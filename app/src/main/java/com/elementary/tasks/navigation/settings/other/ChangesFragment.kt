@@ -3,7 +3,9 @@ package com.elementary.tasks.navigation.settings.other
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
@@ -12,7 +14,11 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 class ChangesFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_web_view
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

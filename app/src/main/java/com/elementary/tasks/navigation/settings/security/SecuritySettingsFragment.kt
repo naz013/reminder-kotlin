@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings.security
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -15,7 +17,11 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
 
   private lateinit var biometricPrompt: BiometricPrompt
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_security
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsSecurityBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

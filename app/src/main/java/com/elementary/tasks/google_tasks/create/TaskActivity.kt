@@ -31,7 +31,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.*
 
-class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.activity_create_google_task) {
+class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
   private val viewModel by viewModel<GoogleTaskViewModel> { parametersOf(getId()) }
@@ -58,6 +58,8 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
     c.set(Calendar.MINUTE, minute)
     stateViewModel.time.postValue(c.timeInMillis)
   }
+
+  override fun inflateBinding() = ActivityCreateGoogleTaskBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

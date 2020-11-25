@@ -2,7 +2,9 @@ package com.elementary.tasks.reminder.create.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
@@ -61,7 +63,11 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
     return reminder
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_reminder_date
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentReminderDateBinding.inflate(inflater, container, false)
 
   override fun provideViews() {
     setViews(

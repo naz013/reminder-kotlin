@@ -10,7 +10,7 @@ import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.widget.NestedScrollView
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -49,7 +49,7 @@ import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
+abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   lateinit var iFace: ReminderInterface
     private set

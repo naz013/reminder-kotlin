@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/photo_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_marginTop="?actionBarSize"
+        android:layout_height="match_parent" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/photo_pager"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_marginTop="?actionBarSize"
-            android:layout_height="match_parent" />
+            android:layout_height="?actionBarSize"
+            android:background="?android:colorBackground" />
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:background="?android:colorBackground" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-    </RelativeLayout>
-</layout>
+    </com.google.android.material.appbar.AppBarLayout>
+</RelativeLayout>

@@ -6,16 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
 import java.util.*
 
-class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfigBinding>(R.layout.activity_widget_calendar_config) {
+class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+
+  override fun inflateBinding() = ActivityWidgetCalendarConfigBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

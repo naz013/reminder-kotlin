@@ -1,74 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listItemCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/statusIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerInside" />
 
     <LinearLayout
-        android:id="@+id/listItemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/statusIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="centerInside" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/taskText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:orientation="vertical">
+            android:singleLine="true"
+            android:textAppearance="?textAppearanceHeadline6"
+            android:textColor="@color/pureBlack"
+            tools:text="text" />
+
+        <LinearLayout
+            android:id="@+id/dateTimeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/taskText"
-                android:layout_width="match_parent"
+                android:id="@+id/taskDate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:textAppearance="?textAppearanceHeadline6"
                 android:textColor="@color/pureBlack"
-                tools:text="text" />
+                tools:text="556sdd" />
 
-            <LinearLayout
-                android:id="@+id/dateTimeView"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/taskTime"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/taskDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@color/pureBlack"
-                    tools:text="556sdd" />
-
-                <TextView
-                    android:id="@+id/taskTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:singleLine="true"
-                    android:textColor="@color/pureBlack"
-                    tools:text="556sdd" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/todoList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:divider="@android:color/transparent"
-                android:fastScrollEnabled="false"
-                android:focusable="false"
-                android:orientation="vertical"
-                android:overScrollMode="never"
-                android:scrollbars="none"
-                android:visibility="visible" />
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:textColor="@color/pureBlack"
+                tools:text="556sdd" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/todoList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:divider="@android:color/transparent"
+            android:fastScrollEnabled="false"
+            android:focusable="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:visibility="visible" />
+
     </LinearLayout>
-</layout>
+</LinearLayout>

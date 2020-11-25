@@ -2,8 +2,9 @@ package com.elementary.tasks.month_view
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import com.elementary.tasks.R
+import android.view.ViewGroup
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.data.models.Birthday
@@ -45,7 +46,11 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     }
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_month_view
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentMonthViewBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

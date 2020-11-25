@@ -1,55 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/noteCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:visibility="visible"
+    app:cardCornerRadius="5dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/noteCard"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="visible"
-        app:cardCornerRadius="5dp">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            app:boxBackgroundColor="?colorSecondary12"
+            app:boxCornerRadiusTopEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nameLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            <com.elementary.tasks.core.views.FixedTextInputEditText
+                android:id="@+id/quickNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxBackgroundColor="?colorSecondary12"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp">
+                android:layout_gravity="center"
+                android:hint="@string/note"
+                android:inputType="textMultiLine"
+                android:textAppearance="?textAppearanceHeadline6"
+                tools:text="Note" />
 
-                <com.elementary.tasks.core.views.FixedTextInputEditText
-                    android:id="@+id/quickNote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:hint="@string/note"
-                    android:inputType="textMultiLine"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="Note" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSave"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textAppearance="?textAppearanceButton" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSave"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="@string/save"
-                android:textAppearance="?textAppearanceButton" />
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

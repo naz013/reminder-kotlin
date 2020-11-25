@@ -13,11 +13,13 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.home.BottomNavActivity
 
-class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activity_pin_login), AuthFragment.AuthCallback {
+class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragment.AuthCallback {
 
   private var isBack = false
   private var hasFinger = false
   private lateinit var biometricPrompt: BiometricPrompt
+
+  override fun inflateBinding() = ActivityPinLoginBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

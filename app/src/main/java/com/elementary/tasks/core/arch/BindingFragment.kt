@@ -4,27 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 
-abstract class BindingFragment<B : ViewDataBinding> : Fragment() {
+abstract class BindingFragment<B : ViewBinding> : Fragment() {
 
-  lateinit var binding: B
+  protected lateinit var binding: B
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    val res = layoutRes()
-    val view = if (res != 0) {
-      inflater.inflate(layoutRes(), container, false)
-    } else {
-      super.onCreateView(inflater, container, savedInstanceState)
-    }
-    if (view != null) {
-      binding = DataBindingUtil.bind(view)!!
-    }
-    return view
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    binding = inflate(inflater, container, savedInstanceState)
+    return binding.root
   }
 
   protected fun string(@StringRes res: Int): String {
@@ -35,6 +29,9 @@ abstract class BindingFragment<B : ViewDataBinding> : Fragment() {
     }
   }
 
-  @LayoutRes
-  open fun layoutRes(): Int = 0
+  abstract fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): B
 }

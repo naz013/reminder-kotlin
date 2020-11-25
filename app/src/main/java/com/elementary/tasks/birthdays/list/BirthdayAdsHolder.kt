@@ -6,6 +6,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemBirthdayAdsBinding
 
 class BirthdayAdsHolder(
@@ -13,7 +14,10 @@ class BirthdayAdsHolder(
   prefs: Prefs,
   adsProvider: AdsProvider,
   failListener: () -> Unit
-) : BaseHolder<ListItemBirthdayAdsBinding>(parent, R.layout.list_item_birthday_ads, prefs) {
+) : BaseHolder<ListItemBirthdayAdsBinding>(
+  ListItemBirthdayAdsBinding.inflate(parent.inflater(), parent, false),
+  prefs
+) {
 
   init {
     adsProvider.showBanner(
@@ -30,9 +34,13 @@ class BirthdayAdsHolder(
       return if (AdsProvider.hasAds() && list.isNotEmpty()) {
         val mutable = list.toMutableList()
         if (list.size > 6) {
-          mutable.add(3, Birthday().apply { this.uuId = AdsProvider.BIRTHDAY_BANNER_ID })
+          mutable.add(3, Birthday().apply {
+            this.uuId = AdsProvider.BIRTHDAY_BANNER_ID
+          })
         } else {
-          mutable.add(list.size / 2 + 1, Birthday().apply { this.uuId = AdsProvider.BIRTHDAY_BANNER_ID })
+          mutable.add(list.size / 2 + 1, Birthday().apply {
+            this.uuId = AdsProvider.BIRTHDAY_BANNER_ID
+          })
         }
         mutable
       } else {

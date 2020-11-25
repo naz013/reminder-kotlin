@@ -12,9 +12,11 @@ import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import org.koin.android.ext.android.inject
 import java.util.*
 
-class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>(R.layout.activity_image_preview) {
+class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
 
   private val imagesSingleton by inject<ImagesSingleton>()
+
+  override fun inflateBinding() = ActivityImagePreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

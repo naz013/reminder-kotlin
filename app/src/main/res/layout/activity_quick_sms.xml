@@ -1,51 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonSend"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/material_margin"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/material_margin"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/acc_button_send_message"
+        android:padding="16dp"
+        android:text="@string/send"
+        android:textAppearance="?textAppearanceButton"
+        android:textColor="?android:textColorPrimary" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonSend"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/material_margin"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="@dimen/material_margin"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/acc_button_send_message"
-            android:padding="16dp"
-            android:text="@string/send"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/contactInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:textAppearance="?textAppearanceHeadline6"
+        tools:text="6541646846886" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/contactInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:textAppearance="?textAppearanceHeadline6"
-            tools:text="6541646846886" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messagesList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonSend"
+        android:layout_below="@+id/contactInfo"
+        android:layout_marginStart="@dimen/material_margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/material_margin"
+        tools:itemCount="5"
+        tools:listitem="@layout/list_item_message" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/messagesList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/buttonSend"
-            android:layout_below="@+id/contactInfo"
-            android:layout_marginStart="@dimen/material_margin"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/material_margin"
-            tools:itemCount="5"
-            tools:listitem="@layout/list_item_message" />
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

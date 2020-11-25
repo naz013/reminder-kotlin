@@ -1,230 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:colorBackground">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_margin"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/appNameBanner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/app_name"
-                    android:textAppearance="?textAppearanceHeadline5"
-                    app:fontFamily="@font/merriweathersans_light" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/appNameBannerPro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:gravity="center"
-                    android:text="PRO"
-                    android:textAppearance="?textAppearanceHeadline5"
-                    android:textColor="?colorSecondary"
-                    app:fontFamily="@font/merriweathersans_italic" />
-
-            </LinearLayout>
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/sale_badge"
-                android:layout_width="match_parent"
+                android:id="@+id/appNameBanner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textAppearance="?textAppearanceHeadline5"
+                app:fontFamily="@font/merriweathersans_light" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/appNameBannerPro"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
-                android:textAppearance="?textAppearanceBody1"
+                android:gravity="center"
+                android:text="PRO"
+                android:textAppearance="?textAppearanceHeadline5"
                 android:textColor="?colorSecondary"
-                android:visibility="visible"
-                tools:text="Sale till" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/update_badge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
-                android:textAppearance="?textAppearanceBody1"
-                android:textColor="?colorSecondary"
-                android:visibility="visible"
-                tools:text="New update" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/backupBadge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
-                android:text="@string/enable_data_backup_to_keep_your_reminders_in_safe"
-                android:textAppearance="?textAppearanceCaption"
-                android:textColor="?colorSecondary"
-                android:visibility="visible" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/playServicesWarning"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
-                android:text="@string/google_play_services_not_found_some_functionality_is_disabled"
-                android:textAppearance="?textAppearanceSubtitle1"
-                android:textColor="@color/secondaryRed"
-                android:visibility="visible" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/doNoDisturbIcon"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_moon"
-                app:tint="?colorSecondary" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/generalSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_divider_top="true"
-                app:prefs_icon="@drawable/ic_twotone_looks_24px"
-                app:prefs_primary_text="@string/general"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/remindersSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_alarm_24px"
-                app:prefs_primary_text="@string/reminders_"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/exportSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_backup_24px"
-                app:prefs_primary_text="@string/export_and_sync"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/calendarSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_today_24px"
-                app:prefs_primary_text="@string/calendar"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/birthdaysSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_cake_24px"
-                app:prefs_primary_text="@string/birthdays"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/notificationSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
-                app:prefs_primary_text="@string/notification"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/securitySettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_lock_24px"
-                app:prefs_primary_text="@string/security"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/additionalSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/additional"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/locationSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_navigation_24px"
-                app:prefs_primary_text="@string/location"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/notesSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_note_24px"
-                app:prefs_primary_text="@string/notes"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/voiceSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_mic_24px"
-                app:prefs_primary_text="@string/voice_control"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/otherSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/other"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/buySettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/buy_pro"
-                app:prefs_type="none" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/testsScreen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_isTest="true"
-                app:prefs_primary_text="Tests"
-                app:prefs_type="none" />
+                app:fontFamily="@font/merriweathersans_italic" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/sale_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:textAppearance="?textAppearanceBody1"
+            android:textColor="?colorSecondary"
+            android:visibility="visible"
+            tools:text="Sale till" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/update_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:textAppearance="?textAppearanceBody1"
+            android:textColor="?colorSecondary"
+            android:visibility="visible"
+            tools:text="New update" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/backupBadge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:text="@string/enable_data_backup_to_keep_your_reminders_in_safe"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?colorSecondary"
+            android:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/playServicesWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:text="@string/google_play_services_not_found_some_functionality_is_disabled"
+            android:textAppearance="?textAppearanceSubtitle1"
+            android:textColor="@color/secondaryRed"
+            android:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/doNoDisturbIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_moon"
+            app:tint="?colorSecondary" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/generalSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_divider_top="true"
+            app:prefs_icon="@drawable/ic_twotone_looks_24px"
+            app:prefs_primary_text="@string/general"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/remindersSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_alarm_24px"
+            app:prefs_primary_text="@string/reminders_"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/exportSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_backup_24px"
+            app:prefs_primary_text="@string/export_and_sync"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/calendarSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_today_24px"
+            app:prefs_primary_text="@string/calendar"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/birthdaysSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_cake_24px"
+            app:prefs_primary_text="@string/birthdays"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/notificationSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+            app:prefs_primary_text="@string/notification"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/securitySettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_lock_24px"
+            app:prefs_primary_text="@string/security"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/additionalSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/additional"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/locationSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_navigation_24px"
+            app:prefs_primary_text="@string/location"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/notesSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_note_24px"
+            app:prefs_primary_text="@string/notes"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/voiceSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_mic_24px"
+            app:prefs_primary_text="@string/voice_control"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/otherSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/other"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/buySettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/buy_pro"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/testsScreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Tests"
+            app:prefs_type="none" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

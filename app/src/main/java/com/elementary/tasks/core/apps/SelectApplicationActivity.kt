@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -18,7 +17,7 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityApplicationListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>(R.layout.activity_application_list) {
+class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>() {
 
   private val viewModel by viewModel<SelectApplicationViewModel>()
   private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
@@ -33,6 +32,8 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
         ?: "").toLowerCase().contains(searchValue.toLowerCase())
     }
   }
+
+  override fun inflateBinding() = ActivityApplicationListBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

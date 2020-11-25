@@ -3,45 +3,52 @@ package com.elementary.tasks.places.list
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
-  private val backupTool by inject<BackupTool>()
   private val viewModel by viewModel<PlacesViewModel>()
 
-  private val mAdapter = PlacesRecyclerAdapter(prefs, get())
-  private var mSearchView: SearchView? = null
-  private var mSearchMenu: MenuItem? = null
+  private val adapter = PlacesRecyclerAdapter(prefs, get(), object : ActionsListener<Place> {
+    override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
+      if (t == null) return
+      when (actions) {
+        ListActions.OPEN -> openPlace(t)
+        ListActions.MORE -> showMore(view, t)
+        else -> {
+        }
+      }
+    }
+  })
+  private var searchView: SearchView? = null
+  private var searchMenu: MenuItem? = null
 
   private val searchModifier = object : SearchModifier<Place>(null, {
-    mAdapter.submitList(it)
+    adapter.submitList(it)
     binding.recyclerView.smoothScrollToPosition(0)
     refreshView(it.size)
   }) {
@@ -53,8 +60,8 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   private val queryTextListener = object : SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean {
       searchModifier.setSearchValue(query)
-      if (mSearchMenu != null) {
-        mSearchMenu?.collapseActionView()
+      if (searchMenu != null) {
+        searchMenu?.collapseActionView()
       }
       return false
     }
@@ -64,7 +71,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
       return false
     }
   }
-  private val mSearchCloseListener = { false }
+  private val searchCloseListener = { false }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -77,22 +84,26 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     menu.findItem(R.id.action_delete_all)?.isVisible = false
     ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
 
-    mSearchMenu = menu.findItem(R.id.action_search)
+    searchMenu = menu.findItem(R.id.action_search)
     val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-    if (mSearchMenu != null) {
-      mSearchView = mSearchMenu?.actionView as SearchView?
+    if (searchMenu != null) {
+      searchView = searchMenu?.actionView as SearchView?
     }
-    if (mSearchView != null) {
+    if (searchView != null) {
       if (searchManager != null) {
-        mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
+        searchView?.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
       }
-      mSearchView?.setOnQueryTextListener(queryTextListener)
-      mSearchView?.setOnCloseListener(mSearchCloseListener)
+      searchView?.setOnQueryTextListener(queryTextListener)
+      searchView?.setOnCloseListener(searchCloseListener)
     }
     super.onCreateOptionsMenu(menu, inflater)
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_places
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentPlacesBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -111,16 +122,17 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
         searchModifier.original = places
       }
     })
-    viewModel.result.observe(viewLifecycleOwner, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.DELETED -> {
-          }
-          else -> {
-          }
+    viewModel.result.observe(viewLifecycleOwner) {
+      when (it) {
+        Commands.DELETED -> {
+        }
+        else -> {
         }
       }
-    })
+    }
+    viewModel.shareFile.observe(viewLifecycleOwner) {
+      sendPlace(it)
+    }
   }
 
   override fun getTitle(): String = getString(R.string.places)
@@ -131,17 +143,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    mAdapter.actionsListener = object : ActionsListener<Place> {
-      override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
-        when (actions) {
-          ListActions.OPEN -> if (t != null) openPlace(t)
-          ListActions.MORE -> if (t != null) showMore(view, t)
-          else -> {
-          }
-        }
-      }
-    }
-    binding.recyclerView.adapter = mAdapter
+    binding.recyclerView.adapter = adapter
     ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
       if (it) binding.fab.show()
       else binding.fab.hide()
@@ -153,7 +155,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     Dialogues.showPopup(view, { i ->
       when (i) {
         0 -> openPlace(place)
-        1 -> sharePlace(place)
+        1 -> viewModel.sharePlace(place)
         2 -> withContext {
           dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
             if (b) viewModel.deletePlace(place)
@@ -163,25 +165,12 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }, getString(R.string.edit), getString(R.string.share), getString(R.string.delete))
   }
 
-  private fun sharePlace(place: Place) {
-    launchDefault {
-      val file = backupTool.placeToFile(requireContext(), place)
-      withUIContext {
-        if (file != null) {
-          sendPlace(place, file)
-        } else {
-          showErrorSending()
-        }
-      }
-    }
-  }
-
-  private fun sendPlace(place: Place, file: File) {
-    if (!file.exists() || !file.canRead()) {
+  private fun sendPlace(shareFile: ShareFile<Place>) {
+    if (shareFile.file == null || !shareFile.file.exists() || !shareFile.file.canRead()) {
       showErrorSending()
       return
     }
-    TelephonyUtil.sendFile(file, requireContext(), place.name)
+    TelephonyUtil.sendFile(shareFile.file, requireContext(), shareFile.item.name)
   }
 
   private fun showErrorSending() {

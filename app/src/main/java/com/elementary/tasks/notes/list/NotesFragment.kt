@@ -4,10 +4,12 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -111,7 +113,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   private fun shareNote(note: NoteWithImages) {
     showProgress()
     launchDefault {
-      val file = backupTool.noteToFile(requireContext(), note)
+      val file = backupTool.noteToFile(note)
       withUIContext {
         hideProgress()
         if (file != null) {
@@ -157,7 +159,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     return super.onOptionsItemSelected(item)
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_notes
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentNotesBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

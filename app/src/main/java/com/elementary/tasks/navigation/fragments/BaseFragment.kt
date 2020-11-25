@@ -2,9 +2,9 @@ package com.elementary.tasks.navigation.fragments
 
 import android.app.Activity
 import android.content.Context
-import androidx.databinding.ViewDataBinding
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
@@ -12,7 +12,7 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject
 
-abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
+abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
 
   var callback: FragmentCallback? = null
     private set

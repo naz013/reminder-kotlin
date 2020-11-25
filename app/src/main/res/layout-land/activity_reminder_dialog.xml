@@ -1,40 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bgImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="visible" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/bgImage"
-            android:layout_width="match_parent"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.45"
+        android:background="?android:colorBackground" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:visibility="visible" />
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.45"
-            android:background="?android:colorBackground" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/remind_me"
+                    android:textAppearance="?textAppearanceCaption"
+                    android:textColor="?colorSecondary" />
 
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:layout_weight="1">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/remText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textAppearance="?textAppearanceHeadline5"
+                    tools:text="Task summary" />
 
                 <LinearLayout
+                    android:id="@+id/timeBlock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -42,361 +65,336 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/remind_me"
+                        android:text="@string/date_and_time"
                         android:textAppearance="?textAppearanceCaption"
                         android:textColor="?colorSecondary" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/remText"
+                        android:id="@+id/reminder_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:textAppearance="?textAppearanceHeadline5"
-                        tools:text="Task summary" />
+                        android:textAppearance="?textAppearanceHeadline6"
+                        tools:text="Date and time" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/actionDirect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/to"
+                        android:textAppearance="?textAppearanceCaption"
+                        android:textColor="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/contactInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        android:textStyle="bold"
+                        tools:text="some@mail.com" />
 
                     <LinearLayout
-                        android:id="@+id/timeBlock"
+                        android:id="@+id/subjectContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:text="@string/date_and_time"
-                            android:textAppearance="?textAppearanceCaption"
-                            android:textColor="?colorSecondary" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/reminder_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:textAppearance="?textAppearanceHeadline6"
-                            tools:text="Date and time" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/container"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/actionDirect"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/to"
-                            android:textAppearance="?textAppearanceCaption"
-                            android:textColor="?colorSecondary" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/contactInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?textAppearanceSubtitle1"
-                            android:textStyle="bold"
-                            tools:text="some@mail.com" />
-
-                        <LinearLayout
-                            android:id="@+id/subjectContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/subjectDirect"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="@string/subject"
-                                android:textAppearance="?textAppearanceCaption"
-                                android:textColor="?colorSecondary" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/subjectView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?textAppearanceSubtitle1"
-                                android:textStyle="bold"
-                                tools:text="Subject" />
-
-                        </LinearLayout>
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/someView"
+                            android:id="@+id/subjectDirect"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="@string/message"
+                            android:text="@string/subject"
                             android:textAppearance="?textAppearanceCaption"
                             android:textColor="?colorSecondary" />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/messageView"
+                            android:id="@+id/subjectView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?textAppearanceSubtitle1"
                             android:textStyle="bold"
-                            tools:text="Hello!" />
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/todoList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:overScrollMode="never"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-
-            <LinearLayout
-                android:layout_width="292dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/contactBlock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    android:background="@drawable/contact_bg_vector"
-                    android:orientation="vertical"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:visibility="visible">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/contactPhoto"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/acc_contact_photo"
-                            android:scaleType="centerCrop"
-                            android:visibility="visible"
-                            app:civ_border_color="@color/material_grey_dialog"
-                            app:civ_border_width="5dp" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:orientation="vertical">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/contactName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:gravity="center"
-                                android:textAppearance="?textAppearanceBody1"
-                                tools:text="User Name" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/contactNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginTop="4dp"
-                                android:gravity="center"
-                                android:textAppearance="?textAppearanceBody2"
-                                tools:text="1234567890" />
-
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/buttonAction"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/action_button_rounded"
-                            android:padding="8dp"
-                            android:text="@string/make_call"
-                            android:textAllCaps="true"
-                            android:textAppearance="?textAppearanceButton"
-                            android:textColor="?colorSecondary" />
+                            tools:text="Subject" />
 
                     </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/someView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/message"
+                        android:textAppearance="?textAppearanceCaption"
+                        android:textColor="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/messageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        android:textStyle="bold"
+                        tools:text="Hello!" />
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <LinearLayout
-                    android:id="@+id/actionContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonOk"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:contentDescription="@string/acc_button_ok"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_done_24px" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonCancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:contentDescription="@string/acc_button_cancel"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_cancel_24px" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonRefresh"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_refresh_24px" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonAttachment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:contentDescription="@string/attach_file"
-                        android:visibility="gone"
-                        app:tint="?colorOnSecondary"
-                        app:fabSize="normal"
-                        app:srcCompat="@drawable/ic_twotone_attachment_24px" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/delayContainer"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/todoList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:overScrollMode="never"
+                    android:visibility="gone" />
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonDelay"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:contentDescription="@string/acc_button_snooze"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_snooze_24px" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonDelayFor"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:contentDescription="@string/acc_button_snooze_for"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_more_horiz_24px" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonNotification"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:contentDescription="@string/acc_button_move_to_status_bar"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_notifications_24px" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/buttonEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:contentDescription="@string/acc_button_edit"
-                        app:fabSize="normal"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_edit_24px" />
-
-                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-        <FrameLayout
-            android:id="@+id/progressOverlay"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="292dp"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="#60000000">
+            android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/contactBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/contact_bg_vector"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:visibility="visible">
 
-                <com.tuyenmonkey.mkloader.MKLoader
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    app:mk_color="?colorSecondary"
-                    app:mk_type="Whirlpool" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <TextView
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/contactPhoto"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/acc_contact_photo"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        app:civ_border_color="@color/material_grey_dialog"
+                        app:civ_border_width="5dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/contactName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:gravity="center"
+                            android:textAppearance="?textAppearanceBody1"
+                            tools:text="User Name" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/contactNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:textAppearance="?textAppearanceBody2"
+                            tools:text="1234567890" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/please_wait"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    android:textColor="?colorSecondary" />
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/buttonAction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/action_button_rounded"
+                        android:padding="8dp"
+                        android:text="@string/make_call"
+                        android:textAllCaps="true"
+                        android:textAppearance="?textAppearanceButton"
+                        android:textColor="?colorSecondary" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/actionContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonOk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/acc_button_ok"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_done_24px" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/acc_button_cancel"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_cancel_24px" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonRefresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_refresh_24px" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonAttachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/attach_file"
+                    android:visibility="gone"
+                    app:tint="?colorOnSecondary"
+                    app:fabSize="normal"
+                    app:srcCompat="@drawable/ic_twotone_attachment_24px" />
 
             </LinearLayout>
-        </FrameLayout>
-    </RelativeLayout>
-</layout>
+
+            <LinearLayout
+                android:id="@+id/delayContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonDelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/acc_button_snooze"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_snooze_24px" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonDelayFor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/acc_button_snooze_for"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_more_horiz_24px" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/acc_button_move_to_status_bar"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_notifications_24px" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/acc_button_edit"
+                    app:fabSize="normal"
+                    app:tint="?colorOnSecondary"
+                    app:srcCompat="@drawable/ic_twotone_edit_24px" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/progressOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#60000000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.tuyenmonkey.mkloader.MKLoader
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                app:mk_color="?colorSecondary"
+                app:mk_type="Whirlpool" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="@string/please_wait"
+                android:textAppearance="?textAppearanceSubtitle1"
+                android:textColor="?colorSecondary" />
+
+        </LinearLayout>
+    </FrameLayout>
+</RelativeLayout>

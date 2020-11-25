@@ -27,11 +27,11 @@ import java.lang.ref.WeakReference
 
 class BackupTool(
   private val appDb: AppDb,
-  private val reminderCompletable: ReminderCompletable
+  private val reminderCompletable: ReminderCompletable,
+  private val context: Context
 ) {
 
   fun importAll(
-    context: Context,
     uri: Uri?,
     replace: Boolean = false,
     callback: (Boolean) -> Unit
@@ -148,7 +148,7 @@ class BackupTool(
     return false
   }
 
-  fun exportAll(context: Context): File? {
+  fun exportAll(): File? {
     val allData = AllData(
       reminders = appDb.reminderDao().all(),
       groups = appDb.reminderGroupDao().all(),
@@ -157,10 +157,10 @@ class BackupTool(
       templates = appDb.smsTemplatesDao().all(),
       birthdays = appDb.birthdaysDao().all()
     )
-    return createAllDataFile(context, allData)
+    return createAllDataFile(allData)
   }
 
-  private fun createAllDataFile(context: Context, item: AllData): File? {
+  private fun createAllDataFile(item: AllData): File? {
     val jsonData = WeakReference(Gson().toJson(item))
     val file: File
     val dir = context.externalCacheDir ?: context.cacheDir
@@ -180,32 +180,32 @@ class BackupTool(
     }
   }
 
-  fun reminderToFile(context: Context, item: Reminder): File? {
-    return anyToFile(context, item, item.uuId + FileConfig.FILE_NAME_REMINDER)
+  fun reminderToFile(item: Reminder): File? {
+    return anyToFile(item, item.uuId + FileConfig.FILE_NAME_REMINDER)
   }
 
-  fun noteToFile(context: Context, item: NoteWithImages?): File? {
+  fun noteToFile(item: NoteWithImages?): File? {
     val note = item?.note ?: return null
-    return anyToFile(context, item, note.key + FileConfig.FILE_NAME_NOTE)
+    return anyToFile(item, note.key + FileConfig.FILE_NAME_NOTE)
   }
 
-  fun placeToFile(context: Context, item: Place): File? {
-    return anyToFile(context, item, item.id + FileConfig.FILE_NAME_PLACE)
+  fun placeToFile(item: Place): File? {
+    return anyToFile(item, item.id + FileConfig.FILE_NAME_PLACE)
   }
 
-  fun templateToFile(context: Context, item: SmsTemplate): File? {
-    return anyToFile(context, item, item.key + FileConfig.FILE_NAME_TEMPLATE)
+  fun templateToFile(item: SmsTemplate): File? {
+    return anyToFile(item, item.key + FileConfig.FILE_NAME_TEMPLATE)
   }
 
-  fun birthdayToFile(context: Context, item: Birthday): File? {
-    return anyToFile(context, item, item.uuId + FileConfig.FILE_NAME_BIRTHDAY)
+  fun birthdayToFile(item: Birthday): File? {
+    return anyToFile(item, item.uuId + FileConfig.FILE_NAME_BIRTHDAY)
   }
 
-  fun groupToFile(context: Context, item: ReminderGroup): File? {
-    return anyToFile(context, item, item.groupUuId + FileConfig.FILE_NAME_GROUP)
+  fun groupToFile(item: ReminderGroup): File? {
+    return anyToFile(item, item.groupUuId + FileConfig.FILE_NAME_GROUP)
   }
 
-  fun anyToFile(context: Context, any: Any, fileName: String): File? {
+  fun anyToFile(any: Any, fileName: String): File? {
     val cacheDir = context.getExternalFilesDir("share") ?: context.filesDir
     val file = File(cacheDir, fileName)
     if (!file.createNewFile()) {

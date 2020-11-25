@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings.voice
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.toDate
@@ -19,7 +21,11 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
   private var is24: Boolean = false
   private val format = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_time_of_day
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsTimeOfDayBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

@@ -1,148 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/listHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:textAppearance="?textAppearanceHeadline6"
+        android:visibility="visible"
+        tools:text="@string/tomorrow" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/listHeader"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/itemCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:clipChildren="false"
+        android:stateListAnimator="@animator/card_animator"
+        app:contentPadding="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reminderContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center_vertical"
-            android:textAppearance="?textAppearanceHeadline6"
-            android:visibility="visible"
-            tools:text="@string/tomorrow" />
+            android:focusable="false"
+            android:padding="8dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/itemCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:clipChildren="false"
-            android:stateListAnimator="@animator/card_animator"
-            app:contentPadding="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/reminderContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/itemCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
                 android:focusable="false"
-                android:padding="8dp">
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/linearLayout4" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/itemCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="49dp"
-                    android:focusable="false"
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/taskText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceSubtitle1"
+                    tools:text="Hello" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/taskDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceBody2"
+                    tools:text="25/05/2018" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/reminder_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceBody2"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/linearLayout4" />
+                    tools:text="1256356549k" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/reminderTypeGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="2"
+                    android:textAppearance="?textAppearanceBody2"
+                    android:visibility="visible"
+                    tools:text="Timer" />
 
                 <LinearLayout
-                    android:id="@+id/linearLayout4"
-                    android:layout_width="0dp"
+                    android:id="@+id/todoList"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:divider="@android:color/transparent"
+                    android:fastScrollEnabled="false"
+                    android:focusable="false"
                     android:orientation="vertical"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    android:visibility="visible" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/taskText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Hello" />
+                <LinearLayout
+                    android:id="@+id/badgesView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/taskDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody2"
-                        tools:text="25/05/2018" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/repeatBadge"
+                        android:layout_width="52dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/reminder_phone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:visibility="visible"
-                        tools:text="1256356549k" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/timeToBadge"
+                        android:layout_width="104dp"
+                        android:layout_height="match_parent" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/reminderTypeGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:maxLines="2"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:visibility="visible"
-                        tools:text="Timer" />
-
-                    <LinearLayout
-                        android:id="@+id/todoList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:divider="@android:color/transparent"
-                        android:fastScrollEnabled="false"
-                        android:focusable="false"
-                        android:orientation="vertical"
-                        android:overScrollMode="never"
-                        android:scrollbars="none"
-                        android:visibility="visible" />
-
-                    <LinearLayout
-                        android:id="@+id/badgesView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="26dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="4dp"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/repeatBadge"
-                            android:layout_width="52dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="8dp"
-                            android:visibility="gone" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/timeToBadge"
-                            android:layout_width="104dp"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
                 </LinearLayout>
+            </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/button_more"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:layout_constraintBottom_toTopOf="@+id/itemCheck"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-                    app:tint="?android:textColorPrimary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/button_more"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toTopOf="@+id/itemCheck"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
+                app:tint="?android:textColorPrimary" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-</layout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

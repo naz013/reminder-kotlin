@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings.reminders
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -13,7 +15,11 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
 
   private var mItemSelect: Int = 0
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_reminders
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsRemindersBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

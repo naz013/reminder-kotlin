@@ -10,10 +10,12 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCombinedConfigBinding
 
-class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfigBinding>(R.layout.activity_widget_combined_config) {
+class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+
+  override fun inflateBinding() = ActivityWidgetCombinedConfigBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

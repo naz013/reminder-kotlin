@@ -3,10 +3,10 @@ package com.elementary.tasks.core.additional
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMessageBinding
 
 class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapter.ViewHolder>() {
@@ -34,8 +34,11 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
     return mDataList.size
   }
 
-  inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemMessageBinding>(parent,
-    R.layout.list_item_message) {
+  inner class ViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemMessageBinding>(
+    ListItemMessageBinding.inflate(parent.inflater(), parent, false)
+  ) {
     fun bind(item: SmsTemplate) {
       binding.messageView.text = item.title
       if (item.isSelected) {

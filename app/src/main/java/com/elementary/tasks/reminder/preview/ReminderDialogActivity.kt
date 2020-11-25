@@ -52,7 +52,7 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 
-class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
+class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>() {
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
 
@@ -195,6 +195,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       }
     }
   }
+
+  override fun inflateBinding() = ActivityReminderDialogBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

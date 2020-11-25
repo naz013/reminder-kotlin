@@ -5,8 +5,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.SyncManagers
-import com.elementary.tasks.core.cloud.converters.PlaceConverter
-import com.elementary.tasks.core.cloud.repositories.PlaceRepository
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault

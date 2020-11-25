@@ -15,10 +15,12 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivitySendFeedbackBinding
 
-class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>(R.layout.activity_send_feedback) {
+class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
 
   private val url = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
 
+  override fun inflateBinding() = ActivitySendFeedbackBinding.inflate(layoutInflater)
+  
   @SuppressLint("SetJavaScriptEnabled")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

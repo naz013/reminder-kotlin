@@ -14,11 +14,13 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
-class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksConfigBinding>(R.layout.activity_widget_current_tasks_config) {
+class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
   private var textSize: Int = 0
+
+  override fun inflateBinding() = ActivityWidgetCurrentTasksConfigBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

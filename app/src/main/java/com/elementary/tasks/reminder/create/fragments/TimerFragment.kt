@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.create.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
@@ -82,7 +84,11 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     return reminder
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_reminder_timer
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentReminderTimerBinding.inflate(inflater, container, false)
 
   override fun provideViews() {
     setViews(
@@ -197,7 +203,9 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
     inner class TimeHolder(
       viewGroup: ViewGroup
-    ) : HolderBinding<ListItemUsedTimeBinding>(viewGroup, R.layout.list_item_used_time) {
+    ) : HolderBinding<ListItemUsedTimeBinding>(
+      ListItemUsedTimeBinding.inflate(viewGroup.inflater(), viewGroup, false)
+    ) {
 
       init {
         binding.chipItem.setOnClickListener {

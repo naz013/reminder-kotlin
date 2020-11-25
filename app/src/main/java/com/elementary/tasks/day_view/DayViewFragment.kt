@@ -3,10 +3,12 @@ package com.elementary.tasks.day_view
 import android.app.AlarmManager
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -64,7 +66,11 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     return super.onOptionsItemSelected(item)
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_day_view
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentDayViewBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

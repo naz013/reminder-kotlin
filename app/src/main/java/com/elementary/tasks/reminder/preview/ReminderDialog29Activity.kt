@@ -54,7 +54,7 @@ import timber.log.Timber
 import java.io.File
 
 @RequiresApi(29)
-class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
+class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>() {
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
 
@@ -111,6 +111,8 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
       }
     }
   }
+
+  override fun inflateBinding() = ActivityReminderDialogBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

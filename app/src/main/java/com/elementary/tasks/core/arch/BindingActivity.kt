@@ -1,16 +1,10 @@
 package com.elementary.tasks.core.arch
 
-import android.os.Bundle
-import androidx.annotation.LayoutRes
-import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.core.utils.activityBinding
+import androidx.viewbinding.ViewBinding
 
-abstract class BindingActivity<B : ViewDataBinding>(@LayoutRes layoutRes: Int) : ThemedActivity() {
+abstract class BindingActivity<B : ViewBinding> : ThemedActivity() {
 
-  protected val binding: B by activityBinding(layoutRes)
+  protected val binding: B by lazy { inflateBinding() }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    binding.lifecycleOwner = this
-  }
+  abstract fun inflateBinding(): B
 }

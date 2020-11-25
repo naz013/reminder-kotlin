@@ -3,7 +3,9 @@ package com.elementary.tasks.navigation.settings.export
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
@@ -47,7 +49,11 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
     mJob?.cancel()
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_backups
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsBackupsBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

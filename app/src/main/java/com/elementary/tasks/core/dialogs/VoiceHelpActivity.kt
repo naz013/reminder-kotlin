@@ -13,7 +13,9 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityVoiceHelpBinding
 import java.util.*
 
-class VoiceHelpActivity : BindingActivity<ActivityVoiceHelpBinding>(R.layout.activity_voice_help) {
+class VoiceHelpActivity : BindingActivity<ActivityVoiceHelpBinding>() {
+
+  override fun inflateBinding() = ActivityVoiceHelpBinding.inflate(layoutInflater)
 
   @SuppressLint("SetJavaScriptEnabled")
   override fun onCreate(savedInstanceState: Bundle?) {

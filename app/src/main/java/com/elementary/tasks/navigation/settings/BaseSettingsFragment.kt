@@ -1,12 +1,12 @@
 package com.elementary.tasks.navigation.settings
 
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import org.koin.android.ext.android.inject
 
-abstract class BaseSettingsFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
+abstract class BaseSettingsFragment<B : ViewBinding> : BaseNavigationFragment<B>() {
 
   protected val language by inject<Language>()
 

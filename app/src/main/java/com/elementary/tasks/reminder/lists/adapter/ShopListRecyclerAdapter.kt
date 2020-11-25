@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemShopTaskBinding
 
 class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {
@@ -54,11 +55,13 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
     }
   }
 
-  fun getItem(position: Int): ShopItem {
-    return mDataList[position]
-  }
+  fun getItem(position: Int) = mDataList[position]
 
-  inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemShopTaskBinding>(parent, R.layout.list_item_shop_task) {
+  inner class ViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemShopTaskBinding>(
+    ListItemShopTaskBinding.inflate(parent.inflater(), parent, false)
+  ) {
 
     init {
       binding.clearButton.setOnClickListener {
@@ -91,9 +94,7 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
     }
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(parent)
-  }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     onBind = true
@@ -102,14 +103,10 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
     onBind = false
   }
 
-  override fun getItemCount(): Int {
-    return mDataList.size
-  }
+  override fun getItemCount() = mDataList.size
 
   interface ActionListener {
-
     fun onItemCheck(position: Int, isChecked: Boolean)
-
     fun onItemDelete(position: Int)
   }
 }

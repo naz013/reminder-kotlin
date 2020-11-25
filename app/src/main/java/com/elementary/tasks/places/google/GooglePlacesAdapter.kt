@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.interfaces.SimpleListener
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGooglePlaceBinding
 
 class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>() {
@@ -22,7 +23,11 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
     notifyDataSetChanged()
   }
 
-  inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemGooglePlaceBinding>(parent, R.layout.list_item_google_place) {
+  inner class ViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemGooglePlaceBinding>(
+    ListItemGooglePlaceBinding.inflate(parent.inflater(), parent, false)
+  ) {
     fun bind(googlePlaceItem: GooglePlaceItem) {
       binding.text1.text = googlePlaceItem.name
       binding.text2.text = googlePlaceItem.address

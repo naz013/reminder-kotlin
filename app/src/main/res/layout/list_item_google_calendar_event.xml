@@ -1,94 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clickView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:stateListAnimator="@animator/card_animator"
+    tools:targetApi="lollipop">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/clickView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:stateListAnimator="@animator/card_animator"
-        tools:targetApi="lollipop">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/task"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:text="Task" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/task"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    tools:text="Task" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/calendarName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceBody2"
+                tools:text="Calendar name" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/calendarName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceBody2"
-                    tools:text="Calendar name" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceBody2"
+                tools:text="Note" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceBody2"
-                    tools:text="Note" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dtStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceSubtitle2"
+                tools:text="14/04" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/dtStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:textAppearance="?textAppearanceSubtitle2"
-                    tools:text="14/04" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/dtEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:textAppearance="?textAppearanceSubtitle2"
-                    tools:text="14/04" />
-            </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/viewButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_google_calendar" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/buttonDelete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_delete_24px"
-                app:tint="?android:textColorPrimary" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dtEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceSubtitle2"
+                tools:text="14/04" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/viewButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_google_calendar" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/buttonDelete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_delete_24px"
+            app:tint="?android:textColorPrimary" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

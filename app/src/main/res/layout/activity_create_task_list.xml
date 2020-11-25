@@ -1,111 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="?actionBarSize"
+        android:stateListAnimator="@animator/toolbar_animator"
+        tools:targetApi="lollipop">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:stateListAnimator="@animator/toolbar_animator"
-            tools:targetApi="lollipop">
+            android:layout_height="match_parent"
+            android:background="?android:colorBackground"
+            app:title="@string/new_tasks_list" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:colorBackground"
-                app:title="@string/new_tasks_list" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        </com.google.android.material.appbar.AppBarLayout>
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/progressView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/material_margin"
-                android:layout_marginEnd="@dimen/material_margin"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="invisible">
 
-                <LinearLayout
-                    android:id="@+id/progressView"
-                    android:layout_width="match_parent"
+                <androidx.core.widget.ContentLoadingProgressBar
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="invisible">
+                    android:layout_gravity="center_horizontal" />
 
-                    <androidx.core.widget.ContentLoadingProgressBar
-                        style="@style/Widget.AppCompat.ProgressBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal" />
-
-                    <TextView
-                        android:id="@+id/progressMessageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="@string/please_wait" />
-
-                </LinearLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/nameLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/progressMessageView"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="16dp"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
-
-                    <com.elementary.tasks.core.views.FixedTextInputEditText
-                        android:id="@+id/editField"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/name"
-                        android:imeOptions="actionDone"
-                        android:inputType="textAutoCorrect|textShortMessage"
-                        android:maxLength="120"
-                        android:maxLines="3"
-                        android:textAppearance="?textAppearanceSubtitle1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/defaultCheck"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/make_default" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/color"
-                    android:textAppearance="?textAppearanceCaption"
-                    android:textColor="?colorSecondary" />
-
-                <com.github.naz013.colorslider.ColorSlider
-                    android:id="@+id/colorSlider"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="8dp" />
+                    android:textAppearance="?textAppearanceSubtitle1"
+                    tools:text="@string/please_wait" />
 
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </LinearLayout>
-</layout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:boxBackgroundColor="?colorSecondary12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
+
+                <com.elementary.tasks.core.views.FixedTextInputEditText
+                    android:id="@+id/editField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:imeOptions="actionDone"
+                    android:inputType="textAutoCorrect|textShortMessage"
+                    android:maxLength="120"
+                    android:maxLines="3"
+                    android:textAppearance="?textAppearanceSubtitle1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/defaultCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/make_default" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/color"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary" />
+
+            <com.github.naz013.colorslider.ColorSlider
+                android:id="@+id/colorSlider"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

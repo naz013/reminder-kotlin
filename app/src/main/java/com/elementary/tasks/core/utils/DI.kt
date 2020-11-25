@@ -134,7 +134,7 @@ val viewModelModule = module {
   viewModel { SmsTemplatesViewModel(get(), get()) }
   viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { SelectApplicationViewModel() }
-  viewModel { PlacesViewModel(get(), get()) }
+  viewModel { PlacesViewModel(get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get()) }
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get()) }
@@ -193,7 +193,7 @@ val utilModule = module {
   single { GTasks(get(), get(), get()) }
   single { SoundStackHolder(get(), get()) }
   single { ThemeUtil(get(), get()) }
-  single { BackupTool(get(), get()) }
+  single { BackupTool(get(), get(), get()) }
   single { Dialogues() }
   single { Language(get()) }
   single { CalendarUtils(get(), get(), get()) }
@@ -207,7 +207,7 @@ val utilModule = module {
   factory { WidgetDataProvider(get()) }
   single { SyncWorker(get(), get(), get()) }
   single { BackupWorker(get(), get()) }
-  single { ExportAllDataWorker(get(), get()) }
+  single { ExportAllDataWorker(get()) }
   single { ScanContactsWorker(get(), get()) }
   factory { EnableThread(get(), get()) }
 }

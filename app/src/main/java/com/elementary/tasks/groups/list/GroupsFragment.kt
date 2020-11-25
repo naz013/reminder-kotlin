@@ -2,7 +2,9 @@ package com.elementary.tasks.groups.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -24,7 +26,11 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   private val viewModel by viewModel<GroupsViewModel>()
   private var mAdapter = GroupsRecyclerAdapter()
 
-  override fun layoutRes(): Int = R.layout.fragment_groups
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentGroupsBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

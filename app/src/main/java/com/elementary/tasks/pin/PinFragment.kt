@@ -23,7 +23,11 @@ class PinFragment : AuthFragment() {
     }
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View {
     binding = FragmentLoginPinBinding.inflate(inflater, container, false)
     return binding.root
   }

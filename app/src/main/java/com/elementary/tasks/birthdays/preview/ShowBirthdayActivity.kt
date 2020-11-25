@@ -36,7 +36,7 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.util.*
 
-class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>(R.layout.activity_show_birthday) {
+class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>() {
 
   private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
 
@@ -166,6 +166,8 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
       }
     }
   }
+
+  override fun inflateBinding() = ActivityShowBirthdayBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -17,11 +17,13 @@ import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>(R.layout.activity_quick_sms) {
+class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>() {
 
   private val viewModel by viewModel<SmsTemplatesViewModel>()
   private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
   private var number: String = ""
+
+  override fun inflateBinding() = ActivityQuickSmsBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

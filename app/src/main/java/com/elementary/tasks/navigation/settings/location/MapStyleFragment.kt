@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatRadioButton
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsMapStyleBinding
@@ -23,7 +25,11 @@ class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>()
       }
     }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_map_style
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsMapStyleBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

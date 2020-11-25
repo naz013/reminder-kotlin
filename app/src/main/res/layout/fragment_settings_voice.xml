@@ -1,58 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:colorBackground">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/languagePrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_margin"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:orientation="vertical">
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_language_24px"
+            app:prefs_primary_text="@string/language"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/languagePrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_language_24px"
-                app:prefs_primary_text="@string/language"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/timePrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+            app:prefs_primary_text="@string/time"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/timePrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_access_time_24px"
-                app:prefs_primary_text="@string/time"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/helpPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_help_24px"
+            app:prefs_primary_text="@string/help"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/helpPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_help_24px"
-                app:prefs_primary_text="@string/help"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/conversationPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_mic_24px"
+            app:prefs_primary_text="@string/live_conversation"
+            app:prefs_secondary_text_off="@string/show_simple_voice_popup"
+            app:prefs_secondary_text_on="@string/show_voice_control_screen"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/conversationPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_mic_24px"
-                app:prefs_primary_text="@string/live_conversation"
-                app:prefs_secondary_text_off="@string/show_simple_voice_popup"
-                app:prefs_secondary_text_on="@string/show_voice_control_screen"
-                app:prefs_type="check_switch" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

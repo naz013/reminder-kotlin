@@ -15,6 +15,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
@@ -103,7 +104,11 @@ class ConversationAdapter(
     return getItem(position)?.viewType ?: 0
   }
 
-  private inner class AskHolder(parent: ViewGroup) : HolderBinding<ListItemAskBinding>(parent, R.layout.list_item_ask) {
+  private inner class AskHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemAskBinding>(
+    ListItemAskBinding.inflate(parent.inflater(), parent, false)
+  ) {
 
     private var askAction: AskAction? = null
 
@@ -123,22 +128,31 @@ class ConversationAdapter(
     }
   }
 
-  private inner class VoiceHolder(parent: ViewGroup) :
-    HolderBinding<ListItemSimpleReplyBinding>(parent, R.layout.list_item_simple_reply) {
+  private inner class VoiceHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemSimpleReplyBinding>(
+    ListItemSimpleReplyBinding.inflate(parent.inflater(), parent, false)
+  ) {
     fun bind(text: String) {
       binding.replyTextSimple.text = text
     }
   }
 
-  private inner class VoiceResponseHolder(parent: ViewGroup) :
-    HolderBinding<ListItemSimpleResponseBinding>(parent, R.layout.list_item_simple_response) {
+  private inner class VoiceResponseHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemSimpleResponseBinding>(
+    ListItemSimpleResponseBinding.inflate(parent.inflater(), parent, false)
+  ) {
     fun bind(text: String) {
       binding.replyTextResponse.text = text
     }
   }
 
-  private inner class ShowMoreHolder(parent: ViewGroup) :
-    HolderBinding<ListItemShowReplyBinding>(parent, R.layout.list_item_show_reply) {
+  private inner class ShowMoreHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemShowReplyBinding>(
+    ListItemShowReplyBinding.inflate(parent.inflater(), parent, false)
+  ) {
     init {
       binding.replyText.setOnClickListener {
         showMore?.invoke(adapterPosition)

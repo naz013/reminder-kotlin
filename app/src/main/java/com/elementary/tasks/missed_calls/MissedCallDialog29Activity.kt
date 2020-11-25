@@ -29,28 +29,26 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.sql.Date
 
-class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
+class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
 
   private var mMissedCall: MissedCall? = null
   private var isEventShowed = false
-
   private val id: Int
     get() = mMissedCall?.uniqueId ?: 2122
-
   private val mMissedCallObserver: Observer<in MissedCall> = Observer { missedCall ->
     if (missedCall != null) {
       showInfo(missedCall)
     }
   }
 
+  override fun inflateBinding() = ActivityMissedDialogBinding.inflate(layoutInflater)
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
     binding.contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
     binding.contactPhoto.visibility = View.GONE
-
     initButtons()
     initViewModel()
   }

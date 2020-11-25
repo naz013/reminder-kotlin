@@ -14,9 +14,11 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
-class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>(R.layout.activity_privacy_policy) {
+class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
 
   private val url = Constants.WEB_URL + "privacy-policy"
+
+  override fun inflateBinding() = ActivityPrivacyPolicyBinding.inflate(layoutInflater)
 
   @SuppressLint("SetJavaScriptEnabled")
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,10 +51,10 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>(R.la
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
-        android.R.id.home -> {
-            finish()
-            return true
-        }
+      android.R.id.home -> {
+        finish()
+        return true
+      }
     }
     return super.onOptionsItemSelected(item)
   }

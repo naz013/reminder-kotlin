@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.views.TextDrawable
@@ -31,7 +32,10 @@ class ShoppingHolder(
   val editable: Boolean,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder, prefs) {
+) : BaseHolder<ListItemReminderBinding>(
+  ListItemReminderBinding.inflate(parent.inflater(), parent, false),
+  prefs
+) {
 
   val listHeader: TextView = binding.listHeader
 

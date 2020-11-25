@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:colorBackground"
+    android:padding="24dp">
 
-    <FrameLayout
+    <com.github.naz013.colorslider.ColorSlider
+        android:id="@+id/colorSlider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
-        android:padding="24dp">
+        android:layout_height="40dp" />
 
-        <com.github.naz013.colorslider.ColorSlider
-            android:id="@+id/colorSlider"
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
-
-    </FrameLayout>
-</layout>
+</FrameLayout>

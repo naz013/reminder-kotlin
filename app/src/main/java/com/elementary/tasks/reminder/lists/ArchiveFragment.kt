@@ -3,10 +3,12 @@ package com.elementary.tasks.reminder.lists
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -98,7 +100,11 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     return super.onOptionsItemSelected(item)
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_trash
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentTrashBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

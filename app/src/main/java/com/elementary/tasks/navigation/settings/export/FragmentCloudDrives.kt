@@ -2,7 +2,9 @@ package com.elementary.tasks.navigation.settings.export
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -54,7 +56,11 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_cloud_drives
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsCloudDrivesBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

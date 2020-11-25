@@ -33,7 +33,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.*
 
-class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.activity_follow),
+class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
   CompoundButton.OnCheckedChangeListener {
 
   private val gTasks by inject<GTasks>()
@@ -108,6 +108,8 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.a
       Reminder.BY_DATE_CALL
     else
       Reminder.BY_DATE_SMS
+
+  override fun inflateBinding() = ActivityFollowBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

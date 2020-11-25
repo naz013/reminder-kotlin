@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
-import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
@@ -17,13 +16,15 @@ import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>(R.layout.activity_fullscreen_map) {
+class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
 
   private var mGoogleMap: AdvancedMapFragment? = null
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
 
   private var reminder: Reminder? = null
   private var placeIndex = 0
+
+  override fun inflateBinding() = ActivityFullscreenMapBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     with(window) {

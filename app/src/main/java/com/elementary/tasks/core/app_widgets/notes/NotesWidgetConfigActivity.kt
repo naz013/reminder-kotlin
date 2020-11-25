@@ -10,10 +10,12 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
-class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBinding>(R.layout.activity_widget_note_config) {
+class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+
+  override fun inflateBinding() = ActivityWidgetNoteConfigBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

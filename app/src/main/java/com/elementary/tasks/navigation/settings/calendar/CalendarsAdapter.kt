@@ -2,9 +2,9 @@ package com.elementary.tasks.navigation.settings.calendar
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemCalendarBinding
 
 class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
@@ -29,25 +29,21 @@ class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
     notifyDataSetChanged()
   }
 
-  fun getSelectedIds(): Array<Long> {
-    return data.filter { it.isSelected }.map { it.id }.toTypedArray()
-  }
+  fun getSelectedIds() = data.filter { it.isSelected }.map { it.id }.toTypedArray()
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(parent)
-  }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     holder.bind(data[position])
   }
 
-  override fun getItemCount(): Int {
-    return data.size
-  }
+  override fun getItemCount() = data.size
 
   inner class ViewHolder(
     parent: ViewGroup
-  ) : HolderBinding<ListItemCalendarBinding>(parent, R.layout.list_item_calendar) {
+  ) : HolderBinding<ListItemCalendarBinding>(
+    ListItemCalendarBinding.inflate(parent.inflater(), parent, false)
+  ) {
 
     init {
       binding.root.setOnClickListener {
