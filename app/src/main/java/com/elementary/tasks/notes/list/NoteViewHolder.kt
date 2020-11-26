@@ -12,31 +12,31 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.isAlmostTransparent
+import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import java.lang.ref.WeakReference
 
-class NoteHolder(
+class NoteViewHolder(
   parent: ViewGroup,
-  prefs: Prefs,
-  private val themeUtil: ThemeUtil,
+  currentStateHolder: CurrentStateHolder,
   private val imagesSingleton: ImagesSingleton,
   val listener: ((View, Int, ListActions) -> Unit)?
-) : BaseHolder<ListItemNoteBinding>(
+) : BaseViewHolder<ListItemNoteBinding>(
   ListItemNoteBinding.inflate(parent.inflater(), parent, false),
-  prefs
+  currentStateHolder
 ) {
 
   var hasMore = true
@@ -85,17 +85,17 @@ class NoteHolder(
     loadImage(binding.imagesView, item)
     loadNote(binding.noteTv, item)
 
-    val color = themeUtil.getNoteLightColor(item.getColor(), item.getOpacity(), item.getPalette())
+    val color = theme.getNoteLightColor(item.getColor(), item.getOpacity(), item.getPalette())
     binding.bgView.setBackgroundColor(color)
 
-    val isDarkIcon = if (ThemeUtil.isAlmostTransparent(item.getOpacity())) {
-      ThemeUtil.isDarkMode(itemView.context)
+    val isDarkIcon = if (item.getOpacity().isAlmostTransparent()) {
+      theme.isDark
     } else {
-      ThemeUtil.isColorDark(color)
+      color.isColorDark()
     }
     binding.buttonMore.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
 
-    if ((ThemeUtil.isAlmostTransparent(item.getOpacity()) && ThemeUtil.isDarkMode(itemView.context)) || ThemeUtil.isColorDark(color)) {
+    if ((item.getOpacity().isAlmostTransparent() && theme.isDark) || color.isColorDark()) {
       binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
     } else {
       binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))

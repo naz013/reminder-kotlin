@@ -22,7 +22,7 @@ import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -40,7 +40,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     allGroups = { return@ReminderResolver viewModel.groups }
   )
 
-  private var remindersAdapter = RemindersRecyclerAdapter(prefs, showHeader = false, isEditable = false) {
+  private var remindersAdapter = RemindersRecyclerAdapter(currentStateHolder, showHeader = false, isEditable = false) {
     showData(viewModel.events.value ?: listOf())
   }
   private val searchModifier = SearchModifier(modifier = null, callback = this)
@@ -164,7 +164,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
   }
 
   override fun invoke(result: List<Reminder>) {
-    val newList = ReminderAdsHolder.updateList(result)
+    val newList = ReminderAdsViewHolder.updateList(result)
     remindersAdapter.submitList(newList)
     binding.recyclerView.smoothScrollToPosition(0)
     reloadView(newList.size)

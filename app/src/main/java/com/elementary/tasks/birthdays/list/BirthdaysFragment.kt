@@ -34,7 +34,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
   )
 
-  private val mAdapter = BirthdaysRecyclerAdapter(prefs) {
+  private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
   private var mSearchView: SearchView? = null
@@ -138,7 +138,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
   }
 
   override fun invoke(result: List<Birthday>) {
-    val newList = BirthdayAdsHolder.updateList(result)
+    val newList = BirthdayAdsViewHolder.updateList(result)
     mAdapter.submitList(newList)
     binding.recyclerView.smoothScrollToPosition(0)
     refreshView(newList.size)

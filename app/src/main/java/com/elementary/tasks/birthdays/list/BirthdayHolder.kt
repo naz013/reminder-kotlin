@@ -4,10 +4,10 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.elementary.tasks.core.binding.HolderBinding
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -16,11 +16,12 @@ import com.elementary.tasks.databinding.ListItemBirthdayBinding
 
 class BirthdayHolder(
   parent: ViewGroup,
-  private val prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : HolderBinding<ListItemBirthdayBinding>(
-  ListItemBirthdayBinding.inflate(parent.inflater(), parent, false)
+) : BaseViewHolder<ListItemBirthdayBinding>(
+  ListItemBirthdayBinding.inflate(parent.inflater(), parent, false),
+  currentStateHolder
 ) {
 
   init {

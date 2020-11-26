@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -26,10 +25,12 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.SelectionList
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
@@ -42,8 +43,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private val cacheUtil by inject<CacheUtil>()
   private val soundStackHolder by inject<SoundStackHolder>()
-
-  private var mItemSelect: Int = 0
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -110,23 +109,20 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showPriorityDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(getString(R.string.priority))
-      mItemSelect = prefs.unlockPriority
-      builder.setSingleChoiceItems(unlockList(), mItemSelect) { _, which ->
-        mItemSelect = which
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        prefs.unlockPriority = mItemSelect
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = prefs.unlockPriority,
+        title = getString(R.string.priority),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = unlockList()
+      ),
+      onOk = {
+        prefs.unlockPriority = it
         showPriority()
-        dialog.dismiss()
       }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
-    }
+    )
   }
 
   private fun initSmartFold() {
@@ -212,8 +208,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showRepeatTime() {
-    binding.repeatIntervalPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-      prefs.notificationRepeatTime.toString()))
+    binding.repeatIntervalPrefs.setDetailText(
+      String.format(Locale.getDefault(), getString(R.string.x_minutes), prefs.notificationRepeatTime.toString())
+    )
   }
 
   private fun changeRepeatPrefs() {
@@ -228,29 +225,24 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showLedColorDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(getString(R.string.led_color))
-      val colors = LED.getAllNames(it)
-      val adapter = ArrayAdapter(it, android.R.layout.simple_list_item_single_choice, colors)
-      mItemSelect = prefs.ledColor
-      builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        prefs.ledColor = mItemSelect
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = prefs.ledColor,
+        title = getString(R.string.led_color),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = LED.getAllNames(requireContext())
+      ),
+      onOk = {
+        prefs.ledColor = it
         showLedColor()
-        dialog.dismiss()
       }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
-    }
+    )
   }
 
   private fun showLedColor() {
-    withContext {
-      binding.chooseLedColorPrefs.setDetailText(LED.getTitle(it, prefs.ledColor))
-    }
+    binding.chooseLedColorPrefs.setDetailText(LED.getTitle(requireContext(), prefs.ledColor))
   }
 
   private fun initLedColorPrefs() {
@@ -283,8 +275,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun snoozeFormat(progress: Int): String {
     if (!isAdded) return ""
-    return String.format(Locale.getDefault(), getString(R.string.x_minutes),
-      progress.toString())
+    return String.format(Locale.getDefault(), getString(R.string.x_minutes), progress.toString())
   }
 
   private fun showSnoozeDialog() {
@@ -324,14 +315,12 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun changeAutoCallPrefs() {
     val isChecked = binding.autoCallPrefs.isChecked
     if (!isChecked) {
-      withActivity {
-        if (Permissions.checkPermission(it, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
-          binding.autoCallPrefs.isChecked = !isChecked
-          prefs.isAutoCallEnabled = !isChecked
-        } else {
-          binding.autoCallPrefs.isChecked = isChecked
-          prefs.isAutoCallEnabled = isChecked
-        }
+      if (Permissions.checkPermission(requireActivity(), PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
+        binding.autoCallPrefs.isChecked = !isChecked
+        prefs.isAutoCallEnabled = !isChecked
+      } else {
+        binding.autoCallPrefs.isChecked = isChecked
+        prefs.isAutoCallEnabled = isChecked
       }
     } else {
       binding.autoCallPrefs.isChecked = !isChecked
@@ -383,33 +372,27 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showTtsLocaleDialog() {
-    dialogues.getNullableDialog(context)?.let { builder ->
-      builder.setTitle(getString(R.string.language))
-      val locale = prefs.ttsLocale
-      mItemSelect = language.getLocalePosition(locale)
-      val names = language.getLocaleNames(context).toTypedArray()
-      builder.setSingleChoiceItems(names, mItemSelect) { _, which -> mItemSelect = which }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        saveTtsLocalePrefs()
-        dialog.dismiss()
-      }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
-    }
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = language.getLocalePosition(prefs.ttsLocale),
+        title = getString(R.string.language),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = language.getLocaleNames(context)
+      ),
+      onOk = { saveTtsLocalePrefs(it) }
+    )
   }
 
   private fun showTtsLocale() {
     val locale = prefs.ttsLocale
     val i = language.getLocalePosition(locale)
-    withContext {
-      binding.localePrefs.setDetailText(language.getLocaleNames(it)[i])
-    }
+    binding.localePrefs.setDetailText(language.getLocaleNames(requireContext())[i])
   }
 
-  private fun saveTtsLocalePrefs() {
-    prefs.ttsLocale = language.getLocaleByPosition(mItemSelect)
+  private fun saveTtsLocalePrefs(i: Int) {
+    prefs.ttsLocale = language.getLocaleByPosition(i)
     showTtsLocale()
   }
 
@@ -441,7 +424,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun openNotificationsSettings() {
     if (Module.isNougat) {
       val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-      activity?.startActivityForResult(intent, 1248)
+      startActivityForResult(intent, 1248)
     }
   }
 
@@ -457,7 +440,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showLoudnessDialog() {
-    if (!SuperUtil.hasVolumePermission(context)) {
+    if (!SuperUtil.hasVolumePermission(requireContext())) {
       openNotificationsSettings()
       return
     }
@@ -499,32 +482,30 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showLoudness() {
-    binding.volumePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.loudness) + " %d",
-      prefs.loudness))
+    binding.volumePrefs.setDetailText(
+      String.format(Locale.getDefault(), getString(R.string.loudness) + " %d", prefs.loudness)
+    )
   }
 
   private fun showStreamDialog() {
-    dialogues.getNullableDialog(context)?.let { builder ->
-      builder.setCancelable(true)
-      builder.setTitle(getString(R.string.sound_stream))
-      val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
-      val stream = prefs.soundStream
-      mItemSelect = stream - 3
-      builder.setSingleChoiceItems(types, mItemSelect) { _, which ->
-        if (which != -1) {
-          mItemSelect = which
-        }
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        prefs.soundStream = mItemSelect + 3
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = prefs.soundStream - 3,
+        title = getString(R.string.sound_stream),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = listOf(
+          getString(R.string.music),
+          getString(R.string.alarm),
+          getString(R.string.notification)
+        )
+      ),
+      onOk = {
+        prefs.soundStream = it + 3
         showStream()
-        dialog.dismiss()
       }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
-    }
+    )
   }
 
   private fun initReminderTypePrefs() {
@@ -538,31 +519,24 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showReminderTypeDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setCancelable(true)
-      builder.setTitle(R.string.notification_type)
-      val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
-      mItemSelect = prefs.reminderType
-      builder.setSingleChoiceItems(types, mItemSelect) { _, which ->
-        if (which != -1) {
-          mItemSelect = which
-        }
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        prefs.reminderType = mItemSelect
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = prefs.reminderType,
+        title = getString(R.string.notification_type),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = listOf(getString(R.string.full_screen), getString(R.string.simple))
+      ),
+      onOk = {
+        prefs.reminderType = it
         showReminderType()
-        dialog.dismiss()
       }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
-    }
+    )
   }
 
   private fun showReminderType() {
-    val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
+    val types = listOf(getString(R.string.full_screen), getString(R.string.simple))
     binding.typePrefs.setDetailText(types[prefs.reminderType])
   }
 
@@ -573,7 +547,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showStream() {
-    val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
+    val types = listOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
     try {
       binding.streamPrefs.setDetailText(types[prefs.soundStream - 3])
     } catch (e: Exception) {
@@ -628,10 +602,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
   }
 
-  private fun iconTintColor(): Int {
-    return if (isDark) ContextCompat.getColor(requireContext(), R.color.pureWhite)
-    else ContextCompat.getColor(requireContext(), R.color.pureBlack)
-  }
+  private fun iconTintColor() =
+    if (isDark) colorOf(R.color.pureWhite)
+    else colorOf(R.color.pureBlack)
 
   private fun showMelody() {
     val filePath = prefs.melodyFile
@@ -661,77 +634,73 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     binding.chooseSoundPrefs.setDetailText(label)
   }
 
-  private fun melodyLabels(): Array<String> {
-    return arrayOf(
-      getString(R.string.default_string) + ": " + getString(R.string.ringtone),
-      getString(R.string.default_string) + ": " + getString(R.string.notification),
-      getString(R.string.default_string) + ": " + getString(R.string.alarm),
-      getString(R.string.choose_file),
-      getString(R.string.choose_ringtone)
-    )
+  private fun melodyLabels() = listOf(
+    getString(R.string.default_string) + ": " + getString(R.string.ringtone),
+    getString(R.string.default_string) + ": " + getString(R.string.notification),
+    getString(R.string.default_string) + ": " + getString(R.string.alarm),
+    getString(R.string.choose_file),
+    getString(R.string.choose_ringtone)
+  )
+
+  private fun soundPrefPosition() = when (prefs.melodyFile) {
+    Constants.SOUND_RINGTONE -> 0
+    Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
+    Constants.SOUND_ALARM -> 2
+    else -> {
+      val musicFile = File(prefs.melodyFile)
+      if (musicFile.exists()) {
+        3
+      } else {
+        val ringtone = RingtoneManager.getRingtone(context, prefs.melodyFile.toUri())
+        if (ringtone != null) {
+          4
+        } else {
+          1
+        }
+      }
+    }
   }
 
   private fun showSoundDialog() {
-    withActivity {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setCancelable(true)
-      builder.setTitle(getString(R.string.melody))
-      mItemSelect = when (prefs.melodyFile) {
-        Constants.SOUND_RINGTONE -> 0
-        Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
-        Constants.SOUND_ALARM -> 2
-        else -> {
-          val musicFile = File(prefs.melodyFile)
-          if (musicFile.exists()) {
-            3
-          } else {
-            val ringtone = RingtoneManager.getRingtone(context, prefs.melodyFile.toUri())
-            if (ringtone != null) {
-              4
-            } else {
-              1
-            }
-          }
-        }
-      }
-      builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        dialog.dismiss()
-        if (mItemSelect <= 2 && !isDefaultMelody()) {
-          cacheUtil.removeFromCache(prefs.melodyFile)
-        }
-        when (mItemSelect) {
-          0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
-          1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
-          2 -> prefs.melodyFile = Constants.SOUND_ALARM
-          3 -> pickMelody()
-          else -> pickRingtone()
-        }
-        showMelody()
-      }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = soundPrefPosition(),
+        title = getString(R.string.melody),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = melodyLabels()
+      ),
+      onOk = { saveMelody(it) }
+    )
+  }
+
+  private fun saveMelody(i: Int) {
+    if (i <= 2 && !isDefaultMelody()) {
+      cacheUtil.removeFromCache(prefs.melodyFile)
     }
+    when (i) {
+      0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
+      1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
+      2 -> prefs.melodyFile = Constants.SOUND_ALARM
+      3 -> pickMelody()
+      else -> pickRingtone()
+    }
+    showMelody()
   }
 
   private fun pickRingtone() {
-    withActivity {
-      val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone_for_notifications))
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
-      startActivityForResult(intent, RINGTONE_CODE)
-    }
+    val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone_for_notifications))
+    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
+    startActivityForResult(intent, RINGTONE_CODE)
   }
 
   private fun pickMelody() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_MELODY, Permissions.READ_EXTERNAL)) {
-        cacheUtil.pickMelody(it, MELODY_CODE)
-      }
+    if (Permissions.checkPermission(requireActivity(), PERM_MELODY, Permissions.READ_EXTERNAL)) {
+      cacheUtil.pickMelody(requireActivity(), MELODY_CODE)
     }
   }
 
@@ -752,51 +721,51 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     binding.melodyDurationPrefs.setDetailText(label)
   }
 
-  private fun durationLabels(): Array<String> {
-    return arrayOf(
-      getString(R.string.till_the_end),
-      "5 " + getString(R.string.seconds),
-      "10 " + getString(R.string.seconds),
-      "15 " + getString(R.string.seconds),
-      "20 " + getString(R.string.seconds),
-      "30 " + getString(R.string.seconds),
-      "60 " + getString(R.string.seconds)
-    )
+  private fun durationLabels() = listOf(
+    getString(R.string.till_the_end),
+    "5 " + getString(R.string.seconds),
+    "10 " + getString(R.string.seconds),
+    "15 " + getString(R.string.seconds),
+    "20 " + getString(R.string.seconds),
+    "30 " + getString(R.string.seconds),
+    "60 " + getString(R.string.seconds)
+  )
+
+  private fun melodyPlaybackDurationPosition() = when (prefs.playbackDuration) {
+    5 -> 1
+    10 -> 2
+    15 -> 3
+    20 -> 4
+    30 -> 5
+    60 -> 6
+    else -> 0
   }
 
   private fun showMelodyDurationDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setCancelable(true)
-      builder.setTitle(getString(R.string.melody_playback_duration))
-      mItemSelect = when (prefs.playbackDuration) {
-        5 -> 1
-        10 -> 2
-        15 -> 3
-        20 -> 4
-        30 -> 5
-        60 -> 6
-        else -> 0
-      }
-      builder.setSingleChoiceItems(durationLabels(), mItemSelect) { _, which -> mItemSelect = which }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        dialog.dismiss()
-        prefs.playbackDuration = when (mItemSelect) {
-          1 -> 5
-          2 -> 10
-          3 -> 15
-          4 -> 20
-          5 -> 30
-          6 -> 60
-          else -> 0
-        }
-        showMelodyDuration()
-      }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = melodyPlaybackDurationPosition(),
+        title = getString(R.string.melody_playback_duration),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = durationLabels()
+      ),
+      onOk = { saveMelodyPlaybackDuration(it) }
+    )
+  }
+
+  private fun saveMelodyPlaybackDuration(i: Int) {
+    prefs.playbackDuration = when (i) {
+      1 -> 5
+      2 -> 10
+      3 -> 15
+      4 -> 20
+      5 -> 30
+      6 -> 60
+      else -> 0
     }
+    showMelodyDuration()
   }
 
   private fun changeInfiniteSoundPrefs() {
@@ -811,15 +780,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun changeSoundPrefs() {
-    withActivity {
-      val isChecked = binding.soundOptionPrefs.isChecked
-      binding.soundOptionPrefs.isChecked = !isChecked
-      prefs.isSoundInSilentModeEnabled = !isChecked
-      if (!SuperUtil.checkNotificationPermission(it)) {
-        SuperUtil.askNotificationPermission(it, dialogues)
-      } else {
-        Permissions.checkPermission(it, PERM_BT, Permissions.BLUETOOTH)
-      }
+    val isChecked = binding.soundOptionPrefs.isChecked
+    binding.soundOptionPrefs.isChecked = !isChecked
+    prefs.isSoundInSilentModeEnabled = !isChecked
+    if (!SuperUtil.checkNotificationPermission(requireActivity())) {
+      SuperUtil.askNotificationPermission(requireActivity(), dialogues)
+    } else {
+      Permissions.checkPermission(requireActivity(), PERM_BT, Permissions.BLUETOOTH)
     }
   }
 
@@ -896,37 +863,33 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     showImage()
   }
 
+  private fun getImagePosition() = when (prefs.screenImage) {
+    Constants.NONE -> 0
+    Constants.DEFAULT -> 1
+    else -> 2
+  }
+
   private fun showImageDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setCancelable(true)
-      builder.setTitle(R.string.background)
-      val types = arrayOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
-      val adapter = ArrayAdapter(it, android.R.layout.simple_list_item_single_choice, types)
-      mItemSelect = when (prefs.screenImage) {
-        Constants.NONE -> 0
-        Constants.DEFAULT -> 1
-        else -> 2
-      }
-      builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-        if (which != -1) {
-          mItemSelect = which
-        }
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        when (mItemSelect) {
-          0 -> prefs.screenImage = Constants.NONE
-          1 -> prefs.screenImage = Constants.DEFAULT
-          2 -> openImagePicker()
-        }
-        showImage()
-        dialog.dismiss()
-      }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
+    dialogues.showPropertyDialog(
+      requireContext(),
+      SelectionList(
+        position = getImagePosition(),
+        title = getString(R.string.background),
+        okButtonTitle = getString(R.string.ok),
+        cancelButtonTitle = getString(R.string.cancel),
+        items = listOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
+      ),
+      onOk = { saveImagePrefs(it) }
+    )
+  }
+
+  private fun saveImagePrefs(i: Int) {
+    when (i) {
+      0 -> prefs.screenImage = Constants.NONE
+      1 -> prefs.screenImage = Constants.DEFAULT
+      2 -> openImagePicker()
     }
+    showImage()
   }
 
   private fun showImage() {
@@ -970,7 +933,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
   }
 
-  override fun getTitle(): String = getString(R.string.notification)
+  override fun getTitle() = getString(R.string.notification)
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
@@ -1030,22 +993,18 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun openImagePicker() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
-        cacheUtil.pickImage(it, Constants.ACTION_REQUEST_GALLERY)
-      }
+    if (Permissions.checkPermission(requireActivity(), PERM_IMAGE, Permissions.READ_EXTERNAL)) {
+      cacheUtil.pickImage(requireActivity(), Constants.ACTION_REQUEST_GALLERY)
     }
   }
 
-  private fun unlockList(): Array<String> {
-    return arrayOf(
-      getString(R.string.all),
-      getString(R.string.priority_low) + " " + getString(R.string.and_above),
-      getString(R.string.priority_normal) + " " + getString(R.string.and_above),
-      getString(R.string.priority_high) + " " + getString(R.string.and_above),
-      getString(R.string.priority_highest)
-    )
-  }
+  private fun unlockList() = listOf(
+    getString(R.string.all),
+    getString(R.string.priority_low) + " " + getString(R.string.and_above),
+    getString(R.string.priority_normal) + " " + getString(R.string.and_above),
+    getString(R.string.priority_high) + " " + getString(R.string.and_above),
+    getString(R.string.priority_highest)
+  )
 
   companion object {
 

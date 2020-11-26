@@ -14,7 +14,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
@@ -36,7 +36,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     super.onCreate(savedInstanceState)
     initActionBar()
 
-    binding.colorSlider.setColors(ThemeUtil.colorsForSliderThemed(this))
+    binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(this))
     binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
     if (savedInstanceState != null) {

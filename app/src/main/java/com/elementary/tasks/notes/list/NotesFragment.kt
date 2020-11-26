@@ -26,7 +26,6 @@ import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -47,10 +46,10 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
   private val viewModel by viewModel<NotesViewModel>()
   private val backupTool by inject<BackupTool>()
-  private val themeUtil by inject<ThemeUtil>()
+  private val themeProvider = currentStateHolder.theme
   private val buttonObservable by inject<GlobalButtonObservable>()
 
-  private val mAdapter = NotesRecyclerAdapter(prefs, themeUtil, get()) {
+  private val mAdapter = NotesRecyclerAdapter(currentStateHolder, get()) {
     filterController.original = viewModel.notes.value ?: listOf()
   }
   private var enableGrid = false
@@ -288,7 +287,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
   private fun selectColor(note: NoteWithImages) {
     dialogues.showColorDialog(requireActivity(), note.getColor(), getString(R.string.color),
-      themeUtil.noteColorsForSlider(note.getPalette())) {
+      themeProvider.noteColorsForSlider(note.getPalette())) {
       viewModel.saveNoteColor(note, it)
     }
   }
@@ -304,7 +303,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   }
 
   override fun invoke(result: List<NoteWithImages>) {
-    val newList = NoteAdsHolder.updateList(result)
+    val newList = NoteAdsViewHolder.updateList(result)
     Timber.d("invoke: $newList")
     mAdapter.submitList(newList)
     refreshView(newList.size)

@@ -13,7 +13,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.databinding.FragmentGroupsBinding
@@ -58,7 +58,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
   private fun changeColor(reminderGroup: ReminderGroup) {
     dialogues.showColorDialog(requireActivity(), reminderGroup.groupColor, getString(R.string.color),
-      ThemeUtil.colorsForSliderThemed(requireContext())) {
+      ThemeProvider.colorsForSliderThemed(requireContext())) {
       viewModel.changeGroupColor(reminderGroup, it)
     }
   }

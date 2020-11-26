@@ -12,10 +12,15 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
+import androidx.annotation.IntRange
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -47,6 +52,37 @@ import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import java.util.*
+
+@ColorInt
+fun Int.adjustAlpha(@IntRange(from = 0, to = 100) factor: Int): Int {
+  val alpha = 255f * (factor.toFloat() / 100f)
+  val red = android.graphics.Color.red(this)
+  val green = android.graphics.Color.green(this)
+  val blue = android.graphics.Color.blue(this)
+  return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
+}
+
+// Check if Color is Dark
+fun Int.isColorDark(): Boolean {
+  val darkness = 1 - (0.299 * android.graphics.Color.red(this) + 0.587
+    * android.graphics.Color.green(this) + 0.114
+    * android.graphics.Color.blue(this)) / 255
+  Timber.d("isColorDark: $darkness")
+  return darkness >= 0.5
+}
+
+// Check of opacity of Color
+fun Int.isAlmostTransparent(): Boolean {
+  return this < 25
+}
+
+fun Fragment.colorOf(@ColorRes color: Int) = ContextCompat.getColor(requireContext(), color)
+
+fun AppCompatActivity.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
+
+fun Context.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
+
+fun View.colorOf(@ColorRes color: Int) = ContextCompat.getColor(context, color)
 
 fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
   doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }

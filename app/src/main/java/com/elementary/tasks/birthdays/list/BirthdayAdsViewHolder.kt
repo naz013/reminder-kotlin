@@ -3,20 +3,20 @@ package com.elementary.tasks.birthdays.list
 import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemBirthdayAdsBinding
 
-class BirthdayAdsHolder(
+class BirthdayAdsViewHolder(
   parent: ViewGroup,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   adsProvider: AdsProvider,
   failListener: () -> Unit
-) : BaseHolder<ListItemBirthdayAdsBinding>(
+) : BaseViewHolder<ListItemBirthdayAdsBinding>(
   ListItemBirthdayAdsBinding.inflate(parent.inflater(), parent, false),
-  prefs
+  currentStateHolder
 ) {
 
   init {

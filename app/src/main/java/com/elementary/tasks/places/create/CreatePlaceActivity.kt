@@ -18,7 +18,6 @@ import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
@@ -48,7 +47,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
       isBack = false,
       isZoom = false,
       markerStyle = prefs.markerStyle,
-      isDark = ThemeUtil.isDarkMode(this),
+      isDark = isDarkMode,
       isRadius = false
     )
     googleMap?.setListener(this)

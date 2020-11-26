@@ -49,7 +49,7 @@ object ViewUtils {
           for (type in mimeTypes) {
             if (type == UriUtil.ANY_MIME || event.clipDescription.hasMimeType(type)) {
               if (markAction) {
-                v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
+                v.setBackgroundColor(color.adjustAlpha(25))
               }
               return@setOnDragListener true
             }
@@ -58,13 +58,13 @@ object ViewUtils {
         }
         DragEvent.ACTION_DRAG_ENTERED -> {
           if (markAction) {
-            v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 50))
+            v.setBackgroundColor(color.adjustAlpha(50))
           }
           true
         }
         DragEvent.ACTION_DRAG_EXITED -> {
           if (markAction) {
-            v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
+            v.setBackgroundColor(color.adjustAlpha(25))
           }
           true
         }

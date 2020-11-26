@@ -49,11 +49,14 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.isAlmostTransparent
+import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -77,7 +80,7 @@ import java.util.*
 class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   PhotoSelectionUtil.UriCallback {
 
-  private val themeUtil by inject<ThemeUtil>()
+  private val themeUtil by inject<ThemeProvider>()
   private val backupTool by inject<BackupTool>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private var isBgDark = false
@@ -198,7 +201,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   override fun onStart() {
     super.onStart()
-    ViewUtils.registerDragAndDrop(this, binding.clickView, true, ThemeUtil.getSecondaryColor(this), {
+    ViewUtils.registerDragAndDrop(this, binding.clickView, true, ThemeProvider.getSecondaryColor(this), {
       if (it.itemCount > 0) {
         parseDrop(it)
       }
@@ -309,7 +312,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun newColor(): Int = if (prefs.isNoteColorRememberingEnabled) {
     prefs.lastNoteColor
   } else {
-    Random().nextInt(ThemeUtil.NOTE_COLORS)
+    Random().nextInt(ThemeProvider.NOTE_COLORS)
   }
 
   private fun setText(text: String?) {
@@ -412,17 +415,14 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
     isBgDark = when {
-      ThemeUtil.isAlmostTransparent(pair.second) -> isDarkMode
-      else -> ThemeUtil.isColorDark(themeUtil.getNoteLightColor(pair.first, pair.second, palette))
+      pair.second.isAlmostTransparent() -> isDarkMode
+      else -> themeUtil.getNoteLightColor(pair.first, pair.second, palette).isColorDark()
     }
   }
 
   private fun updateTextColors() {
-    val textColor = if (isBgDark) {
-      ContextCompat.getColor(this, R.color.pureWhite)
-    } else {
-      ContextCompat.getColor(this, R.color.pureBlack)
-    }
+    val textColor = if (isBgDark) colorOf(R.color.pureWhite)
+    else colorOf(R.color.pureBlack)
     binding.taskMessage.setTextColor(textColor)
     binding.taskMessage.setHintTextColor(textColor)
     binding.taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {

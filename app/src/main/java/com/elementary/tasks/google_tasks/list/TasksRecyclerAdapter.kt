@@ -4,14 +4,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
 
 class TasksRecyclerAdapter(
-  private val prefs: Prefs,
+  private val currentStateHolder: CurrentStateHolder,
   private val refreshListener: () -> Unit
 ) : ListAdapter<GoogleTask, RecyclerView.ViewHolder>(GoogleTaskDiffCallback()) {
 
@@ -33,7 +33,7 @@ class TasksRecyclerAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      AdsProvider.ADS_VIEW_TYPE -> GoogleTaskAdsHolder(parent, adsProvider, prefs, refreshListener)
+      AdsProvider.ADS_VIEW_TYPE -> GoogleTaskAdsViewHolder(parent, adsProvider, currentStateHolder, refreshListener)
       else -> GoogleTaskHolder(parent) { view, i, listActions ->
         actionsListener?.onAction(view, i, getItem(i), listActions)
       }

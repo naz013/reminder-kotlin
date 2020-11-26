@@ -12,9 +12,8 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import timber.log.Timber
 
-class ThemeUtil(
+class ThemeProvider(
   private val context: Context,
   private val prefs: Prefs
 ) {
@@ -186,7 +185,7 @@ class ThemeUtil(
 
   @ColorInt
   fun getNoteLightColor(code: Int, opacity: Int, palette: Int = prefs.notePalette): Int {
-    return adjustAlpha(getNoteColor(code, palette), opacity)
+    return getNoteColor(code, palette).adjustAlpha(opacity)
   }
 
   object Color {
@@ -232,6 +231,14 @@ class ThemeUtil(
     return obtainPalette(palette)[code]
   }
 
+  @ColorRes
+  fun pickColorRes(@ColorRes colorForLight: Int, @ColorRes colorForDark: Int) =
+    if (isDark) colorForDark else colorForLight
+
+  @ColorInt
+  fun pickColor(@ColorInt colorForLight: Int, @ColorInt colorForDark: Int) =
+    if (isDark) colorForDark else colorForLight
+
   data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
 
   companion object {
@@ -245,18 +252,6 @@ class ThemeUtil(
     @ColorInt
     fun getOnSecondaryColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.color_on_secondary)
-    }
-
-    fun isAlmostTransparent(opacity: Int): Boolean {
-      return opacity < 25
-    }
-
-    fun isColorDark(color: Int): Boolean {
-      val darkness = 1 - (0.299 * android.graphics.Color.red(color) + 0.587
-        * android.graphics.Color.green(color) + 0.114
-        * android.graphics.Color.blue(color)) / 255
-      Timber.d("isColorDark: $darkness")
-      return darkness >= 0.5
     }
 
     @DrawableRes
@@ -351,13 +346,6 @@ class ThemeUtil(
       return ContextCompat.getColor(context, color)
     }
 
-    fun isDarkMode(context: Context): Boolean {
-      return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-        Configuration.UI_MODE_NIGHT_YES -> true
-        else -> false
-      }
-    }
-
     @ColorInt
     fun colorWithAlpha(@ColorInt color: Int, alpha: Int): Int {
       val r = android.graphics.Color.red(color)
@@ -375,15 +363,6 @@ class ThemeUtil(
       val outValue = TypedValue()
       context.theme.resolveAttribute(colorAttr, outValue, true)
       return outValue.data
-    }
-
-    @ColorInt
-    fun adjustAlpha(@ColorInt color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
-      val alpha = 255f * (factor.toFloat() / 100f)
-      val red = android.graphics.Color.red(color)
-      val green = android.graphics.Color.green(color)
-      val blue = android.graphics.Color.blue(color)
-      return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
     }
 
     @ColorInt

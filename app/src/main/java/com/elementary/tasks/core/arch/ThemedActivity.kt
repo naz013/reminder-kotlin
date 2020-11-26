@@ -7,34 +7,28 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import org.koin.android.ext.android.inject
 
 abstract class ThemedActivity : AppCompatActivity() {
 
-  protected val prefs by inject<Prefs>()
-  protected val language by inject<Language>()
+  protected val currentStateHolder by inject<CurrentStateHolder>()
+  protected val prefs = currentStateHolder.preferences
+  protected val language = currentStateHolder.language
   protected val dialogues by inject<Dialogues>()
 
-  protected var isDarkMode = false
-    private set
-
-  @Deprecated("Not used anymore", ReplaceWith("true"))
-  protected open fun applyTheme(): Boolean = true
+  protected val isDarkMode = currentStateHolder.theme.isDark
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
-    isDarkMode = ThemeUtil.isDarkMode(this)
   }
 
   override fun onStart() {
     super.onStart()
     if (Module.isChromeOs(this)) {
-      window.statusBarColor = ThemeUtil.getSecondaryColor(this)
+      window.statusBarColor = ThemeProvider.getSecondaryColor(this)
     }
   }
 

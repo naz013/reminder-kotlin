@@ -2,23 +2,23 @@ package com.elementary.tasks.reminder.preview
 
 import android.view.View
 import android.view.ViewGroup
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.databinding.ListItemGoogleCalendarEventBinding
 
-class GoogleEventHolder(
+class GoogleEventViewHolder(
   parent: ViewGroup,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   listener: ((View, CalendarUtils.EventItem?, ListActions) -> Unit)?
-) : BaseHolder<ListItemGoogleCalendarEventBinding>(
+) : BaseViewHolder<ListItemGoogleCalendarEventBinding>(
   ListItemGoogleCalendarEventBinding.inflate(parent.inflater(), parent, false),
-  prefs
+  currentStateHolder
 ) {
   private var eventItem: CalendarUtils.EventItem? = null
 

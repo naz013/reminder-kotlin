@@ -9,7 +9,7 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
@@ -33,7 +33,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
     updateProgress(false)
 
     initActionBar()
-    binding.colorSlider.setColors(ThemeUtil.colorsForSliderThemed(this))
+    binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(this))
     binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
     if (savedInstanceState != null) {
