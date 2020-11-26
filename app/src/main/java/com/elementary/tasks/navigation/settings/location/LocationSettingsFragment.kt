@@ -8,7 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
@@ -20,7 +20,7 @@ import java.util.*
 class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
 
   private var mItemSelect: Int = 0
-  private val themeUtil by inject<ThemeUtil>()
+  private val themeUtil by inject<ThemeProvider>()
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -72,7 +72,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
   private fun showStyleDialog() {
     withActivity { act ->
       dialogues.showColorDialog(act, prefs.markerStyle,
-        getString(R.string.style_of_marker), ThemeUtil.colorsForSlider(act)) {
+        getString(R.string.style_of_marker), ThemeProvider.colorsForSlider(act)) {
         prefs.markerStyle = it
         showMarkerStyle()
       }

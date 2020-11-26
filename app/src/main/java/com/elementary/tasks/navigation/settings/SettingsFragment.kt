@@ -167,7 +167,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   private fun askPin() {
     withActivity {
       if (prefs.hasPinCode) {
-        PinLoginActivity.verify(it, PinLoginActivity.REQ_CODE)
+        PinLoginActivity.verify(it, PinLoginActivity.LOGIN_REQUEST_CODE)
       } else {
         openSecurity()
       }
@@ -178,7 +178,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.REQ_CODE && resultCode == RESULT_OK) {
+    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_OK) {
       openSecurity()
     }
   }

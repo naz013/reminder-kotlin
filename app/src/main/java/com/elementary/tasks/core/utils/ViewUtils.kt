@@ -4,26 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.util.TypedValue
 import android.view.DragEvent
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.DecelerateInterpolator
-import android.widget.ScrollView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.NestedScrollView
@@ -32,12 +24,6 @@ import com.elementary.tasks.R
 import timber.log.Timber
 
 object ViewUtils {
-
-  fun getActionBarSize(context: Context): Int {
-    val value = TypedValue()
-    context.theme.resolveAttribute(android.R.attr.actionBarSize, value, true)
-    return TypedValue.complexToDimensionPixelSize(value.data, context.resources.displayMetrics)
-  }
 
   fun registerDragAndDrop(activity: Activity, view: View, markAction: Boolean = true,
                           @ColorInt color: Int,
@@ -49,7 +35,7 @@ object ViewUtils {
           for (type in mimeTypes) {
             if (type == UriUtil.ANY_MIME || event.clipDescription.hasMimeType(type)) {
               if (markAction) {
-                v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
+                v.setBackgroundColor(color.adjustAlpha(25))
               }
               return@setOnDragListener true
             }
@@ -58,13 +44,13 @@ object ViewUtils {
         }
         DragEvent.ACTION_DRAG_ENTERED -> {
           if (markAction) {
-            v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 50))
+            v.setBackgroundColor(color.adjustAlpha(50))
           }
           true
         }
         DragEvent.ACTION_DRAG_EXITED -> {
           if (markAction) {
-            v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
+            v.setBackgroundColor(color.adjustAlpha(25))
           }
           true
         }
@@ -83,23 +69,6 @@ object ViewUtils {
         else -> false
       }
     }
-  }
-
-  fun isHorizontal(context: Context?): Boolean {
-    if (context == null) return false
-    return context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-  }
-
-  fun tintOverflowButton(toolbar: Toolbar, isDark: Boolean): Boolean {
-    val overflowIcon = toolbar.overflowIcon ?: return false
-    val color = if (isDark) {
-      ContextCompat.getColor(toolbar.context, R.color.whitePrimary)
-    } else {
-      ContextCompat.getColor(toolbar.context, R.color.pureBlack)
-    }
-    val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
-    overflowIcon.colorFilter = colorFilter
-    return true
   }
 
   fun backIcon(context: Context, isDark: Boolean): Drawable? {
@@ -145,27 +114,6 @@ object ViewUtils {
       menu?.getItem(index)?.icon = tintIcon(context, resource, isDark)
     } catch (e: Exception) {
     }
-  }
-
-  @SuppressLint("ClickableViewAccessibility")
-  fun listenScrollableView(scrollView: ScrollView, listener: ((x: Int) -> Unit)?) {
-    val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-      listener?.invoke(scrollView.scrollY)
-    }
-    scrollView.setOnTouchListener(object : View.OnTouchListener {
-      private var observer: ViewTreeObserver? = null
-      override fun onTouch(v: View, event: MotionEvent): Boolean {
-        if (observer == null) {
-          observer = scrollView.viewTreeObserver
-          observer?.addOnScrollChangedListener(onScrollChangedListener)
-        } else if (observer?.isAlive == false) {
-          observer?.removeOnScrollChangedListener(onScrollChangedListener)
-          observer = scrollView.viewTreeObserver
-          observer?.addOnScrollChangedListener(onScrollChangedListener)
-        }
-        return false
-      }
-    })
   }
 
   @SuppressLint("ClickableViewAccessibility")
@@ -248,22 +196,5 @@ object ViewUtils {
         }
       })
     }
-  }
-
-  fun fadeInAnimation(view: View) {
-    val fadeIn = AlphaAnimation(0f, 1f)
-    fadeIn.interpolator = DecelerateInterpolator()
-    fadeIn.startOffset = 400
-    fadeIn.duration = 400
-    view.animation = fadeIn
-    view.visibility = View.VISIBLE
-  }
-
-  fun fadeOutAnimation(view: View) {
-    val fadeOut = AlphaAnimation(1f, 0f)
-    fadeOut.interpolator = AccelerateInterpolator() //and this
-    fadeOut.duration = 400
-    view.animation = fadeOut
-    view.visibility = View.GONE
   }
 }

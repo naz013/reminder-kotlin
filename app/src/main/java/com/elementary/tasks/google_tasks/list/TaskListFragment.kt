@@ -18,7 +18,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
@@ -32,7 +32,7 @@ import org.koin.core.parameter.parametersOf
 
 class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
-  private val adapter = TasksRecyclerAdapter(prefs) {
+  private val adapter = TasksRecyclerAdapter(currentStateHolder) {
     showTasks(viewModel.googleTasks.value ?: listOf())
   }
   private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getListId()) }
@@ -160,7 +160,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun showTasks(googleTasks: List<GoogleTask>) {
-    val newList = GoogleTaskAdsHolder.updateList(googleTasks)
+    val newList = GoogleTaskAdsViewHolder.updateList(googleTasks)
     adapter.submitList(newList)
     reloadView(newList.size)
   }
@@ -226,7 +226,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   private fun showGoogleTaskList(googleTaskList: GoogleTaskList) {
     callback?.onTitleChange(googleTaskList.title)
-    binding.fab.backgroundTintList = ColorStateList.valueOf(ThemeUtil.themedColor(requireContext(), googleTaskList.color))
+    binding.fab.backgroundTintList = ColorStateList.valueOf(ThemeProvider.themedColor(requireContext(), googleTaskList.color))
     val map = mutableMapOf<String, GoogleTaskList>()
     map[googleTaskList.listId] = googleTaskList
     adapter.googleTaskListMap = map

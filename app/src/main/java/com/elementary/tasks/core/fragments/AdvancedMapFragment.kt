@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -25,7 +24,8 @@ import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentMapBinding
@@ -44,7 +44,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
   private var mMap: GoogleMap? = null
 
-  private var placeRecyclerAdapter = RecentPlacesAdapter(themeUtil, prefs)
+  private var placeRecyclerAdapter = RecentPlacesAdapter(currentStateHolder)
 
   private var isTouch = true
   private var isZoom = true
@@ -133,8 +133,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         .center(pos)
         .radius(markerRadius.toDouble())
         .strokeWidth(strokeWidth)
-        .fillColor(ContextCompat.getColor(requireContext(), marker.fillColor))
-        .strokeColor(ContextCompat.getColor(requireContext(), marker.strokeColor)))
+        .fillColor(colorOf(marker.fillColor))
+        .strokeColor(colorOf(marker.strokeColor)))
       if (animate) animate(pos)
     }
   }
@@ -166,8 +166,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         .center(pos)
         .radius(markerRadius.toDouble())
         .strokeWidth(strokeWidth)
-        .fillColor(ContextCompat.getColor(requireContext(), marker.fillColor))
-        .strokeColor(ContextCompat.getColor(requireContext(), marker.strokeColor)))
+        .fillColor(colorOf(marker.fillColor))
+        .strokeColor(colorOf(marker.strokeColor)))
       if (animate) animate(pos)
       return true
     } else {
@@ -199,8 +199,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         .center(lastPos)
         .radius(markerRadius.toDouble())
         .strokeWidth(strokeWidth)
-        .fillColor(ContextCompat.getColor(requireContext(), marker.fillColor))
-        .strokeColor(ContextCompat.getColor(requireContext(), marker.strokeColor)))
+        .fillColor(colorOf(marker.fillColor))
+        .strokeColor(colorOf(marker.strokeColor)))
       animate(lastPos!!)
     }
   }
@@ -231,8 +231,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
           .center(lastPos)
           .radius(markerRadius.toDouble())
           .strokeWidth(strokeWidth)
-          .fillColor(ContextCompat.getColor(requireContext(), marker.fillColor))
-          .strokeColor(ContextCompat.getColor(requireContext(), marker.strokeColor)))
+          .fillColor(colorOf(marker.fillColor))
+          .strokeColor(colorOf(marker.strokeColor)))
       }
       animate(lastPos!!)
     }
@@ -384,7 +384,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
   }
 
   private fun showStyleDialog() {
-    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeUtil.colorsForSlider(requireContext())) {
+    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeProvider.colorsForSlider(requireContext())) {
       prefs.markerStyle = it
       recreateStyle(it)
     }

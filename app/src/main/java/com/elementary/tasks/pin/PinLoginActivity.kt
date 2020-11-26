@@ -104,9 +104,9 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
 
   companion object {
     const val ARG_BACK = "arg_back"
-    const val REQ_CODE = 1233
+    const val LOGIN_REQUEST_CODE = 1233
 
-    fun verify(activity: Activity, code: Int = REQ_CODE) {
+    fun verify(activity: Activity, code: Int = LOGIN_REQUEST_CODE) {
       activity.startActivityForResult(Intent(activity, PinLoginActivity::class.java)
         .putExtra(ARG_BACK, true), code)
     }

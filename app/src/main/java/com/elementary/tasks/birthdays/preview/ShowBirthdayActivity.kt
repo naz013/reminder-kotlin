@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
@@ -24,8 +23,9 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
@@ -177,7 +177,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     binding.buttonCall.setOnClickListener { makeCall() }
     binding.buttonSms.setOnClickListener { sendSMS() }
 
-    binding.contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
+    binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
     binding.contactPhoto.visibility = View.GONE
 
     if (savedInstanceState != null) {
@@ -283,7 +283,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     builder.setContentTitle(name)
     builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
         || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
       val sound = sound
@@ -320,7 +320,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     builder.setContentTitle(name)
     builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     if (isScreenResumed) {
       builder.priority = NotificationCompat.PRIORITY_LOW
     } else {

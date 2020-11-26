@@ -212,8 +212,8 @@ object Notifier {
     WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
     WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
 
-    remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", ThemeUtil.getSecondaryColor(context))
-    val colorOnSecondary = ThemeUtil.getOnSecondaryColor(context)
+    remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", ThemeProvider.getSecondaryColor(context))
+    val colorOnSecondary = ThemeProvider.getOnSecondaryColor(context)
     remoteViews.setTextColor(R.id.featured, colorOnSecondary)
     remoteViews.setTextColor(R.id.text, colorOnSecondary)
     getManager(context)?.notify(PermanentReminderReceiver.PERM_ID, builder.build())

@@ -9,56 +9,36 @@ import com.elementary.tasks.BuildConfig
 
 object Module {
 
-  val isPro: Boolean
-    get() = BuildConfig.IS_PRO
+  const val isPro = BuildConfig.IS_PRO
+  val isR = Build.VERSION.SDK_INT >= 30
+  val isQ = Build.VERSION.SDK_INT >= 29
+  val isPie = Build.VERSION.SDK_INT >= 28
+  val isOreoMr1 = Build.VERSION.SDK_INT >= 27
+  val isOreo = Build.VERSION.SDK_INT >= 26
+  val isMarshmallow = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+  val isNougat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+  val isNougat1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 
-  val isQ: Boolean
-    get() = Build.VERSION.SDK_INT >= 29
+  fun isChromeOs(context: Context) =
+    context.packageManager.hasSystemFeature("org.chromium.arc.device_management")
 
-  val isPie: Boolean
-    get() = Build.VERSION.SDK_INT >= 28
+  fun hasTelephony(context: Context) =
+    context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
 
-  val isOreoMr1: Boolean
-    get() = Build.VERSION.SDK_INT >= 27
+  fun hasLocation(context: Context) =
+    context.packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION) &&
+      SuperUtil.isGooglePlayServicesAvailable(context)
 
-  val isOreo: Boolean
-    get() = Build.VERSION.SDK_INT >= 26
+  fun hasCamera(context: Context) =
+    context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
-  val isMarshmallow: Boolean
-    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-
-  val isNougat: Boolean
-    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-
-  val isNougat1: Boolean
-    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
-
-  fun isChromeOs(context: Context): Boolean {
-    return context.packageManager.hasSystemFeature("org.chromium.arc.device_management")
-  }
-
-  fun hasTelephony(context: Context): Boolean {
-    return context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
-  }
-
-  fun hasLocation(context: Context): Boolean {
-    return context.packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION) && SuperUtil.isGooglePlayServicesAvailable(context)
-  }
-
-  fun hasCamera(context: Context): Boolean {
-    return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
-  }
-
-  fun hasMicrophone(context: Context): Boolean {
-    return context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
-  }
+  fun hasMicrophone(context: Context) =
+    context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 
   @RequiresApi(Build.VERSION_CODES.M)
-  fun hasBiometric(context: Context): Boolean {
-    return BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
-  }
+  fun hasBiometric(context: Context) =
+    BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 
-  fun hasBluetooth(context: Context): Boolean {
-    return context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
-  }
+  fun hasBluetooth(context: Context) =
+    context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
 }

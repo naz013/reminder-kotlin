@@ -7,30 +7,26 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdayHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleResponseBinding
 import com.elementary.tasks.groups.list.GroupHolder
-import com.elementary.tasks.notes.list.NoteHolder
+import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
-import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
+import com.elementary.tasks.reminder.lists.adapter.ShoppingViewHolder
 import timber.log.Timber
 
 class ConversationAdapter(
-  private val language: Language,
-  private val prefs: Prefs,
-  private val themeUtil: ThemeUtil,
+  private val currentStateHolder: CurrentStateHolder,
   private val imagesSingleton: ImagesSingleton
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -74,12 +70,12 @@ class ConversationAdapter(
     return when (viewType) {
       Reply.REPLY -> VoiceHolder(parent)
       Reply.RESPONSE -> VoiceResponseHolder(parent)
-      Reply.REMINDER -> ReminderHolder(parent, prefs, hasHeader = false, editable = false, showMore = false)
-      Reply.NOTE -> NoteHolder(parent, prefs, themeUtil, imagesSingleton, null)
+      Reply.REMINDER -> ReminderViewHolder(parent, currentStateHolder, hasHeader = false, editable = false, showMore = false)
+      Reply.NOTE -> NoteViewHolder(parent, currentStateHolder, imagesSingleton, null)
       Reply.GROUP -> GroupHolder(parent, null)
       Reply.SHOW_MORE -> ShowMoreHolder(parent)
-      Reply.BIRTHDAY -> BirthdayHolder(parent, prefs, false)
-      Reply.SHOPPING -> ShoppingHolder(parent, prefs, editable = false, showMore = false)
+      Reply.BIRTHDAY -> BirthdayHolder(parent, currentStateHolder, false)
+      Reply.SHOPPING -> ShoppingViewHolder(parent, currentStateHolder, editable = false, showMore = false)
       else -> AskHolder(parent)
     }
   }
@@ -89,13 +85,13 @@ class ConversationAdapter(
     when {
       holder is VoiceHolder -> holder.bind(content as String)
       holder is VoiceResponseHolder -> holder.bind(content as String)
-      holder is ReminderHolder -> holder.setData(content as Reminder)
-      holder is NoteHolder && content is NoteWithImages -> holder.setData(content)
+      holder is ReminderViewHolder -> holder.setData(content as Reminder)
+      holder is NoteViewHolder && content is NoteWithImages -> holder.setData(content)
       holder is GroupHolder -> holder.setData(content as ReminderGroup)
       holder is BirthdayHolder -> {
         holder.setData(content as Birthday)
       }
-      holder is ShoppingHolder -> holder.setData(content as Reminder)
+      holder is ShoppingViewHolder -> holder.setData(content as Reminder)
       holder is AskHolder -> holder.setAskAction(content as AskAction)
     }
   }
@@ -119,8 +115,8 @@ class ConversationAdapter(
       binding.replyNo.setOnClickListener {
         askAction?.onNo()
       }
-      binding.replyNo.text = language.getLocalized(itemView.context, R.string.no)
-      binding.replyYes.text = language.getLocalized(itemView.context, R.string.yes)
+      binding.replyNo.text = currentStateHolder.language.getLocalized(itemView.context, R.string.no)
+      binding.replyYes.text = currentStateHolder.language.getLocalized(itemView.context, R.string.yes)
     }
 
     fun setAskAction(askAction: AskAction) {

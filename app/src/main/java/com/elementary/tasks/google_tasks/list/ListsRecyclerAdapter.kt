@@ -10,7 +10,8 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGoogleTasksListBinding
 
@@ -38,7 +39,7 @@ class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Ho
 
     fun bind(googleTaskList: GoogleTaskList) {
       binding.textView.text = googleTaskList.title
-      val color = ThemeUtil.themedColor(binding.textView.context, googleTaskList.color)
+      val color = ThemeProvider.themedColor(binding.textView.context, googleTaskList.color)
       binding.clickView.background = stateList(color)
     }
 
@@ -48,7 +49,7 @@ class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Ho
       stateListDrawable.addState(intArrayOf(android.R.attr.state_pressed),
         tint(ContextCompat.getDrawable(context, R.drawable.gradient_button_google_pressed), color))
       stateListDrawable.addState(intArrayOf(),
-        tint(ContextCompat.getDrawable(context, R.drawable.gradient_button_google), ThemeUtil.adjustAlpha(color, 50)))
+        tint(ContextCompat.getDrawable(context, R.drawable.gradient_button_google), color.adjustAlpha(50)))
       return stateListDrawable
     }
 

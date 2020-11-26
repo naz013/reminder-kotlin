@@ -54,32 +54,15 @@ object MemoryUtil {
       return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
     }
 
-  val remindersDir: File?
-    get() = getDir(DIR_SD)
-
-  val groupsDir: File?
-    get() = getDir(DIR_GROUP_SD)
-
-  val birthdaysDir: File?
-    get() = getDir(DIR_BIRTHDAY_SD)
-
-  val notesDir: File?
-    get() = getDir(DIR_NOTES_SD)
-
-  val placesDir: File?
-    get() = getDir(DIR_PLACES_SD)
-
-  val templatesDir: File?
-    get() = getDir(DIR_TEMPLATES_SD)
-
-  val prefsDir: File?
-    get() = getDir(DIR_PREFS)
-
-  val parent: File?
-    get() = getDir("")
-
-  val imagesDir: File?
-    get() = getDir("image_cache")
+  val remindersDir = getDir(DIR_SD)
+  val groupsDir = getDir(DIR_GROUP_SD)
+  val birthdaysDir = getDir(DIR_BIRTHDAY_SD)
+  val notesDir = getDir(DIR_NOTES_SD)
+  val placesDir = getDir(DIR_PLACES_SD)
+  val templatesDir = getDir(DIR_TEMPLATES_SD)
+  val prefsDir = getDir(DIR_PREFS)
+  val parent = getDir("")
+  val imagesDir = getDir("image_cache")
 
   private fun getDir(directory: String): File? {
     return if (isSdPresent) {

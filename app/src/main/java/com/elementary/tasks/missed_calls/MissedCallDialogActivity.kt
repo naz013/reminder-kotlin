@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
@@ -21,8 +20,9 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
@@ -87,7 +87,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
 
     isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
 
-    binding.contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
+    binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
     binding.contactPhoto.visibility = View.GONE
 
     initButtons()
@@ -259,7 +259,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
         || SuperUtil.checkNotificationPermission(this)
         && prefs.isSoundInSilentModeEnabled)) {

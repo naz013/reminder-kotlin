@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.utils.GlobalAction
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -27,7 +28,7 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
-  FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
+  FragmentCallback, GlobalAction {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val viewModel by viewModel<ConversationViewModel>()

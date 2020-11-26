@@ -3,21 +3,21 @@ package com.elementary.tasks.notes.list
 import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemNoteAdsBinding
 
-class NoteAdsHolder(
+class NoteAdsViewHolder(
   parent: ViewGroup,
   adsProvider: AdsProvider,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   failListener: () -> Unit
-) : BaseHolder<ListItemNoteAdsBinding>(
+) : BaseViewHolder<ListItemNoteAdsBinding>(
   ListItemNoteAdsBinding.inflate(parent.inflater(), parent, false),
-  prefs
+  currentStateHolder
 ) {
 
   init {

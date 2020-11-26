@@ -10,12 +10,15 @@ import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds
 import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getHourOfDay
+import com.github.naz013.calendarext.getMillisecond
 import com.github.naz013.calendarext.getMinute
 import com.github.naz013.calendarext.getMonth
+import com.github.naz013.calendarext.getSecond
 import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
 import com.github.naz013.calendarext.setDate
 import com.github.naz013.calendarext.setHourOfDay
+import com.github.naz013.calendarext.setMillisecond
 import com.github.naz013.calendarext.setMinute
 import com.github.naz013.calendarext.setTime
 import com.github.naz013.calendarext.toCalendar
@@ -137,9 +140,20 @@ object TimeUtil {
     return dialog
   }
 
-  fun showTimePicker(context: Context, is24: Boolean, listener: TimePickerDialog.OnTimeSetListener,
-                     hour: Int, minute: Int): TimePickerDialog {
-    val dialog = TimePickerDialog(context, listener, hour, minute, is24)
+  fun showTimePicker(context: Context, is24: Boolean, old: Calendar?,
+                     listener: (Calendar) -> Unit): TimePickerDialog {
+    val calendar = old ?: newCalendar()
+    val dialog = TimePickerDialog(
+      context,
+      { _, hourOfDay, minute ->
+        newCalendar()
+          .setTime(hourOfDay, minute)
+          .also { listener.invoke(it) }
+      },
+      calendar.getHourOfDay(),
+      calendar.getMinute(),
+      is24
+    )
     dialog.show()
     return dialog
   }
@@ -147,6 +161,25 @@ object TimeUtil {
   fun showDatePicker(context: Context, prefs: Prefs, year: Int, month: Int, dayOfMonth: Int,
                      listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
     val dialog = DatePickerDialog(context, listener, year, month, dayOfMonth)
+    dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
+    dialog.show()
+    return dialog
+  }
+
+  fun showDatePicker(context: Context, prefs: Prefs, old: Calendar?,
+                     listener: (Calendar) -> Unit): DatePickerDialog {
+    val calendar = old ?: newCalendar()
+    val dialog = DatePickerDialog(
+      context,
+      { _, year, monthOfYear, dayOfMonth ->
+        newCalendar()
+          .setDate(year, monthOfYear, dayOfMonth)
+          .also { listener.invoke(it) }
+      },
+      calendar.getYear(),
+      calendar.getMonth(),
+      calendar.getDayOfMonth()
+    )
     dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
     dialog.show()
     return dialog
@@ -286,6 +319,15 @@ object TimeUtil {
     }
   }
 
+  fun Calendar.toGmt(): String {
+    GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
+    return try {
+      GMT_DATE_FORMAT.format(time)
+    } catch (e: Exception) {
+      ""
+    }
+  }
+
   fun getDateTimeFromGmt(dateTime: String?): Long {
     if (dateTime.isNullOrEmpty()) return 0
     return try {
@@ -293,6 +335,15 @@ object TimeUtil {
     } catch (e: Exception) {
       FirebaseCrashlytics.getInstance().recordException(e)
       0
+    }
+  }
+
+  fun String?.fromGmt(def: Calendar = newCalendar()): Calendar {
+    if (isNullOrEmpty()) return def
+    return try {
+      newCalendar(toDate(GMT_DATE_FORMAT, TimeZone.getTimeZone(GMT)))
+    } catch (e: Exception) {
+      def
     }
   }
 
@@ -306,6 +357,15 @@ object TimeUtil {
 
   fun logTime(date: Long = System.currentTimeMillis()): String {
     return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date(date))
+  }
+
+  fun getFullDateTime(input: Calendar?, is24: Boolean, lang: Int = 0): String {
+    val calendar = input ?: newCalendar()
+    return if (is24) {
+      fullDateTime24(lang).format(calendar.time)
+    } else {
+      fullDateTime12(lang).format(calendar.time)
+    }
   }
 
   fun getFullDateTime(date: Long, is24: Boolean, lang: Int = 0): String {
@@ -383,12 +443,16 @@ object TimeUtil {
     return date(lang).format(newCalendar(date).time)
   }
 
-  private fun getGoogleTaskDate(date: Date, lang: Int = 0): String {
+  private fun toGoogleTaskDate(date: Date, lang: Int = 0): String {
     return fullDate(lang).format(date)
   }
 
-  fun getGoogleTaskDate(millis: Long, lang: Int = 0): String {
-    return getGoogleTaskDate(Date(millis), lang)
+  fun toGoogleTaskDate(millis: Long, lang: Int = 0): String {
+    return toGoogleTaskDate(Date(millis), lang)
+  }
+
+  fun Calendar.toGoogleTaskDate(lang: Int = 0): String {
+    return toGoogleTaskDate(time, lang)
   }
 
   fun getDate(date: Date, format: DateFormat): String {
@@ -441,6 +505,10 @@ object TimeUtil {
 
   fun getTime(millis: Long, is24: Boolean, lang: Int = 0): String {
     return getTime(Date(millis), is24, lang)
+  }
+
+  fun Calendar.toTime(is24: Boolean, lang: Int = 0): String {
+    return getTime(time, is24, lang)
   }
 
   private fun getAge(year: Int, at: Long = System.currentTimeMillis()): Int {

@@ -6,6 +6,8 @@ import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
+import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.arch.LoginStateViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.completables.CompletableManager
@@ -64,12 +66,12 @@ import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.LoadTokensWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
-import com.elementary.tasks.home.HomeViewModel
 import com.elementary.tasks.google_tasks.create.GoogleTasksStateViewModel
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.elementary.tasks.home.HomeViewModel
 import com.elementary.tasks.navigation.settings.additional.work.TemplateDeleteBackupWorker
 import com.elementary.tasks.navigation.settings.additional.work.TemplateSingleBackupWorker
 import com.elementary.tasks.navigation.settings.export.CloudViewModel
@@ -149,6 +151,7 @@ val viewModelModule = module {
   viewModel { CreateNoteViewModel() }
   viewModel { CreatePlaceViewModel() }
   viewModel { TimesViewModel() }
+  viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get()) }
 }
 
@@ -191,10 +194,10 @@ val utilModule = module {
   single { AppDb.getAppDatabase(get()) }
   single { Prefs(get()) }
   single { GTasks(get(), get(), get()) }
-  single { SoundStackHolder(get(), get()) }
-  single { ThemeUtil(get(), get()) }
+  single { SoundStackHolder(get()) }
+  single { ThemeProvider(get(), get()) }
   single { BackupTool(get(), get(), get()) }
-  single { Dialogues() }
+  single { Dialogues(get()) }
   single { Language(get()) }
   single { CalendarUtils(get(), get(), get()) }
   single { providesRecognizer(get(), get()) }
@@ -210,6 +213,7 @@ val utilModule = module {
   single { ExportAllDataWorker(get()) }
   single { ScanContactsWorker(get(), get()) }
   factory { EnableThread(get(), get()) }
+  single { CurrentStateHolder(get(), get(), get(), get()) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

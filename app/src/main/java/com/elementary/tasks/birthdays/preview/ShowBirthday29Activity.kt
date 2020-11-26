@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
@@ -57,7 +57,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
     binding.buttonCall.setOnClickListener { makeCall() }
     binding.buttonSms.setOnClickListener { sendSMS() }
 
-    binding.contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
+    binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
     binding.contactPhoto.visibility = View.GONE
 
     initViewModel()

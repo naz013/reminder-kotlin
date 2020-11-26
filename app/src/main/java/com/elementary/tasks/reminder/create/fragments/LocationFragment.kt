@@ -13,8 +13,10 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.fadeInAnimation
+import com.elementary.tasks.core.utils.fadeOutAnimation
 import com.elementary.tasks.core.utils.isVisible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
 import com.google.android.gms.maps.model.LatLng
@@ -42,8 +44,8 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
           iFace.setFullScreenMode(false)
         }
         if (binding.mapContainer.visibility == View.VISIBLE) {
-          ViewUtils.fadeOutAnimation(binding.mapContainer)
-          ViewUtils.fadeInAnimation(binding.scrollView)
+          binding.mapContainer.fadeOutAnimation()
+          binding.scrollView.fadeInAnimation()
         }
       }
     }
@@ -191,11 +193,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     binding.delayLayout.visibility = View.GONE
     binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
       iFace.reminderState.isDelayAdded = isChecked
-      if (isChecked) {
-        binding.delayLayout.visibility = View.VISIBLE
-      } else {
-        binding.delayLayout.visibility = View.GONE
-      }
+      binding.delayLayout.visibleGone(isChecked)
     }
     binding.attackDelay.isChecked = iFace.reminderState.isDelayAdded
 
@@ -234,11 +232,11 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
   private fun toggleMap() {
     if (!isTablet()) {
       if (binding.mapContainer.isVisible()) {
-        ViewUtils.fadeOutAnimation(binding.mapContainer)
-        ViewUtils.fadeInAnimation(binding.scrollView)
+        binding.mapContainer.fadeOutAnimation()
+        binding.scrollView.fadeInAnimation()
       } else {
-        ViewUtils.fadeOutAnimation(binding.scrollView)
-        ViewUtils.fadeInAnimation(binding.mapContainer)
+        binding.scrollView.fadeOutAnimation()
+        binding.mapContainer.fadeInAnimation()
       }
     }
   }

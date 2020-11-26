@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.ThemedActivity
+import com.elementary.tasks.core.utils.finishWith
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -24,22 +25,9 @@ class SplashScreenActivity : ThemedActivity() {
     lifecycle.addObserver(viewModel)
     viewModel.openHome.observe(this) {
       enableShortcuts()
-      if (it) {
-        openPinLogin()
-      } else {
-        openHome()
-      }
+      if (it) finishWith(PinLoginActivity::class.java)
+      else finishWith(BottomNavActivity::class.java)
     }
-  }
-
-  private fun openPinLogin() {
-    startActivity(Intent(this, PinLoginActivity::class.java))
-    finish()
-  }
-
-  private fun openHome() {
-    startActivity(Intent(this, BottomNavActivity::class.java))
-    finish()
   }
 
   private fun enableShortcuts() {

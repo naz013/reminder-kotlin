@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -24,11 +23,15 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.isAlmostTransparent
+import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.tintOverflowButton
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
@@ -54,7 +57,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private val mUiHandler = Handler(Looper.getMainLooper())
 
-  private val themeUtil by inject<ThemeUtil>()
+  private val themeUtil by inject<ThemeProvider>()
   private val backupTool by inject<BackupTool>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
@@ -164,7 +167,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun updateIcons() {
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
-    ViewUtils.tintOverflowButton(binding.toolbar, isBgDark)
+    binding.toolbar.tintOverflowButton(isBgDark)
     invalidateOptionsMenu()
   }
 
@@ -197,10 +200,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
       window.statusBarColor = noteColor
       window.navigationBarColor = noteColor
       binding.windowBackground.setBackgroundColor(noteColor)
-      isBgDark = if (ThemeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
+      isBgDark = if (noteWithImages.getOpacity().isAlmostTransparent()) {
         isDarkMode
       } else {
-        ThemeUtil.isColorDark(noteColor)
+        noteColor.isColorDark()
       }
       updateTextColors()
       updateIcons()
@@ -208,11 +211,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun updateTextColors() {
-    val textColor = if (isBgDark) {
-      ContextCompat.getColor(this, R.color.pureWhite)
-    } else {
-      ContextCompat.getColor(this, R.color.pureBlack)
-    }
+    val textColor = if (isBgDark) colorOf(R.color.pureWhite)
+    else colorOf(R.color.pureBlack)
     binding.noteText.setTextColor(textColor)
   }
 

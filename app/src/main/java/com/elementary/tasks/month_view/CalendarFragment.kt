@@ -14,7 +14,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
@@ -157,13 +157,13 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   override fun birthdayColor(): Int {
     val ctx = context
     return if (ctx == null || !isAdded) Color.GREEN
-    else ThemeUtil.colorBirthdayCalendar(ctx, prefs)
+    else ThemeProvider.colorBirthdayCalendar(ctx, prefs)
   }
 
   override fun reminderColor(): Int {
     val ctx = context
     return if (ctx == null || !isAdded) Color.BLUE
-    else ThemeUtil.colorReminderCalendar(ctx, prefs)
+    else ThemeProvider.colorReminderCalendar(ctx, prefs)
   }
 
   override fun onDateClick(date: Date) {

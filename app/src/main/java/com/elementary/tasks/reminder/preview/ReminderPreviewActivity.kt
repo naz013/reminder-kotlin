@@ -35,7 +35,7 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.StringResPatterns
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.hide
@@ -48,7 +48,7 @@ import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
-import com.elementary.tasks.notes.list.NoteHolder
+import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
@@ -177,7 +177,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun showCalendarEvents(events: List<CalendarUtils.EventItem>) {
     Timber.d("showCalendarEvents: $events")
     for (e in events) {
-      val binding = GoogleEventHolder(binding.dataContainer, prefs) { _, event, listActions ->
+      val binding = GoogleEventViewHolder(binding.dataContainer, currentStateHolder) { _, event, listActions ->
         if (listActions == ListActions.OPEN && event != null) {
           openCalendar(event.id)
         } else if (listActions == ListActions.REMOVE && event != null) {
@@ -216,7 +216,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun showNote(note: NoteWithImages) {
-    val binding = NoteHolder(binding.dataContainer, prefs, get(), get()) { _, _, listActions ->
+    val binding = NoteViewHolder(binding.dataContainer, currentStateHolder, get()) { _, _, listActions ->
       if (listActions == ListActions.OPEN) {
         startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
           .putExtra(Constants.INTENT_ID, note.getKey()))
@@ -258,7 +258,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     binding.windowTypeView.text = getWindowType(reminder.windowType)
     binding.taskText.text = reminder.summary
     binding.type.text = ReminderUtils.getTypeString(this, reminder.type)
-    binding.itemPhoto.setImageResource(ThemeUtil.getReminderIllustration(reminder.type))
+    binding.itemPhoto.setImageResource(ThemeProvider.getReminderIllustration(reminder.type))
     binding.idView.text = reminder.uuId
 
     showDueAndRepeat(reminder)

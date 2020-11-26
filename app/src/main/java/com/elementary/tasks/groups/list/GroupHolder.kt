@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGroupBinding
 
@@ -27,6 +27,6 @@ class GroupHolder(
 
   fun setData(item: ReminderGroup) {
     binding.textView.text = item.groupTitle
-    binding.clickView.setCardBackgroundColor(ThemeUtil.themedColor(binding.clickView.context, item.groupColor))
+    binding.clickView.setCardBackgroundColor(ThemeProvider.themedColor(binding.clickView.context, item.groupColor))
   }
 }

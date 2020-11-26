@@ -12,7 +12,7 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGoogleTaskBinding
@@ -47,12 +47,12 @@ class GoogleTaskHolder(
     val color = if (item.listId != "" && map.containsKey(item.listId)) {
       val googleTaskList = map[item.listId]
       if (googleTaskList != null) {
-        ThemeUtil.themedColor(view.context, googleTaskList.color)
+        ThemeProvider.themedColor(view.context, googleTaskList.color)
       } else {
-        ThemeUtil.themedColor(view.context, 0)
+        ThemeProvider.themedColor(view.context, 0)
       }
     } else {
-      ThemeUtil.themedColor(view.context, 0)
+      ThemeProvider.themedColor(view.context, 0)
     }
     view.setImageBitmap(createIcon(view.context, item.status == GTasks.TASKS_COMPLETE, color))
   }

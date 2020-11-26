@@ -16,7 +16,7 @@ import com.elementary.tasks.core.view_models.Commands
 abstract class BaseBirthdaysViewModel(
   appDb: AppDb,
   prefs: Prefs,
-  private val context: Context
+  protected val context: Context
 ) : BaseDbViewModel(appDb, prefs) {
 
   fun deleteBirthday(birthday: Birthday) {

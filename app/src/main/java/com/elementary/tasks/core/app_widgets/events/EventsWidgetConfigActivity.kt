@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.SeekBar
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
@@ -61,20 +61,20 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     val isDark = WidgetUtils.isDarkBg(code)
     if (isDark) {
       binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
-        ContextCompat.getColor(this, R.color.pureWhite)))
-      binding.taskText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-      binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-      binding.taskNumber.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-      binding.taskTime.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-      binding.leftTime.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+        colorOf(R.color.pureWhite)))
+      binding.taskText.setTextColor(colorOf(R.color.pureWhite))
+      binding.taskDate.setTextColor(colorOf(R.color.pureWhite))
+      binding.taskNumber.setTextColor(colorOf(R.color.pureWhite))
+      binding.taskTime.setTextColor(colorOf(R.color.pureWhite))
+      binding.leftTime.setTextColor(colorOf(R.color.pureWhite))
     } else {
       binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
-        ContextCompat.getColor(this, R.color.pureBlack)))
-      binding.taskText.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-      binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-      binding.taskNumber.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-      binding.taskTime.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-      binding.leftTime.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+        colorOf(R.color.pureBlack)))
+      binding.taskText.setTextColor(colorOf(R.color.pureBlack))
+      binding.taskDate.setTextColor(colorOf(R.color.pureBlack))
+      binding.taskNumber.setTextColor(colorOf(R.color.pureBlack))
+      binding.taskTime.setTextColor(colorOf(R.color.pureBlack))
+      binding.leftTime.setTextColor(colorOf(R.color.pureBlack))
     }
   }
 
@@ -84,9 +84,9 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     binding.btnAddTask.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
     binding.btnVoice.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isDark))
     if (isDark) {
-      binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+      binding.widgetTitle.setTextColor(colorOf(R.color.pureWhite))
     } else {
-      binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+      binding.widgetTitle.setTextColor(colorOf(R.color.pureBlack))
     }
   }
 
@@ -111,18 +111,18 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater, null, false)
     b.seekBar.max = 13
     b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-            textSize = progress + 12
-            b.titleView.text = textSize.toString()
-        }
+      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+        textSize = progress + 12
+        b.titleView.text = textSize.toString()
+      }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
+      override fun onStartTrackingTouch(seekBar: SeekBar) {
 
-        }
+      }
 
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
+      override fun onStopTrackingTouch(seekBar: SeekBar) {
 
-        }
+      }
     })
     b.seekBar.progress = 2
     textSize = 2 + 12

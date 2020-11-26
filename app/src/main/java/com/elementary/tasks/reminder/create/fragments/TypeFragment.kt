@@ -23,7 +23,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.bindProperty
@@ -56,7 +56,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   protected val prefs by inject<Prefs>()
   protected val dialogues by inject<Dialogues>()
-  protected val themeUtil by inject<ThemeUtil>()
+  protected val themeUtil by inject<ThemeProvider>()
   protected val calendarUtils by inject<CalendarUtils>()
 
   private val calendars: List<CalendarUtils.CalendarItem> by lazy {
@@ -198,7 +198,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       it.onFileSelectListener = {
         iFace.attachFile()
       }
-      ViewUtils.registerDragAndDrop(requireActivity(), it, true, ThemeUtil.getSecondaryColor(it.context),
+      ViewUtils.registerDragAndDrop(requireActivity(), it, true, ThemeProvider.getSecondaryColor(it.context),
         { clipData ->
           if (clipData.itemCount > 0) {
             it.setUri(clipData.getItemAt(0).uri)
@@ -312,7 +312,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   }
 
-  protected fun isTablet(): Boolean = iFace.isTablet()
+  protected fun isTablet() = iFace.isTablet()
 
   private fun showGroup(groupView: GroupView?, reminder: Reminder) {
     if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {

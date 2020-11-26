@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMessageBinding
 
@@ -42,7 +42,7 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
     fun bind(item: SmsTemplate) {
       binding.messageView.text = item.title
       if (item.isSelected) {
-        binding.bgView.setBackgroundColor(ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(itemView.context), 50))
+        binding.bgView.setBackgroundColor(ThemeProvider.colorWithAlpha(ThemeProvider.getThemeSecondaryColor(itemView.context), 50))
       } else {
         binding.bgView.setBackgroundResource(android.R.color.transparent)
       }
