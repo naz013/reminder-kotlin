@@ -43,7 +43,7 @@ import java.util.*
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private var speech: SpeechRecognizer? = null
-  private val mAdapter = ConversationAdapter(language, prefs, get(), get())
+  private val mAdapter = ConversationAdapter(currentStateHolder, get())
   private val viewModel by viewModel<ConversationViewModel>()
   private var tts: TextToSpeech? = null
   private var isTtsReady = false

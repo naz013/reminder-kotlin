@@ -10,7 +10,6 @@ import android.speech.tts.TextToSpeech
 import android.text.TextUtils
 import android.view.MotionEvent
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Notifier
@@ -19,6 +18,7 @@ import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.colorOf
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException
@@ -182,7 +182,7 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
-    wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    wearableNotificationBuilder.color = colorOf(R.color.secondaryBlue)
     wearableNotificationBuilder.setOngoing(false)
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)

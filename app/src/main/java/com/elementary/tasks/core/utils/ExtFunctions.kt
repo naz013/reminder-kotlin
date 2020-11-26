@@ -3,19 +3,22 @@ package com.elementary.tasks.core.utils
 import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
+import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.DisplayMetrics
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
+import androidx.annotation.IntRange
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -48,26 +51,63 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
+fun String.normalizeSummary(): String {
+  return if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
+    substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
+  } else {
+    this
+  }
+}
+
+fun Fragment.startActivity(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
+  requireActivity().startActivity(clazz, intent)
+}
+
+fun Activity.startActivity(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
+  startActivity(Intent(this, clazz).also { intent?.invoke(it) })
+}
+
+fun Activity.finishWith(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
+  startActivity(Intent(this, clazz).also { intent?.invoke(it) })
+  finish()
+}
+
+@ColorInt
+fun Int.adjustAlpha(@IntRange(from = 0, to = 100) factor: Int): Int {
+  val alpha = 255f * (factor.toFloat() / 100f)
+  val red = android.graphics.Color.red(this)
+  val green = android.graphics.Color.green(this)
+  val blue = android.graphics.Color.blue(this)
+  return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
+}
+
+// Check if Color is Dark
+fun Int.isColorDark(): Boolean {
+  val darkness = 1 - (0.299 * android.graphics.Color.red(this) + 0.587
+    * android.graphics.Color.green(this) + 0.114
+    * android.graphics.Color.blue(this)) / 255
+  Timber.d("isColorDark: $darkness")
+  return darkness >= 0.5
+}
+
+// Check of opacity of Color
+fun Int.isAlmostTransparent(): Boolean {
+  return this < 25
+}
+
+fun Fragment.colorOf(@ColorRes color: Int) = ContextCompat.getColor(requireContext(), color)
+
+fun AppCompatActivity.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
+
+fun Context.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
+
+fun View.colorOf(@ColorRes color: Int) = ContextCompat.getColor(context, color)
+
 fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
   doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
 }
 
 fun View.inflater() = LayoutInflater.from(context)
-
-fun Context.dp2px(dp: Int): Int {
-  val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager?
-  var display: Display? = null
-  if (wm != null) {
-    display = wm.defaultDisplay
-  }
-  val displaymetrics = DisplayMetrics()
-  display?.getMetrics(displaymetrics)
-  return (dp * displaymetrics.density + 0.5f).toInt()
-}
-
-fun View.dp2px(dp: Int) = context.dp2px(dp)
-
-fun Fragment.dp2px(dp: Int) = requireContext().dp2px(dp)
 
 fun Activity.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(this, message, duration).show()

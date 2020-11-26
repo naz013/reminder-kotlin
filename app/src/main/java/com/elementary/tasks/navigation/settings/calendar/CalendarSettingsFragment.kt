@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -61,7 +61,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
     withActivity { act ->
-      dialogues.showColorDialog(act, current, title, ThemeUtil.colorsForSliderThemed(act)) {
+      dialogues.showColorDialog(act, current, title, ThemeProvider.colorsForSliderThemed(act)) {
         onSave.invoke(it)
       }
     }
@@ -98,7 +98,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
   }
 
   private fun initRemindersColorPrefs() {
-    binding.reminderColorPrefs.setViewColor(ThemeUtil.colorReminderCalendar(requireContext(), prefs))
+    binding.reminderColorPrefs.setViewColor(ThemeProvider.colorReminderCalendar(requireContext(), prefs))
   }
 
   private fun initRemindersPrefs() {
@@ -126,10 +126,10 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
   override fun getTitle(): String = getString(R.string.calendar)
 
   private fun initBirthdaysColorPrefs() {
-    binding.selectedColorPrefs.setViewColor(ThemeUtil.colorBirthdayCalendar(requireContext(), prefs))
+    binding.selectedColorPrefs.setViewColor(ThemeProvider.colorBirthdayCalendar(requireContext(), prefs))
   }
 
   private fun initTodayColorPrefs() {
-    binding.themeColorPrefs.setViewColor(ThemeUtil.colorCurrentCalendar(requireContext(), prefs))
+    binding.themeColorPrefs.setViewColor(ThemeProvider.colorCurrentCalendar(requireContext(), prefs))
   }
 }

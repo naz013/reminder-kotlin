@@ -27,6 +27,7 @@ class GoogleTaskViewModel(
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
   val googleTaskLists = appDb.googleTaskListsDao().loadAll()
 
+  val isLogged = gTasks.isLogged
   private var _reminder = MutableLiveData<Reminder>()
   var reminder: LiveData<Reminder> = _reminder
 

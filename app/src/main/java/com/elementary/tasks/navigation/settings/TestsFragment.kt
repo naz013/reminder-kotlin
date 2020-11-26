@@ -44,34 +44,32 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   }
 
   private fun openMissedScreen() {
-    val missedCall = MissedCall(number = "2454548", dateTime = System.currentTimeMillis())
-    withContext {
+    MissedCall(number = "2454548", dateTime = System.currentTimeMillis()).also {
       if (Module.isQ) {
-        MissedCallDialog29Activity.mockTest(it, missedCall)
+        MissedCallDialog29Activity.mockTest(requireContext(), it)
       } else {
-        MissedCallDialogActivity.mockTest(it, missedCall)
+        MissedCallDialogActivity.mockTest(requireContext(), it)
       }
     }
   }
 
   private fun openReminderScreen() {
-    val reminder = Reminder().apply {
+    Reminder().apply {
       this.summary = "Test"
       this.target = "16546848"
       this.type = Reminder.BY_DATE_CALL
       this.useGlobal = true
-    }
-    withContext {
+    }.also {
       if (Module.isQ) {
-        ReminderDialog29Activity.mockTest(it, reminder)
+        ReminderDialog29Activity.mockTest(requireContext(), it)
       } else {
-        ReminderDialogActivity.mockTest(it, reminder)
+        ReminderDialogActivity.mockTest(requireContext(), it)
       }
     }
   }
 
   private fun openBirthdayScreen() {
-    val birthday = Birthday().apply {
+    Birthday().apply {
       this.day = 25
       this.month = 5
       this.name = "Test User"
@@ -85,12 +83,11 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       this.key = "$name|$secKey"
 
       this.dayMonth = "$day|$month"
-    }
-    withContext {
+    }.also {
       if (Module.isQ) {
-        ShowBirthday29Activity.mockTest(it, birthday)
+        ShowBirthday29Activity.mockTest(requireContext(), it)
       } else {
-        ShowBirthdayActivity.mockTest(it, birthday)
+        ShowBirthdayActivity.mockTest(requireContext(), it)
       }
     }
   }

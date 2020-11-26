@@ -10,6 +10,7 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.databinding.DialogBottomColorSliderBinding
 import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
@@ -17,14 +18,58 @@ import com.elementary.tasks.databinding.ViewColorSliderBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class Dialogues {
+data class SelectionList(
+  val position: Int,
+  val title: String,
+  val okButtonTitle: String,
+  val cancelButtonTitle: String,
+  val items: List<String>
+)
 
-  fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = ThemeUtil.colorsForSlider(activity),
+class Dialogues(
+  private val currentStateHolder: CurrentStateHolder
+) {
+
+  private var selectedItemPosition: Int = 0
+
+  fun showPropertyDialog(
+    context: Context,
+    selectionList: SelectionList,
+    onOk: (position: Int) -> Unit,
+    onCancel: (() -> Unit)? = null
+  ) {
+    propertyDialog(context, selectionList, onOk, onCancel).show()
+  }
+
+  fun propertyDialog(
+    context: Context,
+    selectionList: SelectionList,
+    onOk: (position: Int) -> Unit,
+    onCancel: (() -> Unit)? = null
+  ) = getMaterialDialog(context).also {
+    it.setTitle(selectionList.title)
+    selectedItemPosition = selectionList.position
+    it.setSingleChoiceItems(selectionList.items.toTypedArray(), selectedItemPosition) { _, which ->
+      selectedItemPosition = which
+    }
+    it.setPositiveButton(selectionList.okButtonTitle) { dialog, _ ->
+      onOk.invoke(selectedItemPosition)
+      dialog.dismiss()
+    }
+    it.setNegativeButton(selectionList.cancelButtonTitle) { dialog, _ ->
+      onCancel?.invoke()
+      dialog.dismiss()
+    }
+  }.create()
+
+  fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = ThemeProvider.colorsForSlider(activity),
                             onChange: (Int) -> Unit) {
     val dialog = BottomSheetDialog(activity)
     val b = DialogBottomColorSliderBinding.inflate(LayoutInflater.from(activity))
     b.colorSlider.setColors(colors)
-    b.colorSlider.setSelectorColorResource(if (ThemeUtil.isDarkMode(activity)) R.color.pureWhite else R.color.pureBlack)
+    b.colorSlider.setSelectorColorResource(
+      currentStateHolder.theme.pickColorRes(R.color.pureBlack, R.color.pureWhite)
+    )
     b.colorSlider.setSelection(current)
     b.colorSlider.setListener { i, _ ->
       onChange.invoke(i)
@@ -73,13 +118,15 @@ class Dialogues {
   }
 
   fun showColorDialog(activity: Activity, current: Int, title: String,
-                      colors: IntArray = ThemeUtil.colorsForSlider(activity),
+                      colors: IntArray = ThemeProvider.colorsForSlider(activity),
                       onDone: (Int) -> Unit) {
     val builder = getMaterialDialog(activity)
     builder.setTitle(title)
     val bind = ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
     bind.colorSlider.setColors(colors)
-    bind.colorSlider.setSelectorColorResource(if (ThemeUtil.isDarkMode(activity)) R.color.pureWhite else R.color.pureBlack)
+    bind.colorSlider.setSelectorColorResource(
+      currentStateHolder.theme.pickColorRes(R.color.pureBlack, R.color.pureWhite)
+    )
     bind.colorSlider.setSelection(current)
     builder.setView(bind.root)
     builder.setPositiveButton(R.string.save) { dialog, _ ->

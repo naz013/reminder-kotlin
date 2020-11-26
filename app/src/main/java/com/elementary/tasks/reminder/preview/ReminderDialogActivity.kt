@@ -14,7 +14,6 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -36,8 +35,9 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -327,7 +327,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     else binding.buttonAttachment.hide()
 
     val contactPhoto = binding.contactPhoto
-    contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
+    contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
     contactPhoto.visibility = View.GONE
 
     binding.todoList.layoutManager = LinearLayoutManager(this)
@@ -796,7 +796,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     val isWear = prefs.isWearEnabled
     if (isWear) {
       builder.setOnlyAlertOnce(true)
@@ -857,7 +857,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     val isWear = prefs.isWearEnabled
     if (isWear) {
       builder.setOnlyAlertOnce(true)
@@ -925,7 +925,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     val isWear = prefs.isWearEnabled
     if (isWear) {
       builder.setOnlyAlertOnce(true)

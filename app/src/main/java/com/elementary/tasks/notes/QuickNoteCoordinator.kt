@@ -14,7 +14,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
@@ -89,7 +89,7 @@ class QuickNoteCoordinator(
     if (prefs.isNoteColorRememberingEnabled) {
       item.color = prefs.lastNoteColor
     } else {
-      item.color = Random().nextInt(ThemeUtil.NOTE_COLORS)
+      item.color = Random().nextInt(ThemeProvider.NOTE_COLORS)
     }
     item.palette = prefs.notePalette
     val noteWithImages = NoteWithImages()

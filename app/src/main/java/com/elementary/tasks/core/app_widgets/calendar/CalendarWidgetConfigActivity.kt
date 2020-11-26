@@ -4,11 +4,11 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
 import java.util.*
 
@@ -58,9 +58,9 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
 
   private fun updateHeader(code: Int) {
     val color = if (WidgetUtils.isDarkBg(code)) {
-      ContextCompat.getColor(this, R.color.pureWhite)
+      colorOf(R.color.pureWhite)
     } else {
-      ContextCompat.getColor(this, R.color.pureBlack)
+      colorOf(R.color.pureBlack)
     }
 
     binding.btnSettings.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_settings_24px, color))

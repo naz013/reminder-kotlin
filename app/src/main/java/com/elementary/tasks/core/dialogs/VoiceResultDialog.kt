@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -33,7 +33,7 @@ class VoiceResultDialog : BaseDialog() {
     parent.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
     parent.orientation = LinearLayout.VERTICAL
 
-    val holder = ReminderHolder(parent, prefs, false, editable = false)
+    val holder = ReminderViewHolder(parent, currentStateHolder, false, editable = false)
     holder.setData(reminder)
 
     parent.addView(holder.itemView)

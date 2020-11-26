@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -26,7 +25,8 @@ import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.show
@@ -164,12 +164,14 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
         .draggable(clear))
       val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
       val strokeWidth = 3f
-      mMap?.addCircle(CircleOptions()
-        .center(pos)
-        .radius(markerRadius.toDouble())
-        .strokeWidth(strokeWidth)
-        .fillColor(ContextCompat.getColor(requireContext(), marker.fillColor))
-        .strokeColor(ContextCompat.getColor(requireContext(), marker.strokeColor)))
+      mMap?.addCircle(
+        CircleOptions()
+          .center(pos)
+          .radius(markerRadius.toDouble())
+          .strokeWidth(strokeWidth)
+          .fillColor(colorOf(marker.fillColor))
+          .strokeColor(colorOf(marker.strokeColor))
+      )
       if (animate) {
         animate(pos)
       }
@@ -269,7 +271,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun showStyleDialog() {
-    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeUtil.colorsForSlider(requireActivity())) {
+    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeProvider.colorsForSlider(requireActivity())) {
       prefs.markerStyle = it
       recreateStyle(it)
     }

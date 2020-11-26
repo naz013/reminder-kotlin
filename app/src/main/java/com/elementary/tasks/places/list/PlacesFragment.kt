@@ -26,14 +26,13 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   private val viewModel by viewModel<PlacesViewModel>()
 
-  private val adapter = PlacesRecyclerAdapter(prefs, get(), object : ActionsListener<Place> {
+  private val adapter = PlacesRecyclerAdapter(currentStateHolder, object : ActionsListener<Place> {
     override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
       if (t == null) return
       when (actions) {

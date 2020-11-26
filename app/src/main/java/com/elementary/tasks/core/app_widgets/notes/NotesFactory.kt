@@ -11,13 +11,14 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.isAlmostTransparent
 import java.util.*
 
 class NotesFactory(
   private val context: Context,
   private val appDb: AppDb,
-  private val themeUtil: ThemeUtil
+  private val themeProvider: ThemeProvider
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private val notes = ArrayList<NoteWithImages>()
@@ -55,8 +56,8 @@ class NotesFactory(
       return rv
     }
     rv.setInt(R.id.noteBackground, "setBackgroundColor",
-      themeUtil.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette()))
-    if (ThemeUtil.isAlmostTransparent(note.getOpacity())) {
+      themeProvider.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette()))
+    if (note.getOpacity().isAlmostTransparent()) {
       rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureWhite))
     } else {
       rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureBlack))

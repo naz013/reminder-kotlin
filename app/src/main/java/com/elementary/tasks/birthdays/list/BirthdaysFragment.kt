@@ -21,6 +21,7 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -34,7 +35,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
   )
 
-  private val mAdapter = BirthdaysRecyclerAdapter(prefs) {
+  private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
   private var mSearchView: SearchView? = null
@@ -57,7 +58,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
       return false
     }
   }
-  private val mSearchCloseListener = { false }
+  private val searchCloseListener = { false }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -77,7 +78,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
           searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
         }
         searchView.setOnQueryTextListener(queryTextListener)
-        searchView.setOnCloseListener(mSearchCloseListener)
+        searchView.setOnCloseListener(searchCloseListener)
       }
     }
     super.onCreateOptionsMenu(menu, inflater)
@@ -130,15 +131,11 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
   }
 
   private fun refreshView(count: Int) {
-    if (count == 0) {
-      binding.emptyItem.visibility = View.VISIBLE
-    } else {
-      binding.emptyItem.visibility = View.GONE
-    }
+    binding.emptyItem.visibleGone(count == 0)
   }
 
   override fun invoke(result: List<Birthday>) {
-    val newList = BirthdayAdsHolder.updateList(result)
+    val newList = BirthdayAdsViewHolder.updateList(result)
     mAdapter.submitList(newList)
     binding.recyclerView.smoothScrollToPosition(0)
     refreshView(newList.size)

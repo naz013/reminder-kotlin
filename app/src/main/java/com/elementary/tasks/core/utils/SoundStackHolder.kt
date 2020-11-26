@@ -4,13 +4,15 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import timber.log.Timber
 
 class SoundStackHolder(
-  private val context: Context,
-  private val prefs: Prefs
+  currentStateHolder: CurrentStateHolder
 ) : Sound.PlaybackCallback {
 
+  private val context = currentStateHolder.context
+  private val prefs = currentStateHolder.preferences
   var sound: Sound? = null
     private set
 
@@ -56,11 +58,8 @@ class SoundStackHolder(
     isIncreasingLoudnessEnabled = prefs.isIncreasingLoudnessEnabled
     if (isSystemLoudnessEnabled) mSystemStream = prefs.soundStream
     if (mAudioManager == null) {
-      if (sound != null)
-        sound?.stop(true)
-      else
-        sound = Sound(context, prefs)
-
+      if (sound != null) sound?.stop(true)
+      else sound = Sound(context, prefs)
       sound?.setCallback(this)
       mAudioManager = context.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
       if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH))

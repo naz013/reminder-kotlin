@@ -470,7 +470,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.REQ_CODE) {
+    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE) {
       if (resultCode != Activity.RESULT_OK) {
         finish()
       } else {

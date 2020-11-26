@@ -3,20 +3,20 @@ package com.elementary.tasks.reminder.lists.adapter
 import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemReminderAdsBinding
 
-class ReminderAdsHolder(
+class ReminderAdsViewHolder(
   parent: ViewGroup,
   adsProvider: AdsProvider,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   failListener: () -> Unit
-) : BaseHolder<ListItemReminderAdsBinding>(
+) : BaseViewHolder<ListItemReminderAdsBinding>(
   ListItemReminderAdsBinding.inflate(parent.inflater(), parent, false),
-  prefs
+  currentStateHolder
 ) {
 
   init {

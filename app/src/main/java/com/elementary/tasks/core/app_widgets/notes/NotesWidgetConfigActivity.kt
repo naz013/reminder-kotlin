@@ -3,11 +3,11 @@ package com.elementary.tasks.core.app_widgets.notes
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
 class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBinding>() {
@@ -44,9 +44,9 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
     binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
     binding.btnAddNote.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
     if (isDark) {
-      binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+      binding.widgetTitle.setTextColor(colorOf(R.color.pureWhite))
     } else {
-      binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+      binding.widgetTitle.setTextColor(colorOf(R.color.pureBlack))
     }
   }
 

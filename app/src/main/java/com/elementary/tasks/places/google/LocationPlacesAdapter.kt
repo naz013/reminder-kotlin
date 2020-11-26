@@ -9,13 +9,13 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemLocationBinding
 import java.util.*
 
 class LocationPlacesAdapter(
-  private val themeUtil: ThemeUtil
+  private val themeUtil: ThemeProvider
 ) : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>() {
 
   private val dataList = ArrayList<Reminder>()

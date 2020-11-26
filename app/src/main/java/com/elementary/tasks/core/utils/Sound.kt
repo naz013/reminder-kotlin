@@ -14,11 +14,11 @@ import timber.log.Timber
 import java.io.File
 
 class Sound(
-  private val mContext: Context,
+  private val context: Context,
   private val prefs: Prefs
 ) {
 
-  private var mMediaPlayer: MediaPlayer? = null
+  private var mediaPlayer: MediaPlayer? = null
   var isPaused: Boolean = false
     private set
   private var trimPlayback: Boolean = false
@@ -28,21 +28,21 @@ class Sound(
   private var lastFile: String? = null
   private var mRingtone: Ringtone? = null
   private var isDone: Boolean = false
-  private var mCallback: PlaybackCallback? = null
-  private val mRingtoneHandler = Handler(Looper.getMainLooper())
-  private val mRingtoneRunnable = object : Runnable {
+  private var playbackCallback: PlaybackCallback? = null
+  private val ringtoneHandler = Handler(Looper.getMainLooper())
+  private val ringtoneRunnable = object : Runnable {
     override fun run() {
-      mRingtoneHandler.removeCallbacks(this)
+      ringtoneHandler.removeCallbacks(this)
       val ringtone = mRingtone
       if (ringtone != null && ringtone.isPlaying) {
         if (trimPlayback) {
           if (System.currentTimeMillis() - playbackStartMillis >= playbackDuration * 1000L) {
             stop(true)
           } else {
-            mRingtoneHandler.postDelayed(this, 100)
+            ringtoneHandler.postDelayed(this, 100)
           }
         } else {
-          mRingtoneHandler.postDelayed(this, 100)
+          ringtoneHandler.postDelayed(this, 100)
         }
       } else {
         stop(true)
@@ -50,20 +50,20 @@ class Sound(
     }
   }
 
-  private val mMelodyHandler = Handler(Looper.getMainLooper())
-  private val mMelodyRunnable = object : Runnable {
+  private val melodyHandler = Handler(Looper.getMainLooper())
+  private val melodyRunnable = object : Runnable {
     override fun run() {
-      mMelodyHandler.removeCallbacks(this)
-      val mp = mMediaPlayer
+      melodyHandler.removeCallbacks(this)
+      val mp = mediaPlayer
       if (mp != null && mp.isPlaying) {
         if (trimPlayback) {
           if (System.currentTimeMillis() - playbackStartMillis >= playbackDuration * 1000L) {
             stop(true)
           } else {
-            mMelodyHandler.postDelayed(this, 1000)
+            melodyHandler.postDelayed(this, 1000)
           }
         } else {
-          mMelodyHandler.postDelayed(this, 1000)
+          melodyHandler.postDelayed(this, 1000)
         }
       } else {
         stop(true)
@@ -74,7 +74,7 @@ class Sound(
   val isPlaying: Boolean
     get() {
       return try {
-        val mp = mMediaPlayer
+        val mp = mediaPlayer
         val ringtone = mRingtone
         if (mp == null && ringtone == null) return false
         if (mp != null && mp.isPlaying) return true
@@ -86,13 +86,13 @@ class Sound(
     }
 
   fun setCallback(callback: PlaybackCallback?) {
-    this.mCallback = callback
+    this.playbackCallback = callback
   }
 
   fun stop(notify: Boolean) {
-    mRingtoneHandler.removeCallbacks(mRingtoneRunnable)
-    mMelodyHandler.removeCallbacks(mMelodyRunnable)
-    val mp = mMediaPlayer
+    ringtoneHandler.removeCallbacks(ringtoneRunnable)
+    melodyHandler.removeCallbacks(melodyRunnable)
+    val mp = mediaPlayer
     if (mp != null) {
       try {
         if (mp.isPlaying) {
@@ -118,7 +118,7 @@ class Sound(
   }
 
   fun pause() {
-    val mp = mMediaPlayer ?: return
+    val mp = mediaPlayer ?: return
     try {
       mp.pause()
     } catch (ignored: Exception) {
@@ -127,7 +127,7 @@ class Sound(
   }
 
   fun resume() {
-    val mp = mMediaPlayer ?: return
+    val mp = mediaPlayer ?: return
     if (!isPaused) return
     try {
       mp.start()
@@ -141,13 +141,13 @@ class Sound(
   }
 
   fun play(path: String) {
-    if (!Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) return
+    if (!Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) return
     lastFile = path
     stop(false)
-    mMediaPlayer = MediaPlayer()
+    mediaPlayer = MediaPlayer()
     try {
       val file = File(path)
-      mMediaPlayer?.setDataSource(mContext, Uri.fromFile(file))
+      mediaPlayer?.setDataSource(context, Uri.fromFile(file))
     } catch (e: Exception) {
       e.printStackTrace()
     }
@@ -155,19 +155,19 @@ class Sound(
     val attributes = AudioAttributes.Builder()
       .setLegacyStreamType(AudioManager.STREAM_MUSIC)
       .build()
-    mMediaPlayer?.setAudioAttributes(attributes)
-    mMediaPlayer?.isLooping = false
-    mMediaPlayer?.setOnPreparedListener { mp ->
+    mediaPlayer?.setAudioAttributes(attributes)
+    mediaPlayer?.isLooping = false
+    mediaPlayer?.setOnPreparedListener { mp ->
       notifyStart()
       mp.start()
     }
-    mMediaPlayer?.setOnCompletionListener { notifyFinish() }
-    mMediaPlayer?.setOnErrorListener { _, _, _ ->
+    mediaPlayer?.setOnCompletionListener { notifyFinish() }
+    mediaPlayer?.setOnErrorListener { _, _, _ ->
       notifyFinish()
       false
     }
     try {
-      mMediaPlayer?.prepareAsync()
+      mediaPlayer?.prepareAsync()
     } catch (e: Exception) {
       e.printStackTrace()
     }
@@ -175,19 +175,19 @@ class Sound(
 
   private fun notifyFinish() {
     isDone = true
-    mCallback?.onFinish()
+    playbackCallback?.onFinish()
   }
 
   fun playAlarm(path: Uri, looping: Boolean, duration: Int = 0) {
-    if (isPlaying || !Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) {
+    if (isPlaying || !Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) {
       return
     }
     stop(false)
     trimPlayback = duration > 0 && !looping
     playbackDuration = duration
-    mMediaPlayer = MediaPlayer()
+    mediaPlayer = MediaPlayer()
     try {
-      mMediaPlayer?.setDataSource(mContext, path)
+      mediaPlayer?.setDataSource(context, path)
       var stream = AudioManager.STREAM_MUSIC
       if (prefs.isSystemLoudnessEnabled) {
         stream = prefs.soundStream
@@ -195,20 +195,20 @@ class Sound(
       val attributes = AudioAttributes.Builder()
         .setLegacyStreamType(stream)
         .build()
-      mMediaPlayer?.setAudioAttributes(attributes)
-      mMediaPlayer?.isLooping = looping
-      mMediaPlayer?.setOnPreparedListener { mp ->
+      mediaPlayer?.setAudioAttributes(attributes)
+      mediaPlayer?.isLooping = looping
+      mediaPlayer?.setOnPreparedListener { mp ->
         notifyStart()
         mp.start()
         playbackStartMillis = System.currentTimeMillis()
-        mMelodyHandler.postDelayed(mMelodyRunnable, 1000)
+        melodyHandler.postDelayed(melodyRunnable, 1000)
       }
-      mMediaPlayer?.setOnCompletionListener { notifyFinish() }
-      mMediaPlayer?.setOnErrorListener { _, _, _ ->
+      mediaPlayer?.setOnCompletionListener { notifyFinish() }
+      mediaPlayer?.setOnErrorListener { _, _, _ ->
         notifyFinish()
         false
       }
-      mMediaPlayer?.prepareAsync()
+      mediaPlayer?.prepareAsync()
     } catch (e: Exception) {
       playRingtone(path)
     }
@@ -217,22 +217,22 @@ class Sound(
   fun playRingtone(path: Uri) {
     Timber.d("playRingtone: $path")
     notifyStart()
-    mRingtone = RingtoneManager.getRingtone(mContext, path)
+    mRingtone = RingtoneManager.getRingtone(context, path)
     mRingtone?.play()
     playbackStartMillis = System.currentTimeMillis()
-    mRingtoneHandler.postDelayed(mRingtoneRunnable, 100)
+    ringtoneHandler.postDelayed(ringtoneRunnable, 100)
   }
 
   fun playAlarm(afd: AssetFileDescriptor) {
-    if (!Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) return
+    if (!Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) return
     stop(false)
     if (isDone) {
       return
     }
     trimPlayback = false
-    mMediaPlayer = MediaPlayer()
+    mediaPlayer = MediaPlayer()
     try {
-      mMediaPlayer?.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+      mediaPlayer?.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
     } catch (e: Exception) {
       e.printStackTrace()
     }
@@ -244,26 +244,26 @@ class Sound(
     val attributes = AudioAttributes.Builder()
       .setLegacyStreamType(stream)
       .build()
-    mMediaPlayer?.setAudioAttributes(attributes)
-    mMediaPlayer?.isLooping = false
-    mMediaPlayer?.setOnPreparedListener { mp ->
+    mediaPlayer?.setAudioAttributes(attributes)
+    mediaPlayer?.isLooping = false
+    mediaPlayer?.setOnPreparedListener { mp ->
       notifyStart()
       mp.start()
     }
-    mMediaPlayer?.setOnCompletionListener { notifyFinish() }
-    mMediaPlayer?.setOnErrorListener { _, _, _ ->
+    mediaPlayer?.setOnCompletionListener { notifyFinish() }
+    mediaPlayer?.setOnErrorListener { _, _, _ ->
       notifyFinish()
       false
     }
     try {
-      mMediaPlayer?.prepareAsync()
+      mediaPlayer?.prepareAsync()
     } catch (e: Exception) {
       e.printStackTrace()
     }
   }
 
   private fun notifyStart() {
-    mCallback?.onStart()
+    playbackCallback?.onStart()
   }
 
   interface PlaybackCallback {

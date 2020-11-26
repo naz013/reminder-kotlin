@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.squareup.picasso.Picasso
 import timber.log.Timber
@@ -35,18 +36,24 @@ class PhotoSelectionUtil(
     val items = if (urlSupported) {
       if (hasCamera) {
         arrayOf(
-          activity.getString(R.string.gallery),
-          activity.getString(R.string.take_a_shot),
-          activity.getString(R.string.from_url)
+          getString(R.string.gallery),
+          getString(R.string.take_a_shot),
+          getString(R.string.from_url)
         )
       } else {
-        arrayOf(activity.getString(R.string.gallery), activity.getString(R.string.from_url))
+        arrayOf(
+          getString(R.string.gallery),
+          getString(R.string.from_url)
+        )
       }
     } else {
       if (hasCamera) {
-        arrayOf(activity.getString(R.string.gallery), activity.getString(R.string.take_a_shot))
+        arrayOf(
+          getString(R.string.gallery),
+          getString(R.string.take_a_shot)
+        )
       } else {
-        arrayOf(activity.getString(R.string.gallery))
+        arrayOf(getString(R.string.gallery))
       }
     }
     val builder = dialogues.getMaterialDialog(activity)
@@ -81,7 +88,7 @@ class PhotoSelectionUtil(
       intent.type = "image/*"
       intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
     }
-    val chooser = Intent.createChooser(intent, activity.getString(R.string.gallery))
+    val chooser = Intent.createChooser(intent, getString(R.string.gallery))
     try {
       activity.startActivityForResult(chooser, PICK_FROM_GALLERY)
     } catch (e: ActivityNotFoundException) {
@@ -245,6 +252,8 @@ class PhotoSelectionUtil(
       Toast.makeText(activity, R.string.wrong_url, Toast.LENGTH_SHORT).show()
     }
   }
+
+  private fun getString(@StringRes res: Int) = activity.getString(res)
 
   interface UriCallback {
     fun onImageSelected(uri: Uri?, clipData: ClipData?)

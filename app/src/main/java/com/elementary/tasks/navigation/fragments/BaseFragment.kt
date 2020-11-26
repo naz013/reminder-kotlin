@@ -6,9 +6,8 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject
 
@@ -17,16 +16,14 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   var callback: FragmentCallback? = null
     private set
 
-  protected val prefs by inject<Prefs>()
+  protected val currentStateHolder by inject<CurrentStateHolder>()
+  protected val prefs = currentStateHolder.preferences
   protected val dialogues by inject<Dialogues>()
-
-  var isDark = false
-    private set
+  protected val isDark = currentStateHolder.theme.isDark
   private var mLastAlpha: Float = 0f
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    isDark = ThemeUtil.isDarkMode(context)
     if (callback == null) {
       try {
         callback = context as FragmentCallback?
