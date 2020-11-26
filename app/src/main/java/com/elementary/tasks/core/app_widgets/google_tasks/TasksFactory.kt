@@ -13,7 +13,7 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import java.text.SimpleDateFormat
@@ -82,9 +82,9 @@ class TasksFactory(
 
     val task = mData[i]
     val listColor = if (map.containsKey(task.listId)) {
-      ThemeUtil.themedColor(context, map[task.listId] ?: 0)
+      ThemeProvider.themedColor(context, map[task.listId] ?: 0)
     } else {
-      ThemeUtil.themedColor(context, 0)
+      ThemeProvider.themedColor(context, 0)
     }
 
     val icon = if (task.status == GTasks.TASKS_COMPLETE) {

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
@@ -15,7 +16,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
 class RemindersRecyclerAdapter(
-  private val prefs: Prefs,
+  private val currentStateHolder: CurrentStateHolder,
   private var showHeader: Boolean = true,
   private var isEditable: Boolean = true,
   private val refreshListener: () -> Unit
@@ -119,11 +120,11 @@ class RemindersRecyclerAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      Reminder.REMINDER -> ReminderHolder(parent, prefs, true, isEditable, true) { view, i, listActions ->
+      Reminder.REMINDER -> ReminderViewHolder(parent, currentStateHolder, true, isEditable, true) { view, i, listActions ->
         actionsListener?.onAction(view, i, find(i), listActions)
       }
-      AdsProvider.ADS_VIEW_TYPE -> ReminderAdsHolder(parent, adsProvider, prefs, refreshListener)
-      else -> ShoppingHolder(parent, prefs, isEditable, true) { view, i, listActions ->
+      AdsProvider.ADS_VIEW_TYPE -> ReminderAdsViewHolder(parent, adsProvider, currentStateHolder, refreshListener)
+      else -> ShoppingViewHolder(parent, currentStateHolder, isEditable, true) { view, i, listActions ->
         actionsListener?.onAction(view, i, find(i), listActions)
       }
     }
@@ -142,14 +143,14 @@ class RemindersRecyclerAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     val item = getItem(position)
-    if (holder is ReminderHolder) {
+    if (holder is ReminderViewHolder) {
       holder.setData(item)
       if (showHeader) {
         initLabel(holder.listHeader, position)
       } else {
         holder.listHeader.visibility = View.GONE
       }
-    } else if (holder is ShoppingHolder) {
+    } else if (holder is ShoppingViewHolder) {
       holder.setData(item)
       if (showHeader) {
         initLabel(holder.listHeader, position)

@@ -4,16 +4,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.notes.preview.ImagesSingleton
 
 class NotesRecyclerAdapter(
-  private val prefs: Prefs,
-  private val themeUtil: ThemeUtil,
+  private val currentStateHolder: CurrentStateHolder,
   private val imagesSingleton: ImagesSingleton,
   private val refreshListener: () -> Unit
 ) : ListAdapter<NoteWithImages, RecyclerView.ViewHolder>(NoteDIffCallback()) {
@@ -36,8 +34,8 @@ class NotesRecyclerAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      AdsProvider.ADS_VIEW_TYPE -> NoteAdsHolder(parent, adsProvider, prefs, refreshListener)
-      else -> NoteHolder(parent, prefs, themeUtil, imagesSingleton) { view, i, listActions ->
+      AdsProvider.ADS_VIEW_TYPE -> NoteAdsViewHolder(parent, adsProvider, currentStateHolder, refreshListener)
+      else -> NoteViewHolder(parent, currentStateHolder, imagesSingleton) { view, i, listActions ->
         if (actionsListener != null) {
           actionsListener?.onAction(view, i, getItem(i), listActions)
         }
@@ -46,7 +44,7 @@ class NotesRecyclerAdapter(
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-    if (holder is NoteHolder) {
+    if (holder is NoteViewHolder) {
       getItem(position)?.let { holder.setData(it) }
     }
   }

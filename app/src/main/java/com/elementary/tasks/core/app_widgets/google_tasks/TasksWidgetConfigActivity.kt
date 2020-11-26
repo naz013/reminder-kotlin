@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
 import org.koin.android.ext.android.get
 
@@ -53,16 +53,16 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
   private fun updateText(code: Int) {
     if (WidgetUtils.isDarkBg(code)) {
       binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
-        ContextCompat.getColor(this, R.color.pureWhite)))
-      binding.task.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-      binding.note.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-      binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+        colorOf(R.color.pureWhite)))
+      binding.task.setTextColor(colorOf(R.color.pureWhite))
+      binding.note.setTextColor(colorOf(R.color.pureWhite))
+      binding.taskDate.setTextColor(colorOf(R.color.pureWhite))
     } else {
       binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
-        ContextCompat.getColor(this, R.color.pureBlack)))
-      binding.task.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-      binding.note.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-      binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+        colorOf(R.color.pureBlack)))
+      binding.task.setTextColor(colorOf(R.color.pureBlack))
+      binding.note.setTextColor(colorOf(R.color.pureBlack))
+      binding.taskDate.setTextColor(colorOf(R.color.pureBlack))
     }
   }
 
@@ -98,9 +98,9 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
     binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
     binding.btnAddTask.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
     if (isDark) {
-      binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+      binding.widgetTitle.setTextColor(colorOf(R.color.pureWhite))
     } else {
-      binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+      binding.widgetTitle.setTextColor(colorOf(R.color.pureBlack))
     }
   }
 

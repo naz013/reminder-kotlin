@@ -13,7 +13,7 @@ import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.home.BottomNavActivity
 import hirondelle.date4j.DateTime
@@ -183,13 +183,13 @@ class CalendarMonthFactory(
         if (day == selDay && month == selMonth) {
           if (item.isHasReminders && year == selYear) {
             rv.setInt(R.id.reminderMark, "setBackgroundColor",
-              ThemeUtil.colorReminderCalendar(context, prefs))
+              ThemeProvider.colorReminderCalendar(context, prefs))
           } else {
             rv.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
           }
           if (item.isHasBirthdays) {
             rv.setInt(R.id.birthdayMark, "setBackgroundColor",
-              ThemeUtil.colorBirthdayCalendar(context, prefs))
+              ThemeProvider.colorBirthdayCalendar(context, prefs))
           } else {
             rv.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
           }
@@ -200,7 +200,7 @@ class CalendarMonthFactory(
 
     if (mDay == selDay && mMonth == selMonth && mYear == realYear && mMonth == realMonth + 1
       && mYear == selYear) {
-      rv.setInt(R.id.currentMark, "setBackgroundColor", ThemeUtil.colorCurrentCalendar(context, prefs))
+      rv.setInt(R.id.currentMark, "setBackgroundColor", ThemeProvider.colorCurrentCalendar(context, prefs))
     } else {
       rv.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
     }

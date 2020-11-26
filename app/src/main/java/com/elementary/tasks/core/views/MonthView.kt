@@ -13,12 +13,12 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IntRange
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.dp2px
 import hirondelle.date4j.DateTime
 import org.koin.core.component.KoinComponent
@@ -47,7 +47,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
   private val gradientColors: IntArray by lazy {
     intArrayOf(
       Color.TRANSPARENT,
-      ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(context), 90),
+      ThemeProvider.colorWithAlpha(ThemeProvider.getThemeSecondaryColor(context), 90),
       Color.TRANSPARENT
     )
   }
@@ -95,10 +95,10 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
   }
 
   private fun init(context: Context) {
-    val colorSecondary = ThemeUtil.getThemeSecondaryColor(context)
+    val colorSecondary = ThemeProvider.getThemeSecondaryColor(context)
 
-    this.mDefaultColor = ContextCompat.getColor(context, R.color.color_on_background)
-    this.mTodayColor = ThemeUtil.themedColor(context, prefs.todayColor)
+    this.mDefaultColor = colorOf(R.color.color_on_background)
+    this.mTodayColor = ThemeProvider.themedColor(context, prefs.todayColor)
 
     this.mNormalTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular)
     this.mBoldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold)
@@ -110,7 +110,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     this.touchPaint = Paint()
     this.touchPaint.isAntiAlias = true
     this.touchPaint.style = Paint.Style.FILL
-    this.touchPaint.color = ThemeUtil.colorWithAlpha(colorSecondary, 50)
+    this.touchPaint.color = ThemeProvider.colorWithAlpha(colorSecondary, 50)
 
     this.paint = Paint()
     this.paint.isAntiAlias = true

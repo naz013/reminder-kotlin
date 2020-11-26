@@ -6,6 +6,7 @@ import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.completables.CompletableManager
@@ -192,9 +193,9 @@ val utilModule = module {
   single { Prefs(get()) }
   single { GTasks(get(), get(), get()) }
   single { SoundStackHolder(get(), get()) }
-  single { ThemeUtil(get(), get()) }
+  single { ThemeProvider(get(), get()) }
   single { BackupTool(get(), get(), get()) }
-  single { Dialogues() }
+  single { Dialogues(get()) }
   single { Language(get()) }
   single { CalendarUtils(get(), get(), get()) }
   single { providesRecognizer(get(), get()) }
@@ -210,6 +211,7 @@ val utilModule = module {
   single { ExportAllDataWorker(get()) }
   single { ScanContactsWorker(get(), get()) }
   factory { EnableThread(get(), get()) }
+  single { CurrentStateHolder(get(), get(), get()) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

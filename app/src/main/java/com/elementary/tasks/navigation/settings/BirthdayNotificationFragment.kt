@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.CacheUtil
@@ -20,6 +19,7 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
@@ -202,10 +202,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
   }
 
-  private fun iconTintColor(): Int {
-    return if (isDark) ContextCompat.getColor(requireContext(), R.color.pureWhite)
-    else ContextCompat.getColor(requireContext(), R.color.pureBlack)
-  }
+  private fun iconTintColor() =
+    if (isDark) colorOf(R.color.pureWhite)
+    else colorOf(R.color.pureBlack)
 
   private fun showMelody() {
     val filePath = prefs.birthdayMelody

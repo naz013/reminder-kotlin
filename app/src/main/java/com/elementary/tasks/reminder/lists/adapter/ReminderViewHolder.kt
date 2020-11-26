@@ -7,17 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.arch.BaseViewHolder
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ListItemParams
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.StringResPatterns
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.dp2px
@@ -29,16 +29,16 @@ import com.elementary.tasks.core.views.TextDrawable
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import java.util.*
 
-class ReminderHolder(
+class ReminderViewHolder(
   parent: ViewGroup,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   hasHeader: Boolean,
   editable: Boolean,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : BaseHolder<ListItemReminderBinding>(
+) : BaseViewHolder<ListItemReminderBinding>(
   ListItemReminderBinding.inflate(parent.inflater(), parent, false),
-  prefs
+  currentStateHolder
 ) {
 
   val listHeader: TextView = binding.listHeader
@@ -105,8 +105,8 @@ class ReminderHolder(
     context: Context,
     text: String,
     width: Int = context.dp2px(ListItemParams.BADGE_WIDTH_DP),
-    backgroundColor: Int = ThemeUtil.getSecondaryColor(context),
-    textColor: Int = ThemeUtil.getOnSecondaryColor(context)
+    backgroundColor: Int = ThemeProvider.getSecondaryColor(context),
+    textColor: Int = ThemeProvider.getOnSecondaryColor(context)
   ): TextDrawable {
     return TextDrawable.builder()
       .beginConfig()

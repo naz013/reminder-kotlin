@@ -37,8 +37,9 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -269,7 +270,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     else binding.buttonAttachment.hide()
 
     val contactPhoto = binding.contactPhoto
-    contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
+    contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
     contactPhoto.visibility = View.GONE
 
     binding.todoList.layoutManager = LinearLayoutManager(this)
@@ -722,7 +723,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    builder.color = colorOf(R.color.secondaryBlue)
     val isWear = prefs.isWearEnabled
     if (isWear) {
       builder.setOnlyAlertOnce(true)
@@ -755,7 +756,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
-    wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
+    wearableNotificationBuilder.color = colorOf(R.color.secondaryBlue)
     wearableNotificationBuilder.setOngoing(false)
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)

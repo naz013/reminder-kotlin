@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.list.BirthdayAdsHolder
+import com.elementary.tasks.birthdays.list.BirthdayAdsViewHolder
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
@@ -29,7 +29,7 @@ import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,10 +38,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val viewModel by viewModel<HomeViewModel>()
-  private val remindersAdapter = RemindersRecyclerAdapter(prefs, showHeader = false, isEditable = true) {
+  private val remindersAdapter = RemindersRecyclerAdapter(currentStateHolder, showHeader = false, isEditable = true) {
     showReminders(viewModel.reminders.value ?: listOf())
   }
-  private val birthdaysAdapter = BirthdaysRecyclerAdapter(prefs) {
+  private val birthdaysAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
     showBirthdays(viewModel.birthdays.value ?: listOf())
   }
   private var mPosition: Int = 0
@@ -243,13 +243,13 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun showBirthdays(list: List<Birthday>) {
-    val newList = BirthdayAdsHolder.updateList(list)
+    val newList = BirthdayAdsViewHolder.updateList(list)
     birthdaysAdapter.submitList(newList)
     updateBirthdaysEmpty(newList.size)
   }
 
   private fun showReminders(list: List<Reminder>) {
-    val newList = ReminderAdsHolder.updateList(list)
+    val newList = ReminderAdsViewHolder.updateList(list)
     remindersAdapter.submitList(newList)
     updateRemindersEmpty(newList.size)
   }

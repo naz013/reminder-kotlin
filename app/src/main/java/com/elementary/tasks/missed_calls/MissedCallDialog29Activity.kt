@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
@@ -47,7 +47,7 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    binding.contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
+    binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
     binding.contactPhoto.visibility = View.GONE
     initButtons()
     initViewModel()
