@@ -24,10 +24,12 @@ class BirthdaysRecyclerAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-        AdsProvider.ADS_VIEW_TYPE -> BirthdayAdsViewHolder(parent, currentStateHolder, adsProvider, refreshListener)
-      else -> BirthdayHolder(parent, currentStateHolder) { view, i, listActions ->
-        actionsListener?.onAction(view, i, getItem(i), listActions)
-      }
+      AdsProvider.ADS_VIEW_TYPE ->
+        BirthdayAdsViewHolder(parent, currentStateHolder, adsProvider, refreshListener)
+      else ->
+        BirthdayHolder(parent, currentStateHolder) { view, i, listActions ->
+          actionsListener?.onAction(view, i, getItem(i), listActions)
+        }
     }
   }
 
