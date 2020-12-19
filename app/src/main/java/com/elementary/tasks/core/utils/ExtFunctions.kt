@@ -191,13 +191,13 @@ fun View.show() {
 }
 
 fun View.visibleGone(value: Boolean) {
-  if (value) show()
-  else hide()
+  if (value && !isVisible()) show()
+  else if (!value && !isGone()) hide()
 }
 
 fun View.visibleInvisible(value: Boolean) {
-  if (value) show()
-  else transparent()
+  if (value && !isVisible()) show()
+  else if (!value && !isNotVisible()) transparent()
 }
 
 fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
