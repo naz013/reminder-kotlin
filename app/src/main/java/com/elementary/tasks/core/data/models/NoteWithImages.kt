@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.elementary.tasks.core.interfaces.NoteInterface
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Keep

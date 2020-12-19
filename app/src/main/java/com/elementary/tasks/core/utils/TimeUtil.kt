@@ -10,15 +10,12 @@ import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds
 import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getHourOfDay
-import com.github.naz013.calendarext.getMillisecond
 import com.github.naz013.calendarext.getMinute
 import com.github.naz013.calendarext.getMonth
-import com.github.naz013.calendarext.getSecond
 import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
 import com.github.naz013.calendarext.setDate
 import com.github.naz013.calendarext.setHourOfDay
-import com.github.naz013.calendarext.setMillisecond
 import com.github.naz013.calendarext.setMinute
 import com.github.naz013.calendarext.setTime
 import com.github.naz013.calendarext.toCalendar

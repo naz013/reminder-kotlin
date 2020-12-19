@@ -11,6 +11,9 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.showError
+import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.trimmedText
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
@@ -21,9 +24,6 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
-
-  private var mItem: GoogleTaskList? = null
-  private var mIsLoading = false
 
   override fun inflateBinding() = ActivityCreateTaskListBinding.inflate(layoutInflater)
 
@@ -48,12 +48,12 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
-    outState.putBoolean(ARG_LOADING, mIsLoading)
+    outState.putBoolean(ARG_LOADING, stateViewModel.isLoading)
     super.onSaveInstanceState(outState)
   }
 
   private fun updateProgress(b: Boolean) {
-    mIsLoading = b
+    stateViewModel.isLoading = b
     if (b) {
       binding.progressView.visibility = View.VISIBLE
     } else {
@@ -71,26 +71,16 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.googleTaskList.observe(this, { googleTaskList ->
-      googleTaskList?.let { editTaskList(it) }
-    })
-    viewModel.isInProgress.observe(this, { aBoolean ->
-      aBoolean?.let { updateProgress(it) }
-    })
-    viewModel.result.observe(this, { commands ->
-      commands?.let {
-        when (it) {
-          Commands.DELETED, Commands.SAVED -> onBackPressed()
-          else -> {
-          }
-        }
-      }
-    })
+    viewModel.googleTaskList.observe(this) { editTaskList(it) }
+    viewModel.isInProgress.observe(this) { updateProgress(it) }
+    viewModel.result.observe(this) { commands ->
+      onBackPressed().takeIf { commands == Commands.DELETED || commands == Commands.SAVED }
+    }
   }
 
   private fun editTaskList(googleTaskList: GoogleTaskList) {
-    this.mItem = googleTaskList
     binding.toolbar.title = getString(R.string.edit_task_list)
+    stateViewModel.editedTaskList = googleTaskList
     if (!stateViewModel.isEdited) {
       binding.editField.setText(googleTaskList.title)
       if (googleTaskList.def == 1) {
@@ -103,28 +93,22 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   private fun saveTaskList() {
-    if (mIsLoading) return
-    val listName = binding.editField.text.toString().trim()
-    if (listName == "") {
-      binding.nameLayout.error = getString(R.string.must_be_not_empty)
-      binding.nameLayout.isErrorEnabled = true
+    val listName = binding.editField.trimmedText()
+    if (listName.isEmpty()) {
+      binding.nameLayout.showError(R.string.must_be_not_empty)
       return
     }
     var isNew = false
-    var item = mItem
-    if (item == null) {
-      item = GoogleTaskList()
-      isNew = true
+    val item = (stateViewModel.editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
+      title = listName
+      color = binding.colorSlider.selectedItem
+      updated = System.currentTimeMillis()
     }
-    item.title = listName
-    item.color = binding.colorSlider.selectedItem
-    item.updated = System.currentTimeMillis()
     if (binding.defaultCheck.isChecked) {
       item.def = 1
-      val defList = viewModel.defaultTaskList.value
-      if (defList != null) {
-        defList.def = 0
-        viewModel.saveLocalGoogleTaskList(defList)
+      viewModel.defaultTaskList.value?.also {
+        it.def = 0
+        viewModel.saveLocalGoogleTaskList(it)
       }
     }
 
@@ -142,11 +126,11 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
         true
       }
       MENU_ITEM_DELETE -> {
-        deleteDialog()
+        doIfPossible { deleteDialog() }
         true
       }
       R.id.action_add -> {
-        saveTaskList()
+        doIfPossible { saveTaskList() }
         true
       }
       else -> super.onOptionsItemSelected(item)
@@ -154,31 +138,25 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   private fun deleteDialog() {
-    if (mIsLoading) return
-    val builder = dialogues.getMaterialDialog(this)
-    builder.setMessage(getString(R.string.delete_this_list))
-    builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-      dialog.dismiss()
-      deleteList()
-      finish()
-    }
-    builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-    val dialog = builder.create()
-    dialog.show()
+    dialogues.getMaterialDialog(this)
+      .setMessage(getString(R.string.delete_this_list))
+      .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
+        dialog.dismiss()
+        deleteList()
+      }
+      .setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+      .create().show()
   }
 
   private fun deleteList() {
-    if (mIsLoading) return
-    mItem?.let { viewModel.deleteGoogleTaskList(it) }
+    stateViewModel.editedTaskList?.let { viewModel.deleteGoogleTaskList(it) }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-    mItem?.let {
-      if (it.systemDefault != 1) {
-        menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
-      }
-    }
+    stateViewModel.editedTaskList
+      ?.takeIf { !it.isAppDefault() }
+      ?.also { menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list) }
     return true
   }
 
@@ -188,8 +166,15 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   override fun onBackPressed() {
-    if (mIsLoading) return
-    super.onBackPressed()
+    doIfPossible { super.onBackPressed() }
+  }
+
+  private fun doIfPossible(f: () -> Unit) {
+    if (stateViewModel.isLoading) {
+      toast(R.string.please_wait)
+    } else {
+      f.invoke()
+    }
   }
 
   companion object {
