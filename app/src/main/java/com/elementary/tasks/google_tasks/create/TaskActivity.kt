@@ -153,7 +153,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun editTask(googleTask: GoogleTask) {
-    stateViewModel.editedItem = googleTask
+    stateViewModel.editedTask = googleTask
     stateViewModel.listId = googleTask.listId
     binding.toolbar.setTitle(R.string.edit_task)
     if (!stateViewModel.isEdited) {
@@ -266,7 +266,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun moveTask(listId: String) {
-    stateViewModel.editedItem?.also {
+    stateViewModel.editedTask?.also {
       val initListId = it.listId
       if (!listId.matches(initListId.toRegex())) {
         it.listId = listId
@@ -278,29 +278,27 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun selectList(move: Boolean) {
-    var list = viewModel.googleTaskLists.value
-    if (list == null) list = ArrayList()
-    val names = ArrayList<String>()
+    val list = viewModel.googleTaskLists.value.orEmpty()
+    if (list.isEmpty()) return
+    val names = mutableListOf<String>()
     var position = 0
-    for (i in list.indices) {
-      val item = list[i]
-      names.add(item.title)
-      if (stateViewModel.listId != "" && item.listId != "" && item.listId.matches(stateViewModel.listId.toRegex())) {
-        position = i
+    list.forEachIndexed { index, googleTaskList ->
+      names.add(googleTaskList.title)
+      if (googleTaskList.listId.isNotEmpty() && googleTaskList.listId == stateViewModel.listId) {
+        position = index
       }
     }
-    val builder = dialogues.getMaterialDialog(this)
-    builder.setTitle(R.string.choose_list)
-    val finalList = list
-    builder.setSingleChoiceItems(names.toTypedArray(), position) { dialog, which ->
-      dialog.dismiss()
-      if (move) {
-        moveTask(finalList[which].listId)
-      } else {
-        showTaskList(finalList[which])
+    dialogues.getMaterialDialog(this)
+      .setTitle(R.string.choose_list)
+      .setSingleChoiceItems(names.toTypedArray(), position) { dialog, which ->
+        dialog.dismiss()
+        if (move) {
+          moveTask(list[which].listId)
+        } else {
+          showTaskList(list[which])
+        }
       }
-    }
-    builder.create().show()
+      .create().show()
   }
 
   private fun saveTask() {
@@ -311,7 +309,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     }
     val note = binding.detailsField.trimmedText()
     val reminder = createReminder(summary).takeIf { isReminder() }
-    val item = stateViewModel.editedItem
+    val item = stateViewModel.editedTask
     if (stateViewModel.action == TasksConstants.EDIT && item != null) {
       val initListId = item.listId
       item.update(summary, note, reminder)
@@ -373,12 +371,12 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun deleteTask() {
-    doIfPossible { stateViewModel.editedItem?.let { viewModel.deleteGoogleTask(it) } }
+    doIfPossible { stateViewModel.editedTask?.let { viewModel.deleteGoogleTask(it) } }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.menu_create_task, menu)
-    stateViewModel.editedItem?.also {
+    stateViewModel.editedTask?.also {
       menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_task)
       menu.add(Menu.NONE, MENU_ITEM_MOVE, 100, R.string.move_to_another_list)
     }
@@ -431,12 +429,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   override fun onBackPressed() {
-    doIfPossible {
-      try {
-        super.onBackPressed()
-      } catch (e: Exception) {
-      }
-    }
+    doIfPossible { super.onBackPressed() }
   }
 
   private fun doIfPossible(f: () -> Unit) {

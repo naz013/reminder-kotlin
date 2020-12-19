@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.api.services.tasks.model.TaskList
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Entity
 @Parcelize
@@ -41,4 +41,7 @@ data class GoogleTaskList(
     this.selfLink = taskList.selfLink ?: ""
     this.updated = if (taskList.updated != null) taskList.updated.value else 0
   }
+
+  @Ignore
+  fun isAppDefault() = systemDefault == 1
 }
