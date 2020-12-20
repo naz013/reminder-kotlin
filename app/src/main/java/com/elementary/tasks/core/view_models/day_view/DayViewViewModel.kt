@@ -25,13 +25,11 @@ import java.util.*
 
 class DayViewViewModel(
   private val calculateFuture: Boolean,
-  private val birthTime: Long = 0,
   private val eventControlFactory: EventControlFactory,
+  dayViewProvider: DayViewProvider,
   appDb: AppDb,
   prefs: Prefs
 ) : BaseDbViewModel(appDb, prefs) {
-
-  private var liveData: DayViewLiveData
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events
@@ -40,6 +38,8 @@ class DayViewViewModel(
   val groups: List<ReminderGroup>
     get() = _groups
 
+  private val liveData = DayViewLiveData(dayViewProvider)
+
   init {
     appDb.reminderGroupDao().loadAll().observeForever {
       if (it != null) {
@@ -47,7 +47,6 @@ class DayViewViewModel(
         _groups.addAll(it)
       }
     }
-    liveData = DayViewLiveData()
   }
 
   fun findEvents(item: EventsPagerItem) {
@@ -69,13 +68,13 @@ class DayViewViewModel(
     }
   }
 
-  fun deleteBirthday(birthday: Birthday) {
+  fun deleteBirthday(id: String) {
     postInProgress(true)
     launchDefault {
-      appDb.birthdaysDao().delete(birthday)
+      appDb.birthdaysDao().delete(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
     }
   }
 
@@ -107,7 +106,9 @@ class DayViewViewModel(
     }
   }
 
-  private inner class DayViewLiveData : LiveData<Pair<EventsPagerItem, List<EventModel>>>() {
+  private inner class DayViewLiveData(
+    private val dayViewProvider: DayViewProvider
+  ) : LiveData<Pair<EventsPagerItem, List<EventModel>>>() {
 
     private val reminderData = ArrayList<EventModel>()
     private val birthdayData = ArrayList<EventModel>()
@@ -119,14 +120,14 @@ class DayViewViewModel(
     private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
     private var sort = false
 
-    private val birthdayObserver: Observer<in List<Birthday>> = Observer {
+    private val birthdayObserver: Observer<in List<Birthday>> = Observer { list ->
       Timber.d("birthdaysChanged: ")
       launchDefault {
-        if (it != null) {
-          birthdayData.clear()
-          birthdayData.addAll(DayViewProvider.loadBirthdays(birthTime, it))
-          repeatSearch()
-        }
+        birthdayData.clear()
+        birthdayData.addAll(
+          list.map { dayViewProvider.toEventModel(it) }
+        )
+        repeatSearch()
       }
     }
     private val reminderObserver: Observer<in List<Reminder>> = Observer {
@@ -134,7 +135,7 @@ class DayViewViewModel(
       launchDefault {
         if (it != null) {
           reminderData.clear()
-          reminderData.addAll(DayViewProvider.loadReminders(calculateFuture, it))
+          reminderData.addAll(dayViewProvider.loadReminders(calculateFuture, it))
           repeatSearch()
         }
       }
@@ -203,7 +204,7 @@ class DayViewViewModel(
           withUIContext { notifyObserver(eventsPagerItem, res) }
         } else {
           val sorted = try {
-            res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+            res.asSequence().sortedBy { it.getMillis() }.toList()
           } catch (e: IllegalArgumentException) {
             res
           }

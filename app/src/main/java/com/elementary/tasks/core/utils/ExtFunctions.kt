@@ -51,6 +51,18 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
+fun List<String>.append(): String {
+  val stringBuilder = StringBuilder()
+  for (string in this) {
+    stringBuilder.append(string)
+  }
+  return stringBuilder.toString()
+}
+
+fun listOfNotEmpty(vararg items: String?): List<String> = items.filterNotNull().filterNotEmpty()
+
+fun List<String?>.filterNotEmpty() = filterNotNull().filter { it.isNotEmpty() }
+
 fun String.normalizeSummary(): String {
   return if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
     substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)

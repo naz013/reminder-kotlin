@@ -1,16 +1,16 @@
 package com.elementary.tasks.home
 
-import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
+import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
@@ -21,18 +21,19 @@ import timber.log.Timber
 
 class HomeViewModel(
   appDb: AppDb,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
-  private val context: Context
-) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory), (String) -> Unit {
+  private val birthdayModelAdapter: BirthdayModelAdapter
+) : BaseRemindersViewModel(appDb, currentStateHolder.preferences, calendarUtils, eventControlFactory), (String) -> Unit {
 
+  private val context = currentStateHolder.context
   private val _reminders = mutableLiveDataOf<List<Reminder>>()
   private var liveData: LiveData<List<Reminder>>? = null
   val reminders: LiveData<List<Reminder>> = _reminders
   val birthdays = appDb.birthdaysDao().findAll(
     TimeUtil.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1)
-  )
+  ).map { list -> list.map { birthdayModelAdapter.convert(it) } }
   var topScrollX = 0
 
   init {
@@ -58,12 +59,12 @@ class HomeViewModel(
     liveData = remindersLiveData
   }
 
-  fun deleteBirthday(birthday: Birthday) {
+  fun deleteBirthday(id: String) {
     postInProgress(true)
     launchDefault {
-      appDb.birthdaysDao().delete(birthday)
+      appDb.birthdaysDao().delete(id)
       updateBirthdayPermanent()
-      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
+      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id, context)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

@@ -20,12 +20,12 @@ import java.util.*
 class MonthViewViewModel(
   private val addReminders: Boolean,
   private val calculateFuture: Boolean,
-  private val birthTime: Long = 0,
+  dayViewProvider: DayViewProvider,
   appDb: AppDb,
   prefs: Prefs
 ) : BaseDbViewModel(appDb, prefs) {
 
-  private var liveData: MonthViewLiveData = MonthViewLiveData()
+  private val liveData: MonthViewLiveData = MonthViewLiveData(dayViewProvider)
   private var _events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<MonthPagerItem, List<EventModel>>> = _events
 
@@ -36,7 +36,9 @@ class MonthViewViewModel(
     }
   }
 
-  private inner class MonthViewLiveData : LiveData<Pair<MonthPagerItem, List<EventModel>>>() {
+  private inner class MonthViewLiveData(
+    private val dayViewProvider: DayViewProvider
+  ) : LiveData<Pair<MonthPagerItem, List<EventModel>>>() {
 
     private val reminderData = ArrayList<EventModel>()
     private val birthdayData = ArrayList<EventModel>()
@@ -48,20 +50,18 @@ class MonthViewViewModel(
     private var listener: ((MonthPagerItem, List<EventModel>) -> Unit)? = null
     private var sort = false
 
-    private val birthdayObserver: Observer<in List<Birthday>> = Observer {
+    private val birthdayObserver: Observer<in List<Birthday>> = Observer { list ->
       launchDefault {
-        if (it != null) {
-          birthdayData.clear()
-          birthdayData.addAll(DayViewProvider.loadBirthdays(birthTime, it))
-          repeatSearch()
-        }
+        birthdayData.clear()
+        birthdayData.addAll(list.map { dayViewProvider.toEventModel(it) })
+        repeatSearch()
       }
     }
     private val reminderObserver: Observer<in List<Reminder>> = Observer {
       launchDefault {
         if (it != null) {
           reminderData.clear()
-          reminderData.addAll(DayViewProvider.loadReminders(calculateFuture, it))
+          reminderData.addAll(dayViewProvider.loadReminders(calculateFuture, it))
           repeatSearch()
         }
       }
@@ -132,7 +132,7 @@ class MonthViewViewModel(
           withUIContext { notifyObserver(monthPagerItem, res) }
         } else {
           val sorted = try {
-            res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+            res.asSequence().sortedBy { it.getMillis() }.toList()
           } catch (e: IllegalArgumentException) {
             res
           }

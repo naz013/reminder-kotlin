@@ -7,7 +7,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.interfaces.RecyclerInterface
-import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -40,9 +39,7 @@ data class Birthday(
   @PrimaryKey
   var uuId: String = UUID.randomUUID().toString(),
   @SerializedName("updatedAt")
-  var updatedAt: String? = null,
-  @Ignore
-  var calculatedTime: Long = 0L
+  var updatedAt: String? = null
 ) : RecyclerInterface, Parcelable {
 
   override val viewType: Int
@@ -60,10 +57,6 @@ data class Birthday(
     this.day = day
     this.month = month
     this.dayMonth = "$day|$month"
-  }
-
-  fun calculateTime(time: Long) {
-    calculatedTime = TimeUtil.getFutureBirthdayDate(time, date)?.millis ?: 0L
   }
 
   fun getDateTime(time: Long): Long {

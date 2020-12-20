@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
+import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Dialogues
@@ -30,7 +30,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
   private val mAdapter = CalendarEventsAdapter(get())
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
-    deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday) }
+    deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday.uuId) }
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
@@ -73,7 +73,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t == null) return
         val item = t.model
-        if (item is Birthday) {
+        if (item is BirthdayListItem) {
           birthdayResolver.resolveAction(view, item, actions)
         } else if (item is Reminder) {
           reminderResolver.resolveAction(view, item, actions)

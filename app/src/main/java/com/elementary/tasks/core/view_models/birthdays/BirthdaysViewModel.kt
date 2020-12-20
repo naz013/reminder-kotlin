@@ -1,6 +1,8 @@
 package com.elementary.tasks.core.view_models.birthdays
 
 import android.content.Context
+import androidx.lifecycle.map
+import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
@@ -11,10 +13,13 @@ import com.elementary.tasks.core.view_models.Commands
 class BirthdaysViewModel(
   appDb: AppDb,
   prefs: Prefs,
-  context: Context
+  context: Context,
+  private val birthdayModelAdapter: BirthdayModelAdapter
 ) : BaseBirthdaysViewModel(appDb, prefs, context) {
 
-  val birthdays = appDb.birthdaysDao().loadAll()
+  val birthdays = appDb.birthdaysDao().loadAll().map { list ->
+    list.map { birthdayModelAdapter.convert(it) }
+  }
 
   fun deleteAllBirthdays() {
     postInProgress(true)

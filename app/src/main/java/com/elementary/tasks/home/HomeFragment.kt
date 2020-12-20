@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdayAdsViewHolder
+import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.GlobalButtonObservable
@@ -64,7 +64,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   )
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
-    deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
+    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
 
   override fun inflate(
@@ -200,8 +200,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun initBirthdaysList() {
-    birthdaysAdapter.actionsListener = object : ActionsListener<Birthday> {
-      override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
+    birthdaysAdapter.actionsListener = object : ActionsListener<BirthdayListItem> {
+      override fun onAction(view: View, position: Int, t: BirthdayListItem?, actions: ListActions) {
         if (t != null) {
           birthdayResolver.resolveAction(view, t, actions)
         }
@@ -242,7 +242,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     })
   }
 
-  private fun showBirthdays(list: List<Birthday>) {
+  private fun showBirthdays(list: List<BirthdayListItem>) {
     val newList = BirthdayAdsViewHolder.updateList(list)
     birthdaysAdapter.submitList(newList)
     updateBirthdaysEmpty(newList.size)

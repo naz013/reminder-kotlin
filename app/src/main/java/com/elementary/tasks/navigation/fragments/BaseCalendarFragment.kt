@@ -12,12 +12,11 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.show
@@ -106,7 +105,6 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
-    val bTime = TimeUtil.getBirthdayTime(prefs.birthdayTime)
 
     this.job?.cancel()
     this.job = launchDefault {
@@ -126,7 +124,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
       }
       Timber.d("Search events: found -> %d", res.size)
       val sorted = try {
-        res.asSequence().sortedBy { it.getMillis(bTime) }.toList()
+        res.asSequence().sortedBy { it.getMillis() }.toList()
       } catch (e: IllegalArgumentException) {
         res
       }
@@ -140,7 +138,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t != null) {
           val model = t.model
-          if (model is Birthday) {
+          if (model is BirthdayListItem) {
             birthdayResolver.resolveAction(view, model, actions)
           } else if (model is Reminder) {
             reminderResolver.resolveAction(view, model, actions)

@@ -15,11 +15,12 @@ import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.splash.SplashScreenActivity
+import com.elementary.tasks.birthdays.list.BirthdayListItem
+import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
@@ -29,9 +30,7 @@ import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -42,6 +41,7 @@ import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.splash.SplashScreenActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
 import timber.log.Timber
@@ -49,13 +49,12 @@ import java.util.*
 
 class ConversationViewModel(
   appDb: AppDb,
-  prefs: Prefs,
+  currentStateHolder: CurrentStateHolder,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
   private val recognizer: Recognizer,
-  private val language: Language,
-  private val context: Context
-) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory) {
+  private val birthdayModelAdapter: BirthdayModelAdapter
+) : BaseRemindersViewModel(appDb, currentStateHolder.preferences, calendarUtils, eventControlFactory) {
 
   private var _shoppingLists = MutableLiveData<List<Reminder>>()
   var shoppingLists: LiveData<List<Reminder>> = _shoppingLists
@@ -69,12 +68,14 @@ class ConversationViewModel(
   private var _notes = MutableLiveData<List<NoteWithImages>>()
   var notes: LiveData<List<NoteWithImages>> = _notes
 
-  private var _birthdays = MutableLiveData<List<Birthday>>()
-  var birthdays: LiveData<List<Birthday>> = _birthdays
+  private var _birthdays = MutableLiveData<List<BirthdayListItem>>()
+  var birthdays: LiveData<List<BirthdayListItem>> = _birthdays
 
   private var _replies = MutableLiveData<List<Reply>>()
   var replies: LiveData<List<Reply>> = _replies
   private val mReplies = mutableListOf<Reply>()
+  private val context = currentStateHolder.context
+  private val language = currentStateHolder.language
   private var hasPartial = false
 
   init {
@@ -105,7 +106,7 @@ class ConversationViewModel(
         addRemindersToList(container)
         _replies.postValue(mReplies)
       }
-      is Birthday -> {
+      is BirthdayListItem -> {
         mReplies.removeAt(position)
         val reversed = ArrayList(container.list)
         reversed.reverse()
@@ -219,16 +220,15 @@ class ConversationViewModel(
     }
   }
 
-  fun getBirthdays(dateTime: Long, time: Long) {
+  fun getBirthdays(dateTime: Long) {
     postInProgress(true)
     launchDefault {
-      val list = LinkedList(appDb.birthdaysDao().all())
-      for (i in list.indices.reversed()) {
-        val itemTime = list[i].getDateTime(time)
-        if (itemTime < System.currentTimeMillis() || itemTime > dateTime) {
-          list.removeAt(i)
+      val list = appDb.birthdaysDao()
+        .all()
+        .map { birthdayModelAdapter.convert(it) }
+        .filter {
+          it.nextBirthdayDate >= System.currentTimeMillis() && it.nextBirthdayDate < dateTime
         }
-      }
       postInProgress(false)
       _birthdays.postValue(list)
     }

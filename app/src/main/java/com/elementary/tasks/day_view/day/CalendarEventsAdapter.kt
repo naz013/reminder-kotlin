@@ -3,8 +3,8 @@ package com.elementary.tasks.day_view.day
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.birthdays.list.BirthdayHolder
+import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
@@ -45,7 +45,7 @@ class CalendarEventsAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder) {
       is BirthdayHolder -> {
-        holder.setData(data[position].model as Birthday)
+        holder.setData(data[position].model as BirthdayListItem)
       }
       is ReminderViewHolder -> {
         holder.setData(data[position].model as Reminder)

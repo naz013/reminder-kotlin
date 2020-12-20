@@ -5,19 +5,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
 
 class BirthdaysRecyclerAdapter(
   private val currentStateHolder: CurrentStateHolder,
   private val refreshListener: () -> Unit
-) : ListAdapter<Birthday, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
+) : ListAdapter<BirthdayListItem, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
 
-  var actionsListener: ActionsListener<Birthday>? = null
+  var actionsListener: ActionsListener<BirthdayListItem>? = null
   private val adsProvider = AdsProvider()
 
-  override fun getItem(position: Int): Birthday? {
+  override fun getItem(position: Int): BirthdayListItem? {
     if (position < 0 || position >= itemCount) return null
     return super.getItem(position)
   }

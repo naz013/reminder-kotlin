@@ -18,8 +18,8 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
@@ -166,7 +166,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     viewModel.notes.observe(this, { list -> if (list != null) showNotes(list) })
     viewModel.activeReminders.observe(this, { list -> if (list != null) showActiveReminders(list) })
     viewModel.enabledReminders.observe(this, { list -> if (list != null) showEnabledReminders(list) })
-    viewModel.birthdays.observe(this, { birthdays -> if (birthdays != null) showBirthdays(birthdays) })
+    viewModel.birthdays.observe(this) { showBirthdays(it) }
     viewModel.replies.observe(this, {
       if (it != null) {
         mAdapter.submitList(it)
@@ -271,9 +271,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           Action.NOTES -> viewModel.getNotes()
           Action.GROUPS -> showGroups()
           Action.ACTIVE_REMINDERS -> viewModel.getEnabledReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
-          Action.BIRTHDAYS -> viewModel.getBirthdays(
-            TimeUtil.getDateTimeFromGmt(model.dateTime),
-            TimeUtil.getBirthdayTime(prefs.birthdayTime))
+          Action.BIRTHDAYS -> viewModel.getBirthdays(TimeUtil.getDateTimeFromGmt(model.dateTime))
           Action.SHOP_LISTS -> viewModel.getShoppingReminders()
           else -> showUnsupportedMessage()
         }
@@ -311,7 +309,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
-  private fun showBirthdays(birthdays: List<Birthday>?) {
+  private fun showBirthdays(birthdays: List<BirthdayListItem>?) {
     val items = Container(birthdays)
     if (items.isEmpty) {
       addResponse(getLocalized(R.string.no_birthdays_found))
