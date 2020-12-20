@@ -1,15 +1,24 @@
 package com.elementary.tasks.day_view
 
 import android.app.AlarmManager
+import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.day_view.day.EventModel
+import com.github.naz013.calendarext.getDayOfMonth
+import com.github.naz013.calendarext.getMonth
+import com.github.naz013.calendarext.getYear
+import com.github.naz013.calendarext.newCalendar
 import java.util.*
 
-object DayViewProvider {
+class DayViewProvider(
+  private val currentStateHolder: CurrentStateHolder,
+  private val birthdayModelAdapter: BirthdayModelAdapter
+) {
 
   fun loadReminders(isFuture: Boolean, reminders: List<Reminder>): List<EventModel> {
     val data = mutableListOf<EventModel>()
@@ -116,34 +125,17 @@ object DayViewProvider {
     return data
   }
 
-  fun loadBirthdays(birthTime: Long, list: List<Birthday>): List<EventModel> {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = birthTime
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute = calendar.get(Calendar.MINUTE)
-    val data = mutableListOf<EventModel>()
-    for (item in list) {
-      var date: Date? = null
-      try {
-        date = TimeUtil.BIRTH_DATE_FORMAT.parse(item.date)
-      } catch (e: Exception) {
-        e.printStackTrace()
-      }
-
-      if (date != null) {
-        val calendar1 = Calendar.getInstance()
-        calendar1.time = date
-        val bDay = calendar1.get(Calendar.DAY_OF_MONTH)
-        val bMonth = calendar1.get(Calendar.MONTH)
-        val bYear = calendar1.get(Calendar.YEAR)
-        calendar1.timeInMillis = System.currentTimeMillis()
-        calendar1.set(Calendar.MONTH, bMonth)
-        calendar1.set(Calendar.DAY_OF_MONTH, bDay)
-        calendar1.set(Calendar.HOUR_OF_DAY, hour)
-        calendar1.set(Calendar.MINUTE, minute)
-        data.add(EventModel(EventModel.BIRTHDAY, item, bDay, bMonth, bYear, calendar1.timeInMillis, 0))
-      }
-    }
-    return data
+  fun toEventModel(birthday: Birthday): EventModel {
+    val birthdayListItem = birthdayModelAdapter.convert(birthday)
+    val calendar = newCalendar(birthdayListItem.nextBirthdayDate)
+    return EventModel(
+      EventModel.BIRTHDAY,
+      birthdayListItem,
+      calendar.getDayOfMonth(),
+      calendar.getMonth(),
+      calendar.getYear(),
+      calendar.timeInMillis,
+      0
+    )
   }
 }

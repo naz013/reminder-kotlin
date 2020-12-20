@@ -37,7 +37,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   private var behaviour: BottomSheetBehavior<LinearLayout>? = null
   private val datePageChangeListener = DatePageChangeListener()
   private val mViewModel by viewModel<MonthViewViewModel> {
-    parametersOf(prefs.isRemindersInCalendarEnabled, prefs.isFutureEventEnabled, 0L)
+    parametersOf(prefs.isRemindersInCalendarEnabled, prefs.isFutureEventEnabled)
   }
   private var monthPagerItem: MonthPagerItem? = null
   private var listener: ((MonthPagerItem, List<EventModel>) -> Unit)? = null

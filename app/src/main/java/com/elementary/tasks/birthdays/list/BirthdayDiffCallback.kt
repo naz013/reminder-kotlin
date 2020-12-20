@@ -1,15 +1,11 @@
 package com.elementary.tasks.birthdays.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.elementary.tasks.core.data.models.Birthday
 
-class BirthdayDiffCallback : DiffUtil.ItemCallback<Birthday>() {
+class BirthdayDiffCallback : DiffUtil.ItemCallback<BirthdayListItem>() {
+  override fun areContentsTheSame(oldItem: BirthdayListItem, newItem: BirthdayListItem) =
+    oldItem == newItem
 
-  override fun areContentsTheSame(oldItem: Birthday, newItem: Birthday): Boolean {
-    return oldItem == newItem
-  }
-
-  override fun areItemsTheSame(oldItem: Birthday, newItem: Birthday): Boolean {
-    return oldItem.uuId == newItem.uuId
-  }
+  override fun areItemsTheSame(oldItem: BirthdayListItem, newItem: BirthdayListItem) =
+    oldItem.uuId == newItem.uuId
 }

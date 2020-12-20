@@ -14,7 +14,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.elementary.tasks.day_view.day.DayCallback
@@ -32,8 +31,8 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   private val buttonObservable by inject<GlobalButtonObservable>()
   lateinit var dayPagerAdapter: DayPagerAdapter
   private val datePageChangeListener = DatePageChangeListener()
-  private val mViewModel by viewModel<DayViewViewModel> {
-    parametersOf(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime))
+  private val dayViewViewModel by viewModel<DayViewViewModel> {
+    parametersOf(prefs.isFutureEventEnabled)
   }
   private var eventsPagerItem: EventsPagerItem? = null
   private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
@@ -81,7 +80,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   }
 
   private fun initViewModel() {
-    mViewModel.events.observe(viewLifecycleOwner, {
+    dayViewViewModel.events.observe(viewLifecycleOwner, {
       val item = eventsPagerItem
       if (it != null && item != null) {
         val foundItem = it.first
@@ -135,13 +134,13 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   }
 
   override fun getViewModel(): DayViewViewModel {
-    return mViewModel
+    return dayViewViewModel
   }
 
   override fun find(eventsPagerItem: EventsPagerItem, listener: ((EventsPagerItem, List<EventModel>) -> Unit)?) {
     this.eventsPagerItem = eventsPagerItem
     this.listener = listener
-    mViewModel.findEvents(eventsPagerItem)
+    dayViewViewModel.findEvents(eventsPagerItem)
   }
 
   private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {

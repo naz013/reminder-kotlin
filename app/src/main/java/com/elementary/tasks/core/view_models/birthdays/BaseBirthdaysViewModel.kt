@@ -19,12 +19,12 @@ abstract class BaseBirthdaysViewModel(
   protected val context: Context
 ) : BaseDbViewModel(appDb, prefs) {
 
-  fun deleteBirthday(birthday: Birthday) {
+  fun deleteBirthday(id: String) {
     postInProgress(true)
     launchDefault {
-      appDb.birthdaysDao().delete(birthday)
+      appDb.birthdaysDao().delete(id)
       updateBirthdayPermanent()
-      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
+      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id, context)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

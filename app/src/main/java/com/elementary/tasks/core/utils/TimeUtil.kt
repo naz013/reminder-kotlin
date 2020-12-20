@@ -594,7 +594,12 @@ object TimeUtil {
     return result.toString()
   }
 
-  fun getAgeFormatted(mContext: Context, yearOfBirth: Int, at: Long = System.currentTimeMillis(), lang: Int = 0): String {
+  fun getAgeFormatted(
+    mContext: Context,
+    yearOfBirth: Int,
+    at: Long = System.currentTimeMillis(),
+    lang: Int = 0
+  ): String {
     val years = getAge(yearOfBirth, at)
     val result = StringBuilder()
     val language = Language.getScreenLanguage(lang).toString().toLowerCase()

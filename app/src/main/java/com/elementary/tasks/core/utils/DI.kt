@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import com.backdoor.engine.Recognizer
+import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
@@ -66,6 +67,7 @@ import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.LoadTokensWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
+import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.google_tasks.create.GoogleTasksStateViewModel
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
@@ -126,15 +128,15 @@ val viewModelModule = module {
   viewModel { (number: String) -> MissedCallViewModel(number, get(), get()) }
   viewModel { (listId: String) -> GoogleTaskListViewModel(listId, get(), get(), get(), get()) }
   viewModel { (id: String) -> GoogleTaskViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { (calculateFuture: Boolean, birthTime: Long) ->
-    DayViewViewModel(calculateFuture, birthTime, get(), get(), get())
+  viewModel { (calculateFuture: Boolean) ->
+    DayViewViewModel(calculateFuture, get(), get(), get(), get())
   }
-  viewModel { (addReminders: Boolean, calculateFuture: Boolean, birthTime: Long) ->
-    MonthViewViewModel(addReminders, calculateFuture, birthTime, get(), get())
+  viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
+    MonthViewViewModel(addReminders, calculateFuture, get(), get(), get())
   }
-  viewModel { BirthdaysViewModel(get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get()) }
   viewModel { SmsTemplatesViewModel(get(), get()) }
-  viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { SelectApplicationViewModel() }
   viewModel { PlacesViewModel(get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get()) }
@@ -214,6 +216,8 @@ val utilModule = module {
   single { ScanContactsWorker(get(), get()) }
   factory { EnableThread(get(), get()) }
   single { CurrentStateHolder(get(), get(), get(), get()) }
+  single { BirthdayModelAdapter(get()) }
+  single { DayViewProvider(get(), get()) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

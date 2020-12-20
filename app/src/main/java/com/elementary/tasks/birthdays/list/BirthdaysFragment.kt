@@ -17,7 +17,6 @@ import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
@@ -27,12 +26,13 @@ import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
+class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
+  (List<BirthdayListItem>) -> Unit {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
-    deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
+    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
 
   private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
@@ -41,8 +41,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
 
-  private val sortModifier = SortModifier(null, null, prefs)
-  private val filterController = SearchModifier(sortModifier, this)
+  private val filterController = SearchModifier(SortModifier(), this)
 
   private val queryTextListener = object : SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean {
@@ -115,8 +114,8 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
 
-    mAdapter.actionsListener = object : ActionsListener<Birthday> {
-      override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
+    mAdapter.actionsListener = object : ActionsListener<BirthdayListItem> {
+      override fun onAction(view: View, position: Int, t: BirthdayListItem?, actions: ListActions) {
         if (t != null) {
           birthdayResolver.resolveAction(view, t, actions)
         }
@@ -134,7 +133,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     binding.emptyItem.visibleGone(count == 0)
   }
 
-  override fun invoke(result: List<Birthday>) {
+  override fun invoke(result: List<BirthdayListItem>) {
     val newList = BirthdayAdsViewHolder.updateList(result)
     mAdapter.submitList(newList)
     binding.recyclerView.smoothScrollToPosition(0)

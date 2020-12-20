@@ -262,7 +262,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun deleteItem() {
     if (viewModel.isEdited && !viewModel.isFromFile) {
-      viewModel.deleteBirthday(viewModel.editableBirthday)
+      viewModel.deleteBirthday(viewModel.editableBirthday.uuId)
     }
   }
 
