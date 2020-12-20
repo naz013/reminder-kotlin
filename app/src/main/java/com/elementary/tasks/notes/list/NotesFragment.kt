@@ -224,7 +224,6 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
-    refreshView(0)
   }
 
   private fun showMore(view: View, note: NoteWithImages) {
@@ -306,7 +305,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
   override fun invoke(result: List<NoteWithImages>) {
     val newList = NoteAdsViewHolder.updateList(result)
-    Timber.d("invoke: $newList")
+    Timber.d("invoke: ${newList.size}")
     mAdapter.submitList(newList)
     refreshView(newList.size)
   }

@@ -186,7 +186,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun initRemindersList() {
-    remindersAdapter.prefsProvider = { prefs }
     remindersAdapter.actionsListener = object : ActionsListener<Reminder> {
       override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
         if (t != null) {
