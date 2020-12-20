@@ -137,7 +137,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
   }
 
   private fun initList() {
-    remindersAdapter.prefsProvider = { prefs }
     remindersAdapter.actionsListener = object : ActionsListener<Reminder> {
       override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
         if (t != null) {

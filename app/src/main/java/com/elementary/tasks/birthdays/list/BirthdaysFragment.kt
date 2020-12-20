@@ -34,7 +34,6 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
-
   private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
@@ -101,7 +100,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
   }
 
   private fun initViewModel() {
-    viewModel.birthdays.observe(viewLifecycleOwner, { filterController.original = it })
+    viewModel.birthdays.observe(viewLifecycleOwner) { filterController.original = it }
   }
 
   override fun getTitle(): String = getString(R.string.birthdays)
@@ -126,17 +125,12 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
-    refreshView(0)
-  }
-
-  private fun refreshView(count: Int) {
-    binding.emptyItem.visibleGone(count == 0)
   }
 
   override fun invoke(result: List<BirthdayListItem>) {
     val newList = BirthdayAdsViewHolder.updateList(result)
     mAdapter.submitList(newList)
     binding.recyclerView.smoothScrollToPosition(0)
-    refreshView(newList.size)
+    binding.emptyItem.visibleGone(newList.isEmpty())
   }
 }

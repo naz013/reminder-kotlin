@@ -12,20 +12,19 @@ import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
 class RemindersRecyclerAdapter(
   private val currentStateHolder: CurrentStateHolder,
-  private var showHeader: Boolean = true,
-  private var isEditable: Boolean = true,
+  private val showHeader: Boolean = true,
+  private val isEditable: Boolean = true,
   private val refreshListener: () -> Unit
 ) : ListAdapter<Reminder, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
 
   var actionsListener: ActionsListener<Reminder>? = null
-  var prefsProvider: (() -> Prefs)? = null
   var data = listOf<Reminder>()
     private set
+  private val lang = currentStateHolder.preferences.appLanguage
   private val adsProvider = AdsProvider()
 
   init {
@@ -70,23 +69,23 @@ class RemindersRecyclerAdapter(
 
   override fun submitList(list: List<Reminder>?) {
     super.submitList(list)
-    data = list ?: listOf()
+    data = list ?: emptyList()
     notifyDataSetChanged()
   }
 
   private fun initLabel(listHeader: TextView, position: Int) {
-    val lang = prefsProvider?.invoke()?.appLanguage ?: 0
     val item = getItem(position)
     val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
     var simpleDate = TimeUtil.getSimpleDate(due, lang)
-    var prevItem: Reminder? = null
-    try {
-      prevItem = getItem(position - 1)
-      if (prevItem != null && prevItem.uuId == AdsProvider.REMINDER_BANNER_ID) {
-        prevItem = getItem(position - 2)
-      }
-    } catch (ignored: Exception) {
-      prevItem = null
+    val prevItem: Reminder? = try {
+      getItem(position - 1)
+        ?.let {
+          if (it.uuId == AdsProvider.REMINDER_BANNER_ID) {
+            getItem(position - 2)
+          } else it
+        }
+    } catch (e: Exception) {
+      null
     }
 
     val context = listHeader.context
