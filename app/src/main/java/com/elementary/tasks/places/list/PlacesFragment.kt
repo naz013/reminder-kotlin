@@ -1,16 +1,12 @@
 package com.elementary.tasks.places.list
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -20,6 +16,7 @@ import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.SearchMenuHandler
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
@@ -43,8 +40,6 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
       }
     }
   })
-  private var searchView: SearchView? = null
-  private var searchMenu: MenuItem? = null
 
   private val searchModifier = object : SearchModifier<Place>(null, {
     adapter.submitList(it)
@@ -55,22 +50,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
       return searchValue.isEmpty() || v.name.toLowerCase().contains(searchValue.toLowerCase())
     }
   }
-
-  private val queryTextListener = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String): Boolean {
-      searchModifier.setSearchValue(query)
-      if (searchMenu != null) {
-        searchMenu?.collapseActionView()
-      }
-      return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-      searchModifier.setSearchValue(newText)
-      return false
-    }
-  }
-  private val searchCloseListener = { false }
+  private val searchMenuHandler = SearchMenuHandler { searchModifier.setSearchValue(it) }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -83,18 +63,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     menu.findItem(R.id.action_delete_all)?.isVisible = false
     ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
 
-    searchMenu = menu.findItem(R.id.action_search)
-    val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-    if (searchMenu != null) {
-      searchView = searchMenu?.actionView as SearchView?
-    }
-    if (searchView != null) {
-      if (searchManager != null) {
-        searchView?.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-      }
-      searchView?.setOnQueryTextListener(queryTextListener)
-      searchView?.setOnCloseListener(searchCloseListener)
-    }
+    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
     super.onCreateOptionsMenu(menu, inflater)
   }
 

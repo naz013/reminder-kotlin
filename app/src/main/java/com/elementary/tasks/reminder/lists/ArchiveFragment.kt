@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.lists
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,12 +8,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.SearchMenuHandler
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
@@ -44,24 +42,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     showData(viewModel.events.value ?: listOf())
   }
   private val searchModifier = SearchModifier(modifier = null, callback = this)
-
-  private var mSearchView: SearchView? = null
-  private var mSearchMenu: MenuItem? = null
-
-  private val queryTextListener = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String): Boolean {
-      searchModifier.setSearchValue(query)
-      if (mSearchMenu != null) {
-        mSearchMenu?.collapseActionView()
-      }
-      return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-      searchModifier.setSearchValue(newText)
-      return false
-    }
-  }
+  private val searchMenuHandler = SearchMenuHandler { searchModifier.setSearchValue(it) }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -70,18 +51,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     inflater.inflate(R.menu.fragment_trash, menu)
-
-    mSearchMenu = menu.findItem(R.id.action_search)
-    val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-    if (mSearchMenu != null) {
-      mSearchView = mSearchMenu?.actionView as SearchView?
-    }
-    if (mSearchView != null) {
-      if (searchManager != null) {
-        mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-      }
-      mSearchView?.setOnQueryTextListener(queryTextListener)
-    }
+    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
 
     val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
     menu.getItem(0)?.isVisible = isNotEmpty

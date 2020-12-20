@@ -1,15 +1,11 @@
 package com.elementary.tasks.birthdays.list
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -19,6 +15,7 @@ import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.SearchMenuHandler
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
@@ -37,26 +34,8 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
   private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
-  private var mSearchView: SearchView? = null
-  private var mSearchMenu: MenuItem? = null
-
   private val filterController = SearchModifier(SortModifier(), this)
-
-  private val queryTextListener = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String): Boolean {
-      filterController.setSearchValue(query)
-      if (mSearchMenu != null) {
-        mSearchMenu?.collapseActionView()
-      }
-      return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-      filterController.setSearchValue(newText)
-      return false
-    }
-  }
-  private val searchCloseListener = { false }
+  private val searchMenuHandler = SearchMenuHandler { filterController.setSearchValue(it) }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -65,20 +44,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     inflater.inflate(R.menu.fragment_active_menu, menu)
-
-    mSearchMenu = menu.findItem(R.id.action_search)
-    val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-    mSearchMenu?.let { searchMenu ->
-      mSearchView = searchMenu.actionView as SearchView?
-      val activity = activity
-      mSearchView?.let { searchView ->
-        if (searchManager != null && activity != null) {
-          searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
-        }
-        searchView.setOnQueryTextListener(queryTextListener)
-        searchView.setOnCloseListener(searchCloseListener)
-      }
-    }
+    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
     super.onCreateOptionsMenu(menu, inflater)
   }
 
