@@ -6,14 +6,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
+typealias ActivityResultListener = (resultCode: Int, data: Intent?) -> Unit
 
 abstract class ThemedActivity : AppCompatActivity() {
 
@@ -24,6 +29,21 @@ abstract class ThemedActivity : AppCompatActivity() {
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 
   protected val isDarkMode = currentStateHolder.theme.isDark
+  private var resultLauncher: ActivityResultLauncher<*>? = null
+
+  protected fun launchForResult(
+    intent: Intent,
+    activityResultListener: ActivityResultListener
+  ) {
+    resultLauncher = registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) {
+      resultLauncher?.unregister()
+      activityResultListener.invoke(it.resultCode, it.data)
+    }.also {
+      it.launch(intent)
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -77,6 +97,13 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected fun intentBoolean(key: String, def: Boolean = false) = intent.getBooleanExtra(key, def)
 
   open fun requireLogin() = false
+
+  protected fun checkPermission(requestCode: Int, vararg permissions: String) =
+    Permissions.checkPermission(
+      this,
+      requestCode,
+      *permissions
+    )
 
   companion object {
     const val ARG_LOGIN_FLAG = "arg_login_flag"

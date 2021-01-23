@@ -146,8 +146,9 @@
             android:name="item_id"
             app:argType="string" />
         <argument
-            android:name="arg_logged"
-            app:argType="boolean" />
+            android:name="arg_login_flag"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </activity>
     <activity
         android:id="@+id/addBirthdayActivity"
