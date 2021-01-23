@@ -15,7 +15,6 @@ class ReminderStateViewModel : ViewModel(), LifecycleObserver {
   var group: ReminderGroup? = null
 
   var isShopItemsEdited: Boolean = false
-  var isLogged: Boolean = false
   var isEdited: Boolean = false
   var isExpanded: Boolean = false
   var isLink: Boolean = false

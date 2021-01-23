@@ -216,7 +216,12 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun openGoogleTaskList(googleTaskList: GoogleTaskList) {
-    safeNavigation(GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(googleTaskList.listId, googleTaskList))
+    safeNavigation(
+      GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(
+        googleTaskList.listId,
+        googleTaskList
+      )
+    )
   }
 
   private fun editTask(googleTask: GoogleTask) {

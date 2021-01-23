@@ -8,7 +8,7 @@ import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.navigation.NavDeepLinkBuilder
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -35,10 +35,13 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
   private val noteViewModel by viewModel<NoteViewModel> { parametersOf("") }
   private val mNoteView: QuickNoteCoordinator by lazy {
     binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }
-    val noteView = QuickNoteCoordinator(this, binding.quickNoteContainer, binding.quickNoteView,
-      noteViewModel, prefs)
-    noteView.hideNoteView()
-    noteView
+    QuickNoteCoordinator(
+      this,
+      binding.quickNoteContainer,
+      binding.quickNoteView,
+      noteViewModel,
+      prefs
+    ).also { it.hideNoteView() }
   }
   private var mFragment: BaseFragment<*>? = null
 
@@ -48,7 +51,12 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     super.onCreate(savedInstanceState)
     setSupportActionBar(binding.toolbar)
     Timber.d("onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}")
-    binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
+
+    val navHostFragment =
+      supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
+    val navController = navHostFragment.navController
+    binding.toolbar.setupWithNavController(navController)
+
     if (intent.action == Intent.ACTION_VIEW) {
       when (intent.getIntExtra(ARG_DEST, Dest.DAY_VIEW)) {
         Dest.DAY_VIEW -> {

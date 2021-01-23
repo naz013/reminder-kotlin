@@ -110,5 +110,8 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
       activity.startActivityForResult(Intent(activity, PinLoginActivity::class.java)
         .putExtra(ARG_BACK, true), code)
     }
+
+    fun verifyIntent(activity: Activity) =
+      Intent(activity, PinLoginActivity::class.java).putExtra(ARG_BACK, true)
   }
 }

@@ -38,7 +38,6 @@ import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
 import com.elementary.tasks.reminder.create.fragments.DateFragment
 import com.elementary.tasks.reminder.create.fragments.EmailFragment
@@ -99,6 +98,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun inflateBinding() = ActivityCreateReminderBinding.inflate(layoutInflater)
 
+  override fun requireLogin() = true
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     hasLocation = Module.hasLocation(this)
@@ -110,21 +111,18 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
     if (savedInstanceState == null) {
       stateViewModel.reminder.priority = prefs.defaultPriority
-      stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
     }
 
     loadReminder()
   }
 
-  override fun onStart() {
-    super.onStart()
-    if (prefs.hasPinCode && !stateViewModel.isLogged) {
-      PinLoginActivity.verify(this)
-    }
-  }
-
   private fun hasGpsPermission(code: Int): Boolean {
-    if (!Permissions.checkPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+    if (!Permissions.checkPermission(
+        this,
+        code,
+        Permissions.ACCESS_COARSE_LOCATION,
+        Permissions.ACCESS_FINE_LOCATION
+      )) {
       return false
     }
     return true
@@ -180,7 +178,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     })
   }
 
-  private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun loadReminder() {
     val id = getId()
@@ -219,7 +217,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun readFromIntent() {
-    if (Permissions.checkPermission(this, SD_PERM, Permissions.READ_EXTERNAL)) {
+    if (checkPermission(SD_PERM, Permissions.READ_EXTERNAL)) {
       intent.data?.let {
         try {
           var fromFile = false
@@ -382,13 +380,17 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun selectMelody() {
-    if (Permissions.checkPermission(this, 330, Permissions.READ_EXTERNAL)) {
+    if (checkPermission(330, Permissions.READ_EXTERNAL)) {
       cacheUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
     }
   }
 
   override fun attachFile() {
-    if (Permissions.checkPermission(this, 331, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+    if (checkPermission(
+        331,
+        Permissions.READ_EXTERNAL,
+        Permissions.WRITE_EXTERNAL
+      )) {
       selectAnyFile()
     }
   }
@@ -470,13 +472,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE) {
-      if (resultCode != Activity.RESULT_OK) {
-        finish()
-      } else {
-        stateViewModel.isLogged = true
-      }
-    } else if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+    if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
       val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
       if (matches != null) {
         val model = conversationViewModel.findResults(matches)
@@ -658,14 +654,12 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     private const val FILE_REQUEST = 323
     private const val SD_PERM = 555
 
-    private const val ARG_LOGGED = "arg_logged"
-
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {
         context.startActivity(Intent(context, CreateReminderActivity::class.java)
-          .putExtra(ARG_LOGGED, true))
+          .putExtra(ARG_LOGIN_FLAG, true))
       } else {
-        intent.putExtra(ARG_LOGGED, true)
+        intent.putExtra(ARG_LOGIN_FLAG, true)
         context.startActivity(intent)
       }
     }
