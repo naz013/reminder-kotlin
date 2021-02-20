@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.utils.TimeUtil.toGmt
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -39,6 +40,9 @@ import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
 import com.elementary.tasks.core.views.WindowTypeView
+import com.github.naz013.calendarext.newCalendar
+import com.github.naz013.calendarext.setHourOfDay
+import com.github.naz013.calendarext.setMinute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -168,21 +172,10 @@ fun Date?.toHm(): TimeUtil.HM {
   return TimeUtil.HM(hour, minute)
 }
 
-fun TimeUtil.HM.toDate(): Date {
-  val calendar = Calendar.getInstance()
-  calendar.timeInMillis = System.currentTimeMillis()
-  calendar.set(Calendar.HOUR_OF_DAY, hour)
-  calendar.set(Calendar.MINUTE, minute)
-  return calendar.time
-}
-
-fun TimeUtil.HM.toMillis(): Long {
-  val calendar = Calendar.getInstance()
-  calendar.timeInMillis = System.currentTimeMillis()
-  calendar.set(Calendar.HOUR_OF_DAY, hour)
-  calendar.set(Calendar.MINUTE, minute)
-  return calendar.timeInMillis
-}
+fun TimeUtil.HM.toDate(): Date = newCalendar()
+  .setHourOfDay(hour)
+  .setMinute(minute)
+  .time
 
 fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
@@ -238,11 +231,9 @@ fun EditText.onChanged(function: (String) -> Unit) {
   })
 }
 
-fun Long.toCalendar(): Calendar {
-  val calendar = Calendar.getInstance()
-  calendar.timeInMillis = this
-  return calendar
-}
+fun Long.toGmt() = toCalendar().toGmt()
+
+fun Long.toCalendar() = newCalendar(this)
 
 fun Long.daysAfter(): Int {
   val days = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_DAY

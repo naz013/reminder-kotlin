@@ -35,6 +35,7 @@ import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.toGmt
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
@@ -73,7 +74,7 @@ class ConversationViewModel(
 
   private var _replies = MutableLiveData<List<Reply>>()
   var replies: LiveData<List<Reply>> = _replies
-  private val mReplies = mutableListOf<Reply>()
+  private val repliesList = mutableListOf<Reply>()
   private val context = currentStateHolder.context
   private val language = currentStateHolder.language
   private var hasPartial = false
@@ -83,37 +84,37 @@ class ConversationViewModel(
   }
 
   fun addMoreItemsToList(position: Int) {
-    val reply = mReplies[position]
+    val reply = repliesList[position]
     val container = reply.content as Container<*>
     Timber.d("addMoreItemsToList: $container")
     when (container.type) {
       is ReminderGroup -> {
-        mReplies.removeAt(position)
+        repliesList.removeAt(position)
         for (item in container.list) {
-          mReplies.add(0, Reply(Reply.GROUP, item))
+          repliesList.add(0, Reply(Reply.GROUP, item))
         }
-        _replies.postValue(mReplies)
+        _replies.postValue(repliesList)
       }
       is NoteWithImages -> {
-        mReplies.removeAt(position)
+        repliesList.removeAt(position)
         for (item in container.list) {
-          mReplies.add(0, Reply(Reply.NOTE, item))
+          repliesList.add(0, Reply(Reply.NOTE, item))
         }
-        _replies.postValue(mReplies)
+        _replies.postValue(repliesList)
       }
       is Reminder -> {
-        mReplies.removeAt(position)
+        repliesList.removeAt(position)
         addRemindersToList(container)
-        _replies.postValue(mReplies)
+        _replies.postValue(repliesList)
       }
       is BirthdayListItem -> {
-        mReplies.removeAt(position)
+        repliesList.removeAt(position)
         val reversed = ArrayList(container.list)
         reversed.reverse()
         for (item in reversed) {
-          mReplies.add(0, Reply(Reply.BIRTHDAY, item))
+          repliesList.add(0, Reply(Reply.BIRTHDAY, item))
         }
-        _replies.postValue(mReplies)
+        _replies.postValue(repliesList)
       }
     }
   }
@@ -122,28 +123,28 @@ class ConversationViewModel(
     val reversed = ArrayList((container as Container<Reminder>).list).reversed()
     for (item in reversed) {
       if (item.viewType == Reminder.REMINDER) {
-        mReplies.add(0, Reply(Reply.REMINDER, item))
+        repliesList.add(0, Reply(Reply.REMINDER, item))
       } else {
-        mReplies.add(0, Reply(Reply.SHOPPING, item))
+        repliesList.add(0, Reply(Reply.SHOPPING, item))
       }
     }
   }
 
   fun removeFirst() {
-    if (mReplies[0].viewType == Reply.ASK) {
-      mReplies.removeAt(0)
-      _replies.postValue(mReplies)
+    if (repliesList[0].viewType == Reply.ASK) {
+      repliesList.removeAt(0)
+      _replies.postValue(repliesList)
     } else {
       removeAsk()
     }
   }
 
   fun removeAsk() {
-    for (i in 1 until mReplies.size) {
-      val reply = mReplies[i]
+    for (i in 1 until repliesList.size) {
+      val reply = repliesList[i]
       if (reply.viewType == Reply.ASK) {
-        mReplies.removeAt(i)
-        _replies.postValue(mReplies)
+        repliesList.removeAt(i)
+        _replies.postValue(repliesList)
         break
       }
     }
@@ -151,8 +152,8 @@ class ConversationViewModel(
 
   fun removePartial() {
     if (hasPartial) {
-      mReplies.removeAt(0)
-      _replies.postValue(mReplies)
+      repliesList.removeAt(0)
+      _replies.postValue(repliesList)
     }
     hasPartial = false
   }
@@ -161,16 +162,16 @@ class ConversationViewModel(
     if (reply != null) {
       if (!isPartial) {
         hasPartial = false
-        mReplies.add(0, reply)
-        _replies.postValue(mReplies)
+        repliesList.add(0, reply)
+        _replies.postValue(repliesList)
       } else {
         if (hasPartial) {
-          mReplies[0].content = reply.content
-          _replies.postValue(mReplies)
+          repliesList[0].content = reply.content
+          _replies.postValue(repliesList)
         } else {
           hasPartial = true
-          mReplies.add(0, reply)
-          _replies.postValue(mReplies)
+          repliesList.add(0, reply)
+          _replies.postValue(repliesList)
         }
       }
     }
@@ -188,8 +189,11 @@ class ConversationViewModel(
   fun getShoppingReminders() {
     postInProgress(true)
     launchDefault {
-      val list = LinkedList(appDb.reminderDao().getAllTypes(true, removed = false,
-        types = intArrayOf(Reminder.BY_DATE_SHOP)))
+      val list = appDb.reminderDao().getAllTypes(
+        true,
+        removed = false,
+        types = intArrayOf(Reminder.BY_DATE_SHOP)
+      )
       postInProgress(false)
       _shoppingLists.postValue(list)
     }
@@ -197,12 +201,14 @@ class ConversationViewModel(
 
   fun getEnabledReminders(dateTime: Long) {
     postInProgress(true)
+    Timber.d("getEnabledReminders: ${dateTime.toGmt()}")
     launchDefault {
-      val list = LinkedList(appDb.reminderDao().getAllTypesInRange(
+      val list = appDb.reminderDao().getAllTypesInRange(
         active = true,
         removed = false,
         fromTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
-        toTime = TimeUtil.getGmtFromDateTime(dateTime)))
+        toTime = TimeUtil.getGmtFromDateTime(dateTime)
+      )
       postInProgress(false)
       _enabledReminders.postValue(list)
     }
@@ -211,10 +217,11 @@ class ConversationViewModel(
   fun getReminders(dateTime: Long) {
     postInProgress(true)
     launchDefault {
-      val list = LinkedList(appDb.reminderDao().getActiveInRange(
+      val list = appDb.reminderDao().getActiveInRange(
         false,
         TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
-        TimeUtil.getGmtFromDateTime(dateTime)))
+        TimeUtil.getGmtFromDateTime(dateTime)
+      )
       postInProgress(false)
       _activeReminders.postValue(list)
     }
@@ -328,7 +335,10 @@ class ConversationViewModel(
   fun emptyTrash(showToast: Boolean) {
     postInProgress(true)
     launchDefault {
-      val archived = appDb.reminderDao().getAll(active = false, removed = true)
+      val archived = appDb.reminderDao().getAll(
+        active = false,
+        removed = true
+      )
       for (reminder in archived) {
         deleteReminder(reminder, false)
         calendarUtils.deleteEvents(reminder.uuId)
@@ -438,7 +448,10 @@ class ConversationViewModel(
   }
 
   fun createGroup(model: Model): ReminderGroup {
-    return ReminderGroup(groupTitle = model.summary, groupColor = Random().nextInt(16))
+    return ReminderGroup(
+      groupTitle = model.summary,
+      groupColor = Random().nextInt(16)
+    )
   }
 
   fun saveGroup(model: ReminderGroup, showToast: Boolean) {
@@ -452,8 +465,8 @@ class ConversationViewModel(
 
   fun clearConversation() {
     recognizer.updateLocale(language.getVoiceLanguage(prefs.voiceLocale))
-    mReplies.clear()
-    _replies.postValue(mReplies)
+    repliesList.clear()
+    _replies.postValue(repliesList)
   }
 
   inner class ContactHelper : ContactsInterface {
