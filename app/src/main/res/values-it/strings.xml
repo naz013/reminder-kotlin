@@ -3,7 +3,7 @@
     <string name="app_name">"Promemoria"</string>
     <string name="app_name_pro">"Promemoria PRO"</string>
     <string name="action_settings">"Impostazioni"</string>
-    <string name="copyright">2020© Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Non posso accedere ai servizi di localizzazione!"</string>
     <string name="normal">"Normale"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">Inserisci il tuo PIN?</string>
     <string name="select_ringtone_for_notifications">Seleziona suoneria per le notifiche</string>
     <string name="try_again">Riprova</string>
+    <string name="allow">ermettere</string>
+    <string name="prompt_info_subtitle">Autenticazione biometrica</string>
+    <string name="prompt_info_description">Procedi con l\'autenticazione biometrica</string>
+    <string name="title_feature_birthdays">Compleanni</string>
+    <string name="bg_location_message">Per consentire all\'applicazione di notificarti quando sarai vicino alla posizione selezionata, devi consentire la posizione in background.</string>
 
 </resources>

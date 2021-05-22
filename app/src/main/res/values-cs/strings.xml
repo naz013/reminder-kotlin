@@ -3,7 +3,7 @@
     <string name="app_name">"Připomínka"</string>
     <string name="app_name_pro">"Připomenutí PRO"</string>
     <string name="action_settings">"Nastavení"</string>
-    <string name="copyright">2020 Nazar Sukhovych</string>
+    <string name="copyright">2021 Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Nemohu získat přístup k umístění služeb!"</string>
     <string name="normal">"Normální"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">Zadejte svůj PIN?</string>
     <string name="select_ringtone_for_notifications">Vyberte vyzváněcí tón pro upozornění</string>
     <string name="try_again">Zkus to znovu</string>
+    <string name="allow">Dovolit</string>
+    <string name="prompt_info_subtitle">Biometrické ověřování</string>
+    <string name="prompt_info_description">Pokračujte v biometrickém ověřování</string>
+    <string name="title_feature_birthdays">Narozeniny</string>
+    <string name="bg_location_message">Chcete-li, aby vás aplikace upozornila, když budete poblíž vybraného místa, musíte povolit umístění na pozadí.</string>
 
 </resources>

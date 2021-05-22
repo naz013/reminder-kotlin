@@ -55,7 +55,8 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     if (!Permissions.ensureForeground(requireActivity(), REQ_FOREGROUND)) {
       return null
     }
-    if (!Permissions.ensureBackgroundLocation(requireActivity(), REQ_BG_LOCATION)) {
+    if (!Permissions.isBgLocationAllowed(requireActivity())) {
+      showBgLocationPopup()
       return null
     }
     val reminder = super.prepare() ?: return null
@@ -106,6 +107,20 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
       reminder.startTime = ""
     }
     return reminder
+  }
+
+  private fun showBgLocationPopup() {
+    dialogues.getMaterialDialog(requireContext())
+      .setMessage(R.string.bg_location_message)
+      .setPositiveButton(R.string.allow) { dialog, _ ->
+        dialog.dismiss()
+        Permissions.ensureBackgroundLocation(requireActivity(), LocationFragment.REQ_BG_LOCATION)
+      }
+      .setNegativeButton(R.string.do_not_allow) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .create()
+      .show()
   }
 
   override fun inflate(

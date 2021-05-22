@@ -3,7 +3,7 @@
     <string name="app_name">"Recordatorio"</string>
     <string name="app_name_pro">"Recordatorio PRO"</string>
     <string name="action_settings">"Ajustes"</string>
-    <string name="copyright">2020 © Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"No puedo conseguir el acceso a los servicios de localización!"</string>
     <string name="normal">"Normal"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">¿Introduce tu PIN?</string>
     <string name="select_ringtone_for_notifications">Seleccionar tono de llamada para notificaciones</string>
     <string name="try_again">Inténtalo de nuevo</string>
+    <string name="allow">Permitir</string>
+    <string name="prompt_info_subtitle">Autenticación biométrica</string>
+    <string name="prompt_info_description">Continuar con la autenticación biométrica</string>
+    <string name="title_feature_birthdays">Cumpleaños</string>
+    <string name="bg_location_message">Para permitir que la aplicación le notifique cuando estará cerca de la ubicación seleccionada, debe permitir la ubicación en segundo plano.</string>
 
 </resources>

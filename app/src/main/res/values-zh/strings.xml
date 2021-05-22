@@ -3,7 +3,7 @@
     <string name="app_name">"提醒"</string>
     <string name="app_name_pro">"提醒专业版"</string>
     <string name="action_settings">"设置"</string>
-    <string name="copyright">2020 © Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">无法访问位置服务！</string>
     <string name="normal">正常</string>
@@ -663,5 +663,10 @@
     <string name="enter_your_pin">输入您的PIN码？</string>
     <string name="select_ringtone_for_notifications">选择通知铃声</string>
     <string name="try_again">再试一次</string>
+    <string name="allow">允许</string>
+    <string name="prompt_info_subtitle">生物特征认证</string>
+    <string name="prompt_info_description">进行生物特征认证</string>
+    <string name="title_feature_birthdays">生日</string>
+    <string name="bg_location_message">为了让应用程序在您靠近所选位置时通知您，您需要允许背景位置。</string>
 
 </resources>

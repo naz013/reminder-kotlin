@@ -3,7 +3,7 @@
     <string name="app_name">"Anımsatıcı"</string>
     <string name="app_name_pro">"Anımsatıcı PRO"</string>
     <string name="action_settings">"Ayarlar"</string>
-    <string name="copyright">2020 © Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Konumu hizmetlerine erişim alınamıyor!"</string>
     <string name="normal">"Normal"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">PIN\'inizi girin</string>
     <string name="select_ringtone_for_notifications">Bildirimler için zil sesi seçin</string>
     <string name="try_again">Tekrar deneyin</string>
+    <string name="allow">İzin vermek</string>
+    <string name="prompt_info_subtitle">Biyometrik kimlik doğrulama</string>
+    <string name="prompt_info_description">Biyometrik kimlik doğrulama ile devam edin</string>
+    <string name="title_feature_birthdays">Doğum günleri</string>
+    <string name="bg_location_message">Seçilen konuma yaklaştığınızda uygulamanın sizi bilgilendirmesine izin vermek için arka planda konuma izin vermeniz gerekir.</string>
 
 </resources>

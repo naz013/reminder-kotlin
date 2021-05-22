@@ -3,7 +3,7 @@
     <string name="app_name">"조언"</string>
     <string name="app_name_pro">"조언 PRO"</string>
     <string name="action_settings">"설정"</string>
-    <string name="copyright">"2020 © Nazar Sukhovych"</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"위치 서비스에 액세스 할 수 없습니다."</string>
     <string name="normal">"표준"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">PIN을 입력 하시겠습니까?</string>
     <string name="select_ringtone_for_notifications">알림 벨소리 선택</string>
     <string name="try_again">다시 시도하십시오</string>
+    <string name="allow">허용하다</string>
+    <string name="prompt_info_subtitle">생체 인증</string>
+    <string name="prompt_info_description">생체 인증 진행</string>
+    <string name="title_feature_birthdays">생일</string>
+    <string name="bg_location_message">선택한 위치 근처에있을 때 애플리케이션이 알림을 받도록하려면 백그라운드 위치를 허용해야합니다.</string>
 
 </resources>
