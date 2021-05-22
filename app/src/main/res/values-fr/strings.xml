@@ -3,7 +3,7 @@
     <string name="app_name">"Rappel"</string>
     <string name="app_name_pro">"Rappel PRO"</string>
     <string name="action_settings">"Paramètres"</string>
-    <string name="copyright">2020© Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Je ne peux pas avoir accès aux services de localisation!"</string>
     <string name="normal">"Ordinaire"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">Entrez votre code PIN?</string>
     <string name="select_ringtone_for_notifications">Sélectionner une sonnerie pour les notifications</string>
     <string name="try_again">Réessayer</string>
+    <string name="allow">Permettre</string>
+    <string name="prompt_info_subtitle">Authentification biométrique</string>
+    <string name="prompt_info_description">Procéder à l\'authentification biométrique</string>
+    <string name="title_feature_birthdays">Anniversaires</string>
+    <string name="bg_location_message">Pour permettre à l\'application de vous avertir lorsque vous serez à proximité de l\'emplacement sélectionné, vous devez autoriser l\'emplacement en arrière-plan.</string>
 
 </resources>

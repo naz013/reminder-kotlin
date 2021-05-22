@@ -3,7 +3,7 @@
     <string name="app_name">"अनुस्मारक"</string>
     <string name="app_name_pro">"अनुस्मारक प्रो"</string>
     <string name="action_settings">"सेटिंग"</string>
-    <string name="copyright">2020© नजर Suhovich</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"मैं स्थान सेवाओं के लिए उपयोग नहीं कर सकते!"</string>
     <string name="normal">"साधारण"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">अपना पिन दर्ज करो?</string>
     <string name="select_ringtone_for_notifications">सूचनाओं के लिए रिंगटोन चुनें</string>
     <string name="try_again">पुनः प्रयास करें</string>
+    <string name="allow">अनुमति</string>
+    <string name="prompt_info_subtitle">बायोमेट्रिक प्रमाणीकरण</string>
+    <string name="prompt_info_description">बायोमेट्रिक प्रमाणीकरण के साथ आगे बढ़ें</string>
+    <string name="title_feature_birthdays">जनमदि की</string>
+    <string name="bg_location_message">जब आप चयनित स्थान के पास होंगे तो एप्लिकेशन को आपको सूचित करने के लिए, आपको पृष्ठभूमि स्थान की अनुमति देनी होगी।</string>
 
 </resources>

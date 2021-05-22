@@ -3,7 +3,7 @@
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Setări"</string>
-    <string name="copyright">2020 © Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Eu nu pot avea acces la serviciile de localizare!"</string>
     <string name="normal">"Normal"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">Introduceți codul PIN?</string>
     <string name="select_ringtone_for_notifications">Selectați ton de apel pentru notificări</string>
     <string name="try_again">Încearcă din nou</string>
+    <string name="allow">Permite</string>
+    <string name="prompt_info_subtitle">Autentificare biometrică</string>
+    <string name="prompt_info_description">Procedați cu autentificarea biometrică</string>
+    <string name="title_feature_birthdays">Zile de nastere</string>
+    <string name="bg_location_message">Pentru a permite aplicației să vă anunțe când veți fi aproape de locația selectată, trebuie să permiteți locația în fundal.</string>
 
 </resources>

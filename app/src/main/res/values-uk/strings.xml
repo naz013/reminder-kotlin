@@ -3,7 +3,7 @@
     <string name="app_name">"Нагадування"</string>
     <string name="app_name_pro">"Нагадування PRO"</string>
     <string name="action_settings">"Налаштування"</string>
-    <string name="copyright">2020 © Назар Сухович</string>
+    <string name="copyright">2021 © Назар Сухович</string>
 
     <string name="cant_access_location_services">"Я не можу отримати доступ до послуг розташування!"</string>
     <string name="normal">"Звичайна"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">Введіть свій PIN-код?</string>
     <string name="select_ringtone_for_notifications">Виберіть мелодію дзвінка для сповіщень</string>
     <string name="try_again">Спробуйте ще раз</string>
+    <string name="allow">Дозволити</string>
+    <string name="prompt_info_subtitle">Біометрична аутентифікація</string>
+    <string name="prompt_info_description">Продовжити за допомогою біометричної автентифікації</string>
+    <string name="title_feature_birthdays">Дні народження</string>
+    <string name="bg_location_message">Щоб програма могла повідомити вас, коли ви знаходитесь поблизу вибраного місця, вам потрібно дозволити фонове розташування.</string>
 
 </resources>

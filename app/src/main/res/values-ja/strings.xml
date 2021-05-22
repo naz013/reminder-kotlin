@@ -3,7 +3,7 @@
     <string name="app_name">"リマインダー"</string>
     <string name="app_name_pro">"リマインダーPRO"</string>
     <string name="action_settings">"設定"</string>
-    <string name="copyright">2020 © Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"私は、ロケーションサービスへのアクセスを得ることができません！"</string>
     <string name="normal">"ノーマル"</string>
@@ -665,5 +665,10 @@
     <string name="enter_your_pin">PINを入力しますか？</string>
     <string name="select_ringtone_for_notifications">通知用の着信音を選択</string>
     <string name="try_again">再試行する</string>
+    <string name="allow">許可する</string>
+    <string name="prompt_info_subtitle">生体認証</string>
+    <string name="prompt_info_description">生体認証を続行します</string>
+    <string name="title_feature_birthdays">誕生日</string>
+    <string name="bg_location_message">選択した場所の近くにいるときにアプリケーションに通知させるには、バックグラウンドの場所を許可する必要があります。</string>
 
 </resources>

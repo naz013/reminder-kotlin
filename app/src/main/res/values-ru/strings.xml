@@ -3,7 +3,7 @@
     <string name="app_name">"Напоминания"</string>
     <string name="app_name_pro">"Напоминания ПРО"</string>
     <string name="action_settings">"Настройки"</string>
-    <string name="copyright">2020 © Nazar Sukhovych</string>
+    <string name="copyright">2021 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Я не могу получить доступ к услугам местоположения!"</string>
     <string name="normal">"Нормальная"</string>
@@ -664,5 +664,10 @@
     <string name="enter_your_pin">Введите свой PIN-код?</string>
     <string name="select_ringtone_for_notifications">Выберите мелодию для уведомлений</string>
     <string name="try_again">Попробуйте еще раз</string>
+    <string name="allow">Разрешить</string>
+    <string name="prompt_info_subtitle">Биометрическая аутентификация</string>
+    <string name="prompt_info_description">Выполните биометрическую аутентификацию</string>
+    <string name="title_feature_birthdays">Дни рождения</string>
+    <string name="bg_location_message">Чтобы приложение уведомляло вас, когда вы будете рядом с выбранным местом, вам необходимо разрешить фоновое определение местоположения.</string>
 
 </resources>
