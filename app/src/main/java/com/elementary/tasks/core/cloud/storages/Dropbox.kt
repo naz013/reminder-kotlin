@@ -16,8 +16,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -195,14 +194,11 @@ class Dropbox(
     tokenDataFile.parse(inputStream)
     withUIContext {
       if (prefs.multiDeviceModeEnabled) {
-        FirebaseInstanceId.getInstance().instanceId
-          .addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-              return@OnCompleteListener
-            }
-            val token = task.result?.token
-            updateToken(token)
-          })
+        FirebaseInstallations.getInstance().getToken(true)
+          .addOnCompleteListener { task ->
+            updateToken(task.result.token)
+              .takeIf { task.isSuccessful }
+          }
       }
     }
   }
@@ -210,13 +206,15 @@ class Dropbox(
   private fun saveTokenFile() {
     launchDefault {
       val json = tokenDataFile.toJson() ?: return@launchDefault
-      backup(json, Metadata(
-        "",
-        TokenDataFile.FILE_NAME,
-        FileConfig.FILE_NAME_JSON,
-        TimeUtil.gmtDateTime,
-        "Token file"
-      ))
+      backup(
+        json, Metadata(
+          "",
+          TokenDataFile.FILE_NAME,
+          FileConfig.FILE_NAME_JSON,
+          TimeUtil.gmtDateTime,
+          "Token file"
+        )
+      )
     }
   }
 
@@ -228,13 +226,15 @@ class Dropbox(
   private fun saveIndexFile() {
     launchDefault {
       val json = indexDataFile.toJson() ?: return@launchDefault
-      backup(json, Metadata(
-        "",
-        IndexDataFile.FILE_NAME,
-        FileConfig.FILE_NAME_JSON,
-        TimeUtil.gmtDateTime,
-        "Index file"
-      ))
+      backup(
+        json, Metadata(
+          "",
+          IndexDataFile.FILE_NAME,
+          FileConfig.FILE_NAME_JSON,
+          TimeUtil.gmtDateTime,
+          "Index file"
+        )
+      )
     }
   }
 
