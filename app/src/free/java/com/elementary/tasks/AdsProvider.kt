@@ -12,15 +12,16 @@ import androidx.annotation.LayoutRes
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.formats.NativeAdOptions
-import com.google.android.gms.ads.formats.UnifiedNativeAd
-import com.google.android.gms.ads.formats.UnifiedNativeAdView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.google.android.gms.ads.nativead.NativeAdView
 import timber.log.Timber
 
 class AdsProvider {
 
-  private var unifiedNativeAd: UnifiedNativeAd? = null
+  private var nativeAdd: NativeAd? = null
 
   init {
     wasError = false
@@ -33,33 +34,36 @@ class AdsProvider {
     failListener: (() -> Unit)? = null
   ) {
     val adLoader = AdLoader.Builder(viewGroup.context, bannerId)
-      .forUnifiedNativeAd { ad: UnifiedNativeAd ->
-        unifiedNativeAd?.destroy()
-        unifiedNativeAd = ad
-        val adView = LayoutInflater.from(viewGroup.context).inflate(res, null) as UnifiedNativeAdView
+      .forNativeAd { ad: NativeAd ->
+        nativeAdd?.destroy()
+        nativeAdd = ad
+        val adView = LayoutInflater.from(viewGroup.context).inflate(res, null) as NativeAdView
         populateUnifiedNativeAdView(ad, adView)
         viewGroup.removeAllViews()
         viewGroup.addView(adView)
       }
       .withAdListener(object : AdListener() {
-        override fun onAdFailedToLoad(errorCode: Int) {
-          Timber.d("onAdFailedToLoad: $errorCode")
+        override fun onAdFailedToLoad(error: LoadAdError) {
+          super.onAdFailedToLoad(error)
+          Timber.d("onAdFailedToLoad: $error")
           wasError = true
           failListener?.invoke()
         }
       })
-      .withNativeAdOptions(NativeAdOptions.Builder()
-        .setRequestMultipleImages(false)
-        .build())
+      .withNativeAdOptions(
+        NativeAdOptions.Builder()
+          .setRequestMultipleImages(false)
+          .build()
+      )
       .build()
     adLoader.loadAd(AdRequest.Builder().build())
   }
 
   fun destroy() {
-    unifiedNativeAd?.destroy()
+    nativeAdd?.destroy()
   }
 
-  private fun populateUnifiedNativeAdView(nativeAd: UnifiedNativeAd, adView: UnifiedNativeAdView) {
+  private fun populateUnifiedNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
     adView.mediaView = adView.findViewById(R.id.ad_media)
 
     adView.headlineView = adView.findViewById(R.id.ad_headline)
@@ -90,7 +94,8 @@ class AdsProvider {
       adView.iconView.visibility = View.GONE
     } else {
       (adView.iconView as ImageView).setImageDrawable(
-        nativeAd.icon.drawable)
+        nativeAd.icon.drawable
+      )
       adView.iconView.visibility = View.VISIBLE
     }
 
