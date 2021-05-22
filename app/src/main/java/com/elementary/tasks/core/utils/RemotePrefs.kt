@@ -23,8 +23,8 @@ class RemotePrefs(context: Context) {
   init {
     val configSettings = FirebaseRemoteConfigSettings.Builder()
       .build()
-    this.mFirebaseRemoteConfig?.setConfigSettings(configSettings)
-    this.mFirebaseRemoteConfig?.setDefaults(R.xml.remote_config_defaults)
+    this.mFirebaseRemoteConfig?.setConfigSettingsAsync(configSettings)
+    this.mFirebaseRemoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
     fetchConfig()
   }
 
@@ -32,7 +32,7 @@ class RemotePrefs(context: Context) {
     mFirebaseRemoteConfig?.fetch(3600)?.addOnCompleteListener { task ->
       Timber.d("fetchConfig: ${task.isSuccessful}")
       if (task.isSuccessful) {
-        mFirebaseRemoteConfig.activateFetched()
+        mFirebaseRemoteConfig.fetchAndActivate()
       }
       displayVersionMessage()
       if (!Module.isPro) displaySaleMessage()

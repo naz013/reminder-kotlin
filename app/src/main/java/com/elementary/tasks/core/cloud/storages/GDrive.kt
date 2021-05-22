@@ -12,7 +12,6 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -20,7 +19,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.channels.Channel
 import timber.log.Timber
 import java.io.ByteArrayInputStream
@@ -236,14 +235,11 @@ class GDrive(
     tokenDataFile.parse(inputStream)
     withUIContext {
       if (prefs.multiDeviceModeEnabled) {
-        FirebaseInstanceId.getInstance().instanceId
-          .addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-              return@OnCompleteListener
-            }
-            val token = task.result?.token
-            updateToken(token)
-          })
+        FirebaseInstallations.getInstance().getToken(true)
+          .addOnCompleteListener { task ->
+            updateToken(task.result.token)
+              .takeIf { task.isSuccessful }
+          }
       }
     }
   }

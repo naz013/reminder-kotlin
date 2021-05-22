@@ -31,8 +31,7 @@ import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.installations.FirebaseInstallations
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.util.*
@@ -213,15 +212,14 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     prefs.multiDeviceModeEnabled = !isChecked
 
     if (prefs.multiDeviceModeEnabled) {
-      FirebaseInstanceId.getInstance().instanceId
-        .addOnCompleteListener(OnCompleteListener { task ->
-          if (!task.isSuccessful) {
-            return@OnCompleteListener
+      FirebaseInstallations.getInstance().getToken(true)
+        .addOnCompleteListener { task ->
+          if (task.isSuccessful) {
+            val token = task.result.token
+            dropbox.updateToken(token).takeIf { dropbox.isLinked }
+            gDrive.updateToken(token).takeIf { gDrive.isLogged }
           }
-          val token = task.result?.token
-          dropbox.updateToken(token).takeIf { dropbox.isLinked }
-          gDrive.updateToken(token).takeIf { gDrive.isLogged }
-        })
+        }
     }
   }
 
