@@ -7,7 +7,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.navigation.settings.additional.work.TemplateDeleteBackupWorker
+import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
 
 abstract class BaseSmsTemplatesViewModel(
   appDb: AppDb,

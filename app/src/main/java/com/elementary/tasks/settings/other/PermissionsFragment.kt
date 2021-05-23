@@ -1,19 +1,14 @@
-package com.elementary.tasks.navigation.fragments
+package com.elementary.tasks.settings.other
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
+import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 
-abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
-
-  protected val webView: WebView
-    get() = binding.webView
-
-  protected abstract val url: String
+class PermissionsFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -23,11 +18,9 @@ abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebVie
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    setExtraParams(binding.webView)
+    val url = "file:///android_asset/files/permissions.html"
     binding.webView.loadUrl(url)
   }
 
-  protected open fun setExtraParams(webView: WebView) {
-
-  }
+  override fun getTitle(): String = getString(R.string.permissions)
 }

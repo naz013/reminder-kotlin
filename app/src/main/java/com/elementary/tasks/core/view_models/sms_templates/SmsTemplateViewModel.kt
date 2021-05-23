@@ -6,7 +6,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.navigation.settings.additional.work.TemplateSingleBackupWorker
+import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 
 class SmsTemplateViewModel(
   key: String,

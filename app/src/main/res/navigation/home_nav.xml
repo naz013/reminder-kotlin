@@ -192,7 +192,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.SettingsFragment"
+        android:name="com.elementary.tasks.settings.SettingsFragment"
         android:label="@string/action_settings"
         tools:layout="@layout/fragment_settings">
         <action
@@ -237,17 +237,17 @@
     </fragment>
     <fragment
         android:id="@+id/generalSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment"
+        android:name="com.elementary.tasks.settings.general.GeneralSettingsFragment"
         android:label="@string/general"
         tools:layout="@layout/fragment_settings_general" />
     <fragment
         android:id="@+id/remindersSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.reminders.RemindersSettingsFragment"
+        android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
         android:label="@string/reminders_"
         tools:layout="@layout/fragment_settings_reminders" />
     <fragment
         android:id="@+id/exportSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.export.ExportSettingsFragment"
+        android:name="com.elementary.tasks.settings.export.ExportSettingsFragment"
         android:label="@string/export_and_sync"
         tools:layout="@layout/fragment_settings_export">
         <action
@@ -259,17 +259,17 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentCloudDrives"
-        android:name="com.elementary.tasks.navigation.settings.export.FragmentCloudDrives"
+        android:name="com.elementary.tasks.settings.export.FragmentCloudDrives"
         android:label="@string/cloud_services"
         tools:layout="@layout/fragment_settings_cloud_drives" />
     <fragment
         android:id="@+id/backupsFragment"
-        android:name="com.elementary.tasks.navigation.settings.export.BackupsFragment"
+        android:name="com.elementary.tasks.settings.export.BackupsFragment"
         android:label="@string/backup_files"
         tools:layout="@layout/fragment_settings_backups" />
     <fragment
         android:id="@+id/calendarSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.calendar.CalendarSettingsFragment"
+        android:name="com.elementary.tasks.settings.calendar.CalendarSettingsFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_settings_calendar">
         <action
@@ -278,17 +278,17 @@
     </fragment>
     <fragment
         android:id="@+id/notificationSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.NotificationSettingsFragment"
+        android:name="com.elementary.tasks.settings.NotificationSettingsFragment"
         android:label="@string/notification"
         tools:layout="@layout/fragment_settings_notification" />
     <fragment
         android:id="@+id/fragmentEventsImport"
-        android:name="com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport"
+        android:name="com.elementary.tasks.settings.calendar.FragmentEventsImport"
         android:label="@string/import_events"
         tools:layout="@layout/fragment_settings_events_import" />
     <fragment
         android:id="@+id/birthdaySettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.BirthdaySettingsFragment"
+        android:name="com.elementary.tasks.settings.BirthdaySettingsFragment"
         android:label="@string/birthdays"
         tools:layout="@layout/fragment_settings_birthdays_settings">
         <action
@@ -297,12 +297,12 @@
     </fragment>
     <fragment
         android:id="@+id/birthdayNotificationFragment"
-        android:name="com.elementary.tasks.navigation.settings.BirthdayNotificationFragment"
+        android:name="com.elementary.tasks.settings.BirthdayNotificationFragment"
         android:label="@string/birthday_notification"
         tools:layout="@layout/fragment_settings_birthday_notifications" />
     <fragment
         android:id="@+id/securitySettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment"
+        android:name="com.elementary.tasks.settings.security.SecuritySettingsFragment"
         android:label="@string/security"
         tools:layout="@layout/fragment_settings_security">
         <action
@@ -317,22 +317,22 @@
     </fragment>
     <fragment
         android:id="@+id/addPinFragment"
-        android:name="com.elementary.tasks.navigation.settings.security.AddPinFragment"
+        android:name="com.elementary.tasks.settings.security.AddPinFragment"
         android:label="@string/add_pin"
         tools:layout="@layout/fragment_settings_add_pin" />
     <fragment
         android:id="@+id/changePinFragment"
-        android:name="com.elementary.tasks.navigation.settings.security.ChangePinFragment"
+        android:name="com.elementary.tasks.settings.security.ChangePinFragment"
         android:label="@string/change_pin"
         tools:layout="@layout/fragment_settings_change_pin" />
     <fragment
         android:id="@+id/disablePinFragment"
-        android:name="com.elementary.tasks.navigation.settings.security.DisablePinFragment"
+        android:name="com.elementary.tasks.settings.security.DisablePinFragment"
         android:label="@string/disable_pin"
         tools:layout="@layout/fragment_settings_delete_pin" />
     <fragment
         android:id="@+id/additionalSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.additional.AdditionalSettingsFragment"
+        android:name="com.elementary.tasks.settings.additional.AdditionalSettingsFragment"
         android:label="@string/additional"
         tools:layout="@layout/fragment_settings_additional">
         <action
@@ -341,7 +341,7 @@
     </fragment>
     <fragment
         android:id="@+id/templatesFragment"
-        android:name="com.elementary.tasks.navigation.settings.additional.TemplatesFragment"
+        android:name="com.elementary.tasks.settings.additional.TemplatesFragment"
         android:label="@string/messages"
         tools:layout="@layout/fragment_settings_templates_list">
         <action
@@ -350,7 +350,7 @@
     </fragment>
     <fragment
         android:id="@+id/locationSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.location.LocationSettingsFragment"
+        android:name="com.elementary.tasks.settings.location.LocationSettingsFragment"
         android:label="@string/location"
         tools:layout="@layout/fragment_settings_location">
         <action
@@ -362,7 +362,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapStyleFragment"
-        android:name="com.elementary.tasks.navigation.settings.location.MapStyleFragment"
+        android:name="com.elementary.tasks.settings.location.MapStyleFragment"
         android:label="@string/map_style"
         tools:layout="@layout/fragment_settings_map_style" />
     <fragment
@@ -396,22 +396,22 @@
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
             android:id="@+id/helpFragment"
-            android:name="com.elementary.tasks.navigation.settings.other.HelpFragment"
+            android:name="com.elementary.tasks.settings.other.HelpFragment"
             android:label="@string/help"
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
             android:id="@+id/permissionsFragment"
-            android:name="com.elementary.tasks.navigation.settings.other.PermissionsFragment"
+            android:name="com.elementary.tasks.settings.other.PermissionsFragment"
             android:label="@string/permissions"
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
             android:id="@+id/ossFragment"
-            android:name="com.elementary.tasks.navigation.settings.other.OssFragment"
+            android:name="com.elementary.tasks.settings.other.OssFragment"
             android:label="@string/open_source_licenses"
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
             android:id="@+id/otherSettingsFragment"
-            android:name="com.elementary.tasks.navigation.settings.other.OtherSettingsFragment"
+            android:name="com.elementary.tasks.settings.other.OtherSettingsFragment"
             android:label="@string/other"
             tools:layout="@layout/fragment_settings_other">
             <action
@@ -429,21 +429,29 @@
             <action
                 android:id="@+id/action_otherSettingsFragment_to_ossFragment"
                 app:destination="@id/ossFragment" />
+            <action
+                android:id="@+id/action_otherSettingsFragment_to_privacyPolicyFragment"
+                app:destination="@id/privacyPolicyFragment" />
         </fragment>
         <fragment
             android:id="@+id/changesFragment"
-            android:name="com.elementary.tasks.navigation.settings.other.ChangesFragment"
+            android:name="com.elementary.tasks.settings.other.ChangesFragment"
             android:label="@string/changes"
+            tools:layout="@layout/fragment_settings_web_view" />
+        <fragment
+            android:id="@+id/privacyPolicyFragment"
+            android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
+            android:label="@string/privacy_policy"
             tools:layout="@layout/fragment_settings_web_view" />
     </navigation>
     <fragment
         android:id="@+id/noteSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.NoteSettingsFragment"
+        android:name="com.elementary.tasks.settings.NoteSettingsFragment"
         android:label="@string/notes"
         tools:layout="@layout/fragment_settings_notes" />
     <fragment
         android:id="@+id/voiceSettingsFragment"
-        android:name="com.elementary.tasks.navigation.settings.voice.VoiceSettingsFragment"
+        android:name="com.elementary.tasks.settings.voice.VoiceSettingsFragment"
         android:label="@string/voice_control"
         tools:layout="@layout/fragment_settings_voice">
         <action
@@ -458,17 +466,17 @@
     </fragment>
     <fragment
         android:id="@+id/timeOfDayFragment"
-        android:name="com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment"
+        android:name="com.elementary.tasks.settings.voice.TimeOfDayFragment"
         android:label="@string/time"
         tools:layout="@layout/fragment_settings_time_of_day" />
     <fragment
         android:id="@+id/voiceHelpFragment"
-        android:name="com.elementary.tasks.navigation.settings.voice.HelpFragment"
+        android:name="com.elementary.tasks.settings.voice.HelpFragment"
         android:label="@string/help"
         tools:layout="@layout/fragment_settings_web_view" />
     <activity
         android:id="@+id/templateActivity"
-        android:name="com.elementary.tasks.navigation.settings.additional.TemplateActivity"
+        android:name="com.elementary.tasks.settings.additional.TemplateActivity"
         android:label="@string/create_template"
         tools:layout="@layout/activity_template">
         <argument
@@ -480,7 +488,7 @@
     </activity>
     <fragment
         android:id="@+id/testsFragment"
-        android:name="com.elementary.tasks.navigation.settings.TestsFragment"
+        android:name="com.elementary.tasks.settings.TestsFragment"
         android:label="Tests"
         tools:layout="@layout/fragment_settings_tests" />
 </navigation>

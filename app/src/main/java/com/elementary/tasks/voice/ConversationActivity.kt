@@ -32,7 +32,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityConversationBinding
-import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
+import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.get

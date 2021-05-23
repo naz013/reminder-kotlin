@@ -71,6 +71,10 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
 
   abstract fun getTitle(): String
 
+  protected fun navigate(function: () -> NavDirections) {
+    safeNavigation(function.invoke())
+  }
+
   protected fun safeNavigation(navDirections: NavDirections) {
     safeNavigation {
       findNavController().navigate(navDirections)

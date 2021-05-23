@@ -74,10 +74,10 @@ import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
-import com.elementary.tasks.navigation.settings.additional.work.TemplateDeleteBackupWorker
-import com.elementary.tasks.navigation.settings.additional.work.TemplateSingleBackupWorker
-import com.elementary.tasks.navigation.settings.export.CloudViewModel
-import com.elementary.tasks.navigation.settings.voice.TimesViewModel
+import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
+import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
+import com.elementary.tasks.settings.export.CloudViewModel
+import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
