@@ -199,7 +199,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".navigation.settings.additional.TemplateActivity"
+            android:name="com.elementary.tasks.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden"
             android:label="@string/create_template"
             android:windowSoftInputMode="stateUnchanged">
@@ -378,7 +378,7 @@
         <activity
             android:name=".pin.PinLoginActivity"
             android:excludeFromRecents="true" />
-        <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
+        <activity android:name="com.elementary.tasks.settings.other.SendFeedbackActivity" />
         <activity android:name=".other.PrivacyPolicyActivity" />
         <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity

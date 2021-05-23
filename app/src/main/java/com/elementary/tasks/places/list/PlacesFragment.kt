@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
-import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.settings.BaseSettingsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
