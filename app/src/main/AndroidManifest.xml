@@ -36,6 +36,9 @@
     <uses-feature
         android:name="android.hardware.bluetooth"
         android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <supports-screens
         android:anyDensity="true"
@@ -50,8 +53,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -87,7 +92,8 @@
         android:usesCleartextTraffic="true"
         android:largeHeap="true"
         tools:replace="android:label"
-        tools:targetApi="q">
+        tools:targetApi="s"
+        android:dataExtractionRules="@xml/data_extraction_rules">
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -95,14 +101,16 @@
 
         <activity
             android:name=".splash.SplashScreenActivity"
-            android:theme="@style/SplashScreenTheme">
+            android:theme="@style/SplashScreenTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".home.BottomNavActivity">
+        <activity android:name=".home.BottomNavActivity"
+            android:exported="true">
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity
@@ -110,7 +118,8 @@
             android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
             android:label="@string/import_file"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -176,7 +185,8 @@
             android:name=".reminder.create.CreateReminderActivity"
             android:configChanges="keyboardHidden"
             android:label="@string/new_reminder"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -202,7 +212,8 @@
             android:name="com.elementary.tasks.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden"
             android:label="@string/create_template"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -230,7 +241,8 @@
             android:name=".groups.create.CreateGroupActivity"
             android:configChanges="keyboardHidden"
             android:label="@string/create_group"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -251,7 +263,8 @@
             android:name=".places.create.CreatePlaceActivity"
             android:configChanges="keyboardHidden"
             android:label="@string/new_place"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -272,7 +285,8 @@
             android:name=".notes.create.CreateNoteActivity"
             android:configChanges="keyboardHidden"
             android:label="@string/add_note"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -320,7 +334,8 @@
         <activity
             android:name=".birthdays.create.AddBirthdayActivity"
             android:label="@string/add_birthday"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -394,12 +409,14 @@
 
         <receiver
             android:name=".core.services.CallReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".core.services.BootReceiver">
+        <receiver android:name=".core.services.BootReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -429,7 +446,8 @@
         <receiver
             android:name=".core.app_widgets.buttons.CombinedButtonsWidget"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/quick_buttons">
+            android:label="@string/quick_buttons"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -443,7 +461,8 @@
             android:name=".core.app_widgets.buttons.CombinedWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -452,7 +471,8 @@
             android:name=".core.app_widgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -461,7 +481,8 @@
             android:name=".core.app_widgets.notes.NotesWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -470,7 +491,8 @@
             android:name=".core.app_widgets.google_tasks.TasksWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -479,7 +501,8 @@
         <receiver
             android:name=".core.app_widgets.events.EventsWidget"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/active_reminders">
+            android:label="@string/active_reminders"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="justreminder.LOCATION_CHANGED" />
@@ -497,7 +520,8 @@
         <receiver
             android:name=".core.app_widgets.notes.NotesWidget"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/notes">
+            android:label="@string/notes"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -514,7 +538,8 @@
         <receiver
             android:name=".core.app_widgets.google_tasks.TasksWidget"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/google_tasks">
+            android:label="@string/google_tasks"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -532,7 +557,8 @@
             android:name=".core.app_widgets.calendar.CalendarWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -541,7 +567,8 @@
         <receiver
             android:name=".core.app_widgets.calendar.CalendarWidget"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/calendar">
+            android:label="@string/calendar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -561,19 +588,22 @@
         <activity
             android:name=".core.app_widgets.buttons.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <receiver android:name=".core.app_widgets.calendar.CalendarPreviousReceiver">
+        <receiver android:name=".core.app_widgets.calendar.CalendarPreviousReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".core.app_widgets.calendar.CalendarNextReceiver">
+        <receiver android:name=".core.app_widgets.calendar.CalendarNextReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
             </intent-filter>
@@ -594,7 +624,8 @@
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <data android:scheme="db-4zi1d414h0v8sxe" />
 

@@ -216,7 +216,7 @@ object SuperUtil {
     Timber.d("checkGooglePlayServicesAvailability: $result")
     return if (result != ConnectionResult.SUCCESS) {
       if (googleAPI.isUserResolvableError(result)) {
-        googleAPI.getErrorDialog(a, result, 69).show()
+        googleAPI.getErrorDialog(a, result, 69)?.show()
       }
       false
     } else {

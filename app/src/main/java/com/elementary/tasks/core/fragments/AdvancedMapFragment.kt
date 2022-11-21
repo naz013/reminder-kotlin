@@ -196,7 +196,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         .draggable(true))
       val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
       mMap?.addCircle(CircleOptions()
-        .center(lastPos)
+        .center(lastPos!!)
         .radius(markerRadius.toDouble())
         .strokeWidth(strokeWidth)
         .fillColor(colorOf(marker.fillColor))
@@ -228,7 +228,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
           markerRadius = prefs.radius
         }
         mMap?.addCircle(CircleOptions()
-          .center(lastPos)
+          .center(lastPos!!)
           .radius(markerRadius.toDouble())
           .strokeWidth(strokeWidth)
           .fillColor(colorOf(marker.fillColor))

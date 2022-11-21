@@ -16,7 +16,7 @@ object GeocoderTask {
     mJob = launchDefault {
       val addresses: MutableList<Address> = mutableListOf()
       try {
-        addresses.addAll(geocoder.getFromLocationName(address, 5))
+        addresses.addAll(geocoder.getFromLocationName(address, 5) ?: emptyList())
       } catch (e: IOException) {
       }
       withUIContext {

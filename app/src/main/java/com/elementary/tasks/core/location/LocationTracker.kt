@@ -26,9 +26,9 @@ class LocationTracker(
   private var mLocationManager: LocationManager? = null
   private var mFusedLocationClient: FusedLocationProviderClient? = null
   private val mLocationCallback = object : LocationCallback() {
-    override fun onLocationResult(locationResult: LocationResult?) {
+    override fun onLocationResult(locationResult: LocationResult) {
       Timber.d("onLocationResult: $locationResult")
-      for (location in locationResult!!.locations) {
+      for (location in locationResult.locations) {
         val latitude = location.latitude
         val longitude = location.longitude
         callback?.invoke(latitude, longitude)

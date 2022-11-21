@@ -209,7 +209,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   fun animate(latLng: LatLng?) {
-    val update = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
+    val update = CameraUpdateFactory.newLatLngZoom(latLng!!, 13f)
     if (mMap != null) {
       mMap?.animateCamera(update)
     }
