@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
@@ -21,8 +22,9 @@ abstract class BaseNotesViewModel(
   appDb: AppDb,
   prefs: Prefs,
   private val calendarUtils: CalendarUtils,
-  private val eventControlFactory: EventControlFactory
-) : BaseDbViewModel(appDb, prefs) {
+  private val eventControlFactory: EventControlFactory,
+  dispatcherProvider: DispatcherProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
 
   fun deleteNote(noteWithImages: NoteWithImages) {
     val note = noteWithImages.note ?: return

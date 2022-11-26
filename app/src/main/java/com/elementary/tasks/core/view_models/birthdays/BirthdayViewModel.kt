@@ -8,6 +8,7 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
@@ -17,8 +18,9 @@ class BirthdayViewModel(
   id: String,
   appDb: AppDb,
   prefs: Prefs,
-  context: Context
-) : BaseBirthdaysViewModel(appDb, prefs, context) {
+  context: Context,
+  dispatcherProvider: DispatcherProvider
+) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider) {
 
   val birthday = appDb.birthdaysDao().loadById(id)
   var editableBirthday: Birthday = Birthday()

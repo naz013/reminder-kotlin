@@ -7,12 +7,14 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 
 abstract class BaseGroupsViewModel(
   appDb: AppDb,
-  prefs: Prefs
-) : BaseDbViewModel(appDb, prefs) {
+  prefs: Prefs,
+  dispatcherProvider: DispatcherProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
 
   val allGroups = appDb.reminderGroupDao().loadAll()
 

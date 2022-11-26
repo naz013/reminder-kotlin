@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.month_view.MonthPagerItem
@@ -22,8 +23,9 @@ class MonthViewViewModel(
   private val calculateFuture: Boolean,
   dayViewProvider: DayViewProvider,
   appDb: AppDb,
-  prefs: Prefs
-) : BaseDbViewModel(appDb, prefs) {
+  prefs: Prefs,
+  dispatcherProvider: DispatcherProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
 
   private val liveData: MonthViewLiveData = MonthViewLiveData(dayViewProvider)
   private var _events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()

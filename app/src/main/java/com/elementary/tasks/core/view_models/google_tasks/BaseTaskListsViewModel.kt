@@ -11,14 +11,16 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import java.io.IOException
 
 abstract class BaseTaskListsViewModel(
   appDb: AppDb,
   prefs: Prefs,
   protected val context: Context,
-  protected val gTasks: GTasks
-) : BaseDbViewModel(appDb, prefs) {
+  protected val gTasks: GTasks,
+  dispatcherProvider: DispatcherProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
 
   fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
     if (!gTasks.isLogged) {

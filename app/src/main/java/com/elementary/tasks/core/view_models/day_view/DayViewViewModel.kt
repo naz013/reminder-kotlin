@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.day_view.day.EventModel
@@ -28,8 +29,9 @@ class DayViewViewModel(
   private val eventControlFactory: EventControlFactory,
   dayViewProvider: DayViewProvider,
   appDb: AppDb,
-  prefs: Prefs
-) : BaseDbViewModel(appDb, prefs) {
+  prefs: Prefs,
+  dispatcherProvider: DispatcherProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events

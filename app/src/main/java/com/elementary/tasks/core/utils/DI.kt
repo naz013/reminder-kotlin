@@ -121,27 +121,27 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get()) }
+  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> SmsTemplateViewModel(id, get(), get()) }
   viewModel { (id: String) -> PlaceViewModel(id, get(), get()) }
   viewModel { (id: String) -> NoteViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> GroupViewModel(id, get(), get()) }
-  viewModel { (number: String) -> MissedCallViewModel(number, get(), get()) }
+  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get()) }
   viewModel { (listId: String) -> GoogleTaskListViewModel(listId, get(), get(), get(), get()) }
   viewModel { (id: String) -> GoogleTaskViewModel(id, get(), get(), get(), get(), get()) }
   viewModel { (calculateFuture: Boolean) ->
-    DayViewViewModel(calculateFuture, get(), get(), get(), get())
+    DayViewViewModel(calculateFuture, get(), get(), get(), get(), get())
   }
   viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
-    MonthViewViewModel(addReminders, calculateFuture, get(), get(), get())
+    MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get())
   }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
   viewModel { SmsTemplatesViewModel(get(), get()) }
   viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { SelectApplicationViewModel() }
   viewModel { PlacesViewModel(get(), get(), get()) }
-  viewModel { UsedTimeViewModel(get(), get()) }
+  viewModel { UsedTimeViewModel(get(), get(), get()) }
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get()) }

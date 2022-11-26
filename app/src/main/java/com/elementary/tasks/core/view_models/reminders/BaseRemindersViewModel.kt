@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.runBlocking
@@ -25,8 +26,9 @@ abstract class BaseRemindersViewModel(
   appDb: AppDb,
   prefs: Prefs,
   protected val calendarUtils: CalendarUtils,
-  protected val eventControlFactory: EventControlFactory
-) : BaseDbViewModel(appDb, prefs) {
+  protected val eventControlFactory: EventControlFactory,
+  dispatcherProvider: DispatcherProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
 
   private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
   var defaultReminderGroup: LiveData<ReminderGroup> = _defaultReminderGroup

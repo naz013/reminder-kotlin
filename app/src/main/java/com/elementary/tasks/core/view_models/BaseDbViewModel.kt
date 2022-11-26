@@ -2,29 +2,31 @@ package com.elementary.tasks.core.view_models
 
 import android.content.Context
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.toLiveData
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 open class BaseDbViewModel(
   protected val appDb: AppDb,
-  protected val prefs: Prefs
+  protected val prefs: Prefs,
+  protected val dispatcherProvider: DispatcherProvider
 ) : ViewModel(), LifecycleObserver {
 
-  private val _result = MutableLiveData<Commands>()
-  val result: LiveData<Commands> = _result
-  private val _isInProgress = MutableLiveData<Boolean>()
-  val isInProgress: LiveData<Boolean> = _isInProgress
-  private val _error = MutableLiveData<String>()
-  val error: LiveData<String> = _error
+  private val _result = mutableLiveDataOf<Commands>()
+  val result = _result.toLiveData()
+  private val _isInProgress = mutableLiveDataOf<Boolean>()
+  val isInProgress = _isInProgress.toLiveData()
+  private val _error = mutableLiveDataOf<String>()
+  val error = _error.toLiveData()
 
   protected fun postInProgress(isInProgress: Boolean) {
     _isInProgress.postValue(isInProgress)
@@ -57,7 +59,7 @@ open class BaseDbViewModel(
   }
 
   protected fun withProgress(doWork: ((error: String) -> Unit) -> Unit) {
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
       runBlocking {
         doWork.invoke { postError(it) }
@@ -67,7 +69,7 @@ open class BaseDbViewModel(
   }
 
   protected fun withResult(doWork: ((error: String) -> Unit) -> Commands) {
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
       val commands = runBlocking {
         doWork.invoke { postError(it) }
