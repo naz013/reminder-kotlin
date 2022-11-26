@@ -21,8 +21,8 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.TimeUtil.toGmt
@@ -141,7 +141,9 @@ fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) 
   Toast.makeText(requireContext(), message, duration).show()
 }
 
-fun <T> ViewModel.mutableLiveDataOf() = MutableLiveData<T>()
+fun <T> mutableLiveDataOf() = MutableLiveData<T>()
+
+fun <T> MutableLiveData<T>.toLiveData(): LiveData<T> = this
 
 fun File.copyInputStreamToFile(inputStream: InputStream) {
   inputStream.use { input ->
@@ -179,8 +181,6 @@ fun TimeUtil.HM.toDate(): Date = newCalendar()
 
 fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
-fun View.isNotVisible(): Boolean = visibility == View.INVISIBLE
-
 fun View.isGone(): Boolean = visibility == View.GONE
 
 fun View.transparent() {
@@ -200,17 +200,19 @@ fun View.visibleGone(value: Boolean) {
   else if (!value && !isGone()) hide()
 }
 
-fun View.visibleInvisible(value: Boolean) {
-  if (value && !isVisible()) show()
-  else if (!value && !isNotVisible()) transparent()
-}
-
 fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
   lazy(LazyThreadSafetyMode.NONE, initializer)
 
 suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T)
   : T = withContext(Dispatchers.Main, block)
 
+@Deprecated("Use class scope", ReplaceWith(
+    "GlobalScope.launch(Dispatchers.Default, start, block)",
+    "kotlinx.coroutines.GlobalScope",
+    "kotlinx.coroutines.launch",
+    "kotlinx.coroutines.Dispatchers"
+)
+)
 fun launchDefault(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
   : Job = GlobalScope.launch(Dispatchers.Default, start, block)
 
@@ -234,16 +236,6 @@ fun EditText.onChanged(function: (String) -> Unit) {
 fun Long.toGmt() = toCalendar().toGmt()
 
 fun Long.toCalendar() = newCalendar(this)
-
-fun Long.daysAfter(): Int {
-  val days = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_DAY
-  return days.toInt()
-}
-
-fun Long.hoursAfter(): Int {
-  val hours = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_HOUR
-  return hours.toInt()
-}
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
   this.useGlobal = reminder.useGlobal
@@ -351,13 +343,6 @@ fun MelodyView.bindProperty(value: String, listener: ((String) -> Unit)) {
 fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
   this.content = value
   this.onFileUpdateListener = {
-    listener.invoke(it)
-  }
-}
-
-fun GroupView.bindProperty(value: ReminderGroup, listener: ((ReminderGroup) -> Unit)) {
-  this.reminderGroup = value
-  this.onGroupUpdateListener = {
     listener.invoke(it)
   }
 }

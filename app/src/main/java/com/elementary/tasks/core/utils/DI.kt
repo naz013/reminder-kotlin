@@ -36,6 +36,8 @@ import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -153,6 +155,7 @@ val viewModelModule = module {
   viewModel { TimesViewModel() }
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get()) }
+  viewModel { VoiceHelpViewModel(get(), get()) }
 }
 
 val converterModule = module {
@@ -217,6 +220,8 @@ val utilModule = module {
   single { CurrentStateHolder(get(), get(), get(), get()) }
   single { BirthdayModelAdapter(get()) }
   single { DayViewProvider(get(), get()) }
+
+  single { DispatcherProvider() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

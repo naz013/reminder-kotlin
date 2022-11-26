@@ -30,4 +30,8 @@ abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebVie
   protected open fun setExtraParams(webView: WebView) {
 
   }
+
+  protected fun reload() {
+    binding.webView.loadUrl(url)
+  }
 }
