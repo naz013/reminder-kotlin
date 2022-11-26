@@ -1,3 +1,5 @@
+@file:Suppress("DeprecatedCallableAddReplaceWith")
+
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
@@ -123,7 +125,7 @@ fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
   doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
 }
 
-fun View.inflater() = LayoutInflater.from(context)
+fun View.inflater(): LayoutInflater = LayoutInflater.from(context)
 
 fun Activity.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(this, message, duration).show()
@@ -206,16 +208,11 @@ fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
 suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T)
   : T = withContext(Dispatchers.Main, block)
 
-@Deprecated("Use class scope", ReplaceWith(
-    "GlobalScope.launch(Dispatchers.Default, start, block)",
-    "kotlinx.coroutines.GlobalScope",
-    "kotlinx.coroutines.launch",
-    "kotlinx.coroutines.Dispatchers"
-)
-)
+@Deprecated("Use class scope for coroutine")
 fun launchDefault(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
   : Job = GlobalScope.launch(Dispatchers.Default, start, block)
 
+@Deprecated("Use class scope for coroutine")
 fun launchIo(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
   : Job = GlobalScope.launch(Dispatchers.IO, start, block)
 

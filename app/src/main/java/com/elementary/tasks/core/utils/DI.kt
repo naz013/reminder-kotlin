@@ -5,6 +5,7 @@ import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
+import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
@@ -116,6 +117,7 @@ val workerModule = module {
   worker { TemplateSingleBackupWorker(get(), get(), get()) }
   worker { TemplateDeleteBackupWorker(get(), get(), get()) }
   worker { CheckEventsWorker(get(), get(), get(), get(), get(), get()) }
+  worker { SingleBackupWorker(get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
@@ -154,7 +156,7 @@ val viewModelModule = module {
   viewModel { CreatePlaceViewModel() }
   viewModel { TimesViewModel() }
   viewModel { LoginStateViewModel() }
-  viewModel { SplashViewModel(get(), get(), get(), get(), get()) }
+  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
 }
 
