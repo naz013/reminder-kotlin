@@ -21,4 +21,13 @@
         <key>version_name</key>
         <value>5.0.0</value>
     </entry>
+
+    <entry>
+        <key>privacy_policy_link</key>
+        <value>https://sukhovych.com/reminder-privacy-policy/</value>
+    </entry>
+    <entry>
+        <key>voice_help_urls</key>
+        <value>{}</value>
+    </entry>
 </defaultsMap>

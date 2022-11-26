@@ -24,7 +24,7 @@ class PlaceDeleteBackupWorker(
           syncManagers.converterManager.placeConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
-        ).delete(uuId, IndexTypes.TYPE_PLACE, true)
+        ).delete(uuId, IndexTypes.TYPE_PLACE)
       }
     }
     return Result.success()

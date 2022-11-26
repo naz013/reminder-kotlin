@@ -16,7 +16,6 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
-import java.util.*
 
 class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>() {
 
@@ -41,9 +40,6 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
       setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
     }
 
-    binding.helpPrefs.setOnClickListener {
-      safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToHelpFragment())
-    }
     binding.aboutPrefs.setOnClickListener { showAboutDialog() }
     binding.ossPrefs.setOnClickListener { openOssScreen() }
     binding.permissionsPrefs.setOnClickListener { openPermissionsScreen() }
@@ -144,8 +140,8 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
 
   private fun showPermissionDialog() {
     if (!loadDataToList()) return
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
+    withContext { context ->
+      val builder = dialogues.getMaterialDialog(context)
       builder.setTitle(R.string.allow_permission)
       val names = mDataList.map { it.title }
       builder.setItems(names.toTypedArray()) { dialogInterface, i ->
@@ -165,7 +161,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
       val b = DialogAboutBinding.inflate(LayoutInflater.from(it))
       val name: String =
         if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
-      b.appName.text = name.toUpperCase()
+      b.appName.text = name.uppercase()
       b.translatorsList.text = translators
       val pInfo: PackageInfo
       try {

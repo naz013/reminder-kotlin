@@ -73,7 +73,7 @@ class DataFlow<T>(
     }
   }
 
-  suspend fun delete(id: String, type: IndexTypes, notify: Boolean = false) {
+  suspend fun delete(id: String, type: IndexTypes) {
     val fileName = fileName(id, type)
     if (id.isEmpty() || fileName.isEmpty()) {
       return
@@ -91,9 +91,6 @@ class DataFlow<T>(
     storage.delete(fileName)
     storage.removeIndex(id)
     System.gc()
-    if (notify) {
-      storage.sendNotification("delete", fileName)
-    }
   }
 
   private fun fileName(id: String, type: IndexTypes): String {

@@ -10,7 +10,7 @@
         android:minHeight="50dp"
         android:orientation="vertical">
 
-        <com.google.android.gms.ads.formats.MediaView
+        <com.google.android.gms.ads.nativead.MediaView
             android:id="@+id/ad_media"
             android:layout_width="90dp"
             android:layout_height="90dp"

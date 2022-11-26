@@ -12,7 +12,7 @@ class PrivacyPolicyFragment : BaseWebViewFragment() {
 
   override val url: String
     get() {
-      return Constants.WEB_URL + "privacy-policy"
+      return prefs.privacyUrl
     }
 
   @SuppressLint("SetJavaScriptEnabled")

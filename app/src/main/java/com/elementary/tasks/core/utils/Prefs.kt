@@ -81,10 +81,6 @@ class Prefs(
     get() = getBoolean(PrefsConstants.LOCAL_BACKUP)
     set(value) = putBoolean(PrefsConstants.LOCAL_BACKUP, value)
 
-  var multiDeviceModeEnabled: Boolean
-    get() = Module.isPro && getBoolean(PrefsConstants.MULTI_DEVICE_MODE)
-    set(value) = putBoolean(PrefsConstants.MULTI_DEVICE_MODE, value)
-
   var nightMode: Int
     get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
     set(value) = putInt(PrefsConstants.NIGHT_MODE, value)
@@ -606,6 +602,14 @@ class Prefs(
     get() = getBoolean(PrefsConstants.IGNORE_WINDOW_TYPE)
     set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)
 
+  var privacyUrl: String
+    get() = getString(PrefsConstants.PRIVACY_POLICY_URL, "https://sukhovych.com/reminder-privacy-policy/")
+    set(value) = putString(PrefsConstants.PRIVACY_POLICY_URL, value)
+
+  var voiceHelpUrls: String
+    get() = getString(PrefsConstants.VOICE_HELP_URLS, "{}")
+    set(value) = putString(PrefsConstants.VOICE_HELP_URLS, value)
+
   fun initPrefs(context: Context) {
     val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
     if (!settingsUI.exists()) {
@@ -625,7 +629,7 @@ class Prefs(
       editor.putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
       editor.putInt(PrefsConstants.NOTE_TEXT_SIZE, 4)
       editor.putInt(PrefsConstants.VOLUME, 25)
-      val localeCheck = Locale.getDefault().toString().toLowerCase()
+      val localeCheck = Locale.getDefault().toString().lowercase()
       val locale = when {
         localeCheck.startsWith("uk") -> 2
         localeCheck.startsWith("ru") -> 1
@@ -657,6 +661,7 @@ class Prefs(
       editor.putInt(PrefsConstants.SOUND_STREAM, 5)
       editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
       editor.putInt(PrefsConstants.MAP_STYLE, 6)
+      editor.putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
       editor.putBoolean(PrefsConstants.TRACKING_NOTIFICATION, true)
       editor.putBoolean(PrefsConstants.RATE_SHOW, false)
       editor.putBoolean(PrefsConstants.IS_CREATE_SHOWN, false)
@@ -920,6 +925,9 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.MAP_STYLE)) {
       putInt(PrefsConstants.MAP_STYLE, 6)
+    }
+    if (!hasKey(PrefsConstants.NIGHT_MODE)) {
+      putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
     if (Module.isPro) {
       if (!hasKey(PrefsConstants.LED_STATUS)) {

@@ -15,8 +15,6 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
-import com.elementary.tasks.core.utils.withUIContext
-import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -38,7 +36,6 @@ class Dropbox(
 
   private var mDBApi: DbxClientV2? = null
 
-  private val tokenDataFile = TokenDataFile()
   private val indexDataFile = IndexDataFile()
 
   val isLinked: Boolean
@@ -66,8 +63,8 @@ class Dropbox(
           .uploadAndFinish(fis)
         fis.close()
         stream.close()
-      } catch (e: Exception) {
-      } catch (e: OutOfMemoryError) {
+      } catch (_: Exception) {
+      } catch (_: OutOfMemoryError) {
       }
     }
   }
@@ -85,8 +82,8 @@ class Dropbox(
         .withMode(WriteMode.OVERWRITE)
         .uploadAndFinish(fis)
       fis.close()
-    } catch (e: Exception) {
-    } catch (e: OutOfMemoryError) {
+    } catch (_: Exception) {
+    } catch (_: OutOfMemoryError) {
     }
   }
 
@@ -168,54 +165,14 @@ class Dropbox(
   override fun saveIndex(fileIndex: FileIndex) {
     indexDataFile.addIndex(fileIndex)
     saveIndexFile()
-    sendNotification("file", fileIndex.id + fileIndex.ext)
   }
 
   override suspend fun loadIndex() {
     loadIndexFile()
-    loadTokenFile()
   }
 
   override suspend fun saveIndex() {
     saveIndexFile()
-  }
-
-  override fun sendNotification(type: String, details: String) {
-    tokenDataFile.notifyDevices(type, details)
-  }
-
-  private suspend fun loadTokenFile() {
-    if (tokenDataFile.isLoading) return
-    if (!tokenDataFile.isEmpty() && !tokenDataFile.isOld()) {
-      return
-    }
-    tokenDataFile.isLoading = true
-    val inputStream = restore(TokenDataFile.FILE_NAME) ?: return
-    tokenDataFile.parse(inputStream)
-    withUIContext {
-      if (prefs.multiDeviceModeEnabled) {
-        FirebaseInstallations.getInstance().getToken(true)
-          .addOnCompleteListener { task ->
-            updateToken(task.result.token)
-              .takeIf { task.isSuccessful }
-          }
-      }
-    }
-  }
-
-  private fun saveTokenFile() {
-    launchDefault {
-      val json = tokenDataFile.toJson() ?: return@launchDefault
-      backup(
-        json, Metadata(
-          "",
-          TokenDataFile.FILE_NAME,
-          FileConfig.FILE_NAME_JSON,
-          TimeUtil.gmtDateTime,
-          "Token file"
-        )
-      )
-    }
   }
 
   private suspend fun loadIndexFile() {
@@ -235,13 +192,6 @@ class Dropbox(
           "Index file"
         )
       )
-    }
-  }
-
-  fun updateToken(token: String?) {
-    if (token == null) return
-    if (tokenDataFile.addDevice(token)) {
-      if (!tokenDataFile.isLoading) saveTokenFile()
     }
   }
 
@@ -285,9 +235,6 @@ class Dropbox(
 
     if (!indexDataFile.isLoaded) {
       launchDefault { loadIndexFile() }
-    }
-    if (!tokenDataFile.isLoaded) {
-      launchDefault { loadTokenFile() }
     }
   }
 

@@ -23,12 +23,13 @@ import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.pin.PinLoginActivity
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
-  private val remotePrefs: RemotePrefs by lazy { RemotePrefs(requireContext()) }
+  private val remotePrefs: RemotePrefs by inject<RemotePrefs>()
   private val prefsObserver: (String) -> Unit = {
     Handler(Looper.getMainLooper()).post {
       if (it == PrefsConstants.DATA_BACKUP) {

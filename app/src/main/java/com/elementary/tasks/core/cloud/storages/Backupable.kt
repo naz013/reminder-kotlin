@@ -9,5 +9,4 @@ interface Backupable {
   suspend fun restore(fileName: String): InputStream?
   suspend fun delete(fileName: String)
   fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream>
-  fun sendNotification(type: String, details: String)
 }

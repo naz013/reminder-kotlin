@@ -82,8 +82,8 @@ abstract class SharedPrefs(
     putString(key, Gson().toJson(obj))
   }
 
-  fun getString(stringToLoad: String): String {
-    return prefs.getString(stringToLoad, "") ?: ""
+  fun getString(stringToLoad: String, def: String = ""): String {
+    return prefs.getString(stringToLoad, def) ?: def
   }
 
   fun hasKey(checkString: String): Boolean {

@@ -64,7 +64,6 @@ import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.DeleteFileWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.LoadFileWorker
-import com.elementary.tasks.core.work.LoadTokensWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.day_view.DayViewProvider
@@ -98,7 +97,6 @@ val workerModule = module {
   worker { BirthdayDeleteBackupWorker(get(), get(), get()) }
   worker { BackupDataWorker(get(), get(), get()) }
   worker { CheckBirthdaysWorker(get(), get(), get()) }
-  worker { LoadTokensWorker(get(), get(), get()) }
   worker { LoadFileWorker(get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get()) }
@@ -208,6 +206,7 @@ val utilModule = module {
   single { ImagesSingleton() }
   single { SyncManagers(get(), get(), get(), get()) }
   single { EventControlFactory(get(), get(), get(), get()) }
+  single { RemotePrefs(get(), get()) }
 
   factory { WidgetDataProvider(get()) }
   single { SyncWorker(get(), get(), get()) }

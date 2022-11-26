@@ -395,11 +395,6 @@
             android:label="@string/feedback"
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
-            android:id="@+id/helpFragment"
-            android:name="com.elementary.tasks.settings.other.HelpFragment"
-            android:label="@string/help"
-            tools:layout="@layout/fragment_settings_web_view" />
-        <fragment
             android:id="@+id/permissionsFragment"
             android:name="com.elementary.tasks.settings.other.PermissionsFragment"
             android:label="@string/permissions"
@@ -414,9 +409,6 @@
             android:name="com.elementary.tasks.settings.other.OtherSettingsFragment"
             android:label="@string/other"
             tools:layout="@layout/fragment_settings_other">
-            <action
-                android:id="@+id/action_otherSettingsFragment_to_helpFragment"
-                app:destination="@id/helpFragment" />
             <action
                 android:id="@+id/action_otherSettingsFragment_to_permissionsFragment"
                 app:destination="@id/permissionsFragment" />

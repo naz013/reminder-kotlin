@@ -103,15 +103,6 @@
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/multiDevicePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/multiple_device_mode"
-            app:prefs_pro="true"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/syncSettingsPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

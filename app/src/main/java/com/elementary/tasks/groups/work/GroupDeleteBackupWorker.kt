@@ -25,7 +25,7 @@ class GroupDeleteBackupWorker(
           syncManagers.converterManager.groupConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
-        ).delete(uuId, IndexTypes.TYPE_GROUP, true)
+        ).delete(uuId, IndexTypes.TYPE_GROUP)
       }
     }
     return Result.success()

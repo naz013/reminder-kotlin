@@ -8,6 +8,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -19,9 +20,14 @@ class ThemeProvider(
 
   val isDark: Boolean
     get() {
-      return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-        Configuration.UI_MODE_NIGHT_YES -> true
-        else -> false
+      return when (prefs.nightMode) {
+        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
+          when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            else -> false
+          }
+        }
+        else -> prefs.nightMode == AppCompatDelegate.MODE_NIGHT_YES
       }
     }
 

@@ -25,7 +25,7 @@ class TemplateDeleteBackupWorker(
           syncManagers.converterManager.templateConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
-        ).delete(uuId, IndexTypes.TYPE_TEMPLATE, true)
+        ).delete(uuId, IndexTypes.TYPE_TEMPLATE)
       }
     }
     return Result.success()

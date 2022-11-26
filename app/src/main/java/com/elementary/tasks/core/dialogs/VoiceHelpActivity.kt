@@ -53,7 +53,7 @@ class VoiceHelpActivity : BindingActivity<ActivityVoiceHelpBinding>() {
 
   companion object {
     fun getHelpUrl(locale: Locale = Locale.getDefault()): String {
-      val localeCheck = locale.toString().toLowerCase()
+      val localeCheck = locale.toString().lowercase()
       return when {
         localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"
         localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-voice-russian"

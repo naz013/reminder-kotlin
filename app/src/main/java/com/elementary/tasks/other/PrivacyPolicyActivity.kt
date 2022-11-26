@@ -10,13 +10,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Logger
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
 
-  private val url = Constants.WEB_URL + "privacy-policy"
+  private val url = prefs.privacyUrl
 
   override fun inflateBinding() = ActivityPrivacyPolicyBinding.inflate(layoutInflater)
 

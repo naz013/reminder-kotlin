@@ -79,8 +79,4 @@ class CompositeStorage(
       }
     }
   }
-
-  override fun sendNotification(type: String, details: String) {
-    storageList.forEach { it.sendNotification(type, details) }
-  }
 }

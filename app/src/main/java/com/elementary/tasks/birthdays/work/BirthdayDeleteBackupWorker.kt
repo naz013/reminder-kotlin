@@ -25,7 +25,7 @@ class BirthdayDeleteBackupWorker(
           syncManagers.converterManager.birthdayConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
-        ).delete(uuId, IndexTypes.TYPE_BIRTHDAY, true)
+        ).delete(uuId, IndexTypes.TYPE_BIRTHDAY)
       }
     }
     return Result.success()

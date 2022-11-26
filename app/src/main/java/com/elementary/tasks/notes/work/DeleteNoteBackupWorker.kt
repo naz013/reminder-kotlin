@@ -25,7 +25,7 @@ class DeleteNoteBackupWorker(
           syncManagers.converterManager.noteConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
-        ).delete(uuId, IndexTypes.TYPE_NOTE, true)
+        ).delete(uuId, IndexTypes.TYPE_NOTE)
       }
     }
     return Result.success()

@@ -25,7 +25,7 @@ class ReminderDeleteBackupWorker(
           syncManagers.converterManager.reminderConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
-        ).delete(uuId, IndexTypes.TYPE_REMINDER, true)
+        ).delete(uuId, IndexTypes.TYPE_REMINDER)
       }
     }
     return Result.success()

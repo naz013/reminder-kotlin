@@ -10,7 +10,6 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.settings.export.backups.UserItem
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
@@ -19,13 +18,12 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
-import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.channels.Channel
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
-import java.util.*
+import java.util.Collections
 
 class GDrive(
   context: Context,
@@ -34,7 +32,6 @@ class GDrive(
 
   private var driveService: Drive? = null
 
-  private val tokenDataFile = TokenDataFile()
   private val indexDataFile = IndexDataFile()
 
   var statusObserver: ((Boolean) -> Unit)? = null
@@ -54,9 +51,6 @@ class GDrive(
       statusObserver?.invoke(true)
       if (!indexDataFile.isLoaded) {
         launchDefault { loadIndexFile() }
-      }
-      if (!tokenDataFile.isLoaded) {
-        launchDefault { loadTokenFile() }
       }
     } else {
       logOut()
@@ -200,7 +194,6 @@ class GDrive(
   override fun saveIndex(fileIndex: FileIndex) {
     indexDataFile.addIndex(fileIndex)
     saveIndexFile()
-    sendNotification("file", fileIndex.id + fileIndex.ext)
   }
 
   override fun removeIndex(id: String) {
@@ -218,43 +211,6 @@ class GDrive(
 
   override suspend fun loadIndex() {
     loadIndexFile()
-    loadTokenFile()
-  }
-
-  override fun sendNotification(type: String, details: String) {
-    tokenDataFile.notifyDevices(type, details)
-  }
-
-  private suspend fun loadTokenFile() {
-    if (tokenDataFile.isLoading) return
-    if (!tokenDataFile.isEmpty() && !tokenDataFile.isOld()) {
-      return
-    }
-    tokenDataFile.isLoading = true
-    val inputStream = restore(TokenDataFile.FILE_NAME) ?: return
-    tokenDataFile.parse(inputStream)
-    withUIContext {
-      if (prefs.multiDeviceModeEnabled) {
-        FirebaseInstallations.getInstance().getToken(true)
-          .addOnCompleteListener { task ->
-            updateToken(task.result.token)
-              .takeIf { task.isSuccessful }
-          }
-      }
-    }
-  }
-
-  private fun saveTokenFile() {
-    launchDefault {
-      val json = tokenDataFile.toJson() ?: return@launchDefault
-      backup(json, Metadata(
-        "",
-        TokenDataFile.FILE_NAME,
-        FileConfig.FILE_NAME_JSON,
-        TimeUtil.gmtDateTime,
-        "Token file"
-      ))
-    }
   }
 
   private suspend fun loadIndexFile() {
@@ -272,13 +228,6 @@ class GDrive(
         TimeUtil.gmtDateTime,
         "Index file"
       ))
-    }
-  }
-
-  fun updateToken(token: String?) {
-    if (token == null) return
-    if (tokenDataFile.addDevice(token)) {
-      if (!tokenDataFile.isLoading) saveTokenFile()
     }
   }
 
@@ -329,7 +278,6 @@ class GDrive(
             title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++
             title.endsWith(FileConfig.FILE_NAME_NOTE) -> count++
             title.endsWith(FileConfig.FILE_NAME_REMINDER) -> count++
-            title.contains(TokenDataFile.FILE_NAME) -> count++
             title.contains(IndexDataFile.FILE_NAME) -> count++
           }
         }

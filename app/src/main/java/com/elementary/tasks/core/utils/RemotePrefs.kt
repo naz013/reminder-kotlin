@@ -7,7 +7,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import timber.log.Timber
 
-class RemotePrefs(context: Context) {
+class RemotePrefs(
+  context: Context,
+  private val prefs: Prefs
+) {
 
   private val mFirebaseRemoteConfig: FirebaseRemoteConfig? = try {
     FirebaseRemoteConfig.getInstance()
@@ -28,15 +31,31 @@ class RemotePrefs(context: Context) {
     fetchConfig()
   }
 
+  fun preLoad() {
+    fetchConfig()
+  }
+
   private fun fetchConfig() {
     mFirebaseRemoteConfig?.fetch(3600)?.addOnCompleteListener { task ->
       Timber.d("fetchConfig: ${task.isSuccessful}")
       if (task.isSuccessful) {
         mFirebaseRemoteConfig.fetchAndActivate()
       }
+      reaAppConfigs()
       displayVersionMessage()
       if (!Module.isPro) displaySaleMessage()
     }
+  }
+
+  private fun reaAppConfigs() {
+    val privacyUrl = mFirebaseRemoteConfig?.getString(PRIVACY_POLICY_URL)
+    val voiceHelpUrls = mFirebaseRemoteConfig?.getString(VOICE_HELP_URLS)
+
+    Logger.d("RemoteConfig: privacyUrl=$privacyUrl")
+    Logger.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
+
+    privacyUrl?.also { prefs.privacyUrl = it }
+    voiceHelpUrls?.also { prefs.voiceHelpUrls = it }
   }
 
   fun addUpdateObserver(observer: UpdateObserver) {
@@ -129,5 +148,8 @@ class RemotePrefs(context: Context) {
 
     private const val VERSION_CODE = "version_code"
     private const val VERSION_NAME = "version_name"
+
+    private const val PRIVACY_POLICY_URL = "privacy_policy_link"
+    private const val VOICE_HELP_URLS = "voice_help_urls"
   }
 }

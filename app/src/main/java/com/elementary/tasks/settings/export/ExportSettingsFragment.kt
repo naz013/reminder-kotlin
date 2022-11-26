@@ -31,10 +31,9 @@ import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.settings.BaseCalendarFragment
-import com.google.firebase.installations.FirebaseInstallations
 import org.koin.android.ext.android.inject
 import java.io.File
-import java.util.*
+import java.util.Locale
 
 class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
@@ -105,7 +104,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     initAutoBackupPrefs()
     initAutoSyncPrefs()
     initBackupFilesPrefs()
-    initMultiDevicePrefs()
     initLocalBackupPrefs()
 
     binding.backupsPrefs.setOnClickListener {
@@ -198,29 +196,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     val isChecked = binding.backupFilesPrefs.isChecked
     binding.backupFilesPrefs.isChecked = !isChecked
     prefs.backupAttachedFiles = !isChecked
-  }
-
-  private fun initMultiDevicePrefs() {
-    binding.multiDevicePrefs.isChecked = prefs.multiDeviceModeEnabled
-    binding.multiDevicePrefs.setOnClickListener { changeMultiDevicePrefs() }
-    binding.multiDevicePrefs.setDependentView(binding.backupDataPrefs)
-  }
-
-  private fun changeMultiDevicePrefs() {
-    val isChecked = binding.multiDevicePrefs.isChecked
-    binding.multiDevicePrefs.isChecked = !isChecked
-    prefs.multiDeviceModeEnabled = !isChecked
-
-    if (prefs.multiDeviceModeEnabled) {
-      FirebaseInstallations.getInstance().getToken(true)
-        .addOnCompleteListener { task ->
-          if (task.isSuccessful) {
-            val token = task.result.token
-            dropbox.updateToken(token).takeIf { dropbox.isLinked }
-            gDrive.updateToken(token).takeIf { gDrive.isLogged }
-          }
-        }
-    }
   }
 
   private fun initAutoSyncPrefs() {

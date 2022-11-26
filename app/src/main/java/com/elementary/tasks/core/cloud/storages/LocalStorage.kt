@@ -124,10 +124,6 @@ class LocalStorage(context: Context) : Storage() {
   override suspend fun loadIndex() {
   }
 
-  override fun sendNotification(type: String, details: String) {
-
-  }
-
   private fun folderFromFileName(fileName: String): File? {
     if (fileName.isEmpty()) return MemoryUtil.remindersDir
     val parts = fileName.split(".".toRegex())

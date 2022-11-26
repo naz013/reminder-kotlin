@@ -119,7 +119,6 @@ object PrefsConstants {
   const val AUTO_IMPORT_SHARED_DATA = "auto_import_shared_data"
   const val NIGHT_MODE = "night_mode"
   const val EXPORT_ATTACHED_FILES = "export_attached_files"
-  const val MULTI_DEVICE_MODE = "multi_device_mode"
   const val LOCAL_BACKUP = "local_backup"
   const val PRIVACY_SHOWED = "privacy_showed"
   const val SHOW_PERMANENT_REMINDERS = "show_permanent_reminders"
@@ -151,4 +150,7 @@ object PrefsConstants {
   const val IS_CREATE_SHOWN = "create_showcase"
   const val IS_CALENDAR_SHOWN = "calendar_showcase"
   const val IS_LIST_SHOWN = "list_showcase"
+
+  const val PRIVACY_POLICY_URL = "privacy_url"
+  const val VOICE_HELP_URLS = "voice_help_urls"
 }
