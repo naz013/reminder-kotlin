@@ -7,12 +7,14 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class PlacesViewModel(
   appDb: AppDb,
   prefs: Prefs,
-  private val backupTool: BackupTool
-) : BasePlacesViewModel(appDb, prefs) {
+  private val backupTool: BackupTool,
+  dispatcherProvider: DispatcherProvider
+) : BasePlacesViewModel(appDb, prefs, dispatcherProvider) {
 
   val places = appDb.placesDao().loadAll()
   val shareFile = mutableLiveDataOf<ShareFile<Place>>()

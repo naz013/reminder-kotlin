@@ -14,6 +14,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import timber.log.Timber
 
 class ReminderViewModel(
@@ -21,8 +22,9 @@ class ReminderViewModel(
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  eventControlFactory: EventControlFactory
-) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory) {
+  eventControlFactory: EventControlFactory,
+  dispatcherProvider: DispatcherProvider
+) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory, dispatcherProvider) {
 
   private val _note = MutableLiveData<NoteWithImages>()
   val note: LiveData<NoteWithImages> = _note
@@ -57,7 +59,12 @@ class ReminderViewModel(
       _note.postValue(appDb.notesDao().getById(reminder.noteId))
       val googleTask = appDb.googleTasksDao().getByReminderId(reminder.uuId)
       if (googleTask != null) {
-        _googleTask.postValue(Pair(appDb.googleTaskListsDao().getById(googleTask.listId), googleTask))
+        _googleTask.postValue(
+          Pair(
+            appDb.googleTaskListsDao().getById(googleTask.listId),
+            googleTask
+          )
+        )
       }
       val events = calendarUtils.loadEvents(reminder.uuId)
       if (events.isNotEmpty()) {

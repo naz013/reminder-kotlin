@@ -6,12 +6,14 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 
 class GroupsViewModel(
   appDb: AppDb,
-  prefs: Prefs
-) : BaseGroupsViewModel(appDb, prefs) {
+  prefs: Prefs,
+  dispatcherProvider: DispatcherProvider
+) : BaseGroupsViewModel(appDb, prefs, dispatcherProvider) {
 
   fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
     postInProgress(true)

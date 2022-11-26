@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import timber.log.Timber
 
 class GoogleTaskViewModel(
@@ -20,8 +21,9 @@ class GoogleTaskViewModel(
   prefs: Prefs,
   context: Context,
   gTasks: GTasks,
-  private val eventControlFactory: EventControlFactory
-) : BaseTaskListsViewModel(appDb, prefs, context, gTasks) {
+  private val eventControlFactory: EventControlFactory,
+  dispatcherProvider: DispatcherProvider
+) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider) {
 
   val googleTask = appDb.googleTasksDao().loadById(id)
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()

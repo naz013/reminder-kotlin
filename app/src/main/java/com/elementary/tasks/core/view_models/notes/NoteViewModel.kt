@@ -5,14 +5,16 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class NoteViewModel(
   key: String,
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  eventControlFactory: EventControlFactory
-) : BaseNotesViewModel(appDb, prefs, calendarUtils, eventControlFactory) {
+  eventControlFactory: EventControlFactory,
+  dispatcherProvider: DispatcherProvider
+) : BaseNotesViewModel(appDb, prefs, calendarUtils, eventControlFactory, dispatcherProvider) {
 
   val note = appDb.notesDao().loadById(key)
   val reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)

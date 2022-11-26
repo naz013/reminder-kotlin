@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
 import timber.log.Timber
 
@@ -24,8 +25,15 @@ class HomeViewModel(
   currentStateHolder: CurrentStateHolder,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
-  private val birthdayModelAdapter: BirthdayModelAdapter
-) : BaseRemindersViewModel(appDb, currentStateHolder.preferences, calendarUtils, eventControlFactory), (String) -> Unit {
+  private val birthdayModelAdapter: BirthdayModelAdapter,
+  dispatcherProvider: DispatcherProvider
+) : BaseRemindersViewModel(
+  appDb,
+  currentStateHolder.preferences,
+  calendarUtils,
+  eventControlFactory,
+  dispatcherProvider
+), (String) -> Unit {
 
   private val context = currentStateHolder.context
   private val _reminders = mutableLiveDataOf<List<Reminder>>()

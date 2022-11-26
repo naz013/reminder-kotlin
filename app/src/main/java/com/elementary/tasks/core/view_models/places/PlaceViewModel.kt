@@ -6,13 +6,15 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
 
 class PlaceViewModel(
   key: String,
   appDb: AppDb,
-  prefs: Prefs
-) : BasePlacesViewModel(appDb, prefs) {
+  prefs: Prefs,
+  dispatcherProvider: DispatcherProvider
+) : BasePlacesViewModel(appDb, prefs, dispatcherProvider) {
 
   var place = appDb.placesDao().loadByKey(key)
   var hasSameInDb: Boolean = false

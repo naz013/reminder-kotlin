@@ -6,13 +6,15 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 
 class SmsTemplateViewModel(
   key: String,
   appDb: AppDb,
-  prefs: Prefs
-) : BaseSmsTemplatesViewModel(appDb, prefs) {
+  prefs: Prefs,
+  dispatcherProvider: DispatcherProvider
+) : BaseSmsTemplatesViewModel(appDb, prefs, dispatcherProvider) {
 
   val smsTemplate = appDb.smsTemplatesDao().loadByKey(key)
   var isEdited = false
