@@ -3,7 +3,7 @@
     <string name="app_name">"Rappel"</string>
     <string name="app_name_pro">"Rappel PRO"</string>
     <string name="action_settings">"Paramètres"</string>
-    <string name="copyright">2021 © Nazar Sukhovych</string>
+    <string name="copyright">2022 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Je ne peux pas avoir accès aux services de localisation!"</string>
     <string name="normal">"Ordinaire"</string>

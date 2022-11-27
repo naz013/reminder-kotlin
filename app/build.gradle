@@ -84,7 +84,6 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        useIR = true
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -96,9 +95,6 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-    }
-    dexOptions {
-        javaMaxHeapSize "2g"
     }
     lintOptions {
         checkReleaseBuilds false
@@ -127,7 +123,7 @@ dependencies {
     implementation 'io.insert-koin:koin-androidx-workmanager:3.1.4'
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'com.google.android.material:material:1.4.0-beta01'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
@@ -193,7 +189,7 @@ dependencies {
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
-    implementation 'com.dropbox.core:dropbox-core-sdk:4.0.0'
+    implementation 'com.dropbox.core:dropbox-core-sdk:5.0.0'
     implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'org.dmfs:lib-recur:0.12.2'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
