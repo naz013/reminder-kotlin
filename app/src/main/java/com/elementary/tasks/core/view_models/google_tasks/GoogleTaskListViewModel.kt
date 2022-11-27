@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -23,8 +24,9 @@ class GoogleTaskListViewModel(
   prefs: Prefs,
   context: Context,
   gTasks: GTasks,
-  dispatcherProvider: DispatcherProvider
-) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider, workManagerProvider) {
 
   var googleTaskList: LiveData<GoogleTaskList>
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()

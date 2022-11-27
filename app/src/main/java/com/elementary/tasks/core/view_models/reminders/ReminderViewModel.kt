@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.view_models.reminders
 
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.OnLifecycleEvent
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -13,6 +12,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import timber.log.Timber
@@ -23,8 +23,16 @@ class ReminderViewModel(
   prefs: Prefs,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
-  dispatcherProvider: DispatcherProvider
-) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseRemindersViewModel(
+  appDb,
+  prefs,
+  calendarUtils,
+  eventControlFactory,
+  dispatcherProvider,
+  workManagerProvider
+) {
 
   private val _note = MutableLiveData<NoteWithImages>()
   val note: LiveData<NoteWithImages> = _note
@@ -91,8 +99,8 @@ class ReminderViewModel(
     }
   }
 
-  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-  fun onDestroy() {
+  override fun onDestroy(owner: LifecycleOwner) {
+    super.onDestroy(owner)
     reminder.removeObserver(mObserver)
   }
 }

@@ -8,6 +8,7 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.launch
@@ -17,8 +18,9 @@ class BirthdaysViewModel(
   prefs: Prefs,
   context: Context,
   private val birthdayModelAdapter: BirthdayModelAdapter,
-  dispatcherProvider: DispatcherProvider
-) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider) {
 
   val birthdays = appDb.birthdaysDao().loadAll().map { list ->
     list.map { birthdayModelAdapter.convert(it) }

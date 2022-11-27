@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.UsedTime
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -11,8 +12,9 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 class UsedTimeViewModel(
   appDb: AppDb,
   prefs: Prefs,
-  dispatcherProvider: DispatcherProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   val usedTimeList = appDb.usedTimeDao().loadFirst5()
 

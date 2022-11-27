@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -22,8 +23,9 @@ class GoogleTaskViewModel(
   context: Context,
   gTasks: GTasks,
   private val eventControlFactory: EventControlFactory,
-  dispatcherProvider: DispatcherProvider
-) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider, workManagerProvider) {
 
   val googleTask = appDb.googleTasksDao().loadById(id)
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()

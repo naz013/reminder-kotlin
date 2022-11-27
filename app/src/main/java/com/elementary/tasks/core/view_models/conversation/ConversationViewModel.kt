@@ -34,6 +34,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toGmt
 import com.elementary.tasks.core.utils.withUIContext
@@ -56,13 +57,15 @@ class ConversationViewModel(
     eventControlFactory: EventControlFactory,
     private val recognizer: Recognizer,
     private val birthdayModelAdapter: BirthdayModelAdapter,
-    dispatcherProvider: DispatcherProvider
+    dispatcherProvider: DispatcherProvider,
+    workManagerProvider: WorkManagerProvider
 ) : BaseRemindersViewModel(
     appDb,
     currentStateHolder.preferences,
     calendarUtils,
     eventControlFactory,
-    dispatcherProvider
+    dispatcherProvider,
+    workManagerProvider
 ) {
 
     private var _shoppingLists = MutableLiveData<List<Reminder>>()

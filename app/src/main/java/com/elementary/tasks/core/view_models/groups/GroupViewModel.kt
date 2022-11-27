@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -13,8 +14,9 @@ class GroupViewModel(
   id: String,
   appDb: AppDb,
   prefs: Prefs,
-  dispatcherProvider: DispatcherProvider
-) : BaseGroupsViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseGroupsViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   val reminderGroup = appDb.reminderGroupDao().loadById(id)
   var isEdited = false

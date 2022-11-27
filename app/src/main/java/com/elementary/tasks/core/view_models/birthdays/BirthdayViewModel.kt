@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -19,8 +20,9 @@ class BirthdayViewModel(
   appDb: AppDb,
   prefs: Prefs,
   context: Context,
-  dispatcherProvider: DispatcherProvider
-) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider) {
 
   val birthday = appDb.birthdaysDao().loadById(id)
   var editableBirthday: Birthday = Birthday()

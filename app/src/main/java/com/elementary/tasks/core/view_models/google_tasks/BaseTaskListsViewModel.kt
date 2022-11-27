@@ -7,6 +7,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -19,8 +20,9 @@ abstract class BaseTaskListsViewModel(
   prefs: Prefs,
   protected val context: Context,
   protected val gTasks: GTasks,
-  dispatcherProvider: DispatcherProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
     if (!gTasks.isLogged) {

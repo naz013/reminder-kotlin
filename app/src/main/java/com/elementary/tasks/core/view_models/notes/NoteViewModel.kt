@@ -4,6 +4,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.DispatcherProvider
 
@@ -13,8 +14,16 @@ class NoteViewModel(
   prefs: Prefs,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
-  dispatcherProvider: DispatcherProvider
-) : BaseNotesViewModel(appDb, prefs, calendarUtils, eventControlFactory, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseNotesViewModel(
+  appDb,
+  prefs,
+  calendarUtils,
+  eventControlFactory,
+  dispatcherProvider,
+  workManagerProvider
+) {
 
   val note = appDb.notesDao().loadById(key)
   val reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)

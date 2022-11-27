@@ -185,12 +185,13 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   }
 
   private fun initViewModel() {
-    viewModel.notes.observe(viewLifecycleOwner, { list ->
+    lifecycle.addObserver(viewModel)
+    viewModel.notes.observe(viewLifecycleOwner) { list ->
       if (list != null) {
         Timber.d("initViewModel: $list")
         sortController.original = list
       }
-    })
+    }
   }
 
   private fun layoutManager(): RecyclerView.LayoutManager {

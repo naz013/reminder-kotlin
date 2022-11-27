@@ -1,15 +1,14 @@
 package com.elementary.tasks.core.view_models
 
-import android.content.Context
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import androidx.work.Worker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import kotlinx.coroutines.launch
@@ -18,8 +17,9 @@ import kotlinx.coroutines.runBlocking
 open class BaseDbViewModel(
   protected val appDb: AppDb,
   protected val prefs: Prefs,
-  protected val dispatcherProvider: DispatcherProvider
-) : ViewModel(), LifecycleObserver {
+  protected val dispatcherProvider: DispatcherProvider,
+  private val workManagerProvider: WorkManagerProvider
+) : ViewModel(), DefaultLifecycleObserver {
 
   private val _result = mutableLiveDataOf<Commands>()
   val result = _result.toLiveData()
@@ -40,21 +40,17 @@ open class BaseDbViewModel(
     _error.postValue(error)
   }
 
-  protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String, context: Context? = null) {
-    startWork(clazz, Data.Builder().putString(key, valueTag).build(), valueTag, context)
+  protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String) {
+    startWork(clazz, Data.Builder().putString(key, valueTag).build(), valueTag)
   }
 
-  protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String, context: Context? = null) {
+  protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String) {
     if (prefs.isBackupEnabled) {
       val work = OneTimeWorkRequest.Builder(clazz)
         .setInputData(data)
         .addTag(tag)
         .build()
-      if (context != null) {
-        WorkManager.getInstance(context).enqueue(work)
-      } else {
-        WorkManager.getInstance().enqueue(work)
-      }
+      workManagerProvider.getWorkManager().enqueue(work)
     }
   }
 

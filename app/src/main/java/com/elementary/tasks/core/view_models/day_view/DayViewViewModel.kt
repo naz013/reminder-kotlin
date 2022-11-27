@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -30,8 +31,9 @@ class DayViewViewModel(
   dayViewProvider: DayViewProvider,
   appDb: AppDb,
   prefs: Prefs,
-  dispatcherProvider: DispatcherProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events

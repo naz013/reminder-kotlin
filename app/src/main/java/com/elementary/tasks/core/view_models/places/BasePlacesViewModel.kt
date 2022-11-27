@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
@@ -13,8 +14,9 @@ import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 abstract class BasePlacesViewModel(
   appDb: AppDb,
   prefs: Prefs,
-  dispatcherProvider: DispatcherProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   fun deletePlace(place: Place) {
     postInProgress(true)

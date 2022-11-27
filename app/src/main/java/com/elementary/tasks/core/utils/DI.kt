@@ -6,6 +6,7 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
@@ -76,10 +77,6 @@ import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
-import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
-import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
-import com.elementary.tasks.settings.export.CloudViewModel
-import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
@@ -91,7 +88,12 @@ import com.elementary.tasks.reminder.create.ReminderStateViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
+import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
+import com.elementary.tasks.settings.export.CloudViewModel
+import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
@@ -121,13 +123,13 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get()) }
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> SmsTemplateViewModel(id, get(), get(), get()) }
-  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get()) }
-  viewModel { (id: String) -> NoteViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> GroupViewModel(id, get(), get(), get()) }
-  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get()) }
+  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> SmsTemplateViewModel(id, get(), get(), get(), get()) }
+  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get()) }
+  viewModel { (id: String) -> NoteViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> GroupViewModel(id, get(), get(), get(), get()) }
+  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get(), get()) }
   viewModel { (listId: String) ->
     GoogleTaskListViewModel(
       listId,
@@ -135,29 +137,30 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
-  viewModel { (id: String) -> GoogleTaskViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> GoogleTaskViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
   viewModel { (calculateFuture: Boolean) ->
-    DayViewViewModel(calculateFuture, get(), get(), get(), get(), get())
+    DayViewViewModel(calculateFuture, get(), get(), get(), get(), get(), get())
   }
   viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
-    MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get())
+    MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get(), get())
   }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
-  viewModel { SmsTemplatesViewModel(get(), get(), get()) }
-  viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { SmsTemplatesViewModel(get(), get(), get(), get()) }
+  viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { SelectApplicationViewModel() }
-  viewModel { PlacesViewModel(get(), get(), get(), get()) }
-  viewModel { UsedTimeViewModel(get(), get(), get()) }
-  viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get(), get()) }
-  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get()) }
-  viewModel { NotesViewModel(get(), get(), get(), get(), get()) }
-  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(),get()) }
-  viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { GroupsViewModel(get(), get(), get()) }
+  viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
+  viewModel { UsedTimeViewModel(get(), get(), get(), get()) }
+  viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(),get(), get()) }
+  viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { GroupsViewModel(get(), get(), get(), get()) }
   viewModel { CloudViewModel(get(), get()) }
   viewModel { ReminderStateViewModel() }
   viewModel { GoogleTasksStateViewModel() }
@@ -233,6 +236,10 @@ val utilModule = module {
   single { DayViewProvider(get(), get()) }
 
   single { DispatcherProvider() }
+
+  single { WorkManagerProvider(get()) }
+
+  single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

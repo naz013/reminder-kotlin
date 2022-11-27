@@ -13,6 +13,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.view_models.Commands
@@ -26,13 +27,15 @@ class HomeViewModel(
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
   private val birthdayModelAdapter: BirthdayModelAdapter,
-  dispatcherProvider: DispatcherProvider
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
 ) : BaseRemindersViewModel(
   appDb,
   currentStateHolder.preferences,
   calendarUtils,
   eventControlFactory,
-  dispatcherProvider
+  dispatcherProvider,
+  workManagerProvider
 ), (String) -> Unit {
 
   private val context = currentStateHolder.context
@@ -72,7 +75,7 @@ class HomeViewModel(
     launchDefault {
       appDb.birthdaysDao().delete(id)
       updateBirthdayPermanent()
-      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id, context)
+      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
@@ -27,8 +28,9 @@ abstract class BaseRemindersViewModel(
   prefs: Prefs,
   protected val calendarUtils: CalendarUtils,
   protected val eventControlFactory: EventControlFactory,
-  dispatcherProvider: DispatcherProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
   var defaultReminderGroup: LiveData<ReminderGroup> = _defaultReminderGroup

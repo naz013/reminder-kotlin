@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -13,8 +14,9 @@ class PlaceViewModel(
   key: String,
   appDb: AppDb,
   prefs: Prefs,
-  dispatcherProvider: DispatcherProvider
-) : BasePlacesViewModel(appDb, prefs, dispatcherProvider) {
+  dispatcherProvider: DispatcherProvider,
+  workManagerProvider: WorkManagerProvider
+) : BasePlacesViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   var place = appDb.placesDao().loadByKey(key)
   var hasSameInDb: Boolean = false
