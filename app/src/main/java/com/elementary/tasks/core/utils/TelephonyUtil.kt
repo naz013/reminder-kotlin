@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.ui.UiShareData
 import java.io.File
 
 object TelephonyUtil {
@@ -43,6 +44,22 @@ object TelephonyUtil {
     intent.type = "*/*"
     intent.putExtra(Intent.EXTRA_SUBJECT, message)
     val uri = UriUtil.getUri(context, file)
+    intent.putExtra(Intent.EXTRA_STREAM, uri)
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    try {
+      val chooser = Intent.createChooser(intent, "Send email...")
+      context.startActivity(chooser)
+    } catch (e: Exception) {
+      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+    }
+  }
+
+  fun sendFile(context: Context, shareData: UiShareData) {
+    if (shareData.file == null) return
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "*/*"
+    intent.putExtra(Intent.EXTRA_SUBJECT, shareData.name)
+    val uri = UriUtil.getUri(context, shareData.file)
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     try {

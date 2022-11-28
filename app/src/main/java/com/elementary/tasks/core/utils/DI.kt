@@ -38,6 +38,8 @@ import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
+import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
@@ -58,6 +60,7 @@ import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
+import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
@@ -125,6 +128,19 @@ val workerModule = module {
 val viewModelModule = module {
   viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    ReminderPreviewViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { (id: String) -> SmsTemplateViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> NoteViewModel(id, get(), get(), get(), get(), get(), get()) }
@@ -141,7 +157,18 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { (id: String) -> GoogleTaskViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    GoogleTaskViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { (calculateFuture: Boolean) ->
     DayViewViewModel(calculateFuture, get(), get(), get(), get(), get(), get())
   }
@@ -158,7 +185,7 @@ val viewModelModule = module {
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(),get(), get()) }
+  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
   viewModel { CloudViewModel(get(), get()) }
@@ -240,6 +267,13 @@ val utilModule = module {
   single { WorkManagerProvider(get()) }
 
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
+
+  single { TextProvider(get()) }
+}
+
+val adapterModule = module {
+  single { UiReminderPreviewAdapter(get(), get(), get()) }
+  single { UiReminderPlaceAdapter() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

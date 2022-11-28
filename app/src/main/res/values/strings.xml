@@ -669,5 +669,6 @@
     <string name="prompt_info_description">Proceed with biometric authentication</string>
     <string name="title_feature_birthdays">Birthdays</string>
     <string name="bg_location_message">To let application notify you when you will be near selected location, you need to allow background location.</string>
+    <string name="deleted">Deleted</string>
 
 </resources>

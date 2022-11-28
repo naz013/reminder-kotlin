@@ -3,7 +3,6 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.text.Editable
@@ -23,17 +22,17 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.TimeUtil.toGmt
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.ExclusionPickerView
-import com.elementary.tasks.core.views.GroupView
 import com.elementary.tasks.core.views.LedPickerView
 import com.elementary.tasks.core.views.LoudnessPickerView
 import com.elementary.tasks.core.views.MelodyView
@@ -55,7 +54,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.io.InputStream
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 fun List<String>.append(): String {
   val stringBuilder = StringBuilder()
@@ -185,6 +185,8 @@ fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
 fun View.isGone(): Boolean = visibility == View.GONE
 
+fun View.isTransparent(): Boolean = visibility == View.INVISIBLE
+
 fun View.transparent() {
   visibility = View.INVISIBLE
 }
@@ -200,6 +202,11 @@ fun View.show() {
 fun View.visibleGone(value: Boolean) {
   if (value && !isVisible()) show()
   else if (!value && !isGone()) hide()
+}
+
+fun View.visibleInvisible(value: Boolean) {
+  if (value && !isVisible()) show()
+  else if (!value && !isTransparent()) transparent()
 }
 
 fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
@@ -390,4 +397,12 @@ fun ExclusionPickerView.bindProperty(v1: List<Int>, v2: String, v3: String, list
 
 fun <T> Calendar.map(func: (Calendar) -> T): T {
   return func.invoke(this)
+}
+
+fun <T> LiveData<T>.nonNullObserve(owner: LifecycleOwner, observer: Observer<T>) {
+  this.observe(owner) { o: T? ->
+    if (o != null) {
+      observer.onChanged(o)
+    }
+  }
 }

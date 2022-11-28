@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +30,7 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val dialogues by inject<Dialogues>()
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 
+  private val uiHandler = Handler(Looper.getMainLooper())
   protected val isDarkMode = currentStateHolder.theme.isDark
   private var resultLauncher: ActivityResultLauncher<*>? = null
 
@@ -104,6 +107,10 @@ abstract class ThemedActivity : AppCompatActivity() {
       requestCode,
       *permissions
     )
+
+  protected fun postUi(action: () -> Unit) {
+    uiHandler.post(action)
+  }
 
   companion object {
     const val ARG_LOGIN_FLAG = "arg_login_flag"

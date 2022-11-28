@@ -252,15 +252,8 @@ object ReminderUtils {
     }
   }
 
-  private fun isAllChecked(repCode: List<Int>): Boolean {
-    var `is` = true
-    for (i in repCode) {
-      if (i == 0) {
-        `is` = false
-        break
-      }
-    }
-    return `is`
+  fun isAllChecked(repCode: List<Int>): Boolean {
+    return repCode.none { it == 0 }
   }
 
   fun getTypeString(context: Context, type: Int): String {

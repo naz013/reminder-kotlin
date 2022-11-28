@@ -2,8 +2,8 @@ package com.elementary.tasks.core.view_models.notes
 
 import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.CalendarUtils
@@ -31,6 +31,6 @@ class NotesViewModel(
 
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
-    analyticsEventSender.send(FeatureUsedEvent(Feature.NOTE))
+    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
   }
 }

@@ -52,7 +52,8 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
   private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
   private fun initViewModel() {
-    viewModel.reminder.observe(this, { showInfo(it) })
+    lifecycle.addObserver(viewModel)
+    viewModel.reminder.observe(this) { showInfo(it) }
   }
 
   private fun showMapData(reminder: Reminder) {

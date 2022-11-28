@@ -293,16 +293,17 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
   private fun initViewModel() {
     Timber.d("initViewModel: ${getId()}")
     viewModel.reminder.observeForever(mReminderObserver)
-    viewModel.result.observe(this, { commands ->
+    viewModel.result.observe(this) { commands ->
       if (commands != null) {
         when (commands) {
           Commands.DELETED -> {
           }
+
           else -> {
           }
         }
       }
-    })
+    }
     lifecycle.addObserver(viewModel)
     if (getId() == "" && BuildConfig.DEBUG) {
       loadTest()

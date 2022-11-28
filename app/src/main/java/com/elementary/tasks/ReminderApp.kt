@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.RemotePrefs
+import com.elementary.tasks.core.utils.adapterModule
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
 import com.elementary.tasks.core.utils.repositoryModule
@@ -43,15 +44,18 @@ class ReminderApp : MultiDexApplication() {
     startKoin {
       logger(logger)
       androidContext(this@ReminderApp)
-      modules(listOf(
-        utilModule,
-        repositoryModule,
-        storageModule,
-        completableModule,
-        converterModule,
-        workerModule,
-        viewModelModule
-      ))
+      modules(
+        listOf(
+          utilModule,
+          repositoryModule,
+          storageModule,
+          completableModule,
+          converterModule,
+          workerModule,
+          viewModelModule,
+          adapterModule
+        )
+      )
     }
     Notifier.createChannels(this)
     JobManager.create(this).addJobCreator { EventJobService() }

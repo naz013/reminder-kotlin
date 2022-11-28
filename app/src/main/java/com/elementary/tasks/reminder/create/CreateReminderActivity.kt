@@ -157,25 +157,27 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun initViewModel() {
+    lifecycle.addObserver(viewModel)
     viewModel.reminder.observe(this, mReminderObserver)
-    viewModel.result.observe(this, { commands ->
+    viewModel.result.observe(this) { commands ->
       if (commands != null) {
         when (commands) {
           Commands.DELETED, Commands.SAVED -> {
             setResult(Activity.RESULT_OK)
             finish()
           }
+
           else -> {
           }
         }
       }
-    })
-    viewModel.allGroups.observe(this, {
+    }
+    viewModel.allGroups.observe(this) {
       if (it != null && it.isNotEmpty()) {
         stateViewModel.group = it[0]
         showGroup(it[0])
       }
-    })
+    }
   }
 
   private fun getId(): String = intentString(Constants.INTENT_ID)

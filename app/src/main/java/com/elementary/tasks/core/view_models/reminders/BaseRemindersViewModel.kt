@@ -3,6 +3,7 @@ package com.elementary.tasks.core.view_models.reminders
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -13,15 +14,15 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 abstract class BaseRemindersViewModel(
   appDb: AppDb,
@@ -42,10 +43,11 @@ abstract class BaseRemindersViewModel(
   var defaultGroup: ReminderGroup? = null
 
   init {
-    launchDefault {
-      val defGroup = appDb.reminderGroupDao().defaultGroup(true)
-      defaultGroup = defGroup
-      _defaultReminderGroup.postValue(defGroup)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      appDb.reminderGroupDao().defaultGroup(true)?.also {
+        defaultGroup = it
+        _defaultReminderGroup.postValue(it)
+      }
     }
     appDb.reminderGroupDao().loadAll().observeForever {
       _allGroups.postValue(it)
@@ -58,7 +60,7 @@ abstract class BaseRemindersViewModel(
 
   fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
         Timber.d("saveAndStartReminder: save START")
         if (reminder.groupUuId == "") {
@@ -89,7 +91,7 @@ abstract class BaseRemindersViewModel(
 
   fun copyReminder(reminder: Reminder, time: Long, name: String) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
         if (reminder.groupUuId == "") {
           val group = appDb.reminderGroupDao().defaultGroup()
@@ -123,7 +125,7 @@ abstract class BaseRemindersViewModel(
 
   fun stopReminder(reminder: Reminder) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       eventControlFactory.getController(reminder).stop()
       postInProgress(false)
     }
@@ -131,7 +133,7 @@ abstract class BaseRemindersViewModel(
 
   fun pauseReminder(reminder: Reminder) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       eventControlFactory.getController(reminder).pause()
       postInProgress(false)
     }
@@ -139,7 +141,7 @@ abstract class BaseRemindersViewModel(
 
   fun resumeReminder(reminder: Reminder) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       eventControlFactory.getController(reminder).resume()
       postInProgress(false)
     }
@@ -147,7 +149,7 @@ abstract class BaseRemindersViewModel(
 
   fun toggleReminder(reminder: Reminder) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       if (!eventControlFactory.getController(reminder).onOff()) {
         postInProgress(false)
         postCommand(Commands.OUTDATED)
@@ -195,7 +197,7 @@ abstract class BaseRemindersViewModel(
 
   fun saveReminder(reminder: Reminder, context: Context? = null) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
         appDb.reminderDao().insert(reminder)
       }
