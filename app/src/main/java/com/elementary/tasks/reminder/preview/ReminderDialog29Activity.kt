@@ -731,7 +731,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
       builder.setGroup("GROUP")
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(appName)
     }
@@ -740,7 +740,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   private fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
     discardMedia()
-    Notifier.getManager(this)?.cancel(id)
+    notifier.cancel(id)
   }
 
   private fun discardMedia() {
@@ -762,7 +762,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)
     wearableNotificationBuilder.setGroupSummary(false)
-    Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
+    notifier.notify(id, wearableNotificationBuilder.build())
   }
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

@@ -62,7 +62,7 @@ class TuneExtraView : LinearLayout {
       binding.unlockCheck.isEnabled = !extra.useGlobal
       binding.vibrationCheck.isEnabled = !extra.useGlobal
       binding.voiceCheck.isEnabled = !extra.useGlobal
-      if (Module.isQ) {
+      if (Module.is10) {
         binding.autoCheck.hide()
         binding.unlockCheck.hide()
       } else {
@@ -95,11 +95,11 @@ class TuneExtraView : LinearLayout {
     var res = ""
     res += toSign(extra.vibrate)
     res += toSign(extra.notifyByVoice)
-    if (!Module.isQ) {
+    if (!Module.is10) {
       res += toSign(extra.unlock)
     }
     res += toSign(extra.repeatNotification)
-    if (!Module.isQ) {
+    if (!Module.is10) {
       if (hasAutoExtra) res += toSign(extra.auto)
     }
     res = res.trim()

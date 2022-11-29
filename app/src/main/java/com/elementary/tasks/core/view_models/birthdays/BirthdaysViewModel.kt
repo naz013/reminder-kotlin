@@ -7,6 +7,7 @@ import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.view_models.Commands
@@ -19,8 +20,9 @@ class BirthdaysViewModel(
   context: Context,
   private val birthdayModelAdapter: BirthdayModelAdapter,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  notifier: Notifier
+) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider, notifier) {
 
   val birthdays = appDb.birthdaysDao().loadAll().map { list ->
     list.map { birthdayModelAdapter.convert(it) }

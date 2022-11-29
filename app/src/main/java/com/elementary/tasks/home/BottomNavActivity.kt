@@ -40,7 +40,8 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
       binding.quickNoteContainer,
       binding.quickNoteView,
       noteViewModel,
-      prefs
+      prefs,
+      notifier
     ).also { it.hideNoteView() }
   }
   private var mFragment: BaseFragment<*>? = null

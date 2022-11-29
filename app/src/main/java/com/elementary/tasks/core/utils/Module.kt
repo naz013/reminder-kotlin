@@ -10,9 +10,10 @@ import com.elementary.tasks.BuildConfig
 object Module {
 
   const val isPro = BuildConfig.IS_PRO
-  val isS = Build.VERSION.SDK_INT >= 31
-  val isR = Build.VERSION.SDK_INT >= 30
-  val isQ = Build.VERSION.SDK_INT >= 29
+  val is13 = Build.VERSION.SDK_INT >= 33
+  val is12 = Build.VERSION.SDK_INT >= 31
+  val is11 = Build.VERSION.SDK_INT >= 30
+  val is10 = Build.VERSION.SDK_INT >= 29
   val isPie = Build.VERSION.SDK_INT >= 28
   val isOreoMr1 = Build.VERSION.SDK_INT >= 27
   val isOreo = Build.VERSION.SDK_INT >= 26

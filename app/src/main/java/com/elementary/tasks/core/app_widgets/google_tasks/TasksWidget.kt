@@ -11,14 +11,20 @@ import androidx.core.content.ContextCompat
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.utils.PendingIntentWrapper
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 
 class TasksWidget : AppWidgetProvider() {
 
-  override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+  override fun onUpdate(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetIds: IntArray
+  ) {
     val sp = context.getSharedPreferences(
-      TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+      TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE
+    )
     for (i in appWidgetIds) {
       updateWidget(context, appWidgetManager, sp, i)
     }
@@ -28,7 +34,8 @@ class TasksWidget : AppWidgetProvider() {
   override fun onDeleted(context: Context, appWidgetIds: IntArray) {
     super.onDeleted(context, appWidgetIds)
     val editor = context.getSharedPreferences(
-      TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE).edit()
+      TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE
+    ).edit()
     for (widgetID in appWidgetIds) {
       editor.remove(TasksWidgetConfigActivity.WIDGET_HEADER_BG + widgetID)
       editor.remove(TasksWidgetConfigActivity.WIDGET_ITEM_BG + widgetID)
@@ -38,8 +45,10 @@ class TasksWidget : AppWidgetProvider() {
 
   companion object {
 
-    fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
-                     sp: SharedPreferences, widgetID: Int) {
+    fun updateWidget(
+      context: Context, appWidgetManager: AppWidgetManager,
+      sp: SharedPreferences, widgetID: Int
+    ) {
       val rv = RemoteViews(context.packageName, R.layout.widget_google_tasks)
 
       val headerBgColor = sp.getInt(TasksWidgetConfigActivity.WIDGET_HEADER_BG + widgetID, 0)
@@ -47,25 +56,33 @@ class TasksWidget : AppWidgetProvider() {
       rv.setInt(R.id.headerBg, "setBackgroundResource", WidgetUtils.newWidgetBg(headerBgColor))
 
       if (WidgetUtils.isDarkBg(headerBgColor)) {
-        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureWhite,
-          R.id.btn_settings, TasksWidgetConfigActivity::class.java) {
+        WidgetUtils.initButton(
+          context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureWhite,
+          R.id.btn_settings, TasksWidgetConfigActivity::class.java
+        ) {
           it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
           return@initButton it
         }
-        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.color.pureWhite,
-          R.id.btn_add_task, TaskActivity::class.java) {
+        WidgetUtils.initButton(
+          context, rv, R.drawable.ic_twotone_add_24px, R.color.pureWhite,
+          R.id.btn_add_task, TaskActivity::class.java
+        ) {
           it.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
           return@initButton it
         }
         rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureWhite))
       } else {
-        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureBlack,
-          R.id.btn_settings, TasksWidgetConfigActivity::class.java) {
+        WidgetUtils.initButton(
+          context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureBlack,
+          R.id.btn_settings, TasksWidgetConfigActivity::class.java
+        ) {
           it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
           return@initButton it
         }
-        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.color.pureBlack,
-          R.id.btn_add_task, TaskActivity::class.java) {
+        WidgetUtils.initButton(
+          context, rv, R.drawable.ic_twotone_add_24px, R.color.pureBlack,
+          R.id.btn_add_task, TaskActivity::class.java
+        ) {
           it.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
           return@initButton it
         }
@@ -73,8 +90,12 @@ class TasksWidget : AppWidgetProvider() {
       }
 
       val startActivityIntent = Intent(context, TaskActivity::class.java)
-      val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
-        startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+      val startActivityPendingIntent = PendingIntentWrapper.getActivity(
+        context,
+        0,
+        startActivityIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT
+      )
       rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent)
 
       val adapter = Intent(context, TasksService::class.java)

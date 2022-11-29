@@ -45,7 +45,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
   private fun openMissedScreen() {
     MissedCall(number = "2454548", dateTime = System.currentTimeMillis()).also {
-      if (Module.isQ) {
+      if (Module.is10) {
         MissedCallDialog29Activity.mockTest(requireContext(), it)
       } else {
         MissedCallDialogActivity.mockTest(requireContext(), it)
@@ -60,7 +60,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       this.type = Reminder.BY_DATE_CALL
       this.useGlobal = true
     }.also {
-      if (Module.isQ) {
+      if (Module.is10) {
         ReminderDialog29Activity.mockTest(requireContext(), it)
       } else {
         ReminderDialogActivity.mockTest(requireContext(), it)
@@ -84,7 +84,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
       this.dayMonth = "$day|$month"
     }.also {
-      if (Module.isQ) {
+      if (Module.is10) {
         ShowBirthday29Activity.mockTest(requireContext(), it)
       } else {
         ShowBirthdayActivity.mockTest(requireContext(), it)

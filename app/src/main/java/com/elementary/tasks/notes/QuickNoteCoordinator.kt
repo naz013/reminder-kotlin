@@ -21,14 +21,15 @@ import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ViewNoteCardBinding
 import com.elementary.tasks.databinding.ViewNoteReminderCardBinding
 import com.elementary.tasks.databinding.ViewNoteStatusCardBinding
-import java.util.*
+import java.util.Random
 
 class QuickNoteCoordinator(
   private val context: Context,
   private val parent: ViewGroup,
   private val noteList: ViewGroup,
   private var noteViewModel: NoteViewModel,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val notifier: Notifier
 ) {
 
   val isNoteVisible: Boolean
@@ -164,7 +165,7 @@ class QuickNoteCoordinator(
   }
 
   private fun showInStatusBar(item: NoteWithImages) {
-    Notifier.showNoteNotification(context, prefs, item)
+    notifier.showNoteNotification(item)
     hideNoteView()
   }
 }

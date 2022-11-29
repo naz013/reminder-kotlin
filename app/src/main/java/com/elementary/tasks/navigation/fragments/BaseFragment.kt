@@ -19,6 +19,7 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   protected val currentStateHolder by inject<CurrentStateHolder>()
   protected val prefs = currentStateHolder.preferences
   protected val dialogues by inject<Dialogues>()
+  protected val notifier = currentStateHolder.notifier
   protected val isDark = currentStateHolder.theme.isDark
   private var mLastAlpha: Float = 0f
 

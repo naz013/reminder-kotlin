@@ -14,14 +14,15 @@ abstract class EventManager(
   protected val db: AppDb,
   protected val prefs: Prefs,
   protected val calendarUtils: CalendarUtils,
-  protected val context: Context
+  protected val context: Context,
+  protected val notifier: Notifier
 ) : EventControl {
 
   protected fun save() {
     db.reminderDao().insert(reminder)
     UpdatesHelper.updateWidget(context)
     if (prefs.isSbNotificationEnabled) {
-      Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
+      notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
     }
   }
 
@@ -29,7 +30,7 @@ abstract class EventManager(
     db.reminderDao().delete(reminder)
     UpdatesHelper.updateWidget(context)
     if (prefs.isSbNotificationEnabled) {
-      Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
+      notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
     }
   }
 }

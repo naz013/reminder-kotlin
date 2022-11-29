@@ -31,8 +31,21 @@ object Permissions {
   @RequiresApi(Build.VERSION_CODES.P)
   const val FOREGROUND = Manifest.permission.FOREGROUND_SERVICE
 
+  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+  const val POST_NOTIFICATION = Manifest.permission.POST_NOTIFICATIONS
+
+  fun isNotificationsAllowed(context: Context): Boolean {
+    if (Module.is13) {
+      if (ContextCompat.checkSelfPermission(context, POST_NOTIFICATION) != PackageManager.PERMISSION_GRANTED) {
+        return false
+      }
+      return true
+    }
+    return true
+  }
+
   fun isBgLocationAllowed(context: Context): Boolean {
-    if (Module.isQ) {
+    if (Module.is10) {
       return ContextCompat.checkSelfPermission(context, BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
     return true
@@ -52,7 +65,7 @@ object Permissions {
     return if (isBgLocationAllowed(activity)) {
       true
     } else {
-      if (Module.isQ) {
+      if (Module.is10) {
         requestPermission(activity, requestCode, BACKGROUND_LOCATION)
         false
       } else {
@@ -114,7 +127,7 @@ object Permissions {
   }
 
   fun requestPermission(a: Activity, requestCode: Int, vararg permission: String) {
-    if (Module.isMarshmallow) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val size = permission.size
       if (size == 1) {
         a.requestPermissions(permission, requestCode)

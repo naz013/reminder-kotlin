@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SelectionList
@@ -36,7 +36,7 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import org.koin.android.ext.android.inject
 import java.io.File
-import java.util.*
+import java.util.Locale
 
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
 
@@ -93,7 +93,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initUnlockPriorityPrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.unlockPriorityPrefs.hide()
     } else {
       binding.unlockPriorityPrefs.show()
@@ -153,7 +153,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initIgnoreWindowTypePrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.ignoreWindowType.hide()
     } else {
       binding.ignoreWindowType.show()
@@ -328,7 +328,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initAutoCallPrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.autoCallPrefs.hide()
     } else {
       binding.autoCallPrefs.show()
@@ -345,7 +345,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initAutoLaunchPrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.autoLaunchPrefs.hide()
     } else {
       binding.autoLaunchPrefs.show()
@@ -361,7 +361,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initUnlockPrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.unlockScreenPrefs.hide()
     } else {
       binding.unlockScreenPrefs.show()
@@ -421,7 +421,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun openNotificationsSettings() {
-    if (Module.isNougat) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
       startActivityForResult(intent, 1248)
     }
@@ -508,7 +508,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initReminderTypePrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.typePrefs.hide()
     } else {
       binding.typePrefs.show()
@@ -821,7 +821,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     val isChecked = binding.statusIconPrefs.isChecked
     binding.statusIconPrefs.isChecked = !isChecked
     prefs.isSbIconEnabled = !isChecked
-    Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_SHOW)
+    notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
   }
 
   private fun initSbIconPrefs() {
@@ -835,9 +835,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     binding.permanentNotificationPrefs.isChecked = !isChecked
     prefs.isSbNotificationEnabled = !isChecked
     if (prefs.isSbNotificationEnabled) {
-      Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_SHOW)
+      notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
     } else {
-      Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_HIDE)
+      notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_HIDE)
     }
   }
 

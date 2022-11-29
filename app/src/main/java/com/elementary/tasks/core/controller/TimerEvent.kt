@@ -4,6 +4,7 @@ import android.content.Context
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -14,8 +15,9 @@ class TimerEvent(
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  context: Context
-) : RepeatableEventManager(reminder, appDb, prefs, calendarUtils, context) {
+  context: Context,
+  notifier: Notifier
+) : RepeatableEventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
 
   override val isActive: Boolean
     get() = reminder.isActive

@@ -216,7 +216,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
   private fun loadTest() {
     val isMocked = intent.getBooleanExtra(ARG_TEST, false)
     if (isMocked) {
-      val birthday = intent.getSerializableExtra(ARG_TEST_ITEM) as Birthday?
+      val birthday = intent.getSerializableExtra(ARG_TEST_ITEM) as? Birthday?
       if (birthday != null) showBirthday(birthday)
     }
   }
@@ -305,7 +305,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
       builder.setGroup(groupName)
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(name)
     }
@@ -346,7 +346,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
       builder.setGroup(groupName)
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(name)
     }

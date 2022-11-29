@@ -126,7 +126,7 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
     ReminderPreviewViewModel(
@@ -175,7 +175,7 @@ val viewModelModule = module {
   viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
     MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get(), get())
   }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { SmsTemplatesViewModel(get(), get(), get(), get()) }
   viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { SelectApplicationViewModel() }
@@ -195,7 +195,7 @@ val viewModelModule = module {
   viewModel { CreatePlaceViewModel() }
   viewModel { TimesViewModel() }
   viewModel { LoginStateViewModel() }
-  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
 }
 
@@ -249,8 +249,9 @@ val utilModule = module {
   single { GlobalButtonObservable() }
   single { ImagesSingleton() }
   single { SyncManagers(get(), get(), get(), get()) }
-  single { EventControlFactory(get(), get(), get(), get()) }
+  single { EventControlFactory(get(), get(), get(), get(), get()) }
   single { RemotePrefs(get(), get()) }
+  single { Notifier(get(), get()) }
 
   factory { WidgetDataProvider(get()) }
   single { SyncWorker(get(), get(), get()) }
@@ -258,7 +259,7 @@ val utilModule = module {
   single { ExportAllDataWorker(get()) }
   single { ScanContactsWorker(get(), get()) }
   factory { EnableThread(get(), get()) }
-  single { CurrentStateHolder(get(), get(), get(), get()) }
+  single { CurrentStateHolder(get(), get(), get(), get(), get()) }
   single { BirthdayModelAdapter(get()) }
   single { DayViewProvider(get(), get()) }
 

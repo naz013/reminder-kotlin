@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
@@ -21,8 +22,9 @@ class BirthdayViewModel(
   prefs: Prefs,
   context: Context,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  notifier: Notifier
+) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider, notifier) {
 
   val birthday = appDb.birthdaysDao().loadById(id)
   var editableBirthday: Birthday = Birthday()

@@ -11,7 +11,6 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -19,7 +18,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import org.koin.core.component.inject
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 class BirthdayActionReceiver : BaseBroadcast() {
 
@@ -81,13 +80,13 @@ class BirthdayActionReceiver : BaseBroadcast() {
     val birthday = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
       ?: "") ?: return
     sendCloseBroadcast(context, birthday.uuId)
-    if (Module.isQ || SuperUtil.isPhoneCallActive(context)) {
+    if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
       qAction(birthday, context)
     } else {
       val notificationIntent = ShowBirthdayActivity.getLaunchIntent(context, birthday.uuId)
       notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
       context.startActivity(notificationIntent)
-      Notifier.hideNotification(context, PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)
+      notifier.cancel(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)
     }
   }
 
@@ -113,6 +112,12 @@ class BirthdayActionReceiver : BaseBroadcast() {
     val intent = Intent(ShowBirthdayActivity.ACTION_STOP_BG_ACTIVITY)
     intent.putExtra(Constants.INTENT_ID, id)
     LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+  }
+
+  private fun finish(context: Context, id: Int) {
+    notifier.cancel(id)
+    UpdatesHelper.updateWidget(context)
+    UpdatesHelper.updateCalendarWidget(context)
   }
 
   companion object {
@@ -141,12 +146,6 @@ class BirthdayActionReceiver : BaseBroadcast() {
       intent.action = action
       intent.putExtra(Constants.INTENT_ID, id)
       return intent
-    }
-
-    private fun finish(context: Context, id: Int) {
-      Notifier.hideNotification(context, id)
-      UpdatesHelper.updateWidget(context)
-      UpdatesHelper.updateCalendarWidget(context)
     }
   }
 }

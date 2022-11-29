@@ -4,6 +4,7 @@ import android.content.Context
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -14,8 +15,9 @@ class WeeklyEvent(
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  context: Context
-) : RepeatableEventManager(reminder, appDb, prefs, calendarUtils, context) {
+  context: Context,
+  notifier: Notifier
+) : RepeatableEventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
 
   override val isActive: Boolean
     get() = reminder.isActive
@@ -35,7 +37,10 @@ class WeeklyEvent(
 
   override fun skip(): Boolean {
     if (canSkip()) {
-      val time = TimeCount.getNextWeekdayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L)
+      val time = TimeCount.getNextWeekdayTime(
+        reminder,
+        TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L
+      )
       reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
       start()
       return true
@@ -60,7 +65,10 @@ class WeeklyEvent(
       stop()
     } else {
       if (!TimeCount.isCurrent(reminder.eventTime)) {
-        val time = TimeCount.getNextWeekdayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L)
+        val time = TimeCount.getNextWeekdayTime(
+          reminder,
+          TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L
+        )
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         reminder.startTime = TimeUtil.getGmtFromDateTime(time)
       }

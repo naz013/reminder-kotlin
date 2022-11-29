@@ -18,8 +18,9 @@ class LocationEvent(
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  context: Context
-) : EventManager(reminder, appDb, prefs, calendarUtils, context) {
+  context: Context,
+  notifier: Notifier
+) : EventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
 
   override val isActive: Boolean
     get() = reminder.isActive
@@ -49,13 +50,17 @@ class LocationEvent(
       reminder.isRemoved = true
     }
     super.save()
-    Notifier.hideNotification(context, reminder.uniqueId)
+    notifier.cancel(reminder.uniqueId)
     stopTracking(false)
     return true
   }
 
   private fun stopTracking(isPaused: Boolean) {
-    val list = db.reminderDao().getAllTypes(true, false, Reminder.gpsTypes())
+    val list = db.reminderDao().getAllTypes(
+      active = true,
+      removed = false,
+      types = Reminder.gpsTypes()
+    )
     if (list.isEmpty()) {
       SuperUtil.stopService(context, GeolocationService::class.java)
     }
@@ -90,7 +95,7 @@ class LocationEvent(
 
   override fun pause(): Boolean {
     EventJobScheduler.cancelReminder(reminder.uuId)
-    Notifier.hideNotification(context, reminder.uniqueId)
+    notifier.cancel(reminder.uniqueId)
     stopTracking(true)
     return true
   }

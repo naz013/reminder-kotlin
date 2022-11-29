@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.app_widgets
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
@@ -9,6 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.PendingIntentWrapper
 import com.elementary.tasks.core.utils.ViewUtils
 
 object WidgetUtils {
@@ -20,7 +20,7 @@ object WidgetUtils {
       configIntent = extras.invoke(configIntent)
     }
     extras?.invoke(configIntent)
-    val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
+    val configPendingIntent = PendingIntentWrapper.getActivity(context, 0, configIntent, 0)
     rv.setOnClickPendingIntent(viewId, configPendingIntent)
     setIcon(context, rv, iconId, viewId, color)
   }
@@ -28,7 +28,7 @@ object WidgetUtils {
   fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @ColorRes color: Int,
                  @IdRes viewId: Int, cls: Class<*>) {
     val configIntent = Intent(context, cls)
-    val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
+    val configPendingIntent = PendingIntentWrapper.getActivity(context, 0, configIntent, 0)
     rv.setOnClickPendingIntent(viewId, configPendingIntent)
     setIcon(context, rv, iconId, viewId, color)
   }

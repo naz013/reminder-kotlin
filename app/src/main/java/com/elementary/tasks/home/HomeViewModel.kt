@@ -10,7 +10,6 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.WorkManagerProvider
@@ -23,7 +22,7 @@ import timber.log.Timber
 
 class HomeViewModel(
   appDb: AppDb,
-  currentStateHolder: CurrentStateHolder,
+  private val currentStateHolder: CurrentStateHolder,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
   private val birthdayModelAdapter: BirthdayModelAdapter,
@@ -83,7 +82,7 @@ class HomeViewModel(
 
   private fun updateBirthdayPermanent() {
     if (prefs.isBirthdayPermanentEnabled) {
-      Notifier.showBirthdayPermanent(context, prefs)
+      currentStateHolder.notifier.showBirthdayPermanent()
     }
   }
 

@@ -15,7 +15,6 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -148,7 +147,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
   private fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
     discardMedia()
-    Notifier.getManager(this)?.cancel(id)
+    notifier.cancel(id)
   }
 
   override fun onBackPressed() {

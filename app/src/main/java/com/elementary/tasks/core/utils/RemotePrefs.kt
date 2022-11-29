@@ -151,5 +151,9 @@ class RemotePrefs(
 
     private const val PRIVACY_POLICY_URL = "privacy_policy_link"
     private const val VOICE_HELP_URLS = "voice_help_urls"
+
+    private const val FEATURE_DROPBOX = "feature_dropbox"
+    private const val FEATURE_GOOGLE_DRIVE = "feature_google_drive"
+    private const val FEATURE_GOOGLE_TASKS = "feature_google_tasks"
   }
 }

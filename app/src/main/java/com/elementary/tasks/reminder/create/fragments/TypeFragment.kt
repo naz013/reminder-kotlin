@@ -142,7 +142,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
     }
     windowTypeView?.let {
-      if (Module.isQ) {
+      if (Module.is10) {
         it.hide()
       } else {
         it.show()

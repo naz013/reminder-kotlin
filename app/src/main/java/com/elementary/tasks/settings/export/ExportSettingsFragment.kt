@@ -164,7 +164,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun initLocalBackupPrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.localPrefs.hide()
     } else {
       binding.localPrefs.show()

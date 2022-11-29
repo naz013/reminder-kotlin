@@ -185,7 +185,7 @@ class UiReminderPreviewAdapter(
   }
 
   private fun getWindowType(reminderWindowType: Int): String {
-    if (Module.isQ) return textProvider.getText(R.string.simple)
+    if (Module.is10) return textProvider.getText(R.string.simple)
     var windowType = prefs.reminderType
     val ignore = prefs.isIgnoreWindowType
     if (!ignore) {

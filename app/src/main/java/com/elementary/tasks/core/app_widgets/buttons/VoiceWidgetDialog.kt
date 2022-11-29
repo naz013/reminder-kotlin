@@ -23,6 +23,7 @@ class VoiceWidgetDialog : FragmentActivity() {
   private val viewModel by viewModel<ConversationViewModel>()
   private val prefs by inject<Prefs>()
   private val language by inject<Language>()
+  private val notifier by inject<Notifier>()
   private var mIsLogged = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +64,7 @@ class VoiceWidgetDialog : FragmentActivity() {
         ?: ArrayList()
       viewModel.parseResults(matches, true, this)
       if (prefs.isSbNotificationEnabled) {
-        Notifier.updateReminderPermanent(applicationContext, PermanentReminderReceiver.ACTION_SHOW)
+        notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
       }
       finish()
     } else {

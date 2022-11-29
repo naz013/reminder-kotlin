@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
@@ -129,15 +130,13 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
 
   private fun initViewModel() {
     viewModel.missedCall.observeForever(mMissedCallObserver)
-    viewModel.result.observe(this, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.DELETED -> closeWindow()
-          else -> {
-          }
+    viewModel.result.nonNullObserve(this) { commands ->
+      when (commands) {
+        Commands.DELETED -> closeWindow()
+        else -> {
         }
       }
-    })
+    }
     lifecycle.addObserver(viewModel)
     if (getNumber() == "" && BuildConfig.DEBUG) {
       loadTest()
@@ -280,7 +279,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
       builder.setGroup(groupName)
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(appName)
     }

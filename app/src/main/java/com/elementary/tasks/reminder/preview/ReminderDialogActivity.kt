@@ -32,6 +32,7 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.PendingIntentWrapper
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -323,7 +324,14 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     if (!isMockedTest) {
       this.mControl = get<EventControlFactory>().getController(reminder)
     }
-    Timber.d("showInfo: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime), true)}")
+    Timber.d(
+      "showInfo: ${
+        TimeUtil.getFullDateTime(
+          TimeUtil.getDateTimeFromGmt(reminder.eventTime),
+          true
+        )
+      }"
+    )
     if (reminder.attachmentFile != "") showAttachmentButton()
     else binding.buttonAttachment.hide()
 
@@ -337,14 +345,20 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     binding.remText.text = ""
 
     if (!TextUtils.isEmpty(reminder.eventTime) && !Reminder.isGpsType(reminder.type)) {
-      binding.reminderTime.text = TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime),
-        prefs.is24HourFormat, prefs.appLanguage)
+      binding.reminderTime.text = TimeUtil.getFullDateTime(
+        TimeUtil.getDateTimeFromGmt(reminder.eventTime),
+        prefs.is24HourFormat, prefs.appLanguage
+      )
       binding.timeBlock.visibility = View.VISIBLE
     } else {
       binding.timeBlock.visibility = View.GONE
     }
 
-    if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
+    if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(
+        reminder.type,
+        Reminder.BY_SKYPE_VIDEO
+      )
+    ) {
       if (!Reminder.isBase(reminder.type, Reminder.BY_SKYPE)) {
         contactPhoto.visibility = View.VISIBLE
         val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
@@ -404,7 +418,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
       }
       binding.container.visibility = View.VISIBLE
-    } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE)) {
+    } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS) || Reminder.isSame(
+        reminder.type,
+        Reminder.BY_SKYPE
+      )
+    ) {
       if (!Reminder.isSame(reminder.type, Reminder.BY_SKYPE)) {
         contactPhoto.visibility = View.VISIBLE
         val conID = Contacts.getIdFromNumber(reminder.target, this)
@@ -486,7 +504,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       } catch (ignored: PackageManager.NameNotFoundException) {
       }
 
-      val nameA = (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
+      val nameA =
+        (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
       val label = summary + "\n\n" + nameA + "\n" + reminder.target
       binding.remText.text = summary
       binding.remText.contentDescription = label
@@ -572,12 +591,15 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {
       if (Module.isNougat) {
-        val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
+        val uri =
+          FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
         intent.data = uri
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
       } else {
-        intent.setDataAndType(Uri.parse("file://$path"),
-          mime.getMimeTypeFromExtension(fileExt(reminder.attachmentFile).substring(1)))
+        intent.setDataAndType(
+          Uri.parse("file://$path"),
+          mime.getMimeTypeFromExtension(fileExt(reminder.attachmentFile).substring(1))
+        )
       }
       startActivity(intent)
     } catch (e: Exception) {
@@ -692,8 +714,10 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
   private fun editReminder() {
     doActions({ it.stop() }, {
-      CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
-        .putExtra(Constants.INTENT_ID, it.uuId))
+      CreateReminderActivity.openLogged(
+        this, Intent(this, CreateReminderActivity::class.java)
+          .putExtra(Constants.INTENT_ID, it.uuId)
+      )
       finish()
     })
   }
@@ -731,14 +755,26 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             return@doActions
           }
           when {
-            Reminder.isSame(it.type, Reminder.BY_SKYPE_CALL) -> TelephonyUtil.skypeCall(it.target, this)
-            Reminder.isSame(it.type, Reminder.BY_SKYPE_VIDEO) -> TelephonyUtil.skypeVideoCall(it.target, this)
+            Reminder.isSame(it.type, Reminder.BY_SKYPE_CALL) -> TelephonyUtil.skypeCall(
+              it.target,
+              this
+            )
+
+            Reminder.isSame(
+              it.type,
+              Reminder.BY_SKYPE_VIDEO
+            ) -> TelephonyUtil.skypeVideoCall(it.target, this)
+
             Reminder.isSame(it.type, Reminder.BY_SKYPE) -> TelephonyUtil.skypeChat(it.target, this)
           }
         }
+
         isAppType -> openApplication(it)
-        Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(this, it.target,
-          it.subject, summary, it.attachmentFile)
+        Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
+          this, it.target,
+          it.subject, summary, it.attachmentFile
+        )
+
         else -> makeCall()
       }
       if (!Reminder.isKind(it.type, Reminder.Kind.SMS)) {
@@ -804,7 +840,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       builder.setGroup("GROUP")
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(appName)
     }
@@ -814,7 +850,12 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     Timber.d("showReminderNotification: $id")
 
     val notificationIntent = ReminderActionReceiver.showIntent(this, uuId)
-    val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+    val intent = PendingIntentWrapper.getBroadcast(
+      this,
+      id,
+      notificationIntent,
+      PendingIntent.FLAG_CANCEL_CURRENT
+    )
 
     val builder: NotificationCompat.Builder
     if (isScreenResumed) {
@@ -824,7 +865,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
       builder.priority = priority()
       if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
+          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
+      ) {
         val soundUri = soundUri
         Timber.d("showReminderNotification: $soundUri")
         sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled, prefs.playbackDuration)
@@ -865,7 +907,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       builder.setGroup(groupName)
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(appName)
     }
@@ -891,7 +933,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
       builder.priority = priority()
       if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
+          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
+      ) {
         playDefaultMelody()
       }
       if (prefs.isVibrateEnabled) {
@@ -906,7 +949,12 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     builder.setContentTitle(summary)
 
     val notificationIntent = ReminderActionReceiver.showIntent(this, uuId)
-    val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+    val intent = PendingIntentWrapper.getBroadcast(
+      this,
+      id,
+      notificationIntent,
+      PendingIntent.FLAG_CANCEL_CURRENT
+    )
 
     builder.setContentIntent(intent)
     builder.setAutoCancel(false)
@@ -933,13 +981,17 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       builder.setGroup(groupName)
       builder.setGroupSummary(true)
     }
-    Notifier.getManager(this)?.notify(id, builder.build())
+    notifier.notify(id, builder.build())
     if (isWear) {
       showWearNotification(appName)
     }
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     when (requestCode) {
       CALL_PERM -> if (Permissions.checkPermission(grantResults)) {

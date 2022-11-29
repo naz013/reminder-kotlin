@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.pin.PinLoginActivity
@@ -28,6 +29,7 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val prefs = currentStateHolder.preferences
   protected val language = currentStateHolder.language
   protected val dialogues by inject<Dialogues>()
+  protected val notifier by inject<Notifier>()
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 
   private val uiHandler = Handler(Looper.getMainLooper())

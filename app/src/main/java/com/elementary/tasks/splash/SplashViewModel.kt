@@ -24,7 +24,8 @@ class SplashViewModel(
   private val prefs: Prefs,
   private val context: Context,
   private val enableThread: EnableThread,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val notifier: Notifier
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = gTasks.isLogged
@@ -38,7 +39,7 @@ class SplashViewModel(
       checkDb()
       withUIContext {
         if (prefs.isSbNotificationEnabled) {
-          Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
+          notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
         openHome.postValue(prefs.hasPinCode)
       }

@@ -15,11 +15,11 @@ import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
@@ -78,15 +78,13 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
 
   private fun initViewModel() {
     viewModel.missedCall.observeForever(mMissedCallObserver)
-    viewModel.result.observe(this, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.DELETED -> finish()
-          else -> {
-          }
+    viewModel.result.nonNullObserve(this) { commands ->
+      when (commands) {
+        Commands.DELETED -> finish()
+        else -> {
         }
       }
-    })
+    }
     lifecycle.addObserver(viewModel)
     if (getNumber() == "" && BuildConfig.DEBUG) {
       loadTest()
@@ -137,7 +135,7 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
   private fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
     discardMedia()
-    Notifier.getManager(this)?.cancel(id)
+    notifier.cancel(id)
   }
 
   override fun onDestroy() {

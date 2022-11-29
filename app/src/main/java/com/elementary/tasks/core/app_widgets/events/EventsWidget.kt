@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.app_widgets.events
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -11,9 +10,11 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
+import com.elementary.tasks.core.utils.PendingIntentWrapper
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.GregorianCalendar
+import java.util.Locale
 
 class EventsWidget : AppWidgetProvider() {
 
@@ -80,7 +81,7 @@ class EventsWidget : AppWidgetProvider() {
       }
 
       val startActivityIntent = Intent(context, EventActionReceiver::class.java)
-      val startActivityPendingIntent = PendingIntent.getBroadcast(context, 0, startActivityIntent, 0)
+      val startActivityPendingIntent = PendingIntentWrapper.getBroadcast(context, 0, startActivityIntent, 0)
       rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent)
 
       val adapter = Intent(context, EventsService::class.java)

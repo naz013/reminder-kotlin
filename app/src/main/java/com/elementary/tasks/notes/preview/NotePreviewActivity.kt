@@ -20,7 +20,6 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -182,7 +181,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun moveToStatus() {
     val noteWithImages = mNote
     if (noteWithImages != null) {
-      Notifier.showNoteNotification(this, prefs, noteWithImages)
+      notifier.showNoteNotification(noteWithImages)
     }
   }
 

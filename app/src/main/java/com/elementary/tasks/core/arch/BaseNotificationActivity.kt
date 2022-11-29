@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.colorOf
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicInteger
 
 abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() {
@@ -169,7 +169,7 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
   protected fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
     discardMedia()
-    Notifier.getManager(this)?.cancel(id)
+    notifier.cancel(id)
   }
 
   protected fun discardMedia() {
@@ -187,7 +187,7 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)
     wearableNotificationBuilder.setGroupSummary(false)
-    Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
+    notifier.notify(id, wearableNotificationBuilder.build())
   }
 
   protected fun playDefaultMelody() {

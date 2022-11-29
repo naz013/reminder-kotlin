@@ -11,7 +11,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.TimeUtil.BIRTH_FORMAT
@@ -25,12 +24,13 @@ import com.evernote.android.job.Job
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 class EventJobService : Job(), KoinComponent {
 
   private val prefs by inject<Prefs>()
   private val appDb by inject<AppDb>()
+  private val notifier by inject<Notifier>()
 
   override fun onRunJob(params: Params): Result {
     Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
@@ -80,14 +80,14 @@ class EventJobService : Job(), KoinComponent {
 
   private fun birthdayPermanentAction() {
     if (prefs.isBirthdayPermanentEnabled) {
-      Notifier.showBirthdayPermanent(context, prefs)
+      notifier.showBirthdayPermanent()
     }
   }
 
   private fun missedCallAction(params: Params) {
     if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
       EventJobScheduler.scheduleMissedCall(prefs, params.tag)
-      if (Module.isQ || SuperUtil.isPhoneCallActive(context)) {
+      if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
         ContextCompat.startForegroundService(context,
           EventOperationalService.getIntent(context, params.tag,
             EventOperationalService.TYPE_MISSED,
@@ -116,7 +116,7 @@ class EventJobService : Job(), KoinComponent {
         val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
         if (!applyDnd && birthValue == mDate && year != mYear) {
           withUIContext {
-            if (Module.isQ) {
+            if (Module.is10) {
               ContextCompat.startForegroundService(context,
                 EventOperationalService.getIntent(context, item.uuId,
                   EventOperationalService.TYPE_BIRTHDAY,
@@ -144,7 +144,7 @@ class EventJobService : Job(), KoinComponent {
     if (prefs.reminderType == 0) {
       context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.uuId))
     } else {
-      ReminderUtils.showSimpleBirthday(context, prefs, item.uuId)
+      notifier.showSimpleBirthday(item.uuId)
     }
   }
 

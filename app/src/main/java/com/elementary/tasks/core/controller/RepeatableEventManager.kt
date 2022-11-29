@@ -25,8 +25,9 @@ abstract class RepeatableEventManager(
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  context: Context
-) : EventManager(reminder, appDb, prefs, calendarUtils, context) {
+  context: Context,
+  notifier: Notifier
+) : EventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
 
   protected fun enableReminder() {
     EventJobScheduler.scheduleReminder(reminder)
@@ -85,7 +86,7 @@ abstract class RepeatableEventManager(
   }
 
   override fun pause(): Boolean {
-    Notifier.hideNotification(context, reminder.uniqueId)
+    notifier.cancel(reminder.uniqueId)
     EventJobScheduler.cancelReminder(reminder.uuId)
     return true
   }

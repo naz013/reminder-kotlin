@@ -19,7 +19,7 @@ class LocalStorage(context: Context) : Storage() {
   private val hasSdPermission = Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)
 
   override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
-    if (!Module.isQ && hasSdPermission) {
+    if (!Module.is10 && hasSdPermission) {
       val stream = fileIndex.stream
       if (stream == null) {
         return
@@ -40,7 +40,7 @@ class LocalStorage(context: Context) : Storage() {
   }
 
   override suspend fun restore(fileName: String): InputStream? {
-    if (!Module.isQ && hasSdPermission) {
+    if (!Module.is10 && hasSdPermission) {
       val dir = folderFromFileName(fileName)
       if (dir != null) {
         val file = File(dir, fileName)
@@ -60,7 +60,7 @@ class LocalStorage(context: Context) : Storage() {
 
   override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
     val channel = Channel<InputStream>()
-    if (Module.isQ || !hasSdPermission) {
+    if (Module.is10 || !hasSdPermission) {
       channel.cancel()
       return channel
     }
@@ -93,7 +93,7 @@ class LocalStorage(context: Context) : Storage() {
   }
 
   override suspend fun delete(fileName: String) {
-    if (!Module.isQ && hasSdPermission) {
+    if (!Module.is10 && hasSdPermission) {
       val dir = folderFromFileName(fileName)
       if (dir != null) {
         val file = File(dir, fileName)

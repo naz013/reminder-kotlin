@@ -1,20 +1,13 @@
 package com.elementary.tasks.core.utils
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.text.TextUtils
-import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.BirthdayActionReceiver
-import com.elementary.tasks.core.services.ReminderActionReceiver
-import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 object ReminderUtils {
 
@@ -79,129 +72,6 @@ object ReminderUtils {
       Constants.SOUND_ALARM -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
       else -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
     }
-  }
-
-  fun showSimpleBirthday(context: Context, prefs: Prefs, id: String) {
-    val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
-    val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-    val intent = PendingIntent.getBroadcast(context, birthday.uniqueId,
-      BirthdayActionReceiver.show(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-    builder.setContentIntent(intent)
-    builder.setAutoCancel(false)
-    builder.setOngoing(true)
-    builder.priority = NotificationCompat.PRIORITY_HIGH
-    builder.setContentTitle(birthday.name)
-    if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context)
-      && prefs.isSoundInSilentModeEnabled) {
-      val melodyPath: String? = if (Module.isPro && !isGlobal(prefs)) {
-        prefs.birthdayMelody
-      } else {
-        prefs.melodyFile
-      }
-      getSoundUri(context, prefs, melodyPath).let {
-        context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        builder.setSound(it)
-      }
-    }
-    var vibrate = prefs.isVibrateEnabled
-    if (Module.isPro && !isGlobal(prefs)) {
-      vibrate = prefs.isBirthdayVibrationEnabled
-    }
-    if (vibrate) {
-      vibrate = prefs.isInfiniteVibrateEnabled
-      if (Module.isPro && !isGlobal(prefs)) {
-        vibrate = prefs.isBirthdayInfiniteVibrationEnabled
-      }
-      val pattern: LongArray = if (vibrate) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-      builder.setVibrate(pattern)
-    }
-    if (Module.isPro && prefs.isLedEnabled) {
-      var ledColor = LED.getLED(prefs.ledColor)
-      if (Module.isPro && !isGlobal(prefs)) {
-        ledColor = LED.getLED(prefs.birthdayLedColor)
-      }
-      builder.setLights(ledColor, 500, 1000)
-    }
-    builder.setContentText(context.getString(R.string.birthday))
-
-    val piDismiss = PendingIntent.getBroadcast(context, birthday.uniqueId,
-      BirthdayActionReceiver.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-    builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
-
-    if (prefs.isTelephonyAllowed && !TextUtils.isEmpty(birthday.number)) {
-      val piCall = PendingIntent.getBroadcast(context, birthday.uniqueId,
-        BirthdayActionReceiver.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-      builder.addAction(R.drawable.ic_twotone_call_white, context.getString(R.string.make_call), piCall)
-
-      val piSms = PendingIntent.getBroadcast(context, birthday.uniqueId,
-        BirthdayActionReceiver.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-      builder.addAction(R.drawable.ic_twotone_send_white, context.getString(R.string.send_sms), piSms)
-    }
-
-    Notifier.getManager(context)?.notify(birthday.uniqueId, builder.build())
-  }
-
-  private fun isGlobal(prefs: Prefs): Boolean {
-    return prefs.isBirthdayGlobalEnabled
-  }
-
-  fun showSimpleReminder(context: Context, prefs: Prefs, id: String) {
-    Timber.d("showSimpleReminder: ")
-    val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
-    val dismissIntent = Intent(context, ReminderActionReceiver::class.java)
-    dismissIntent.action = ReminderActionReceiver.ACTION_HIDE
-    dismissIntent.putExtra(Constants.INTENT_ID, id)
-    val piDismiss = PendingIntent.getBroadcast(context, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-    val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    val notificationIntent = ReminderActionReceiver.showIntent(context, id)
-    val intent = PendingIntent.getBroadcast(context, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-    builder.setContentIntent(intent)
-    builder.setAutoCancel(false)
-    builder.setOngoing(true)
-    builder.priority = NotificationCompat.PRIORITY_HIGH
-    builder.setContentTitle(reminder.summary)
-    val appName: String = if (Module.isPro) {
-      context.getString(R.string.app_name_pro)
-    } else {
-      context.getString(R.string.app_name)
-    }
-    if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
-      getSoundUri(context, prefs, reminder.melodyPath).let {
-        context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        builder.setSound(it)
-      }
-    }
-    if (prefs.isVibrateEnabled) {
-      val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-      builder.setVibrate(pattern)
-    }
-    if (Module.isPro && prefs.isLedEnabled) {
-      if (reminder.color != -1) {
-        builder.setLights(reminder.color, 500, 1000)
-      } else {
-        builder.setLights(LED.getLED(prefs.ledColor), 500, 1000)
-      }
-    }
-    builder.setContentText(appName)
-    builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
-    if (!Reminder.isGpsType(reminder.type)) {
-      val snoozeIntent = Intent(context, ReminderActionReceiver::class.java)
-      snoozeIntent.action = ReminderActionReceiver.ACTION_SNOOZE
-      snoozeIntent.putExtra(Constants.INTENT_ID, id)
-      val piSnooze = PendingIntent.getBroadcast(context, reminder.uniqueId, snoozeIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-      builder.addAction(R.drawable.ic_twotone_snooze_24px, context.getString(R.string.acc_button_snooze), piSnooze)
-    }
-    Notifier.getManager(context)?.notify(reminder.uniqueId, builder.build())
   }
 
   fun getTime(day: Int, month: Int, year: Int, hour: Int, minute: Int, after: Long): Long {

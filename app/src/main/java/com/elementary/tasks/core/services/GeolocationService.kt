@@ -29,6 +29,7 @@ class GeolocationService : Service() {
   private var stockRadius: Int = 0
   private val prefs by inject<Prefs>()
   private val appDb by inject<AppDb>()
+  private val notifier by inject<Notifier>()
 
   override fun onDestroy() {
     super.onDestroy()
@@ -169,7 +170,7 @@ class GeolocationService : Service() {
     builder.priority = NotificationCompat.PRIORITY_MIN
     builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
     builder.setCategory(NotificationCompat.CATEGORY_NAVIGATION)
-    Notifier.getManager(applicationContext)?.notify(reminder.uniqueId, builder.build())
+    notifier.notify(reminder.uniqueId, builder.build())
   }
 
   private fun showDefaultNotification() {

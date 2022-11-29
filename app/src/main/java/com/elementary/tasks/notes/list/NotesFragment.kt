@@ -24,7 +24,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.launchDefault
@@ -283,7 +282,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
   private fun showInStatusBar(note: NoteWithImages?) {
     if (note != null) {
-      Notifier.showNoteNotification(requireContext(), prefs, note)
+      notifier.showNoteNotification(note)
     }
   }
 

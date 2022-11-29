@@ -21,7 +21,8 @@ abstract class BaseBirthdaysViewModel(
   prefs: Prefs,
   protected val context: Context,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
+  workManagerProvider: WorkManagerProvider,
+  private val notifier: Notifier
 ) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   fun deleteBirthday(id: String) {
@@ -37,7 +38,7 @@ abstract class BaseBirthdaysViewModel(
 
   protected fun updateBirthdayPermanent() {
     if (prefs.isBirthdayPermanentEnabled) {
-      Notifier.showBirthdayPermanent(context, prefs)
+      notifier.showBirthdayPermanent()
     }
   }
 

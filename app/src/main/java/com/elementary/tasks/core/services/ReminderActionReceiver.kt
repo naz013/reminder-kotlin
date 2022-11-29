@@ -2,6 +2,7 @@ package com.elementary.tasks.core.services
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.Actions
@@ -10,8 +11,6 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -35,7 +34,7 @@ class ReminderActionReceiver : BaseBroadcast() {
         when {
           action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID)
             ?: "")
-          action.matches(ACTION_SNOOZE.toRegex()) -> snoozeReminder(context, intent.getStringExtra(Constants.INTENT_ID)
+          action.matches(ACTION_SNOOZE.toRegex()) -> snoozeReminder(intent.getStringExtra(Constants.INTENT_ID)
             ?: "")
           action.matches(ACTION_RUN.toRegex()) -> resolveAction(context, intent.getStringExtra(Constants.INTENT_ID)
             ?: "")
@@ -45,12 +44,12 @@ class ReminderActionReceiver : BaseBroadcast() {
     }
   }
 
-  private fun snoozeReminder(context: Context, id: String) {
+  private fun snoozeReminder(id: String) {
     launchDefault {
       val reminder = appDb.reminderDao().getById(id)
       if (reminder != null) {
         eventControlFactory.getController(reminder).setDelay(prefs.snoozeTime)
-        endService(context, reminder.uniqueId)
+        endService(reminder.uniqueId)
       }
     }
   }
@@ -58,16 +57,16 @@ class ReminderActionReceiver : BaseBroadcast() {
   private fun showReminder(context: Context, id: String) {
     val reminder = appDb.reminderDao().getById(id) ?: return
     sendCloseBroadcast(context, id)
-    if (Module.isQ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       val intent = ReminderDialog29Activity.getLaunchIntent(context, id)
       intent.putExtra(Constants.INTENT_NOTIFICATION, true)
       context.startActivity(intent)
-      endService(context, reminder.uniqueId)
+      endService(reminder.uniqueId)
     } else {
       val intent = ReminderDialogActivity.getLaunchIntent(context, id)
       intent.putExtra(Constants.INTENT_NOTIFICATION, true)
       context.startActivity(intent)
-      endService(context, reminder.uniqueId)
+      endService(reminder.uniqueId)
     }
   }
 
@@ -80,11 +79,11 @@ class ReminderActionReceiver : BaseBroadcast() {
         EventOperationalService.TYPE_REMINDER,
         EventOperationalService.ACTION_STOP,
         reminder.uniqueId))
-    endService(context, reminder.uniqueId)
+    endService(reminder.uniqueId)
   }
 
-  private fun endService(context: Context, id: Int) {
-    Notifier.getManager(context)?.cancel(id)
+  private fun endService(id: Int) {
+    notifier.cancel(id)
   }
 
   private fun sendCloseBroadcast(context: Context, id: String) {
@@ -111,14 +110,14 @@ class ReminderActionReceiver : BaseBroadcast() {
         }
       } else {
         withUIContext {
-          if (Module.isQ) {
+          if (Module.is10) {
             qAction(reminder, context)
           } else {
             if (windowType == 0 && !SuperUtil.isPhoneCallActive(context)) {
               sendCloseBroadcast(context, id)
               context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
             } else {
-              ReminderUtils.showSimpleReminder(context, prefs, id)
+              notifier.showSimpleReminder(id)
             }
           }
         }

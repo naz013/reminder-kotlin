@@ -364,7 +364,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   }
 
   private fun initWakePrefs() {
-    if (Module.isQ) {
+    if (Module.is10) {
       binding.wakeScreenOptionPrefs.hide()
     } else {
       binding.wakeScreenOptionPrefs.show()

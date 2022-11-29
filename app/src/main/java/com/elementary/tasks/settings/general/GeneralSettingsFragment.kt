@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module.isQ
+import com.elementary.tasks.core.utils.Module.is10
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -134,7 +134,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   }
 
   private fun themeNames(): Array<String> {
-    return if (isQ) {
+    return if (is10) {
       arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
     } else {
       arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.set_by_battery_saver))
@@ -142,7 +142,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   }
 
   private fun getTheme(index: Int): Int {
-    return if (isQ) {
+    return if (is10) {
       when (index) {
         0 -> AppCompatDelegate.MODE_NIGHT_NO
         1 -> AppCompatDelegate.MODE_NIGHT_YES

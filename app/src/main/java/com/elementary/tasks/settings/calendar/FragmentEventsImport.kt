@@ -17,7 +17,6 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -30,7 +29,7 @@ import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import org.koin.android.ext.android.inject
-import java.util.*
+import java.util.Calendar
 
 class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(),
   CompoundButton.OnCheckedChangeListener {
@@ -270,7 +269,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         } else {
           Toast.makeText(ctx, "$eventsCount " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
           UpdatesHelper.updateCalendarWidget(ctx)
-          Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_SHOW)
+          notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
       }
     }
