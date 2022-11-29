@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Module
@@ -30,7 +30,7 @@ class LocationEvent(
       reminder.isActive = true
       reminder.isRemoved = false
       super.save()
-      if (EventJobScheduler.scheduleGpsDelay(db, reminder.uuId)) {
+      if (JobScheduler.scheduleGpsDelay(db, reminder.uuId)) {
         true
       } else {
         SuperUtil.startGpsTracking(context)
@@ -44,7 +44,7 @@ class LocationEvent(
   }
 
   override fun stop(): Boolean {
-    EventJobScheduler.cancelReminder(reminder.uuId)
+    JobScheduler.cancelReminder(reminder.uuId)
     reminder.isActive = false
     if (prefs.moveCompleted) {
       reminder.isRemoved = true
@@ -94,7 +94,7 @@ class LocationEvent(
   }
 
   override fun pause(): Boolean {
-    EventJobScheduler.cancelReminder(reminder.uuId)
+    JobScheduler.cancelReminder(reminder.uuId)
     notifier.cancel(reminder.uniqueId)
     stopTracking(true)
     return true
@@ -106,7 +106,7 @@ class LocationEvent(
 
   override fun resume(): Boolean {
     if (reminder.isActive) {
-      val b = EventJobScheduler.scheduleGpsDelay(db, reminder.uuId)
+      val b = JobScheduler.scheduleGpsDelay(db, reminder.uuId)
       if (!b) SuperUtil.startGpsTracking(context)
     }
     return true

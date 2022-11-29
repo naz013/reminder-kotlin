@@ -14,7 +14,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Permissions
@@ -117,7 +117,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   }
 
   private fun startCheckService() {
-    EventJobScheduler.scheduleEventCheck(prefs)
+    JobScheduler.scheduleEventCheck(prefs)
   }
 
   private fun loadCalendars() {
@@ -195,9 +195,9 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     prefs.isAutoEventsCheckEnabled = isChecked
     binding.syncInterval.isEnabled = isChecked
     if (isChecked) {
-      EventJobScheduler.scheduleEventCheck(prefs)
+      JobScheduler.scheduleEventCheck(prefs)
     } else {
-      EventJobScheduler.cancelEventCheck()
+      JobScheduler.cancelEventCheck()
     }
   }
 

@@ -2,22 +2,24 @@ package com.elementary.tasks.core.services
 
 import android.app.AlarmManager
 import android.content.Context
+import android.os.Build
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.evernote.android.job.JobManager
-import com.evernote.android.job.JobRequest
-import com.evernote.android.job.util.support.PersistableBundleCompat
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-object EventJobScheduler {
+object JobScheduler {
 
   const val EVENT_BIRTHDAY = "event_birthday"
   const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
@@ -30,20 +32,23 @@ object EventJobScheduler {
   const val ARG_MISSED = "arg_missed"
   const val ARG_REPEAT = "arg_repeated"
 
+  private const val INTERVAL_MINUTE = 60 * 1000L
+  private const val INTERVAL_HOUR = 60 * INTERVAL_MINUTE
+
   fun scheduleEventCheck(prefs: Prefs) {
     val interval = prefs.autoCheckInterval
     if (interval <= 0) {
       cancelEventCheck()
       return
     }
-    val millis = AlarmManager.INTERVAL_HOUR * interval
-    JobRequest.Builder(EVENT_CHECK)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
+    val millis = INTERVAL_HOUR * interval
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(EVENT_CHECK)
+      .setConstraints(getDefaultConstraints())
       .build()
-      .schedule()
+    schedule(work)
   }
 
   fun cancelEventCheck() {
@@ -51,7 +56,13 @@ object EventJobScheduler {
   }
 
   fun scheduleBirthdaysCheck(context: Context) {
-    val work = PeriodicWorkRequest.Builder(CheckBirthdaysWorker::class.java, 24, TimeUnit.HOURS, 1, TimeUnit.HOURS)
+    val work = PeriodicWorkRequest.Builder(
+      CheckBirthdaysWorker::class.java,
+      24,
+      TimeUnit.HOURS,
+      1,
+      TimeUnit.HOURS
+    )
       .addTag(EVENT_CHECK_BIRTHDAYS)
       .build()
     WorkManager.getInstance(context).enqueue(work)
@@ -74,13 +85,14 @@ object EventJobScheduler {
       calendar.add(Calendar.DAY_OF_MONTH, 1)
       millis = calendar.timeInMillis
     }
-    JobRequest.Builder(EVENT_BIRTHDAY_PERMANENT)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+      .addTag(EVENT_BIRTHDAY_PERMANENT)
+      .setConstraints(getDefaultConstraints())
       .build()
-      .schedule()
+
+    schedule(work)
   }
 
   fun cancelBirthdayPermanent() {
@@ -93,14 +105,16 @@ object EventJobScheduler {
       cancelAutoSync()
       return
     }
+
     val millis = AlarmManager.INTERVAL_HOUR * interval
-    JobRequest.Builder(EVENT_AUTO_SYNC)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(EVENT_AUTO_SYNC)
+      .setConstraints(getDefaultConstraints())
       .build()
-      .schedule()
+
+    schedule(work)
   }
 
   private fun cancelAutoSync() {
@@ -114,13 +128,14 @@ object EventJobScheduler {
       return
     }
     val millis = AlarmManager.INTERVAL_HOUR * interval
-    JobRequest.Builder(EVENT_AUTO_BACKUP)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(EVENT_AUTO_BACKUP)
+      .setConstraints(getDefaultConstraints())
       .build()
-      .schedule()
+
+    schedule(work)
   }
 
   private fun cancelAutoBackup() {
@@ -135,31 +150,32 @@ object EventJobScheduler {
     val time = prefs.birthdayTime
     val millis = TimeUtil.getBirthdayTime(time) - System.currentTimeMillis()
     if (millis <= 0) return
-    JobRequest.Builder(EVENT_BIRTHDAY)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(EVENT_BIRTHDAY)
+      .setConstraints(getDefaultConstraints())
       .build()
-      .schedule()
+
+    schedule(work)
   }
 
   fun scheduleMissedCall(prefs: Prefs, number: String?) {
     if (number == null) return
     val time = prefs.missedReminderTime
     val millis = (time * (1000 * 60)).toLong()
-    val bundle = PersistableBundleCompat()
-    bundle.putBoolean(ARG_MISSED, true)
-    JobRequest.Builder(number)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
-      .setRequiresStorageNotLow(false)
-      .setExtras(bundle)
-      .setUpdateCurrent(true)
+    val bundle = Data.Builder()
+      .putBoolean(ARG_MISSED, true)
       .build()
-      .schedule()
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(number)
+      .setInputData(bundle)
+      .setConstraints(getDefaultConstraints())
+      .build()
+
+    schedule(work)
   }
 
   fun cancelMissedCall(number: String?) {
@@ -175,18 +191,19 @@ object EventJobScheduler {
       return false
     }
     Timber.d("scheduleReminderRepeat: $millis, $uuId")
-    val bundle = PersistableBundleCompat()
-    bundle.putBoolean(ARG_REPEAT, true)
-    JobRequest.Builder(item.uuId)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
-      .setRequiresStorageNotLow(false)
-      .setUpdateCurrent(true)
-      .setExtras(bundle)
+
+    val bundle = Data.Builder()
+      .putBoolean(ARG_REPEAT, true)
       .build()
-      .schedule()
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(item.uuId)
+      .setInputData(bundle)
+      .setConstraints(getDefaultConstraints())
+      .build()
+
+    schedule(work)
     return true
   }
 
@@ -199,15 +216,14 @@ object EventJobScheduler {
       return
     }
     Timber.d("scheduleReminderDelay: $millis, $uuId")
-    JobRequest.Builder(uuId)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
-      .setRequiresStorageNotLow(false)
-      .setUpdateCurrent(true)
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(uuId)
+      .setConstraints(getDefaultConstraints())
       .build()
-      .schedule()
+
+    schedule(work)
   }
 
   fun scheduleGpsDelay(appDb: AppDb, uuId: String): Boolean {
@@ -218,18 +234,19 @@ object EventJobScheduler {
       return false
     }
     Timber.d("scheduleGpsDelay: $millis, $uuId")
-    val bundle = PersistableBundleCompat()
-    bundle.putBoolean(ARG_LOCATION, true)
-    JobRequest.Builder(item.uuId)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
-      .setRequiresStorageNotLow(false)
-      .setUpdateCurrent(true)
-      .setExtras(bundle)
+
+    val bundle = Data.Builder()
+      .putBoolean(ARG_LOCATION, true)
       .build()
-      .schedule()
+
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(item.uuId)
+      .setInputData(bundle)
+      .setConstraints(getDefaultConstraints())
+      .build()
+
+    schedule(work)
     return true
   }
 
@@ -255,23 +272,35 @@ object EventJobScheduler {
     if (millis < 0) {
       millis = 100L
     }
-    JobRequest.Builder(reminder.uuId)
-      .setExact(millis)
-      .setRequiresCharging(false)
-      .setRequiresDeviceIdle(false)
-      .setRequiresBatteryNotLow(false)
-      .setRequiresStorageNotLow(false)
-      .setUpdateCurrent(true)
-      .build()
-      .schedule()
-  }
 
-  fun isEventScheduled(uuId: String): Boolean {
-    return JobManager.instance().getAllJobsForTag(uuId).isNotEmpty()
+    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
+      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+      .addTag(reminder.uuId)
+      .setConstraints(getDefaultConstraints())
+      .build()
+
+    schedule(work)
   }
 
   fun cancelReminder(uuId: String) {
     Timber.i("cancelReminder: $uuId")
-    JobManager.instance().cancelAllForTag(uuId)
+    WorkManager.getInstance().cancelAllWorkByTag(uuId)
+  }
+
+  private fun getDefaultConstraints(): Constraints {
+    return Constraints.Builder()
+      .setRequiresCharging(false)
+      .setRequiresBatteryNotLow(false)
+      .setRequiresStorageNotLow(false)
+      .apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+          setRequiresDeviceIdle(false)
+        }
+      }
+      .build()
+  }
+
+  private fun schedule(workRequest: WorkRequest) {
+    WorkManager.getInstance().enqueue(workRequest)
   }
 }

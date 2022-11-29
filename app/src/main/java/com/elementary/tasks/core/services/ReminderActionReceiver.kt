@@ -71,7 +71,7 @@ class ReminderActionReceiver : BaseBroadcast() {
   }
 
   private fun hidePermanent(context: Context, id: String) {
-    EventJobScheduler.cancelReminder(id)
+    JobScheduler.cancelReminder(id)
     val reminder = appDb.reminderDao().getById(id) ?: return
     eventControlFactory.getController(reminder).next()
     ContextCompat.startForegroundService(context,
@@ -105,7 +105,7 @@ class ReminderActionReceiver : BaseBroadcast() {
         if (prefs.doNotDisturbAction == 0) {
           val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis() - TimeCount.MINUTE)
           if (delayTime > 0) {
-            EventJobScheduler.scheduleReminderDelay(delayTime, id)
+            JobScheduler.scheduleReminderDelay(delayTime, id)
           }
         }
       } else {

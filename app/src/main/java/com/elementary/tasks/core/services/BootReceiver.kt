@@ -13,23 +13,23 @@ class BootReceiver : BaseBroadcast() {
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
       get<EnableThread>().run()
       if (prefs.isBirthdayReminderEnabled) {
-        EventJobScheduler.scheduleDailyBirthday(prefs)
+        JobScheduler.scheduleDailyBirthday(prefs)
       }
       if (prefs.isSbNotificationEnabled) {
         notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
       }
       if (prefs.isContactAutoCheckEnabled) {
-        EventJobScheduler.scheduleBirthdaysCheck(context)
+        JobScheduler.scheduleBirthdaysCheck(context)
       }
       if (prefs.isAutoEventsCheckEnabled) {
-        EventJobScheduler.scheduleEventCheck(prefs)
+        JobScheduler.scheduleEventCheck(prefs)
       }
       if (prefs.isBackupEnabled) {
-        EventJobScheduler.scheduleAutoBackup(prefs)
-        EventJobScheduler.scheduleAutoSync(prefs)
+        JobScheduler.scheduleAutoBackup(prefs)
+        JobScheduler.scheduleAutoSync(prefs)
       }
       if (prefs.isBirthdayPermanentEnabled) {
-        EventJobScheduler.scheduleBirthdayPermanent()
+        JobScheduler.scheduleBirthdayPermanent()
         notifier.showBirthdayPermanent()
       }
     }

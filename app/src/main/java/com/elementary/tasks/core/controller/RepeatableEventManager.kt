@@ -9,7 +9,7 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
@@ -30,7 +30,7 @@ abstract class RepeatableEventManager(
 ) : EventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
 
   protected fun enableReminder() {
-    EventJobScheduler.scheduleReminder(reminder)
+    JobScheduler.scheduleReminder(reminder)
   }
 
   protected fun export() {
@@ -87,7 +87,7 @@ abstract class RepeatableEventManager(
 
   override fun pause(): Boolean {
     notifier.cancel(reminder.uniqueId)
-    EventJobScheduler.cancelReminder(reminder.uuId)
+    JobScheduler.cancelReminder(reminder.uuId)
     return true
   }
 
@@ -102,6 +102,6 @@ abstract class RepeatableEventManager(
   }
 
   override fun setDelay(delay: Int) {
-    EventJobScheduler.scheduleReminderDelay(delay, reminder.uuId)
+    JobScheduler.scheduleReminderDelay(delay, reminder.uuId)
   }
 }

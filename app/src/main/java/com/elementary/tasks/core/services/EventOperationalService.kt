@@ -141,7 +141,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                 increment()
                 showReminderNotification(reminder)
                 if (isRepeatEnabled(reminder)) {
-                  EventJobScheduler.scheduleReminderRepeat(appDb, id, prefs)
+                  JobScheduler.scheduleReminderRepeat(appDb, id, prefs)
                 }
               }
 

@@ -2,7 +2,7 @@ package com.elementary.tasks.core.view_models.missed_calls
 
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
@@ -24,7 +24,7 @@ class MissedCallViewModel(
     postInProgress(true)
     launchDefault {
       appDb.missedCallsDao().delete(missedCall)
-      EventJobScheduler.cancelMissedCall(missedCall.number)
+      JobScheduler.cancelMissedCall(missedCall.number)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

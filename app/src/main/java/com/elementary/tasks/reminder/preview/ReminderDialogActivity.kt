@@ -24,7 +24,7 @@ import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
@@ -254,7 +254,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     binding.buttonEdit.setOnClickListener { editReminder() }
     binding.buttonDelay.setOnClickListener { delay() }
     binding.buttonDelayFor.setOnClickListener {
-      EventJobScheduler.cancelReminder(uuId)
+      JobScheduler.cancelReminder(uuId)
       showDialog()
       discardNotification(id)
     }
@@ -559,7 +559,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     } else {
       showNotification()
       if (isRepeatEnabled) {
-        EventJobScheduler.scheduleReminderRepeat(viewModel.db, uuId, prefs)
+        JobScheduler.scheduleReminderRepeat(viewModel.db, uuId, prefs)
       }
       if (isTtsEnabled) {
         startTts()
@@ -637,7 +637,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
   override fun onBackPressed() {
     discardMedia()
     if (prefs.isFoldingEnabled) {
-      EventJobScheduler.cancelReminder(uuId)
+      JobScheduler.cancelReminder(uuId)
       removeFlags()
       finish()
     } else {
@@ -1015,7 +1015,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       finish()
       return
     }
-    EventJobScheduler.cancelReminder(reminder.uuId)
+    JobScheduler.cancelReminder(reminder.uuId)
     val control = mControl
     launchDefault {
       if (control != null) {

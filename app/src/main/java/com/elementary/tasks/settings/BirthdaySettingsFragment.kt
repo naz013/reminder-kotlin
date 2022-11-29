@@ -12,7 +12,7 @@ import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
@@ -164,9 +164,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     binding.autoScanPrefs.isChecked = !isChecked
     prefs.isContactAutoCheckEnabled = !isChecked
     if (!isChecked) {
-      EventJobScheduler.scheduleBirthdaysCheck(requireContext())
+      JobScheduler.scheduleBirthdaysCheck(requireContext())
     } else {
-      EventJobScheduler.cancelBirthdaysCheck(requireContext())
+      JobScheduler.cancelBirthdaysCheck(requireContext())
     }
   }
 
@@ -308,11 +308,11 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     if (!isChecked) {
       requireActivity().sendBroadcast(Intent(requireContext(), PermanentBirthdayReceiver::class.java)
         .setAction(PermanentBirthdayReceiver.ACTION_SHOW))
-      EventJobScheduler.scheduleBirthdayPermanent()
+      JobScheduler.scheduleBirthdayPermanent()
     } else {
       requireActivity().sendBroadcast(Intent(requireContext(), PermanentBirthdayReceiver::class.java)
         .setAction(PermanentBirthdayReceiver.ACTION_HIDE))
-      EventJobScheduler.cancelBirthdayPermanent()
+      JobScheduler.cancelBirthdayPermanent()
     }
   }
 
@@ -340,10 +340,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     binding.birthReminderPrefs.isChecked = !isChecked
     prefs.isBirthdayReminderEnabled = !isChecked
     if (!isChecked) {
-      EventJobScheduler.scheduleDailyBirthday(prefs)
+      JobScheduler.scheduleDailyBirthday(prefs)
     } else {
       cleanBirthdays()
-      EventJobScheduler.cancelDailyBirthday()
+      JobScheduler.cancelDailyBirthday()
     }
   }
 
@@ -357,7 +357,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
     initBirthdayTimePrefs()
     if (prefs.isBirthdayReminderEnabled) {
-      EventJobScheduler.scheduleDailyBirthday(prefs)
+      JobScheduler.scheduleDailyBirthday(prefs)
     }
   }
 

@@ -4,6 +4,8 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
@@ -20,37 +22,48 @@ import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.work.CheckEventsWorker
-import com.evernote.android.job.Job
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.Calendar
 
-class EventJobService : Job(), KoinComponent {
+class EventJobService(
+  private val context: Context,
+  private val params: WorkerParameters
+) : Worker(context, params), KoinComponent {
 
   private val prefs by inject<Prefs>()
   private val appDb by inject<AppDb>()
   private val notifier by inject<Notifier>()
 
-  override fun onRunJob(params: Params): Result {
-    Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
-    val bundle = params.extras
-    when (params.tag) {
-      EventJobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
-      EventJobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
-      EventJobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
-      EventJobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
-      EventJobScheduler.EVENT_CHECK -> eventsCheckAction()
+  override fun doWork(): Result {
+    Timber.d(
+      "onRunJob: %s, tag -> %s",
+      TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
+      params.tags.toList()
+    )
+    val bundle = params.inputData
+    val tag = params.tags.first()
+    when (tag) {
+      JobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
+      JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
+      JobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
+      JobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
+      JobScheduler.EVENT_CHECK -> eventsCheckAction()
       else -> {
         when {
-          bundle.getBoolean(EventJobScheduler.ARG_MISSED, false) -> missedCallAction(params)
-          bundle.getBoolean(EventJobScheduler.ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
-          bundle.getBoolean(EventJobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(context, params.tag)
-          else -> reminderAction(context, params.tag)
+          bundle.getBoolean(JobScheduler.ARG_MISSED, false) -> missedCallAction(tag)
+          bundle.getBoolean(JobScheduler.ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
+          bundle.getBoolean(JobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(
+            context,
+            tag
+          )
+
+          else -> reminderAction(context, tag)
         }
       }
     }
-    return Result.SUCCESS
+    return Result.success()
   }
 
   private fun repeatedReminderAction(context: Context, tag: String?) {
@@ -59,23 +72,23 @@ class EventJobService : Job(), KoinComponent {
     if (item != null) {
       Timber.d("repeatedReminderAction: ${item.uuId}")
       reminderAction(context, item.uuId)
-      EventJobScheduler.scheduleReminderRepeat(appDb, item.uuId, prefs)
+      JobScheduler.scheduleReminderRepeat(appDb, item.uuId, prefs)
     }
   }
 
   private fun eventsCheckAction() {
     CheckEventsWorker.schedule(context)
-    EventJobScheduler.scheduleEventCheck(prefs)
+    JobScheduler.scheduleEventCheck(prefs)
   }
 
   private fun autoBackupAction() {
     BackupDataWorker.schedule(context)
-    EventJobScheduler.scheduleAutoBackup(prefs)
+    JobScheduler.scheduleAutoBackup(prefs)
   }
 
   private fun autoSyncAction() {
     SyncDataWorker.schedule(context)
-    EventJobScheduler.scheduleAutoSync(prefs)
+    JobScheduler.scheduleAutoSync(prefs)
   }
 
   private fun birthdayPermanentAction() {
@@ -84,26 +97,31 @@ class EventJobService : Job(), KoinComponent {
     }
   }
 
-  private fun missedCallAction(params: Params) {
+  private fun missedCallAction(tag: String) {
     if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
-      EventJobScheduler.scheduleMissedCall(prefs, params.tag)
+      JobScheduler.scheduleMissedCall(prefs, tag)
       if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
-        ContextCompat.startForegroundService(context,
-          EventOperationalService.getIntent(context, params.tag,
+        ContextCompat.startForegroundService(
+          context,
+          EventOperationalService.getIntent(
+            context,
+            tag,
             EventOperationalService.TYPE_MISSED,
             EventOperationalService.ACTION_PLAY,
-            0))
+            0
+          )
+        )
       } else {
-        openMissedScreen(params.tag)
+        openMissedScreen(tag)
       }
     } else if (prefs.doNotDisturbAction == 0) {
-      EventJobScheduler.scheduleMissedCall(prefs, params.tag)
+      JobScheduler.scheduleMissedCall(prefs, tag)
     }
   }
 
   private fun birthdayAction(context: Context) {
-    EventJobScheduler.cancelDailyBirthday()
-    EventJobScheduler.scheduleDailyBirthday(prefs)
+    JobScheduler.cancelDailyBirthday()
+    JobScheduler.scheduleDailyBirthday(prefs)
     launchDefault {
       val daysBefore = prefs.daysToBirthday
       val applyDnd = prefs.applyDoNotDisturb(prefs.birthdayPriority)
@@ -117,11 +135,15 @@ class EventJobService : Job(), KoinComponent {
         if (!applyDnd && birthValue == mDate && year != mYear) {
           withUIContext {
             if (Module.is10) {
-              ContextCompat.startForegroundService(context,
-                EventOperationalService.getIntent(context, item.uuId,
+              ContextCompat.startForegroundService(
+                context,
+                EventOperationalService.getIntent(
+                  context, item.uuId,
                   EventOperationalService.TYPE_BIRTHDAY,
                   EventOperationalService.ACTION_PLAY,
-                  item.uniqueId))
+                  item.uniqueId
+                )
+              )
             } else {
               showBirthday(context, item)
             }

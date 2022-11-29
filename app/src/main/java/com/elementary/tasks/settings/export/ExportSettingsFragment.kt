@@ -10,7 +10,7 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.CalendarUtils
@@ -203,7 +203,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       showIntervalDialog(getString(R.string.automatically_sync), prefs.autoSyncState) { state ->
         prefs.autoSyncState = stateFromPosition(state)
         showSyncState()
-        EventJobScheduler.scheduleAutoSync(prefs)
+        JobScheduler.scheduleAutoSync(prefs)
       }
     }
     binding.autoSyncPrefs.setDependentView(binding.backupDataPrefs)
@@ -367,7 +367,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       showIntervalDialog(getString(R.string.automatically_backup), prefs.autoBackupState) { state ->
         prefs.autoBackupState = stateFromPosition(state)
         showBackupState()
-        EventJobScheduler.scheduleAutoBackup(prefs)
+        JobScheduler.scheduleAutoBackup(prefs)
       }
     }
     binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)

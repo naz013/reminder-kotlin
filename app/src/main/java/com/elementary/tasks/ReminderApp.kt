@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.bumptech.glide.Glide
-import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.RemotePrefs
 import com.elementary.tasks.core.utils.adapterModule
@@ -16,7 +15,6 @@ import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.evernote.android.job.JobManager
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -58,7 +56,6 @@ class ReminderApp : MultiDexApplication() {
       )
     }
     get<Notifier>().createChannels()
-    JobManager.create(this).addJobCreator { EventJobService() }
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
   }

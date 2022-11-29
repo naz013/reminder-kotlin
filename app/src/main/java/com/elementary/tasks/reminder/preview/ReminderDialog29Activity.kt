@@ -27,7 +27,7 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
@@ -196,7 +196,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     binding.buttonEdit.setOnClickListener { editReminder() }
     binding.buttonDelay.setOnClickListener { delay() }
     binding.buttonDelayFor.setOnClickListener {
-      EventJobScheduler.cancelReminder(mReminder?.uuId ?: "")
+      JobScheduler.cancelReminder(mReminder?.uuId ?: "")
       showDialog()
       discardNotification(id)
     }
@@ -545,7 +545,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   override fun onBackPressed() {
     discardMedia()
     if (prefs.isFoldingEnabled) {
-      EventJobScheduler.cancelReminder(mReminder?.uuId ?: "")
+      JobScheduler.cancelReminder(mReminder?.uuId ?: "")
       removeFlags()
       finish()
     } else {
@@ -789,7 +789,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
       finish()
       return
     }
-    EventJobScheduler.cancelReminder(reminder.uuId)
+    JobScheduler.cancelReminder(reminder.uuId)
     val control = mControl
     launchDefault {
       if (control != null) {

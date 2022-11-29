@@ -18,7 +18,7 @@ object PendingIntentWrapper {
         context,
         requestCode,
         intent,
-        flags and PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE
       )
     } else {
       PendingIntent.getActivity(context, requestCode, intent, flags)
@@ -36,7 +36,7 @@ object PendingIntentWrapper {
         context,
         requestCode,
         intent,
-        flags and PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE
       )
     } else {
       PendingIntent.getBroadcast(context, requestCode, intent, flags)
@@ -54,7 +54,7 @@ object PendingIntentWrapper {
         context,
         requestCode,
         intent,
-        flags and PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE
       )
     } else {
       PendingIntent.getService(context, requestCode, intent, flags)

@@ -63,14 +63,14 @@ class CallReceiver : BaseBroadcast() {
               if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && number != null) {
                 var missedCall = appDb.missedCallsDao().getByNumber(number)
                 if (missedCall != null) {
-                  EventJobScheduler.cancelMissedCall(missedCall.number)
+                  JobScheduler.cancelMissedCall(missedCall.number)
                 } else {
                   missedCall = MissedCall()
                 }
                 missedCall.dateTime = currTime
                 missedCall.number = number
                 appDb.missedCallsDao().insert(missedCall)
-                EventJobScheduler.scheduleMissedCall(prefs, missedCall.number)
+                JobScheduler.scheduleMissedCall(prefs, missedCall.number)
               }
             } else {
               Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
