@@ -49,6 +49,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
   private val language by inject<Language>()
   private val soundStackHolder by inject<SoundStackHolder>()
   private val notifier by inject<Notifier>()
+  private val jobScheduler by inject<JobScheduler>()
 
   private val ttsLocale: Locale? = language.getLocale(false)
 
@@ -141,7 +142,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                 increment()
                 showReminderNotification(reminder)
                 if (isRepeatEnabled(reminder)) {
-                  JobScheduler.scheduleReminderRepeat(appDb, id, prefs)
+                  jobScheduler.scheduleReminderRepeat(appDb, id)
                 }
               }
 

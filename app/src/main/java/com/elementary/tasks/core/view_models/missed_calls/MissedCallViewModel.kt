@@ -15,7 +15,8 @@ class MissedCallViewModel(
   appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
+  workManagerProvider: WorkManagerProvider,
+  private val jobScheduler: JobScheduler
 ) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   val missedCall = appDb.missedCallsDao().loadByNumber(number)
@@ -24,7 +25,7 @@ class MissedCallViewModel(
     postInProgress(true)
     launchDefault {
       appDb.missedCallsDao().delete(missedCall)
-      JobScheduler.cancelMissedCall(missedCall.number)
+      jobScheduler.cancelMissedCall(missedCall.number)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

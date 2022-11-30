@@ -58,7 +58,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
     if (item != null) {
       TelephonyUtil.sendSms(item.number, context)
       updateBirthday(item)
-      finish(context, item.uniqueId)
+      finish(item.uniqueId)
     } else {
       hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
     }
@@ -70,7 +70,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
     if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
       TelephonyUtil.makeCall(item.number, context)
       updateBirthday(item)
-      finish(context, item.uniqueId)
+      finish(item.uniqueId)
     } else {
       hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
     }
@@ -104,7 +104,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
     val item = appDb.birthdaysDao().getById(id)
     if (item != null) {
       updateBirthday(item)
-      finish(context, item.uniqueId)
+      finish(item.uniqueId)
     }
   }
 
@@ -114,10 +114,10 @@ class BirthdayActionReceiver : BaseBroadcast() {
     LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
   }
 
-  private fun finish(context: Context, id: Int) {
+  private fun finish(id: Int) {
     notifier.cancel(id)
-    UpdatesHelper.updateWidget(context)
-    UpdatesHelper.updateCalendarWidget(context)
+    updatesHelper.updateWidgets()
+    updatesHelper.updateCalendarWidget()
   }
 
   companion object {

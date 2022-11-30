@@ -2,6 +2,7 @@ package com.elementary.tasks.core.view_models.reminders
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
@@ -29,14 +30,16 @@ class ReminderPreviewViewModel(
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
   private val uiReminderPreviewAdapter: UiReminderPreviewAdapter,
-  private val backupTool: BackupTool
+  private val backupTool: BackupTool,
+  updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
   appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
-  workManagerProvider
+  workManagerProvider,
+  updatesHelper
 ) {
 
   private val _note = mutableLiveDataOf<NoteWithImages>()
@@ -63,9 +66,7 @@ class ReminderPreviewViewModel(
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       appDb.reminderDao().getById(reminderId)?.also {
-        saveReminder(
-          it.copy(shoppings = shopList)
-        )
+        saveReminder(it.copy(shoppings = shopList))
       }
     }
   }

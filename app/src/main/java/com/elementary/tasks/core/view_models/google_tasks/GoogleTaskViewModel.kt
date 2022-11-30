@@ -3,6 +3,7 @@ package com.elementary.tasks.core.view_models.google_tasks
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -24,8 +25,17 @@ class GoogleTaskViewModel(
   gTasks: GTasks,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  updatesHelper: UpdatesHelper
+) : BaseTaskListsViewModel(
+  appDb,
+  prefs,
+  context,
+  gTasks,
+  dispatcherProvider,
+  workManagerProvider,
+  updatesHelper
+) {
 
   val googleTask = appDb.googleTasksDao().loadById(id)
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
@@ -57,8 +67,10 @@ class GoogleTaskViewModel(
         }
         if (reminder.groupUuId != "") {
           eventControlFactory.getController(reminder).start()
-          startWork(com.elementary.tasks.reminder.work.ReminderSingleBackupWorker::class.java,
-            Constants.INTENT_ID, reminder.uuId)
+          startWork(
+            com.elementary.tasks.reminder.work.ReminderSingleBackupWorker::class.java,
+            Constants.INTENT_ID, reminder.uuId
+          )
         }
       }
     }

@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
@@ -162,7 +161,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   override fun onDestroy() {
     super.onDestroy()
-    UpdatesHelper.updateTasksWidget(this)
+    updatesHelper.updateTasksWidget()
   }
 
   override fun onBackPressed() {

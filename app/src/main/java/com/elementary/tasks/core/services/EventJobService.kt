@@ -35,6 +35,7 @@ class EventJobService(
   private val prefs by inject<Prefs>()
   private val appDb by inject<AppDb>()
   private val notifier by inject<Notifier>()
+  private val jobScheduler by inject<JobScheduler>()
 
   override fun doWork(): Result {
     Timber.d(
@@ -72,23 +73,23 @@ class EventJobService(
     if (item != null) {
       Timber.d("repeatedReminderAction: ${item.uuId}")
       reminderAction(context, item.uuId)
-      JobScheduler.scheduleReminderRepeat(appDb, item.uuId, prefs)
+      jobScheduler.scheduleReminderRepeat(appDb, item.uuId)
     }
   }
 
   private fun eventsCheckAction() {
     CheckEventsWorker.schedule(context)
-    JobScheduler.scheduleEventCheck(prefs)
+    jobScheduler.scheduleEventCheck()
   }
 
   private fun autoBackupAction() {
     BackupDataWorker.schedule(context)
-    JobScheduler.scheduleAutoBackup(prefs)
+    jobScheduler.scheduleAutoBackup()
   }
 
   private fun autoSyncAction() {
     SyncDataWorker.schedule(context)
-    JobScheduler.scheduleAutoSync(prefs)
+    jobScheduler.scheduleAutoSync()
   }
 
   private fun birthdayPermanentAction() {
@@ -99,7 +100,7 @@ class EventJobService(
 
   private fun missedCallAction(tag: String) {
     if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
-      JobScheduler.scheduleMissedCall(prefs, tag)
+      jobScheduler.scheduleMissedCall(tag)
       if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
         ContextCompat.startForegroundService(
           context,
@@ -115,13 +116,13 @@ class EventJobService(
         openMissedScreen(tag)
       }
     } else if (prefs.doNotDisturbAction == 0) {
-      JobScheduler.scheduleMissedCall(prefs, tag)
+      jobScheduler.scheduleMissedCall(tag)
     }
   }
 
   private fun birthdayAction(context: Context) {
-    JobScheduler.cancelDailyBirthday()
-    JobScheduler.scheduleDailyBirthday(prefs)
+    jobScheduler.cancelDailyBirthday()
+    jobScheduler.scheduleDailyBirthday()
     launchDefault {
       val daysBefore = prefs.daysToBirthday
       val applyDnd = prefs.applyDoNotDisturb(prefs.birthdayPriority)

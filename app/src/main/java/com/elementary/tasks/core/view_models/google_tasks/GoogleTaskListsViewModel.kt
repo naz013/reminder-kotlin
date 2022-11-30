@@ -16,7 +16,7 @@ import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Random
 
 class GoogleTaskListsViewModel(
   appDb: AppDb,
@@ -24,8 +24,17 @@ class GoogleTaskListsViewModel(
   context: Context,
   gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  updatesHelper: UpdatesHelper
+) : BaseTaskListsViewModel(
+  appDb,
+  prefs,
+  context,
+  gTasks,
+  dispatcherProvider,
+  workManagerProvider,
+  updatesHelper
+) {
 
   val googleTaskLists = appDb.googleTaskListsDao().loadAll()
   val allGoogleTasks = appDb.googleTasksDao().loadAll()
@@ -128,7 +137,7 @@ class GoogleTaskListsViewModel(
             withUIContext {
               postInProgress(false)
               postCommand(Commands.UPDATED)
-              UpdatesHelper.updateTasksWidget(context)
+              updatesHelper.updateTasksWidget()
             }
           } else {
             val googleTasks = ArrayList<GoogleTask>()
@@ -146,7 +155,7 @@ class GoogleTaskListsViewModel(
             withUIContext {
               postInProgress(false)
               postCommand(Commands.UPDATED)
-              UpdatesHelper.updateTasksWidget(context)
+              updatesHelper.updateTasksWidget()
             }
           }
         }

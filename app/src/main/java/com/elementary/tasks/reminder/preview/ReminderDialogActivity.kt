@@ -48,6 +48,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -56,6 +57,7 @@ import java.io.File
 class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>() {
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+  private val jobScheduler by inject<JobScheduler>()
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
 
@@ -254,7 +256,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     binding.buttonEdit.setOnClickListener { editReminder() }
     binding.buttonDelay.setOnClickListener { delay() }
     binding.buttonDelayFor.setOnClickListener {
-      JobScheduler.cancelReminder(uuId)
+      jobScheduler.cancelReminder(uuId)
       showDialog()
       discardNotification(id)
     }
@@ -559,7 +561,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     } else {
       showNotification()
       if (isRepeatEnabled) {
-        JobScheduler.scheduleReminderRepeat(viewModel.db, uuId, prefs)
+        jobScheduler.scheduleReminderRepeat(viewModel.db, uuId)
       }
       if (isTtsEnabled) {
         startTts()
@@ -637,7 +639,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
   override fun onBackPressed() {
     discardMedia()
     if (prefs.isFoldingEnabled) {
-      JobScheduler.cancelReminder(uuId)
+      jobScheduler.cancelReminder(uuId)
       removeFlags()
       finish()
     } else {
@@ -1015,7 +1017,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       finish()
       return
     }
-    JobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uuId)
     val control = mControl
     launchDefault {
       if (control != null) {

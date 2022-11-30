@@ -8,6 +8,7 @@ import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
@@ -16,7 +17,9 @@ import kotlinx.coroutines.Job
 class SyncWorker(
   private val syncManagers: SyncManagers,
   private val context: Context,
-  private val appDb: AppDb
+  private val appDb: AppDb,
+  private val updatesHelper: UpdatesHelper,
+  private val textProvider: TextProvider
 ) {
 
   private var mJob: Job? = null
@@ -50,7 +53,7 @@ class SyncWorker(
   private fun launchSync() {
     val storage = CompositeStorage(syncManagers.storageManager)
     mJob = launchIo {
-      notifyMsg(context.getString(R.string.syncing_groups))
+      notifyMsg(textProvider.getText(R.string.syncing_groups))
       val groupRepository = syncManagers.repositoryManager.groupRepository
       val groupConverter = syncManagers.converterManager.groupConverter
       BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
@@ -66,7 +69,7 @@ class SyncWorker(
       }
       BulkDataFlow(groupRepository, groupConverter, storage, completable = null).backup()
 
-      notifyMsg(context.getString(R.string.syncing_reminders))
+      notifyMsg(textProvider.getText(R.string.syncing_reminders))
       val reminderRepository = syncManagers.repositoryManager.reminderRepository
       val reminderConverter = syncManagers.converterManager.reminderConverter
       BulkDataFlow(
@@ -77,28 +80,28 @@ class SyncWorker(
       ).restore(IndexTypes.TYPE_REMINDER, deleteFile = true)
       BulkDataFlow(reminderRepository, reminderConverter, storage, completable = null).backup()
 
-      notifyMsg(context.getString(R.string.syncing_notes))
+      notifyMsg(textProvider.getText(R.string.syncing_notes))
       val noteRepository = syncManagers.repositoryManager.noteRepository
       val noteConverter = syncManagers.converterManager.noteConverter
       BulkDataFlow(noteRepository, noteConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_NOTE, deleteFile = true)
       BulkDataFlow(noteRepository, noteConverter, storage, completable = null).backup()
 
-      notifyMsg(context.getString(R.string.syncing_birthdays))
+      notifyMsg(textProvider.getText(R.string.syncing_birthdays))
       val birthdayRepository = syncManagers.repositoryManager.birthdayRepository
       val birthdayConverter = syncManagers.converterManager.birthdayConverter
       BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_BIRTHDAY, deleteFile = true)
       BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null).backup()
 
-      notifyMsg(context.getString(R.string.syncing_places))
+      notifyMsg(textProvider.getText(R.string.syncing_places))
       val placeRepository = syncManagers.repositoryManager.placeRepository
       val placeConverter = syncManagers.converterManager.placeConverter
       BulkDataFlow(placeRepository, placeConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_PLACE, deleteFile = true)
       BulkDataFlow(placeRepository, placeConverter, storage, completable = null).backup()
 
-      notifyMsg(context.getString(R.string.syncing_templates))
+      notifyMsg(textProvider.getText(R.string.syncing_templates))
       val templateRepository = syncManagers.repositoryManager.templateRepository
       val templateConverter = syncManagers.converterManager.templateConverter
       BulkDataFlow(templateRepository, templateConverter, storage, completable = null)
@@ -113,8 +116,8 @@ class SyncWorker(
       ).backup()
 
       withUIContext {
-        UpdatesHelper.updateWidget(context)
-        UpdatesHelper.updateNotesWidget(context)
+        updatesHelper.updateWidgets()
+        updatesHelper.updateNotesWidget()
         onEnd?.invoke()
       }
       mJob = null

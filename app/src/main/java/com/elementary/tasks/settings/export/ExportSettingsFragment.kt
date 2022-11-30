@@ -44,6 +44,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   private val exportAllDataWorker by inject<ExportAllDataWorker>()
   private val dropbox by inject<Dropbox>()
   private val gDrive by inject<GDrive>()
+  private val jobScheduler by inject<JobScheduler>()
 
   private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
   private var mItemSelect: Int = 0
@@ -203,7 +204,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       showIntervalDialog(getString(R.string.automatically_sync), prefs.autoSyncState) { state ->
         prefs.autoSyncState = stateFromPosition(state)
         showSyncState()
-        JobScheduler.scheduleAutoSync(prefs)
+        jobScheduler.scheduleAutoSync()
       }
     }
     binding.autoSyncPrefs.setDependentView(binding.backupDataPrefs)
@@ -367,7 +368,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       showIntervalDialog(getString(R.string.automatically_backup), prefs.autoBackupState) { state ->
         prefs.autoBackupState = stateFromPosition(state)
         showBackupState()
-        JobScheduler.scheduleAutoBackup(prefs)
+        jobScheduler.scheduleAutoBackup()
       }
     }
     binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)

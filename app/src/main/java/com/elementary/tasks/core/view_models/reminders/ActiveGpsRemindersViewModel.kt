@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.view_models.reminders
 
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -14,14 +15,16 @@ class ActiveGpsRemindersViewModel(
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
+  workManagerProvider: WorkManagerProvider,
+  updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
   appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
-  workManagerProvider
+  workManagerProvider,
+  updatesHelper
 ) {
 
   val events = appDb.reminderDao().loadAllTypes(

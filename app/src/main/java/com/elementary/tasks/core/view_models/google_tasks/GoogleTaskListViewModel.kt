@@ -16,7 +16,7 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Random
 
 class GoogleTaskListViewModel(
   listId: String,
@@ -25,8 +25,17 @@ class GoogleTaskListViewModel(
   context: Context,
   gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseTaskListsViewModel(appDb, prefs, context, gTasks, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  updatesHelper: UpdatesHelper
+) : BaseTaskListsViewModel(
+  appDb,
+  prefs,
+  context,
+  gTasks,
+  dispatcherProvider,
+  workManagerProvider,
+  updatesHelper
+) {
 
   var googleTaskList: LiveData<GoogleTaskList>
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
@@ -72,7 +81,7 @@ class GoogleTaskListViewModel(
             withUIContext {
               postInProgress(false)
               postCommand(Commands.UPDATED)
-              UpdatesHelper.updateTasksWidget(context)
+              updatesHelper.updateTasksWidget()
             }
           } else {
             val googleTasks = ArrayList<GoogleTask>()
@@ -90,7 +99,7 @@ class GoogleTaskListViewModel(
             withUIContext {
               postInProgress(false)
               postCommand(Commands.UPDATED)
-              UpdatesHelper.updateTasksWidget(context)
+              updatesHelper.updateTasksWidget()
             }
           }
         }
@@ -138,13 +147,14 @@ class GoogleTaskListViewModel(
     }
     postInProgress(true)
     launchDefault {
-      val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
+      val googleTasks =
+        appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
       appDb.googleTasksDao().deleteAll(googleTasks)
       gTasks.clearTaskList(googleTaskList.listId)
       postInProgress(false)
       postCommand(Commands.UPDATED)
       withUIContext {
-        UpdatesHelper.updateTasksWidget(context)
+        updatesHelper.updateTasksWidget()
       }
     }
   }

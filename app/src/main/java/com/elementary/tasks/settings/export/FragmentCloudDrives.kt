@@ -28,6 +28,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   private val dropbox by inject<Dropbox>()
   private val gTasks by inject<GTasks>()
   private val gDrive by inject<GDrive>()
+  private val updatesHelper by inject<UpdatesHelper>()
 
   private val viewModel by viewModel<CloudViewModel>()
   private val mDropbox: DropboxLogin by lazy {
@@ -79,16 +80,16 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   override fun onStart() {
     super.onStart()
 
-    viewModel.isLoading.observe(viewLifecycleOwner, {
+    viewModel.isLoading.observe(viewLifecycleOwner) {
       if (it != null) {
         updateProgress(it)
       }
-    })
-    viewModel.isReady.observe(viewLifecycleOwner, { b ->
+    }
+    viewModel.isReady.observe(viewLifecycleOwner) { b ->
       if (b != null && b) {
-        withContext { UpdatesHelper.updateTasksWidget(it) }
+        withContext { updatesHelper.updateTasksWidget() }
       }
-    })
+    }
   }
 
   private fun initGoogleTasksButton() {
@@ -207,15 +208,13 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   private fun disconnectFromGoogleTasks() {
-    val ctx = context ?: return
-
     mGoogleLogin.logOutTasks()
     updateProgress(true)
     launchDefault {
       viewModel.db.googleTasksDao().deleteAll()
       viewModel.db.googleTaskListsDao().deleteAll()
       withUIContext {
-        UpdatesHelper.updateTasksWidget(ctx)
+        updatesHelper.updateTasksWidget()
         updateProgress(false)
         checkGoogleStatus()
       }

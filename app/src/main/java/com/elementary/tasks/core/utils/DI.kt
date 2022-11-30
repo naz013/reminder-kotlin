@@ -7,6 +7,7 @@ import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
@@ -41,6 +42,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
@@ -108,7 +110,7 @@ val workerModule = module {
   worker { LoadFileWorker(get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get()) }
-  worker { SyncDataWorker(get(), get(), get(), get(), get()) }
+  worker { SyncDataWorker(get(), get(), get(), get(), get(), get()) }
   worker { SaveNewTaskWorker(get(), get(), get()) }
   worker { UpdateTaskWorker(get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get()) }
@@ -127,10 +129,11 @@ val workerModule = module {
 
 val viewModelModule = module {
   viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
     ReminderPreviewViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),
@@ -145,10 +148,11 @@ val viewModelModule = module {
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> NoteViewModel(id, get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) -> GroupViewModel(id, get(), get(), get(), get()) }
-  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get(), get()) }
+  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get(), get(), get()) }
   viewModel { (listId: String) ->
     GoogleTaskListViewModel(
       listId,
+      get(),
       get(),
       get(),
       get(),
@@ -166,6 +170,7 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -177,16 +182,16 @@ val viewModelModule = module {
   }
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { SmsTemplatesViewModel(get(), get(), get(), get()) }
-  viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ConversationViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { SelectApplicationViewModel() }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get(), get(), get()) }
-  viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
   viewModel { CloudViewModel(get(), get()) }
   viewModel { ReminderStateViewModel() }
@@ -249,16 +254,23 @@ val utilModule = module {
   single { GlobalButtonObservable() }
   single { ImagesSingleton() }
   single { SyncManagers(get(), get(), get(), get()) }
-  single { EventControlFactory(get(), get(), get(), get(), get()) }
+  single { EventControlFactory(get(), get(), get(), get(), get(), get(), get(), get()) }
+
   single { RemotePrefs(get(), get()) }
+
   single { Notifier(get(), get()) }
+  single { JobScheduler(get(), get()) }
+  single { UpdatesHelper(get()) }
 
   factory { WidgetDataProvider(get()) }
-  single { SyncWorker(get(), get(), get()) }
+
+  single { SyncWorker(get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }
   single { ExportAllDataWorker(get()) }
   single { ScanContactsWorker(get(), get()) }
+
   factory { EnableThread(get(), get()) }
+
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
   single { BirthdayModelAdapter(get()) }
   single { DayViewProvider(get(), get()) }
@@ -270,6 +282,7 @@ val utilModule = module {
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
 
   single { TextProvider(get()) }
+  single { FeatureManager(get()) }
 }
 
 val adapterModule = module {

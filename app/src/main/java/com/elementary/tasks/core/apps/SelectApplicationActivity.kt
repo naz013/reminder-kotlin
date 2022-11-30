@@ -29,7 +29,7 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
   }) {
     override fun filter(v: ApplicationItem): Boolean {
       return searchValue.isEmpty() || (v.name
-        ?: "").toLowerCase().contains(searchValue.toLowerCase())
+        ?: "").lowercase().contains(searchValue.lowercase())
     }
   }
 
@@ -48,18 +48,18 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
 
   override fun onStart() {
     super.onStart()
-    viewModel.applications.observe(this, { applications ->
-        applications?.let { searchModifier.original = it }
-    })
-    viewModel.isLoading.observe(this, { isLoading ->
-        isLoading?.let {
-            if (it) {
-                showProgress()
-            } else {
-                hideProgress()
-            }
+    viewModel.applications.observe(this) { applications ->
+      applications?.let { searchModifier.original = it }
+    }
+    viewModel.isLoading.observe(this) { isLoading ->
+      isLoading?.let {
+        if (it) {
+          showProgress()
+        } else {
+          hideProgress()
         }
-    })
+      }
+    }
   }
 
   private fun hideProgress() {

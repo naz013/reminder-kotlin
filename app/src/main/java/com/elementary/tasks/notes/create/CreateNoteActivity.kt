@@ -30,7 +30,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ImageFile
@@ -242,7 +241,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun observeStates() {
-    stateViewModel.colorOpacity.observe(this, {
+    stateViewModel.colorOpacity.observe(this) {
       if (it != null) {
         Timber.d("observeStates: $it")
         updateDarkness(it)
@@ -250,34 +249,34 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         updateTextColors()
         updateIcons()
       }
-    })
-    stateViewModel.time.observe(this, {
+    }
+    stateViewModel.time.observe(this) {
       if (it != null) {
         binding.remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
       }
-    })
-    stateViewModel.date.observe(this, {
+    }
+    stateViewModel.date.observe(this) {
       if (it != null) {
         binding.remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
       }
-    })
-    stateViewModel.isReminderAttached.observe(this, {
+    }
+    stateViewModel.isReminderAttached.observe(this) {
       if (it != null) {
         binding.remindContainer.visibility = if (it) View.VISIBLE else View.GONE
       }
-    })
-    stateViewModel.fontStyle.observe(this, {
+    }
+    stateViewModel.fontStyle.observe(this) {
       if (it != null) {
         updateFontStyle(it)
       }
-    })
-    stateViewModel.images.observe(this, {
+    }
+    stateViewModel.images.observe(this) {
       if (it != null) {
         Timber.d("observeStates: images -> $it")
         imagesGridAdapter.submitList(it)
       }
-    })
-    stateViewModel.palette.observe(this, {
+    }
+    stateViewModel.palette.observe(this) {
       if (it != null) {
         prefs.notePalette = it
         binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
@@ -287,7 +286,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         updateTextColors()
         updateIcons()
       }
-    })
+    }
   }
 
   private fun initDefaults(): Pair<Int, Int> {
@@ -491,21 +490,22 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   private fun initViewModel() {
     viewModel.note.observe(this, mNoteObserver)
-    viewModel.reminder.observe(this, { this.showReminder(it) })
-    viewModel.result.observe(this, { commands ->
+    viewModel.reminder.observe(this) { this.showReminder(it) }
+    viewModel.result.observe(this) { commands ->
       if (commands != null) {
         Timber.d("initViewModel: $commands")
         when (commands) {
           Commands.DELETED, Commands.SAVED -> {
-            UpdatesHelper.updateNotesWidget(this)
-            UpdatesHelper.updateWidget(this)
+            updatesHelper.updateNotesWidget()
+            updatesHelper.updateWidgets()
             finish()
           }
+
           else -> {
           }
         }
       }
-    })
+    }
     lifecycle.addObserver(viewModel)
   }
 

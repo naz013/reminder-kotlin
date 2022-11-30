@@ -21,6 +21,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
 import com.elementary.tasks.settings.BaseCalendarFragment
@@ -36,6 +37,9 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
   private val eventControlFactory by inject<EventControlFactory>()
   private val appDb by inject<AppDb>()
+  private val jobScheduler by inject<JobScheduler>()
+  private val updatesHelper by inject<UpdatesHelper>()
+
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
   private var list: List<CalendarUtils.CalendarItem> = listOf()
@@ -117,7 +121,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   }
 
   private fun startCheckService() {
-    JobScheduler.scheduleEventCheck(prefs)
+    jobScheduler.scheduleEventCheck()
   }
 
   private fun loadCalendars() {
@@ -195,9 +199,9 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     prefs.isAutoEventsCheckEnabled = isChecked
     binding.syncInterval.isEnabled = isChecked
     if (isChecked) {
-      JobScheduler.scheduleEventCheck(prefs)
+      jobScheduler.scheduleEventCheck()
     } else {
-      JobScheduler.cancelEventCheck()
+      jobScheduler.cancelEventCheck()
     }
   }
 
@@ -265,10 +269,10 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         binding.progressView.visibility = View.GONE
 
         if (eventsCount == 0) {
-          Toast.makeText(ctx, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show()
+          toast(getString(R.string.no_events_found))
         } else {
-          Toast.makeText(ctx, "$eventsCount " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
-          UpdatesHelper.updateCalendarWidget(ctx)
+          toast("$eventsCount " + getString(R.string.events_found))
+          updatesHelper.updateCalendarWidget()
           notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
       }

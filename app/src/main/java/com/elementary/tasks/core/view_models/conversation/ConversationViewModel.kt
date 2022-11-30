@@ -58,14 +58,16 @@ class ConversationViewModel(
     private val recognizer: Recognizer,
     private val birthdayModelAdapter: BirthdayModelAdapter,
     dispatcherProvider: DispatcherProvider,
-    workManagerProvider: WorkManagerProvider
+    workManagerProvider: WorkManagerProvider,
+    updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
     appDb,
     currentStateHolder.preferences,
     calendarUtils,
     eventControlFactory,
     dispatcherProvider,
-    workManagerProvider
+    workManagerProvider,
+    updatesHelper
 ) {
 
     private var _shoppingLists = MutableLiveData<List<Reminder>>()
@@ -459,7 +461,7 @@ class ConversationViewModel(
             note.updatedAt = TimeUtil.gmtDateTime
             appDb.notesDao().insert(note)
         }
-        UpdatesHelper.updateNotesWidget(context)
+        updatesHelper.updateNotesWidget()
         if (showToast) {
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
         }

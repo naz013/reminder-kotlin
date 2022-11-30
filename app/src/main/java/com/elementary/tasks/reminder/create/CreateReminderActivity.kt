@@ -19,7 +19,6 @@ import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.GTasks
@@ -596,8 +595,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     if (stateViewModel.isPaused && !stateViewModel.isSaving) {
       stateViewModel.original?.let { viewModel.resumeReminder(it) }
     }
-    UpdatesHelper.updateWidget(this)
-    UpdatesHelper.updateCalendarWidget(this)
+    updatesHelper.updateWidgets()
+    updatesHelper.updateCalendarWidget()
   }
 
   override fun onBackPressed() {

@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.view_models.reminders
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -30,7 +29,8 @@ abstract class BaseRemindersViewModel(
   protected val calendarUtils: CalendarUtils,
   protected val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
+  workManagerProvider: WorkManagerProvider,
+  protected val updatesHelper: UpdatesHelper
 ) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
@@ -195,13 +195,13 @@ abstract class BaseRemindersViewModel(
     }
   }
 
-  fun saveReminder(reminder: Reminder, context: Context? = null) {
+  fun saveReminder(reminder: Reminder) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
         appDb.reminderDao().insert(reminder)
       }
-      if (context != null) UpdatesHelper.updateTasksWidget(context)
+      updatesHelper.updateTasksWidget()
       backupReminder(reminder.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)

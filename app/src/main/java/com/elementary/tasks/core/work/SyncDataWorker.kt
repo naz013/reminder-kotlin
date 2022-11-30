@@ -23,7 +23,8 @@ class SyncDataWorker(
   private val prefs: Prefs,
   private val appDb: AppDb,
   context: Context,
-  workerParams: WorkerParameters
+  workerParams: WorkerParameters,
+  private val updatesHelper: UpdatesHelper
 ) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
@@ -101,8 +102,8 @@ class SyncDataWorker(
       }
 
       withUIContext {
-        UpdatesHelper.updateWidget(applicationContext)
-        UpdatesHelper.updateNotesWidget(applicationContext)
+        updatesHelper.updateWidgets()
+        updatesHelper.updateNotesWidget()
       }
     }
     return Result.success()

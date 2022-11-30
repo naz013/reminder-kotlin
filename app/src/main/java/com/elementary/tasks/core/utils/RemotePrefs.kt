@@ -12,7 +12,7 @@ class RemotePrefs(
   private val prefs: Prefs
 ) {
 
-  private val mFirebaseRemoteConfig: FirebaseRemoteConfig? = try {
+  private val config: FirebaseRemoteConfig? = try {
     FirebaseRemoteConfig.getInstance()
   } catch (e: Exception) {
     null
@@ -26,8 +26,8 @@ class RemotePrefs(
   init {
     val configSettings = FirebaseRemoteConfigSettings.Builder()
       .build()
-    this.mFirebaseRemoteConfig?.setConfigSettingsAsync(configSettings)
-    this.mFirebaseRemoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
+    this.config?.setConfigSettingsAsync(configSettings)
+    this.config?.setDefaultsAsync(R.xml.remote_config_defaults)
     fetchConfig()
   }
 
@@ -36,26 +36,36 @@ class RemotePrefs(
   }
 
   private fun fetchConfig() {
-    mFirebaseRemoteConfig?.fetch(3600)?.addOnCompleteListener { task ->
+    config?.fetch(3600)?.addOnCompleteListener { task ->
       Timber.d("fetchConfig: ${task.isSuccessful}")
       if (task.isSuccessful) {
-        mFirebaseRemoteConfig.fetchAndActivate()
+        config.fetchAndActivate()
       }
       reaAppConfigs()
+      readFeatureFlags()
       displayVersionMessage()
       if (!Module.isPro) displaySaleMessage()
     }
   }
 
   private fun reaAppConfigs() {
-    val privacyUrl = mFirebaseRemoteConfig?.getString(PRIVACY_POLICY_URL)
-    val voiceHelpUrls = mFirebaseRemoteConfig?.getString(VOICE_HELP_URLS)
+    val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
+    val voiceHelpUrls = config?.getString(VOICE_HELP_URLS)
 
     Logger.d("RemoteConfig: privacyUrl=$privacyUrl")
     Logger.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
 
     privacyUrl?.also { prefs.privacyUrl = it }
     voiceHelpUrls?.also { prefs.voiceHelpUrls = it }
+  }
+
+  private fun readFeatureFlags() {
+    FeatureManager.Feature.values().map {
+      it to (config?.getBoolean(it.value) ?: false)
+    }.forEach {
+      Logger.d("Feature ${it.first} isEnabled=${it.second}")
+      prefs.putBoolean(it.first.value, it.second)
+    }
   }
 
   fun addUpdateObserver(observer: UpdateObserver) {
@@ -85,12 +95,12 @@ class RemotePrefs(
   }
 
   private fun displayVersionMessage() {
-    val versionCode = mFirebaseRemoteConfig?.getLong(VERSION_CODE) ?: 0
+    val versionCode = config?.getLong(VERSION_CODE) ?: 0
     try {
       val pInfo = pm.getPackageInfo(packageName, 0)
       val verCode = pInfo.versionCode
       if (versionCode > verCode) {
-        val version = mFirebaseRemoteConfig?.getString(VERSION_NAME) ?: ""
+        val version = config?.getString(VERSION_NAME) ?: ""
         for (observer in mUpdateObservers) {
           observer.onUpdate(version)
         }
@@ -110,10 +120,10 @@ class RemotePrefs(
   }
 
   private fun displaySaleMessage() {
-    val isSale = mFirebaseRemoteConfig?.getBoolean(SALE_STARTED) ?: false
+    val isSale = config?.getBoolean(SALE_STARTED) ?: false
     if (isSale) {
-      val expiry = mFirebaseRemoteConfig?.getString(SALE_EXPIRY_DATE) ?: ""
-      val discount = mFirebaseRemoteConfig?.getString(SALE_VALUE) ?: ""
+      val expiry = config?.getString(SALE_EXPIRY_DATE) ?: ""
+      val discount = config?.getString(SALE_VALUE) ?: ""
       for (observer in mObservers) {
         observer.onSale(discount, expiry)
       }
@@ -151,9 +161,5 @@ class RemotePrefs(
 
     private const val PRIVACY_POLICY_URL = "privacy_policy_link"
     private const val VOICE_HELP_URLS = "voice_help_urls"
-
-    private const val FEATURE_DROPBOX = "feature_dropbox"
-    private const val FEATURE_GOOGLE_DRIVE = "feature_google_drive"
-    private const val FEATURE_GOOGLE_TASKS = "feature_google_tasks"
   }
 }

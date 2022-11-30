@@ -1,13 +1,13 @@
 package com.elementary.tasks.core.app_widgets.calendar
 
 import android.appwidget.AppWidgetManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.services.BaseBroadcast
+import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
-class CalendarNextReceiver : BroadcastReceiver() {
+class CalendarNextReceiver : BaseBroadcast(), KoinComponent {
 
   override fun onReceive(context: Context?, intent: Intent?) {
     Timber.d("onReceive: $intent")
@@ -32,7 +32,7 @@ class CalendarNextReceiver : BroadcastReceiver() {
         }
         editor.putInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetId, year)
         editor.apply()
-        UpdatesHelper.updateCalendarWidget(context)
+        updatesHelper.updateCalendarWidget()
       }
     }
   }

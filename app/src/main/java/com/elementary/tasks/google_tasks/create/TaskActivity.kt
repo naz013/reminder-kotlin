@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -33,7 +32,6 @@ import com.github.naz013.calendarext.newCalendar
 import com.github.naz013.calendarext.takeTimeFrom
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
 
 class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
@@ -82,11 +80,11 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun observeStates() {
-    stateViewModel.time.observe(this, { switchDate() })
-    stateViewModel.date.observe(this, { switchDate() })
-    stateViewModel.isDateEnabled.observe(this, { switchDate(isDate = it) })
-    stateViewModel.isReminder.observe(this, { switchDate(isReminder = it) })
-    stateViewModel.reminderValue.observe(this, { showReminder(it) })
+    stateViewModel.time.observe(this) { switchDate() }
+    stateViewModel.date.observe(this) { switchDate() }
+    stateViewModel.isDateEnabled.observe(this) { switchDate(isDate = it) }
+    stateViewModel.isReminder.observe(this) { switchDate(isReminder = it) }
+    stateViewModel.reminderValue.observe(this) { showReminder(it) }
   }
 
   private fun initDefaults() {
@@ -425,7 +423,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     } catch (e: Exception) {
     }
     hideKeyboard()
-    UpdatesHelper.updateTasksWidget(this)
+    updatesHelper.updateTasksWidget()
   }
 
   override fun onBackPressed() {

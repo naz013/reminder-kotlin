@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
@@ -30,6 +31,7 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val language = currentStateHolder.language
   protected val dialogues by inject<Dialogues>()
   protected val notifier by inject<Notifier>()
+  protected val updatesHelper by inject<UpdatesHelper>()
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 
   private val uiHandler = Handler(Looper.getMainLooper())

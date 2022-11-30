@@ -24,13 +24,15 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
+import java.util.Calendar
 
 class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>(),
   TimePickerDialog.OnTimeSetListener {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
   private val scanContactsWorker by inject<ScanContactsWorker>()
+  private val jobScheduler by inject<JobScheduler>()
+  private val updatesHelper by inject<UpdatesHelper>()
   private var mItemSelect: Int = 0
 
   private val onProgress: (Boolean) -> Unit = {
@@ -104,16 +106,17 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
   }
 
   private fun initViewModel() {
-    viewModel.result.observe(viewLifecycleOwner, { commands ->
+    viewModel.result.observe(viewLifecycleOwner) { commands ->
       if (commands != null) {
         when (commands) {
           Commands.DELETED -> {
           }
+
           else -> {
           }
         }
       }
-    })
+    }
   }
 
   private fun initNotificationPrefs() {
@@ -164,9 +167,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     binding.autoScanPrefs.isChecked = !isChecked
     prefs.isContactAutoCheckEnabled = !isChecked
     if (!isChecked) {
-      JobScheduler.scheduleBirthdaysCheck(requireContext())
+      jobScheduler.scheduleBirthdaysCheck()
     } else {
-      JobScheduler.cancelBirthdaysCheck(requireContext())
+      jobScheduler.cancelBirthdaysCheck()
     }
   }
 
@@ -308,11 +311,11 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     if (!isChecked) {
       requireActivity().sendBroadcast(Intent(requireContext(), PermanentBirthdayReceiver::class.java)
         .setAction(PermanentBirthdayReceiver.ACTION_SHOW))
-      JobScheduler.scheduleBirthdayPermanent()
+      jobScheduler.scheduleBirthdayPermanent()
     } else {
       requireActivity().sendBroadcast(Intent(requireContext(), PermanentBirthdayReceiver::class.java)
         .setAction(PermanentBirthdayReceiver.ACTION_HIDE))
-      JobScheduler.cancelBirthdayPermanent()
+      jobScheduler.cancelBirthdayPermanent()
     }
   }
 
@@ -326,8 +329,8 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     val isChecked = binding.widgetShowPrefs.isChecked
     binding.widgetShowPrefs.isChecked = !isChecked
     prefs.isBirthdayInWidgetEnabled = !isChecked
-    UpdatesHelper.updateCalendarWidget(requireContext())
-    UpdatesHelper.updateWidget(requireContext())
+    updatesHelper.updateCalendarWidget()
+    updatesHelper.updateWidgets()
   }
 
   private fun initBirthdayReminderPrefs() {
@@ -340,10 +343,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     binding.birthReminderPrefs.isChecked = !isChecked
     prefs.isBirthdayReminderEnabled = !isChecked
     if (!isChecked) {
-      JobScheduler.scheduleDailyBirthday(prefs)
+      jobScheduler.scheduleDailyBirthday()
     } else {
       cleanBirthdays()
-      JobScheduler.cancelDailyBirthday()
+      jobScheduler.cancelDailyBirthday()
     }
   }
 
@@ -357,7 +360,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
     initBirthdayTimePrefs()
     if (prefs.isBirthdayReminderEnabled) {
-      JobScheduler.scheduleDailyBirthday(prefs)
+      jobScheduler.scheduleDailyBirthday()
     }
   }
 

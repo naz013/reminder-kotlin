@@ -4,32 +4,35 @@ import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.utils.EnableThread
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class BootReceiver : BaseBroadcast() {
+
+  private val jobScheduler by inject<JobScheduler>()
 
   override fun onReceive(context: Context, intent: Intent) {
     Timber.d("onReceive: ")
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
       get<EnableThread>().run()
       if (prefs.isBirthdayReminderEnabled) {
-        JobScheduler.scheduleDailyBirthday(prefs)
+        jobScheduler.scheduleDailyBirthday()
       }
       if (prefs.isSbNotificationEnabled) {
         notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
       }
       if (prefs.isContactAutoCheckEnabled) {
-        JobScheduler.scheduleBirthdaysCheck(context)
+        jobScheduler.scheduleBirthdaysCheck()
       }
       if (prefs.isAutoEventsCheckEnabled) {
-        JobScheduler.scheduleEventCheck(prefs)
+        jobScheduler.scheduleEventCheck()
       }
       if (prefs.isBackupEnabled) {
-        JobScheduler.scheduleAutoBackup(prefs)
-        JobScheduler.scheduleAutoSync(prefs)
+        jobScheduler.scheduleAutoBackup()
+        jobScheduler.scheduleAutoSync()
       }
       if (prefs.isBirthdayPermanentEnabled) {
-        JobScheduler.scheduleBirthdayPermanent()
+        jobScheduler.scheduleBirthdayPermanent()
         notifier.showBirthdayPermanent()
       }
     }

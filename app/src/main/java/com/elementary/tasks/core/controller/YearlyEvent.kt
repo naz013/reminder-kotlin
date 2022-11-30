@@ -1,11 +1,13 @@
 package com.elementary.tasks.core.controller
 
-import android.content.Context
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 
@@ -14,9 +16,20 @@ class YearlyEvent(
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
-  context: Context,
-  notifier: Notifier
-) : RepeatableEventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
+  notifier: Notifier,
+  jobScheduler: JobScheduler,
+  updatesHelper: UpdatesHelper,
+  textProvider: TextProvider
+) : RepeatableEventManager(
+  reminder,
+  appDb,
+  prefs,
+  calendarUtils,
+  notifier,
+  jobScheduler,
+  updatesHelper,
+  textProvider
+) {
 
   override val isActive: Boolean
     get() = reminder.isActive

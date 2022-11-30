@@ -21,7 +21,8 @@ abstract class BaseTaskListsViewModel(
   protected val context: Context,
   protected val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
+  workManagerProvider: WorkManagerProvider,
+  protected val updatesHelper: UpdatesHelper
 ) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
 
   fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
@@ -64,7 +65,7 @@ abstract class BaseTaskListsViewModel(
         postInProgress(false)
         postCommand(Commands.UPDATED)
         withUIContext {
-          UpdatesHelper.updateTasksWidget(context)
+          updatesHelper.updateTasksWidget()
         }
       } catch (e: IOException) {
         postInProgress(false)

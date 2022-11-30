@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -27,17 +28,18 @@ class HomeViewModel(
   eventControlFactory: EventControlFactory,
   private val birthdayModelAdapter: BirthdayModelAdapter,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
+  workManagerProvider: WorkManagerProvider,
+  updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
   appDb,
   currentStateHolder.preferences,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
-  workManagerProvider
+  workManagerProvider,
+  updatesHelper
 ), (String) -> Unit {
 
-  private val context = currentStateHolder.context
   private val _reminders = mutableLiveDataOf<List<Reminder>>()
   private var liveData: LiveData<List<Reminder>>? = null
   val reminders: LiveData<List<Reminder>> = _reminders

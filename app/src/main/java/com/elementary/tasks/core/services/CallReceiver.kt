@@ -14,6 +14,7 @@ import timber.log.Timber
 class CallReceiver : BaseBroadcast() {
 
   private val appDb by inject<AppDb>()
+  private val jobScheduler by inject<JobScheduler>()
 
   private var mIncomingNumber: String? = null
   private var prevState: Int = 0
@@ -23,13 +24,16 @@ class CallReceiver : BaseBroadcast() {
     if (intent.action ?: "" == "android.intent.action.PHONE_STATE") {
       val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
       if (telephony != null && prefs.isTelephonyAllowed) {
-        val customPhoneListener = CustomPhoneStateListener(context)
+        val customPhoneListener = CustomPhoneStateListener(context, jobScheduler)
         telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
       }
     }
   }
 
-  inner class CustomPhoneStateListener(private var context: Context) : PhoneStateListener() {
+  inner class CustomPhoneStateListener(
+    private val context: Context,
+    private val jobScheduler: JobScheduler
+    ) : PhoneStateListener() {
 
     override fun onCallStateChanged(state: Int, incomingNumber: String?) {
       Timber.d("onCallStateChanged: $incomingNumber")
@@ -63,14 +67,14 @@ class CallReceiver : BaseBroadcast() {
               if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && number != null) {
                 var missedCall = appDb.missedCallsDao().getByNumber(number)
                 if (missedCall != null) {
-                  JobScheduler.cancelMissedCall(missedCall.number)
+                  jobScheduler.cancelMissedCall(missedCall.number)
                 } else {
                   missedCall = MissedCall()
                 }
                 missedCall.dateTime = currTime
                 missedCall.number = number
                 appDb.missedCallsDao().insert(missedCall)
-                JobScheduler.scheduleMissedCall(prefs, missedCall.number)
+                jobScheduler.scheduleMissedCall(missedCall.number)
               }
             } else {
               Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")

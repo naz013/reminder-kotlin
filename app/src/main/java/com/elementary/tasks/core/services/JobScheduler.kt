@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.services
 
-import android.app.AlarmManager
 import android.content.Context
 import android.os.Build
 import androidx.work.Constraints
@@ -10,32 +9,26 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
+import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
+import com.google.gson.Gson
 import timber.log.Timber
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-object JobScheduler {
+class JobScheduler(
+  private val context: Context,
+  private val prefs: Prefs
+) {
 
-  const val EVENT_BIRTHDAY = "event_birthday"
-  const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
-  const val EVENT_AUTO_SYNC = "event_auto_sync"
-  const val EVENT_AUTO_BACKUP = "event_auto_backup"
-  const val EVENT_CHECK = "event_check"
-  private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
-
-  const val ARG_LOCATION = "arg_location"
-  const val ARG_MISSED = "arg_missed"
-  const val ARG_REPEAT = "arg_repeated"
-
-  private const val INTERVAL_MINUTE = 60 * 1000L
-  private const val INTERVAL_HOUR = 60 * INTERVAL_MINUTE
-
-  fun scheduleEventCheck(prefs: Prefs) {
+  fun scheduleEventCheck() {
     val interval = prefs.autoCheckInterval
     if (interval <= 0) {
       cancelEventCheck()
@@ -55,7 +48,7 @@ object JobScheduler {
     cancelReminder(EVENT_CHECK)
   }
 
-  fun scheduleBirthdaysCheck(context: Context) {
+  fun scheduleBirthdaysCheck() {
     val work = PeriodicWorkRequest.Builder(
       CheckBirthdaysWorker::class.java,
       24,
@@ -65,11 +58,11 @@ object JobScheduler {
     )
       .addTag(EVENT_CHECK_BIRTHDAYS)
       .build()
-    WorkManager.getInstance(context).enqueue(work)
+    schedule(work)
   }
 
-  fun cancelBirthdaysCheck(context: Context) {
-    WorkManager.getInstance(context).cancelAllWorkByTag(EVENT_CHECK_BIRTHDAYS)
+  fun cancelBirthdaysCheck() {
+    cancelReminder(EVENT_CHECK_BIRTHDAYS)
   }
 
   fun scheduleBirthdayPermanent() {
@@ -99,14 +92,14 @@ object JobScheduler {
     cancelReminder(EVENT_BIRTHDAY_PERMANENT)
   }
 
-  fun scheduleAutoSync(prefs: Prefs) {
+  fun scheduleAutoSync() {
     val interval = prefs.autoSyncState
     if (interval <= 0) {
       cancelAutoSync()
       return
     }
 
-    val millis = AlarmManager.INTERVAL_HOUR * interval
+    val millis = INTERVAL_HOUR * interval
 
     val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
       .setInitialDelay(millis, TimeUnit.MILLISECONDS)
@@ -121,13 +114,13 @@ object JobScheduler {
     cancelReminder(EVENT_AUTO_SYNC)
   }
 
-  fun scheduleAutoBackup(prefs: Prefs) {
+  fun scheduleAutoBackup() {
     val interval = prefs.autoBackupState
     if (interval <= 0) {
       cancelAutoBackup()
       return
     }
-    val millis = AlarmManager.INTERVAL_HOUR * interval
+    val millis = INTERVAL_HOUR * interval
 
     val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
       .setInitialDelay(millis, TimeUnit.MILLISECONDS)
@@ -146,7 +139,7 @@ object JobScheduler {
     cancelReminder(EVENT_BIRTHDAY)
   }
 
-  fun scheduleDailyBirthday(prefs: Prefs) {
+  fun scheduleDailyBirthday() {
     val time = prefs.birthdayTime
     val millis = TimeUtil.getBirthdayTime(time) - System.currentTimeMillis()
     if (millis <= 0) return
@@ -160,10 +153,10 @@ object JobScheduler {
     schedule(work)
   }
 
-  fun scheduleMissedCall(prefs: Prefs, number: String?) {
+  fun scheduleMissedCall(number: String?) {
     if (number == null) return
     val time = prefs.missedReminderTime
-    val millis = (time * (1000 * 60)).toLong()
+    val millis = time * INTERVAL_MINUTE
     val bundle = Data.Builder()
       .putBoolean(ARG_MISSED, true)
       .build()
@@ -183,10 +176,10 @@ object JobScheduler {
     cancelReminder(number)
   }
 
-  fun scheduleReminderRepeat(appDb: AppDb, uuId: String, prefs: Prefs): Boolean {
+  fun scheduleReminderRepeat(appDb: AppDb, uuId: String): Boolean {
     val item = appDb.reminderDao().getById(uuId) ?: return false
     val minutes = prefs.notificationRepeatTime
-    val millis = minutes * TimeCount.MINUTE
+    val millis = minutes * INTERVAL_MINUTE
     if (millis <= 0) {
       return false
     }
@@ -208,7 +201,7 @@ object JobScheduler {
   }
 
   fun scheduleReminderDelay(minutes: Int, uuId: String) {
-    scheduleReminderDelay(TimeCount.MINUTE * minutes, uuId)
+    scheduleReminderDelay(INTERVAL_MINUTE * minutes, uuId)
   }
 
   fun scheduleReminderDelay(millis: Long, uuId: String) {
@@ -226,6 +219,7 @@ object JobScheduler {
     schedule(work)
   }
 
+  @Deprecated("Remove db call")
   fun scheduleGpsDelay(appDb: AppDb, uuId: String): Boolean {
     val item = appDb.reminderDao().getById(uuId) ?: return false
     val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
@@ -282,11 +276,6 @@ object JobScheduler {
     schedule(work)
   }
 
-  fun cancelReminder(uuId: String) {
-    Timber.i("cancelReminder: $uuId")
-    WorkManager.getInstance().cancelAllWorkByTag(uuId)
-  }
-
   private fun getDefaultConstraints(): Constraints {
     return Constraints.Builder()
       .setRequiresCharging(false)
@@ -300,7 +289,53 @@ object JobScheduler {
       .build()
   }
 
+  fun cancelReminder(uuId: String) {
+    Timber.i("cancelReminder: $uuId")
+    WorkManager.getInstance(context).cancelAllWorkByTag(uuId)
+  }
+
+  fun scheduleSaveNewTask(googleTask: GoogleTask, uuId: String) {
+    val work = OneTimeWorkRequest.Builder(SaveNewTaskWorker::class.java)
+      .setInputData(
+        Data.Builder().putString(Constants.INTENT_JSON, Gson().toJson(googleTask)).build()
+      )
+      .addTag(uuId)
+      .build()
+
+    schedule(work)
+  }
+
+  fun scheduleTaskDone(googleTask: GoogleTask, uuId: String) {
+    val work = OneTimeWorkRequest.Builder(UpdateTaskWorker::class.java)
+      .setInputData(
+        Data.Builder()
+          .putString(Constants.INTENT_JSON, Gson().toJson(googleTask))
+          .putString(Constants.INTENT_STATUS, GTasks.TASKS_COMPLETE)
+          .build()
+      )
+      .addTag(uuId)
+      .build()
+
+    schedule(work)
+  }
+
   private fun schedule(workRequest: WorkRequest) {
-    WorkManager.getInstance().enqueue(workRequest)
+    WorkManager.getInstance(context).enqueue(workRequest)
+  }
+
+  companion object {
+    const val EVENT_BIRTHDAY = "event_birthday"
+    const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
+    const val EVENT_AUTO_SYNC = "event_auto_sync"
+    const val EVENT_AUTO_BACKUP = "event_auto_backup"
+    const val EVENT_CHECK = "event_check"
+    private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
+
+    const val ARG_LOCATION = "arg_location"
+    const val ARG_MISSED = "arg_missed"
+    const val ARG_REPEAT = "arg_repeated"
+
+    private const val INTERVAL_MINUTE = 60 * 1000L
+    private const val INTERVAL_HOUR = 60 * INTERVAL_MINUTE
   }
 }

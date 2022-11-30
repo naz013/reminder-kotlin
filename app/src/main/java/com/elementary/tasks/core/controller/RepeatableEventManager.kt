@@ -1,36 +1,32 @@
 package com.elementary.tasks.core.controller
 
-import android.content.Context
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
-import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
-import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
-import com.google.gson.Gson
 
 abstract class RepeatableEventManager(
   reminder: Reminder,
   appDb: AppDb,
   prefs: Prefs,
-  calendarUtils: CalendarUtils,
-  context: Context,
-  notifier: Notifier
-) : EventManager(reminder, appDb, prefs, calendarUtils, context, notifier) {
+  private val calendarUtils: CalendarUtils,
+  notifier: Notifier,
+  jobScheduler: JobScheduler,
+  updatesHelper: UpdatesHelper,
+  private val textProvider: TextProvider
+) : EventManager(reminder, appDb, prefs, notifier, jobScheduler, updatesHelper) {
 
   protected fun enableReminder() {
-    JobScheduler.scheduleReminder(reminder)
+    jobScheduler.scheduleReminder(reminder)
   }
 
   protected fun export() {
@@ -41,17 +37,16 @@ abstract class RepeatableEventManager(
       googleTask.status = GTasks.TASKS_NEED_ACTION
       googleTask.title = reminder.summary
       googleTask.dueDate = due
-      googleTask.notes = context.getString(R.string.from_reminder)
+      googleTask.notes = textProvider.getText(R.string.from_reminder)
       googleTask.uuId = reminder.uuId
-      val work = OneTimeWorkRequest.Builder(SaveNewTaskWorker::class.java)
-        .setInputData(Data.Builder().putString(Constants.INTENT_JSON, Gson().toJson(googleTask)).build())
-        .addTag(reminder.uuId)
-        .build()
-      WorkManager.getInstance(context).enqueue(work)
+      jobScheduler.scheduleSaveNewTask(googleTask, reminder.uuId)
     }
     if (reminder.exportToCalendar) {
       if (prefs.isStockCalendarEnabled) {
-        calendarUtils.addEventToStock(reminder.summary, TimeUtil.getDateTimeFromGmt(reminder.eventTime))
+        calendarUtils.addEventToStock(
+          reminder.summary,
+          TimeUtil.getDateTimeFromGmt(reminder.eventTime)
+        )
       }
       if (prefs.isCalendarEnabled) {
         calendarUtils.addEvent(reminder)
@@ -64,15 +59,7 @@ abstract class RepeatableEventManager(
       launchIo {
         val googleTask = db.googleTasksDao().getByReminderId(reminder.uuId)
         if (googleTask != null && googleTask.status == GTasks.TASKS_NEED_ACTION) {
-          val work = OneTimeWorkRequest.Builder(UpdateTaskWorker::class.java)
-            .setInputData(
-              Data.Builder()
-                .putString(Constants.INTENT_JSON, Gson().toJson(googleTask))
-                .putString(Constants.INTENT_STATUS, GTasks.TASKS_COMPLETE)
-                .build())
-            .addTag(reminder.uuId)
-            .build()
-          WorkManager.getInstance(context).enqueue(work)
+          jobScheduler.scheduleTaskDone(googleTask, reminder.uuId)
         }
       }
     }
@@ -87,7 +74,7 @@ abstract class RepeatableEventManager(
 
   override fun pause(): Boolean {
     notifier.cancel(reminder.uniqueId)
-    JobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uuId)
     return true
   }
 
@@ -102,6 +89,6 @@ abstract class RepeatableEventManager(
   }
 
   override fun setDelay(delay: Int) {
-    JobScheduler.scheduleReminderDelay(delay, reminder.uuId)
+    jobScheduler.scheduleReminderDelay(delay, reminder.uuId)
   }
 }

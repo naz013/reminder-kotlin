@@ -27,8 +27,8 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.EventOperationalService
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
@@ -49,6 +49,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -58,6 +59,7 @@ import java.io.File
 class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>() {
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+  private val jobScheduler by inject<JobScheduler>()
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
 
@@ -196,7 +198,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     binding.buttonEdit.setOnClickListener { editReminder() }
     binding.buttonDelay.setOnClickListener { delay() }
     binding.buttonDelayFor.setOnClickListener {
-      JobScheduler.cancelReminder(mReminder?.uuId ?: "")
+      jobScheduler.cancelReminder(mReminder?.uuId ?: "")
       showDialog()
       discardNotification(id)
     }
@@ -545,7 +547,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   override fun onBackPressed() {
     discardMedia()
     if (prefs.isFoldingEnabled) {
-      JobScheduler.cancelReminder(mReminder?.uuId ?: "")
+      jobScheduler.cancelReminder(mReminder?.uuId ?: "")
       removeFlags()
       finish()
     } else {
@@ -789,7 +791,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
       finish()
       return
     }
-    JobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uuId)
     val control = mControl
     launchDefault {
       if (control != null) {

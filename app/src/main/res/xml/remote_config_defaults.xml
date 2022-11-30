@@ -30,4 +30,16 @@
         <key>voice_help_urls</key>
         <value>{}</value>
     </entry>
+    <entry>
+        <key>feature_dropbox</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>feature_google_drive</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>feature_google_tasks</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
