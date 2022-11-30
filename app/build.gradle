@@ -105,15 +105,15 @@ android {
 }
 
 dependencies {
-    implementation('com.google.apis:google-api-services-calendar:v3-rev99-1.19.0') {
+    implementation('com.google.apis:google-api-services-calendar:v3-rev411-1.25.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
     implementation('com.google.apis:google-api-services-tasks:v1-rev71-1.25.0')
-    implementation 'com.google.http-client:google-http-client-gson:1.39.2-sp.1'
-    implementation('com.google.api-client:google-api-client-android:1.31.5') {
+    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
+    implementation('com.google.api-client:google-api-client-android:2.0.1') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation('com.google.apis:google-api-services-drive:v3-rev99-1.23.0') {
+    implementation('com.google.apis:google-api-services-drive:v3-rev197-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation project(':voice-engine-ktx')
@@ -184,7 +184,7 @@ dependencies {
     implementation 'com.tuyenmonkey:mkloader:1.4.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
