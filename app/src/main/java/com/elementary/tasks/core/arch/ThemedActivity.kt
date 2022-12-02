@@ -3,11 +3,14 @@ package com.elementary.tasks.core.arch
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.view.inputmethod.InputMethodManager
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -58,6 +61,24 @@ abstract class ThemedActivity : AppCompatActivity() {
     if (savedInstanceState == null) {
       loginStateViewModel.isLogged = isLogged()
     }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      onBackInvokedDispatcher.registerOnBackInvokedCallback(
+        OnBackInvokedDispatcher.PRIORITY_DEFAULT
+      ) {
+        invokeBackPress()
+      }
+    } else {
+      onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          invokeBackPress()
+        }
+      })
+    }
+  }
+
+  fun invokeBackPress() {
+    if (!handleBackPress()) finish()
   }
 
   override fun onStart() {
@@ -114,6 +135,10 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   protected fun postUi(action: () -> Unit) {
     uiHandler.post(action)
+  }
+
+  protected open fun handleBackPress(): Boolean {
+    return false
   }
 
   companion object {

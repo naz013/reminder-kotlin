@@ -192,13 +192,14 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     removeFlags()
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     discardMedia()
     if (prefs.isFoldingEnabled) {
       closeWindow()
     } else {
       Toast.makeText(this@MissedCallDialogActivity, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     }
+    return true
   }
 
   private fun makeCall() {

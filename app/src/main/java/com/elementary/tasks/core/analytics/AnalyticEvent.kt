@@ -45,7 +45,9 @@ enum class Feature(val value: String) {
   BIRTHDAY("birthday"),
   SMS_TEMPLATE("sms_template"),
   MISSED_CALL("missed_call_reminder"),
-  AFTER_CALL("after_call_reminder")
+  AFTER_CALL("after_call_reminder"),
+  GOOGLE_DRIVE("google_drive"),
+  DROPBOX("dropbox")
 }
 
 enum class Screen(val value: String) {

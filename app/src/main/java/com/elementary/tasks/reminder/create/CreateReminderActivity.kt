@@ -21,11 +21,11 @@ import androidx.lifecycle.Observer
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -34,7 +34,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.reminders.EditReminderViewModel
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
@@ -52,7 +52,6 @@ import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -64,7 +63,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private val cacheUtil by inject<CacheUtil>()
 
-  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+  private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
   private val conversationViewModel by viewModel<ConversationViewModel>()
   private val stateViewModel by viewModel<ReminderStateViewModel>()
 
@@ -104,7 +103,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     hasLocation = Module.hasLocation(this)
     mIsTablet = resources.getBoolean(R.bool.is_tablet)
     canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
-    canExportToTasks = get<GTasks>().isLogged
+    canExportToTasks = stateViewModel.isLoggedToGoogleTasks()
     initActionBar()
     initNavigation()
 
@@ -382,7 +381,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun selectMelody() {
     if (checkPermission(330, Permissions.READ_EXTERNAL)) {
-      cacheUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
+      IntentUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
     }
   }
 
@@ -599,10 +598,11 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     updatesHelper.updateCalendarWidget()
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     if (fragment != null && fragment?.onBackPressed() == true) {
       closeScreen()
     }
+    return true
   }
 
   private class SpinnerItem(val title: String)

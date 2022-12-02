@@ -628,10 +628,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun getReminder() = viewModel.reminder.value
 
-  override fun onBackPressed() {
-    finish()
-  }
-
   override fun onDestroy() {
     super.onDestroy()
     adsProvider.destroy()

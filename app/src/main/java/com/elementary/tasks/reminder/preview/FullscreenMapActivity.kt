@@ -124,7 +124,8 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
     this.mGoogleMap = googleMap
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     finishAfterTransition()
+    return true
   }
 }

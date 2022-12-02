@@ -88,8 +88,9 @@ class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>() {
     Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     removeFlags()
+    return true
   }
 
   companion object {

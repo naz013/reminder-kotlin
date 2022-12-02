@@ -233,10 +233,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     return true
   }
 
-  override fun onBackPressed() {
-    finish()
-  }
-
   override fun placeChanged(place: LatLng, address: String) {
     stateViewModel.place.apply {
       this.latitude = place.latitude

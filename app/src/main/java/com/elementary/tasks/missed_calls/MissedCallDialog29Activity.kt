@@ -144,13 +144,14 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
     lifecycle.removeObserver(viewModel)
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     discardMedia()
     if (prefs.isFoldingEnabled) {
       finish()
     } else {
-      Toast.makeText(this@MissedCallDialog29Activity, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
+      Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     }
+    return true
   }
 
   private fun makeCall() {

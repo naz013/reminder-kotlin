@@ -97,9 +97,10 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
     finish()
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     setResult(Activity.RESULT_CANCELED)
     finishAffinity()
+    return true
   }
 
   companion object {

@@ -108,7 +108,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     viewModel.isInProgress.observe(this) { updateProgress(it) }
     viewModel.result.observe(this) { commands ->
       when (commands) {
-        Commands.SAVED, Commands.DELETED -> onBackPressed()
+        Commands.SAVED, Commands.DELETED -> handleBackPress()
         else -> {
         }
       }
@@ -396,7 +396,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         return true
       }
       android.R.id.home -> {
-        onBackPressed()
+        handleBackPress()
         return true
       }
       else -> return super.onOptionsItemSelected(item)
@@ -426,8 +426,9 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     updatesHelper.updateTasksWidget()
   }
 
-  override fun onBackPressed() {
-    doIfPossible { super.onBackPressed() }
+  override fun handleBackPress(): Boolean {
+    doIfPossible { finish() }
+    return true
   }
 
   private fun doIfPossible(f: () -> Unit) {

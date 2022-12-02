@@ -394,8 +394,9 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
     mDay = c.get(Calendar.DAY_OF_MONTH)
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     closeWindow()
+    return true
   }
 
   companion object {

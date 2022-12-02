@@ -360,7 +360,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     removeFlags()
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     discardMedia()
     if (prefs.isFoldingEnabled) {
       removeFlags()
@@ -368,6 +368,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     } else {
       Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     }
+    return true
   }
 
   private fun makeCall() {

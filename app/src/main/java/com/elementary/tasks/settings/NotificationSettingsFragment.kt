@@ -20,6 +20,7 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -699,7 +700,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun pickMelody() {
     if (Permissions.checkPermission(requireActivity(), PERM_MELODY, Permissions.READ_EXTERNAL)) {
-      cacheUtil.pickMelody(requireActivity(), MELODY_CODE)
+      IntentUtil.pickMelody(requireActivity(), MELODY_CODE)
     }
   }
 
@@ -993,7 +994,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun openImagePicker() {
     if (Permissions.checkPermission(requireActivity(), PERM_IMAGE, Permissions.READ_EXTERNAL)) {
-      cacheUtil.pickImage(requireActivity(), Constants.ACTION_REQUEST_GALLERY)
+      IntentUtil.pickImage(requireActivity(), Constants.ACTION_REQUEST_GALLERY)
     }
   }
 

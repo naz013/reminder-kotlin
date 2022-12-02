@@ -104,7 +104,7 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
   }
 
   private fun initActionBar() {
-    binding.backButton.setOnClickListener { onBackPressed() }
+    binding.backButton.setOnClickListener { handleBackPress() }
   }
 
   override fun onPause() {
@@ -123,9 +123,10 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
     }
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     val intent = Intent()
     setResult(RESULT_CANCELED, intent)
     finish()
+    return true
   }
 }

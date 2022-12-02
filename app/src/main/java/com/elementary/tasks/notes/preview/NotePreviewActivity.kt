@@ -185,8 +185,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     closeWindow()
+    return true
   }
 
   private fun showNote(noteWithImages: NoteWithImages?) {

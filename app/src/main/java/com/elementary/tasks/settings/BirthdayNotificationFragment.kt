@@ -12,6 +12,7 @@ import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -248,7 +249,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   private fun pickMelody() {
     withActivity {
       if (Permissions.checkPermission(it, PERM_MELODY, Permissions.READ_EXTERNAL)) {
-        cacheUtil.pickMelody(it, MELODY_CODE)
+        IntentUtil.pickMelody(it, MELODY_CODE)
       }
     }
   }

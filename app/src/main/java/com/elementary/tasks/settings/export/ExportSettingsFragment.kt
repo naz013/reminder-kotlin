@@ -12,9 +12,9 @@ import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -38,7 +38,6 @@ import java.util.Locale
 class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
   private val backupTool by inject<BackupTool>()
-  private val cacheUtil by inject<CacheUtil>()
   private val syncWorker by inject<SyncWorker>()
   private val backupWorker by inject<BackupWorker>()
   private val exportAllDataWorker by inject<ExportAllDataWorker>()
@@ -160,7 +159,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
   private fun pickFile() {
     if (Permissions.checkPermission(requireActivity(), PERM_PICK_RBAK, Permissions.READ_EXTERNAL)) {
-      cacheUtil.pickFile(requireActivity(), REQ_PICK_RBAK)
+      IntentUtil.pickFile(requireActivity(), REQ_PICK_RBAK)
     }
   }
 

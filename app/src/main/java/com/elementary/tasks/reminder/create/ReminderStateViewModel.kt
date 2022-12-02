@@ -2,12 +2,15 @@ package com.elementary.tasks.reminder.create
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import java.util.*
 
-class ReminderStateViewModel : ViewModel(), LifecycleObserver {
+class ReminderStateViewModel(
+  private val gTasks: GTasks
+) : ViewModel(), LifecycleObserver {
 
   var shopItems: List<ShopItem> = listOf()
   var weekdays: List<Int> = listOf()
@@ -47,6 +50,10 @@ class ReminderStateViewModel : ViewModel(), LifecycleObserver {
 
   init {
     setDateTime()
+  }
+
+  fun isLoggedToGoogleTasks(): Boolean {
+    return gTasks.isLogged
   }
 
   private fun setDateTime(millis: Long = System.currentTimeMillis()) {

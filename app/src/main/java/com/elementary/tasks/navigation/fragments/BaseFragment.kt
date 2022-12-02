@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject
@@ -42,7 +43,12 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   protected fun moveBack() {
-    activity?.onBackPressed()
+    val activity = activity
+    if (activity is ThemedActivity) {
+      activity.invokeBackPress()
+    } else {
+      activity?.onBackPressed()
+    }
   }
 
   protected fun withActivity(action: (Activity) -> Unit) {

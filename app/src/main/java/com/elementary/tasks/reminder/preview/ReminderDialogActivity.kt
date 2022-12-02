@@ -636,7 +636,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     removeFlags()
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     discardMedia()
     if (prefs.isFoldingEnabled) {
       jobScheduler.cancelReminder(uuId)
@@ -645,6 +645,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     } else {
       Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     }
+    return true
   }
 
   private fun openApplication(reminder: Reminder) {

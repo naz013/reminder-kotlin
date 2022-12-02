@@ -1019,12 +1019,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     stateViewModel.addBitmap(bitmap)
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     if (!isColorPickerHidden()) {
       toggleColorView()
-      return
+    } else {
+      finish()
     }
-    super.onBackPressed()
+    return true
   }
 
   companion object {

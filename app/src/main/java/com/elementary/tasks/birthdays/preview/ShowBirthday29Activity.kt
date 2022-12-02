@@ -150,13 +150,14 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
     notifier.cancel(id)
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
     discardMedia()
     if (prefs.isFoldingEnabled) {
       finish()
     } else {
       Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     }
+    return true
   }
 
   private fun makeCall() {

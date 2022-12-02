@@ -72,10 +72,6 @@ class VoiceWidgetDialog : FragmentActivity() {
     }
   }
 
-  override fun onBackPressed() {
-    finish()
-  }
-
   companion object {
     const val VOICE_RECOGNITION_REQUEST_CODE = 109
     private const val ARG_LOGGED = "arg_logged"

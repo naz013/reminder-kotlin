@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -45,6 +46,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     ).also { it.hideNoteView() }
   }
   private var mFragment: BaseFragment<*>? = null
+  private lateinit var navController: NavController
 
   override fun inflateBinding() = ActivityBottomNavBinding.inflate(layoutInflater)
 
@@ -56,6 +58,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     val navHostFragment =
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
     val navController = navHostFragment.navController
+    this.navController = navController
     binding.toolbar.setupWithNavController(navController)
 
     if (intent.action == Intent.ACTION_VIEW) {
@@ -183,7 +186,8 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     }
   }
 
-  override fun onBackPressed() {
+  override fun handleBackPress(): Boolean {
+    Timber.d("handleBackPress: $mFragment, ${navController.backQueue.size}")
     if (mFragment is HomeFragment) {
       if (mNoteView.isNoteVisible) {
         mNoteView.hideNoteView()
@@ -191,8 +195,9 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
         finishAffinity()
       }
     } else {
-      super.onBackPressed()
+      navController.popBackStack()
     }
+    return true
   }
 
   companion object {

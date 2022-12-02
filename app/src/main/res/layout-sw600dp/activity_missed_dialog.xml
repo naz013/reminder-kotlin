@@ -116,8 +116,7 @@
             android:textSize="14sp"
             android:visibility="visible"
             app:backgroundTint="?colorSecondary"
-            app:cornerRadius="32dp"
-            tools:targetApi="lollipop" />
+            app:cornerRadius="32dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonOk"
@@ -147,8 +146,7 @@
             android:textSize="14sp"
             android:visibility="visible"
             app:backgroundTint="?colorSecondary"
-            app:cornerRadius="32dp"
-            tools:targetApi="lollipop" />
+            app:cornerRadius="32dp" />
 
     </LinearLayout>
 </LinearLayout>

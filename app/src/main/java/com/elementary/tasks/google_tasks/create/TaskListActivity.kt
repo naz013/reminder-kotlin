@@ -73,7 +73,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
     viewModel.googleTaskList.observe(this) { editTaskList(it) }
     viewModel.isInProgress.observe(this) { updateProgress(it) }
     viewModel.result.observe(this) { commands ->
-      onBackPressed().takeIf { commands == Commands.DELETED || commands == Commands.SAVED }
+      handleBackPress().takeIf { commands == Commands.DELETED || commands == Commands.SAVED }
     }
   }
 
@@ -121,7 +121,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       android.R.id.home -> {
-        onBackPressed()
+        handleBackPress()
         true
       }
       MENU_ITEM_DELETE -> {
@@ -164,8 +164,9 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
     updatesHelper.updateTasksWidget()
   }
 
-  override fun onBackPressed() {
-    doIfPossible { super.onBackPressed() }
+  override fun handleBackPress(): Boolean {
+    doIfPossible { finish() }
+    return true
   }
 
   private fun doIfPossible(f: () -> Unit) {
