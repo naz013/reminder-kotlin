@@ -6,6 +6,7 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.finishWith
@@ -21,7 +22,13 @@ class SplashScreenActivity : ThemedActivity() {
   private val viewModel by viewModel<SplashViewModel>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    // Handle the splash screen transition.
+    val splashScreen = installSplashScreen()
+
     super.onCreate(savedInstanceState)
+
+    splashScreen.setKeepOnScreenCondition { true }
+
     lifecycle.addObserver(viewModel)
     viewModel.openHome.observe(this) {
       enableShortcuts()

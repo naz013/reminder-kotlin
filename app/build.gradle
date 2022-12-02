@@ -10,12 +10,12 @@ android {
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 33
         versionCode 287
         versionName '8.3.0'
         multiDexEnabled true
-        renderscriptTargetApi 21
+        renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -130,6 +130,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation "androidx.biometric:biometric:1.1.0"
+    implementation 'androidx.core:core-splashscreen:1.0.0'
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
