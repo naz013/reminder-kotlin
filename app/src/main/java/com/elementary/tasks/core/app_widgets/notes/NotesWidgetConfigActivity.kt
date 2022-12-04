@@ -21,6 +21,7 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
     super.onCreate(savedInstanceState)
     readIntent()
 
+    binding.backButton.setOnClickListener { finish() }
     binding.fabSave.setOnClickListener { savePrefs() }
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->

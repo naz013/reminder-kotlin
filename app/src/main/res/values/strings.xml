@@ -447,6 +447,8 @@
     <string name="trash_was_cleared">Trash was cleared</string>
     <string name="reminder_channel">Reminder channel</string>
     <string name="default_reminder_notifications">Default reminder notifications</string>
+    <string name="note_channel">Note channel</string>
+    <string name="default_note_notifications">Default note notifications</string>
     <string name="info_channel">Info channel</string>
     <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
     <string name="tell_about_event">Tell about event</string>
@@ -670,5 +672,8 @@
     <string name="title_feature_birthdays">Birthdays</string>
     <string name="bg_location_message">To let application notify you when you will be near selected location, you need to allow background location.</string>
     <string name="deleted">Deleted</string>
+    <string name="post_notification">Post Notification</string>
+    <string name="post_notification_explanation">To show notification in Status Bar application requires Notification permission</string>
+    <string name="call_phone_explanation">To make auto call when reminder emits application require this permission</string>
 
 </resources>

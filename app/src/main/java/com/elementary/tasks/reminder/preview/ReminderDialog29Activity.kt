@@ -55,7 +55,6 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 
-@RequiresApi(29)
 class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>() {
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
@@ -258,7 +257,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   private fun loadTest() {
     isMockedTest = intent.getBooleanExtra(ARG_TEST, false)
     if (isMockedTest) {
-      val reminder = intent.getSerializableExtra(ARG_TEST_ITEM) as Reminder?
+      val reminder = intent.getSerializableExtra(ARG_TEST_ITEM) as? Reminder?
       if (reminder != null) showInfo(reminder)
     }
   }
@@ -532,7 +531,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
       if (ext.contains("/")) {
         ext = ext.substring(0, ext.indexOf("/"))
       }
-      ext.toLowerCase()
+      ext.lowercase()
     }
   }
 

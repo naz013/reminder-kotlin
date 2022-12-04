@@ -55,6 +55,7 @@ import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
+import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.view_models.notes.NotesViewModel
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
@@ -171,6 +172,18 @@ val viewModelModule = module {
   viewModel { (id: String) -> SmsTemplateViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> NoteViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    NotePreviewViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { (id: String) -> GroupViewModel(id, get(), get(), get(), get()) }
   viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get(), get(), get()) }
   viewModel { (listId: String) ->
@@ -213,7 +226,7 @@ val viewModelModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }

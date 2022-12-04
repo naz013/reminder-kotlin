@@ -1,31 +1,30 @@
 package com.elementary.tasks.core.view_models.notes
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-class NotesViewModel(
+class NotePreviewViewModel(
+  key: String,
   appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
   workManagerProvider: WorkManagerProvider,
   private val backupTool: BackupTool
 ) : BaseNotesViewModel(
@@ -40,10 +39,30 @@ class NotesViewModel(
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
-  val notes = appDb.notesDao().loadAll()
-  var noteInProcessing: NoteWithImages? = null
+  val note = appDb.notesDao().loadById(key)
+  val reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)
 
-  fun shareNote(note: NoteWithImages) {
+  var hasSameInDb: Boolean = false
+
+  fun deleteNote() {
+    val noteWithImages = note.value ?: return
+    val note = noteWithImages.note ?: return
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      runBlocking(dispatcherProvider.io()) {
+        appDb.notesDao().delete(note)
+        for (image in noteWithImages.images) {
+          appDb.notesDao().delete(image)
+        }
+      }
+      startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
+    }
+  }
+
+  fun shareNote() {
+    val note = note.value ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
       val file = runBlocking {
@@ -56,10 +75,5 @@ class NotesViewModel(
         postError("Failed to send Note")
       }
     }
-  }
-
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
-    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
   }
 }

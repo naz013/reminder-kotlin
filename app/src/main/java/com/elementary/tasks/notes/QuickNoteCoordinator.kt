@@ -1,7 +1,9 @@
 package com.elementary.tasks.notes
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -23,6 +25,7 @@ import com.elementary.tasks.databinding.ViewNoteReminderCardBinding
 import com.elementary.tasks.databinding.ViewNoteStatusCardBinding
 import java.util.Random
 
+@SuppressLint("ClickableViewAccessibility")
 class QuickNoteCoordinator(
   private val context: Context,
   private val parent: ViewGroup,
@@ -63,7 +66,7 @@ class QuickNoteCoordinator(
 
   private fun showNoteView() {
     parent.visibility = View.VISIBLE
-    Handler().postDelayed({ this.addFirstCard() }, 250)
+    Handler(Looper.getMainLooper()).postDelayed({ this.addFirstCard() }, 250)
   }
 
   private fun addFirstCard() {

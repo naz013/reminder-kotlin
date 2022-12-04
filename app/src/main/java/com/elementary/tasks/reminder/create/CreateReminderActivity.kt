@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.Menu
@@ -29,6 +30,7 @@ import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.RuntimeRequestCode
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -120,7 +122,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         code,
         Permissions.ACCESS_COARSE_LOCATION,
         Permissions.ACCESS_FINE_LOCATION
-      )) {
+      )
+    ) {
       return false
     }
     return true
@@ -131,11 +134,17 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       DATE -> replaceFragment(DateFragment())
       TIMER -> replaceFragment(TimerFragment())
       WEEK -> replaceFragment(WeekFragment())
-      EMAIL -> if (Permissions.checkPermission(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
+      EMAIL -> if (Permissions.checkPermission(
+          this,
+          CONTACTS_REQUEST_E,
+          Permissions.READ_CONTACTS
+        )
+      ) {
         replaceFragment(EmailFragment())
       } else {
         binding.navSpinner.setSelection(DATE)
       }
+
       SKYPE -> replaceFragment(SkypeFragment())
       APP -> replaceFragment(ApplicationFragment())
       MONTH -> replaceFragment(MonthFragment())
@@ -146,6 +155,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       } else {
         binding.navSpinner.setSelection(DATE)
       }
+
       GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
         replaceFragment(PlacesTypeFragment())
       } else {
@@ -190,17 +200,21 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
           handleSendText(intent)
         }
       }
+
       id != "" -> {
         isEditing = true
       }
+
       date != 0L -> {
         stateViewModel.reminder.type = Reminder.BY_DATE
         stateViewModel.reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
         editReminder(stateViewModel.reminder, false)
       }
+
       intent.data != null -> {
         readFromIntent()
       }
+
       intent.hasExtra(Constants.INTENT_ITEM) -> {
         try {
           val reminder = intent.getParcelableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
@@ -208,6 +222,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         } catch (e: Exception) {
         }
       }
+
       else -> {
         var lastPos = prefs.lastUsedReminder
         if (lastPos >= binding.navSpinner.adapter.count) lastPos = 0
@@ -268,12 +283,15 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = APP
       Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = MONTH
       Reminder.BY_DATE_SHOP -> toSelect = SHOP
-      Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> toSelect = YEAR
+      Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> toSelect =
+        YEAR
+
       else -> {
         if (hasLocation) {
           when (reminder.type) {
             Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
             Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = GPS
+
             else -> if (Module.isPro) {
               toSelect = when (reminder.type) {
                 Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> GPS_PLACE
@@ -329,8 +347,12 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     val names = groups.map { it.groupTitle }
     val builder = dialogues.getMaterialDialog(this)
     builder.setTitle(R.string.choose_group)
-    builder.setSingleChoiceItems(ArrayAdapter(this,
-      android.R.layout.simple_list_item_single_choice, names), names.indexOf(stateViewModel.reminder.groupTitle)) { dialog, which ->
+    builder.setSingleChoiceItems(
+      ArrayAdapter(
+        this,
+        android.R.layout.simple_list_item_single_choice, names
+      ), names.indexOf(stateViewModel.reminder.groupTitle)
+    ) { dialog, which ->
       dialog.dismiss()
       showGroup(groups[which])
     }
@@ -344,7 +366,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun openRecognizer() {
-    SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true, prefs, language)
+    SuperUtil.startVoiceRecognitionActivity(
+      this,
+      VOICE_RECOGNITION_REQUEST_CODE,
+      true,
+      prefs,
+      language
+    )
   }
 
   private fun replaceFragment(fragment: TypeFragment<*>) {
@@ -360,17 +388,20 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
       R.id.action_add -> {
-        askCopySaving()
+        askNotificationPermissionIfNeeded()
         return true
       }
+
       R.id.action_voice -> {
         openRecognizer()
         return true
       }
+
       MENU_ITEM_DELETE -> {
         deleteReminder()
         return true
       }
+
       android.R.id.home -> {
         closeScreen()
         return true
@@ -390,7 +421,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         331,
         Permissions.READ_EXTERNAL,
         Permissions.WRITE_EXTERNAL
-      )) {
+      )
+    ) {
       selectAnyFile()
     }
   }
@@ -417,6 +449,14 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       dialogues.askConfirmation(this, getString(R.string.move_to_trash)) {
         if (it) viewModel.moveToTrash(stateViewModel.reminder)
       }
+    }
+  }
+
+  private fun askNotificationPermissionIfNeeded() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      askPermission(Permissions.POST_NOTIFICATION, RuntimeRequestCode.obtainNewCode())
+    } else {
+      askCopySaving()
     }
   }
 
@@ -508,15 +548,21 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun showCurrentMelody() {
     val musicFile = File(stateViewModel.reminder.melodyPath)
-    showSnackbar(String.format(getString(R.string.melody_x), musicFile.name),
-      getString(R.string.delete)) { removeMelody() }
+    showSnackbar(
+      String.format(getString(R.string.melody_x), musicFile.name),
+      getString(R.string.delete)
+    ) { removeMelody() }
   }
 
   private fun removeMelody() {
     fragment?.onMelodySelect("")
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     when (requestCode) {
@@ -525,19 +571,23 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       } else {
         binding.navSpinner.setSelection(DATE)
       }
+
       GPS_PLACE -> if (Permissions.checkPermission(grantResults)) {
         binding.navSpinner.setSelection(GPS_PLACE)
       } else {
         binding.navSpinner.setSelection(DATE)
       }
+
       GPS -> if (Permissions.checkPermission(grantResults)) {
         binding.navSpinner.setSelection(GPS)
       } else {
         binding.navSpinner.setSelection(DATE)
       }
+
       331 -> if (Permissions.checkPermission(grantResults)) {
         selectAnyFile()
       }
+
       SD_PERM -> if (Permissions.checkPermission(grantResults)) {
         readFromIntent()
       }
@@ -560,7 +610,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener) {
-    Snackbar.make(binding.coordinator, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
+    Snackbar.make(binding.coordinator, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener)
+      .show()
   }
 
   override fun showSnackbar(title: String) {
@@ -603,6 +654,31 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       closeScreen()
     }
     return true
+  }
+
+  override fun permissionGranted(permission: String, requestCode: Int) {
+    super.permissionGranted(permission, requestCode)
+    when {
+      permission == Permissions.POST_NOTIFICATION &&
+        requestCode == RuntimeRequestCode.currentCode() -> {
+        askCopySaving()
+      }
+    }
+  }
+
+  override fun explainPermission(permission: String, requestCode: Int) {
+    super.explainPermission(permission, requestCode)
+    when {
+      permission == Permissions.POST_NOTIFICATION &&
+        requestCode == RuntimeRequestCode.currentCode() -> {
+        showPermissionExplanation(
+          permission,
+          requestCode,
+          getString(R.string.post_notification),
+          getString(R.string.post_notification_explanation)
+        )
+      }
+    }
   }
 
   private class SpinnerItem(val title: String)
@@ -657,8 +733,10 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {
-        context.startActivity(Intent(context, CreateReminderActivity::class.java)
-          .putExtra(ARG_LOGIN_FLAG, true))
+        context.startActivity(
+          Intent(context, CreateReminderActivity::class.java)
+            .putExtra(ARG_LOGIN_FLAG, true)
+        )
       } else {
         intent.putExtra(ARG_LOGIN_FLAG, true)
         context.startActivity(intent)

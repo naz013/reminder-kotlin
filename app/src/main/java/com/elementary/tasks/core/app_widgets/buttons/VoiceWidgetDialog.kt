@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -23,7 +22,6 @@ class VoiceWidgetDialog : FragmentActivity() {
   private val viewModel by viewModel<ConversationViewModel>()
   private val prefs by inject<Prefs>()
   private val language by inject<Language>()
-  private val notifier by inject<Notifier>()
   private var mIsLogged = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +62,7 @@ class VoiceWidgetDialog : FragmentActivity() {
         ?: ArrayList()
       viewModel.parseResults(matches, true, this)
       if (prefs.isSbNotificationEnabled) {
-        notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+        PermanentReminderReceiver.show(this)
       }
       finish()
     } else {

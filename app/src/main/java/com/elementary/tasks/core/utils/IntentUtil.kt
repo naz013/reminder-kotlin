@@ -2,12 +2,10 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.content.Intent
-import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 
 object IntentUtil {
 
-  @RequiresPermission(Permissions.READ_EXTERNAL)
   fun pickImage(activity: Activity, code: Int) {
     val intent = Intent()
     intent.type = "image/*"
@@ -18,7 +16,6 @@ object IntentUtil {
     }
   }
 
-  @RequiresPermission(Permissions.READ_EXTERNAL)
   fun pickMelody(activity: Activity, code: Int) {
     val intent = Intent()
     intent.type = "audio/*"
@@ -29,7 +26,6 @@ object IntentUtil {
     }
   }
 
-  @RequiresPermission(Permissions.READ_EXTERNAL)
   fun pickFile(activity: Activity, code: Int) {
     val intent = Intent()
     intent.type = "*/*"

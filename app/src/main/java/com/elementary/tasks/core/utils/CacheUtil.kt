@@ -1,12 +1,12 @@
 package com.elementary.tasks.core.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
-import androidx.annotation.RequiresPermission
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -23,13 +23,12 @@ class CacheUtil(val context: Context) {
     }
   }
 
-  @RequiresPermission(Permissions.READ_EXTERNAL)
   fun cacheFile(intent: Intent?): String? {
     val uri = intent?.data ?: return null
     return cacheFile(uri)
   }
 
-  @RequiresPermission(Permissions.READ_EXTERNAL)
+  @SuppressLint("Range")
   fun cacheFile(uri: Uri): String? {
     val cacheDir = context.externalCacheDir ?: context.cacheDir
     val inputStream = try {
@@ -62,9 +61,9 @@ class CacheUtil(val context: Context) {
       return null
     }
 
-    val fileName = if (name.isEmpty()) fileId else name
+    val fileName = name.ifEmpty { fileId }
     val file = File(cacheDir, fileName)
-    val fId = if (fileId.isEmpty()) name else fileId
+    val fId = fileId.ifEmpty { name }
 
     Timber.d("cacheFile: $fId, ${file.absolutePath}, $fileName")
 

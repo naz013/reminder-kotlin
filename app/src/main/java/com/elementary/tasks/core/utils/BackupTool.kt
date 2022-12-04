@@ -205,8 +205,8 @@ class BackupTool(
     return anyToFile(item, item.groupUuId + FileConfig.FILE_NAME_GROUP)
   }
 
-  fun anyToFile(any: Any, fileName: String): File? {
-    val cacheDir = context.getExternalFilesDir("share") ?: context.filesDir
+  private fun anyToFile(any: Any, fileName: String): File? {
+    val cacheDir = context.externalCacheDir ?: context.cacheDir
     val file = File(cacheDir, fileName)
     if (!file.createNewFile()) {
       try {

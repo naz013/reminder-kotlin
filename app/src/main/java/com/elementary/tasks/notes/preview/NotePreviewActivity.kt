@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes.preview
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +17,6 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
@@ -26,14 +26,14 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.tintOverflowButton
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
+import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -47,17 +47,14 @@ import java.io.File
 
 class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
-  private var mNote: NoteWithImages? = null
-  private var mReminder: Reminder? = null
   private var isBgDark = false
 
   private val mAdapter = ImagesGridAdapter()
-  private val viewModel by viewModel<NoteViewModel> { parametersOf(getId()) }
+  private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
 
   private val mUiHandler = Handler(Looper.getMainLooper())
 
   private val themeUtil by inject<ThemeProvider>()
-  private val backupTool by inject<BackupTool>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
 
@@ -92,41 +89,29 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
   private fun initViewModel() {
-    viewModel.note.observe(this, { note ->
-      if (note != null) {
-        showNote(note)
-      }
-    })
-    viewModel.reminder.observe(this, { reminder ->
-      if (reminder != null) {
-        showReminder(reminder)
-      } else {
-        this.mReminder = null
-        binding.reminderContainer.visibility = View.GONE
-      }
-    })
-    viewModel.result.observe(this, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.DELETED -> closeWindow()
-          else -> {
-          }
+    viewModel.note.nonNullObserve(this) { showNote(it) }
+    viewModel.reminder.observe(this) { showReminder(it) }
+    viewModel.result.nonNullObserve(this) { commands ->
+      when (commands) {
+        Commands.DELETED -> closeWindow()
+        else -> {
         }
       }
-    })
+    }
+    viewModel.error.nonNullObserve(this) { showErrorSending() }
+    viewModel.sharedFile.nonNullObserve(this) { sendNote(it.first, it.second) }
   }
 
   private fun initReminderCard() {
-    binding.reminderContainer.visibility = View.GONE
+    binding.reminderContainer.hide()
     binding.editReminder.setOnClickListener { editReminder() }
     binding.deleteReminder.setOnClickListener { showReminderDeleteDialog() }
   }
 
   private fun editReminder() {
-    if (mReminder != null) {
-      CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
-        .putExtra(Constants.INTENT_ID, mReminder?.uuId))
-    }
+    val reminder = viewModel.reminder.value ?: return
+    CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
+      .putExtra(Constants.INTENT_ID, reminder.uuId))
   }
 
   override fun onDestroy() {
@@ -171,17 +156,37 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editNote() {
-    val noteWithImages = mNote
-    if (noteWithImages != null) {
-      CreateNoteActivity.openLogged(this, Intent(this, CreateNoteActivity::class.java)
-        .putExtra(Constants.INTENT_ID, noteWithImages.note?.key))
-    }
+    val noteWithImages = viewModel.note.value ?: return
+    CreateNoteActivity.openLogged(this, Intent(this, CreateNoteActivity::class.java)
+      .putExtra(Constants.INTENT_ID, noteWithImages.note?.key))
   }
 
   private fun moveToStatus() {
-    val noteWithImages = mNote
-    if (noteWithImages != null) {
+    val noteWithImages = viewModel.note.value ?: return
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      askPermission(Permissions.POST_NOTIFICATION)
+    } else {
       notifier.showNoteNotification(noteWithImages)
+    }
+  }
+
+  override fun permissionGranted(permission: String, requestCode: Int) {
+    super.permissionGranted(permission, requestCode)
+    if (permission == Permissions.POST_NOTIFICATION) {
+      val noteWithImages = viewModel.note.value ?: return
+      notifier.showNoteNotification(noteWithImages)
+    }
+  }
+
+  override fun explainPermission(permission: String, requestCode: Int) {
+    super.explainPermission(permission, requestCode)
+    if (permission == Permissions.POST_NOTIFICATION) {
+      showPermissionExplanation(
+        permission,
+        requestCode,
+        getString(R.string.post_notification),
+        getString(R.string.post_notification_explanation)
+      )
     }
   }
 
@@ -190,24 +195,25 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     return true
   }
 
-  private fun showNote(noteWithImages: NoteWithImages?) {
-    this.mNote = noteWithImages
-    if (noteWithImages != null) {
-      val noteColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity(), noteWithImages.getPalette())
-      showImages(noteWithImages.images)
-      binding.noteText.text = noteWithImages.getSummary()
-      binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
-      window.statusBarColor = noteColor
-      window.navigationBarColor = noteColor
-      binding.windowBackground.setBackgroundColor(noteColor)
-      isBgDark = if (noteWithImages.getOpacity().isAlmostTransparent()) {
-        isDarkMode
-      } else {
-        noteColor.isColorDark()
-      }
-      updateTextColors()
-      updateIcons()
+  private fun showNote(noteWithImages: NoteWithImages) {
+    val noteColor = themeUtil.getNoteLightColor(
+      noteWithImages.getColor(),
+      noteWithImages.getOpacity(),
+      noteWithImages.getPalette()
+    )
+    showImages(noteWithImages.images)
+    binding.noteText.text = noteWithImages.getSummary()
+    binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
+    window.statusBarColor = noteColor
+    window.navigationBarColor = noteColor
+    binding.windowBackground.setBackgroundColor(noteColor)
+    isBgDark = if (noteWithImages.getOpacity().isAlmostTransparent()) {
+      isDarkMode
+    } else {
+      noteColor.isColorDark()
     }
+    updateTextColors()
+    updateIcons()
   }
 
   private fun updateTextColors() {
@@ -217,14 +223,13 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun showReminder(reminder: Reminder?) {
-    mReminder = reminder
     if (reminder != null) {
       val dateTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime, prefs.is24HourFormat,
         prefs.appLanguage)
       binding.reminderTime.text = dateTime
-      binding.reminderContainer.visibility = View.VISIBLE
+      binding.reminderContainer.show()
     } else {
-      binding.reminderContainer.visibility = View.GONE
+      binding.reminderContainer.hide()
     }
   }
 
@@ -232,42 +237,17 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     mAdapter.submitList(images)
   }
 
-  private fun hideProgress() {
-
-  }
-
-  private fun showProgress() {
-
-  }
-
   private fun shareNote() {
-    if (!Permissions.checkPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-      return
-    }
-    showProgress()
-    launchDefault {
-      val file = backupTool.noteToFile(mNote)
-      withUIContext {
-        hideProgress()
-        if (file != null) {
-          sendNote(file)
-        } else {
-          showErrorSending()
-        }
-      }
-    }
+    viewModel.shareNote()
   }
 
-  private fun sendNote(file: File) {
+  private fun sendNote(note: NoteWithImages, file: File) {
     if (isFinishing) return
     if (!file.exists() || !file.canRead()) {
       showErrorSending()
       return
     }
-    val noteWithImages = mNote
-    if (noteWithImages != null) {
-      TelephonyUtil.sendNote(file, this, noteWithImages.note?.summary)
-    }
+    TelephonyUtil.sendNote(file, this, note.note?.summary)
   }
 
   private fun showErrorSending() {
@@ -316,7 +296,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     builder.setMessage(getString(R.string.delete_this_note))
     builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
       dialog.dismiss()
-      if (mNote != null) viewModel.deleteNote(mNote!!)
+      viewModel.deleteNote()
     }
     builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
     builder.create().show()
@@ -334,22 +314,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun deleteReminder() {
-    val reminder = mReminder ?: return
+    val reminder = viewModel.reminder.value ?: return
     viewModel.deleteReminder(reminder)
     binding.reminderContainer.visibility = View.GONE
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      SEND_CODE -> if (Permissions.checkPermission(grantResults)) {
-        shareNote()
-      }
-    }
-  }
-
-  companion object {
-
-    private const val SEND_CODE = 25501
   }
 }

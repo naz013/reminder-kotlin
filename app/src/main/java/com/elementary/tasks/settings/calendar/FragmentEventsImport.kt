@@ -273,7 +273,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         } else {
           toast("$eventsCount " + getString(R.string.events_found))
           updatesHelper.updateCalendarWidget()
-          notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+          PermanentReminderReceiver.show(requireContext())
         }
       }
     }

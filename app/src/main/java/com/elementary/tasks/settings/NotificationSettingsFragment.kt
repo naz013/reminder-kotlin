@@ -22,9 +22,11 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.LED
+import com.elementary.tasks.core.utils.Logger
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.RuntimeRequestCode
 import com.elementary.tasks.core.utils.SelectionList
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
@@ -171,8 +173,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       b.seekBar.max = 60
       b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-            progress.toString())
+          b.titleView.text = String.format(
+            Locale.getDefault(), getString(R.string.x_minutes),
+            progress.toString()
+          )
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -185,8 +189,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       })
       val repeatTime = prefs.notificationRepeatTime
       b.seekBar.progress = repeatTime
-      b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-        repeatTime.toString())
+      b.titleView.text = String.format(
+        Locale.getDefault(), getString(R.string.x_minutes),
+        repeatTime.toString()
+      )
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
         prefs.notificationRepeatTime = b.seekBar.progress
@@ -209,7 +215,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun showRepeatTime() {
     binding.repeatIntervalPrefs.setDetailText(
-      String.format(Locale.getDefault(), getString(R.string.x_minutes), prefs.notificationRepeatTime.toString())
+      String.format(
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
+        prefs.notificationRepeatTime.toString()
+      )
     )
   }
 
@@ -269,8 +279,12 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showSnooze() {
-    binding.delayForPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-      prefs.snoozeTime.toString()))
+    binding.delayForPrefs.setDetailText(
+      String.format(
+        Locale.getDefault(), getString(R.string.x_minutes),
+        prefs.snoozeTime.toString()
+      )
+    )
   }
 
   private fun snoozeFormat(progress: Int): String {
@@ -315,16 +329,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun changeAutoCallPrefs() {
     val isChecked = binding.autoCallPrefs.isChecked
     if (!isChecked) {
-      if (Permissions.checkPermission(requireActivity(), PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
-        binding.autoCallPrefs.isChecked = !isChecked
-        prefs.isAutoCallEnabled = !isChecked
-      } else {
-        binding.autoCallPrefs.isChecked = isChecked
-        prefs.isAutoCallEnabled = isChecked
-      }
+      askPermission(Permissions.CALL_PHONE, RuntimeRequestCode.obtainNewCode())
     } else {
-      binding.autoCallPrefs.isChecked = !isChecked
-      prefs.isAutoCallEnabled = !isChecked
+      binding.autoCallPrefs.isChecked = false
+      prefs.isAutoCallEnabled = false
     }
   }
 
@@ -422,10 +430,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun openNotificationsSettings() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-      startActivityForResult(intent, 1248)
-    }
+    val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+    startActivityForResult(intent, RuntimeRequestCode.obtainNewCode())
   }
 
   private fun changeIncrease() {
@@ -547,7 +553,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun showStream() {
-    val types = listOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
+    val types =
+      listOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
     try {
       binding.streamPrefs.setDetailText(types[prefs.soundStream - 3])
     } catch (e: Exception) {
@@ -683,7 +690,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
       1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
       2 -> prefs.melodyFile = Constants.SOUND_ALARM
-      3 -> pickMelody()
+      3 -> IntentUtil.pickMelody(requireActivity(), MELODY_CODE)
       else -> pickRingtone()
     }
     showMelody()
@@ -691,21 +698,22 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun pickRingtone() {
     val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone_for_notifications))
+    intent.putExtra(
+      RingtoneManager.EXTRA_RINGTONE_TITLE,
+      getString(R.string.select_ringtone_for_notifications)
+    )
     intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
     intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
     intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
     startActivityForResult(intent, RINGTONE_CODE)
   }
 
-  private fun pickMelody() {
-    if (Permissions.checkPermission(requireActivity(), PERM_MELODY, Permissions.READ_EXTERNAL)) {
-      IntentUtil.pickMelody(requireActivity(), MELODY_CODE)
-    }
-  }
-
   private fun isDefaultMelody(): Boolean {
-    return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM).contains(prefs.melodyFile)
+    return listOf(
+      Constants.SOUND_RINGTONE,
+      Constants.SOUND_NOTIFICATION,
+      Constants.SOUND_ALARM
+    ).contains(prefs.melodyFile)
   }
 
   private fun showMelodyDuration() {
@@ -786,7 +794,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     if (!SuperUtil.checkNotificationPermission(requireActivity())) {
       SuperUtil.askNotificationPermission(requireActivity(), dialogues)
     } else {
-      Permissions.checkPermission(requireActivity(), PERM_BT, Permissions.BLUETOOTH)
+      askPermission(Permissions.BLUETOOTH, RuntimeRequestCode.obtainNewCode())
     }
   }
 
@@ -818,17 +826,39 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     binding.vibrationOptionPrefs.isChecked = prefs.isVibrateEnabled
   }
 
-  private fun changeSbIconPrefs() {
-    val isChecked = binding.statusIconPrefs.isChecked
-    binding.statusIconPrefs.isChecked = !isChecked
-    prefs.isSbIconEnabled = !isChecked
-    notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
-  }
-
   private fun initSbIconPrefs() {
     binding.statusIconPrefs.setOnClickListener { changeSbIconPrefs() }
     binding.statusIconPrefs.isChecked = prefs.isSbIconEnabled
     binding.statusIconPrefs.setDependentView(binding.permanentNotificationPrefs)
+  }
+
+  private fun changeSbIconPrefs() {
+    val isChecked = binding.statusIconPrefs.isChecked
+    binding.statusIconPrefs.isChecked = !isChecked
+    prefs.isSbIconEnabled = !isChecked
+    PermanentReminderReceiver.show(requireContext())
+  }
+
+  private fun initSbPrefs() {
+    binding.permanentNotificationPrefs.setOnClickListener { tryChangeSbPrefs() }
+    binding.permanentNotificationPrefs.isChecked = prefs.isSbNotificationEnabled
+  }
+
+  private fun tryChangeSbPrefs() {
+    val isChecked = binding.permanentNotificationPrefs.isChecked
+    Logger.d("tryChangeSbPrefs: $isChecked")
+    if (!isChecked) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        askPermission(
+          Permissions.POST_NOTIFICATION,
+          RuntimeRequestCode.obtainNewCode()
+        )
+      } else {
+        changeSbPrefs()
+      }
+    } else {
+      changeSbPrefs()
+    }
   }
 
   private fun changeSbPrefs() {
@@ -836,15 +866,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     binding.permanentNotificationPrefs.isChecked = !isChecked
     prefs.isSbNotificationEnabled = !isChecked
     if (prefs.isSbNotificationEnabled) {
-      notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+      PermanentReminderReceiver.show(requireContext())
     } else {
-      notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_HIDE)
+      PermanentReminderReceiver.hide(requireContext())
     }
-  }
-
-  private fun initSbPrefs() {
-    binding.permanentNotificationPrefs.setOnClickListener { changeSbPrefs() }
-    binding.permanentNotificationPrefs.isChecked = prefs.isSbNotificationEnabled
   }
 
   private fun changeManualPrefs() {
@@ -877,7 +902,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         title = getString(R.string.background),
         okButtonTitle = getString(R.string.ok),
         cancelButtonTitle = getString(R.string.cancel),
-        items = listOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
+        items = listOf(
+          getString(R.string.none),
+          getString(R.string.default_string),
+          getString(R.string.choose_file)
+        )
       ),
       onOk = { saveImagePrefs(it) }
     )
@@ -912,7 +941,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
       } else {
         val imageFile = File(prefs.screenImage)
-        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL) && imageFile.exists()) {
+        if (Permissions.checkPermission(
+            requireContext(),
+            Permissions.READ_EXTERNAL
+          ) && imageFile.exists()
+        ) {
           Glide.with(requireContext())
             .load(imageFile)
             .override(200, 200)
@@ -922,7 +955,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
               }
 
-              override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+              override fun onResourceReady(
+                resource: Drawable,
+                transition: Transition<in Drawable>?
+              ) {
                 binding.bgImagePrefs.setViewDrawable(resource)
               }
             })
@@ -939,17 +975,16 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL)) {
-          val filePath = cacheUtil.cacheFile(data)
-          if (filePath != null) {
-            val file = File(filePath)
-            if (file.exists()) {
-              prefs.melodyFile = file.toString()
-            }
+        val filePath = cacheUtil.cacheFile(data)
+        if (filePath != null) {
+          val file = File(filePath)
+          if (file.exists()) {
+            prefs.melodyFile = file.toString()
           }
-          showMelody()
         }
+        showMelody()
       }
+
       RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
         val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
         if (uri != null) {
@@ -957,30 +992,18 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
           showMelody()
         }
       }
-      Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
-        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL)) {
-          val filePath = cacheUtil.cacheFile(data)
-          if (filePath != null) {
-            val file = File(filePath)
-            if (file.exists()) {
-              prefs.screenImage = filePath
-            } else {
-              prefs.screenImage = Constants.DEFAULT
-            }
-          }
-          showImage()
-        }
-      }
-    }
-  }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        PERM_AUTO_CALL -> changeAutoCallPrefs()
-        PERM_IMAGE -> openImagePicker()
-        PERM_MELODY -> pickMelody()
+      Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
+        val filePath = cacheUtil.cacheFile(data)
+        if (filePath != null) {
+          val file = File(filePath)
+          if (file.exists()) {
+            prefs.screenImage = filePath
+          } else {
+            prefs.screenImage = Constants.DEFAULT
+          }
+        }
+        showImage()
       }
     }
   }
@@ -993,9 +1016,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun openImagePicker() {
-    if (Permissions.checkPermission(requireActivity(), PERM_IMAGE, Permissions.READ_EXTERNAL)) {
-      IntentUtil.pickImage(requireActivity(), Constants.ACTION_REQUEST_GALLERY)
-    }
+    IntentUtil.pickImage(requireActivity(), Constants.ACTION_REQUEST_GALLERY)
   }
 
   private fun unlockList() = listOf(
@@ -1006,13 +1027,42 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     getString(R.string.priority_highest)
   )
 
+  override fun permissionGranted(permission: String, requestCode: Int) {
+    if (requestCode == RuntimeRequestCode.currentCode()) {
+      when (permission) {
+        Permissions.POST_NOTIFICATION -> changeSbPrefs()
+        Permissions.CALL_PHONE -> {
+          binding.autoCallPrefs.isChecked = true
+          prefs.isAutoCallEnabled = true
+        }
+      }
+    }
+  }
+
+  override fun explainPermission(permission: String, requestCode: Int) {
+    when (permission) {
+      Permissions.POST_NOTIFICATION -> {
+        showPermissionExplanation(
+          permission = permission,
+          requestCode = requestCode,
+          title = getString(R.string.post_notification),
+          message = getString(R.string.post_notification_explanation)
+        )
+      }
+      Permissions.CALL_PHONE -> {
+        showPermissionExplanation(
+          permission = permission,
+          requestCode = requestCode,
+          title = getString(R.string.call_phone),
+          message = getString(R.string.call_phone_explanation)
+        )
+      }
+    }
+  }
+
   companion object {
 
     private const val MELODY_CODE = 125
     private const val RINGTONE_CODE = 126
-    private const val PERM_BT = 1425
-    private const val PERM_AUTO_CALL = 1427
-    private const val PERM_IMAGE = 1428
-    private const val PERM_MELODY = 1429
   }
 }

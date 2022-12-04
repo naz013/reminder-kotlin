@@ -37,13 +37,13 @@ class Notifier(
 ) {
 
   fun createChannels() {
-    val manager =
-      context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
+    val manager = context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
     manager?.run {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         createNotificationChannel(createReminderChannel())
         createNotificationChannel(createSystemChannel())
         createNotificationChannel(createSilentChannel())
+        createNotificationChannel(createNoteChannel())
       }
     }
   }
@@ -68,6 +68,20 @@ class Notifier(
     val descr = context.getString(R.string.default_reminder_notifications)
     val importance = NotificationManager.IMPORTANCE_DEFAULT
     val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
+    channel.description = descr
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      channel.setAllowBubbles(false)
+    }
+    channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+    return channel
+  }
+
+  @TargetApi(Build.VERSION_CODES.O)
+  private fun createNoteChannel(): NotificationChannel {
+    val name = context.getString(R.string.note_channel)
+    val descr = context.getString(R.string.default_note_notifications)
+    val importance = NotificationManager.IMPORTANCE_LOW
+    val channel = NotificationChannel(CHANNEL_NOTES, name, importance)
     channel.description = descr
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       channel.setAllowBubbles(false)
@@ -109,9 +123,10 @@ class Notifier(
     return context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
   }
 
+  // Checked for Notification permission
   fun showNoteNotification(noteWithImages: NoteWithImages) {
     val note = noteWithImages.note ?: return
-    val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
+    val builder = NotificationCompat.Builder(context, CHANNEL_NOTES)
     builder.setContentText(context.getString(R.string.note))
     builder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
     val content = note.summary
@@ -132,7 +147,7 @@ class Notifier(
       s.bigPicture(bitmap)
       builder.setStyle(s)
     }
-    getManager()?.notify(note.uniqueId, builder.build())
+    notify(note.uniqueId, builder.build())
     if (isWear) {
       val wearableNotificationBuilder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
       wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_note_white)
@@ -143,21 +158,19 @@ class Notifier(
       wearableNotificationBuilder.setOnlyAlertOnce(true)
       wearableNotificationBuilder.setGroup("GROUP")
       wearableNotificationBuilder.setGroupSummary(false)
-      getManager()?.notify(note.uniqueId, wearableNotificationBuilder.build())
+      notify(note.uniqueId, wearableNotificationBuilder.build())
     }
   }
 
-  fun updateReminderPermanent(action: String) {
-    context.sendBroadcast(
-      Intent(context, PermanentReminderReceiver::class.java)
-        .setAction(action)
-    )
+  fun sendShowReminderPermanent() {
+    PermanentReminderReceiver.show(context)
   }
 
   fun cancel(id: Int) {
     getManager()?.cancel(id)
   }
 
+  // Checked for Notification permission
   fun showReminderPermanent() {
     Timber.d("showReminderPermanent: ")
     val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
@@ -256,7 +269,7 @@ class Notifier(
     val colorOnSecondary = ThemeProvider.getOnSecondaryColor(context)
     remoteViews.setTextColor(R.id.featured, colorOnSecondary)
     remoteViews.setTextColor(R.id.text, colorOnSecondary)
-    getManager()?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
+    notify(PermanentReminderReceiver.PERM_ID, builder.build())
   }
 
   fun showBirthdayPermanent() {
@@ -296,10 +309,11 @@ class Notifier(
         builder.setStyle(NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()))
       }
       builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss)
-      getManager()?.notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
+      notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
     }
   }
 
+  // Checked for Notification permission
   fun showSimpleBirthday(id: String) {
     val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
     val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
@@ -318,7 +332,7 @@ class Notifier(
     if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context)
       && prefs.isSoundInSilentModeEnabled
     ) {
-      val melodyPath: String? = if (Module.isPro && !isGlobal(prefs)) {
+      val melodyPath: String = if (Module.isPro && !isGlobal(prefs)) {
         prefs.birthdayMelody
       } else {
         prefs.melodyFile
@@ -398,6 +412,7 @@ class Notifier(
     return prefs.isBirthdayGlobalEnabled
   }
 
+  // Checked for Notification permission
   fun showSimpleReminder(id: String) {
     Timber.d("showSimpleReminder: ")
     val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
@@ -477,6 +492,7 @@ class Notifier(
 
   companion object {
     const val CHANNEL_REMINDER = "reminder.channel.events"
+    const val CHANNEL_NOTES = "reminder.channel.notes"
     const val CHANNEL_SILENT = "reminder.channel.silent"
     const val CHANNEL_SYSTEM = "reminder.channel.system"
   }

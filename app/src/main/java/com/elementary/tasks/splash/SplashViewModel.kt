@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
@@ -39,7 +38,7 @@ class SplashViewModel(
       checkDb()
       withUIContext {
         if (prefs.isSbNotificationEnabled) {
-          notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+          notifier.sendShowReminderPermanent()
         }
         openHome.postValue(prefs.hasPinCode)
       }
@@ -47,11 +46,10 @@ class SplashViewModel(
   }
 
   private fun checkDb() {
-    try {
+    runCatching {
       if (appDb.reminderGroupDao().all().isEmpty()) {
         GroupsUtil.initDefault(context, appDb)
       }
-    } catch (e: Exception) {
     }
   }
 
