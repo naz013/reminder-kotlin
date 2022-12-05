@@ -17,6 +17,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
@@ -24,6 +25,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.isVisible
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -31,12 +33,13 @@ import com.elementary.tasks.databinding.ActivityFollowBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
+import java.util.Calendar
 
 class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
   CompoundButton.OnCheckedChangeListener {
 
   private val gTasks by inject<GTasks>()
+  private val featureManager by inject<FeatureManager>()
   private val viewModel by viewModel<ReminderViewModel> { parametersOf("") }
 
   private var mHour = 0
@@ -113,7 +116,9 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    canExportToTasks = gTasks.isLogged
+    canExportToTasks = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+      gTasks.isLogged
+
     val receivedDate = intent.getLongExtra(Constants.SELECTED_TIME, 0)
     mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
     val name = Contacts.getNameFromNumber(mNumber, this)
@@ -158,7 +163,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
   }
 
   private fun initViewModel() {
-    viewModel.result.observe(this, { commands ->
+    viewModel.result.nonNullObserve(this) { commands ->
       if (commands != null) {
         when (commands) {
           Commands.SAVED -> closeWindow()
@@ -166,10 +171,8 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
           }
         }
       }
-    })
-    viewModel.defaultReminderGroup.observe(this, {
-      defGroup = it
-    })
+    }
+    viewModel.defaultReminderGroup.observe(this) { defGroup = it }
   }
 
   private fun initViews() {

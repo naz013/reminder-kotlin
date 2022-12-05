@@ -16,6 +16,7 @@ import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
@@ -24,6 +25,7 @@ import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
@@ -37,6 +39,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
+  private val featureManager by inject<FeatureManager>()
   private val viewModel by viewModel<HomeViewModel>()
   private val remindersAdapter = RemindersRecyclerAdapter(currentStateHolder, showHeader = false, isEditable = true) {
     showReminders(viewModel.reminders.value ?: listOf())
@@ -133,6 +136,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     binding.calendarButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
     }
+
+    binding.googleButton.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS))
     binding.googleButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
     }
@@ -217,28 +222,28 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun initViewModel() {
-    viewModel.reminders.observe(viewLifecycleOwner, {
+    viewModel.reminders.observe(viewLifecycleOwner) {
       if (it != null) {
         showReminders(it)
       } else {
         showReminders(listOf())
       }
-    })
-    viewModel.birthdays.observe(viewLifecycleOwner, {
+    }
+    viewModel.birthdays.observe(viewLifecycleOwner) {
       if (it != null) {
         showBirthdays(it)
       } else {
         showBirthdays(listOf())
       }
-    })
-    viewModel.result.observe(viewLifecycleOwner, {
+    }
+    viewModel.result.observe(viewLifecycleOwner) {
       if (it != null) {
         if (it == Commands.OUTDATED) {
           remindersAdapter.notifyItemChanged(mPosition)
           toast(R.string.reminder_is_outdated)
         }
       }
-    })
+    }
   }
 
   private fun showBirthdays(list: List<BirthdayListItem>) {

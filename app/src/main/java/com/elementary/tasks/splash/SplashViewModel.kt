@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.mutableLiveDataOf
@@ -24,10 +25,12 @@ class SplashViewModel(
   private val context: Context,
   private val enableThread: EnableThread,
   private val dispatcherProvider: DispatcherProvider,
-  private val notifier: Notifier
+  private val notifier: Notifier,
+  featureManager: FeatureManager
 ) : ViewModel(), DefaultLifecycleObserver {
 
-  val isGoogleTasksEnabled = gTasks.isLogged
+  val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+    gTasks.isLogged
   val openHome = mutableLiveDataOf<Boolean>()
 
   override fun onResume(owner: LifecycleOwner) {

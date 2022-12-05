@@ -6,10 +6,12 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
-import java.util.*
+import com.elementary.tasks.core.utils.FeatureManager
+import java.util.Calendar
 
 class ReminderStateViewModel(
-  private val gTasks: GTasks
+  private val gTasks: GTasks,
+  private val featureManager: FeatureManager
 ) : ViewModel(), LifecycleObserver {
 
   var shopItems: List<ShopItem> = listOf()
@@ -53,7 +55,7 @@ class ReminderStateViewModel(
   }
 
   fun isLoggedToGoogleTasks(): Boolean {
-    return gTasks.isLogged
+    return featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) && gTasks.isLogged
   }
 
   private fun setDateTime(millis: Long = System.currentTimeMillis()) {

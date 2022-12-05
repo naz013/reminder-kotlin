@@ -231,13 +231,13 @@ val viewModelModule = module {
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
   viewModel { CloudViewModel(get(), get()) }
-  viewModel { ReminderStateViewModel(get()) }
+  viewModel { ReminderStateViewModel(get(), get()) }
   viewModel { GoogleTasksStateViewModel() }
   viewModel { CreateNoteViewModel() }
   viewModel { CreatePlaceViewModel() }
   viewModel { TimesViewModel() }
   viewModel { LoginStateViewModel() }
-  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
 }
 

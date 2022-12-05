@@ -5,7 +5,7 @@ class FeatureManager(
 ) {
 
   fun isFeatureEnabled(feature: Feature): Boolean {
-    return prefs.getBoolean(feature.value, false)
+    return prefs.getBoolean(feature.value, true)
   }
 
   enum class Feature(val value: String) {

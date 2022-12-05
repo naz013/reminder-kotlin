@@ -13,9 +13,11 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -29,6 +31,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   private val gTasks by inject<GTasks>()
   private val gDrive by inject<GDrive>()
   private val updatesHelper by inject<UpdatesHelper>()
+  private val featureManager by inject<FeatureManager>()
 
   private val viewModel by viewModel<CloudViewModel>()
   private val mDropbox: DropboxLogin by lazy {
@@ -94,7 +97,9 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun initGoogleTasksButton() {
     withContext {
-      if (SuperUtil.isGooglePlayServicesAvailable(it)) {
+      if (SuperUtil.isGooglePlayServicesAvailable(it) &&
+        featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
+      ) {
         binding.tasksView.visibility = View.VISIBLE
         binding.linkGTasks.setOnClickListener { googleTasksButtonClick() }
       } else {
@@ -105,7 +110,9 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun initGoogleDriveButton() {
     withContext {
-      if (SuperUtil.isGooglePlayServicesAvailable(it)) {
+      if (SuperUtil.isGooglePlayServicesAvailable(it) &&
+        featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
+      ) {
         binding.driveView.visibility = View.VISIBLE
         binding.linkGDrive.setOnClickListener { googleDriveButtonClick() }
       } else {
@@ -116,9 +123,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun googleTasksButtonClick() {
     withActivity {
-      if (Permissions.checkPermission(it, 104,
+      if (Permissions.checkPermission(
+          it, 104,
           Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-          Permissions.WRITE_EXTERNAL)) {
+          Permissions.WRITE_EXTERNAL
+        )
+      ) {
         switchGoogleTasksStatus()
       }
     }
@@ -126,15 +136,19 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun googleDriveButtonClick() {
     withActivity {
-      if (Permissions.checkPermission(it, 103,
+      if (Permissions.checkPermission(
+          it, 103,
           Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-          Permissions.WRITE_EXTERNAL)) {
+          Permissions.WRITE_EXTERNAL
+        )
+      ) {
         switchGoogleDriveStatus()
       }
     }
   }
 
   private fun initDropboxButton() {
+    binding.dropboxView.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX))
     binding.linkDropbox.setOnClickListener { mDropbox.login() }
   }
 
@@ -226,7 +240,11 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     checkGoogleStatus()
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     if (Permissions.checkPermission(grantResults)) {
       when (requestCode) {
