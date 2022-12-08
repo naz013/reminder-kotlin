@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.showError
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.trimmedText
@@ -70,9 +71,9 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.googleTaskList.observe(this) { editTaskList(it) }
-    viewModel.isInProgress.observe(this) { updateProgress(it) }
-    viewModel.result.observe(this) { commands ->
+    viewModel.googleTaskList.nonNullObserve(this) { editTaskList(it) }
+    viewModel.isInProgress.nonNullObserve(this) { updateProgress(it) }
+    viewModel.result.nonNullObserve(this) { commands ->
       handleBackPress().takeIf { commands == Commands.DELETED || commands == Commands.SAVED }
     }
   }

@@ -25,10 +25,10 @@ class RemotePrefs(
 
   init {
     val configSettings = FirebaseRemoteConfigSettings.Builder()
+      .setMinimumFetchIntervalInSeconds(3600)
       .build()
     this.config?.setConfigSettingsAsync(configSettings)
     this.config?.setDefaultsAsync(R.xml.remote_config_defaults)
-    fetchConfig()
   }
 
   fun preLoad() {
@@ -36,8 +36,8 @@ class RemotePrefs(
   }
 
   private fun fetchConfig() {
-    config?.fetch(3600)?.addOnCompleteListener { task ->
-      Timber.d("fetchConfig: ${task.isSuccessful}")
+    config?.fetchAndActivate()?.addOnCompleteListener { task ->
+      Timber.d("fetchConfig: ${task.isSuccessful}, ${task.exception}")
       if (task.isSuccessful) {
         config.fetchAndActivate()
       }
@@ -45,6 +45,8 @@ class RemotePrefs(
       readFeatureFlags()
       displayVersionMessage()
       if (!Module.isPro) displaySaleMessage()
+    }?.addOnFailureListener {
+      it.printStackTrace()
     }
   }
 
@@ -61,7 +63,7 @@ class RemotePrefs(
 
   private fun readFeatureFlags() {
     FeatureManager.Feature.values().map {
-      it to (config?.getBoolean(it.value) ?: false)
+      it to (config?.getBoolean(it.value) ?: true)
     }.forEach {
       Logger.d("Feature ${it.first} isEnabled=${it.second}")
       prefs.putBoolean(it.first.value, it.second)

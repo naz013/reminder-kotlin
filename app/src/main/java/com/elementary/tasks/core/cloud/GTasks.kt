@@ -21,7 +21,7 @@ import timber.log.Timber
 import java.util.*
 
 class GTasks(
-  context: Context,
+  private val context: Context,
   private val appDb: AppDb,
   private val prefs: Prefs
 ) {
@@ -38,6 +38,11 @@ class GTasks(
 
   init {
     val user = prefs.tasksUser
+    login(user)
+  }
+
+  fun login(user: String) {
+    Timber.d("login: ")
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
       Timber.d("GTasks: user -> $user")
       val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(TasksScopes.TASKS))

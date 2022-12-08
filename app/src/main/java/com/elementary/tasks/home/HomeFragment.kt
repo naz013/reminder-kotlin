@@ -41,9 +41,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val featureManager by inject<FeatureManager>()
   private val viewModel by viewModel<HomeViewModel>()
-  private val remindersAdapter = RemindersRecyclerAdapter(currentStateHolder, showHeader = false, isEditable = true) {
-    showReminders(viewModel.reminders.value ?: listOf())
-  }
+  private val remindersAdapter =
+    RemindersRecyclerAdapter(currentStateHolder, showHeader = false, isEditable = true) {
+      showReminders(viewModel.reminders.value ?: listOf())
+    }
   private val birthdaysAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
     showBirthdays(viewModel.birthdays.value ?: listOf())
   }
@@ -168,14 +169,23 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
       binding.privacyBanner.hide()
     } else {
       binding.privacyBanner.show()
-      binding.privacyButton.setOnClickListener { startActivity(Intent(context, PrivacyPolicyActivity::class.java)) }
+      binding.privacyButton.setOnClickListener {
+        startActivity(
+          Intent(
+            context,
+            PrivacyPolicyActivity::class.java
+          )
+        )
+      }
       binding.acceptButton.setOnClickListener { prefs.isPrivacyPolicyShowed = true }
     }
   }
 
   private fun updateLoginBanner() {
     if (prefs.isPrivacyPolicyShowed) {
-      if (prefs.isUserLogged) {
+      if (prefs.isUserLogged ||
+        !featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
+      ) {
         binding.loginBanner.hide()
       } else {
         binding.loginBanner.show()
@@ -292,6 +302,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
         return true
       }
+
       R.id.action_settings -> {
         safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
         return true
@@ -306,6 +317,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         updatePrivacyBanner()
         updateLoginBanner()
       }
+
       PrefsConstants.USER_LOGGED -> {
         updateLoginBanner()
       }

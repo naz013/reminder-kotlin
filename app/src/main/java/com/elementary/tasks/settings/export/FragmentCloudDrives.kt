@@ -161,12 +161,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
       if (mGoogleLogin.isGoogleTasksLogged) {
         disconnectFromGoogleTasks()
       } else {
-        mGoogleLogin.loginTasks(object : GoogleLogin.TasksCallback {
+        mGoogleLogin.loginTasks(object : GoogleLogin.LoginCallback {
           override fun onProgress(isLoading: Boolean) {
             updateProgress(isLoading)
           }
 
-          override fun onResult(v: GTasks?, isLogged: Boolean) {
+          override fun onResult(isLogged: Boolean) {
             Timber.d("onResult: $isLogged")
             if (isLogged) {
               viewModel.loadGoogleTasks()
@@ -202,12 +202,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
       if (mGoogleLogin.isGoogleDriveLogged) {
         disconnectFromGoogleDrive()
       } else {
-        mGoogleLogin.loginDrive(object : GoogleLogin.DriveCallback {
+        mGoogleLogin.loginDrive(object : GoogleLogin.LoginCallback {
           override fun onProgress(isLoading: Boolean) {
             updateProgress(isLoading)
           }
 
-          override fun onResult(v: GDrive?, isLogged: Boolean) {
+          override fun onResult(isLogged: Boolean) {
             if (isLogged) {
               checkGoogleStatus()
             }

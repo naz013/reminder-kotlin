@@ -32,14 +32,14 @@
     </entry>
     <entry>
         <key>feature_dropbox</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
     <entry>
         <key>feature_google_drive</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
     <entry>
         <key>feature_google_tasks</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
 </defaultsMap>

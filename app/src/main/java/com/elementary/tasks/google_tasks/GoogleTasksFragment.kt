@@ -21,6 +21,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
@@ -83,12 +84,12 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
         Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
         return@withActivity
       }
-      googleLogin.loginTasks(object : GoogleLogin.TasksCallback {
+      googleLogin.loginTasks(object : GoogleLogin.LoginCallback {
         override fun onProgress(isLoading: Boolean) {
           updateProgress(isLoading)
         }
 
-        override fun onResult(v: GTasks?, isLogged: Boolean) {
+        override fun onResult(isLogged: Boolean) {
           Timber.d("onResult: $isLogged")
           if (isLogged) {
             viewModel.loadGoogleTasks()
@@ -142,21 +143,9 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun initViewModel() {
-    viewModel.googleTaskLists.observe(viewLifecycleOwner, {
-      if (it != null) {
-        showLists(it)
-      }
-    })
-    viewModel.allGoogleTasks.observe(viewLifecycleOwner, {
-      if (it != null) {
-        showTasks(it)
-      }
-    })
-    viewModel.isInProgress.observe(viewLifecycleOwner, {
-      if (it != null) {
-        updateProgress(it)
-      }
-    })
+    viewModel.googleTaskLists.nonNullObserve(viewLifecycleOwner) { showLists(it) }
+    viewModel.allGoogleTasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
   }
 
   private fun showTasks(list: List<GoogleTask>) {

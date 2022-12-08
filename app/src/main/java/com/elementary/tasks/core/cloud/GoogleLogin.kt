@@ -19,8 +19,8 @@ class GoogleLogin(
   private val gTasks: GTasks
 ) {
 
-  private var mDriveCallback: DriveCallback? = null
-  private var mTasksCallback: TasksCallback? = null
+  private var mDriveCallback: LoginCallback? = null
+  private var mTasksCallback: LoginCallback? = null
   private var isDriveLogin = false
 
   var googleStatus: ((Boolean) -> Unit)? = null
@@ -63,7 +63,7 @@ class GoogleLogin(
     }
   }
 
-  fun loginDrive(loginCallback: DriveCallback) {
+  fun loginDrive(loginCallback: LoginCallback) {
     isDriveLogin = true
     mDriveCallback = loginCallback
 
@@ -75,7 +75,7 @@ class GoogleLogin(
     activity.startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
   }
 
-  fun loginTasks(loginCallback: TasksCallback) {
+  fun loginTasks(loginCallback: LoginCallback) {
     isDriveLogin = false
     mTasksCallback = loginCallback
 
@@ -129,28 +129,24 @@ class GoogleLogin(
       gDrive.statusObserver = {
         googleStatus?.invoke(it)
       }
-      mDriveCallback?.onResult(gDrive, gDrive.isLogged)
+      mDriveCallback?.onResult(gDrive.isLogged)
     } else {
       gTasks.logOut()
-      prefs.tasksUser = account
       gTasks.statusObserver = {
         googleStatus?.invoke(it)
       }
-      mTasksCallback?.onResult(gTasks, gTasks.isLogged)
+      gTasks.login(account)
+      mTasksCallback?.onResult(gTasks.isLogged)
     }
   }
 
-  interface LoginCallback<V> {
+  interface LoginCallback {
     fun onProgress(isLoading: Boolean)
 
-    fun onResult(v: V?, isLogged: Boolean)
+    fun onResult(isLogged: Boolean)
 
     fun onFail()
   }
-
-  interface DriveCallback : LoginCallback<GDrive>
-
-  interface TasksCallback : LoginCallback<GTasks>
 
   companion object {
     private const val REQUEST_CODE_SIGN_IN = 4
