@@ -18,7 +18,7 @@ import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
 import com.google.api.services.tasks.model.TaskLists
 import timber.log.Timber
-import java.util.*
+import java.util.Collections
 
 class GTasks(
   private val context: Context,
@@ -28,7 +28,7 @@ class GTasks(
 
   private var tasksService: Tasks? = null
 
-  var statusObserver: ((Boolean) -> Unit)? = null
+  var statusCallback: StatusCallback? = null
   var isLogged: Boolean = false
     get() {
       Timber.d("isLogged: $field")
@@ -51,7 +51,7 @@ class GTasks(
         .setApplicationName(APPLICATION_NAME)
         .build()
       isLogged = true
-      statusObserver?.invoke(true)
+      statusCallback?.onStatusChanged(true)
     } else {
       logOut()
     }
@@ -62,7 +62,7 @@ class GTasks(
     prefs.tasksUser = Prefs.DRIVE_USER_NONE
     tasksService = null
     isLogged = false
-    statusObserver?.invoke(false)
+    statusCallback?.onStatusChanged(false)
   }
 
   fun taskLists(): TaskLists? {
@@ -236,6 +236,10 @@ class GTasks(
       e.printStackTrace()
     }
     return false
+  }
+
+  interface StatusCallback {
+    fun onStatusChanged(isLogged: Boolean)
   }
 
   companion object {

@@ -26,7 +26,7 @@ import java.io.InputStream
 import java.util.Collections
 
 class GDrive(
-  context: Context,
+  private val context: Context,
   private val prefs: Prefs
 ) : Storage() {
 
@@ -34,12 +34,33 @@ class GDrive(
 
   private val indexDataFile = IndexDataFile()
 
-  var statusObserver: ((Boolean) -> Unit)? = null
+  var statusCallback: StatusCallback? = null
   var isLogged: Boolean = false
     private set
 
+  val data: UserItem?
+    get() {
+      val service = driveService ?: return null
+      if (!isLogged) return null
+      try {
+        val about = service.about().get().setFields("user, storageQuota").execute()
+          ?: return null
+        val quota = about.storageQuota ?: return null
+        return UserItem(name = about.user.displayName ?: "", quota = quota.limit,
+          used = quota.usage, count = countFiles(), photo = about.user.photoLink
+            ?: "")
+      } catch (e: Exception) {
+      } catch (e: OutOfMemoryError) {
+      }
+      return null
+    }
+
   init {
     val user = prefs.driveUser
+    login(user)
+  }
+
+  fun login(user: String) {
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
       Timber.d("GDrive: user -> $user")
       val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(DriveScopes.DRIVE_APPDATA))
@@ -48,13 +69,20 @@ class GDrive(
         .setApplicationName(APPLICATION_NAME)
         .build()
       isLogged = true
-      statusObserver?.invoke(true)
+      statusCallback?.onStatusChanged(true)
       if (!indexDataFile.isLoaded) {
         launchDefault { loadIndexFile() }
       }
     } else {
       logOut()
     }
+  }
+
+  fun logOut() {
+    prefs.driveUser = Prefs.DRIVE_USER_NONE
+    driveService = null
+    isLogged = false
+    statusCallback?.onStatusChanged(false)
   }
 
   override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
@@ -81,39 +109,6 @@ class GDrive(
       } catch (e: Exception) {
       } catch (e: OutOfMemoryError) {
       }
-    }
-  }
-
-  private fun showContent(id: String) {
-    val service = driveService ?: return
-    if (!isLogged) return
-    try {
-      val out = ByteArrayOutputStream()
-      service.files().get(id).executeMediaAndDownloadTo(out)
-      val data = out.toString()
-      if (BuildConfig.DEBUG) Timber.d("showContent: $id, $data")
-    } catch (e: Exception) {
-      e.printStackTrace()
-    }
-  }
-
-  private fun backup(json: String, metadata: Metadata) {
-    val service = driveService ?: return
-    if (!isLogged) return
-    if (TextUtils.isEmpty(metadata.fileName)) return
-    try {
-      removeAllCopies(metadata.fileName)
-      val fileMetadata = File()
-      fileMetadata.name = metadata.fileName
-      fileMetadata.description = metadata.meta
-      fileMetadata.parents = PARENTS
-      val mediaContent = InputStreamContent("text/plain", ByteArrayInputStream(json.toByteArray()))
-      val driveFile = service.files().create(fileMetadata, mediaContent)
-        .setFields("id")
-        .execute()
-      Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
-    } catch (e: Exception) {
-    } catch (e: OutOfMemoryError) {
     }
   }
 
@@ -213,6 +208,46 @@ class GDrive(
     loadIndexFile()
   }
 
+  fun clean() {
+    val service = driveService ?: return
+    if (!isLogged) return
+    try {
+      val request = service.files().list()
+        .setSpaces("appDataFolder")
+        .setFields("nextPageToken, files(id, name)") ?: return
+      do {
+        val files = request.execute()
+        val fileList = files.files as ArrayList<File>
+        for (f in fileList) {
+          service.files().delete(f.id).execute()
+        }
+        request.pageToken = files.nextPageToken
+      } while (request.pageToken != null && request.pageToken.length >= 0)
+    } catch (e: java.lang.Exception) {
+    } catch (e: OutOfMemoryError) {
+    }
+  }
+
+  fun cleanFolder() {
+    val service = driveService ?: return
+    if (!isLogged) return
+    val request = service.files().list()
+      .setSpaces("appDataFolder")
+      .setFields("nextPageToken, files(id, name)") ?: return
+    try {
+      do {
+        val files = request.execute()
+        val fileList = files.files as ArrayList<File>
+        for (f in fileList) {
+          service.files().delete(f.id).execute()
+        }
+        request.pageToken = files.nextPageToken
+      } while (request.pageToken != null && request.pageToken.length >= 0)
+    } catch (e: java.lang.Exception) {
+    } catch (e: OutOfMemoryError) {
+    }
+  }
+
   private suspend fun loadIndexFile() {
     val inputStream = restore(IndexDataFile.FILE_NAME)
     indexDataFile.parse(inputStream)
@@ -230,30 +265,6 @@ class GDrive(
       ))
     }
   }
-
-  fun logOut() {
-    prefs.driveUser = Prefs.DRIVE_USER_NONE
-    driveService = null
-    isLogged = false
-    statusObserver?.invoke(false)
-  }
-
-  val data: UserItem?
-    get() {
-      val service = driveService ?: return null
-      if (!isLogged) return null
-      try {
-        val about = service.about().get().setFields("user, storageQuota").execute()
-          ?: return null
-        val quota = about.storageQuota ?: return null
-        return UserItem(name = about.user.displayName ?: "", quota = quota.limit,
-          used = quota.usage, count = countFiles(), photo = about.user.photoLink
-          ?: "")
-      } catch (e: Exception) {
-      } catch (e: OutOfMemoryError) {
-      }
-      return null
-    }
 
   private fun countFiles(): Int {
     val service = driveService ?: return 0
@@ -309,44 +320,41 @@ class GDrive(
     }
   }
 
-  fun clean() {
+  private fun showContent(id: String) {
     val service = driveService ?: return
     if (!isLogged) return
     try {
-      val request = service.files().list()
-        .setSpaces("appDataFolder")
-        .setFields("nextPageToken, files(id, name)") ?: return
-      do {
-        val files = request.execute()
-        val fileList = files.files as ArrayList<File>
-        for (f in fileList) {
-          service.files().delete(f.id).execute()
-        }
-        request.pageToken = files.nextPageToken
-      } while (request.pageToken != null && request.pageToken.length >= 0)
-    } catch (e: java.lang.Exception) {
+      val out = ByteArrayOutputStream()
+      service.files().get(id).executeMediaAndDownloadTo(out)
+      val data = out.toString()
+      if (BuildConfig.DEBUG) Timber.d("showContent: $id, $data")
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+  }
+
+  private fun backup(json: String, metadata: Metadata) {
+    val service = driveService ?: return
+    if (!isLogged) return
+    if (TextUtils.isEmpty(metadata.fileName)) return
+    try {
+      removeAllCopies(metadata.fileName)
+      val fileMetadata = File()
+      fileMetadata.name = metadata.fileName
+      fileMetadata.description = metadata.meta
+      fileMetadata.parents = PARENTS
+      val mediaContent = InputStreamContent("text/plain", ByteArrayInputStream(json.toByteArray()))
+      val driveFile = service.files().create(fileMetadata, mediaContent)
+        .setFields("id")
+        .execute()
+      Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
+    } catch (e: Exception) {
     } catch (e: OutOfMemoryError) {
     }
   }
 
-  fun cleanFolder() {
-    val service = driveService ?: return
-    if (!isLogged) return
-    val request = service.files().list()
-      .setSpaces("appDataFolder")
-      .setFields("nextPageToken, files(id, name)") ?: return
-    try {
-      do {
-        val files = request.execute()
-        val fileList = files.files as ArrayList<File>
-        for (f in fileList) {
-          service.files().delete(f.id).execute()
-        }
-        request.pageToken = files.nextPageToken
-      } while (request.pageToken != null && request.pageToken.length >= 0)
-    } catch (e: java.lang.Exception) {
-    } catch (e: OutOfMemoryError) {
-    }
+  interface StatusCallback {
+    fun onStatusChanged(isLogged: Boolean)
   }
 
   companion object {

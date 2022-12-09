@@ -42,12 +42,33 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   private val gTasks by inject<GTasks>()
   private val viewModel by viewModel<GoogleTaskListsViewModel>()
   private val googleLogin: GoogleLogin by lazy {
-    GoogleLogin(requireActivity(), prefs, gDrive, gTasks)
+    GoogleLogin(requireActivity(), prefs, gDrive, gTasks, loginCallback)
   }
   private val adapter = TasksRecyclerAdapter(currentStateHolder) {
     showTasks(viewModel.allGoogleTasks.value ?: listOf())
   }
   private val listsRecyclerAdapter = ListsRecyclerAdapter()
+  private val loginCallback = object : GoogleLogin.LoginCallback {
+    override fun onProgress(isLoading: Boolean, mode: GoogleLogin.Mode) {
+      if (mode == GoogleLogin.Mode.TASKS) {
+        updateProgress(isLoading)
+      }
+    }
+
+    override fun onResult(isLogged: Boolean, mode: GoogleLogin.Mode) {
+      Timber.d("onResult: $isLogged")
+      if (isLogged) {
+        viewModel.loadGoogleTasks()
+      }
+      updateGoogleStatus(isLogged)
+    }
+
+    override fun onFail(mode: GoogleLogin.Mode) {
+      if (mode == GoogleLogin.Mode.TASKS) {
+        showErrorDialog()
+      }
+    }
+  }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -65,7 +86,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     updateProgress(false)
     initEmpty()
     initList()
-    checkGoogleStatus()
+    updateGoogleStatus(gTasks.isLogged)
 
     initViewModel()
   }
@@ -84,23 +105,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
         Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
         return@withActivity
       }
-      googleLogin.loginTasks(object : GoogleLogin.LoginCallback {
-        override fun onProgress(isLoading: Boolean) {
-          updateProgress(isLoading)
-        }
-
-        override fun onResult(isLogged: Boolean) {
-          Timber.d("onResult: $isLogged")
-          if (isLogged) {
-            viewModel.loadGoogleTasks()
-          }
-          checkGoogleStatus()
-        }
-
-        override fun onFail() {
-          showErrorDialog()
-        }
-      })
+      googleLogin.loginTasks()
     }
   }
 
@@ -113,8 +118,8 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
   }
 
-  private fun checkGoogleStatus() {
-    if (!gTasks.isLogged) {
+  private fun updateGoogleStatus(isLogged: Boolean) {
+    if (!isLogged) {
       binding.notLoggedView.show()
       binding.notLoggedView.setOnClickListener { }
       binding.fab.hide()

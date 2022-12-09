@@ -15,30 +15,29 @@ import com.google.api.services.tasks.TasksScopes
 class GoogleLogin(
   private val activity: Activity,
   private val prefs: Prefs,
-  private val gDrive: GDrive,
-  private val gTasks: GTasks
+  private val drive: GDrive,
+  private val tasks: GTasks,
+  private val loginCallback: LoginCallback
 ) {
-
-  private var mDriveCallback: LoginCallback? = null
-  private var mTasksCallback: LoginCallback? = null
-  private var isDriveLogin = false
-
-  var googleStatus: ((Boolean) -> Unit)? = null
 
   var isGoogleDriveLogged = false
     private set
     get() {
-      return gDrive.isLogged
+      return drive.isLogged
     }
 
   var isGoogleTasksLogged = false
     private set
     get() {
-      return gDrive.isLogged
+      return tasks.isLogged
     }
 
+  private var mode = Mode.DRIVE
+
   fun logOutDrive() {
-    gDrive.logOut()
+    mode = Mode.DRIVE
+
+    drive.logOut()
 
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
@@ -46,12 +45,14 @@ class GoogleLogin(
       .build()
     val client = GoogleSignIn.getClient(activity, signInOptions)
     client.signOut().addOnSuccessListener {
-      googleStatus?.invoke(false)
+      loginCallback.onResult(false, mode)
     }
   }
 
   fun logOutTasks() {
-    gTasks.logOut()
+    mode = Mode.TASKS
+
+    tasks.logOut()
 
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       .requestScopes(Scope(TasksScopes.TASKS))
@@ -59,13 +60,12 @@ class GoogleLogin(
       .build()
     val client = GoogleSignIn.getClient(activity, signInOptions)
     client.signOut().addOnSuccessListener {
-      googleStatus?.invoke(false)
+      loginCallback.onResult(false, mode)
     }
   }
 
-  fun loginDrive(loginCallback: LoginCallback) {
-    isDriveLogin = true
-    mDriveCallback = loginCallback
+  fun loginDrive() {
+    mode = Mode.DRIVE
 
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
@@ -75,9 +75,8 @@ class GoogleLogin(
     activity.startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
   }
 
-  fun loginTasks(loginCallback: LoginCallback) {
-    isDriveLogin = false
-    mTasksCallback = loginCallback
+  fun loginTasks() {
+    mode = Mode.TASKS
 
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       .requestScopes(Scope(TasksScopes.TASKS))
@@ -88,15 +87,11 @@ class GoogleLogin(
   }
 
   private fun sendFail() {
-    if (isDriveLogin) {
-      mDriveCallback?.onFail()
-    } else {
-      mTasksCallback?.onFail()
-    }
+    loginCallback.onFail(mode)
   }
 
   fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    Logger.d("GoogleLogin: onActivityResult: req=$requestCode, res=$resultCode, data=$data")
+    Logger.d("GoogleLogin: onActivityResult: mode=${mode}, req=$requestCode, res=$resultCode, data=$data")
     if (requestCode == REQUEST_CODE_SIGN_IN && resultCode == RESULT_OK) {
       if (data != null) handleSignInResult(data)
       else sendFail()
@@ -118,35 +113,41 @@ class GoogleLogin(
   }
 
   private fun finishLogin(account: String) {
-    Logger.d("finishLogin: $account")
+    Logger.d("finishLogin: mode=$mode, $account")
     if (account.isEmpty()) {
       sendFail()
       return
     }
-    if (isDriveLogin) {
-      gDrive.logOut()
+    if (mode == Mode.DRIVE) {
+      drive.logOut()
       prefs.driveUser = account
-      gDrive.statusObserver = {
-        googleStatus?.invoke(it)
+      drive.statusCallback = object : GDrive.StatusCallback {
+        override fun onStatusChanged(isLogged: Boolean) {
+          loginCallback.onResult(isLogged, mode)
+        }
       }
-      mDriveCallback?.onResult(gDrive.isLogged)
+      drive.login(account)
     } else {
-      gTasks.logOut()
-      gTasks.statusObserver = {
-        googleStatus?.invoke(it)
+      tasks.logOut()
+      tasks.statusCallback = object : GTasks.StatusCallback {
+        override fun onStatusChanged(isLogged: Boolean) {
+          loginCallback.onResult(isLogged, mode)
+        }
       }
-      gTasks.login(account)
-      mTasksCallback?.onResult(gTasks.isLogged)
+      prefs.tasksUser = account
+      tasks.login(account)
     }
   }
 
   interface LoginCallback {
-    fun onProgress(isLoading: Boolean)
+    fun onProgress(isLoading: Boolean, mode: Mode)
 
-    fun onResult(isLogged: Boolean)
+    fun onResult(isLogged: Boolean, mode: Mode)
 
-    fun onFail()
+    fun onFail(mode: Mode)
   }
+
+  enum class Mode { DRIVE, TASKS }
 
   companion object {
     private const val REQUEST_CODE_SIGN_IN = 4

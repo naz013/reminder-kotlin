@@ -34,14 +34,36 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   private val featureManager by inject<FeatureManager>()
 
   private val viewModel by viewModel<CloudViewModel>()
-  private val mDropbox: DropboxLogin by lazy {
-    DropboxLogin(requireActivity(), dropbox, mDropboxCallback)
+  private val dropboxLogin: DropboxLogin by lazy {
+    DropboxLogin(requireActivity(), dropbox, dropboxCallback)
   }
-  private val mGoogleLogin: GoogleLogin by lazy {
-    GoogleLogin(requireActivity(), prefs, gDrive, gTasks)
+  private val googleLogin: GoogleLogin by lazy {
+    GoogleLogin(requireActivity(), prefs, gDrive, gTasks, loginCallback)
   }
 
-  private val mDropboxCallback = object : DropboxLogin.LoginCallback {
+  private val loginCallback = object : GoogleLogin.LoginCallback {
+    override fun onProgress(isLoading: Boolean, mode: GoogleLogin.Mode) {
+      updateProgress(isLoading)
+    }
+
+    override fun onResult(isLogged: Boolean, mode: GoogleLogin.Mode) {
+      Timber.d("onResult: $isLogged, mode=$mode")
+      if (mode == GoogleLogin.Mode.TASKS) {
+        if (isLogged) {
+          viewModel.loadGoogleTasks()
+        }
+        updateGoogleTasksStatus(isLogged)
+      } else {
+        updateGoogleDriveStatus(isLogged)
+      }
+    }
+
+    override fun onFail(mode: GoogleLogin.Mode) {
+      showErrorDialog()
+    }
+  }
+
+  private val dropboxCallback = object : DropboxLogin.LoginCallback {
     override fun onSuccess(b: Boolean) {
       if (b) {
         binding.linkDropbox.text = getString(R.string.disconnect)
@@ -70,14 +92,13 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     super.onViewCreated(view, savedInstanceState)
     updateProgress(false)
     binding.progressMessageView.text = getString(R.string.please_wait)
-    mGoogleLogin.googleStatus = {
-      checkGoogleStatus()
-    }
+
     initDropboxButton()
     initGoogleDriveButton()
     initGoogleTasksButton()
 
-    checkGoogleStatus()
+    updateGoogleTasksStatus(googleLogin.isGoogleTasksLogged)
+    updateGoogleDriveStatus(googleLogin.isGoogleDriveLogged)
   }
 
   override fun onStart() {
@@ -149,7 +170,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun initDropboxButton() {
     binding.dropboxView.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX))
-    binding.linkDropbox.setOnClickListener { mDropbox.login() }
+    binding.linkDropbox.setOnClickListener { dropboxLogin.login() }
   }
 
   private fun switchGoogleTasksStatus() {
@@ -158,26 +179,10 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
         Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
         return@withActivity
       }
-      if (mGoogleLogin.isGoogleTasksLogged) {
+      if (googleLogin.isGoogleTasksLogged) {
         disconnectFromGoogleTasks()
       } else {
-        mGoogleLogin.loginTasks(object : GoogleLogin.LoginCallback {
-          override fun onProgress(isLoading: Boolean) {
-            updateProgress(isLoading)
-          }
-
-          override fun onResult(isLogged: Boolean) {
-            Timber.d("onResult: $isLogged")
-            if (isLogged) {
-              viewModel.loadGoogleTasks()
-            }
-            checkGoogleStatus()
-          }
-
-          override fun onFail() {
-            showErrorDialog()
-          }
-        })
+        googleLogin.loginTasks()
       }
     }
   }
@@ -199,30 +204,16 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
         Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
         return@withActivity
       }
-      if (mGoogleLogin.isGoogleDriveLogged) {
+      if (googleLogin.isGoogleDriveLogged) {
         disconnectFromGoogleDrive()
       } else {
-        mGoogleLogin.loginDrive(object : GoogleLogin.LoginCallback {
-          override fun onProgress(isLoading: Boolean) {
-            updateProgress(isLoading)
-          }
-
-          override fun onResult(isLogged: Boolean) {
-            if (isLogged) {
-              checkGoogleStatus()
-            }
-          }
-
-          override fun onFail() {
-            showErrorDialog()
-          }
-        })
+        googleLogin.loginDrive()
       }
     }
   }
 
   private fun disconnectFromGoogleTasks() {
-    mGoogleLogin.logOutTasks()
+    googleLogin.logOutTasks()
     updateProgress(true)
     launchDefault {
       viewModel.db.googleTasksDao().deleteAll()
@@ -230,14 +221,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
       withUIContext {
         updatesHelper.updateTasksWidget()
         updateProgress(false)
-        checkGoogleStatus()
       }
     }
   }
 
   private fun disconnectFromGoogleDrive() {
-    mGoogleLogin.logOutDrive()
-    checkGoogleStatus()
+    googleLogin.logOutDrive()
   }
 
   override fun onRequestPermissionsResult(
@@ -254,34 +243,33 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
   }
 
-  private fun checkGoogleStatus() {
-    if (mGoogleLogin.isGoogleDriveLogged) {
-      binding.linkGDrive.text = getString(R.string.disconnect)
-    } else {
-      binding.linkGDrive.text = getString(R.string.connect)
-    }
-    if (mGoogleLogin.isGoogleTasksLogged) {
+  private fun updateGoogleTasksStatus(isLogged: Boolean) {
+    if (isLogged) {
       binding.linkGTasks.text = getString(R.string.disconnect)
     } else {
       binding.linkGTasks.text = getString(R.string.connect)
     }
   }
 
-  override fun onBackStackResume() {
-    super.onBackStackResume()
-    mDropbox.checkDropboxStatus()
-    checkGoogleStatus()
+  private fun updateGoogleDriveStatus(isLogged: Boolean) {
+    if (isLogged) {
+      binding.linkGDrive.text = getString(R.string.disconnect)
+    } else {
+      binding.linkGDrive.text = getString(R.string.connect)
+    }
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    mGoogleLogin.googleStatus = null
+  override fun onBackStackResume() {
+    super.onBackStackResume()
+    dropboxLogin.checkDropboxStatus()
+    updateGoogleDriveStatus(googleLogin.isGoogleDriveLogged)
+    updateGoogleTasksStatus(googleLogin.isGoogleTasksLogged)
   }
 
   override fun getTitle(): String = getString(R.string.cloud_services)
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    mGoogleLogin.onActivityResult(requestCode, resultCode, data)
+    googleLogin.onActivityResult(requestCode, resultCode, data)
   }
 }
