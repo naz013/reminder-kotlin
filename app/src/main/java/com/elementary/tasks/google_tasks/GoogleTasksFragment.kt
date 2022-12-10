@@ -9,9 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -34,16 +32,13 @@ import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>() {
 
-  private val gDrive by inject<GDrive>()
-  private val gTasks by inject<GTasks>()
   private val viewModel by viewModel<GoogleTaskListsViewModel>()
-  private val googleLogin: GoogleLogin by lazy {
-    GoogleLogin(requireActivity(), prefs, gDrive, gTasks, loginCallback)
-  }
+  private val googleLogin: GoogleLogin by inject { parametersOf(requireActivity(), loginCallback) }
   private val adapter = TasksRecyclerAdapter(currentStateHolder) {
     showTasks(viewModel.allGoogleTasks.value ?: listOf())
   }
@@ -86,7 +81,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     updateProgress(false)
     initEmpty()
     initList()
-    updateGoogleStatus(gTasks.isLogged)
+    updateGoogleStatus(googleLogin.isGoogleTasksLogged)
 
     initViewModel()
   }

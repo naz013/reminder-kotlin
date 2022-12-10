@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils
 
+import android.app.Activity
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
@@ -12,7 +13,9 @@ import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.LoginStateViewModel
+import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.completables.CompletableManager
 import com.elementary.tasks.core.cloud.completables.ReminderCompletable
@@ -230,7 +233,7 @@ val viewModelModule = module {
   viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
-  viewModel { CloudViewModel(get(), get()) }
+  viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
   viewModel { GoogleTasksStateViewModel() }
   viewModel { CreateNoteViewModel() }
@@ -320,6 +323,13 @@ val utilModule = module {
 
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
+
+  factory { (activity: Activity, callback: GoogleLogin.LoginCallback) ->
+    GoogleLogin(activity, get(), get(), get(), callback)
+  }
+  factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
+    DropboxLogin(activity, get(), callback)
+  }
 }
 
 val adapterModule = module {

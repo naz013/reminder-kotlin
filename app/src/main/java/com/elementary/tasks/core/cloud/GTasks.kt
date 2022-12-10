@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.cloud
 
 import android.content.Context
-import android.text.TextUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -44,7 +43,7 @@ class GTasks(
   fun login(user: String) {
     Timber.d("login: ")
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
-      Timber.d("GTasks: user -> $user")
+      Timber.d("user -> $user")
       val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(TasksScopes.TASKS))
       credential.selectedAccountName = user
       tasksService = Tasks.Builder(NetHttpTransport(), GsonFactory(), credential)
@@ -67,20 +66,21 @@ class GTasks(
 
   fun taskLists(): TaskLists? {
     return try {
-      if (!isLogged || tasksService == null) null else tasksService?.tasklists()?.list()?.execute()
+      withService { it.tasklists().list().execute() }
     } catch (e: Exception) {
+      Timber.e(e, "Failed to get task lists")
       null
     }
   }
 
   fun insertTask(item: GoogleTask): Boolean {
-    if (!isLogged || TextUtils.isEmpty(item.title) || tasksService == null) {
+    if (item.title.isEmpty()) {
       return false
     }
     try {
       val task = Task()
       task.title = item.title
-      if (item.notes != "") {
+      if (item.notes.isNotEmpty()) {
         task.notes = item.notes
       }
       if (item.dueDate != 0L) {
@@ -88,16 +88,16 @@ class GTasks(
       }
       val result: Task?
       val listId = item.listId
-      if (!TextUtils.isEmpty(listId)) {
-        result = tasksService?.tasks()?.insert(listId, task)?.execute()
+      if (listId.isNotEmpty()) {
+        result = withService { it.tasks().insert(listId, task).execute() }
       } else {
         val googleTaskList = appDb.googleTaskListsDao().defaultGoogleTaskList()
         if (googleTaskList != null) {
           item.listId = googleTaskList.listId
-          result = tasksService?.tasks()?.insert(googleTaskList.listId, task)?.execute()
+          result = withService { it.tasks().insert(googleTaskList.listId, task).execute() }
         } else {
-          result = tasksService?.tasks()?.insert("@default", task)?.execute()
-          val list = tasksService?.tasklists()?.get("@default")?.execute()
+          result = withService { it.tasks().insert("@default", task).execute() }
+          val list = withService { it.tasklists().get("@default").execute() }
           if (list != null) {
             item.listId = list.id
           }
@@ -109,122 +109,118 @@ class GTasks(
         return true
       }
     } catch (e: Exception) {
+      Timber.e(e, "Failed to insert task id=${item.taskId}")
       return false
     }
     return false
   }
 
-  fun updateTaskStatus(status: String, googleTask: GoogleTask) {
-    if (!isLogged || tasksService == null) return
+  fun updateTaskStatus(status: String, item: GoogleTask) {
     try {
-      val task = tasksService?.tasks()?.get(googleTask.listId, googleTask.taskId)?.execute()
-        ?: return
+      val task = withService { it.tasks().get(item.listId, item.taskId).execute() } ?: return
       task.status = status
       if (status == TASKS_NEED_ACTION) {
         task.completed = Data.NULL_DATE_TIME
       }
       task.updated = DateTime(System.currentTimeMillis())
-      val result = tasksService?.tasks()?.update(googleTask.listId, task.id, task)?.execute()
+      val result = withService { it.tasks().update(item.listId, task.id, task).execute() }
       if (result != null) {
-        googleTask.update(result)
-        appDb.googleTasksDao().insert(googleTask)
+        item.update(result)
+        appDb.googleTasksDao().insert(item)
       }
     } catch (e: Exception) {
+      Timber.e(e, "Failed to update task status id=${item.taskId}")
     }
   }
 
   fun deleteTask(item: GoogleTask) {
-    if (!isLogged || item.listId == "" || tasksService == null) return
+    if (item.listId.isEmpty()) return
     try {
-      tasksService?.tasks()?.delete(item.listId, item.taskId)?.execute()
+      withService { it.tasks().delete(item.listId, item.taskId).execute() }
     } catch (e: Exception) {
+      Timber.e(e, "Failed to delete task id=${item.taskId}")
     }
   }
 
   fun updateTask(item: GoogleTask) {
-    if (!isLogged || tasksService == null) return
     try {
-      val task = tasksService?.tasks()?.get(item.listId, item.taskId)?.execute() ?: return
+      val task = withService { it.tasks().get(item.listId, item.taskId).execute() } ?: return
       task.status = TASKS_NEED_ACTION
       task.title = item.title
       task.completed = Data.NULL_DATE_TIME
       if (item.dueDate != 0L) task.due = DateTime(item.dueDate)
       if (item.notes != "") task.notes = item.notes
       task.updated = DateTime(System.currentTimeMillis())
-      tasksService?.tasks()?.update(item.listId, task.id, task)?.execute()
+      withService { it.tasks().update(item.listId, task.id, task).execute() }
     } catch (e: Exception) {
+      Timber.e(e, "Failed to update task id=${item.taskId}")
     }
   }
 
   fun getTasks(listId: String): List<Task> {
-    var taskLists: List<Task> = ArrayList()
-    if (!isLogged || tasksService == null) return taskLists
     try {
-      taskLists = tasksService?.tasks()?.list(listId)?.execute()?.items ?: arrayListOf()
+      return withService { it.tasks().list(listId).execute().items } ?: emptyList()
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e, "Failed to get tasks listId=$listId")
     }
-    return taskLists
+    return emptyList()
   }
 
   fun insertTasksList(listTitle: String, color: Int) {
-    if (!isLogged || tasksService == null) return
     val taskList = TaskList()
     taskList.title = listTitle
     try {
-      val result = tasksService?.tasklists()?.insert(taskList)?.execute() ?: return
+      val result = withService { it.tasklists().insert(taskList).execute() } ?: return
       val item = GoogleTaskList(result, color)
       appDb.googleTaskListsDao().insert(item)
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e, "Failed to insert task list $listTitle")
     }
   }
 
   fun updateTasksList(listTitle: String, listId: String?) {
-    if (!isLogged || listId == null || tasksService == null) {
+    if (listId == null) {
       return
     }
     try {
-      val taskList = tasksService?.tasklists()?.get(listId)?.execute() ?: return
+      val taskList = withService { it.tasklists().get(listId).execute() } ?: return
       taskList.title = listTitle
-      tasksService?.tasklists()?.update(listId, taskList)?.execute()
+      withService { it.tasklists().update(listId, taskList).execute() }
       val item = appDb.googleTaskListsDao().getById(listId)
       if (item != null) {
         item.update(taskList)
         appDb.googleTaskListsDao().insert(item)
       }
     } catch (e: Exception) {
+      Timber.e(e, "Failed to update task list $listTitle")
     }
   }
 
   fun deleteTaskList(listId: String?) {
-    if (!isLogged || listId == null || tasksService == null) {
+    if (listId == null) {
       return
     }
     try {
-      tasksService?.tasklists()?.delete(listId)?.execute()
+      withService { it.tasklists().delete(listId).execute() }
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e, "Failed to delete task list")
     }
   }
 
   fun clearTaskList(listId: String?) {
-    if (!isLogged || listId == null || tasksService == null) {
+    if (listId == null) {
       return
     }
     try {
-      tasksService?.tasks()?.clear(listId)?.execute()
+      withService { it.tasks().clear(listId).execute() }
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e, "Failed to clear task list")
     }
   }
 
   fun moveTask(item: GoogleTask, oldList: String): Boolean {
-    if (!isLogged || tasksService == null) {
-      return false
-    }
     try {
-      val task = tasksService?.tasks()?.get(oldList, item.taskId)?.execute()
+      val task = withService { it.tasks().get(oldList, item.taskId).execute() }
       if (task != null) {
         val clone = GoogleTask(item)
         clone.listId = oldList
@@ -233,9 +229,14 @@ class GTasks(
         return insertTask(item)
       }
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e, "Failed to move task")
     }
     return false
+  }
+
+  private fun <T> withService(call: (Tasks) -> T): T? {
+    val service = tasksService?.takeIf { isLogged } ?: return null
+    return call.invoke(service)
   }
 
   interface StatusCallback {

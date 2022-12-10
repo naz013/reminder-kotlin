@@ -7,41 +7,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.cloud.storages.Dropbox
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
 
-  private val dropbox by inject<Dropbox>()
-  private val gTasks by inject<GTasks>()
-  private val gDrive by inject<GDrive>()
-  private val updatesHelper by inject<UpdatesHelper>()
   private val featureManager by inject<FeatureManager>()
 
   private val viewModel by viewModel<CloudViewModel>()
-  private val dropboxLogin: DropboxLogin by lazy {
-    DropboxLogin(requireActivity(), dropbox, dropboxCallback)
+  private val dropboxLogin: DropboxLogin by inject {
+    parametersOf(requireActivity(), dropboxCallback)
   }
-  private val googleLogin: GoogleLogin by lazy {
-    GoogleLogin(requireActivity(), prefs, gDrive, gTasks, loginCallback)
-  }
+  private val googleLogin: GoogleLogin by inject { parametersOf(requireActivity(), googleCallback) }
 
-  private val loginCallback = object : GoogleLogin.LoginCallback {
+  private val googleCallback = object : GoogleLogin.LoginCallback {
     override fun onProgress(isLoading: Boolean, mode: GoogleLogin.Mode) {
       updateProgress(isLoading)
     }
@@ -103,17 +93,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   override fun onStart() {
     super.onStart()
-
-    viewModel.isLoading.observe(viewLifecycleOwner) {
-      if (it != null) {
-        updateProgress(it)
-      }
-    }
-    viewModel.isReady.observe(viewLifecycleOwner) { b ->
-      if (b != null && b) {
-        withContext { updatesHelper.updateTasksWidget() }
-      }
-    }
+    viewModel.isLoading.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
   }
 
   private fun initGoogleTasksButton() {
@@ -214,15 +194,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun disconnectFromGoogleTasks() {
     googleLogin.logOutTasks()
-    updateProgress(true)
-    launchDefault {
-      viewModel.db.googleTasksDao().deleteAll()
-      viewModel.db.googleTaskListsDao().deleteAll()
-      withUIContext {
-        updatesHelper.updateTasksWidget()
-        updateProgress(false)
-      }
-    }
+    viewModel.clearGoogleTasks()
   }
 
   private fun disconnectFromGoogleDrive() {

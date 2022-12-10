@@ -3,32 +3,44 @@ package com.elementary.tasks.settings.export
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Random
 
 class CloudViewModel(
   private val appDb: AppDb,
-  private val gTasks: GTasks
+  private val gTasks: GTasks,
+  private val dispatcherProvider: DispatcherProvider,
+  private val updatesHelper: UpdatesHelper
 ) : ViewModel(), LifecycleObserver {
 
   var isLoading: MutableLiveData<Boolean> = MutableLiveData()
-  var isReady: MutableLiveData<Boolean> = MutableLiveData()
-  val db = appDb
 
-  private var job: Job? = null
+  fun clearGoogleTasks() {
+    isLoading.postValue(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      appDb.googleTasksDao().deleteAll()
+      appDb.googleTaskListsDao().deleteAll()
+      withUIContext {
+        updatesHelper.updateTasksWidget()
+        isLoading.postValue(false)
+      }
+    }
+  }
 
   fun loadGoogleTasks() {
     isLoading.postValue(true)
-    job = launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       var lists: TaskLists? = null
       try {
         lists = gTasks.taskLists()
@@ -75,9 +87,8 @@ class CloudViewModel(
 
       withUIContext {
         isLoading.postValue(false)
-        isReady.postValue(true)
+        updatesHelper.updateTasksWidget()
       }
-      job = null
     }
   }
 }
