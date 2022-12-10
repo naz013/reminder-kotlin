@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -22,7 +23,8 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 class Dropbox(
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val dispatcherProvider: DispatcherProvider
 ) : Storage() {
 
   private val rootFolder = "/"
@@ -102,7 +104,7 @@ class Dropbox(
     }
   }
 
-  override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
     val channel = Channel<InputStream>()
     if (!isLinked) {
       channel.cancel()
@@ -149,7 +151,7 @@ class Dropbox(
     }
   }
 
-  override fun hasIndex(id: String): Boolean {
+  override suspend fun hasIndex(id: String): Boolean {
     return indexDataFile.hasIndex(id)
   }
 
@@ -157,12 +159,12 @@ class Dropbox(
     return indexDataFile.isFileChanged(id, updatedAt)
   }
 
-  override fun removeIndex(id: String) {
+  override suspend fun removeIndex(id: String) {
     indexDataFile.removeIndex(id)
     saveIndexFile()
   }
 
-  override fun saveIndex(fileIndex: FileIndex) {
+  override suspend fun saveIndex(fileIndex: FileIndex) {
     indexDataFile.addIndex(fileIndex)
     saveIndexFile()
   }

@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
@@ -99,6 +101,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
     initList()
     initViewModel()
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
 
     addMenu(R.menu.notes_menu, { onMenuItemClicked(it) }) { modifyMenu(it) }
   }

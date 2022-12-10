@@ -20,10 +20,14 @@ import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.UiReminderType
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.IntentUtil
@@ -64,6 +68,7 @@ import java.util.*
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
   private val cacheUtil by inject<CacheUtil>()
+  private val reminderAnalyticsTracker by inject<ReminderAnalyticsTracker>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
   private val conversationViewModel by viewModel<ConversationViewModel>()
@@ -71,16 +76,16 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private var fragment: TypeFragment<*>? = null
   private var isEditing: Boolean = false
-  private var mIsTablet = false
+  private var isTablet = false
   private var hasLocation = false
-  override val reminderState: ReminderStateViewModel
+  override val state: ReminderStateViewModel
     get() = stateViewModel
   override val defGroup: ReminderGroup?
     get() = stateViewModel.group
   override var canExportToTasks: Boolean = false
   override var canExportToCalendar: Boolean = false
 
-  private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
+  private val typeSelectListener = object : AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
       prefs.lastUsedReminder = position
       openScreen(position)
@@ -90,7 +95,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
     }
   }
-  private val mReminderObserver: Observer<in Reminder> = Observer { reminder ->
+  private val reminderObserver: Observer<in Reminder> = Observer { reminder ->
     if (reminder != null) {
       editReminder(reminder)
     }
@@ -102,8 +107,10 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    reminderAnalyticsTracker.startTracking()
+
     hasLocation = Module.hasLocation(this)
-    mIsTablet = resources.getBoolean(R.bool.is_tablet)
+    isTablet = resources.getBoolean(R.bool.is_tablet)
     canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
     canExportToTasks = stateViewModel.isLoggedToGoogleTasks()
     initActionBar()
@@ -166,7 +173,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.reminder.observe(this, mReminderObserver)
+    viewModel.reminder.observe(this, reminderObserver)
     viewModel.result.observe(this) { commands ->
       if (commands != null) {
         when (commands) {
@@ -216,10 +223,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       }
 
       intent.hasExtra(Constants.INTENT_ITEM) -> {
-        try {
+        runCatching {
           val reminder = intent.getParcelableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
           editReminder(reminder, false, fromFile = true)
-        } catch (e: Exception) {
         }
       }
 
@@ -330,7 +336,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     }
     val adapter = TitleNavigationAdapter(list)
     binding.navSpinner.adapter = adapter
-    binding.navSpinner.onItemSelectedListener = mOnTypeSelectListener
+    binding.navSpinner.onItemSelectedListener = typeSelectListener
     Timber.d("initNavigation: ")
   }
 
@@ -485,12 +491,14 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private fun save(newId: Boolean = false) {
     fragment?.let {
       it.prepare()?.let { item ->
-        Timber.d("save: %s", item)
-        viewModel.reminder.removeObserver(mReminderObserver)
+        Timber.d("save: $item")
+        viewModel.reminder.removeObserver(reminderObserver)
         stateViewModel.isSaving = true
         if (newId) {
           item.uuId = UUID.randomUUID().toString()
         }
+        analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
+        reminderAnalyticsTracker.sendEvent(UiReminderType(item.reminderType))
         viewModel.saveAndStartReminder(item, isEditing)
       }
     }
@@ -619,7 +627,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun setFullScreenMode(b: Boolean) {
-    if (!mIsTablet) {
+    if (!isTablet) {
       if (b) {
         binding.appBar.visibility = View.GONE
       } else {
@@ -629,11 +637,11 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun updateScroll(y: Int) {
-    if (!mIsTablet) binding.appBar.isSelected = y > 0
+    if (!isTablet) binding.appBar.isSelected = y > 0
   }
 
   override fun isTablet(): Boolean {
-    return mIsTablet
+    return isTablet
   }
 
   override fun setFragment(typeFragment: TypeFragment<*>?) {

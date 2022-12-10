@@ -32,7 +32,7 @@ class DropboxLogin(
   private fun performDropboxLinking(context: Context) {
     if (dropbox.isLinked) {
       if (dropbox.unlink()) {
-        callback.onSuccess(false)
+        callback.onResult(false)
       }
     } else {
       dropbox.startLink(context)
@@ -42,13 +42,13 @@ class DropboxLogin(
   fun checkDropboxStatus() {
     Timber.d("checkDropboxStatus: ${dropbox.isLinked}")
     if (dropbox.isLinked) {
-      callback.onSuccess(true)
+      callback.onResult(true)
     } else {
       dropbox.startSession()
       if (dropbox.isLinked) {
-        callback.onSuccess(true)
+        callback.onResult(true)
       } else {
-        callback.onSuccess(false)
+        callback.onResult(false)
       }
     }
   }
@@ -96,7 +96,7 @@ class DropboxLogin(
   }
 
   interface LoginCallback {
-    fun onSuccess(b: Boolean)
+    fun onResult(b: Boolean)
   }
 
   companion object {

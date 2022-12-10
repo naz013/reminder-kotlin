@@ -115,15 +115,15 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         it.show()
         it.setActivity(requireActivity())
         it.setContactClickListener { selectContact() }
-        it.bindProperty(iFace.reminderState.reminder.target) { number ->
-          iFace.reminderState.reminder.target = number
+        it.bindProperty(iFace.state.reminder.target) { number ->
+          iFace.state.reminder.target = number
           updateActions()
         }
-        if (iFace.reminderState.reminder.target != "") {
+        if (iFace.state.reminder.target != "") {
           it.setAction(true)
-          if (Reminder.isKind(iFace.reminderState.reminder.type, Reminder.Kind.CALL)) {
+          if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.CALL)) {
             it.type = ActionView.TYPE_CALL
-          } else if (Reminder.isKind(iFace.reminderState.reminder.type, Reminder.Kind.SMS)) {
+          } else if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.SMS)) {
             it.type = ActionView.TYPE_MESSAGE
           }
         }
@@ -132,13 +132,13 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
     }
     loudnessPickerView?.let {
-      it.bindProperty(iFace.reminderState.reminder.volume) { loudness ->
-        iFace.reminderState.reminder.volume = loudness
+      it.bindProperty(iFace.state.reminder.volume) { loudness ->
+        iFace.state.reminder.volume = loudness
       }
     }
     repeatLimitView?.let {
-      it.bindProperty(iFace.reminderState.reminder.repeatLimit) { limit ->
-        iFace.reminderState.reminder.repeatLimit = limit
+      it.bindProperty(iFace.state.reminder.repeatLimit) { limit ->
+        iFace.state.reminder.repeatLimit = limit
       }
     }
     windowTypeView?.let {
@@ -146,52 +146,52 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         it.hide()
       } else {
         it.show()
-        it.bindProperty(iFace.reminderState.reminder.windowType) { type ->
-          iFace.reminderState.reminder.windowType = type
+        it.bindProperty(iFace.state.reminder.windowType) { type ->
+          iFace.state.reminder.windowType = type
         }
       }
     }
     priorityPickerView?.let {
-      it.bindProperty(iFace.reminderState.reminder.priority) { priority ->
-        iFace.reminderState.reminder.priority = priority
+      it.bindProperty(iFace.state.reminder.priority) { priority ->
+        iFace.state.reminder.priority = priority
         updateHeader()
       }
     }
     dateTimeView?.let {
-      it.bindProperty(iFace.reminderState.reminder.eventTime) { dateTime ->
-        iFace.reminderState.reminder.eventTime = dateTime
+      it.bindProperty(iFace.state.reminder.eventTime) { dateTime ->
+        iFace.state.reminder.eventTime = dateTime
       }
     }
     repeatView?.let {
-      it.bindProperty(iFace.reminderState.reminder.repeatInterval) { millis ->
-        iFace.reminderState.reminder.repeatInterval = millis
+      it.bindProperty(iFace.state.reminder.repeatInterval) { millis ->
+        iFace.state.reminder.repeatInterval = millis
       }
     }
     beforePickerView?.let {
-      it.bindProperty(iFace.reminderState.reminder.remindBefore) { millis ->
-        iFace.reminderState.reminder.remindBefore = millis
+      it.bindProperty(iFace.state.reminder.remindBefore) { millis ->
+        iFace.state.reminder.remindBefore = millis
         updateHeader()
       }
     }
     summaryView?.let {
       it.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
       it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-      it.bindProperty(iFace.reminderState.reminder.summary) { summary ->
-        iFace.reminderState.reminder.summary = summary.trim()
+      it.bindProperty(iFace.state.reminder.summary) { summary ->
+        iFace.state.reminder.summary = summary.trim()
       }
     }
     groupView?.let {
       it.onGroupSelectListener = {
         iFace.selectGroup()
       }
-      showGroup(it, iFace.reminderState.reminder)
+      showGroup(it, iFace.state.reminder)
     }
     melodyView?.let {
       it.onFileSelectListener = {
         iFace.selectMelody()
       }
-      it.bindProperty(iFace.reminderState.reminder.melodyPath) { melody ->
-        iFace.reminderState.reminder.melodyPath = melody
+      it.bindProperty(iFace.state.reminder.melodyPath) { melody ->
+        iFace.state.reminder.melodyPath = melody
       }
     }
     attachmentView?.let {
@@ -204,8 +204,8 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
             it.setUri(clipData.getItemAt(0).uri)
           }
         }, *ATTACHMENT_TYPES)
-      it.bindProperty(iFace.reminderState.reminder.attachmentFile) { path ->
-        iFace.reminderState.reminder.attachmentFile = path
+      it.bindProperty(iFace.state.reminder.attachmentFile) { path ->
+        iFace.state.reminder.attachmentFile = path
       }
     }
     scrollView?.let { view ->
@@ -215,20 +215,20 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     }
     expansionLayout?.let {
       it.isNestedScrollingEnabled = false
-      if (iFace.reminderState.isExpanded) {
+      if (iFace.state.isExpanded) {
         it.expand(false)
       } else {
         it.collapse(false)
       }
       it.addListener { _, expanded ->
-        iFace.reminderState.isExpanded = expanded
+        iFace.state.isExpanded = expanded
       }
     }
     ledPickerView?.let {
       if (Module.isPro) {
         it.show()
-        it.bindProperty(iFace.reminderState.reminder.color) { color ->
-          iFace.reminderState.reminder.color = color
+        it.bindProperty(iFace.state.reminder.color) { color ->
+          iFace.state.reminder.color = color
         }
       } else {
         it.hide()
@@ -237,8 +237,8 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     calendarCheck?.let {
       if (iFace.canExportToCalendar) {
         it.show()
-        it.bindProperty(iFace.reminderState.reminder.exportToCalendar) { isChecked ->
-          iFace.reminderState.reminder.exportToCalendar = isChecked
+        it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
+          iFace.state.reminder.exportToCalendar = isChecked
           if (isChecked) {
             calendarPicker?.show()
           } else {
@@ -253,8 +253,8 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     tasksCheck?.let {
       if (iFace.canExportToTasks) {
         it.show()
-        it.bindProperty(iFace.reminderState.reminder.exportToTasks) { isChecked ->
-          iFace.reminderState.reminder.exportToTasks = isChecked
+        it.bindProperty(iFace.state.reminder.exportToTasks) { isChecked ->
+          iFace.state.reminder.exportToTasks = isChecked
         }
       } else {
         it.hide()
@@ -262,8 +262,8 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     }
     extraView?.let {
       it.dialogues = dialogues
-      it.bindProperty(iFace.reminderState.reminder) { reminder ->
-        iFace.reminderState.reminder.copyExtra(reminder)
+      it.bindProperty(iFace.state.reminder) { reminder ->
+        iFace.state.reminder.copyExtra(reminder)
       }
     }
     if (iFace.canExportToCalendar) {
@@ -274,11 +274,11 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         it.titleProvider = { pointer -> calendars[pointer].name }
         it.dataSize = calendars.size
         it.selectListener = { pointer, _ ->
-          iFace.reminderState.reminder.calendarId = calendars[pointer].id
+          iFace.state.reminder.calendarId = calendars[pointer].id
         }
         var index = 0
         for (c in calendars) {
-          if (c.id == iFace.reminderState.reminder.calendarId) {
+          if (c.id == iFace.state.reminder.calendarId) {
             index = calendars.indexOf(c)
             break
           }
@@ -328,8 +328,8 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   override fun onResume() {
     super.onResume()
-    Timber.d("onResume: ${iFace.reminderState.reminder.groupTitle}, ${iFace.defGroup}")
-    if (iFace.reminderState.reminder.groupUuId.isBlank() || TextUtils.isEmpty(iFace.reminderState.reminder.groupTitle)) {
+    Timber.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
+    if (iFace.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(iFace.state.reminder.groupTitle)) {
       iFace.defGroup?.let {
         onGroupUpdate(it)
       }
@@ -340,9 +340,9 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   fun onGroupUpdate(reminderGroup: ReminderGroup) {
     try {
-      iFace.reminderState.reminder.groupUuId = reminderGroup.groupUuId
-      iFace.reminderState.reminder.groupColor = reminderGroup.groupColor
-      iFace.reminderState.reminder.groupTitle = reminderGroup.groupTitle
+      iFace.state.reminder.groupUuId = reminderGroup.groupUuId
+      iFace.state.reminder.groupColor = reminderGroup.groupColor
+      iFace.state.reminder.groupTitle = reminderGroup.groupTitle
     } catch (e: Exception) {
     }
     if (isResumed) {
@@ -356,7 +356,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   fun onMelodySelect(path: String) {
-    iFace.reminderState.reminder.melodyPath = path
+    iFace.state.reminder.melodyPath = path
     melodyView?.file = path
   }
 

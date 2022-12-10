@@ -13,6 +13,9 @@ import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.SearchMenuHandler
@@ -59,6 +62,8 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     binding.fab.setOnClickListener { addPlace() }
     initList()
     initViewModel()
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.BIRTHDAYS))
   }
 
   private fun addPlace() {

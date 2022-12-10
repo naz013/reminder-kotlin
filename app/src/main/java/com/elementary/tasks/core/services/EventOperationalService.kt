@@ -15,6 +15,9 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
@@ -50,6 +53,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
   private val soundStackHolder by inject<SoundStackHolder>()
   private val notifier by inject<Notifier>()
   private val jobScheduler by inject<JobScheduler>()
+  private val analyticsEventSender by inject<AnalyticsEventSender>()
 
   private val ttsLocale: Locale? = language.getLocale(false)
 
@@ -115,16 +119,19 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       Timber.d("onHandleIntent: $id, $type, $action")
 
       if (action == ACTION_FORCE) {
-        try {
+        runCatching {
           tts?.stop()
           tts?.shutdown()
-        } catch (e: Exception) {
         }
-        try {
+        runCatching {
           soundStackHolder.sound?.stop(true)
-        } catch (e: Exception) {
         }
-        stopForeground(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+          stopForeground(STOP_FOREGROUND_REMOVE)
+        } else {
+          @Suppress("DEPRECATION")
+          stopForeground(true)
+        }
         return
       }
 
@@ -314,6 +321,8 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       builder.setGroup("birthday")
       builder.setGroupSummary(true)
     }
+
+    analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY))
     notifier.notify(birthday.uniqueId, builder.build())
     if (isWear) {
       showWearNotification(birthday.uniqueId, birthday.name, appName(), "birthday")
@@ -421,6 +430,8 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       builder.setGroup("missed_call")
       builder.setGroupSummary(true)
     }
+
+    analyticsEventSender.send(FeatureUsedEvent(Feature.MISSED_CALL))
     notifier.notify(missedCall.uniqueId, builder.build())
     if (isWear) {
       showWearNotification(missedCall.uniqueId, name, appName(), "missed_call")
@@ -553,6 +564,8 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       builder.setGroup("reminder")
       builder.setGroupSummary(true)
     }
+
+    analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
     notifier.notify(reminder.uniqueId, builder.build())
     if (isWear) {
       showWearNotification(reminder.uniqueId, reminder.summary, appName(), "reminder")

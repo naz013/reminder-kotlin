@@ -54,8 +54,8 @@ class RemotePrefs(
     val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
     val voiceHelpUrls = config?.getString(VOICE_HELP_URLS)
 
-    Logger.d("RemoteConfig: privacyUrl=$privacyUrl")
-    Logger.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
+    Timber.d("RemoteConfig: privacyUrl=$privacyUrl")
+    Timber.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
 
     privacyUrl?.also { prefs.privacyUrl = it }
     voiceHelpUrls?.also { prefs.voiceHelpUrls = it }
@@ -65,7 +65,7 @@ class RemotePrefs(
     FeatureManager.Feature.values().map {
       it to (config?.getBoolean(it.value) ?: true)
     }.forEach {
-      Logger.d("Feature ${it.first} isEnabled=${it.second}")
+      Timber.d("Feature ${it.first} isEnabled=${it.second}")
       prefs.putBoolean(it.first.value, it.second)
     }
   }

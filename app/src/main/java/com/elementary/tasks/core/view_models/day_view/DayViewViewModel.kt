@@ -23,7 +23,6 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import java.util.*
 
 class DayViewViewModel(
   private val calculateFuture: Boolean,

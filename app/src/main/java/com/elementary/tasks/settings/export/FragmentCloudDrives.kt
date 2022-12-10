@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.utils.FeatureManager
@@ -43,8 +47,14 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
           viewModel.loadGoogleTasks()
         }
         updateGoogleTasksStatus(isLogged)
+        if (isLogged) {
+          analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK))
+        }
       } else {
         updateGoogleDriveStatus(isLogged)
+        if (isLogged) {
+          analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_DRIVE))
+        }
       }
     }
 
@@ -54,8 +64,9 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   private val dropboxCallback = object : DropboxLogin.LoginCallback {
-    override fun onSuccess(b: Boolean) {
-      if (b) {
+    override fun onResult(success: Boolean) {
+      if (success) {
+        analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
         binding.linkDropbox.text = getString(R.string.disconnect)
       } else {
         binding.linkDropbox.text = getString(R.string.connect)
@@ -89,6 +100,8 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     updateGoogleTasksStatus(googleLogin.isGoogleTasksLogged)
     updateGoogleDriveStatus(googleLogin.isGoogleDriveLogged)
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.CLOUD_DRIVES))
   }
 
   override fun onStart() {

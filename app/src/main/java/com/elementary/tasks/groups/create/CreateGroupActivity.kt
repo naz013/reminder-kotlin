@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -124,10 +126,10 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.reminderGroup.observe(this, { group ->
+    viewModel.reminderGroup.observe(this) { group ->
       group?.let { showGroup(it) }
-    })
-    viewModel.result.observe(this, { commands ->
+    }
+    viewModel.result.observe(this) { commands ->
       commands?.let {
         when (it) {
           Commands.SAVED, Commands.DELETED -> finish()
@@ -135,10 +137,10 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
           }
         }
       }
-    })
-    viewModel.allGroups.observe(this, { groups ->
+    }
+    viewModel.allGroups.observe(this) { groups ->
       groups?.let { invalidateOptionsMenu() }
-    })
+    }
   }
 
   private fun saveGroup(newId: Boolean = false) {
@@ -158,6 +160,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     if (newId) {
       item.groupUuId = UUID.randomUUID().toString()
     }
+    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
     viewModel.saveGroup(item, wasDefault)
   }
 

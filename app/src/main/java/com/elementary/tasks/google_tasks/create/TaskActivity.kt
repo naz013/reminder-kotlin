@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -317,6 +319,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         viewModel.updateGoogleTask(item, reminder)
       }
     } else {
+      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK))
       viewModel.newGoogleTask(GoogleTask().update(summary, note, reminder), reminder)
     }
   }
@@ -417,10 +420,9 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   override fun onDestroy() {
     super.onDestroy()
-    try {
+    runCatching {
       lifecycle.removeObserver(stateViewModel)
       lifecycle.removeObserver(viewModel)
-    } catch (e: Exception) {
     }
     hideKeyboard()
     updatesHelper.updateTasksWidget()

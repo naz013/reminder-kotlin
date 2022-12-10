@@ -4,7 +4,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.Logger
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
@@ -13,6 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class VoiceHelpViewModel(
     private val prefs: Prefs,
@@ -27,10 +27,10 @@ class VoiceHelpViewModel(
         viewModelScope.launch {
             val urls = withContext(dispatcherProvider.default()) {
                 val json = prefs.voiceHelpUrls
-                Logger.d("voice help json $json")
+                Timber.d("voice help json $json")
                 parseUrls(json)
             }
-            Logger.d("voice help data $urls")
+            Timber.d("voice help data $urls")
             urls?.also { _urls.postValue(it) }
         }
     }

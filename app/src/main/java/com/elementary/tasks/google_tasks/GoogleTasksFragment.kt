@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -82,6 +84,8 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     initEmpty()
     initList()
     updateGoogleStatus(googleLogin.isGoogleTasksLogged)
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.GOOGLE_TASKS_LIST))
 
     initViewModel()
   }

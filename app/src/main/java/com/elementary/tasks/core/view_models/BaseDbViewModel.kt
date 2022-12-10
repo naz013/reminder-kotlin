@@ -4,6 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
+import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.Worker
 import com.elementary.tasks.core.data.AppDb
@@ -40,11 +41,11 @@ open class BaseDbViewModel(
     _error.postValue(error)
   }
 
-  protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String) {
+  protected fun startWork(clazz: Class<out ListenableWorker>, key: String, valueTag: String) {
     startWork(clazz, Data.Builder().putString(key, valueTag).build(), valueTag)
   }
 
-  protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String) {
+  protected fun startWork(clazz: Class<out ListenableWorker>, data: Data, tag: String) {
     if (prefs.isBackupEnabled) {
       val work = OneTimeWorkRequest.Builder(clazz)
         .setInputData(data)

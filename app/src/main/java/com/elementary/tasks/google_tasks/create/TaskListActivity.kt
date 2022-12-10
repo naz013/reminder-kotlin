@@ -5,6 +5,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
@@ -113,6 +115,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
     }
 
     if (isNew) {
+      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
       viewModel.newGoogleTaskList(item)
     } else {
       viewModel.updateGoogleTaskList(item)

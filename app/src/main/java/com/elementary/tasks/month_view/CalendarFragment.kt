@@ -11,6 +11,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
@@ -29,7 +31,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
 
@@ -58,7 +62,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
       var nextDay = sunday.plusDays(startDayOfWeek - SUNDAY)
       for (i in 0..6) {
         val date = TimeUtil.convertDateTimeToDate(nextDay)
-        list.add(fmt.format(date).toUpperCase())
+        list.add(fmt.format(date).uppercase())
         nextDay = nextDay.plusDays(1)
       }
       return list
@@ -91,10 +95,12 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     initPager()
     initViewModel()
     showCalendar()
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR))
   }
 
   private fun initViewModel() {
-    mViewModel.events.observe(viewLifecycleOwner, {
+    mViewModel.events.observe(viewLifecycleOwner) {
       val item = monthPagerItem
       if (it != null && item != null) {
         val foundItem = it.first
@@ -105,7 +111,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
           listener?.invoke(foundItem, foundList)
         }
       }
-    })
+    }
   }
 
   private fun initPager() {

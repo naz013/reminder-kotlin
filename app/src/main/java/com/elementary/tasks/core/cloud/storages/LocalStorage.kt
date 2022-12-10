@@ -6,15 +6,19 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 
-class LocalStorage(context: Context) : Storage() {
+class LocalStorage(
+  context: Context,
+  private val dispatcherProvider: DispatcherProvider
+) : Storage() {
 
   private val hasSdPermission = Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)
 
@@ -58,7 +62,7 @@ class LocalStorage(context: Context) : Storage() {
     return null
   }
 
-  override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
     val channel = Channel<InputStream>()
     if (Module.is10 || !hasSdPermission) {
       channel.cancel()
@@ -74,7 +78,7 @@ class LocalStorage(context: Context) : Storage() {
       channel.cancel()
       return channel
     }
-    launchIo {
+    runBlocking(dispatcherProvider.io()) {
       for (f in files) {
         try {
           try {
@@ -104,16 +108,16 @@ class LocalStorage(context: Context) : Storage() {
     }
   }
 
-  override fun removeIndex(id: String) {
+  override suspend fun removeIndex(id: String) {
   }
 
-  override fun saveIndex(fileIndex: FileIndex) {
+  override suspend fun saveIndex(fileIndex: FileIndex) {
   }
 
   override suspend fun saveIndex() {
   }
 
-  override fun hasIndex(id: String): Boolean {
+  override suspend fun hasIndex(id: String): Boolean {
     return true
   }
 

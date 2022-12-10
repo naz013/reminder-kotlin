@@ -11,7 +11,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
 
 class ThemeProvider(
   private val context: Context,
@@ -240,10 +239,6 @@ class ThemeProvider(
   fun pickColorRes(@ColorRes colorForLight: Int, @ColorRes colorForDark: Int) =
     if (isDark) colorForDark else colorForLight
 
-  @ColorInt
-  fun pickColor(@ColorInt colorForLight: Int, @ColorInt colorForDark: Int) =
-    if (isDark) colorForDark else colorForLight
-
   data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
 
   companion object {
@@ -257,29 +252,6 @@ class ThemeProvider(
     @ColorInt
     fun getOnSecondaryColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.color_on_secondary)
-    }
-
-    @DrawableRes
-    fun getReminderIllustration(type: Int): Int {
-      return when {
-        Reminder.isKind(type, Reminder.Kind.CALL) -> R.drawable.ic_phone_call
-        Reminder.isKind(type, Reminder.Kind.SMS) -> R.drawable.ic_chat
-        Reminder.isBase(type, Reminder.BY_LOCATION) -> R.drawable.ic_location_illustration
-        Reminder.isBase(type, Reminder.BY_OUT) -> R.drawable.ic_radar
-        Reminder.isBase(type, Reminder.BY_PLACES) -> R.drawable.ic_placeholder
-        Reminder.isSame(type, Reminder.BY_DATE_LINK) -> R.drawable.ic_browser
-        Reminder.isSame(type, Reminder.BY_DATE_APP) -> R.drawable.ic_gamepad
-        Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> R.drawable.ic_email_illustration
-        Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> R.drawable.ic_shopping_cart
-        Reminder.isBase(type, Reminder.BY_DATE) -> R.drawable.ic_calendar_illustration
-        Reminder.isBase(type, Reminder.BY_WEEK) -> R.drawable.ic_alarm_clock
-        Reminder.isBase(type, Reminder.BY_MONTH) -> R.drawable.ic_seventeen
-        Reminder.isBase(type, Reminder.BY_SKYPE) -> R.drawable.ic_skype_illustration
-        Reminder.isBase(type, Reminder.BY_MONTH) -> R.drawable.ic_seventeen
-        Reminder.isBase(type, Reminder.BY_TIME) -> R.drawable.ic_stopwatch
-        Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> R.drawable.ic_balloons
-        else -> R.drawable.ic_bell_illustration
-      }
     }
 
     @ColorInt

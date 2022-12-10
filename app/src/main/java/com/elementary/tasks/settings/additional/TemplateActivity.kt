@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
@@ -12,12 +14,13 @@ import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
+import java.util.UUID
 
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
 
@@ -69,20 +72,16 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.smsTemplate.observe(this, { smsTemplate ->
-      if (smsTemplate != null) {
-        showTemplate(smsTemplate)
-      }
-    })
-    viewModel.result.observe(this, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.SAVED, Commands.DELETED -> finish()
-          else -> {
-          }
+    viewModel.smsTemplate.nonNullObserve(this) { smsTemplate ->
+      showTemplate(smsTemplate)
+    }
+    viewModel.result.nonNullObserve(this) { commands ->
+      when (commands) {
+        Commands.SAVED, Commands.DELETED -> finish()
+        else -> {
         }
       }
-    })
+    }
   }
 
   private fun showTemplate(smsTemplate: SmsTemplate, fromFile: Boolean = false) {
@@ -165,6 +164,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
     if (newId) {
       item.key = UUID.randomUUID().toString()
     }
+    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_SMS_TEMPLATE))
     viewModel.saveTemplate(item)
   }
 

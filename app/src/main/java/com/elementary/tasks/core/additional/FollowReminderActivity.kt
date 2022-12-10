@@ -11,6 +11,8 @@ import android.widget.CompoundButton
 import android.widget.SpinnerAdapter
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
@@ -166,7 +168,10 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
     viewModel.result.nonNullObserve(this) { commands ->
       if (commands != null) {
         when (commands) {
-          Commands.SAVED -> closeWindow()
+          Commands.SAVED -> {
+            analyticsEventSender.send(FeatureUsedEvent(Feature.AFTER_CALL))
+            closeWindow()
+          }
           else -> {
           }
         }

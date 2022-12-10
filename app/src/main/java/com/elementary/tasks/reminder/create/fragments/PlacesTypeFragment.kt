@@ -160,7 +160,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     placesMap.setListener(mListener)
     placesMap.setCallback(object : MapCallback {
       override fun onMapReady() {
-        mPlacesMap?.selectMarkers(iFace.reminderState.reminder.places)
+        mPlacesMap?.selectMarkers(iFace.state.reminder.places)
       }
     })
     placesMap.markerRadius = prefs.radius
@@ -175,14 +175,14 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
     binding.delayLayout.visibility = View.GONE
     binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
-      iFace.reminderState.isDelayAdded = isChecked
+      iFace.state.isDelayAdded = isChecked
       if (isChecked) {
         binding.delayLayout.visibility = View.VISIBLE
       } else {
         binding.delayLayout.visibility = View.GONE
       }
     }
-    binding.attackDelay.isChecked = iFace.reminderState.isDelayAdded
+    binding.attackDelay.isChecked = iFace.state.isDelayAdded
     binding.mapButton.setOnClickListener { toggleMap() }
     editReminder()
   }
@@ -217,7 +217,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
   }
 
   private fun editReminder() {
-    val reminder = iFace.reminderState.reminder
+    val reminder = iFace.state.reminder
     Timber.d("editReminder: %s", reminder)
     if (reminder.eventTime != "" && reminder.hasReminder) {
       binding.dateView.setDateTime(reminder.eventTime)

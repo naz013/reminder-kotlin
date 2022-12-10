@@ -31,7 +31,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
   private val viewModel by viewModel<UsedTimeViewModel>()
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.reminderState.reminder
+    val reminder = iFace.state.reminder
     val after = binding.timerPickerView.timerValue
     if (after == 0L) {
       iFace.showSnackbar(getString(R.string.you_dont_insert_timer_time))
@@ -124,18 +124,18 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
     binding.timerPickerView.setListener(object : TimerPickerView.TimerListener {
       override fun onTimerChange(time: Long) {
-        iFace.reminderState.reminder.after = time
+        iFace.state.reminder.after = time
       }
     })
 
     binding.exclusionView.dialogues = dialogues
     binding.exclusionView.prefs = prefs
 
-    binding.exclusionView.bindProperty(iFace.reminderState.reminder.hours, iFace.reminderState.reminder.from,
-      iFace.reminderState.reminder.to) { hours, from, to ->
-      iFace.reminderState.reminder.hours = hours
-      iFace.reminderState.reminder.from = from
-      iFace.reminderState.reminder.to = to
+    binding.exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
+      iFace.state.reminder.to) { hours, from, to ->
+      iFace.state.reminder.hours = hours
+      iFace.state.reminder.from = from
+      iFace.state.reminder.to = to
     }
 
     editReminder()
@@ -179,7 +179,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
   }
 
   private fun editReminder() {
-    binding.timerPickerView.timerValue = iFace.reminderState.reminder.after
+    binding.timerPickerView.timerValue = iFace.state.reminder.after
   }
 
   inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {

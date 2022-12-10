@@ -15,13 +15,14 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Logger
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
 
@@ -33,6 +34,8 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   protected val dialogues by inject<Dialogues>()
   protected val notifier = currentStateHolder.notifier
   protected val isDark = currentStateHolder.theme.isDark
+  protected val analyticsEventSender by inject<AnalyticsEventSender>()
+
   private var mLastAlpha: Float = 0f
   private var askedPermission: String = ""
   private var permissionRequestCode: Int = 0
@@ -164,15 +167,15 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   protected open fun permissionGranted(permission: String, requestCode: Int) {
-    Logger.d("Permission granted $permission, code=$requestCode")
+    Timber.d("Permission granted $permission, code=$requestCode")
   }
 
   protected open fun permissionWasNotGranted(permission: String, requestCode: Int) {
-    Logger.d("Permission Not granted $permission, code=$requestCode")
+    Timber.d("Permission Not granted $permission, code=$requestCode")
   }
 
   protected open fun explainPermission(permission: String, requestCode: Int) {
-    Logger.d("Explain $permission, code=$requestCode")
+    Timber.d("Explain $permission, code=$requestCode")
   }
 
   protected fun addMenu(

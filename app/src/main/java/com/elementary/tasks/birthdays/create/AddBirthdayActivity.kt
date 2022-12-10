@@ -9,6 +9,8 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
@@ -35,7 +37,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.text.ParseException
-import java.util.*
+import java.util.Calendar
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
@@ -250,6 +252,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
         return
       }
     }
+    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
     viewModel.save(contact, number, binding.birthDate.text(), newId)
   }
 

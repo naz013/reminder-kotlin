@@ -30,6 +30,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ImageFile
@@ -726,6 +728,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       noteWithImages.note?.key = UUID.randomUUID().toString()
       reminder?.noteId = noteWithImages.getKey()
     }
+    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
     viewModel.note.removeObserver(mNoteObserver)
     viewModel.saveNote(noteWithImages, reminder)
   }

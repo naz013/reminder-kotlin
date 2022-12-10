@@ -7,12 +7,15 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -40,15 +43,15 @@ class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>() {
     }
     binding.contactInfo.text = "$name\n$number"
 
+    analyticsEventSender.send(FeatureUsedEvent(Feature.QUICK_SMS))
+
     initViewModel()
   }
 
   private fun initViewModel() {
-    viewModel.smsTemplates.observe(this, { smsTemplates ->
-      if (smsTemplates != null) {
-        updateList(smsTemplates)
-      }
-    })
+    viewModel.smsTemplates.nonNullObserve(this) { smsTemplates ->
+      updateList(smsTemplates)
+    }
   }
 
   private fun updateList(smsTemplates: List<SmsTemplate>) {

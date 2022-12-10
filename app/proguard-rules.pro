@@ -164,3 +164,7 @@
 
 -keep,allowobfuscation @interface kotlin.coroutines.jvm.internal.** { *; }
 -keep @interface kotlin.coroutines.jvm.internal.DebugMetadata { *; }
+
+-keepclassmembers class * extends androidx.work.Worker {
+    public <init>(android.content.Context,androidx.work.WorkerParameters);
+}

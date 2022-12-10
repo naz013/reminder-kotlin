@@ -18,9 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Logger
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Permissions
@@ -28,6 +28,7 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 typealias ActivityResultListener = (resultCode: Int, data: Intent?) -> Unit
 
@@ -39,6 +40,7 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val dialogues by inject<Dialogues>()
   protected val notifier by inject<Notifier>()
   protected val updatesHelper by inject<UpdatesHelper>()
+  protected val analyticsEventSender by inject<AnalyticsEventSender>()
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 
   private val uiHandler = Handler(Looper.getMainLooper())
@@ -201,15 +203,15 @@ abstract class ThemedActivity : AppCompatActivity() {
   }
 
   protected open fun permissionGranted(permission: String, requestCode: Int) {
-    Logger.d("Permission granted $permission, code=$requestCode")
+    Timber.d("Permission granted $permission, code=$requestCode")
   }
 
   protected open fun permissionWasNotGranted(permission: String, requestCode: Int) {
-    Logger.d("Permission Not granted $permission, code=$requestCode")
+    Timber.d("Permission Not granted $permission, code=$requestCode")
   }
 
   protected open fun explainPermission(permission: String, requestCode: Int) {
-    Logger.d("Explain $permission, code=$requestCode")
+    Timber.d("Explain $permission, code=$requestCode")
   }
 
   companion object {

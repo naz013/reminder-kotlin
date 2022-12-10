@@ -16,7 +16,7 @@ import timber.log.Timber
 class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.reminderState.reminder
+    val reminder = iFace.state.reminder
     val email = binding.mail.text.toString().trim()
     if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*".toRegex())) {
       iFace.showSnackbar(getString(R.string.email_is_incorrect))
@@ -91,24 +91,24 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
     binding.tuneExtraView.hasAutoExtra = true
 
     binding.mail.onChanged {
-      iFace.reminderState.isEmailOrSubjectChanged = true
-      iFace.reminderState.email = it
+      iFace.state.isEmailOrSubjectChanged = true
+      iFace.state.email = it
     }
     binding.subject.onChanged {
-      iFace.reminderState.isEmailOrSubjectChanged = true
-      iFace.reminderState.subject = it
+      iFace.state.isEmailOrSubjectChanged = true
+      iFace.state.subject = it
     }
 
     editReminder()
   }
 
   private fun editReminder() {
-    if (iFace.reminderState.isEmailOrSubjectChanged) {
-      binding.mail.setText(iFace.reminderState.email)
-      binding.subject.setText(iFace.reminderState.subject)
+    if (iFace.state.isEmailOrSubjectChanged) {
+      binding.mail.setText(iFace.state.email)
+      binding.subject.setText(iFace.state.subject)
     } else {
-      binding.mail.setText(iFace.reminderState.reminder.target)
-      binding.subject.setText(iFace.reminderState.reminder.subject)
+      binding.mail.setText(iFace.state.reminder.target)
+      binding.subject.setText(iFace.state.reminder.subject)
     }
   }
 }

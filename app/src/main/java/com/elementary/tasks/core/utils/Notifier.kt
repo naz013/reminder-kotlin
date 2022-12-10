@@ -111,7 +111,7 @@ class Notifier(
       if (Permissions.isNotificationsAllowed(context)) {
         getManager()?.notify(id, notification)
       } else {
-        Logger.d("Notification not allowed by user")
+        Timber.d("Notification not allowed by user")
       }
     } else {
       getManager()?.notify(id, notification)

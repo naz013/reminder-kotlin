@@ -1,10 +1,6 @@
 package com.elementary.tasks.core.view_models.notes
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -25,7 +21,6 @@ class NotesViewModel(
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
   workManagerProvider: WorkManagerProvider,
   private val backupTool: BackupTool
 ) : BaseNotesViewModel(
@@ -56,10 +51,5 @@ class NotesViewModel(
         postError("Failed to send Note")
       }
     }
-  }
-
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
-    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
   }
 }

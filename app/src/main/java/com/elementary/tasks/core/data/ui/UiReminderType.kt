@@ -20,6 +20,16 @@ data class UiReminderType(
 
   fun isEmail() = isKind(Kind.EMAIL)
 
+  fun isByDate() = isBase(Base.DATE)
+
+  fun isTimer() = isBase(Base.TIMER)
+
+  fun isByWeekday() = isBase(Base.WEEKDAY)
+
+  fun isMonthly() = isBase(Base.MONTHLY)
+
+  fun isYearly() = isBase(Base.YEARLY)
+
   private fun isKind(kind: Kind): Boolean {
     return value % Base.DATE.value == kind.value
   }

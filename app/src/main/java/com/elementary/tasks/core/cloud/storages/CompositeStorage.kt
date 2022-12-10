@@ -2,9 +2,9 @@ package com.elementary.tasks.core.cloud.storages
 
 import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.launchIo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.InputStream
 
@@ -13,6 +13,7 @@ class CompositeStorage(
 ) : Storage() {
 
   private val storageList = DataFlow.availableStorageList(storageManager)
+  private val dispatcherProvider = storageManager.dispatcherProvider
 
   init {
     Timber.d("init: $storageList")
@@ -30,13 +31,13 @@ class CompositeStorage(
     return null
   }
 
-  override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
     val channel = Channel<InputStream>()
     if (storageList.isEmpty()) {
       channel.cancel()
       return channel
     }
-    launchIo {
+    withContext(dispatcherProvider.io()) {
       loadIndex()
       storageList.forEach {
         it.restoreAll(ext, deleteFile).consumeEach { json ->
@@ -52,11 +53,11 @@ class CompositeStorage(
     storageList.forEach { it.delete(fileName) }
   }
 
-  override fun removeIndex(id: String) {
+  override suspend fun removeIndex(id: String) {
     storageList.forEach { it.removeIndex(id) }
   }
 
-  override fun saveIndex(fileIndex: FileIndex) {
+  override suspend fun saveIndex(fileIndex: FileIndex) {
     storageList.forEach { it.saveIndex(fileIndex) }
   }
 
@@ -64,7 +65,7 @@ class CompositeStorage(
     storageList.forEach { it.saveIndex() }
   }
 
-  override fun hasIndex(id: String): Boolean {
+  override suspend fun hasIndex(id: String): Boolean {
     return false
   }
 
@@ -73,7 +74,7 @@ class CompositeStorage(
   }
 
   override suspend fun loadIndex() {
-    launchIo {
+    withContext(dispatcherProvider.io()) {
       storageList.forEach {
         it.loadIndex()
       }

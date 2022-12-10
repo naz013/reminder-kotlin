@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.settings.export.backups.UserItem
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
@@ -19,6 +19,7 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -27,7 +28,8 @@ import java.util.Collections
 
 class GDrive(
   private val context: Context,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val dispatcherProvider: DispatcherProvider
 ) : Storage() {
 
   private var driveService: Drive? = null
@@ -49,8 +51,8 @@ class GDrive(
         return UserItem(name = about.user.displayName ?: "", quota = quota.limit,
           used = quota.usage, count = countFiles(), photo = about.user.photoLink
             ?: "")
-      } catch (e: Exception) {
-      } catch (e: OutOfMemoryError) {
+      } catch (e: Throwable) {
+        Timber.d(e, "Failed to get user data")
       }
       return null
     }
@@ -139,8 +141,9 @@ class GDrive(
     return null
   }
 
-  override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
     val channel = Channel<InputStream>()
+
     val service = driveService
     if (service == null) {
       channel.cancel()
@@ -150,7 +153,7 @@ class GDrive(
       channel.cancel()
       return channel
     }
-    launchIo {
+    withContext(dispatcherProvider.io()) {
       try {
         val request = service.files().list()
           .setSpaces("appDataFolder")
@@ -182,16 +185,16 @@ class GDrive(
     removeAllCopies(fileName)
   }
 
-  override fun hasIndex(id: String): Boolean {
+  override suspend fun hasIndex(id: String): Boolean {
     return indexDataFile.hasIndex(id)
   }
 
-  override fun saveIndex(fileIndex: FileIndex) {
+  override suspend fun saveIndex(fileIndex: FileIndex) {
     indexDataFile.addIndex(fileIndex)
     saveIndexFile()
   }
 
-  override fun removeIndex(id: String) {
+  override suspend fun removeIndex(id: String) {
     indexDataFile.removeIndex(id)
     saveIndexFile()
   }
@@ -209,42 +212,35 @@ class GDrive(
   }
 
   fun clean() {
-    val service = driveService ?: return
-    if (!isLogged) return
-    try {
-      val request = service.files().list()
+    catchError("Failed to clean") {
+      val request = it.files().list()
         .setSpaces("appDataFolder")
-        .setFields("nextPageToken, files(id, name)") ?: return
+        .setFields("nextPageToken, files(id, name)")
       do {
         val files = request.execute()
         val fileList = files.files as ArrayList<File>
         for (f in fileList) {
-          service.files().delete(f.id).execute()
+          it.files().delete(f.id).execute()
         }
         request.pageToken = files.nextPageToken
       } while (request.pageToken != null && request.pageToken.length >= 0)
-    } catch (e: java.lang.Exception) {
-    } catch (e: OutOfMemoryError) {
     }
   }
 
   fun cleanFolder() {
-    val service = driveService ?: return
-    if (!isLogged) return
-    val request = service.files().list()
-      .setSpaces("appDataFolder")
-      .setFields("nextPageToken, files(id, name)") ?: return
-    try {
+    catchError("Failed to clean folder") {
+      val request = it.files().list()
+        .setSpaces("appDataFolder")
+        .setFields("nextPageToken, files(id, name)")
+
       do {
         val files = request.execute()
         val fileList = files.files as ArrayList<File>
         for (f in fileList) {
-          service.files().delete(f.id).execute()
+          it.files().delete(f.id).execute()
         }
         request.pageToken = files.nextPageToken
       } while (request.pageToken != null && request.pageToken.length >= 0)
-    } catch (e: java.lang.Exception) {
-    } catch (e: OutOfMemoryError) {
     }
   }
 
@@ -253,9 +249,9 @@ class GDrive(
     indexDataFile.parse(inputStream)
   }
 
-  private fun saveIndexFile() {
-    launchDefault {
-      val json = indexDataFile.toJson() ?: return@launchDefault
+  private suspend fun saveIndexFile() {
+    withContext(dispatcherProvider.default()) {
+      val json = indexDataFile.toJson() ?: return@withContext
       backup(json, Metadata(
         "",
         IndexDataFile.FILE_NAME,
@@ -267,14 +263,12 @@ class GDrive(
   }
 
   private fun countFiles(): Int {
-    val service = driveService ?: return 0
-    if (!isLogged) return 0
-    var count = 0
-    val request = service.files().list()
-      .setSpaces("appDataFolder")
-      .setFields("nextPageToken, files(id, name)")
-      .setQ("mimeType = 'text/plain'") ?: return 0
-    try {
+    return catchError("Failed to count files") {
+      var count = 0
+      val request = it.files().list()
+        .setSpaces("appDataFolder")
+        .setFields("nextPageToken, files(id, name)")
+        .setQ("mimeType = 'text/plain'")
       do {
         val files = request.execute()
         val fileList = files.files as ArrayList<File>
@@ -294,18 +288,14 @@ class GDrive(
         }
         request.pageToken = files.nextPageToken
       } while (request.pageToken != null)
-    } catch (e: Exception) {
-    } catch (e: OutOfMemoryError) {
-    }
-    return count
+      count
+    } ?: 0
   }
 
   private fun removeAllCopies(fileName: String) {
-    val service = driveService ?: return
-    if (!isLogged) return
-    if (TextUtils.isEmpty(fileName)) return
-    try {
-      val request = service.files().list()
+    if (fileName.isEmpty()) return
+    catchError("Failed to removeAllCopies") {
+      val request = it.files().list()
         .setSpaces("appDataFolder")
         .setFields("nextPageToken, files(id, name)")
         .setPageSize(10)
@@ -313,44 +303,50 @@ class GDrive(
       val files = request.execute()
       val fileList = files.files as ArrayList<File>
       for (f in fileList) {
-        service.files().delete(f.id).execute()
+        it.files().delete(f.id).execute()
       }
-    } catch (e: java.lang.Exception) {
-    } catch (e: OutOfMemoryError) {
     }
   }
 
   private fun showContent(id: String) {
-    val service = driveService ?: return
-    if (!isLogged) return
-    try {
-      val out = ByteArrayOutputStream()
-      service.files().get(id).executeMediaAndDownloadTo(out)
-      val data = out.toString()
-      if (BuildConfig.DEBUG) Timber.d("showContent: $id, $data")
-    } catch (e: Exception) {
-      e.printStackTrace()
+    if (BuildConfig.DEBUG) {
+      catchError("Failed to show file content") {
+        val out = ByteArrayOutputStream()
+        it.files().get(id).executeMediaAndDownloadTo(out)
+        val data = out.toString()
+        Timber.d("showContent: $id, $data")
+      }
     }
   }
 
   private fun backup(json: String, metadata: Metadata) {
-    val service = driveService ?: return
-    if (!isLogged) return
-    if (TextUtils.isEmpty(metadata.fileName)) return
-    try {
-      removeAllCopies(metadata.fileName)
+    if (metadata.fileName.isEmpty()) return
+    removeAllCopies(metadata.fileName)
+    catchError("Failed to backup file") {
       val fileMetadata = File()
       fileMetadata.name = metadata.fileName
       fileMetadata.description = metadata.meta
       fileMetadata.parents = PARENTS
       val mediaContent = InputStreamContent("text/plain", ByteArrayInputStream(json.toByteArray()))
-      val driveFile = service.files().create(fileMetadata, mediaContent)
+      val driveFile = it.files().create(fileMetadata, mediaContent)
         .setFields("id")
         .execute()
       Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
-    } catch (e: Exception) {
-    } catch (e: OutOfMemoryError) {
     }
+  }
+
+  private fun <T> catchError(errorMessage: String? = null, call: (Drive) -> T): T? {
+    return try {
+      withService(call)
+    } catch (e: Throwable) {
+      Timber.d(e, errorMessage ?: "Failed to call Drive service")
+      null
+    }
+  }
+
+  private fun <T> withService(call: (Drive) -> T): T? {
+    val service = driveService?.takeIf { isLogged } ?: return null
+    return call.invoke(service)
   }
 
   interface StatusCallback {

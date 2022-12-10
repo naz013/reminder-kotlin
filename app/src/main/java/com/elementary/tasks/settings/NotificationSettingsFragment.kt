@@ -22,7 +22,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Logger
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
@@ -38,6 +37,7 @@ import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.io.File
 import java.util.Locale
 
@@ -846,7 +846,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun tryChangeSbPrefs() {
     val isChecked = binding.permanentNotificationPrefs.isChecked
-    Logger.d("tryChangeSbPrefs: $isChecked")
+    Timber.d("tryChangeSbPrefs: $isChecked")
     if (!isChecked) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         askPermission(

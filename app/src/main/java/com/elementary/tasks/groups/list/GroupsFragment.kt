@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
@@ -15,6 +17,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
@@ -37,6 +40,8 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     binding.fab.setOnClickListener { addGroup() }
     initGroupsList()
     initViewModel()
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.GROUPS))
   }
 
   private fun addGroup() {
@@ -44,11 +49,9 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.allGroups.observe(viewLifecycleOwner, { groups ->
-      if (groups != null) {
-        showGroups(groups.toList())
-      }
-    })
+    viewModel.allGroups.nonNullObserve(viewLifecycleOwner) { groups ->
+      showGroups(groups.toList())
+    }
   }
 
   private fun showGroups(reminderGroups: List<ReminderGroup>) {

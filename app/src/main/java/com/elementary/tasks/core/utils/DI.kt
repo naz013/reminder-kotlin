@@ -8,6 +8,7 @@ import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
@@ -125,7 +126,7 @@ val workerModule = module {
   worker { PlaceDeleteBackupWorker(get(), get(), get()) }
   worker { PlaceSingleBackupWorker(get(), get(), get()) }
   worker { ReminderDeleteBackupWorker(get(), get(), get()) }
-  worker { ReminderSingleBackupWorker(get(), get(), get()) }
+  worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
   worker { TemplateSingleBackupWorker(get(), get(), get()) }
   worker { TemplateDeleteBackupWorker(get(), get(), get()) }
   worker { CheckEventsWorker(get(), get(), get(), get(), get(), get()) }
@@ -229,7 +230,7 @@ val viewModelModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
@@ -262,10 +263,10 @@ val completableModule = module {
 }
 
 val storageModule = module {
-  single { Dropbox(get()) }
-  single { GDrive(get(), get()) }
-  single { LocalStorage(get()) }
-  single { StorageManager(get(), get(), get(), get()) }
+  single { Dropbox(get(), get()) }
+  single { GDrive(get(), get(), get()) }
+  single { LocalStorage(get(), get()) }
+  single { StorageManager(get(), get(), get(), get(), get()) }
 }
 
 val repositoryModule = module {
@@ -320,6 +321,7 @@ val utilModule = module {
   single { WorkManagerProvider(get()) }
 
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
+  single { ReminderAnalyticsTracker(get()) }
 
   single { TextProvider(get()) }
   single { FeatureManager(get()) }

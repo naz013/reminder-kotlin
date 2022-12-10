@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.GlobalButtonObservable
@@ -91,6 +93,8 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     binding.groupsButton.setOnClickListener {
       safeNavigation(RemindersFragmentDirections.actionRemindersFragmentToGroupsFragment())
     }
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
 
     initList()
     initViewModel()

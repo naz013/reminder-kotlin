@@ -52,7 +52,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
   }
 
   private fun showPlaceOnMap() {
-    val reminder = iFace.reminderState.reminder
+    val reminder = iFace.state.reminder
     if (!Reminder.isGpsType(reminder.type)) return
     val text = reminder.summary
     if (reminder.places.isNotEmpty()) {
@@ -207,13 +207,13 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
 
     binding.delayLayout.visibility = View.GONE
     binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
-      iFace.reminderState.isDelayAdded = isChecked
+      iFace.state.isDelayAdded = isChecked
       binding.delayLayout.visibleGone(isChecked)
     }
-    binding.attackDelay.isChecked = iFace.reminderState.isDelayAdded
+    binding.attackDelay.isChecked = iFace.state.isDelayAdded
 
     binding.leaveCheck.setOnCheckedChangeListener { _, isChecked ->
-      iFace.reminderState.isLeave = isChecked
+      iFace.state.isLeave = isChecked
     }
 
     binding.clearButton.setOnClickListener { binding.addressField.setText("") }
@@ -261,13 +261,13 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
   }
 
   private fun editReminder() {
-    val reminder = iFace.reminderState.reminder
+    val reminder = iFace.state.reminder
     Timber.d("editReminder: %s", reminder)
     if (reminder.eventTime != "" && reminder.hasReminder) {
       binding.dateView.setDateTime(reminder.eventTime)
       binding.attackDelay.isChecked = true
     }
-    if (iFace.reminderState.isLeave && Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
+    if (iFace.state.isLeave && Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
       binding.leaveCheck.isChecked = true
     } else {
       binding.enterCheck.isChecked = true

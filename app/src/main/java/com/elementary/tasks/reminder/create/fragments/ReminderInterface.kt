@@ -8,7 +8,7 @@ interface ReminderInterface {
   val defGroup: ReminderGroup?
   var canExportToTasks: Boolean
   var canExportToCalendar: Boolean
-  val reminderState: ReminderStateViewModel
+  val state: ReminderStateViewModel
   fun isTablet(): Boolean
   fun selectMelody()
   fun attachFile()

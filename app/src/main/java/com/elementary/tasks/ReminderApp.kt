@@ -17,6 +17,8 @@ import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
@@ -24,7 +26,7 @@ import org.koin.core.logger.MESSAGE
 import timber.log.Timber
 
 @Suppress("unused")
-class ReminderApp : MultiDexApplication() {
+class ReminderApp : MultiDexApplication(), KoinComponent {
 
   override fun attachBaseContext(base: Context) {
     super.attachBaseContext(base)
@@ -42,6 +44,7 @@ class ReminderApp : MultiDexApplication() {
     startKoin {
       logger(logger)
       androidContext(this@ReminderApp)
+      workManagerFactory()
       modules(
         listOf(
           utilModule,
@@ -55,6 +58,7 @@ class ReminderApp : MultiDexApplication() {
         )
       )
     }
+
     get<Notifier>().createChannels()
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
