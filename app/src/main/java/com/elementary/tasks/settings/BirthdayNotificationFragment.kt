@@ -247,15 +247,14 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   }
 
   private fun pickMelody() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_MELODY, Permissions.READ_EXTERNAL)) {
-        IntentUtil.pickMelody(it, MELODY_CODE)
-      }
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+      IntentUtil.pickMelody(requireActivity(), MELODY_CODE)
     }
   }
 
   private fun isDefaultMelody(): Boolean {
-    return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM).contains(prefs.birthdayMelody)
+    return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM)
+      .contains(prefs.birthdayMelody)
   }
 
   private fun melodyLabels(): Array<String> {
@@ -474,18 +473,8 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        PERM_MELODY -> pickMelody()
-      }
-    }
-  }
-
   companion object {
     private const val MELODY_CODE = 125
     private const val RINGTONE_CODE = 126
-    private const val PERM_MELODY = 1429
   }
 }

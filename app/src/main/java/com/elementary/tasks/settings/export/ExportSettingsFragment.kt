@@ -158,7 +158,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun pickFile() {
-    if (Permissions.checkPermission(requireActivity(), PERM_PICK_RBAK, Permissions.READ_EXTERNAL)) {
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       IntentUtil.pickFile(requireActivity(), REQ_PICK_RBAK)
     }
   }
@@ -177,12 +177,21 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   private fun changeLocalBackupPrefs() {
     val isChecked = binding.localPrefs.isChecked
     if (!isChecked) {
-      if (!Permissions.checkPermission(requireActivity(), PERM_LOCAL_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-        return
-      }
+      permissionFlow.askPermissions(
+        listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL),
+        {
+          binding.localPrefs.isChecked = true
+          prefs.localBackup = true
+        },
+        {
+          binding.localPrefs.isChecked = false
+          prefs.localBackup = false
+        }
+      )
+    } else {
+      binding.localPrefs.isChecked = false
+      prefs.localBackup = false
     }
-    binding.localPrefs.isChecked = !isChecked
-    prefs.localBackup = !isChecked
   }
 
   private fun initBackupFilesPrefs() {
@@ -259,8 +268,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun syncClick() {
-    if (Permissions.checkPermission(requireActivity(), PERM_SYNC,
-        Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+    permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
       onProgress.invoke(true)
       syncWorker.sync()
     }
@@ -283,8 +291,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun exportClick() {
-    if (Permissions.checkPermission(requireActivity(), PERM_EXPORT,
-        Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+    permissionFlow.askPermissions(listOf(Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
       onProgress.invoke(true)
       exportAllDataWorker.export()
     }
@@ -304,8 +311,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun backupClick() {
-    if (Permissions.checkPermission(requireActivity(), PERM_BACKUP,
-        Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+    permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
       onProgress.invoke(true)
       backupWorker.backup()
     }
@@ -472,7 +478,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun initSelectCalendarPrefs() {
-    binding.selectCalendarPrefs.setOnClickListener { showSelectCalendarDialog() }
+    binding.selectCalendarPrefs.setOnClickListener { tryToShowSelectCalendarDialog() }
     binding.selectCalendarPrefs.setDependentView(binding.exportToCalendarPrefs)
     showCurrentCalendar()
   }
@@ -521,24 +527,24 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun changeExportToCalendarPrefs() {
-    if (!Permissions.checkPermission(requireActivity(), CALENDAR_CODE,
-        Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-      return
+    permissionFlow.askPermissions(listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+      val isChecked = binding.exportToCalendarPrefs.isChecked
+      binding.exportToCalendarPrefs.isChecked = !isChecked
+      prefs.isCalendarEnabled = !isChecked
+      if (binding.exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
+        prefs.isCalendarEnabled = false
+        binding.exportToCalendarPrefs.isChecked = false
+      }
     }
-    val isChecked = binding.exportToCalendarPrefs.isChecked
-    binding.exportToCalendarPrefs.isChecked = !isChecked
-    prefs.isCalendarEnabled = !isChecked
-    if (binding.exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
-      prefs.isCalendarEnabled = false
-      binding.exportToCalendarPrefs.isChecked = false
+  }
+
+  private fun tryToShowSelectCalendarDialog() {
+    permissionFlow.askPermissions(listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+      showSelectCalendarDialog()
     }
   }
 
   private fun showSelectCalendarDialog(): Boolean {
-    if (!Permissions.checkPermission(requireActivity(), CALENDAR_PERM,
-        Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-      return false
-    }
     mDataList.clear()
     mDataList.addAll(calendarUtils.getCalendarsList())
     if (mDataList.isEmpty()) {
@@ -581,21 +587,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     binding.exportToCalendarPrefs.isChecked = prefs.isCalendarEnabled
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        CALENDAR_CODE -> changeExportToCalendarPrefs()
-        CALENDAR_PERM -> showSelectCalendarDialog()
-        PERM_BACKUP -> backupClick()
-        PERM_EXPORT -> exportClick()
-        PERM_SYNC -> syncClick()
-        PERM_LOCAL_BACKUP -> changeLocalBackupPrefs()
-        PERM_PICK_RBAK -> pickFile()
-      }
-    }
-  }
-
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     if (requestCode == REQ_PICK_RBAK && resultCode == Activity.RESULT_OK) {
@@ -634,14 +625,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   data class SyncFlag(val title: String, val key: String, var isChecked: Boolean)
 
   companion object {
-    private const val CALENDAR_CODE = 124
     private const val REQ_PICK_RBAK = 600
-
-    private const val CALENDAR_PERM = 500
-    private const val PERM_SYNC = 501
-    private const val PERM_BACKUP = 502
-    private const val PERM_EXPORT = 503
-    private const val PERM_LOCAL_BACKUP = 504
-    private const val PERM_PICK_RBAK = 505
   }
 }

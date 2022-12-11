@@ -28,13 +28,13 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderType
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.RuntimeRequestCode
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -73,6 +73,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
   private val conversationViewModel by viewModel<ConversationViewModel>()
   private val stateViewModel by viewModel<ReminderStateViewModel>()
+
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var fragment: TypeFragment<*>? = null
   private var isEditing: Boolean = false
@@ -123,51 +125,19 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     loadReminder()
   }
 
-  private fun hasGpsPermission(code: Int): Boolean {
-    if (!Permissions.checkPermission(
-        this,
-        code,
-        Permissions.ACCESS_COARSE_LOCATION,
-        Permissions.ACCESS_FINE_LOCATION
-      )
-    ) {
-      return false
-    }
-    return true
-  }
-
   private fun openScreen(position: Int) {
     when (position) {
       DATE -> replaceFragment(DateFragment())
       TIMER -> replaceFragment(TimerFragment())
       WEEK -> replaceFragment(WeekFragment())
-      EMAIL -> if (Permissions.checkPermission(
-          this,
-          CONTACTS_REQUEST_E,
-          Permissions.READ_CONTACTS
-        )
-      ) {
-        replaceFragment(EmailFragment())
-      } else {
-        binding.navSpinner.setSelection(DATE)
-      }
-
+      EMAIL -> replaceFragment(EmailFragment())
       SKYPE -> replaceFragment(SkypeFragment())
       APP -> replaceFragment(ApplicationFragment())
       MONTH -> replaceFragment(MonthFragment())
       SHOP -> replaceFragment(ShopFragment())
       YEAR -> replaceFragment(YearFragment())
-      GPS -> if (hasGpsPermission(GPS)) {
-        replaceFragment(LocationFragment())
-      } else {
-        binding.navSpinner.setSelection(DATE)
-      }
-
-      GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
-        replaceFragment(PlacesTypeFragment())
-      } else {
-        binding.navSpinner.setSelection(DATE)
-      }
+      GPS -> replaceFragment(LocationFragment())
+      GPS_PLACE -> replaceFragment(PlacesTypeFragment())
     }
   }
 
@@ -199,7 +169,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun loadReminder() {
     val id = getId()
-    val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
+    val date = intentLong(Constants.INTENT_DATE)
     initViewModel()
     when {
       intent?.action == Intent.ACTION_SEND -> {
@@ -224,7 +194,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
       intent.hasExtra(Constants.INTENT_ITEM) -> {
         runCatching {
-          val reminder = intent.getParcelableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
+          val reminder = intentParcelable(Constants.INTENT_ITEM, Reminder::class.java) ?: Reminder()
           editReminder(reminder, false, fromFile = true)
         }
       }
@@ -238,7 +208,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun readFromIntent() {
-    if (checkPermission(SD_PERM, Permissions.READ_EXTERNAL)) {
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       intent.data?.let {
         try {
           var fromFile = false
@@ -382,12 +352,11 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun replaceFragment(fragment: TypeFragment<*>) {
-    try {
+    runCatching {
       supportFragmentManager.beginTransaction()
         .replace(R.id.main_container, fragment, null)
         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         .commitAllowingStateLoss()
-    } catch (e: Exception) {
     }
   }
 
@@ -417,20 +386,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun selectMelody() {
-    if (checkPermission(330, Permissions.READ_EXTERNAL)) {
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       IntentUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
     }
   }
 
   override fun attachFile() {
-    if (checkPermission(
-        331,
-        Permissions.READ_EXTERNAL,
-        Permissions.WRITE_EXTERNAL
-      )
-    ) {
-      selectAnyFile()
-    }
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) { selectAnyFile() }
   }
 
   private fun closeScreen() {
@@ -460,7 +422,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun askNotificationPermissionIfNeeded() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      askPermission(Permissions.POST_NOTIFICATION, RuntimeRequestCode.obtainNewCode())
+      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { askCopySaving() }
     } else {
       askCopySaving()
     }
@@ -566,42 +528,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     fragment?.onMelodySelect("")
   }
 
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      CONTACTS_REQUEST_E -> if (Permissions.checkPermission(grantResults)) {
-        binding.navSpinner.setSelection(EMAIL)
-      } else {
-        binding.navSpinner.setSelection(DATE)
-      }
-
-      GPS_PLACE -> if (Permissions.checkPermission(grantResults)) {
-        binding.navSpinner.setSelection(GPS_PLACE)
-      } else {
-        binding.navSpinner.setSelection(DATE)
-      }
-
-      GPS -> if (Permissions.checkPermission(grantResults)) {
-        binding.navSpinner.setSelection(GPS)
-      } else {
-        binding.navSpinner.setSelection(DATE)
-      }
-
-      331 -> if (Permissions.checkPermission(grantResults)) {
-        selectAnyFile()
-      }
-
-      SD_PERM -> if (Permissions.checkPermission(grantResults)) {
-        readFromIntent()
-      }
-    }
-  }
-
   private fun selectAnyFile() {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
     intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -664,31 +590,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     return true
   }
 
-  override fun permissionGranted(permission: String, requestCode: Int) {
-    super.permissionGranted(permission, requestCode)
-    when {
-      permission == Permissions.POST_NOTIFICATION &&
-        requestCode == RuntimeRequestCode.currentCode() -> {
-        askCopySaving()
-      }
-    }
-  }
-
-  override fun explainPermission(permission: String, requestCode: Int) {
-    super.explainPermission(permission, requestCode)
-    when {
-      permission == Permissions.POST_NOTIFICATION &&
-        requestCode == RuntimeRequestCode.currentCode() -> {
-        showPermissionExplanation(
-          permission,
-          requestCode,
-          getString(R.string.post_notification),
-          getString(R.string.post_notification_explanation)
-        )
-      }
-    }
-  }
-
   private class SpinnerItem(val title: String)
 
   private inner class TitleNavigationAdapter(private val items: List<SpinnerItem>) : BaseAdapter() {
@@ -735,9 +636,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
     private const val VOICE_RECOGNITION_REQUEST_CODE = 109
     private const val MENU_ITEM_DELETE = 12
-    private const val CONTACTS_REQUEST_E = 501
     private const val FILE_REQUEST = 323
-    private const val SD_PERM = 555
 
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {

@@ -2,62 +2,45 @@ package com.elementary.tasks.core.view_models.birthdays
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.core.data.AppDb
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
-import java.util.*
+import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.UUID
 
 class BirthdayViewModel(
   id: String,
-  appDb: AppDb,
+  birthdaysDao: BirthdaysDao,
   prefs: Prefs,
-  context: Context,
+  private val context: Context,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
   notifier: Notifier
-) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider, notifier) {
+) : BaseBirthdaysViewModel(birthdaysDao, prefs, dispatcherProvider, workManagerProvider, notifier) {
 
-  val birthday = appDb.birthdaysDao().loadById(id)
+  val birthday = birthdaysDao.loadById(id)
   var editableBirthday: Birthday = Birthday()
 
   private val _date = mutableLiveDataOf<Calendar>()
   val date: LiveData<Calendar> = _date
 
-  private val _isContactAttached = mutableLiveDataOf<Boolean>()
-  val isContactAttached: LiveData<Boolean> = _isContactAttached
-
   var isEdited = false
   var hasSameInDb = false
   var isFromFile = false
 
-  fun editBirthday(birthday: Birthday) {
-    editableBirthday = birthday
-  }
-
-  fun onContactAttached(value: Boolean) {
-    _isContactAttached.postValue(value)
-  }
-
-  fun onDateChanged(calendar: Calendar) {
-    _date.postValue(calendar)
-  }
-
-  fun onDateChanged(millis: Long) {
-    newCalendar(millis).also { _date.postValue(it) }
-  }
-
   fun findSame(id: String) {
-    launchDefault {
-      val birthday = appDb.birthdaysDao().getById(id)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val birthday = birthdaysDao.getById(id)
       hasSameInDb = birthday != null
     }
   }

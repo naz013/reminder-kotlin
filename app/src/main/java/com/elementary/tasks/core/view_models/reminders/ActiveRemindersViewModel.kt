@@ -17,13 +17,15 @@ class ActiveRemindersViewModel(
   workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ) {
-  val events = appDb.reminderDao().loadNotRemoved(removed = false)
+  val events = reminderDao.loadNotRemoved(removed = false)
 }

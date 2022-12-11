@@ -21,6 +21,8 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
+import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
@@ -42,13 +44,14 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
 import com.elementary.tasks.home.BottomNavActivity
-import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
 import timber.log.Timber
-import java.util.*
+import java.util.LinkedList
+import java.util.Random
 
 class ConversationViewModel(
     appDb: AppDb,
@@ -59,15 +62,19 @@ class ConversationViewModel(
     private val birthdayModelAdapter: BirthdayModelAdapter,
     dispatcherProvider: DispatcherProvider,
     workManagerProvider: WorkManagerProvider,
-    updatesHelper: UpdatesHelper
+    updatesHelper: UpdatesHelper,
+    private val notesDao: NotesDao,
+    private val birthdaysDao: BirthdaysDao
 ) : BaseRemindersViewModel(
-    appDb,
     currentStateHolder.preferences,
     calendarUtils,
     eventControlFactory,
     dispatcherProvider,
     workManagerProvider,
-    updatesHelper
+    updatesHelper,
+    appDb.reminderDao(),
+    appDb.reminderGroupDao(),
+    appDb.placesDao()
 ) {
 
     private var _shoppingLists = MutableLiveData<List<Reminder>>()
@@ -196,7 +203,7 @@ class ConversationViewModel(
     fun getNotes() {
         postInProgress(true)
         launchDefault {
-            val list = LinkedList(appDb.notesDao().all())
+            val list = LinkedList(notesDao.all())
             postInProgress(false)
             _notes.postValue(list)
         }
@@ -205,7 +212,7 @@ class ConversationViewModel(
     fun getShoppingReminders() {
         postInProgress(true)
         launchDefault {
-            val list = appDb.reminderDao().getAllTypes(
+            val list = reminderDao.getAllTypes(
                 true,
                 removed = false,
                 types = intArrayOf(Reminder.BY_DATE_SHOP)
@@ -219,7 +226,7 @@ class ConversationViewModel(
         postInProgress(true)
         Timber.d("getEnabledReminders: ${dateTime.toGmt()}")
         launchDefault {
-            val list = appDb.reminderDao().getAllTypesInRange(
+            val list = reminderDao.getAllTypesInRange(
                 active = true,
                 removed = false,
                 fromTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
@@ -233,7 +240,7 @@ class ConversationViewModel(
     fun getReminders(dateTime: Long) {
         postInProgress(true)
         launchDefault {
-            val list = appDb.reminderDao().getActiveInRange(
+            val list = reminderDao.getActiveInRange(
                 false,
                 TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                 TimeUtil.getGmtFromDateTime(dateTime)
@@ -246,8 +253,7 @@ class ConversationViewModel(
     fun getBirthdays(dateTime: Long) {
         postInProgress(true)
         launchDefault {
-            val list = appDb.birthdaysDao()
-                .all()
+            val list = birthdaysDao.all()
                 .map { birthdayModelAdapter.convert(it) }
                 .filter {
                     it.nextBirthdayDate >= System.currentTimeMillis() && it.nextBirthdayDate < dateTime
@@ -356,7 +362,7 @@ class ConversationViewModel(
     fun disableAllReminders(showToast: Boolean) {
         postInProgress(true)
         launchDefault {
-            for (reminder in appDb.reminderDao().getAll(active = true, removed = false)) {
+            for (reminder in reminderDao.getAll(active = true, removed = false)) {
                 stopReminder(reminder)
             }
             postInProgress(false)
@@ -376,7 +382,7 @@ class ConversationViewModel(
     fun emptyTrash(showToast: Boolean) {
         postInProgress(true)
         launchDefault {
-            val archived = appDb.reminderDao().getAll(
+            val archived = reminderDao.getAll(
                 active = false,
                 removed = true
             )
@@ -459,7 +465,7 @@ class ConversationViewModel(
         }
         launchDefault {
             note.updatedAt = TimeUtil.gmtDateTime
-            appDb.notesDao().insert(note)
+            notesDao.insert(note)
         }
         updatesHelper.updateNotesWidget()
         if (showToast) {
@@ -498,7 +504,7 @@ class ConversationViewModel(
 
     fun saveGroup(model: ReminderGroup, showToast: Boolean) {
         launchDefault {
-            appDb.reminderGroupDao().insert(model)
+            reminderGroupDao.insert(model)
         }
         if (showToast) {
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()

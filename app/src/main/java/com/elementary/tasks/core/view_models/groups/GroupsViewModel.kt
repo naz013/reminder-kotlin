@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.groups
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
@@ -11,17 +11,17 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 
 class GroupsViewModel(
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseGroupsViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  reminderGroupDao: ReminderGroupDao
+) : BaseGroupsViewModel(prefs, dispatcherProvider, workManagerProvider, reminderGroupDao) {
 
   fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
     postInProgress(true)
     launchDefault {
       reminderGroup.groupColor = color
-      appDb.reminderGroupDao().insert(reminderGroup)
+      reminderGroupDao.insert(reminderGroup)
       startWork(GroupSingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
       withUIContext { postInProgress(false) }
     }

@@ -1,6 +1,5 @@
 package com.elementary.tasks.settings.export
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +32,9 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   private val dropboxLogin: DropboxLogin by inject {
     parametersOf(requireActivity(), dropboxCallback)
   }
-  private val googleLogin: GoogleLogin by inject { parametersOf(requireActivity(), googleCallback) }
+  private val googleLogin: GoogleLogin by inject {
+    parametersOf(this@FragmentCloudDrives, googleCallback)
+  }
 
   private val googleCallback = object : GoogleLogin.LoginCallback {
     override fun onProgress(isLoading: Boolean, mode: GoogleLogin.Mode) {
@@ -64,8 +65,8 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   private val dropboxCallback = object : DropboxLogin.LoginCallback {
-    override fun onResult(success: Boolean) {
-      if (success) {
+    override fun onResult(isSuccess: Boolean) {
+      if (isSuccess) {
         analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
         binding.linkDropbox.text = getString(R.string.disconnect)
       } else {
@@ -135,35 +136,13 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
   }
 
-  private fun googleTasksButtonClick() {
-    withActivity {
-      if (Permissions.checkPermission(
-          it, 104,
-          Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-          Permissions.WRITE_EXTERNAL
-        )
-      ) {
-        switchGoogleTasksStatus()
-      }
-    }
-  }
-
-  private fun googleDriveButtonClick() {
-    withActivity {
-      if (Permissions.checkPermission(
-          it, 103,
-          Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-          Permissions.WRITE_EXTERNAL
-        )
-      ) {
-        switchGoogleDriveStatus()
-      }
-    }
-  }
-
   private fun initDropboxButton() {
     binding.dropboxView.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX))
     binding.linkDropbox.setOnClickListener { dropboxLogin.login() }
+  }
+
+  private fun googleTasksButtonClick() {
+    permissionFlow.askPermission(Permissions.GET_ACCOUNTS) { switchGoogleTasksStatus() }
   }
 
   private fun switchGoogleTasksStatus() {
@@ -191,6 +170,10 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     binding.linkGTasks.isEnabled = !loading
   }
 
+  private fun googleDriveButtonClick() {
+    permissionFlow.askPermission(Permissions.GET_ACCOUNTS) { switchGoogleDriveStatus() }
+  }
+
   private fun switchGoogleDriveStatus() {
     withActivity {
       if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
@@ -212,20 +195,6 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   private fun disconnectFromGoogleDrive() {
     googleLogin.logOutDrive()
-  }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        103 -> switchGoogleDriveStatus()
-        104 -> switchGoogleTasksStatus()
-      }
-    }
   }
 
   private fun updateGoogleTasksStatus(isLogged: Boolean) {
@@ -252,9 +221,4 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   override fun getTitle(): String = getString(R.string.cloud_services)
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    googleLogin.onActivityResult(requestCode, resultCode, data)
-  }
 }

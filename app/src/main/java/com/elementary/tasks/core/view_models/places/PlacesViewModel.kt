@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.places
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.PlacesDao
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.utils.BackupTool
@@ -11,14 +11,14 @@ import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class PlacesViewModel(
-  appDb: AppDb,
   prefs: Prefs,
   private val backupTool: BackupTool,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BasePlacesViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  placesDao: PlacesDao
+) : BasePlacesViewModel(prefs, dispatcherProvider, workManagerProvider, placesDao) {
 
-  val places = appDb.placesDao().loadAll()
+  val places = placesDao.loadAll()
   val shareFile = mutableLiveDataOf<ShareFile<Place>>()
 
   fun sharePlace(place: Place) = launchDefault {

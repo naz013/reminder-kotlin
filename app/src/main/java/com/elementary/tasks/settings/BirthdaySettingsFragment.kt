@@ -147,12 +147,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
   }
 
   private fun scanForBirthdays() {
-    if (!Permissions.checkPermission(requireActivity(), BIRTHDAYS_CODE,
-        Permissions.READ_CONTACTS)) {
-      return
+    permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+      onProgress.invoke(true)
+      scanContactsWorker.scan()
     }
-    onProgress.invoke(true)
-    scanContactsWorker.scan()
   }
 
   private fun initContactsAutoPrefs() {
@@ -180,13 +178,12 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
   }
 
   private fun changeContactsPrefs() {
-    if (!Permissions.checkPermission(requireActivity(), CONTACTS_CODE, Permissions.READ_CONTACTS)) {
-      return
+    permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+      val isChecked = binding.useContactsPrefs.isChecked
+      binding.useContactsPrefs.isChecked = !isChecked
+      prefs.isContactBirthdaysEnabled = !isChecked
+      initScanButton()
     }
-    val isChecked = binding.useContactsPrefs.isChecked
-    binding.useContactsPrefs.isChecked = !isChecked
-    prefs.isContactBirthdaysEnabled = !isChecked
-    initScanButton()
   }
 
   private fun initBirthdayTimePrefs() {
@@ -362,22 +359,5 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     if (prefs.isBirthdayReminderEnabled) {
       jobScheduler.scheduleDailyBirthday()
     }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      CONTACTS_CODE -> if (Permissions.checkPermission(grantResults)) {
-        changeContactsPrefs()
-      }
-      BIRTHDAYS_CODE -> if (Permissions.checkPermission(grantResults)) {
-        scanForBirthdays()
-      }
-    }
-  }
-
-  companion object {
-    private const val CONTACTS_CODE = 302
-    private const val BIRTHDAYS_CODE = 303
   }
 }

@@ -280,17 +280,12 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   private fun showInStatusBar(note: NoteWithImages?) {
     if (note != null) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        viewModel.noteInProcessing = note
-        askPermission(Permissions.POST_NOTIFICATION)
+        permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+          notifier.showNoteNotification(note)
+        }
       } else {
         notifier.showNoteNotification(note)
       }
-    }
-  }
-
-  override fun permissionGranted(permission: String, requestCode: Int) {
-    viewModel.noteInProcessing?.also {
-      notifier.showNoteNotification(it)
     }
   }
 

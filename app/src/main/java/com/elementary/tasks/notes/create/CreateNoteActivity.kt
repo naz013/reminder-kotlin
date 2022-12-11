@@ -26,7 +26,6 @@ import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
@@ -40,6 +39,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
@@ -56,11 +56,17 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.tintOverflowButton
+import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.trimmedText
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
@@ -87,6 +93,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private val imagesSingleton by inject<ImagesSingleton>()
   private var isBgDark = false
 
+  private val permissionFlow = PermissionFlow(this, dialogues)
   private val viewModel by viewModel<NoteViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<CreateNoteViewModel>()
   private val photoSelectionUtil: PhotoSelectionUtil by lazy {
@@ -128,7 +135,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     override fun onResults(bundle: Bundle?) {
       val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
       if (res != null && res.size > 0) {
-        setText(StringUtils.capitalize(res[0].toString().toLowerCase()))
+        setText(StringUtils.capitalize(res[0].toString().lowercase()))
       }
       Timber.d("onResults: $res")
       releaseSpeech()
@@ -137,7 +144,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     override fun onPartialResults(bundle: Bundle?) {
       val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
       if (res != null && res.size > 0) {
-        setText(res[0].toString().toLowerCase())
+        setText(res[0].toString().lowercase())
       }
       Timber.d("onPartialResults: $res")
     }
@@ -146,14 +153,15 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
   }
 
-  private var mDateCallBack = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-    val c = Calendar.getInstance()
-    c.timeInMillis = System.currentTimeMillis()
-    c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-    c.set(Calendar.MONTH, monthOfYear)
-    c.set(Calendar.YEAR, year)
-    stateViewModel.date.postValue(c.timeInMillis)
-  }
+  private var mDateCallBack =
+    DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+      val c = Calendar.getInstance()
+      c.timeInMillis = System.currentTimeMillis()
+      c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+      c.set(Calendar.MONTH, monthOfYear)
+      c.set(Calendar.YEAR, year)
+      stateViewModel.date.postValue(c.timeInMillis)
+    }
 
   private var mCallBack = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
     val c = Calendar.getInstance()
@@ -177,7 +185,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     hideRecording()
     binding.remindDate.setOnClickListener { dateDialog() }
     binding.remindTime.setOnClickListener { timeDialog() }
-    binding.micButton.setOnClickListener { micClick() }
+    binding.micButton.setOnClickListener { tryMicClick() }
     binding.discardReminder.setOnClickListener { stateViewModel.isReminderAttached.postValue(false) }
     binding.clickView.setOnClickListener {
       Timber.d("onCreate: on outside touch")
@@ -203,11 +211,19 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   override fun onStart() {
     super.onStart()
-    ViewUtils.registerDragAndDrop(this, binding.clickView, true, ThemeProvider.getSecondaryColor(this), {
-      if (it.itemCount > 0) {
-        parseDrop(it)
-      }
-    }, ClipDescription.MIMETYPE_TEXT_PLAIN, UriUtil.ANY_MIME)
+    ViewUtils.registerDragAndDrop(
+      this,
+      binding.clickView,
+      true,
+      ThemeProvider.getSecondaryColor(this),
+      {
+        if (it.itemCount > 0) {
+          parseDrop(it)
+        }
+      },
+      ClipDescription.MIMETYPE_TEXT_PLAIN,
+      UriUtil.ANY_MIME
+    )
 
     if (prefs.hasPinCode && !stateViewModel.isLogged) {
       PinLoginActivity.verify(this)
@@ -227,7 +243,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
       if (text != "") {
         withUIContext {
-          val oldText = binding.taskMessage.text.toString().trim()
+          val oldText = binding.taskMessage.trimmedText()
           if (oldText.trim() == "") {
             binding.taskMessage.setText(text)
           } else {
@@ -243,56 +259,40 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun observeStates() {
-    stateViewModel.colorOpacity.observe(this) {
-      if (it != null) {
-        Timber.d("observeStates: $it")
-        updateDarkness(it)
-        updateBackground(it)
-        updateTextColors()
-        updateIcons()
-      }
+    stateViewModel.colorOpacity.nonNullObserve(this) {
+      Timber.d("observeStates: $it")
+      updateDarkness(it)
+      updateBackground(it)
+      updateTextColors()
+      updateIcons()
     }
-    stateViewModel.time.observe(this) {
-      if (it != null) {
-        binding.remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
-      }
+    stateViewModel.time.nonNullObserve(this) {
+      binding.remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
     }
-    stateViewModel.date.observe(this) {
-      if (it != null) {
-        binding.remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
-      }
+    stateViewModel.date.nonNullObserve(this) {
+      binding.remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
     }
-    stateViewModel.isReminderAttached.observe(this) {
-      if (it != null) {
-        binding.remindContainer.visibility = if (it) View.VISIBLE else View.GONE
-      }
+    stateViewModel.isReminderAttached.nonNullObserve(this) {
+      binding.remindContainer.visibleGone(it)
     }
-    stateViewModel.fontStyle.observe(this) {
-      if (it != null) {
-        updateFontStyle(it)
-      }
+    stateViewModel.fontStyle.nonNullObserve(this) { updateFontStyle(it) }
+    stateViewModel.images.nonNullObserve(this) {
+      Timber.d("observeStates: images -> $it")
+      imagesGridAdapter.submitList(it)
     }
-    stateViewModel.images.observe(this) {
-      if (it != null) {
-        Timber.d("observeStates: images -> $it")
-        imagesGridAdapter.submitList(it)
-      }
-    }
-    stateViewModel.palette.observe(this) {
-      if (it != null) {
-        prefs.notePalette = it
-        binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
-        val pair = newPair()
-        updateDarkness(pair)
-        updateBackground(pair, it)
-        updateTextColors()
-        updateIcons()
-      }
+    stateViewModel.palette.nonNullObserve(this) {
+      prefs.notePalette = it
+      binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
+      val pair = newPair()
+      updateDarkness(pair)
+      updateBackground(pair, it)
+      updateTextColors()
+      updateIcons()
     }
   }
 
   private fun initDefaults(): Pair<Int, Int> {
-    stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+    stateViewModel.isLogged = intentBoolean(ARG_LOGGED)
 
     val color = if (prefs.isNoteColorRememberingEnabled) {
       prefs.lastNoteColor
@@ -323,17 +323,20 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun showRecording() {
-    binding.recordingView.visibility = View.VISIBLE
+    binding.recordingView.show()
   }
 
   private fun hideRecording() {
-    binding.recordingView.visibility = View.GONE
+    binding.recordingView.hide()
   }
 
   private fun initRecognizer() {
     try {
       val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-      recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+      recognizerIntent.putExtra(
+        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+        RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
+      )
       recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
       recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
       speech = SpeechRecognizer.createSpeechRecognizer(this)
@@ -345,21 +348,21 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun releaseSpeech() {
-    try {
+    runCatching {
       if (speech != null) {
         speech?.stopListening()
         speech?.cancel()
         speech?.destroy()
         speech = null
       }
-    } catch (ignored: IllegalArgumentException) {
     }
   }
 
+  private fun tryMicClick() {
+    permissionFlow.askPermission(Permissions.RECORD_AUDIO) { micClick() }
+  }
+
   private fun micClick() {
-    if (!Permissions.checkPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
-      return
-    }
     if (speech != null) {
       hideRecording()
       releaseSpeech()
@@ -382,11 +385,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun initMenu() {
-    if (Module.hasMicrophone(this)) {
-      binding.micButton.visibility = View.VISIBLE
-    } else {
-      binding.micButton.visibility = View.GONE
-    }
+    binding.micButton.visibleGone(Module.hasMicrophone(this))
 
     binding.colorButton.setOnClickListener { toggleColorView() }
     binding.imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
@@ -423,25 +422,26 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun updateTextColors() {
-    val textColor = if (isBgDark) colorOf(R.color.pureWhite)
-    else colorOf(R.color.pureBlack)
+    val textColor = if (isBgDark) {
+      colorOf(R.color.pureWhite)
+    } else {
+      colorOf(R.color.pureBlack)
+    }
     binding.taskMessage.setTextColor(textColor)
     binding.taskMessage.setHintTextColor(textColor)
-    binding.taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {
-      R.color.pureWhite
-    } else {
-      R.color.pureBlack
-    })
+    binding.taskMessage.backgroundTintList = ContextCompat.getColorStateList(
+      this, if (isBgDark) {
+        R.color.pureWhite
+      } else {
+        R.color.pureBlack
+      }
+    )
     binding.remindDate.setTextColor(textColor)
     binding.remindTime.setTextColor(textColor)
   }
 
   private fun toggleColorView() {
-    if (isColorPickerHidden()) {
-      binding.colorLayout.visibility = View.VISIBLE
-    } else {
-      binding.colorLayout.visibility = View.GONE
-    }
+    binding.colorLayout.visibleGone(isColorPickerHidden())
   }
 
   private fun isColorPickerHidden(): Boolean {
@@ -454,7 +454,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     stateViewModel.isReminderAttached.postValue(!isReminderAdded())
   }
 
-  private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun loadNote() {
     initViewModel()
@@ -466,19 +466,21 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
           handleSendImage(intent)
         }
       }
+
       intent?.action == Intent.ACTION_SEND_MULTIPLE
         && intent.type?.startsWith("image/") == true -> {
         handleSendMultipleImages(intent)
       }
+
       else -> {
         if (intent.data != null) {
-          loadNoteFromFile()
+          permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+            loadNoteFromFile()
+          }
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
-          try {
-            val note = intent.getParcelableExtra(Constants.INTENT_ITEM) as NoteWithImages?
+          runCatching {
+            val note = intentParcelable(Constants.INTENT_ITEM, NoteWithImages::class.java)
             showNote(note, true)
-          } catch (e: Exception) {
-            e.printStackTrace()
           }
         }
       }
@@ -530,15 +532,18 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
     invalidateOptionsMenu()
-    binding.discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
+    binding.discardReminder.setImageDrawable(
+      ViewUtils.tintIcon(
+        this,
+        R.drawable.ic_twotone_cancel_24px,
+        isBgDark
+      )
+    )
   }
 
   private fun loadNoteFromFile() {
-    if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
-      return
-    }
     intent.data?.let {
-      try {
+      runCatching {
         mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
           val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_NOTE)
           if (any != null && any is OldNote) {
@@ -549,8 +554,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         } else {
           null
         }
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
     showNote(mItem, true)
@@ -594,8 +597,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   private fun openImagePreview(position: Int) {
     imagesSingleton.setCurrent(imagesGridAdapter.data)
-    startActivity(Intent(this, ImagePreviewActivity::class.java)
-      .putExtra(Constants.INTENT_POSITION, position))
+    startActivity(
+      Intent(this, ImagePreviewActivity::class.java)
+        .putExtra(Constants.INTENT_POSITION, position)
+    )
   }
 
   private fun showReminder(reminder: Reminder?) {
@@ -608,18 +613,15 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun hideProgress() {
-    binding.recordingView.visibility = View.GONE
+    binding.recordingView.hide()
   }
 
   private fun showProgress() {
-    binding.recordingView.visibility = View.VISIBLE
+    binding.recordingView.show()
   }
 
   private fun shareNote() {
-    if (!Permissions.checkPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-      return
-    }
-    val note = createObject() ?: return
+    val note = createObject()
     showProgress()
     launchDefault {
       val file = backupTool.noteToFile(note)
@@ -647,7 +649,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun showErrorSending() {
-    Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
+    toast(R.string.error_sending)
   }
 
   private fun setDateTime(eventTime: String?) {
@@ -661,7 +663,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     stateViewModel.time.postValue(calendar.timeInMillis)
   }
 
-  private fun createObject(): NoteWithImages? {
+  private fun createObject(): NoteWithImages {
     val text = binding.taskMessage.text.toString()
     val images = imagesGridAdapter.data
 
@@ -712,7 +714,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun saveNote(newId: Boolean = false) {
-    val noteWithImages = createObject() ?: return
+    val noteWithImages = createObject()
     val hasReminder = stateViewModel.isReminderAttached.value ?: false
     if (!hasReminder && mItem != null) removeNoteFromReminder()
     var reminder: Reminder? = null
@@ -772,17 +774,14 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
     reminder.eventTime = reminder.startTime
     if (!TimeCount.isCurrent(reminder.eventTime)) {
-      Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+      toast(R.string.reminder_is_outdated)
       return null
     }
     return reminder
   }
 
   private fun removeNoteFromReminder() {
-    val reminder = mReminder
-    if (reminder != null) {
-      viewModel.deleteReminder(reminder)
-    }
+    mReminder?.also { viewModel.deleteReminder(it) }
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -791,18 +790,24 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         finish()
         return true
       }
+
       R.id.action_share -> {
-        shareNote()
+        permissionFlow.askPermissions(
+          listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+        ) { shareNote() }
         return true
       }
+
       MENU_ITEM_DELETE -> {
         deleteDialog()
         return true
       }
+
       R.id.action_add -> {
         askCopySaving()
         return true
       }
+
       else -> return super.onOptionsItemSelected(item)
     }
   }
@@ -860,8 +865,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     val names = AssetsUtil.getFontNames()
 
     val inflater = LayoutInflater.from(this)
-    val adapter = object : ArrayAdapter<String>(this,
-      android.R.layout.simple_list_item_single_choice, names) {
+    val adapter = object : ArrayAdapter<String>(
+      this,
+      android.R.layout.simple_list_item_single_choice, names
+    ) {
       override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var cView = convertView
         if (cView == null) {
@@ -906,9 +913,27 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
     val buttons = arrayOf(bind.paletteOne, bind.paletteTwo, bind.paletteThree)
 
-    bind.paletteOne.setOnCheckedChangeListener { buttonView, isChecked -> updateCheck(buttonView, isChecked, *buttons) }
-    bind.paletteTwo.setOnCheckedChangeListener { buttonView, isChecked -> updateCheck(buttonView, isChecked, *buttons) }
-    bind.paletteThree.setOnCheckedChangeListener { buttonView, isChecked -> updateCheck(buttonView, isChecked, *buttons) }
+    bind.paletteOne.setOnCheckedChangeListener { buttonView, isChecked ->
+      updateCheck(
+        buttonView,
+        isChecked,
+        *buttons
+      )
+    }
+    bind.paletteTwo.setOnCheckedChangeListener { buttonView, isChecked ->
+      updateCheck(
+        buttonView,
+        isChecked,
+        *buttons
+      )
+    }
+    bind.paletteThree.setOnCheckedChangeListener { buttonView, isChecked ->
+      updateCheck(
+        buttonView,
+        isChecked,
+        *buttons
+      )
+    }
 
     builder.setView(bind.root)
     builder.setPositiveButton(R.string.save) { dialog, _ ->
@@ -938,15 +963,19 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun dateDialog() {
     val c = Calendar.getInstance()
     c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
-    TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR),
-      c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
+    TimeUtil.showDatePicker(
+      this, prefs, c.get(Calendar.YEAR),
+      c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack
+    )
   }
 
   private fun timeDialog() {
     val c = Calendar.getInstance()
     c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
-    TimeUtil.showTimePicker(this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
-      c.get(Calendar.MINUTE), mCallBack)
+    TimeUtil.showTimePicker(
+      this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
+      c.get(Calendar.MINUTE), mCallBack
+    )
   }
 
   override fun onDestroy() {
@@ -1002,18 +1031,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     Timber.d("onResume: ")
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    photoSelectionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        AUDIO_CODE -> micClick()
-        SEND_CODE -> shareNote()
-        SD_REQ -> loadNoteFromFile()
-      }
-    }
-  }
-
   override fun onImageSelected(uri: Uri?, clipData: ClipData?) {
     stateViewModel.addMultiple(uri, clipData, this)
   }
@@ -1033,16 +1050,15 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   companion object {
     const val MENU_ITEM_DELETE = 12
-    private const val SD_REQ = 555
     private const val EDIT_CODE = 11223
-    private const val AUDIO_CODE = 255000
-    private const val SEND_CODE = 25501
     private const val ARG_LOGGED = "arg_logged"
 
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {
-        context.startActivity(Intent(context, CreateNoteActivity::class.java)
-          .putExtra(ARG_LOGGED, true))
+        context.startActivity(
+          Intent(context, CreateNoteActivity::class.java)
+            .putExtra(ARG_LOGGED, true)
+        )
       } else {
         intent.putExtra(ARG_LOGGED, true)
         context.startActivity(intent)

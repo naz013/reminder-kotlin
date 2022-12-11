@@ -18,16 +18,18 @@ class ActiveGpsRemindersViewModel(
   workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ) {
 
-  val events = appDb.reminderDao().loadAllTypes(
+  val events = reminderDao.loadAllTypes(
     active = true,
     removed = false,
     types = Reminder.gpsTypes()

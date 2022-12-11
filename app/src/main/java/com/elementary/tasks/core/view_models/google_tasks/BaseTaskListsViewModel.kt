@@ -3,7 +3,8 @@ package com.elementary.tasks.core.view_models.google_tasks
 import android.content.Context
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Prefs
@@ -16,14 +17,15 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 import java.io.IOException
 
 abstract class BaseTaskListsViewModel(
-  appDb: AppDb,
   prefs: Prefs,
   protected val context: Context,
   protected val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  protected val updatesHelper: UpdatesHelper
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  protected val updatesHelper: UpdatesHelper,
+  protected val googleTasksDao: GoogleTasksDao,
+  protected val googleTaskListsDao: GoogleTaskListsDao
+) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
 
   fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
     if (!gTasks.isLogged) {
@@ -34,14 +36,14 @@ abstract class BaseTaskListsViewModel(
     launchDefault {
       val def = googleTaskList.def
       gTasks.deleteTaskList(googleTaskList.listId)
-      appDb.googleTaskListsDao().delete(googleTaskList)
-      appDb.googleTasksDao().deleteAll(googleTaskList.listId)
+      googleTaskListsDao.delete(googleTaskList)
+      googleTasksDao.deleteAll(googleTaskList.listId)
       if (def == 1) {
-        val lists = appDb.googleTaskListsDao().all()
+        val lists = googleTaskListsDao.all()
         if (lists.isNotEmpty()) {
           val taskList = lists[0]
           taskList.def = 1
-          appDb.googleTaskListsDao().insert(taskList)
+          googleTaskListsDao.insert(taskList)
         }
       }
       postInProgress(false)

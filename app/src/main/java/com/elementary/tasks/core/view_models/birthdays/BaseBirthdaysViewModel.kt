@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.view_models.birthdays
 
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
@@ -17,18 +16,17 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.launch
 
 abstract class BaseBirthdaysViewModel(
-  appDb: AppDb,
+  protected val birthdaysDao: BirthdaysDao,
   prefs: Prefs,
-  protected val context: Context,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
   private val notifier: Notifier
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
 
   fun deleteBirthday(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.birthdaysDao().delete(id)
+      birthdaysDao.delete(id)
       updateBirthdayPermanent()
       startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       postInProgress(false)
@@ -46,7 +44,7 @@ abstract class BaseBirthdaysViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       birthday.updatedAt = TimeUtil.gmtDateTime
-      appDb.birthdaysDao().insert(birthday)
+      birthdaysDao.insert(birthday)
       updateBirthdayPermanent()
       startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
       postInProgress(false)

@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.used_time
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.UsedTimeDao
 import com.elementary.tasks.core.data.models.UsedTime
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
@@ -10,23 +10,23 @@ import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class UsedTimeViewModel(
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  private val usedTimeDao: UsedTimeDao
+) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
 
-  val usedTimeList = appDb.usedTimeDao().loadFirst5()
+  val usedTimeList = usedTimeDao.loadFirst5()
 
   fun saveTime(after: Long) {
     launchDefault {
-      var old = appDb.usedTimeDao().getByTimeMills(after)
+      var old = usedTimeDao.getByTimeMills(after)
       if (old != null) {
         old.useCount = old.useCount + 1
       } else {
         old = UsedTime(0, TimeUtil.generateViewAfterString(after), after, 1)
       }
-      appDb.usedTimeDao().insert(old)
+      usedTimeDao.insert(old)
     }
   }
 }

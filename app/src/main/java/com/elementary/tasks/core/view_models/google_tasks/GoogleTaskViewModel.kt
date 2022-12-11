@@ -6,7 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
@@ -19,27 +22,31 @@ import timber.log.Timber
 
 class GoogleTaskViewModel(
   id: String,
-  appDb: AppDb,
   prefs: Prefs,
   context: Context,
   gTasks: GTasks,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  updatesHelper: UpdatesHelper
+  updatesHelper: UpdatesHelper,
+  googleTasksDao: GoogleTasksDao,
+  googleTaskListsDao: GoogleTaskListsDao,
+  private val reminderDao: ReminderDao,
+  private val reminderGroupDao: ReminderGroupDao
 ) : BaseTaskListsViewModel(
-  appDb,
   prefs,
   context,
   gTasks,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  googleTasksDao,
+  googleTaskListsDao
 ) {
 
-  val googleTask = appDb.googleTasksDao().loadById(id)
-  val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
-  val googleTaskLists = appDb.googleTaskListsDao().loadAll()
+  val googleTask = googleTasksDao.loadById(id)
+  val defaultTaskList = googleTaskListsDao.loadDefault()
+  val googleTaskLists = googleTaskListsDao.loadAll()
 
   val isLogged = gTasks.isLogged
   private var _reminder = MutableLiveData<Reminder>()
@@ -48,7 +55,7 @@ class GoogleTaskViewModel(
   fun loadReminder(uuId: String) {
     postInProgress(true)
     launchDefault {
-      val reminderItem = appDb.reminderDao().getById(uuId)
+      val reminderItem = reminderDao.getById(uuId)
       _reminder.postValue(reminderItem)
       postInProgress(false)
     }
@@ -58,12 +65,12 @@ class GoogleTaskViewModel(
     Timber.d("saveReminder: $reminder")
     if (reminder != null) {
       launchDefault {
-        val group = appDb.reminderGroupDao().defaultGroup()
+        val group = reminderGroupDao.defaultGroup()
         if (group != null) {
           reminder.groupColor = group.groupColor
           reminder.groupTitle = group.groupTitle
           reminder.groupUuId = group.groupUuId
-          appDb.reminderDao().insert(reminder)
+          reminderDao.insert(reminder)
         }
         if (reminder.groupUuId != "") {
           eventControlFactory.getController(reminder).start()
@@ -85,7 +92,7 @@ class GoogleTaskViewModel(
     launchDefault {
       try {
         gTasks.deleteTask(googleTask)
-        appDb.googleTasksDao().delete(googleTask)
+        googleTasksDao.delete(googleTask)
         postInProgress(false)
         postCommand(Commands.DELETED)
       } catch (e: Exception) {
@@ -121,7 +128,7 @@ class GoogleTaskViewModel(
     }
     postInProgress(true)
     launchDefault {
-      appDb.googleTasksDao().insert(googleTask)
+      googleTasksDao.insert(googleTask)
       try {
         gTasks.updateTask(googleTask)
         saveReminder(reminder)
@@ -141,7 +148,7 @@ class GoogleTaskViewModel(
     }
     postInProgress(true)
     launchDefault {
-      appDb.googleTasksDao().insert(googleTask)
+      googleTasksDao.insert(googleTask)
       try {
         gTasks.updateTask(googleTask)
         gTasks.moveTask(googleTask, oldListId)
@@ -162,7 +169,7 @@ class GoogleTaskViewModel(
     }
     postInProgress(true)
     launchDefault {
-      appDb.googleTasksDao().insert(googleTask)
+      googleTasksDao.insert(googleTask)
       gTasks.moveTask(googleTask, oldListId)
       postInProgress(false)
       postCommand(Commands.SAVED)

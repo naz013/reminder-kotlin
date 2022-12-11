@@ -30,6 +30,7 @@ import com.elementary.tasks.core.data.ui.UiReminderType
 import com.elementary.tasks.core.data.ui.UiSmsTarget
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
@@ -70,6 +71,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private var mGoogleMap: AdvancedMapFragment? = null
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private val list = ArrayList<Long>()
 
@@ -112,7 +114,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     loadAds()
   }
 
-  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intentString(Constants.INTENT_ID)
 
   private fun loadAds() {
     if (!Module.isPro) {
@@ -134,7 +136,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun makeCall(action: UiCallTarget) {
-    if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
+    permissionFlow.askPermission(Permissions.CALL_PHONE) {
       TelephonyUtil.makeCall(action.target, this)
     }
   }
@@ -201,10 +203,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     if (id <= 0L) return
     val uri = Uri.parse("content://com.android.calendar/events/$id")
     val intent = Intent(Intent.ACTION_VIEW, uri)
-    try {
+    runCatching {
       startActivity(intent)
-    } catch (e: java.lang.Exception) {
-      e.printStackTrace()
     }
   }
 
@@ -464,9 +464,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun shareReminder() {
-    if (!Permissions.checkPermission(this, SD_PERM, Permissions.WRITE_EXTERNAL)) {
-      return
-    }
     viewModel.shareReminder()
   }
 
@@ -631,24 +628,5 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   override fun onDestroy() {
     super.onDestroy()
     adsProvider.destroy()
-  }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        CALL_PERM -> fabClick()
-        SD_PERM -> shareReminder()
-      }
-    }
-  }
-
-  companion object {
-    private const val CALL_PERM = 612
-    private const val SD_PERM = 614
   }
 }

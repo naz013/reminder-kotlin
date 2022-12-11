@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.Actions
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
@@ -33,7 +32,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
           action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
           action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
           action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> {
-            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+            hidePermanent(intent.getStringExtra(Constants.INTENT_ID) ?: "")
           }
           else -> showReminder(context, intent)
         }
@@ -60,7 +59,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
       updateBirthday(item)
       finish(item.uniqueId)
     } else {
-      hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+      hidePermanent(intent.getStringExtra(Constants.INTENT_ID) ?: "")
     }
   }
 
@@ -72,7 +71,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
       updateBirthday(item)
       finish(item.uniqueId)
     } else {
-      hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+      hidePermanent(intent.getStringExtra(Constants.INTENT_ID) ?: "")
     }
   }
 
@@ -99,7 +98,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
         birthday.uniqueId))
   }
 
-  private fun hidePermanent(context: Context, id: String) {
+  private fun hidePermanent(id: String) {
     if (id.isEmpty()) return
     val item = appDb.birthdaysDao().getById(id)
     if (item != null) {

@@ -610,7 +610,7 @@ class Prefs(
     get() = getString(PrefsConstants.VOICE_HELP_URLS, "{}")
     set(value) = putString(PrefsConstants.VOICE_HELP_URLS, value)
 
-  fun initPrefs(context: Context) {
+  fun initPrefs() {
     val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
     if (!settingsUI.exists()) {
       val preferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)

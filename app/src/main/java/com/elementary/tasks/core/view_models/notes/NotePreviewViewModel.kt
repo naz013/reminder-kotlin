@@ -2,45 +2,48 @@ package com.elementary.tasks.core.view_models.notes
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.NotesDao
+import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
+import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class NotePreviewViewModel(
   key: String,
-  appDb: AppDb,
   prefs: Prefs,
-  calendarUtils: CalendarUtils,
-  eventControlFactory: EventControlFactory,
+  private val calendarUtils: CalendarUtils,
+  private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  private val backupTool: BackupTool
+  private val backupTool: BackupTool,
+  notesDao: NotesDao,
+  private val reminderDao: ReminderDao
 ) : BaseNotesViewModel(
-  appDb,
   prefs,
-  calendarUtils,
-  eventControlFactory,
   dispatcherProvider,
-  workManagerProvider
+  workManagerProvider,
+  notesDao
 ) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
-  val note = appDb.notesDao().loadById(key)
-  val reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)
+  val note = notesDao.loadById(key)
+  val reminder = reminderDao.loadByNoteKey(if (key == "") "1" else key)
 
   var hasSameInDb: Boolean = false
 
@@ -50,9 +53,9 @@ class NotePreviewViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking(dispatcherProvider.io()) {
-        appDb.notesDao().delete(note)
+        notesDao.delete(note)
         for (image in noteWithImages.images) {
-          appDb.notesDao().delete(image)
+          notesDao.delete(image)
         }
       }
       startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
@@ -74,6 +77,18 @@ class NotePreviewViewModel(
       } else {
         postError("Failed to send Note")
       }
+    }
+  }
+
+  fun deleteReminder(reminder: Reminder) {
+    postInProgress(true)
+    launchDefault {
+      eventControlFactory.getController(reminder).stop()
+      reminderDao.delete(reminder)
+      calendarUtils.deleteEvents(reminder.uuId)
+      startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      postInProgress(false)
+      postCommand(Commands.UPDATED)
     }
   }
 }

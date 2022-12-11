@@ -9,6 +9,7 @@ import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
@@ -25,6 +26,7 @@ import java.util.UUID
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
 
   private val viewModel by viewModel<SmsTemplateViewModel> { parametersOf(getId()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
   private var mItem: SmsTemplate? = null
 
   override fun inflateBinding() = ActivityTemplateBinding.inflate(layoutInflater)
@@ -35,29 +37,26 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
     loadTemplate()
   }
 
-  private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun loadTemplate() {
     val intent = intent
     initViewModel()
     if (intent.data != null) {
-      readUri()
+      permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+        readUri()
+      }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
-      try {
+      runCatching {
         val item = intent.getParcelableExtra(Constants.INTENT_ITEM) as SmsTemplate?
         item?.also { showTemplate(it, true) }
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
 
   private fun readUri() {
-    if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
-      return
-    }
     intent.data?.let {
-      try {
+      runCatching {
         mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
           val any = MemoryUtil.readFromUri(this, it)
           if (any != null && any is SmsTemplate) {
@@ -65,8 +64,6 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
           } else null
         } else null
         mItem?.let { item -> showTemplate(item, true) }
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
@@ -176,15 +173,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
     return true
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
-      readUri()
-    }
-  }
-
   companion object {
     private const val MENU_ITEM_DELETE = 12
-    private const val SD_REQ = 555
   }
 }

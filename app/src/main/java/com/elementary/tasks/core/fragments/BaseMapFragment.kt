@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.utils.Dialogues
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
 import org.koin.android.ext.android.inject
@@ -14,7 +13,6 @@ abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
   protected val currentStateHolder by inject<CurrentStateHolder>()
   protected val themeUtil = currentStateHolder.theme
   protected val prefs = currentStateHolder.preferences
-  protected val dialogues by inject<Dialogues>()
 
   private var mMapType = GoogleMap.MAP_TYPE_TERRAIN
 

@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -30,6 +29,7 @@ import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -61,7 +61,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   private var mLat: Double = 0.0
   private var mLng: Double = 0.0
 
-  private var mLocList: LocationTracker? = null
+  private var locationTracker: LocationTracker? = null
 
   private var mMapListener: MapListener? = null
   private var mCallback: MapCallback? = null
@@ -73,7 +73,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     googleMap.uiSettings.isMyLocationButtonEnabled = false
     googleMap.uiSettings.isCompassEnabled = true
     setStyle(googleMap)
-    setMyLocation()
+    tryToSetMyLocation()
     googleMap.setOnMapClickListener {
       hideLayers()
       hideStyles()
@@ -89,17 +89,17 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
         }
         spinnerArray = places
         if (spinnerArray.size == 0) {
-          Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
+          toast(R.string.no_places_found)
         }
         addSelectAllItem()
         refreshAdapter()
       } else {
-        Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
+        toast(R.string.no_places_found)
       }
     }
 
     override fun onFailure(call: Call<PlacesResponse>, t: Throwable) {
-      Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
+      toast(R.string.no_places_found)
     }
   }
 
@@ -110,14 +110,17 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
         for (model in spinnerArray) {
           if (model.isSelected) {
             if (model.position != null) {
-              places.add(Place(
-                radius = markerRadius,
-                marker = markerStyle,
-                latitude = model.latitude,
-                longitude = model.longitude,
-                name = model.name,
-                address = model.address,
-                tags = model.types))
+              places.add(
+                Place(
+                  radius = markerRadius,
+                  marker = markerStyle,
+                  latitude = model.latitude,
+                  longitude = model.longitude,
+                  name = model.name,
+                  address = model.address,
+                  tags = model.types
+                )
+              )
             }
           }
         }
@@ -143,7 +146,13 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     this.markerStyle = markerStyle
   }
 
-  private fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int = markerRadius) {
+  private fun addMarker(
+    pos: LatLng?,
+    title: String?,
+    clear: Boolean,
+    animate: Boolean,
+    radius: Int = markerRadius
+  ) {
     var t = title
     if (mMap != null && pos != null) {
       if (pos.latitude == 0.0 && pos.longitude == 0.0) return
@@ -157,11 +166,13 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
       if (t == null || t.matches("".toRegex())) {
         t = pos.toString()
       }
-      mMap?.addMarker(MarkerOptions()
-        .position(pos)
-        .title(t)
-        .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
-        .draggable(clear))
+      mMap?.addMarker(
+        MarkerOptions()
+          .position(pos)
+          .title(t)
+          .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
+          .draggable(clear)
+      )
       val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
       val strokeWidth = 3f
       mMap?.addCircle(
@@ -198,7 +209,17 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   private fun addSelectAllItem() {
     if (spinnerArray.size > 1) {
-      spinnerArray.add(GooglePlaceItem(getString(R.string.add_all), "", "", "", null, listOf(), false))
+      spinnerArray.add(
+        GooglePlaceItem(
+          getString(R.string.add_all),
+          "",
+          "",
+          "",
+          null,
+          listOf(),
+          false
+        )
+      )
     }
   }
 
@@ -209,8 +230,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   fun animate(latLng: LatLng?) {
-    val update = CameraUpdateFactory.newLatLngZoom(latLng!!, 13f)
-    if (mMap != null) {
+    latLng?.also {
+      val update = CameraUpdateFactory.newLatLngZoom(it, 13f)
       mMap?.animateCamera(update)
     }
   }
@@ -221,10 +242,12 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
         hideLayers()
         false
       }
+
       isStylesVisible -> {
         hideStyles()
         false
       }
+
       else -> true
     }
   }
@@ -271,7 +294,11 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun showStyleDialog() {
-    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeProvider.colorsForSlider(requireActivity())) {
+    dialogues.showColorBottomDialog(
+      requireActivity(),
+      prefs.markerStyle,
+      ThemeProvider.colorsForSlider(requireActivity())
+    ) {
       prefs.markerStyle = it
       recreateStyle(it)
     }
@@ -293,7 +320,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun initViews() {
-    binding.placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    binding.placesList.layoutManager =
+      LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     LinearSnapHelper().attachToRecyclerView(binding.placesList)
 
     binding.placesListCard.visibility = View.GONE
@@ -355,16 +383,26 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     imm?.hideSoftInputFromWindow(binding.cardSearch.windowToken, 0)
   }
 
+  private fun tryToSetMyLocation() {
+    permissionFlow.askPermissions(
+      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
+      { setMyLocation() }
+    ) { toast(R.string.cant_access_location_services) }
+  }
+
   @SuppressLint("MissingPermission")
   private fun setMyLocation() {
-    if (Permissions.checkPermission(requireActivity(), 205,
-        Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+    if (Permissions.checkPermission(
+        requireContext(),
+        Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION
+      )
+    ) {
       mMap?.isMyLocationEnabled = true
     }
   }
 
   private fun loadPlaces() {
-    val req = binding.cardSearch.text.toString().trim().toLowerCase()
+    val req = binding.cardSearch.text.toString().trim().lowercase()
     if (req.matches("".toRegex())) return
     cancelSearchTask()
     call = RequestBuilder.getSearch(req)
@@ -402,10 +440,16 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   private fun toModels(list: List<Place>?, select: Boolean) {
     spinnerArray = ArrayList()
-    if (list != null && list.isNotEmpty()) {
+    if (!list.isNullOrEmpty()) {
       for (model in list) {
-        spinnerArray.add(GooglePlaceItem(model.name, model.id, "", model.address, LatLng(model.latitude,
-          model.longitude), model.tags, select))
+        spinnerArray.add(
+          GooglePlaceItem(
+            model.name, model.id, "", model.address, LatLng(
+              model.latitude,
+              model.longitude
+            ), model.tags, select
+          )
+        )
       }
     }
   }
@@ -465,9 +509,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   private fun zoomClick() {
     isFullscreen = !isFullscreen
-    if (mMapListener != null) {
-      mMapListener?.onZoomClick(isFullscreen)
-    }
+    mMapListener?.onZoomClick(isFullscreen)
     if (isFullscreen) {
       binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
     } else {
@@ -482,7 +524,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   override fun onResume() {
     binding.mapView.onResume()
     super.onResume()
-    startTracking()
+    tryToStartTracking()
   }
 
   override fun onLowMemory() {
@@ -508,33 +550,22 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     cancelTracking()
   }
 
+  private fun tryToStartTracking() {
+    permissionFlow.askPermissions(
+      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
+      { startTracking() }
+    ) { toast(R.string.cant_access_location_services) }
+  }
+
   private fun startTracking() {
-    mLocList = LocationTracker(prefs, context) { lat, lng ->
+    locationTracker = LocationTracker(prefs, context) { lat, lng ->
       mLat = lat
       mLng = lng
     }
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      205 -> if (Permissions.checkPermission(grantResults)) {
-        setMyLocation()
-      } else {
-        Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
-      }
-      200 -> if (Permissions.checkPermission(grantResults)) {
-        startTracking()
-      } else {
-        Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
-      }
-    }
-  }
-
   private fun cancelTracking() {
-    if (mLocList != null) {
-      mLocList?.removeUpdates()
-    }
+    locationTracker?.removeUpdates()
   }
 
   override fun onDetach() {

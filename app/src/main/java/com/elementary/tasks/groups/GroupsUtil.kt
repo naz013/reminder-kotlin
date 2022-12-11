@@ -1,28 +1,50 @@
 package com.elementary.tasks.groups
 
-import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.ReminderGroup
-import java.util.*
+import com.elementary.tasks.core.utils.TextProvider
+import java.util.Random
 
-object GroupsUtil {
+class GroupsUtil(
+  private val textProvider: TextProvider,
+  private val reminderGroupDao: ReminderGroupDao
+) {
 
-  fun initDefault(context: Context, appDb: AppDb): String {
-    val random = Random()
-    val def = ReminderGroup(groupTitle = context.getString(R.string.general), groupColor = random.nextInt(16))
+  private val random = Random()
+
+  fun initDefaultIfEmpty() {
+    if (reminderGroupDao.all().isEmpty()) {
+      initDefault()
+    }
+  }
+
+  fun initDefault(): String {
+    val def = ReminderGroup(
+      groupTitle = textProvider.getText(R.string.general),
+      groupColor = random.nextInt(16)
+    )
     def.isDefaultGroup = true
-    try {
-      appDb.reminderGroupDao().insert(def)
-      appDb.reminderGroupDao().insert(ReminderGroup(groupTitle = context.getString(R.string.work), groupColor = random.nextInt(16)))
-      appDb.reminderGroupDao().insert(ReminderGroup(groupTitle = context.getString(R.string.personal), groupColor = random.nextInt(16)))
-    } catch (e: Exception) {
+    runCatching {
+      reminderGroupDao.insert(def)
+      reminderGroupDao.insert(
+        ReminderGroup(
+          groupTitle = textProvider.getText(R.string.work),
+          groupColor = random.nextInt(16)
+        )
+      )
+      reminderGroupDao.insert(
+        ReminderGroup(
+          groupTitle = textProvider.getText(R.string.personal),
+          groupColor = random.nextInt(16)
+        )
+      )
     }
     return def.groupUuId
   }
 
-  fun mapAll(appDb: AppDb): Map<String, ReminderGroup> {
-    val list = appDb.reminderGroupDao().all()
+  fun mapAll(): Map<String, ReminderGroup> {
+    val list = reminderGroupDao.all()
     val map = mutableMapOf<String, ReminderGroup>()
     for (group in list) map[group.groupUuId] = group
     return map

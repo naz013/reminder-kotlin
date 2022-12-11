@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.RemotePrefs
 import com.elementary.tasks.core.utils.adapterModule
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
+import com.elementary.tasks.core.utils.dbModule
 import com.elementary.tasks.core.utils.repositoryModule
 import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.utilModule
@@ -48,6 +49,7 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
       modules(
         listOf(
           utilModule,
+          dbModule(this@ReminderApp),
           repositoryModule,
           storageModule,
           completableModule,

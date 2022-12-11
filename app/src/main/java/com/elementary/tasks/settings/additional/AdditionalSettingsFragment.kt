@@ -12,7 +12,7 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
-import java.util.*
+import java.util.Locale
 
 class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAdditionalBinding>() {
 
@@ -99,10 +99,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
   }
 
   private fun changeFollowPrefs() {
-    withActivity {
-      if (!Permissions.checkPermission(it, FOLLOW, Permissions.READ_PHONE_STATE)) {
-        return@withActivity
-      }
+    permissionFlow.askPermission(Permissions.READ_PHONE_STATE) {
       val isChecked = binding.followReminderPrefs.isChecked
       binding.followReminderPrefs.isChecked = !isChecked
       prefs.isFollowReminderEnabled = !isChecked
@@ -110,10 +107,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
   }
 
   private fun changeMissedPrefs() {
-    withActivity {
-      if (!Permissions.checkPermission(it, MISSED, Permissions.READ_PHONE_STATE)) {
-        return@withActivity
-      }
+    permissionFlow.askPermission(Permissions.READ_PHONE_STATE) {
       val isChecked = binding.missedPrefs.isChecked
       binding.missedPrefs.isChecked = !isChecked
       prefs.isMissedReminderEnabled = !isChecked
@@ -121,10 +115,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
   }
 
   private fun changeQuickSmsPrefs() {
-    withActivity {
-      if (!Permissions.checkPermission(it, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
-        return@withActivity
-      }
+    permissionFlow.askPermission(Permissions.READ_PHONE_STATE) {
       val isChecked = binding.quickSMSPrefs.isChecked
       binding.quickSMSPrefs.isChecked = !isChecked
       prefs.isQuickSmsEnabled = !isChecked
@@ -167,21 +158,4 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
   }
 
   override fun getTitle(): String = getString(R.string.additional)
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        MISSED -> changeMissedPrefs()
-        QUICK_SMS -> changeQuickSmsPrefs()
-        FOLLOW -> changeFollowPrefs()
-      }
-    }
-  }
-
-  companion object {
-    private const val MISSED = 107
-    private const val QUICK_SMS = 108
-    private const val FOLLOW = 109
-  }
 }

@@ -329,7 +329,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun changeAutoCallPrefs() {
     val isChecked = binding.autoCallPrefs.isChecked
     if (!isChecked) {
-      askPermission(Permissions.CALL_PHONE, RuntimeRequestCode.obtainNewCode())
+      permissionFlow.askPermission(Permissions.CALL_PHONE) {
+        binding.autoCallPrefs.isChecked = true
+        prefs.isAutoCallEnabled = true
+      }
     } else {
       binding.autoCallPrefs.isChecked = false
       prefs.isAutoCallEnabled = false
@@ -794,7 +797,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     if (!SuperUtil.checkNotificationPermission(requireActivity())) {
       SuperUtil.askNotificationPermission(requireActivity(), dialogues)
     } else {
-      askPermission(Permissions.BLUETOOTH, RuntimeRequestCode.obtainNewCode())
+      permissionFlow.askPermission(Permissions.BLUETOOTH) {}
     }
   }
 
@@ -849,10 +852,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     Timber.d("tryChangeSbPrefs: $isChecked")
     if (!isChecked) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        askPermission(
-          Permissions.POST_NOTIFICATION,
-          RuntimeRequestCode.obtainNewCode()
-        )
+        permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { changeSbPrefs() }
       } else {
         changeSbPrefs()
       }
@@ -1026,39 +1026,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     getString(R.string.priority_high) + " " + getString(R.string.and_above),
     getString(R.string.priority_highest)
   )
-
-  override fun permissionGranted(permission: String, requestCode: Int) {
-    if (requestCode == RuntimeRequestCode.currentCode()) {
-      when (permission) {
-        Permissions.POST_NOTIFICATION -> changeSbPrefs()
-        Permissions.CALL_PHONE -> {
-          binding.autoCallPrefs.isChecked = true
-          prefs.isAutoCallEnabled = true
-        }
-      }
-    }
-  }
-
-  override fun explainPermission(permission: String, requestCode: Int) {
-    when (permission) {
-      Permissions.POST_NOTIFICATION -> {
-        showPermissionExplanation(
-          permission = permission,
-          requestCode = requestCode,
-          title = getString(R.string.post_notification),
-          message = getString(R.string.post_notification_explanation)
-        )
-      }
-      Permissions.CALL_PHONE -> {
-        showPermissionExplanation(
-          permission = permission,
-          requestCode = requestCode,
-          title = getString(R.string.call_phone),
-          message = getString(R.string.call_phone_explanation)
-        )
-      }
-    }
-  }
 
   companion object {
 

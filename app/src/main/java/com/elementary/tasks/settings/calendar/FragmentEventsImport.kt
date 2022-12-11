@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -80,7 +79,8 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     binding.autoCheck.isChecked = prefs.isAutoEventsCheckEnabled
     binding.syncInterval.isEnabled = false
 
-    binding.eventCalendars.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    binding.eventCalendars.layoutManager =
+      LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     binding.eventCalendars.adapter = calendarsAdapter
   }
 
@@ -88,11 +88,13 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     withContext {
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(getString(R.string.interval))
-      val items = arrayOf(getString(R.string.one_hour),
+      val items = arrayOf(
+        getString(R.string.one_hour),
         getString(R.string.six_hours),
         getString(R.string.twelve_hours),
         getString(R.string.one_day),
-        getString(R.string.two_days))
+        getString(R.string.two_days)
+      )
       builder.setSingleChoiceItems(items, intervalPosition) { _, item -> mItemSelect = item }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         saveIntervalPrefs()
@@ -113,10 +115,8 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
       3 -> prefs.autoCheckInterval = 24
       4 -> prefs.autoCheckInterval = 48
     }
-    withActivity {
-      if (Permissions.checkPermission(it, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-        startCheckService()
-      }
+    permissionFlow.askPermissions(listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+      startCheckService()
     }
   }
 
@@ -125,13 +125,10 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   }
 
   private fun loadCalendars() {
-    withActivity {
-      if (!Permissions.checkPermission(it, CALENDAR_PERM, Permissions.READ_CALENDAR)) {
-        return@withActivity
-      }
+    permissionFlow.askPermission(Permissions.READ_CALENDAR) {
       list = calendarUtils.getCalendarsList()
       if (list.isEmpty()) {
-        Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
+        toast(R.string.no_calendars_found)
       }
       calendarsAdapter.data = list
       calendarsAdapter.selectIds(prefs.trackCalendarIds)
@@ -146,18 +143,15 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   override fun getTitle(): String = getString(R.string.import_events)
 
   private fun importEvents() {
-    withActivity {
-      if (!Permissions.checkPermission(it, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-        return@withActivity
-      }
+    permissionFlow.askPermissions(listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
       if (list.isEmpty()) {
-        Toast.makeText(it, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
-        return@withActivity
+        toast(R.string.no_calendars_found)
+        return@askPermissions
       }
       val selectedIds = calendarsAdapter.getSelectedIds()
       if (selectedIds.isEmpty()) {
-        Toast.makeText(it, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show()
-        return@withActivity
+        toast(R.string.you_dont_select_any_calendar)
+        return@askPermissions
       }
       val isEnabled = prefs.isCalendarEnabled
       if (!isEnabled) {
@@ -172,25 +166,11 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
     when (buttonView.id) {
       R.id.autoCheck -> if (isChecked) {
-        withActivity {
-          if (Permissions.checkPermission(it, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            autoCheck(true)
-          }
-        }
+        permissionFlow.askPermissions(
+          listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
+        ) { autoCheck(true) }
       } else {
         autoCheck(false)
-      }
-    }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        101 -> autoCheck(true)
-        102 -> importEvents()
-        CALENDAR_PERM -> loadCalendars()
-        AUTO_PERM -> startCheckService()
       }
     }
   }
@@ -206,7 +186,6 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   }
 
   private fun import(ids: Array<Long>) {
-    val ctx = context ?: return
     binding.button.isEnabled = false
     binding.progressView.visibility = View.VISIBLE
     mJob = launchDefault {
@@ -279,8 +258,10 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     }
   }
 
-  private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long,
-                           categoryId: String, calendarId: Long, appDb: AppDb) {
+  private fun saveReminder(
+    itemId: Long, summary: String, dtStart: Long, repeat: Long,
+    categoryId: String, calendarId: Long, appDb: AppDb
+  ) {
     val reminder = Reminder()
     reminder.type = Reminder.BY_DATE
     reminder.repeatInterval = repeat
@@ -297,10 +278,5 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   override fun onDestroy() {
     super.onDestroy()
     mJob?.cancel()
-  }
-
-  companion object {
-    private const val CALENDAR_PERM = 500
-    private const val AUTO_PERM = 501
   }
 }

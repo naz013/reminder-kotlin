@@ -6,14 +6,16 @@ import android.os.StatFs
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -23,7 +25,6 @@ import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
@@ -83,10 +84,7 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   }
 
   private fun loadUserInfo() {
-    withActivity {
-      if (!Permissions.checkPermission(it, SD_CODE, Permissions.READ_EXTERNAL)) {
-        return@withActivity
-      }
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       val list = ArrayList<Info>()
       list.add(Info.Local)
       if (dropbox.isLinked) {
@@ -96,15 +94,6 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
         list.add(Info.Google)
       }
       loadInfo(list)
-    }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      SD_CODE -> if (Permissions.checkPermission(grantResults)) {
-        loadUserInfo()
-      }
     }
   }
 
@@ -129,11 +118,11 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   }
 
   private fun showProgress() {
-    binding.progressView.visibility = View.VISIBLE
+    binding.progressView.show()
   }
 
   private fun hideProgress() {
-    binding.progressView.visibility = View.GONE
+    binding.progressView.hide()
   }
 
   private fun deleteFiles(params: List<File?>, type: Info) {
@@ -162,15 +151,14 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
                 f.delete()
               }
             } else {
-              if (file.delete()) {
-              }
+              file.delete()
             }
           }
         }
       }
       withUIContext {
         hideProgress()
-        Toast.makeText(context, R.string.all_files_removed, Toast.LENGTH_SHORT).show()
+        toast(R.string.all_files_removed)
         loadUserInfo()
       }
     }
@@ -270,8 +258,6 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   }
 
   companion object {
-    private const val SD_CODE = 623
-
     fun newInstance(): BackupsFragment {
       return BackupsFragment()
     }

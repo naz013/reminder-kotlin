@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.groups
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
@@ -12,21 +12,20 @@ import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 
 class GroupViewModel(
   id: String,
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseGroupsViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  reminderGroupDao: ReminderGroupDao
+) : BaseGroupsViewModel(prefs, dispatcherProvider, workManagerProvider, reminderGroupDao) {
 
-  val reminderGroup = appDb.reminderGroupDao().loadById(id)
+  val reminderGroup = reminderGroupDao.loadById(id)
   var isEdited = false
   var hasSameInDb: Boolean = false
   var isFromFile: Boolean = false
-  var isLogged = false
 
   fun findSame(id: String) {
     launchDefault {
-      val group = appDb.reminderGroupDao().getById(id)
+      val group = reminderGroupDao.getById(id)
       hasSameInDb = group != null
     }
   }
@@ -35,11 +34,11 @@ class GroupViewModel(
     postInProgress(true)
     launchDefault {
       if (!wasDefault && reminderGroup.isDefaultGroup) {
-        val groups = appDb.reminderGroupDao().all()
+        val groups = reminderGroupDao.all()
         for (g in groups) g.isDefaultGroup = false
-        appDb.reminderGroupDao().insertAll(groups)
+        reminderGroupDao.insertAll(groups)
       }
-      appDb.reminderGroupDao().insert(reminderGroup)
+      reminderGroupDao.insert(reminderGroup)
       startWork(GroupSingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
       postInProgress(false)
       postCommand(Commands.SAVED)

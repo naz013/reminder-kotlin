@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -15,9 +14,12 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.trimmedText
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
@@ -25,12 +27,13 @@ import com.elementary.tasks.pin.PinLoginActivity
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
+import java.util.UUID
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
 
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<CreatePlaceViewModel>()
+  private val permissionFlow = PermissionFlow(this, dialogues)
   private var googleMap: AdvancedMapFragment? = null
 
   override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
@@ -60,7 +63,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     loadPlace()
 
     if (savedInstanceState == null) {
-      stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+      stateViewModel.isLogged = intentBoolean(ARG_LOGGED)
     }
   }
 
@@ -92,28 +95,23 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     }
   }
 
-  private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun loadPlace() {
     initViewModel()
     if (intent.data != null) {
-      readUri()
+      permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
-      try {
-        val place = intent.getParcelableExtra(Constants.INTENT_ITEM) as Place?
+      runCatching {
+        val place = intentParcelable(Constants.INTENT_ITEM, Place::class.java)
         showPlace(place, true)
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
 
   private fun readUri() {
-    if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-      return
-    }
     intent.data?.let {
-      try {
+      runCatching {
         val place = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
           val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_PLACE)
           if (any != null && any is Place) {
@@ -121,8 +119,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
           } else null
         } else null
         showPlace(place, true)
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
@@ -144,7 +140,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
   }
 
   private fun savePlace(newId: Boolean = false) {
-    var name: String = binding.placeName.text.toString().trim()
+    var name: String = binding.placeName.trimmedText()
     if (name == "") {
       name = stateViewModel.place.name
     }
@@ -207,7 +203,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
         savePlace()
       }
     } else {
-      Toast.makeText(this, getString(R.string.you_dont_select_place), Toast.LENGTH_SHORT).show()
+      toast(R.string.you_dont_select_place)
     }
   }
 
@@ -239,7 +235,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
       this.longitude = place.longitude
       this.name = address
     }
-    if (binding.placeName.text.toString().trim() == "") {
+    if (binding.placeName.trimmedText() == "") {
       binding.placeName.setText(address)
     }
   }
@@ -267,15 +263,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     }
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
-      readUri()
-    }
-  }
-
   companion object {
-    private const val SD_REQ = 555
     private const val MENU_ITEM_DELETE = 12
     private const val ARG_LOGGED = "arg_logged"
 

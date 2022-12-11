@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Prefs
@@ -26,15 +28,18 @@ class GoogleTaskListViewModel(
   gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  updatesHelper: UpdatesHelper
+  updatesHelper: UpdatesHelper,
+  googleTasksDao: GoogleTasksDao,
+  googleTaskListsDao: GoogleTaskListsDao
 ) : BaseTaskListsViewModel(
-  appDb,
   prefs,
   context,
   gTasks,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  googleTasksDao,
+  googleTaskListsDao
 ) {
 
   var googleTaskList: LiveData<GoogleTaskList>
@@ -67,7 +72,7 @@ class GoogleTaskListViewModel(
       if (lists != null && lists.size > 0 && lists.items != null) {
         for (item in lists.items) {
           val listId = item.id
-          var taskList = appDb.googleTaskListsDao().getById(listId)
+          var taskList = googleTaskListsDao.getById(listId)
           if (taskList != null) {
             taskList.update(item)
           } else {
@@ -75,7 +80,7 @@ class GoogleTaskListViewModel(
             val color = r.nextInt(15)
             taskList = GoogleTaskList(item, color)
           }
-          appDb.googleTaskListsDao().insert(taskList)
+          googleTaskListsDao.insert(taskList)
           val tasks = gTasks.getTasks(listId)
           if (tasks.isEmpty()) {
             withUIContext {
@@ -86,7 +91,7 @@ class GoogleTaskListViewModel(
           } else {
             val googleTasks = ArrayList<GoogleTask>()
             for (task in tasks) {
-              var googleTask = appDb.googleTasksDao().getById(task.id)
+              var googleTask = googleTasksDao.getById(task.id)
               if (googleTask != null) {
                 googleTask.listId = listId
                 googleTask.update(task)
@@ -95,7 +100,7 @@ class GoogleTaskListViewModel(
               }
               googleTasks.add(googleTask)
             }
-            appDb.googleTasksDao().insertAll(googleTasks)
+            googleTasksDao.insertAll(googleTasks)
             withUIContext {
               postInProgress(false)
               postCommand(Commands.UPDATED)
@@ -128,7 +133,7 @@ class GoogleTaskListViewModel(
     }
     postInProgress(true)
     launchDefault {
-      appDb.googleTaskListsDao().insert(googleTaskList)
+      googleTaskListsDao.insert(googleTaskList)
       try {
         gTasks.updateTasksList(googleTaskList.title, googleTaskList.listId)
         postInProgress(false)
@@ -147,9 +152,8 @@ class GoogleTaskListViewModel(
     }
     postInProgress(true)
     launchDefault {
-      val googleTasks =
-        appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
-      appDb.googleTasksDao().deleteAll(googleTasks)
+      val googleTasks = googleTasksDao.getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
+      googleTasksDao.deleteAll(googleTasks)
       gTasks.clearTaskList(googleTaskList.listId)
       postInProgress(false)
       postCommand(Commands.UPDATED)
@@ -162,7 +166,7 @@ class GoogleTaskListViewModel(
   fun saveLocalGoogleTaskList(googleTaskList: GoogleTaskList) {
     postInProgress(true)
     launchDefault {
-      appDb.googleTaskListsDao().insert(googleTaskList)
+      googleTaskListsDao.insert(googleTaskList)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

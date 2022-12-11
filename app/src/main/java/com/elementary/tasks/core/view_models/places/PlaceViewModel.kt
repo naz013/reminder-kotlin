@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.places
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.PlacesDao
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
@@ -12,19 +12,19 @@ import com.elementary.tasks.places.work.PlaceSingleBackupWorker
 
 class PlaceViewModel(
   key: String,
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BasePlacesViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  placesDao: PlacesDao
+) : BasePlacesViewModel(prefs, dispatcherProvider, workManagerProvider, placesDao) {
 
-  var place = appDb.placesDao().loadByKey(key)
+  var place = placesDao.loadByKey(key)
   var hasSameInDb: Boolean = false
 
   fun savePlace(place: Place) {
     postInProgress(true)
     launchDefault {
-      appDb.placesDao().insert(place)
+      placesDao.insert(place)
       startWork(PlaceSingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -33,7 +33,7 @@ class PlaceViewModel(
 
   fun findSame(id: String) {
     launchDefault {
-      val place = appDb.placesDao().getByKey(id)
+      val place = placesDao.getByKey(id)
       hasSameInDb = place != null
     }
   }

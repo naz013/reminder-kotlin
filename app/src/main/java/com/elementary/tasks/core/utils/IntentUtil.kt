@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import com.elementary.tasks.R
 
+@Deprecated("Use Result launcher")
 object IntentUtil {
 
+  @Deprecated("Use Result launcher")
   fun pickImage(activity: Activity, code: Int) {
     val intent = Intent()
     intent.type = "image/*"
@@ -16,6 +18,7 @@ object IntentUtil {
     }
   }
 
+  @Deprecated("Use Result launcher")
   fun pickMelody(activity: Activity, code: Int) {
     val intent = Intent()
     intent.type = "audio/*"
@@ -26,6 +29,7 @@ object IntentUtil {
     }
   }
 
+  @Deprecated("Use Result launcher")
   fun pickFile(activity: Activity, code: Int) {
     val intent = Intent()
     intent.type = "*/*"

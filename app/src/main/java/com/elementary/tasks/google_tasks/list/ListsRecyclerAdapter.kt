@@ -33,7 +33,12 @@ class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Ho
 
     init {
       binding.clickView.setOnClickListener {
-        actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+        actionsListener?.onAction(
+          it,
+          bindingAdapterPosition,
+          getItem(bindingAdapterPosition),
+          ListActions.OPEN
+        )
       }
     }
 

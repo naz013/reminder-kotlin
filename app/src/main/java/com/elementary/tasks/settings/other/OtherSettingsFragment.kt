@@ -1,23 +1,26 @@
 package com.elementary.tasks.settings.other
 
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
+import org.koin.android.ext.android.inject
 
 class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>() {
+
+  private val packageManagerWrapper by inject<PackageManagerWrapper>()
 
   private val mDataList = ArrayList<Item>()
   private val translators: String
@@ -66,8 +69,8 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
   }
 
   private fun requestPermission(position: Int) {
-    withActivity {
-      Permissions.requestPermission(it, position, mDataList[position].permission)
+    permissionFlow.askPermission(mDataList[position].permission) {
+      showPermissionDialog()
     }
   }
 
@@ -106,8 +109,18 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     if (!Permissions.checkPermission(activity, Permissions.WRITE_EXTERNAL)) {
       mDataList.add(Item(getString(R.string.write_external_storage), Permissions.WRITE_EXTERNAL))
     }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+      if (!Permissions.checkPermission(activity, Permissions.FOREGROUND)) {
+        mDataList.add(Item(getString(R.string.foreground_service), Permissions.FOREGROUND))
+      }
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (!Permissions.checkPermission(activity, Permissions.POST_NOTIFICATION)) {
+        mDataList.add(Item(getString(R.string.post_notification), Permissions.POST_NOTIFICATION))
+      }
+    }
     return if (mDataList.size == 0) {
-      Toast.makeText(context, R.string.all_permissions_are_enabled, Toast.LENGTH_SHORT).show()
+      toast(R.string.all_permissions_are_enabled)
       false
     } else {
       true
@@ -163,28 +176,9 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
         if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
       b.appName.text = name.uppercase()
       b.translatorsList.text = translators
-      val pInfo: PackageInfo
-      try {
-        pInfo = it.packageManager.getPackageInfo(it.packageName, 0)
-        b.appVersion.text = pInfo.versionName
-      } catch (e: PackageManager.NameNotFoundException) {
-        e.printStackTrace()
-      }
-
+      b.appVersion.text = packageManagerWrapper.getVersionName()
       builder.setView(b.root)
       builder.create().show()
-    }
-  }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (grantResults.isEmpty()) return
-    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      showPermissionDialog()
     }
   }
 

@@ -1,10 +1,11 @@
 package com.elementary.tasks.core.cloud
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -13,7 +14,7 @@ import com.google.api.services.tasks.TasksScopes
 import timber.log.Timber
 
 class GoogleLogin(
-  private val activity: Activity,
+  private val fragment: BaseFragment<*>,
   private val prefs: Prefs,
   private val drive: GDrive,
   private val tasks: GTasks,
@@ -33,6 +34,11 @@ class GoogleLogin(
     }
 
   private var mode = Mode.DRIVE
+  private val resultLauncher = fragment.registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+  ) { result ->
+    onActivityResult(result.resultCode, result.data)
+  }
 
   fun logOutDrive() {
     mode = Mode.DRIVE
@@ -43,7 +49,7 @@ class GoogleLogin(
       .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
       .requestEmail()
       .build()
-    val client = GoogleSignIn.getClient(activity, signInOptions)
+    val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
     client.signOut().addOnSuccessListener {
       loginCallback.onResult(false, mode)
     }
@@ -58,7 +64,7 @@ class GoogleLogin(
       .requestScopes(Scope(TasksScopes.TASKS))
       .requestEmail()
       .build()
-    val client = GoogleSignIn.getClient(activity, signInOptions)
+    val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
     client.signOut().addOnSuccessListener {
       loginCallback.onResult(false, mode)
     }
@@ -71,8 +77,8 @@ class GoogleLogin(
       .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
       .requestEmail()
       .build()
-    val client = GoogleSignIn.getClient(activity, signInOptions)
-    activity.startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
+    val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
+    resultLauncher.launch(client.signInIntent)
   }
 
   fun loginTasks() {
@@ -82,17 +88,17 @@ class GoogleLogin(
       .requestScopes(Scope(TasksScopes.TASKS))
       .requestEmail()
       .build()
-    val client = GoogleSignIn.getClient(activity, signInOptions)
-    activity.startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
+    val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
+    resultLauncher.launch(client.signInIntent)
   }
 
   private fun sendFail() {
     loginCallback.onFail(mode)
   }
 
-  fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    Timber.d("onActivityResult: mode=${mode}, req=$requestCode, res=$resultCode, data=$data")
-    if (requestCode == REQUEST_CODE_SIGN_IN && resultCode == RESULT_OK) {
+  private fun onActivityResult(resultCode: Int, data: Intent?) {
+    Timber.d("onActivityResult: mode=${mode}, res=$resultCode, data=$data")
+    if (resultCode == RESULT_OK) {
       if (data != null) handleSignInResult(data)
       else sendFail()
     } else {
@@ -148,8 +154,4 @@ class GoogleLogin(
   }
 
   enum class Mode { DRIVE, TASKS }
-
-  companion object {
-    private const val REQUEST_CODE_SIGN_IN = 4
-  }
 }

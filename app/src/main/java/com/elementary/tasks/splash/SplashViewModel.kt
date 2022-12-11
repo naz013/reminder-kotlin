@@ -1,13 +1,11 @@
 package com.elementary.tasks.splash
 
-import android.content.Context
-import android.content.pm.PackageManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
@@ -20,13 +18,13 @@ import kotlinx.coroutines.launch
 
 class SplashViewModel(
   gTasks: GTasks,
-  private val appDb: AppDb,
   private val prefs: Prefs,
-  private val context: Context,
   private val enableThread: EnableThread,
   private val dispatcherProvider: DispatcherProvider,
   private val notifier: Notifier,
-  featureManager: FeatureManager
+  featureManager: FeatureManager,
+  private val packageManagerWrapper: PackageManagerWrapper,
+  private val groupsUtil: GroupsUtil
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
@@ -50,26 +48,20 @@ class SplashViewModel(
 
   private fun checkDb() {
     runCatching {
-      if (appDb.reminderGroupDao().all().isEmpty()) {
-        GroupsUtil.initDefault(context, appDb)
-      }
+      groupsUtil.initDefaultIfEmpty()
     }
   }
 
   private fun checkIfAppUpdated() {
-    try {
-      val info = context.packageManager.getPackageInfo(context.packageName, 0)
-      if (!prefs.getVersion(info.versionName)) {
-        prefs.saveVersionBoolean(info.versionName)
-        enableThread.run()
-      }
-    } catch (e: PackageManager.NameNotFoundException) {
-      e.printStackTrace()
+    val versionName = packageManagerWrapper.getVersionName()
+    if (!prefs.getVersion(versionName)) {
+      prefs.saveVersionBoolean(versionName)
+      enableThread.run()
     }
   }
 
   private fun initPrefs() {
-    prefs.initPrefs(context)
+    prefs.initPrefs()
     prefs.checkPrefs()
   }
 }

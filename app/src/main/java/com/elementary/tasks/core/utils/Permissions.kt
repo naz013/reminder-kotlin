@@ -61,6 +61,7 @@ object Permissions {
     return true
   }
 
+  @Deprecated("Use PermissionFlow to request permission")
   fun ensureBackgroundLocation(activity: Activity, requestCode: Int): Boolean {
     return if (isBgLocationAllowed(activity)) {
       true
@@ -74,6 +75,7 @@ object Permissions {
     }
   }
 
+  @Deprecated("Use PermissionFlow to request permission")
   fun ensureForeground(activity: Activity, requestCode: Int): Boolean {
     return if (checkForeground(activity)) {
       true
@@ -87,6 +89,7 @@ object Permissions {
     }
   }
 
+  @Deprecated("Use PermissionFlow to request permission")
   fun checkPermission(grantResults: IntArray): Boolean {
     if (grantResults.isEmpty()) {
       return false
@@ -100,6 +103,7 @@ object Permissions {
     }
   }
 
+  @Deprecated("Use PermissionFlow to request permission")
   fun checkPermission(activity: Activity, requestCode: Int, vararg permissions: String): Boolean {
     return if (checkPermission(activity, *permissions)) {
       true
@@ -126,6 +130,7 @@ object Permissions {
     return !Module.isMarshmallow || ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
   }
 
+  @Deprecated("Use PermissionFlow to request permission")
   fun requestPermission(a: Activity, requestCode: Int, vararg permission: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val size = permission.size

@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.create.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
@@ -14,15 +13,12 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.os.ContactPicker
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -51,11 +47,12 @@ import timber.log.Timber
 
 abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
+  private val contactPicker = ContactPicker(requireActivity()) { actionView?.number = it.phone }
+
   lateinit var iFace: ReminderInterface
     private set
 
   protected val prefs by inject<Prefs>()
-  protected val dialogues by inject<Dialogues>()
   protected val themeUtil by inject<ThemeProvider>()
   protected val calendarUtils by inject<CalendarUtils>()
 
@@ -113,8 +110,10 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     actionView?.let {
       if (prefs.isTelephonyAllowed) {
         it.show()
-        it.setActivity(requireActivity())
-        it.setContactClickListener { selectContact() }
+        it.setPermissionHandle(permissionFlow)
+        it.setContactClickListener {
+          permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
+        }
         it.bindProperty(iFace.state.reminder.target) { number ->
           iFace.state.reminder.target = number
           updateActions()
@@ -175,7 +174,8 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     }
     summaryView?.let {
       it.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
-      it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+      it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
+        InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
       it.bindProperty(iFace.state.reminder.summary) { summary ->
         iFace.state.reminder.summary = summary.trim()
       }
@@ -198,12 +198,17 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       it.onFileSelectListener = {
         iFace.attachFile()
       }
-      ViewUtils.registerDragAndDrop(requireActivity(), it, true, ThemeProvider.getSecondaryColor(it.context),
+      ViewUtils.registerDragAndDrop(requireActivity(),
+        it,
+        true,
+        ThemeProvider.getSecondaryColor(it.context),
         { clipData ->
           if (clipData.itemCount > 0) {
             it.setUri(clipData.getItemAt(0).uri)
           }
-        }, *ATTACHMENT_TYPES)
+        },
+        *ATTACHMENT_TYPES
+      )
       it.bindProperty(iFace.state.reminder.attachmentFile) { path ->
         iFace.state.reminder.attachmentFile = path
       }
@@ -309,7 +314,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   open fun onVoiceAction(text: String) {
-
   }
 
   protected fun isTablet() = iFace.isTablet()
@@ -339,11 +343,10 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   fun onGroupUpdate(reminderGroup: ReminderGroup) {
-    try {
+    runCatching {
       iFace.state.reminder.groupUuId = reminderGroup.groupUuId
       iFace.state.reminder.groupColor = reminderGroup.groupColor
       iFace.state.reminder.groupTitle = reminderGroup.groupTitle
-    } catch (e: Exception) {
     }
     if (isResumed) {
       groupView?.reminderGroup = reminderGroup
@@ -364,34 +367,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     attachmentView?.setUri(uri)
   }
 
-  private fun selectContact() {
-    if (Permissions.checkPermission(requireActivity(), CONTACTS, Permissions.READ_CONTACTS)) {
-      SuperUtil.selectContact(requireActivity(), Constants.REQUEST_CODE_CONTACTS)
-    }
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
-      if (Permissions.checkPermission(requireActivity(), CONTACTS, Permissions.READ_CONTACTS)) {
-        val contact = Contacts.readPickerResults(requireContext(), requestCode, resultCode, data)
-        if (contact != null) {
-          actionView?.number = contact.phone
-        }
-      }
-    }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    actionView?.onRequestPermissionsResult(requestCode, grantResults)
-    when (requestCode) {
-      CONTACTS -> if (Permissions.checkPermission(grantResults)) selectContact()
-    }
-  }
-
   companion object {
-    private const val CONTACTS = 112
     val ATTACHMENT_TYPES = arrayOf(UriUtil.URI_MIME, UriUtil.ANY_MIME)
   }
 }

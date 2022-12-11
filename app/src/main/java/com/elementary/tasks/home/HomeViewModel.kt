@@ -8,6 +8,7 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
@@ -29,15 +30,18 @@ class HomeViewModel(
   private val birthdayModelAdapter: BirthdayModelAdapter,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  updatesHelper: UpdatesHelper
+  updatesHelper: UpdatesHelper,
+  private val birthdaysDao: BirthdaysDao
 ) : BaseRemindersViewModel(
-  appDb,
   currentStateHolder.preferences,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ), (String) -> Unit {
 
   private val _reminders = mutableLiveDataOf<List<Reminder>>()
@@ -55,12 +59,12 @@ class HomeViewModel(
 
   private fun initReminders() {
     val remindersLiveData = if (prefs.showPermanentOnHome) {
-      appDb.reminderDao().loadAllTypesInRangeWithPermanent(
+      reminderDao.loadAllTypesInRangeWithPermanent(
         fromTime = TimeUtil.getDayStart(),
         toTime = TimeUtil.getDayEnd()
       )
     } else {
-      appDb.reminderDao().loadAllTypesInRange(
+      reminderDao.loadAllTypesInRange(
         fromTime = TimeUtil.getDayStart(),
         toTime = TimeUtil.getDayEnd()
       )
@@ -74,7 +78,7 @@ class HomeViewModel(
   fun deleteBirthday(id: String) {
     postInProgress(true)
     launchDefault {
-      appDb.birthdaysDao().delete(id)
+      birthdaysDao.delete(id)
       updateBirthdayPermanent()
       startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       postInProgress(false)

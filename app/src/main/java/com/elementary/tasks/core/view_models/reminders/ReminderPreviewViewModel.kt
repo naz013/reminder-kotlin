@@ -23,7 +23,7 @@ import timber.log.Timber
 
 class ReminderPreviewViewModel(
   id: String,
-  appDb: AppDb,
+  private val appDb: AppDb,
   prefs: Prefs,
   calendarUtils: CalendarUtils,
   eventControlFactory: EventControlFactory,
@@ -33,13 +33,15 @@ class ReminderPreviewViewModel(
   private val backupTool: BackupTool,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ) {
 
   private val _note = mutableLiveDataOf<NoteWithImages>()
@@ -55,7 +57,7 @@ class ReminderPreviewViewModel(
   val sharedFile = _sharedFile.toLiveData()
 
   val clearExtraData = mutableLiveDataOf<Boolean>()
-  val reminder = Transformations.map(appDb.reminderDao().loadById(id)) {
+  val reminder = Transformations.map(reminderDao.loadById(id)) {
     uiReminderPreviewAdapter.create(it)
   }
 
@@ -65,7 +67,7 @@ class ReminderPreviewViewModel(
   fun saveNewShopList(shopList: List<ShopItem>) {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderDao().getById(reminderId)?.also {
+      reminderDao.getById(reminderId)?.also {
         saveReminder(it.copy(shoppings = shopList))
       }
     }
@@ -73,7 +75,7 @@ class ReminderPreviewViewModel(
 
   fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = appDb.reminderDao().getById(id)
+      val reminder = reminderDao.getById(id)
       hasSameInDb = reminder != null
     }
   }
@@ -120,35 +122,35 @@ class ReminderPreviewViewModel(
   fun toggleReminder() {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderDao().getById(reminderId)?.also { toggleReminder(it) }
+      reminderDao.getById(reminderId)?.also { toggleReminder(it) }
     }
   }
 
   fun copyReminder(time: Long, name: String) {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderDao().getById(reminderId)?.also { copyReminder(it, time, name) }
+      reminderDao.getById(reminderId)?.also { copyReminder(it, time, name) }
     }
   }
 
   fun deleteReminder(showMessage: Boolean) {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderDao().getById(reminderId)?.also { deleteReminder(it, showMessage) }
+      reminderDao.getById(reminderId)?.also { deleteReminder(it, showMessage) }
     }
   }
 
   fun moveToTrash() {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderDao().getById(reminderId)?.also { moveToTrash(it) }
+      reminderDao.getById(reminderId)?.also { moveToTrash(it) }
     }
   }
 
   fun shareReminder() {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderDao().getById(reminderId)?.let {
+      reminderDao.getById(reminderId)?.let {
         UiShareData(
           file = backupTool.reminderToFile(it),
           name = it.summary

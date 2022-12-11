@@ -27,8 +27,12 @@ class GoogleTaskHolder(
 ) {
 
   init {
-    binding.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
-    binding.statusIcon.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+    binding.clickView.setOnClickListener {
+      listener?.invoke(it, bindingAdapterPosition, ListActions.EDIT)
+    }
+    binding.statusIcon.setOnClickListener {
+      listener?.invoke(it, bindingAdapterPosition, ListActions.SWITCH)
+    }
   }
 
   fun bind(googleTask: GoogleTask, map: Map<String, GoogleTaskList>) {

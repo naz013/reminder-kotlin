@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.cray.software.justreminder",
+  "variantName": "freeDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 287,
+      "versionName": "8.3.0",
+      "outputFile": "app-free-debug.apk"
+    }
+  ],
+  "elementType": "File"
+}

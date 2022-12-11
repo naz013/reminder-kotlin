@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
@@ -24,6 +23,7 @@ import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.utils.BitmapUtils
@@ -40,6 +40,7 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -58,6 +59,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
   private val jobScheduler by inject<JobScheduler>()
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
 
@@ -191,7 +193,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
   private val mLocalReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       val action = intent?.action ?: ""
-      val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
+      val mId = getId()
       Timber.d("onReceive: $action, $mId")
       if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
         finish()
@@ -242,7 +244,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       .registerReceiver(mLocalReceiver, IntentFilter(ACTION_STOP_BG_ACTIVITY))
   }
 
-  private fun getId() = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intentString(Constants.INTENT_ID)
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putBoolean(ARG_IS_ROTATED, true)
@@ -314,9 +316,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
   }
 
   private fun loadTest() {
-    isMockedTest = intent.getBooleanExtra(ARG_TEST, false)
+    isMockedTest = intentBoolean(ARG_TEST)
     if (isMockedTest) {
-      val reminder = intent.getSerializableExtra(ARG_TEST_ITEM) as Reminder?
+      val reminder = intentParcelable(ARG_TEST_ITEM, Reminder::class.java)
       if (reminder != null) showInfo(reminder)
     }
   }
@@ -605,7 +607,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       }
       startActivity(intent)
     } catch (e: Exception) {
-      Toast.makeText(this, R.string.cant_find_app_for_that_file_type, Toast.LENGTH_LONG).show()
+      toast(R.string.cant_find_app_for_that_file_type)
     }
   }
 
@@ -624,7 +626,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       if (ext.contains("/")) {
         ext = ext.substring(0, ext.indexOf("/"))
       }
-      ext.toLowerCase()
+      ext.lowercase()
     }
   }
 
@@ -643,7 +645,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       removeFlags()
       finish()
     } else {
-      Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
+      toast(R.string.select_one_of_item)
     }
     return true
   }
@@ -799,14 +801,14 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
   private fun makeCall() {
     val reminder = mReminder ?: return
-    if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
+    permissionFlow.askPermission(Permissions.CALL_PHONE) {
       TelephonyUtil.makeCall(reminder.target, this)
     }
   }
 
   private fun delay(minutes: Int = prefs.snoozeTime) {
     doActions({ it.setDelay(minutes) }, {
-      Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
+      toast(R.string.reminder_snoozed)
       finish()
     })
   }
@@ -990,19 +992,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
   }
 
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      CALL_PERM -> if (Permissions.checkPermission(grantResults)) {
-        makeCall()
-      }
-    }
-  }
-
   override fun onStop() {
     super.onStop()
     mWasStopped = true
@@ -1033,7 +1022,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
   }
 
   companion object {
-    private const val CALL_PERM = 612
+
     private const val ARG_TEST = "arg_test"
     private const val ARG_TEST_ITEM = "arg_test_item"
     private const val ARG_IS_ROTATED = "arg_rotated"

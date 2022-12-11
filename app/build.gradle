@@ -1,3 +1,5 @@
+apply from: "$rootProject.projectDir/app/keys.gradle"
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -24,16 +26,22 @@ android {
     }
     signingConfigs {
         freeApp {
-            storeFile file('justreminder.jks')
-            storePassword 'justreminder140419912014'
-            keyAlias 'com.cray.software.justreminder'
-            keyPassword 'nazar19912014'
+            storeFile file(releaseFreeKey.storeFile)
+            storePassword releaseFreeKey.storePassword
+            keyAlias releaseFreeKey.keyAlias
+            keyPassword releaseFreeKey.keyPassword
         }
         proApp {
-            storeFile file('justReminderPro.jks')
-            storePassword 'justreminderpro24072014'
-            keyAlias 'com.cray.software.justreminderpro'
-            keyPassword 'craysoftware2014'
+            storeFile file(releaseProKey.storeFile)
+            storePassword releaseProKey.storePassword
+            keyAlias releaseProKey.keyAlias
+            keyPassword releaseProKey.keyPassword
+        }
+        debugApp {
+            storeFile file(debugKey.storeFile)
+            storePassword debugKey.storePassword
+            keyAlias debugKey.keyAlias
+            keyPassword debugKey.keyPassword
         }
     }
     productFlavors {
@@ -74,8 +82,7 @@ android {
         }
         debug {
             minifyEnabled false
-            productFlavors.free.signingConfig signingConfigs.freeApp
-            productFlavors.pro.signingConfig signingConfigs.proApp
+            signingConfig signingConfigs.debugApp
         }
     }
     compileOptions {
@@ -133,7 +140,7 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0'
 
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+    implementation 'androidx.fragment:fragment-ktx:1.5.5'
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation "androidx.collection:collection-ktx:1.2.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
@@ -172,7 +179,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
 
-    freeImplementation 'com.google.android.gms:play-services-ads:21.3.0'
+    freeImplementation 'com.google.android.gms:play-services-ads:21.4.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.1.0'

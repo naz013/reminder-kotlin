@@ -22,16 +22,18 @@ class ArchiveRemindersViewModel(
   workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ) {
 
-  val events = appDb.reminderDao().loadNotRemoved(removed = true)
+  val events = reminderDao.loadNotRemoved(removed = true)
 
   fun deleteAll(data: List<Reminder>) {
     postInProgress(true)
@@ -39,7 +41,7 @@ class ArchiveRemindersViewModel(
       data.forEach {
         eventControlFactory.getController(it).stop()
       }
-      appDb.reminderDao().deleteAll(data)
+      reminderDao.deleteAll(data)
       data.forEach {
         startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
       }

@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -28,11 +30,13 @@ class DayViewViewModel(
   private val calculateFuture: Boolean,
   private val eventControlFactory: EventControlFactory,
   dayViewProvider: DayViewProvider,
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  private val reminderDao: ReminderDao,
+  private val birthdaysDao: BirthdaysDao,
+  reminderGroupDao: ReminderGroupDao
+) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events
@@ -44,7 +48,7 @@ class DayViewViewModel(
   private val liveData = DayViewLiveData(dayViewProvider)
 
   init {
-    appDb.reminderGroupDao().loadAll().observeForever {
+    reminderGroupDao.loadAll().observeForever {
       if (it != null) {
         _groups.clear()
         _groups.addAll(it)
@@ -64,7 +68,7 @@ class DayViewViewModel(
   fun saveReminder(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      appDb.reminderDao().insert(reminder)
+      reminderDao.insert(reminder)
       postInProgress(false)
       postCommand(Commands.SAVED)
       startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
@@ -74,7 +78,7 @@ class DayViewViewModel(
   fun deleteBirthday(id: String) {
     postInProgress(true)
     launchDefault {
-      appDb.birthdaysDao().delete(id)
+      birthdaysDao.delete(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
       startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
@@ -84,11 +88,11 @@ class DayViewViewModel(
   fun moveToTrash(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      val fromDb = appDb.reminderDao().getById(reminder.uuId)
+      val fromDb = reminderDao.getById(reminder.uuId)
       if (fromDb != null) {
         fromDb.isRemoved = true
         eventControlFactory.getController(fromDb).stop()
-        appDb.reminderDao().insert(fromDb)
+        reminderDao.insert(fromDb)
       }
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -99,7 +103,7 @@ class DayViewViewModel(
   fun skip(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      val fromDb = appDb.reminderDao().getById(reminder.uuId)
+      val fromDb = reminderDao.getById(reminder.uuId)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
       }
@@ -115,8 +119,8 @@ class DayViewViewModel(
 
     private val reminderData = ArrayList<EventModel>()
     private val birthdayData = ArrayList<EventModel>()
-    private val birthdays = appDb.birthdaysDao().loadAll()
-    private val reminders = appDb.reminderDao().loadType(active = true, removed = false)
+    private val birthdays = birthdaysDao.loadAll()
+    private val reminders = reminderDao.loadType(active = true, removed = false)
 
     private var eventsPagerItem: EventsPagerItem? = null
     private var job: Job? = null

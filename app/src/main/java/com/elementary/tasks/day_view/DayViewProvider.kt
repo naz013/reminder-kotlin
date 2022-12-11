@@ -2,7 +2,6 @@ package com.elementary.tasks.day_view
 
 import android.app.AlarmManager
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
-import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
@@ -13,10 +12,9 @@ import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getMonth
 import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
-import java.util.*
+import java.util.Calendar
 
 class DayViewProvider(
-  private val currentStateHolder: CurrentStateHolder,
   private val birthdayModelAdapter: BirthdayModelAdapter
 ) {
 

@@ -26,22 +26,25 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityConversationBinding
-import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.settings.other.SendFeedbackActivity
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
+  private val permissionFlow = PermissionFlow(this, dialogues)
   private var speech: SpeechRecognizer? = null
   private val mAdapter = ConversationAdapter(currentStateHolder, get())
   private val viewModel by viewModel<ConversationViewModel>()
@@ -63,7 +66,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         if (!isRotated || mAdapter.itemCount == 0) {
           addResponse(getLocalized(R.string.hi_how_can_i_help_you))
           if (Module.hasMicrophone(this)) {
-            postMicClick({ micClick() }, 2000)
+            postMicClick({ tryToActivateMic() }, 2000)
           }
         }
       }
@@ -109,7 +112,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
     override fun onPartialResults(bundle: Bundle) {
       val list = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-      if (list != null && list.isNotEmpty()) {
+      if (!list.isNullOrEmpty()) {
         val text = list[0]
         if (text.isNotBlank()) {
           viewModel.addReply(Reply(Reply.REPLY, text), true)
@@ -127,7 +130,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     isRotated = savedInstanceState != null
-    binding.micButton.setOnClickListener { micClick() }
+    binding.micButton.setOnClickListener { tryToActivateMic() }
     binding.recordingView.setOnClickListener {
       stopView()
       viewModel.removePartial()
@@ -146,34 +149,32 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.result.observe(this, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.TRASH_CLEARED -> {
-            stopView()
-            addResponse(getLocalized(R.string.trash_was_cleared))
-          }
-          Commands.DELETED -> {
-            stopView()
-            addResponse(getLocalized(R.string.all_reminders_were_disabled))
-          }
-          else -> {
-          }
+    viewModel.result.nonNullObserve(this) { commands ->
+      when (commands) {
+        Commands.TRASH_CLEARED -> {
+          stopView()
+          addResponse(getLocalized(R.string.trash_was_cleared))
+        }
+
+        Commands.DELETED -> {
+          stopView()
+          addResponse(getLocalized(R.string.all_reminders_were_disabled))
+        }
+
+        else -> {
         }
       }
-    })
-    viewModel.shoppingLists.observe(this, { reminders -> if (reminders != null) showShoppingLists(reminders) })
-    viewModel.notes.observe(this, { list -> if (list != null) showNotes(list) })
-    viewModel.activeReminders.observe(this, { list -> if (list != null) showActiveReminders(list) })
-    viewModel.enabledReminders.observe(this, { list -> if (list != null) showEnabledReminders(list) })
+    }
+    viewModel.shoppingLists.nonNullObserve(this) { showShoppingLists(it) }
+    viewModel.notes.nonNullObserve(this) { showNotes(it) }
+    viewModel.activeReminders.nonNullObserve(this) { showActiveReminders(it) }
+    viewModel.enabledReminders.nonNullObserve(this) { showEnabledReminders(it) }
     viewModel.birthdays.observe(this) { showBirthdays(it) }
-    viewModel.replies.observe(this, {
-      if (it != null) {
-        mAdapter.submitList(it)
-        binding.conversationList.scrollToPosition(0)
-        Timber.d("initViewModel: $it")
-      }
-    })
+    viewModel.replies.nonNullObserve(this) {
+      mAdapter.submitList(it)
+      binding.conversationList.scrollToPosition(0)
+      Timber.d("initViewModel: $it")
+    }
   }
 
   private fun postMicClick(action: () -> Unit, time: Long = 1500) {
@@ -191,7 +192,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun parseResults(list: List<String>?) {
     Timber.d("parseResults: $list")
-    if (list == null || list.isEmpty()) {
+    if (list.isNullOrEmpty()) {
       showSilentMessage()
       return
     }
@@ -458,7 +459,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick({ this.micClick() }, 1000)
+    postMicClick({ tryToActivateMic() }, 1000)
   }
 
   private fun askReminderAction(reminder: Reminder, ask: Boolean) {
@@ -476,7 +477,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick({ this.micClick() }, 1000)
+    postMicClick({ tryToActivateMic() }, 1000)
   }
 
   private fun askNoteAction(note: Note) {
@@ -498,7 +499,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick({ this.micClick() }, 1000)
+    postMicClick({ tryToActivateMic() }, 1000)
   }
 
   private fun askQuickReminder(note: Note) {
@@ -524,7 +525,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick({ this.micClick() }, 1000)
+    postMicClick({ tryToActivateMic() }, 1000)
   }
 
   private fun addAskReply() {
@@ -640,8 +641,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
+  private fun tryToActivateMic() {
+    permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+      micClick()
+    }
+  }
+
   private fun micClick() {
-    if (!Permissions.checkPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
+    if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
       return
     }
     if (isListening) {
@@ -669,15 +676,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun releaseSpeech() {
-    try {
+    runCatching {
       speech?.let {
         it.stopListening()
         it.cancel()
         it.destroy()
       }
-      speech = null
-    } catch (ignored: IllegalArgumentException) {
     }
+    speech = null
     isListening = false
   }
 
@@ -706,20 +712,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun installTts() {
     val installTTSIntent = Intent()
     installTTSIntent.action = TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA
-    try {
-      startActivity(installTTSIntent)
-    } catch (e: ActivityNotFoundException) {
-      e.printStackTrace()
-    }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      AUDIO_CODE -> if (Permissions.checkPermission(grantResults)) {
-        micClick()
-      }
-    }
+    runCatching { startActivity(installTTSIntent) }
   }
 
   private fun createAsk(askAction: AskAction): AskAction {
@@ -739,7 +732,6 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   companion object {
-    private const val AUDIO_CODE = 255000
     private const val CHECK_CODE = 1651
   }
 }

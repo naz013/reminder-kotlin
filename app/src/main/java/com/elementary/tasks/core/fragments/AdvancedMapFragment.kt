@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -26,6 +25,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentMapBinding
@@ -74,7 +74,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     googleMap.uiSettings.isMyLocationButtonEnabled = false
     googleMap.uiSettings.isCompassEnabled = true
     setStyle(googleMap)
-    setMyLocation()
+    tryToSetMyLocation()
     googleMap.setOnMapClickListener {
       hideLayers()
       hideStyles()
@@ -262,14 +262,24 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     mMap?.animateCamera(update)
   }
 
+  private fun tryToMoveToMyLocation() {
+    permissionFlow.askPermissions(
+      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
+      { moveToMyLocation() }
+    ) { toast(R.string.cant_access_location_services) }
+  }
+
   @Suppress("DEPRECATION")
-  @SuppressLint("MissingPermission")
   private fun moveToMyLocation() {
-    if (!Permissions.checkPermission(requireActivity(), REQ_LOC,
-        Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+    if (!Permissions.checkPermission(
+        requireContext(),
+        Permissions.ACCESS_COARSE_LOCATION,
+        Permissions.ACCESS_FINE_LOCATION
+      )
+    ) {
       return
     }
-    if (mMap != null) {
+    mMap?.run {
       val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
       val criteria = Criteria()
       var location: Location? = null
@@ -284,13 +294,9 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         val pos = LatLng(location.latitude, location.longitude)
         animate(pos)
       } else {
-        try {
-          location = mMap?.myLocation
-          if (location != null) {
-            val pos = LatLng(location.latitude, location.longitude)
-            animate(pos)
-          }
-        } catch (ignored: IllegalStateException) {
+        runCatching {
+          val pos = LatLng(myLocation.latitude, myLocation.longitude)
+          animate(pos)
         }
       }
     }
@@ -369,11 +375,11 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
   }
 
   private fun initPlacesViewModel() {
-    viewModel.places.observe(viewLifecycleOwner, { places ->
+    viewModel.places.observe(viewLifecycleOwner) { places ->
       if (places != null && isPlaces) {
         showPlaces(places)
       }
-    })
+    }
   }
 
   private fun showRadiusDialog() {
@@ -421,7 +427,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     binding.myCard.setOnClickListener {
       hideLayers()
       hideStyles()
-      moveToMyLocation()
+      tryToMoveToMyLocation()
     }
     binding.markersCard.setOnClickListener { toggleMarkers() }
     binding.radiusCard.setOnClickListener { toggleRadius() }
@@ -481,10 +487,20 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     mListener?.onBackClick()
   }
 
+  private fun tryToSetMyLocation() {
+    permissionFlow.askPermissions(
+      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+    ) { setMyLocation() }
+  }
+
   @SuppressLint("MissingPermission")
   private fun setMyLocation() {
-    val context = activity ?: return
-    if (Permissions.checkPermission(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+    if (Permissions.checkPermission(
+        requireContext(),
+        Permissions.ACCESS_COARSE_LOCATION,
+        Permissions.ACCESS_FINE_LOCATION
+      )
+    ) {
       mMap?.isMyLocationEnabled = true
     }
   }
@@ -586,10 +602,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
   override fun onDestroy() {
     super.onDestroy()
-    try {
-      binding.mapView.onDestroy()
-    } catch (e: UninitializedPropertyAccessException) {
-    }
+    runCatching { binding.mapView.onDestroy() }
   }
 
   override fun onPause() {
@@ -602,27 +615,12 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     binding.mapView.onStop()
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      REQ_LOC -> if (Permissions.checkPermission(grantResults)) {
-        moveToMyLocation()
-      }
-      205 -> if (Permissions.checkPermission(grantResults)) {
-        setMyLocation()
-      } else {
-        Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
-      }
-    }
-  }
-
   private fun restoreScaleButton() {
     binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
   }
 
   companion object {
 
-    private const val REQ_LOC = 1245
     private const val DEF_MARKER_STYLE = 5
 
     const val ENABLE_TOUCH = "enable_touch"

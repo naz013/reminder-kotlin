@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.widget.Toast
-import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiShareData
 import java.io.File
@@ -133,7 +132,6 @@ object TelephonyUtil {
     }
   }
 
-  @RequiresPermission(value = Permissions.CALL_PHONE)
   fun makeCall(number: String, context: Context) {
     if (TextUtils.isEmpty(number)) {
       return

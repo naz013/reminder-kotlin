@@ -19,7 +19,6 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
@@ -198,11 +197,6 @@ object SuperUtil {
       val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
       context.startActivity(intent)
     })
-  }
-
-  @RequiresPermission(value = Permissions.READ_CONTACTS)
-  fun selectContact(activity: Activity, requestCode: Int) {
-    Contacts.pickContact(activity, requestCode)
   }
 
   fun isGooglePlayServicesAvailable(a: Context): Boolean {

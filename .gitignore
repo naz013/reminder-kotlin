@@ -4,3 +4,9 @@
 /captures
 *.iml
 *.idea
+/app/debug_key.jks
+/app/reminder_beta.jks
+/app/justreminder.jks
+/app/justReminderPro.jks
+/local.properties
+/app/keys.gradle

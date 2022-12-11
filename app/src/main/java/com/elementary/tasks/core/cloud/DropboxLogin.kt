@@ -96,7 +96,7 @@ class DropboxLogin(
   }
 
   interface LoginCallback {
-    fun onResult(b: Boolean)
+    fun onResult(isSuccess: Boolean)
   }
 
   companion object {

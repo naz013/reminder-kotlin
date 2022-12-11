@@ -12,6 +12,7 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
@@ -19,6 +20,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
@@ -26,11 +28,12 @@ import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
 
   private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var mBirthday: Birthday? = null
   private var isEventShowed = false
@@ -62,19 +65,17 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
     initViewModel()
   }
 
-  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intentString(Constants.INTENT_ID)
 
   private fun initViewModel() {
     viewModel.birthday.observeForever(mBirthdayObserver)
-    viewModel.result.observe(this, { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.SAVED -> finish()
-          else -> {
-          }
+    viewModel.result.nonNullObserve(this) { commands ->
+      when (commands) {
+        Commands.SAVED -> finish()
+        else -> {
         }
       }
-    })
+    }
     lifecycle.addObserver(viewModel)
     if (getId().isEmpty() && BuildConfig.DEBUG) {
       loadTest()
@@ -82,9 +83,9 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
   }
 
   private fun loadTest() {
-    val isMocked = intent.getBooleanExtra(ARG_TEST, false)
+    val isMocked = intentBoolean(ARG_TEST, false)
     if (isMocked) {
-      val birthday = intent.getSerializableExtra(ARG_TEST_ITEM) as Birthday?
+      val birthday = intentParcelable(ARG_TEST_ITEM, Birthday::class.java)
       if (birthday != null) showBirthday(birthday)
     }
   }
@@ -161,7 +162,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
   }
 
   private fun makeCall() {
-    if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE) && mBirthday != null) {
+    permissionFlow.askPermission(Permissions.CALL_PHONE) {
       TelephonyUtil.makeCall(mBirthday?.number ?: "", this)
       updateBirthday(mBirthday)
     }
@@ -191,18 +192,8 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
     }
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        CALL_PERM -> makeCall()
-      }
-    }
-  }
-
   companion object {
 
-    private const val CALL_PERM = 612
     private const val ARG_TEST = "arg_test"
     private const val ARG_TEST_ITEM = "arg_test_item"
 

@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.views
 
-import android.app.Activity
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.ActionViewBinding
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
@@ -17,8 +17,8 @@ import com.elementary.tasks.core.utils.show
 class ActionView : LinearLayout, TextWatcher {
 
   private var mImm: InputMethodManager? = null
-  private var mActivity: Activity? = null
   private var listener: OnActionListener? = null
+  private var permissionFlow: PermissionFlow? = null
   private lateinit var binding: ActionViewBinding
 
   var type: Int
@@ -79,12 +79,12 @@ class ActionView : LinearLayout, TextWatcher {
     binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
     binding.callAction.isChecked = true
     binding.actionCheck.setOnCheckedChangeListener { _, b ->
-      if (!Permissions.checkPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
-        binding.actionCheck.isChecked = false
-        return@setOnCheckedChangeListener
-      }
       if (b) {
-        openAction()
+        permissionFlow?.askPermission(Permissions.READ_CONTACTS) {
+          openAction()
+        } ?: run {
+          binding.actionCheck.isChecked = false
+        }
       } else {
         binding.actionBlock.hide()
       }
@@ -111,8 +111,8 @@ class ActionView : LinearLayout, TextWatcher {
     }
   }
 
-  fun setActivity(activity: Activity) {
-    this.mActivity = activity
+  fun setPermissionHandle(permissionFlow: PermissionFlow) {
+    this.permissionFlow = permissionFlow
   }
 
   fun setContactClickListener(contactClickListener: OnClickListener) {
@@ -129,15 +129,6 @@ class ActionView : LinearLayout, TextWatcher {
 
   fun setAction(action: Boolean) {
     binding.actionCheck.isChecked = action
-  }
-
-  fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
-    when (requestCode) {
-      REQ_CONTACTS -> if (Permissions.checkPermission(grantResults)) {
-        binding.actionCheck.isChecked = true
-        binding.numberView.reloadContacts()
-      }
-    }
   }
 
   override fun afterTextChanged(s: Editable?) {
@@ -157,6 +148,5 @@ class ActionView : LinearLayout, TextWatcher {
   companion object {
     const val TYPE_CALL = 1
     const val TYPE_MESSAGE = 2
-    private const val REQ_CONTACTS = 32564
   }
 }

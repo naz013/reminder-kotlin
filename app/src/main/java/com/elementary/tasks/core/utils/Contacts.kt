@@ -1,44 +1,13 @@
 package com.elementary.tasks.core.utils
 
-import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.provider.ContactsContract
 import androidx.annotation.RequiresPermission
 
 object Contacts {
-
-  @RequiresPermission(value = Permissions.READ_CONTACTS)
-  fun pickContact(activity: Activity, code: Int) {
-    val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-    activity.startActivityForResult(intent, code)
-  }
-
-  @RequiresPermission(value = Permissions.READ_CONTACTS)
-  fun readPickerResults(context: Context, requestCode: Int, resultCode: Int, data: Intent?): Contact? {
-    if (resultCode == Activity.RESULT_OK) {
-      val uri = data?.data
-      if (uri != null) {
-        val cursor = context.contentResolver.query(uri, null, null, null, null)
-        if (cursor != null) {
-          if (cursor.moveToFirst()) {
-            return try {
-              val phoneNo = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-              val name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-              Contact(name, phone = phoneNo)
-            } catch (e: Exception) {
-              null
-            }
-          }
-          cursor.close()
-        }
-      }
-    }
-    return null
-  }
 
   @RequiresPermission(value = Permissions.READ_CONTACTS)
   fun getPhoto(contactId: Long): Uri? {
@@ -51,17 +20,27 @@ object Contacts {
 
   @RequiresPermission(value = Permissions.READ_CONTACTS)
   fun getIdFromNumber(phoneNumber: String?, context: Context): Long {
-    if (phoneNumber == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
+    if (phoneNumber == null || !Permissions.checkPermission(
+        context,
+        Permissions.READ_CONTACTS
+      )
+    ) return 0
     var phoneContactID = 0L
     try {
       val contact = Uri.encode(phoneNumber)
       val contactLookupCursor = context.contentResolver
-        .query(Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
-          arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID), null, null, null)
+        .query(
+          Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
+          arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID),
+          null,
+          null,
+          null
+        )
         ?: return 0
       while (contactLookupCursor.moveToNext()) {
         phoneContactID = contactLookupCursor.getLong(
-          contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID))
+          contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID)
+        )
       }
       contactLookupCursor.close()
     } catch (iae: IllegalArgumentException) {
@@ -74,14 +53,18 @@ object Contacts {
   @RequiresPermission(value = Permissions.READ_CONTACTS)
   fun getIdFromMail(eMail: String?, context: Context): Long {
     if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
-    val uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail))
+    val uri = Uri.withAppendedPath(
+      ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
+      Uri.encode(eMail)
+    )
     var contactId = 0L
     val contentResolver = context.contentResolver
-    val contactLookup = contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID), null, null, null)
+    val contactLookup =
+      contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID), null, null, null)
     contactLookup.use { look ->
       if (look != null && look.count > 0) {
         look.moveToNext()
-        contactId = look.getLong(look.getColumnIndex(ContactsContract.PhoneLookup._ID))
+        contactId = look.readLong(ContactsContract.PhoneLookup._ID) ?: 0
       }
     }
     return contactId
@@ -89,15 +72,23 @@ object Contacts {
 
   @RequiresPermission(value = Permissions.READ_CONTACTS)
   fun getNameFromMail(eMail: String?, context: Context): String? {
-    if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return null
-    val uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail))
+    if (eMail == null || !Permissions.checkPermission(
+        context,
+        Permissions.READ_CONTACTS
+      )
+    ) return null
+    val uri = Uri.withAppendedPath(
+      ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
+      Uri.encode(eMail)
+    )
     var name = "?"
     val contentResolver = context.contentResolver
-    val contactLookup = contentResolver.query(uri, arrayOf(ContactsContract.Data.DISPLAY_NAME), null, null, null)
+    val contactLookup =
+      contentResolver.query(uri, arrayOf(ContactsContract.Data.DISPLAY_NAME), null, null, null)
     contactLookup.use { look ->
       if (look != null && look.count > 0) {
         look.moveToNext()
-        name = look.getString(look.getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
+        name = look.readString(ContactsContract.Data.DISPLAY_NAME) ?: "?"
       }
     }
     return name
@@ -111,11 +102,16 @@ object Contacts {
         val contact = Uri.encode(contactNumber)
         val contactLookupCursor = context.contentResolver.query(
           Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
-          arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID), null, null, null)
+          arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID),
+          null,
+          null,
+          null
+        )
           ?: return null
         while (contactLookupCursor.moveToNext()) {
           phoneContactID = contactLookupCursor.getString(
-            contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME))
+            contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME)
+          )
         }
         contactLookupCursor.close()
       } catch (iae: IllegalArgumentException) {
@@ -139,8 +135,10 @@ object Contacts {
     val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
     try {
       val c = try {
-        context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-          projection, selection, null, null)
+        context.contentResolver.query(
+          ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+          projection, selection, null, null
+        )
       } catch (e: Exception) {
         null
       }
@@ -154,11 +152,4 @@ object Contacts {
 
     return number
   }
-
-  data class Contact(
-    val name: String = "",
-    val phone: String = "",
-    val email: String = "",
-    val photo: Uri? = null
-  )
 }

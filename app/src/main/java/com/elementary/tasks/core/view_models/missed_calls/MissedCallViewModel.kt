@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.missed_calls
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.MissedCallsDao
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Prefs
@@ -12,19 +12,19 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class MissedCallViewModel(
   number: String,
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  private val jobScheduler: JobScheduler
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  private val jobScheduler: JobScheduler,
+  private val missedCallsDao: MissedCallsDao
+) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
 
-  val missedCall = appDb.missedCallsDao().loadByNumber(number)
+  val missedCall = missedCallsDao.loadByNumber(number)
 
   fun deleteMissedCall(missedCall: MissedCall) {
     postInProgress(true)
     launchDefault {
-      appDb.missedCallsDao().delete(missedCall)
+      missedCallsDao.delete(missedCall)
       jobScheduler.cancelMissedCall(missedCall.number)
       postInProgress(false)
       postCommand(Commands.DELETED)

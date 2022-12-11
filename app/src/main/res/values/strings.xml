@@ -284,16 +284,24 @@
     <string name="birthday_notification">Notification</string>
     <string name="from">From</string>
     <string name="to">To</string>
-    <string name="course_location">Approximate location</string>
-    <string name="fine_location">Exact location</string>
+    <string name="course_location">Approximate Location</string>
+    <string name="course_location_explanation">To access you location, application requires Approximate Location permission</string>
+    <string name="fine_location">Exact Location</string>
+    <string name="fine_location_explanation">To access you precise location, application requires Exact Location permission</string>
     <string name="call_phone">Call phone</string>
     <string name="get_accounts">Get accounts</string>
+    <string name="get_accounts_explanation">To login, application requires Get Accounts permission</string>
     <string name="read_phone_state">Read phone state</string>
     <string name="read_contacts">Read contacts</string>
+    <string name="read_contacts_explanation">To pick number from your contacts, application require Read Contacts permission</string>
     <string name="read_calendar">Read calendar</string>
+    <string name="read_calendar_explanation">To Read events from your Calendar, application requires Read Calendar permission</string>
     <string name="write_calendar">Write to calendar</string>
+    <string name="write_calendar_explanation">To Write events to your Calendar, application requires Write to Calendar permission</string>
     <string name="read_external_storage">Read memory card</string>
+    <string name="read_external_storage_explanation">To access files on your device, application requires Read memory card permission</string>
     <string name="write_external_storage">Write to a memory card</string>
+    <string name="write_external_storage_explanation">To write backup files on your device, application requires Write to a memory card permission</string>
     <string name="x_seconds">"%s seconds"</string>
     <string name="say_something">Say something</string>
     <string name="no_recognizer_found">Speech recognition system not found!</string>
@@ -675,5 +683,6 @@
     <string name="post_notification">Post Notification</string>
     <string name="post_notification_explanation">To show notification in Status Bar application requires Notification permission</string>
     <string name="call_phone_explanation">To make auto call when reminder emits application require this permission</string>
+    <string name="foreground_service">Foreground Service</string>
 
 </resources>

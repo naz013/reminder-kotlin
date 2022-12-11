@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentValues
@@ -13,23 +12,32 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Patterns
 import android.view.LayoutInflater
-import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.PermissionFlow
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class PhotoSelectionUtil(
-  private val activity: Activity,
+  private val activity: ComponentActivity,
   private val dialogues: Dialogues,
   private val urlSupported: Boolean = true,
   private val mCallback: UriCallback?
 ) {
 
+  private val permissionFlow = PermissionFlow(activity, dialogues)
   private var imageUri: Uri? = null
+  private val context = CoroutineScope(Job())
 
   fun selectImage() {
     val hasCamera = Module.hasCamera(activity)
@@ -62,13 +70,13 @@ class PhotoSelectionUtil(
       dialog.dismiss()
       if (hasCamera) {
         when (item) {
-          0 -> pickFromGallery()
-          1 -> takePhoto()
+          0 -> tryToPickFromGallery()
+          1 -> tryToTakePhoto()
           2 -> checkClipboard()
         }
       } else {
         when (item) {
-          0 -> pickFromGallery()
+          0 -> tryToPickFromGallery()
           1 -> checkClipboard()
         }
       }
@@ -76,10 +84,17 @@ class PhotoSelectionUtil(
     builder.create().show()
   }
 
-  private fun pickFromGallery() {
-    if (!checkSdPermission(REQUEST_SD_CARD)) {
-      return
+  fun onDestroy() {
+    context.cancel()
+  }
+
+  private fun tryToPickFromGallery() {
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+      pickFromGallery()
     }
+  }
+
+  private fun pickFromGallery() {
     var intent = Intent(Intent.ACTION_GET_CONTENT)
     intent.type = "image/*"
     if (urlSupported) {
@@ -89,19 +104,9 @@ class PhotoSelectionUtil(
       intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
     }
     val chooser = Intent.createChooser(intent, getString(R.string.gallery))
-    try {
+    runCatching {
       activity.startActivityForResult(chooser, PICK_FROM_GALLERY)
-    } catch (e: ActivityNotFoundException) {
-      checkSdPermission(REQUEST_SD_CARD)
     }
-  }
-
-  private fun checkSdPermission(code: Int): Boolean {
-    return Permissions.checkPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-  }
-
-  private fun checkCameraPermission(code: Int): Boolean {
-    return Permissions.checkPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)
   }
 
   private fun showPhoto(imageUri: Uri) {
@@ -109,10 +114,11 @@ class PhotoSelectionUtil(
     mCallback?.onImageSelected(imageUri, null)
   }
 
+  private fun tryToTakePhoto() {
+    permissionFlow.askPermission(Permissions.CAMERA) { takePhoto() }
+  }
+
   private fun takePhoto() {
-    if (!checkCameraPermission(REQUEST_CAMERA)) {
-      return
-    }
     val pictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     if (pictureIntent.resolveActivity(activity.packageManager) == null) {
       return
@@ -122,10 +128,8 @@ class PhotoSelectionUtil(
         val photoFile = createImageFile()
         imageUri = UriUtil.getUri(activity, photoFile)
         pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-        try {
+        runCatching {
           activity.startActivityForResult(pictureIntent, PICK_FROM_CAMERA)
-        } catch (e: ActivityNotFoundException) {
-          checkCameraPermission(REQUEST_CAMERA)
         }
       }
     } else {
@@ -134,10 +138,8 @@ class PhotoSelectionUtil(
       values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
       imageUri = activity.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
       pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-      try {
+      runCatching {
         activity.startActivityForResult(pictureIntent, PICK_FROM_CAMERA)
-      } catch (e: ActivityNotFoundException) {
-        checkCameraPermission(REQUEST_CAMERA)
       }
     }
   }
@@ -153,16 +155,6 @@ class PhotoSelectionUtil(
   private fun getExternalFilesDir(directoryPictures: String): File {
     val sd = Environment.getExternalStorageDirectory()
     return File(sd, File(directoryPictures, "Reminder").toString())
-  }
-
-  @Suppress("UNUSED_PARAMETER")
-  fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        REQUEST_SD_CARD -> pickFromGallery()
-        REQUEST_CAMERA -> takePhoto()
-      }
-    }
   }
 
   fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -227,7 +219,7 @@ class PhotoSelectionUtil(
 
   private fun downloadUrl(url: String) {
     if (Patterns.WEB_URL.matcher(url).matches()) {
-      launchDefault {
+      context.launch(Dispatchers.Default) {
         try {
           val bitmap = Picasso.get()
             .load(url)
@@ -238,18 +230,18 @@ class PhotoSelectionUtil(
             }
           } else {
             withUIContext {
-              Toast.makeText(activity, R.string.failed_to_download, Toast.LENGTH_SHORT).show()
+              activity.toast(R.string.failed_to_download)
             }
           }
         } catch (e: Exception) {
           Timber.d("downloadUrl: $e")
           withUIContext {
-            Toast.makeText(activity, R.string.failed_to_download, Toast.LENGTH_SHORT).show()
+            activity.toast(R.string.failed_to_download)
           }
         }
       }
     } else {
-      Toast.makeText(activity, R.string.wrong_url, Toast.LENGTH_SHORT).show()
+      activity.toast(R.string.wrong_url)
     }
   }
 
@@ -265,7 +257,5 @@ class PhotoSelectionUtil(
 
     private const val PICK_FROM_GALLERY = 25
     private const val PICK_FROM_CAMERA = 26
-    private const val REQUEST_SD_CARD = 1112
-    private const val REQUEST_CAMERA = 1113
   }
 }

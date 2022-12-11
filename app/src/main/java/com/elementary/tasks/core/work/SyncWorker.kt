@@ -1,13 +1,13 @@
 package com.elementary.tasks.core.work
 
-import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
@@ -16,10 +16,11 @@ import kotlinx.coroutines.Job
 
 class SyncWorker(
   private val syncManagers: SyncManagers,
-  private val context: Context,
-  private val appDb: AppDb,
+  private val reminderDao: ReminderDao,
+  private val reminderGroupDao: ReminderGroupDao,
   private val updatesHelper: UpdatesHelper,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
+  private val groupsUtil: GroupsUtil
 ) {
 
   private var mJob: Job? = null
@@ -58,14 +59,14 @@ class SyncWorker(
       val groupConverter = syncManagers.converterManager.groupConverter
       BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_GROUP, deleteFile = true)
-      val list = appDb.reminderGroupDao().all()
+      val list = reminderGroupDao.all()
       if (list.isEmpty()) {
-        val defUiID = GroupsUtil.initDefault(context, appDb)
-        val items = appDb.reminderDao().all()
+        val defUiID = groupsUtil.initDefault()
+        val items = reminderDao.all()
         for (item in items) {
           item.groupUuId = defUiID
         }
-        appDb.reminderDao().insertAll(items)
+        reminderDao.insertAll(items)
       }
       BulkDataFlow(groupRepository, groupConverter, storage, completable = null).backup()
 

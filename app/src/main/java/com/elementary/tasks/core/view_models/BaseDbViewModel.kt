@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequest
-import androidx.work.Worker
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
@@ -16,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 open class BaseDbViewModel(
-  protected val appDb: AppDb,
   protected val prefs: Prefs,
   protected val dispatcherProvider: DispatcherProvider,
   private val workManagerProvider: WorkManagerProvider

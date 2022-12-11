@@ -12,7 +12,6 @@ import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -21,12 +20,10 @@ import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
-  private val dialogues by inject<Dialogues>()
   private val mAdapter = CalendarEventsAdapter(get())
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },

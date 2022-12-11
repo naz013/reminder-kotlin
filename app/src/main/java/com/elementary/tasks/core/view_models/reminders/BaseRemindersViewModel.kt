@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.PlacesDao
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.CalendarUtils
@@ -24,14 +26,16 @@ import timber.log.Timber
 import java.util.Calendar
 
 abstract class BaseRemindersViewModel(
-  appDb: AppDb,
   prefs: Prefs,
   protected val calendarUtils: CalendarUtils,
   protected val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
-  protected val updatesHelper: UpdatesHelper
-) : BaseDbViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  protected val updatesHelper: UpdatesHelper,
+  protected val reminderDao: ReminderDao,
+  protected val reminderGroupDao: ReminderGroupDao,
+  protected val placesDao: PlacesDao
+) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
 
   private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
   var defaultReminderGroup: LiveData<ReminderGroup> = _defaultReminderGroup
@@ -44,12 +48,12 @@ abstract class BaseRemindersViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      appDb.reminderGroupDao().defaultGroup(true)?.also {
+      reminderGroupDao.defaultGroup(true)?.also {
         defaultGroup = it
         _defaultReminderGroup.postValue(it)
       }
     }
-    appDb.reminderGroupDao().loadAll().observeForever {
+    reminderGroupDao.loadAll().observeForever {
       _allGroups.postValue(it)
       if (it != null) {
         groups.clear()
@@ -64,19 +68,19 @@ abstract class BaseRemindersViewModel(
       runBlocking {
         Timber.d("saveAndStartReminder: save START")
         if (reminder.groupUuId == "") {
-          val group = appDb.reminderGroupDao().defaultGroup()
+          val group = reminderGroupDao.defaultGroup()
           if (group != null) {
             reminder.groupColor = group.groupColor
             reminder.groupTitle = group.groupTitle
             reminder.groupUuId = group.groupUuId
           }
         }
-        appDb.reminderDao().insert(reminder)
+        reminderDao.insert(reminder)
         if (!isEdit) {
           if (Reminder.isGpsType(reminder.type)) {
             val places = reminder.places
             if (places.isNotEmpty()) {
-              appDb.placesDao().insert(places[0])
+              placesDao.insert(places[0])
             }
           }
         }
@@ -94,7 +98,7 @@ abstract class BaseRemindersViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
         if (reminder.groupUuId == "") {
-          val group = appDb.reminderGroupDao().defaultGroup()
+          val group = reminderGroupDao.defaultGroup()
           if (group != null) {
             reminder.groupColor = group.groupColor
             reminder.groupTitle = group.groupTitle
@@ -116,7 +120,7 @@ abstract class BaseRemindersViewModel(
         }
         newItem.eventTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
         newItem.startTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
-        appDb.reminderDao().insert(newItem)
+        reminderDao.insert(newItem)
         eventControlFactory.getController(newItem).start()
       }
       postCommand(Commands.SAVED)
@@ -165,7 +169,7 @@ abstract class BaseRemindersViewModel(
     withResult {
       reminder.isRemoved = true
       eventControlFactory.getController(reminder).stop()
-      appDb.reminderDao().insert(reminder)
+      reminderDao.insert(reminder)
       backupReminder(reminder.uuId)
       Commands.DELETED
     }
@@ -180,7 +184,7 @@ abstract class BaseRemindersViewModel(
     if (showMessage) {
       withResult {
         eventControlFactory.getController(reminder).stop()
-        appDb.reminderDao().delete(reminder)
+        reminderDao.delete(reminder)
         calendarUtils.deleteEvents(reminder.uuId)
         startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
         Commands.DELETED
@@ -188,7 +192,7 @@ abstract class BaseRemindersViewModel(
     } else {
       withProgress {
         eventControlFactory.getController(reminder).stop()
-        appDb.reminderDao().delete(reminder)
+        reminderDao.delete(reminder)
         calendarUtils.deleteEvents(reminder.uuId)
         startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
       }
@@ -199,7 +203,7 @@ abstract class BaseRemindersViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
-        appDb.reminderDao().insert(reminder)
+        reminderDao.insert(reminder)
       }
       updatesHelper.updateTasksWidget()
       backupReminder(reminder.uuId)
@@ -210,7 +214,7 @@ abstract class BaseRemindersViewModel(
 
   fun skip(reminder: Reminder) {
     withResult {
-      val fromDb = appDb.reminderDao().getById(reminder.uuId)
+      val fromDb = reminderDao.getById(reminder.uuId)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
       }

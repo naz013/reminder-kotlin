@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
@@ -135,10 +136,10 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.isInProgress.observe(viewLifecycleOwner, { updateProgress(it) })
-    viewModel.result.observe(viewLifecycleOwner, { showResult(it) })
-    viewModel.googleTasks.observe(viewLifecycleOwner, { showTasks(it) })
-    viewModel.googleTaskList.observe(viewLifecycleOwner, { showGoogleTaskList(it) })
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
+    viewModel.result.nonNullObserve(viewLifecycleOwner) { showResult(it) }
+    viewModel.googleTasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
+    viewModel.googleTaskList.nonNullObserve(viewLifecycleOwner) { showGoogleTaskList(it) }
   }
 
   private fun showResult(commands: Commands) {

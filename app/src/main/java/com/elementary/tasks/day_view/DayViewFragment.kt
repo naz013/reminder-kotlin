@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
+import java.util.Calendar
 
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
@@ -80,7 +80,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   }
 
   private fun initViewModel() {
-    dayViewViewModel.events.observe(viewLifecycleOwner, {
+    dayViewViewModel.events.observe(viewLifecycleOwner) {
       val item = eventsPagerItem
       if (it != null && item != null) {
         val foundItem = it.first
@@ -89,7 +89,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
           listener?.invoke(foundItem, foundList)
         }
       }
-    })
+    }
   }
 
   private fun initPager() {

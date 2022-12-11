@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.view_models.sms_templates
 
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.SmsTemplatesDao
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
@@ -12,20 +12,20 @@ import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 
 class SmsTemplateViewModel(
   key: String,
-  appDb: AppDb,
   prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider
-) : BaseSmsTemplatesViewModel(appDb, prefs, dispatcherProvider, workManagerProvider) {
+  workManagerProvider: WorkManagerProvider,
+  smsTemplatesDao: SmsTemplatesDao
+) : BaseSmsTemplatesViewModel(prefs, dispatcherProvider, workManagerProvider, smsTemplatesDao) {
 
-  val smsTemplate = appDb.smsTemplatesDao().loadByKey(key)
+  val smsTemplate = smsTemplatesDao.loadByKey(key)
   var isEdited = false
   var hasSameInDb: Boolean = false
   var isFromFile: Boolean = false
 
   fun findSame(id: String) {
     launchDefault {
-      val template = appDb.smsTemplatesDao().getByKey(id)
+      val template = smsTemplatesDao.getByKey(id)
       hasSameInDb = template != null
     }
   }
@@ -33,7 +33,7 @@ class SmsTemplateViewModel(
   fun saveTemplate(smsTemplate: SmsTemplate) {
     postInProgress(true)
     launchDefault {
-      appDb.smsTemplatesDao().insert(smsTemplate)
+      smsTemplatesDao.insert(smsTemplate)
       startWork(TemplateSingleBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
       postInProgress(false)
       postCommand(Commands.SAVED)

@@ -25,13 +25,15 @@ class ReminderViewModel(
   workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ) {
 
   private val _note = mutableLiveDataOf<NoteWithImages>()
@@ -47,7 +49,7 @@ class ReminderViewModel(
 
   fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = appDb.reminderDao().getById(id)
+      val reminder = reminderDao.getById(id)
       hasSameInDb = reminder != null
     }
   }

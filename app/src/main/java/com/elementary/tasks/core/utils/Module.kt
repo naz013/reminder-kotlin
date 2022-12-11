@@ -10,7 +10,7 @@ import com.elementary.tasks.BuildConfig
 object Module {
 
   const val isPro = BuildConfig.IS_PRO
-  val is13 = Build.VERSION.SDK_INT >= 33
+  val is13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
   val is12 = Build.VERSION.SDK_INT >= 31
   val is11 = Build.VERSION.SDK_INT >= 30
   val is10 = Build.VERSION.SDK_INT >= 29

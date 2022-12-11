@@ -18,6 +18,7 @@ import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
@@ -53,6 +54,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private val mAdapter = ImagesGridAdapter()
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private val mUiHandler = Handler(Looper.getMainLooper())
 
@@ -113,8 +115,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editReminder() {
     val reminder = viewModel.reminder.value ?: return
-    CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
-      .putExtra(Constants.INTENT_ID, reminder.uuId))
+    CreateReminderActivity.openLogged(
+      this, Intent(this, CreateReminderActivity::class.java)
+        .putExtra(Constants.INTENT_ID, reminder.uuId)
+    )
   }
 
   override fun onDestroy() {
@@ -140,8 +144,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun openImagePreview(position: Int) {
     imagesSingleton.setCurrent(mAdapter.data)
-    startActivity(Intent(this, ImagePreviewActivity::class.java)
-      .putExtra(Constants.INTENT_POSITION, position))
+    startActivity(
+      Intent(this, ImagePreviewActivity::class.java)
+        .putExtra(Constants.INTENT_POSITION, position)
+    )
   }
 
   private fun initActionBar() {
@@ -160,36 +166,20 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editNote() {
     val noteWithImages = viewModel.note.value ?: return
-    CreateNoteActivity.openLogged(this, Intent(this, CreateNoteActivity::class.java)
-      .putExtra(Constants.INTENT_ID, noteWithImages.note?.key))
+    CreateNoteActivity.openLogged(
+      this, Intent(this, CreateNoteActivity::class.java)
+        .putExtra(Constants.INTENT_ID, noteWithImages.note?.key)
+    )
   }
 
   private fun moveToStatus() {
     val noteWithImages = viewModel.note.value ?: return
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      askPermission(Permissions.POST_NOTIFICATION)
+      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+        notifier.showNoteNotification(noteWithImages)
+      }
     } else {
       notifier.showNoteNotification(noteWithImages)
-    }
-  }
-
-  override fun permissionGranted(permission: String, requestCode: Int) {
-    super.permissionGranted(permission, requestCode)
-    if (permission == Permissions.POST_NOTIFICATION) {
-      val noteWithImages = viewModel.note.value ?: return
-      notifier.showNoteNotification(noteWithImages)
-    }
-  }
-
-  override fun explainPermission(permission: String, requestCode: Int) {
-    super.explainPermission(permission, requestCode)
-    if (permission == Permissions.POST_NOTIFICATION) {
-      showPermissionExplanation(
-        permission,
-        requestCode,
-        getString(R.string.post_notification),
-        getString(R.string.post_notification_explanation)
-      )
     }
   }
 
@@ -227,8 +217,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun showReminder(reminder: Reminder?) {
     if (reminder != null) {
-      val dateTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime, prefs.is24HourFormat,
-        prefs.appLanguage)
+      val dateTime = TimeUtil.getDateTimeFromGmt(
+        reminder.eventTime, prefs.is24HourFormat,
+        prefs.appLanguage
+      )
       binding.reminderTime.text = dateTime
       binding.reminderContainer.show()
     } else {
@@ -270,22 +262,27 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
         closeWindow()
         return true
       }
+
       R.id.action_share -> {
         shareNote()
         return true
       }
+
       R.id.action_delete -> {
         showDeleteDialog()
         return true
       }
+
       R.id.action_status -> {
         moveToStatus()
         return true
       }
+
       R.id.action_edit -> {
         editNote()
         return true
       }
+
       else -> return super.onOptionsItemSelected(item)
     }
   }

@@ -1,11 +1,10 @@
 package com.elementary.tasks.core.view_models.birthdays
 
-import android.content.Context
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
@@ -15,25 +14,24 @@ import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.launch
 
 class BirthdaysViewModel(
-  appDb: AppDb,
+  birthdaysDao: BirthdaysDao,
   prefs: Prefs,
-  context: Context,
   private val birthdayModelAdapter: BirthdayModelAdapter,
   dispatcherProvider: DispatcherProvider,
   workManagerProvider: WorkManagerProvider,
   notifier: Notifier
-) : BaseBirthdaysViewModel(appDb, prefs, context, dispatcherProvider, workManagerProvider, notifier) {
+) : BaseBirthdaysViewModel(birthdaysDao, prefs, dispatcherProvider, workManagerProvider, notifier) {
 
-  val birthdays = appDb.birthdaysDao().loadAll().map { list ->
+  val birthdays = birthdaysDao.loadAll().map { list ->
     list.map { birthdayModelAdapter.convert(it) }
   }
 
   fun deleteAllBirthdays() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = appDb.birthdaysDao().all()
+      val list = birthdaysDao.all()
       for (birthday in list) {
-        appDb.birthdaysDao().delete(birthday)
+        birthdaysDao.delete(birthday)
         startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
       }
       updateBirthdayPermanent()

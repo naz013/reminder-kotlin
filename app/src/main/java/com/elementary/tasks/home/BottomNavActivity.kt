@@ -2,7 +2,6 @@ package com.elementary.tasks.home
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
@@ -86,36 +85,12 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     super.onResume()
     buttonObservable.addObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
     buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
-
-    if (!prefs.isBetaWarmingShowed) {
-      showBetaDialog()
-    }
   }
 
   override fun onPause() {
     super.onPause()
     buttonObservable.removeObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
     buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
-  }
-
-  private fun showBetaDialog() {
-    prefs.isBetaWarmingShowed = true
-    var appVersion = ""
-    try {
-      val pInfo = packageManager.getPackageInfo(packageName, 0)
-      appVersion = pInfo.versionName
-    } catch (e: PackageManager.NameNotFoundException) {
-      e.printStackTrace()
-    }
-
-    if (!appVersion.contains("beta")) {
-      return
-    }
-    val builder = dialogues.getMaterialDialog(this)
-    builder.setTitle("Beta")
-    builder.setMessage("This version of application may work unstable!")
-    builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.dismiss() }
-    builder.create().show()
   }
 
   override fun setCurrentFragment(fragment: BaseFragment<*>) {
@@ -164,11 +139,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
       viewModel.parseResults(matches, false, this)
     }
     mFragment?.onActivityResult(requestCode, resultCode, data)
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    mFragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
   }
 
   override fun onDestroy() {

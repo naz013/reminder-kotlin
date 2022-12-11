@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
@@ -32,6 +33,7 @@ import java.sql.Date
 class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var mMissedCall: MissedCall? = null
   private var isEventShowed = false
@@ -67,14 +69,14 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
   }
 
   private fun loadTest() {
-    val isMocked = intent.getBooleanExtra(ARG_TEST, false)
+    val isMocked = intentBoolean(ARG_TEST)
     if (isMocked) {
-      val missedCall = intent.getSerializableExtra(ARG_TEST_ITEM) as MissedCall?
+      val missedCall = intentParcelable(ARG_TEST_ITEM, MissedCall::class.java)
       if (missedCall != null) showInfo(missedCall)
     }
   }
 
-  private fun getNumber() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getNumber() = intentString(Constants.INTENT_ID)
 
   private fun initViewModel() {
     viewModel.missedCall.observeForever(mMissedCallObserver)
@@ -149,13 +151,13 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
     if (prefs.isFoldingEnabled) {
       finish()
     } else {
-      Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
+      toast(R.string.select_one_of_item)
     }
     return true
   }
 
   private fun makeCall() {
-    if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
+    permissionFlow.askPermission(Permissions.CALL_PHONE) {
       TelephonyUtil.makeCall(mMissedCall?.number ?: "", this)
       removeMissed()
     }
@@ -178,19 +180,9 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
     }
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      CALL_PERM -> if (Permissions.checkPermission(grantResults)) {
-        makeCall()
-      }
-    }
-  }
-
   companion object {
     private const val ARG_TEST = "arg_test"
     private const val ARG_TEST_ITEM = "arg_test_item"
-    private const val CALL_PERM = 612
 
     fun mockTest(context: Context, missedCall: MissedCall) {
       val intent = Intent(context, MissedCallDialog29Activity::class.java)

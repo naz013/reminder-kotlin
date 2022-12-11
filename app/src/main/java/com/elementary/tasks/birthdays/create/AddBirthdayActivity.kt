@@ -14,34 +14,38 @@ import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.os.ContactPicker
+import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.listenScrollableView
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.showError
 import com.elementary.tasks.core.utils.text
 import com.elementary.tasks.core.utils.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
+import com.elementary.tasks.core.view_models.birthdays.CreateBirthdayViewModel
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import com.github.naz013.calendarext.newCalendar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
-import java.text.ParseException
 import java.util.Calendar
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
-  private val viewModel by viewModel<BirthdayViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<CreateBirthdayViewModel> { parametersOf(idFromIntent()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
+
+  private val contactPicker = ContactPicker(this) { showContact(it) }
 
   override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
 
@@ -54,6 +58,13 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     binding.pickContact.setOnClickListener { pickContact() }
     loadBirthday()
     setInitState().takeIf { savedInstanceState == null }
+  }
+
+  private fun showContact(contact: ContactData) {
+    if (binding.birthName.text.toString().trim() == "") {
+      binding.birthName.setText(contact.name)
+    }
+    binding.numberView.setText(contact.phone)
   }
 
   private fun initContact() {
@@ -89,11 +100,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
       if (viewModel.isEdited) return
       binding.birthName.setText(it.name)
-      try {
+      runCatching {
         val dt = TimeUtil.BIRTH_DATE_FORMAT.parse(it.date)
         if (dt != null) calendar.time = dt
-      } catch (e: ParseException) {
-        e.printStackTrace()
       }
 
       viewModel.onDateChanged(calendar.timeInMillis)
@@ -124,23 +133,18 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     }
   }
 
-  private fun idFromIntent() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun idFromIntent() = intentString(Constants.INTENT_ID)
 
-  private fun dateFromIntent() =
-    intent.getLongExtra(Constants.INTENT_DATE, System.currentTimeMillis())
+  private fun dateFromIntent() = intentLong(Constants.INTENT_DATE, System.currentTimeMillis())
 
-  private fun birthdayFromIntent() = try {
-    intent.getParcelableExtra(Constants.INTENT_ITEM) as? Birthday?
-  } catch (e: Exception) {
-    null
-  }
+  private fun birthdayFromIntent() = intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
 
   private fun readUri() {
     if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
       return
     }
     intent.data?.let {
-      try {
+      runCatching {
         showBirthday(
           if (ContentResolver.SCHEME_CONTENT != it.scheme) {
             val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_BIRTHDAY)
@@ -150,40 +154,28 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
           } else null,
           true
         )
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
 
   private fun initViewModel() {
     viewModel.birthday.observe(this) { showBirthday(it) }
-    viewModel.result.observe(this) {
+    viewModel.result.nonNullObserve(this) {
       when (it) {
         Commands.SAVED, Commands.DELETED -> closeScreen()
         else -> {
         }
       }
     }
-    viewModel.date.observe(this) {
+    viewModel.date.nonNullObserve(this) {
       Timber.d("initViewModel: ${TimeUtil.getFullDateTime(it, true)}")
       binding.birthDate.text = TimeUtil.BIRTH_DATE_FORMAT.format(it.time)
     }
-    viewModel.isContactAttached.observe(this) { binding.container.visibleGone(it) }
-  }
-
-  private fun checkContactPermission(code: Int): Boolean {
-    if (!Permissions.checkPermission(this, code, Permissions.READ_CONTACTS)) {
-      return false
-    }
-    return true
+    viewModel.isContactAttached.nonNullObserve(this) { binding.container.visibleGone(it) }
   }
 
   private fun pickContact() {
-    if (!checkContactPermission(101)) {
-      return
-    }
-    SuperUtil.selectContact(this, Constants.REQUEST_CODE_CONTACTS)
+    permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -200,16 +192,19 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
         askCopySaving()
         true
       }
+
       android.R.id.home -> {
         finish()
         true
       }
+
       MENU_ITEM_DELETE -> {
         dialogues.askConfirmation(this, getString(R.string.delete)) {
           if (it) deleteItem()
         }
         true
       }
+
       else -> super.onOptionsItemSelected(item)
     }
   }
@@ -243,22 +238,28 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       return
     }
     val number = binding.numberView.trimmedText().takeIf { binding.contactCheck.isChecked }
+    viewModel.prepare(contact, number, binding.birthDate.text(), newId)
     if (binding.contactCheck.isChecked) {
       if (number.isNullOrEmpty()) {
         binding.numberLayout.showError(R.string.you_dont_insert_number)
         return
       }
-      if (!checkContactPermission(CONTACT_PERM)) {
-        return
-      }
+      permissionFlow.askPermission(Permissions.READ_CONTACTS) { finalSave() }
+      return
     }
+    finalSave()
+  }
+
+  private fun finalSave() {
     analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
-    viewModel.save(contact, number, binding.birthDate.text(), newId)
+    viewModel.save()
   }
 
   private fun closeScreen() {
-    sendBroadcast(Intent(this, PermanentBirthdayReceiver::class.java)
-      .setAction(PermanentBirthdayReceiver.ACTION_SHOW))
+    sendBroadcast(
+      Intent(this, PermanentBirthdayReceiver::class.java)
+        .setAction(PermanentBirthdayReceiver.ACTION_SHOW)
+    )
     setResult(Activity.RESULT_OK)
     finish()
   }
@@ -275,47 +276,18 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
-      if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-        val contact = Contacts.readPickerResults(this, requestCode, resultCode, data)
-        if (contact != null) {
-          if (binding.birthName.text.toString().trim() == "") {
-            binding.birthName.setText(contact.name)
-          }
-          binding.numberView.setText(contact.phone)
-        }
-      }
-    }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      101 -> if (Permissions.checkPermission(grantResults)) {
-        SuperUtil.selectContact(this, Constants.REQUEST_CODE_CONTACTS)
-      }
-      CONTACT_PERM -> if (Permissions.checkPermission(grantResults)) {
-        askCopySaving()
-      }
-      SD_REQ -> if (Permissions.checkPermission(grantResults)) {
-
-      }
-    }
-  }
-
   override fun requireLogin() = true
 
   companion object {
     private const val SD_REQ = 555
     private const val MENU_ITEM_DELETE = 12
-    private const val CONTACT_PERM = 102
 
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {
-        context.startActivity(Intent(context, AddBirthdayActivity::class.java)
-          .putExtra(ARG_LOGIN_FLAG, true))
+        context.startActivity(
+          Intent(context, AddBirthdayActivity::class.java)
+            .putExtra(ARG_LOGIN_FLAG, true)
+        )
       } else {
         intent.putExtra(ARG_LOGIN_FLAG, true)
         context.startActivity(intent)

@@ -25,13 +25,15 @@ class EditReminderViewModel(
   workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  appDb,
   prefs,
   calendarUtils,
   eventControlFactory,
   dispatcherProvider,
   workManagerProvider,
-  updatesHelper
+  updatesHelper,
+  appDb.reminderDao(),
+  appDb.reminderGroupDao(),
+  appDb.placesDao()
 ) {
 
   private val _note = mutableLiveDataOf<NoteWithImages>()
@@ -40,14 +42,14 @@ class EditReminderViewModel(
   private val _googleTask = mutableLiveDataOf<Pair<GoogleTaskList?, GoogleTask?>>()
   val googleTask = _googleTask.toLiveData()
 
-  val reminder = appDb.reminderDao().loadById(id)
+  val reminder = reminderDao.loadById(id)
 
   val db = appDb
   var hasSameInDb: Boolean = false
 
   fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = appDb.reminderDao().getById(id)
+      val reminder = reminderDao.getById(id)
       hasSameInDb = reminder != null
     }
   }

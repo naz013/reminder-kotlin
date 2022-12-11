@@ -1,6 +1,5 @@
 package com.elementary.tasks.groups.create
 
-import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -13,23 +12,25 @@ import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
-import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
+import java.util.UUID
 
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   private val viewModel by viewModel<GroupViewModel> { parametersOf(getId()) }
+  private val permissionFlow = PermissionFlow(this, dialogues)
   private var mItem: ReminderGroup? = null
 
   override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
@@ -43,21 +44,14 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
     if (savedInstanceState != null) {
       binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
-    } else {
-      viewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
     }
 
     loadGroup()
   }
 
-  override fun onStart() {
-    super.onStart()
-    if (prefs.hasPinCode && !viewModel.isLogged) {
-      PinLoginActivity.verify(this)
-    }
-  }
+  override fun requireLogin() = true
 
-  private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId(): String = intentString(Constants.INTENT_ID)
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
@@ -93,24 +87,19 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   private fun loadGroup() {
     initViewModel()
     if (intent.data != null) {
-      readUri()
+      permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
-      try {
-        (intent.getParcelableExtra(Constants.INTENT_ITEM) as ReminderGroup?)?.let {
+      runCatching {
+        intentParcelable(Constants.INTENT_ITEM, ReminderGroup::class.java)?.let {
           showGroup(it, true)
         }
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
 
   private fun readUri() {
-    if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-      return
-    }
     intent.data?.let {
-      try {
+      runCatching {
         (if (ContentResolver.SCHEME_CONTENT != it.scheme) {
           val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_GROUP)
           if (any != null && any is ReminderGroup) {
@@ -119,28 +108,20 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
             null
           }
         } else null)?.let { item -> showGroup(item, true) }
-      } catch (e: Exception) {
-        e.printStackTrace()
       }
     }
   }
 
   private fun initViewModel() {
-    viewModel.reminderGroup.observe(this) { group ->
-      group?.let { showGroup(it) }
-    }
-    viewModel.result.observe(this) { commands ->
-      commands?.let {
-        when (it) {
-          Commands.SAVED, Commands.DELETED -> finish()
-          else -> {
-          }
+    viewModel.reminderGroup.nonNullObserve(this) { showGroup(it) }
+    viewModel.result.nonNullObserve(this) {
+      when (it) {
+        Commands.SAVED, Commands.DELETED -> finish()
+        else -> {
         }
       }
     }
-    viewModel.allGroups.observe(this) { groups ->
-      groups?.let { invalidateOptionsMenu() }
-    }
+    viewModel.allGroups.nonNullObserve(this) { invalidateOptionsMenu() }
   }
 
   private fun saveGroup(newId: Boolean = false) {
@@ -184,16 +165,19 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
         askCopySaving()
         true
       }
+
       android.R.id.home -> {
         finish()
         true
       }
+
       MENU_ITEM_DELETE -> {
         dialogues.askConfirmation(this, getString(R.string.delete)) {
           if (it) deleteItem()
         }
         true
       }
+
       else -> super.onOptionsItemSelected(item)
     }
   }
@@ -226,34 +210,17 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE) {
-      if (resultCode != Activity.RESULT_OK) {
-        finish()
-      } else {
-        viewModel.isLogged = true
-      }
-    }
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
-      readUri()
-    }
-  }
-
   companion object {
     private const val MENU_ITEM_DELETE = 12
-    private const val SD_REQ = 555
     private const val ARG_COLOR = "arg_color"
     private const val ARG_LOGGED = "arg_logged"
 
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {
-        context.startActivity(Intent(context, CreateGroupActivity::class.java)
-          .putExtra(ARG_LOGGED, true))
+        context.startActivity(
+          Intent(context, CreateGroupActivity::class.java)
+            .putExtra(ARG_LOGGED, true)
+        )
       } else {
         intent.putExtra(ARG_LOGGED, true)
         context.startActivity(intent)

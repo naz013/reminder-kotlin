@@ -27,6 +27,7 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.BitmapUtils
@@ -59,6 +60,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
   private val jobScheduler by inject<JobScheduler>()
+  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
 
@@ -149,7 +151,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ACTION_STOP_BG_ACTIVITY))
   }
 
-  private fun getId() = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intentString(Constants.INTENT_ID)
 
   private fun init() {
     setUpScreenOptions()
@@ -255,9 +257,9 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   }
 
   private fun loadTest() {
-    isMockedTest = intent.getBooleanExtra(ARG_TEST, false)
+    isMockedTest = intentBoolean(ARG_TEST)
     if (isMockedTest) {
-      val reminder = intent.getSerializableExtra(ARG_TEST_ITEM) as? Reminder?
+      val reminder = intentParcelable(ARG_TEST_ITEM, Reminder::class.java)
       if (reminder != null) showInfo(reminder)
     }
   }
@@ -685,7 +687,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
 
   private fun makeCall() {
     val reminder = mReminder ?: return
-    if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
+    permissionFlow.askPermission(Permissions.CALL_PHONE) {
       TelephonyUtil.makeCall(reminder.target, this)
     }
   }
@@ -767,15 +769,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     notifier.notify(id, wearableNotificationBuilder.build())
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      CALL_PERM -> if (Permissions.checkPermission(grantResults)) {
-        makeCall()
-      }
-    }
-  }
-
   override fun onStop() {
     super.onStop()
     mWasStopped = true
@@ -806,7 +799,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   }
 
   companion object {
-    private const val CALL_PERM = 612
+
     private const val ARG_TEST = "arg_test"
     private const val ARG_TEST_ITEM = "arg_test_item"
     const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"

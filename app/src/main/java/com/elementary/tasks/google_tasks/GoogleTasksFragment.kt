@@ -40,7 +40,9 @@ import timber.log.Timber
 class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>() {
 
   private val viewModel by viewModel<GoogleTaskListsViewModel>()
-  private val googleLogin: GoogleLogin by inject { parametersOf(requireActivity(), loginCallback) }
+  private val googleLogin: GoogleLogin by inject {
+    parametersOf(this@GoogleTasksFragment, loginCallback)
+  }
   private val adapter = TasksRecyclerAdapter(currentStateHolder) {
     showTasks(viewModel.allGoogleTasks.value ?: listOf())
   }
@@ -91,11 +93,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun googleTasksButtonClick() {
-    if (Permissions.checkPermission(requireActivity(), 104,
-        Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-        Permissions.WRITE_EXTERNAL)) {
-      switchGoogleTasksStatus()
-    }
+    permissionFlow.askPermission(Permissions.GET_ACCOUNTS) { switchGoogleTasksStatus() }
   }
 
   private fun switchGoogleTasksStatus() {
@@ -238,18 +236,4 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   override fun getTitle(): String = getString(R.string.google_tasks)
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    googleLogin.onActivityResult(requestCode, resultCode, data)
-  }
-
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (Permissions.checkPermission(grantResults)) {
-      when (requestCode) {
-        104 -> switchGoogleTasksStatus()
-      }
-    }
-  }
 }
