@@ -289,9 +289,12 @@
     <string name="fine_location">Exact Location</string>
     <string name="fine_location_explanation">To access you precise location, application requires Exact Location permission</string>
     <string name="call_phone">Call phone</string>
+    <string name="record_audio">Record audio</string>
+    <string name="record_audio_explanation">To access to microphone, application requires Record Audio permission</string>
     <string name="get_accounts">Get accounts</string>
     <string name="get_accounts_explanation">To login, application requires Get Accounts permission</string>
     <string name="read_phone_state">Read phone state</string>
+    <string name="read_phone_state_explanation">To detect missed calls, application requires Read phone state permission</string>
     <string name="read_contacts">Read contacts</string>
     <string name="read_contacts_explanation">To pick number from your contacts, application require Read Contacts permission</string>
     <string name="read_calendar">Read calendar</string>
@@ -684,5 +687,8 @@
     <string name="post_notification_explanation">To show notification in Status Bar application requires Notification permission</string>
     <string name="call_phone_explanation">To make auto call when reminder emits application require this permission</string>
     <string name="foreground_service">Foreground Service</string>
+    <string name="foreground_service_explanation">To allow application be fully functional, it requires Foreground Service permission</string>
+    <string name="background_location">Background Location</string>
+    <string name="background_location_explanation">To track You when You have active location reminders, application requires Background Location permission</string>
 
 </resources>

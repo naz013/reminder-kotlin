@@ -15,7 +15,6 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.Base64
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
@@ -148,9 +147,6 @@ object SuperUtil {
   }
 
   fun isDoNotDisturbEnabled(context: Context): Boolean {
-    if (!Module.isMarshmallow) {
-      return false
-    }
     val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     return if (mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS || mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_NONE) {
       Timber.d("isDoNotDisturbEnabled: true")
@@ -167,20 +163,18 @@ object SuperUtil {
   }
 
   fun askNotificationPermission(activity: Activity, dialogues: Dialogues) {
-    if (Module.isMarshmallow) {
-      val builder = dialogues.getMaterialDialog(activity)
-      builder.setMessage(R.string.for_correct_work_of_application)
-      builder.setPositiveButton(R.string.grant) { dialog, _ ->
-        dialog.dismiss()
-        val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-        try {
-          activity.startActivity(intent)
-        } catch (ignored: ActivityNotFoundException) {
-        }
+    val builder = dialogues.getMaterialDialog(activity)
+    builder.setMessage(R.string.for_correct_work_of_application)
+    builder.setPositiveButton(R.string.grant) { dialog, _ ->
+      dialog.dismiss()
+      val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+      try {
+        activity.startActivity(intent)
+      } catch (ignored: ActivityNotFoundException) {
       }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-      builder.create().show()
     }
+    builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+    builder.create().show()
   }
 
   fun checkLocationEnable(context: Context): Boolean {
@@ -193,10 +187,10 @@ object SuperUtil {
   }
 
   fun showLocationAlert(context: Context, callbacks: ReminderInterface) {
-    callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings), View.OnClickListener {
+    callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings)) {
       val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
       context.startActivity(intent)
-    })
+    }
   }
 
   fun isGooglePlayServicesAvailable(a: Context): Boolean {
@@ -218,7 +212,7 @@ object SuperUtil {
     }
   }
 
-  fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+  private fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
     val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
       if (serviceClass.name == service.service.className) {

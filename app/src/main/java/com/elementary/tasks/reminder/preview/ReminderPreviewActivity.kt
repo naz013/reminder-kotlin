@@ -566,7 +566,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     withReminder {
       if (!it.status.canToggle) return@withReminder
       if (it.type.isGpsType()) {
-        if (Permissions.ensureForeground(this@ReminderPreviewActivity, 1142)) {
+        permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
           viewModel.toggleReminder()
         }
       } else {

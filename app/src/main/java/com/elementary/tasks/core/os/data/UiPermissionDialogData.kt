@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.os.data
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Permissions
 
@@ -60,8 +58,26 @@ data class UiPermissionDialogData(
       R.string.call_phone,
       R.string.call_phone_explanation
     )
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    val RECORD_AUDIO = UiPermissionDialogData(
+      Permissions.RECORD_AUDIO,
+      R.string.record_audio,
+      R.string.record_audio_explanation
+    )
+    val BACKGROUND_LOCATION = UiPermissionDialogData(
+      Permissions.BACKGROUND_LOCATION,
+      R.string.background_location,
+      R.string.background_location_explanation
+    )
+    val READ_PHONE_STATE = UiPermissionDialogData(
+      Permissions.READ_PHONE_STATE,
+      R.string.read_phone_state,
+      R.string.read_phone_state_explanation
+    )
+    val FOREGROUND_SERVICE = UiPermissionDialogData(
+      Permissions.FOREGROUND_SERVICE,
+      R.string.foreground_service,
+      R.string.foreground_service_explanation
+    )
     val POST_NOTIFICATION = UiPermissionDialogData(
       Permissions.POST_NOTIFICATION,
       R.string.post_notification,

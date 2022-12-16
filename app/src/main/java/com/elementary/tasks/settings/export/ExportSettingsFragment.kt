@@ -1,7 +1,5 @@
 package com.elementary.tasks.settings.export
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +8,11 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
+import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -44,6 +42,19 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   private val dropbox by inject<Dropbox>()
   private val gDrive by inject<GDrive>()
   private val jobScheduler by inject<JobScheduler>()
+  private val backupFilePicker = BackupFilePicker(this) {
+    onProgress.invoke(true)
+    backupTool.importAll(it, keepOldData) {
+      onSyncEnd.invoke()
+      binding.importButton.post {
+        if (it) {
+          toast(getString(R.string.backup_file_imported_successfully))
+        } else {
+          toast(getString(R.string.failed_to_import_backup))
+        }
+      }
+    }
+  }
 
   private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
   private var mItemSelect: Int = 0
@@ -159,7 +170,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
   private fun pickFile() {
     permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      IntentUtil.pickFile(requireActivity(), REQ_PICK_RBAK)
+      backupFilePicker.pickRbakFile()
     }
   }
 
@@ -587,23 +598,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     binding.exportToCalendarPrefs.isChecked = prefs.isCalendarEnabled
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == REQ_PICK_RBAK && resultCode == Activity.RESULT_OK) {
-      onProgress.invoke(true)
-      backupTool.importAll(data?.data, keepOldData) {
-        onSyncEnd.invoke()
-        binding.importButton.post {
-          if (it) {
-            toast(getString(R.string.backup_file_imported_successfully))
-          } else {
-            toast(getString(R.string.failed_to_import_backup))
-          }
-        }
-      }
-    }
-  }
-
   override fun getTitle(): String = getString(R.string.export_and_sync)
 
   private fun syncStates(): Array<String> {
@@ -623,8 +617,4 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   data class SyncFlag(val title: String, val key: String, var isChecked: Boolean)
-
-  companion object {
-    private const val REQ_PICK_RBAK = 600
-  }
 }

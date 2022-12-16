@@ -13,7 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.os.ContactPicker
+import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Module
@@ -47,7 +47,7 @@ import timber.log.Timber
 
 abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
-  private val contactPicker = ContactPicker(requireActivity()) { actionView?.number = it.phone }
+  private val contactPicker = ContactPicker(this) { actionView?.number = it.phone }
 
   lateinit var iFace: ReminderInterface
     private set

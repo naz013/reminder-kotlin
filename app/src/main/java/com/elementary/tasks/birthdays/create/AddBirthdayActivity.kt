@@ -14,7 +14,7 @@ import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.os.ContactPicker
+import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -122,7 +122,11 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   private fun loadBirthday() {
     initViewModel()
     when {
-      intent.data != null -> readUri()
+      intent.data != null -> {
+        permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+          readUri()
+        }
+      }
       intent.hasExtra(Constants.INTENT_ITEM) -> showBirthday(birthdayFromIntent(), true)
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
       else -> {
@@ -140,9 +144,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   private fun birthdayFromIntent() = intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
 
   private fun readUri() {
-    if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
-      return
-    }
     intent.data?.let {
       runCatching {
         showBirthday(
@@ -279,7 +280,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   override fun requireLogin() = true
 
   companion object {
-    private const val SD_REQ = 555
+
     private const val MENU_ITEM_DELETE = 12
 
     fun openLogged(context: Context, intent: Intent? = null) {

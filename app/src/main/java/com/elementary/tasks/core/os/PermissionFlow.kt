@@ -2,7 +2,6 @@ package com.elementary.tasks.core.os
 
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
@@ -11,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.UiPermissionDialogData
 import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import java.util.LinkedList
 
@@ -49,6 +49,19 @@ class PermissionFlow private constructor(
     permission: String,
     callback: (permission: String) -> Unit
   ) {
+    if (permission == Permissions.POST_NOTIFICATION && !Module.is13) {
+      callback.invoke(permission)
+      return
+    }
+    if (permission == Permissions.FOREGROUND_SERVICE && !Module.isPie) {
+      callback.invoke(permission)
+      return
+    }
+    if (permission == Permissions.BACKGROUND_LOCATION && !Module.is10) {
+      callback.invoke(permission)
+      return
+    }
+
     this.map.clear()
     this.queue.clear()
     this.permissionDeniedCallback = null
@@ -62,12 +75,8 @@ class PermissionFlow private constructor(
     callback: (permission: String) -> Unit,
     deniedCallback: (permission: String) -> Unit
   ) {
-    this.map.clear()
-    this.queue.clear()
     this.permissionDeniedCallback = deniedCallback
-    this.permissionGrantedCallback = callback
-    this.permissionsGrantedCallback = null
-    checkPermission(permission)
+    askPermission(permission, callback)
   }
 
   fun askPermissions(
@@ -140,12 +149,10 @@ class PermissionFlow private constructor(
 
   private fun explainPermission(permission: String) {
     val dialogData = when (permission) {
-      Permissions.POST_NOTIFICATION -> {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-          UiPermissionDialogData.POST_NOTIFICATION
-        } else {
-          null
-        }
+      Permissions.POST_NOTIFICATION -> if (Module.is13) {
+        UiPermissionDialogData.POST_NOTIFICATION
+      } else {
+        null
       }
 
       Permissions.READ_CONTACTS -> UiPermissionDialogData.READ_CONTACTS
@@ -157,10 +164,20 @@ class PermissionFlow private constructor(
       Permissions.WRITE_EXTERNAL -> UiPermissionDialogData.WRITE_EXTERNAL
       Permissions.ACCESS_FINE_LOCATION -> UiPermissionDialogData.FINE_LOCATION
       Permissions.ACCESS_COARSE_LOCATION -> UiPermissionDialogData.COARSE_LOCATION
-      Permissions.RECORD_AUDIO -> TODO()
-      Permissions.BACKGROUND_LOCATION -> TODO()
-      Permissions.READ_PHONE_STATE -> TODO()
-      Permissions.FOREGROUND -> TODO()
+      Permissions.RECORD_AUDIO -> UiPermissionDialogData.RECORD_AUDIO
+      Permissions.BACKGROUND_LOCATION -> if (Module.is10) {
+        UiPermissionDialogData.BACKGROUND_LOCATION
+      } else {
+        null
+      }
+
+      Permissions.READ_PHONE_STATE -> UiPermissionDialogData.READ_PHONE_STATE
+      Permissions.FOREGROUND_SERVICE -> if (Module.isPie) {
+        UiPermissionDialogData.FOREGROUND_SERVICE
+      } else {
+        null
+      }
+
       else -> null
     } ?: return
 
@@ -183,7 +200,7 @@ class PermissionFlow private constructor(
       .show()
   }
 
-  abstract class Launcher() {
+  abstract class Launcher {
     protected var askedPermission = ""
     protected lateinit var onGranted: (String) -> Unit
     protected lateinit var onDenied: (String) -> Unit

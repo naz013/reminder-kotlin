@@ -24,7 +24,7 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     isBack = intent.getBooleanExtra(ARG_BACK, false)
-    hasFinger = prefs.useFingerprint && Module.isMarshmallow && Module.hasBiometric(this)
+    hasFinger = prefs.useFingerprint && Module.hasBiometric(this)
 
     openPinLogin()
     if (hasFinger) {

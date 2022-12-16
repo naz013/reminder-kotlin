@@ -138,7 +138,7 @@ class Notifier(
       builder.setGroup("GROUP")
       builder.setGroupSummary(true)
     }
-    if (noteWithImages.images.isNotEmpty() && Module.isMarshmallow) {
+    if (noteWithImages.images.isNotEmpty()) {
       val image = noteWithImages.images[0]
       val bitmap = BitmapFactory.decodeByteArray(image.image, 0, image.image?.size ?: 0)
       builder.setLargeIcon(bitmap)

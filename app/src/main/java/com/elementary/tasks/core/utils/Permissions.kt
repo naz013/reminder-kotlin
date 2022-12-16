@@ -5,10 +5,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
+@SuppressLint("InlinedApi")
 object Permissions {
 
   const val READ_CONTACTS = Manifest.permission.READ_CONTACTS
@@ -28,10 +27,8 @@ object Permissions {
   const val BLUETOOTH = Manifest.permission.BLUETOOTH
   const val CAMERA = Manifest.permission.CAMERA
 
-  @RequiresApi(Build.VERSION_CODES.P)
-  const val FOREGROUND = Manifest.permission.FOREGROUND_SERVICE
+  const val FOREGROUND_SERVICE = Manifest.permission.FOREGROUND_SERVICE
 
-  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
   const val POST_NOTIFICATION = Manifest.permission.POST_NOTIFICATIONS
 
   fun isNotificationsAllowed(context: Context): Boolean {
@@ -53,7 +50,7 @@ object Permissions {
 
   fun checkForeground(context: Context): Boolean {
     if (Module.isPie) {
-      if (ContextCompat.checkSelfPermission(context, FOREGROUND) != PackageManager.PERMISSION_GRANTED) {
+      if (ContextCompat.checkSelfPermission(context, FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
         return false
       }
       return true
@@ -61,62 +58,7 @@ object Permissions {
     return true
   }
 
-  @Deprecated("Use PermissionFlow to request permission")
-  fun ensureBackgroundLocation(activity: Activity, requestCode: Int): Boolean {
-    return if (isBgLocationAllowed(activity)) {
-      true
-    } else {
-      if (Module.is10) {
-        requestPermission(activity, requestCode, BACKGROUND_LOCATION)
-        false
-      } else {
-        return true
-      }
-    }
-  }
-
-  @Deprecated("Use PermissionFlow to request permission")
-  fun ensureForeground(activity: Activity, requestCode: Int): Boolean {
-    return if (checkForeground(activity)) {
-      true
-    } else {
-      if (Module.isPie) {
-        requestPermission(activity, requestCode, FOREGROUND)
-        false
-      } else {
-        return true
-      }
-    }
-  }
-
-  @Deprecated("Use PermissionFlow to request permission")
-  fun checkPermission(grantResults: IntArray): Boolean {
-    if (grantResults.isEmpty()) {
-      return false
-    } else {
-      for (p in grantResults) {
-        if (p != PackageManager.PERMISSION_GRANTED) {
-          return false
-        }
-      }
-      return true
-    }
-  }
-
-  @Deprecated("Use PermissionFlow to request permission")
-  fun checkPermission(activity: Activity, requestCode: Int, vararg permissions: String): Boolean {
-    return if (checkPermission(activity, *permissions)) {
-      true
-    } else {
-      requestPermission(activity, requestCode, *permissions)
-      false
-    }
-  }
-
   fun checkPermission(a: Context, vararg permissions: String): Boolean {
-    if (!Module.isMarshmallow) {
-      return true
-    }
     var res = true
     for (string in permissions) {
       if (ContextCompat.checkSelfPermission(a, string) != PackageManager.PERMISSION_GRANTED) {
@@ -127,20 +69,18 @@ object Permissions {
   }
 
   fun checkPermission(a: Context, permission: String): Boolean {
-    return !Module.isMarshmallow || ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
   }
 
   @Deprecated("Use PermissionFlow to request permission")
   fun requestPermission(a: Activity, requestCode: Int, vararg permission: String) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      val size = permission.size
-      if (size == 1) {
-        a.requestPermissions(permission, requestCode)
-      } else {
-        val array = arrayOfNulls<String>(size)
-        System.arraycopy(permission, 0, array, 0, size)
-        a.requestPermissions(array, requestCode)
-      }
+    val size = permission.size
+    if (size == 1) {
+      a.requestPermissions(permission, requestCode)
+    } else {
+      val array = arrayOfNulls<String>(size)
+      System.arraycopy(permission, 0, array, 0, size)
+      a.requestPermissions(array, requestCode)
     }
   }
 }

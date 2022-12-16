@@ -19,7 +19,5 @@ object Constants {
   const val SELECTED_TIME = "call_time"
   const val REQUEST_CODE_SELECTED_MELODY = 500
   const val REQUEST_CODE_APPLICATION = 117
-  const val ACTION_REQUEST_GALLERY = 111
   const val SELECTED_APPLICATION = "selected_application"
-  const val WEB_URL = "https://www.hummingbirdrr.com/"
 }

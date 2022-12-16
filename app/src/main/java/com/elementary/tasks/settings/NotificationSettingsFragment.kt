@@ -16,11 +16,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.datapicker.MelodyPicker
+import com.elementary.tasks.core.os.datapicker.PicturePicker
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -45,6 +46,22 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private val cacheUtil by inject<CacheUtil>()
   private val soundStackHolder by inject<SoundStackHolder>()
+  private val melodyPicker = MelodyPicker(this) {
+    val file = File(it)
+    if (file.exists()) {
+      prefs.melodyFile = file.toString()
+      showMelody()
+    }
+  }
+  private val picturePicker = PicturePicker(this) {
+    val file = File(it)
+    if (file.exists()) {
+      prefs.screenImage = it
+    } else {
+      prefs.screenImage = Constants.DEFAULT
+    }
+    showImage()
+  }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -693,7 +710,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
       1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
       2 -> prefs.melodyFile = Constants.SOUND_ALARM
-      3 -> IntentUtil.pickMelody(requireActivity(), MELODY_CODE)
+      3 -> melodyPicker.pickMelody()
       else -> pickRingtone()
     }
     showMelody()
@@ -916,7 +933,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     when (i) {
       0 -> prefs.screenImage = Constants.NONE
       1 -> prefs.screenImage = Constants.DEFAULT
-      2 -> openImagePicker()
+      2 -> picturePicker.pickPicture()
     }
     showImage()
   }
@@ -974,36 +991,12 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
-      MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-        val filePath = cacheUtil.cacheFile(data)
-        if (filePath != null) {
-          val file = File(filePath)
-          if (file.exists()) {
-            prefs.melodyFile = file.toString()
-          }
-        }
-        showMelody()
-      }
-
       RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
         val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
         if (uri != null) {
           prefs.melodyFile = uri.toString()
           showMelody()
         }
-      }
-
-      Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
-        val filePath = cacheUtil.cacheFile(data)
-        if (filePath != null) {
-          val file = File(filePath)
-          if (file.exists()) {
-            prefs.screenImage = filePath
-          } else {
-            prefs.screenImage = Constants.DEFAULT
-          }
-        }
-        showImage()
       }
     }
   }
@@ -1015,10 +1008,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
   }
 
-  private fun openImagePicker() {
-    IntentUtil.pickImage(requireActivity(), Constants.ACTION_REQUEST_GALLERY)
-  }
-
   private fun unlockList() = listOf(
     getString(R.string.all),
     getString(R.string.priority_low) + " " + getString(R.string.and_above),
@@ -1028,8 +1017,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   )
 
   companion object {
-
-    private const val MELODY_CODE = 125
     private const val RINGTONE_CODE = 126
   }
 }

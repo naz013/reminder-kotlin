@@ -52,7 +52,8 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
   }
 
   override fun prepare(): Reminder? {
-    if (!Permissions.ensureForeground(requireActivity(), REQ_FOREGROUND)) {
+    if (!Permissions.checkForeground(requireActivity())) {
+      permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {}
       return null
     }
     if (!Permissions.isBgLocationAllowed(requireActivity())) {
@@ -114,7 +115,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
       .setMessage(R.string.bg_location_message)
       .setPositiveButton(R.string.allow) { dialog, _ ->
         dialog.dismiss()
-        Permissions.ensureBackgroundLocation(requireActivity(), LocationFragment.REQ_BG_LOCATION)
+        permissionFlow.askPermission(Permissions.BACKGROUND_LOCATION) {}
       }
       .setNegativeButton(R.string.do_not_allow) { dialog, _ ->
         dialog.dismiss()
@@ -227,6 +228,5 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
   companion object {
     const val REQ_FOREGROUND = 2121
-    const val REQ_BG_LOCATION = 2122
   }
 }

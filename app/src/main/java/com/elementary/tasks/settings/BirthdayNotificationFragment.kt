@@ -10,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -31,6 +31,13 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
 
   private val cacheUtil by inject<CacheUtil>()
   private val soundStackHolder by inject<SoundStackHolder>()
+  private val melodyPicker = MelodyPicker(this) {
+    val file = File(it)
+    if (file.exists()) {
+      prefs.birthdayMelody = file.toString()
+      showMelody()
+    }
+  }
 
   private var mItemSelect: Int = 0
 
@@ -248,7 +255,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
 
   private fun pickMelody() {
     permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      IntentUtil.pickMelody(requireActivity(), MELODY_CODE)
+      melodyPicker.pickMelody()
     }
   }
 
@@ -444,18 +451,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
-      MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL)) {
-          val filePath = cacheUtil.cacheFile(data)
-          if (filePath != null) {
-            val file = File(filePath)
-            if (file.exists()) {
-              prefs.birthdayMelody = file.toString()
-            }
-          }
-          showMelody()
-        }
-      }
+
       RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
         val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
         if (uri != null) {

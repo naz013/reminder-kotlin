@@ -55,7 +55,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     saveAction = { reminder -> viewModel.saveReminder(reminder) },
     toggleAction = { reminder ->
       if (Reminder.isGpsType(reminder.type)) {
-        if (Permissions.ensureForeground(requireActivity(), 1122)) {
+        permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
           viewModel.toggleReminder(reminder)
         }
       } else {
@@ -84,10 +84,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    if (Module.isMarshmallow) {
-      binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-        viewModel.topScrollX = scrollX
-      }
+    binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+      viewModel.topScrollX = scrollX
     }
 
     binding.addReminderButton.setOnClickListener {

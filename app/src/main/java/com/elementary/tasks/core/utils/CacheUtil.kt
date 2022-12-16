@@ -74,10 +74,9 @@ class CacheUtil(val context: Context) {
 
     return try {
       if (!file.createNewFile()) {
-        try {
+        runCatching {
           file.delete()
           file.createNewFile()
-        } catch (e: Exception) {
         }
       }
       file.copyInputStreamToFile(inputStream)

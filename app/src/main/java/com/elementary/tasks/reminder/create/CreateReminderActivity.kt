@@ -28,10 +28,9 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderType
+import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.IntentUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -67,7 +66,6 @@ import java.util.*
 
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
-  private val cacheUtil by inject<CacheUtil>()
   private val reminderAnalyticsTracker by inject<ReminderAnalyticsTracker>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
@@ -75,6 +73,10 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val stateViewModel by viewModel<ReminderStateViewModel>()
 
   private val permissionFlow = PermissionFlow(this, dialogues)
+  private val melodyPicker = MelodyPicker(this) {
+    fragment?.onMelodySelect(it)
+    showCurrentMelody()
+  }
 
   private var fragment: TypeFragment<*>? = null
   private var isEditing: Boolean = false
@@ -387,7 +389,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun selectMelody() {
     permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      IntentUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
+      melodyPicker.pickMelody()
     }
   }
 
@@ -494,13 +496,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         }
       }
     } else if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
-      if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
-        val melodyPath = cacheUtil.cacheFile(data)
-        if (melodyPath != null) {
-          fragment?.onMelodySelect(melodyPath)
-          showCurrentMelody()
-        }
-      }
+
     } else if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
       data?.data?.let {
         fragment?.onAttachmentSelect(it)

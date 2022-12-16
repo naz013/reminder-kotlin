@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SearchMenuHandler
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
@@ -43,7 +44,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     saveAction = { reminder -> viewModel.saveReminder(reminder) },
     toggleAction = { reminder ->
       if (Reminder.isGpsType(reminder.type)) {
-        if (Permissions.ensureForeground(requireActivity(), 1122)) {
+        permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
           viewModel.toggleReminder(reminder)
         }
       } else {
@@ -101,26 +102,18 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
   }
 
   private fun initViewModel() {
-    viewModel.events.observe(viewLifecycleOwner, { reminders ->
-      if (reminders != null) {
-        showData(reminders)
-      }
-    })
-    viewModel.error.observe(viewLifecycleOwner, {
+    viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
+    viewModel.error.nonNullObserve(viewLifecycleOwner) {
       Timber.d("initViewModel: onError -> $it")
-      if (it != null) {
-        remindersAdapter.notifyDataSetChanged()
-        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+      remindersAdapter.notifyDataSetChanged()
+      Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+    }
+    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+      if (it == Commands.OUTDATED) {
+        remindersAdapter.notifyItemChanged(mPosition)
+        toast(R.string.reminder_is_outdated)
       }
-    })
-    viewModel.result.observe(viewLifecycleOwner, {
-      if (it != null) {
-        if (it == Commands.OUTDATED) {
-          remindersAdapter.notifyItemChanged(mPosition)
-          toast(R.string.reminder_is_outdated)
-        }
-      }
-    })
+    }
   }
 
   private fun showData(result: List<Reminder>) {

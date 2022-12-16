@@ -49,13 +49,8 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     binding.changesPrefs.setOnClickListener { openChangesScreen() }
     binding.ratePrefs.setOnClickListener { withContext { SuperUtil.launchMarket(it) } }
     binding.tellFriendsPrefs.setOnClickListener { shareApplication() }
-    if (Module.isMarshmallow) {
-      binding.permissionsPrefs.visibility = View.VISIBLE
-      binding.addPermissionPrefs.visibility = View.VISIBLE
-    } else {
-      binding.permissionsPrefs.visibility = View.GONE
-      binding.addPermissionPrefs.visibility = View.GONE
-    }
+    binding.permissionsPrefs.visibility = View.VISIBLE
+    binding.addPermissionPrefs.visibility = View.VISIBLE
     binding.addPermissionPrefs.setOnClickListener { showPermissionDialog() }
     binding.privacyPolicyPrefs.setOnClickListener { openPrivacyPolicyScreen() }
   }
@@ -109,9 +104,17 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     if (!Permissions.checkPermission(activity, Permissions.WRITE_EXTERNAL)) {
       mDataList.add(Item(getString(R.string.write_external_storage), Permissions.WRITE_EXTERNAL))
     }
+    if (!Permissions.checkPermission(activity, Permissions.RECORD_AUDIO)) {
+      mDataList.add(Item(getString(R.string.record_audio), Permissions.RECORD_AUDIO))
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-      if (!Permissions.checkPermission(activity, Permissions.FOREGROUND)) {
-        mDataList.add(Item(getString(R.string.foreground_service), Permissions.FOREGROUND))
+      if (!Permissions.checkPermission(activity, Permissions.FOREGROUND_SERVICE)) {
+        mDataList.add(Item(getString(R.string.foreground_service), Permissions.FOREGROUND_SERVICE))
+      }
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      if (!Permissions.checkPermission(activity, Permissions.BACKGROUND_LOCATION)) {
+        mDataList.add(Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION))
       }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
