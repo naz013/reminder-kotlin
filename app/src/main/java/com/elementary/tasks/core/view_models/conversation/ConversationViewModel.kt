@@ -268,7 +268,7 @@ class ConversationViewModel(
         return recognizer.parse(suggestion)
     }
 
-    fun findResults(matches: ArrayList<*>): Reminder? {
+    fun findResults(matches: List<*>): Reminder? {
         recognizer.setContactHelper(ContactHelper())
         for (i in matches.indices) {
             val key = matches[i]
@@ -282,7 +282,7 @@ class ConversationViewModel(
         return null
     }
 
-    fun parseResults(matches: ArrayList<*>, isWidget: Boolean, context: Context) {
+    fun parseResults(matches: List<*>, isWidget: Boolean, context: Context) {
         for (i in matches.indices) {
             val key = matches[i]
             val keyStr = key.toString()

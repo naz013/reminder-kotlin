@@ -13,7 +13,6 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
-import android.speech.RecognizerIntent
 import android.util.Base64
 import android.view.Window
 import android.view.WindowManager
@@ -21,10 +20,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface
-import com.elementary.tasks.voice.ConversationActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import timber.log.Timber
@@ -244,31 +241,6 @@ object SuperUtil {
       hour * h + minute * m + sec * s
     } else
       0
-  }
-
-  fun startVoiceRecognitionActivity(activity: Activity, requestCode: Int, isLive: Boolean, prefs: Prefs, language: Language) {
-    val intent: Intent
-    when {
-      isLive -> {
-        intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
-      }
-      prefs.isLiveEnabled -> {
-        (activity as? VoiceWidgetDialog)?.finish()
-        intent = Intent(activity, ConversationActivity::class.java)
-      }
-      else -> {
-        intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
-      }
-    }
-    try {
-      activity.startActivityForResult(intent, requestCode)
-    } catch (e: Exception) {
-      Toast.makeText(activity, activity.getString(R.string.no_recognizer_found), Toast.LENGTH_SHORT).show()
-    }
   }
 
   fun isAppInstalled(context: Context, packageName: String): Boolean {

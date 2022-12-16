@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -28,13 +27,13 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderType
-import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.datapicker.MelodyPicker
+import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
@@ -76,6 +75,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val melodyPicker = MelodyPicker(this) {
     fragment?.onMelodySelect(it)
     showCurrentMelody()
+  }
+  private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
+
   }
 
   private var fragment: TypeFragment<*>? = null
@@ -344,13 +346,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun openRecognizer() {
-    SuperUtil.startVoiceRecognitionActivity(
-      this,
-      VOICE_RECOGNITION_REQUEST_CODE,
-      true,
-      prefs,
-      language
-    )
+    voiceRecognitionLauncher.recognize(true)
   }
 
   private fun replaceFragment(fragment: TypeFragment<*>) {
@@ -482,22 +478,21 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     return true
   }
 
+  private fun processVoiceResult(matches: List<String>) {
+    if (matches.isNotEmpty()) {
+      val model = conversationViewModel.findResults(matches)
+      if (model != null) {
+        editReminder(model, false)
+      } else {
+        val text = matches[0]
+        fragment?.onVoiceAction(StringUtils.capitalize(text))
+      }
+    }
+  }
+
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-      val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-      if (matches != null) {
-        val model = conversationViewModel.findResults(matches)
-        if (model != null) {
-          editReminder(model, false)
-        } else {
-          val text = matches[0].toString()
-          fragment?.onVoiceAction(StringUtils.capitalize(text))
-        }
-      }
-    } else if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
-
-    } else if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
+    if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
       data?.data?.let {
         fragment?.onAttachmentSelect(it)
       }
@@ -630,7 +625,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     private const val GPS = 9
     private const val GPS_PLACE = 10
 
-    private const val VOICE_RECOGNITION_REQUEST_CODE = 109
     private const val MENU_ITEM_DELETE = 12
     private const val FILE_REQUEST = 323
 

@@ -3,7 +3,6 @@ package com.elementary.tasks.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.navigation.NavController
@@ -12,9 +11,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.GlobalAction
 import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
@@ -33,6 +32,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val viewModel by viewModel<ConversationViewModel>()
   private val noteViewModel by viewModel<NoteViewModel> { parametersOf("") }
+  private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
   private val mNoteView: QuickNoteCoordinator by lazy {
     binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }
     QuickNoteCoordinator(
@@ -132,13 +132,10 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     imm?.hideSoftInputFromWindow(token, 0)
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-      val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return
+  private fun processResult(matches: List<String>) {
+    if (matches.isNotEmpty()) {
       viewModel.parseResults(matches, false, this)
     }
-    mFragment?.onActivityResult(requestCode, resultCode, data)
   }
 
   override fun onDestroy() {
@@ -152,7 +149,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
     if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
       mNoteView.switchQuickNote()
     } else if (action == GlobalButtonObservable.Action.VOICE) {
-      SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
+      voiceRecognitionLauncher.recognize(false)
     }
   }
 
@@ -171,7 +168,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
   }
 
   companion object {
-    const val VOICE_RECOGNITION_REQUEST_CODE = 109
     const val ARG_DEST = "arg_dest"
 
     object Dest {

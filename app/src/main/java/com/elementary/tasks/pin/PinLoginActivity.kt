@@ -107,12 +107,10 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
     const val ARG_BACK = "arg_back"
     const val LOGIN_REQUEST_CODE = 1233
 
+    @Deprecated("Use LoginLauncher")
     fun verify(activity: Activity, code: Int = LOGIN_REQUEST_CODE) {
       activity.startActivityForResult(Intent(activity, PinLoginActivity::class.java)
         .putExtra(ARG_BACK, true), code)
     }
-
-    fun verifyIntent(activity: Activity) =
-      Intent(activity, PinLoginActivity::class.java).putExtra(ARG_BACK, true)
   }
 }
