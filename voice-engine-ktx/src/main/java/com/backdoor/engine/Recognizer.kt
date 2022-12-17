@@ -9,7 +9,8 @@ import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.LongInternal
 import com.backdoor.engine.misc.TimeUtil.getGmtFromDateTime
 import org.apache.commons.lang3.StringUtils
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class Recognizer private constructor(
   locale: String,
@@ -27,8 +28,7 @@ class Recognizer private constructor(
   }
 
   fun parse(input: String): Model? {
-    return input.toLowerCase(LOCALE)
-      .let { s -> s.trim { it <= ' ' } }
+    return input.lowercase(LOCALE).trim()
       .let { worker.replaceNumbers(it) ?: "" }
       .also { println("parse: $it, worker $worker") }
       .let { s ->

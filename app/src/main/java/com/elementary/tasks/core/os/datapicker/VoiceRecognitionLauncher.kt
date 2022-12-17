@@ -60,7 +60,7 @@ class VoiceRecognitionLauncher private constructor(
     when {
       isLiveSupported -> {
         intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getActivity().getString(R.string.say_something))
       }
       prefs.isLiveEnabled -> {

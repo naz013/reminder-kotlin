@@ -347,7 +347,7 @@ val utilModule = module {
   single { Dialogues(get()) }
   single { Language(get()) }
   single { CalendarUtils(get(), get(), get()) }
-  single { providesRecognizer(get(), get()) }
+  factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get()) }
   single { GlobalButtonObservable() }
   single { ImagesSingleton() }

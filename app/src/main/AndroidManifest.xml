@@ -629,11 +629,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.evernote.android.job.gcm.PlatformGcmService"
-            android:enabled="true"
-            tools:replace="android:enabled" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="${apiKey}" />
@@ -672,4 +667,10 @@
             tools:node="remove">
         </provider>
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 </manifest>
