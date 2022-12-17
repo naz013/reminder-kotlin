@@ -109,6 +109,20 @@ class PermissionFlow private constructor(
   }
 
   private fun checkPermission(permission: String) {
+    when (permission) {
+      Permissions.POST_NOTIFICATION -> if (!Module.is13) {
+        permissionGranted(permission)
+        return
+      }
+      Permissions.BACKGROUND_LOCATION -> if (!Module.is10) {
+        permissionGranted(permission)
+        return
+      }
+      Permissions.FOREGROUND_SERVICE -> if (!Module.isPie) {
+        permissionGranted(permission)
+        return
+      }
+    }
     this.askedPermission = permission
     when {
       ContextCompat.checkSelfPermission(
