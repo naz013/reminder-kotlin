@@ -635,6 +635,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     } catch (e: Throwable) {
       speech = null
       isListening = false
+      stopView()
     }
   }
 

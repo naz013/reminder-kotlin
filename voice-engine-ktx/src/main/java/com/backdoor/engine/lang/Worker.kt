@@ -5,7 +5,8 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.LongInternal
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 internal abstract class Worker : WorkerInterface {
   internal val weekdayArray = intArrayOf(0, 0, 0, 0, 0, 0, 0)
@@ -293,8 +294,8 @@ internal abstract class Worker : WorkerInterface {
     const val HOUR = MINUTE * 60
     const val HALF_DAY = HOUR * 12
     const val DAY = HALF_DAY * 2
-    const val WHITESPACES = "\\s+"
-    const val WHITESPACE = "\\s"
+    val WHITESPACES = "\\s+".toRegex()
+    val WHITESPACE = "\\s".toRegex()
 
     fun getNumberOfSelectedWeekdays(days: List<Int>) = days.count { it == 1 }
 

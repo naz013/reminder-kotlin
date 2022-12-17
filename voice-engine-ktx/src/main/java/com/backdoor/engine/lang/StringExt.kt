@@ -21,4 +21,4 @@ internal fun String.toRepeat(def1: Long, def2: Long = 0): Long {
 }
 
 internal fun List<String>.clip() =
-  joinToString { " " }.trim { it <= ' ' }.replace("\\s{2,}".toRegex(), " ")
+  joinToString(" ").trim().replace("\\s{2,}".toRegex(), " ")
