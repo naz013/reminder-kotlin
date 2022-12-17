@@ -28,5 +28,6 @@
     <integer name="num_of_cols">1</integer>
 
     <integer name="gradient_button_anim_duration">250</integer>
+    <integer name="banner_anim_duration">5000</integer>
 
 </resources>
