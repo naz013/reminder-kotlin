@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <gradient
-        android:angle="0"
-        android:endColor="#80f64848"
-        android:startColor="#80f095ff" />
-</shape>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/gradient_birthdays_banner_start"
+        android:duration="@integer/banner_anim_duration" />
+
+    <item
+        android:drawable="@drawable/gradient_birthdays_banner_center"
+        android:duration="@integer/banner_anim_duration" />
+
+    <item
+        android:drawable="@drawable/gradient_birthdays_banner_end"
+        android:duration="@integer/banner_anim_duration" />
+</animation-list>
