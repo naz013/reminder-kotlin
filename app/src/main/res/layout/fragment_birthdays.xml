@@ -36,7 +36,7 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
                 android:gravity="center|top"
-                android:text="@string/no_birthdays_found"
+                android:text="@string/voice_no_birthdays_found"
                 android:textAppearance="?textAppearanceHeadline6" />
 
         </LinearLayout>

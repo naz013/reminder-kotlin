@@ -167,7 +167,7 @@
     <string name="allow_customizing_notification">"Pozwól dostosowywania powiadomienia dla każdego przypomnienia"</string>
     <string name="permissions">"Uprawnienia"</string>
     <string name="allow_permission">"Dodaj uprawienie"</string>
-    <string name="about">"O"</string>
+    <string name="about">O aplikacji</string>
     <string name="changes">"Zmiany"</string>
     <string name="open_source_licenses">"Oprogramowanie open source"</string>
     <string name="tell_friends">"Powiadom znajomych"</string>
@@ -399,36 +399,6 @@
     <string name="notification_type">Typ powiadomienia</string>
     <string name="simple">Uproszczony</string>
     <string name="full_screen">Pełny ekran</string>
-    <string name="would_you_like_to_save_it">Chcesz to zapisać?</string>
-    <string name="would_you_like_to_add_reminder">Chcesz dodać przypomnienie?</string>
-    <string name="trash_was_cleared">Kosz oczyszczono</string>
-    <string name="this_command_not_supported_on_that_screen">"Tą komenda nie jest wspierana na tym ekranie"</string>
-
-    <string name="shopping_lists">shopping lists</string>
-    <string name="reminders">reminders</string>
-    <string name="reminder_saved">Reminder saved</string>
-    <string name="reminder_canceled">Reminder canceled</string>
-    <string name="note_saved_without_reminder">Note saved without reminder</string>
-    <string name="note_saved">Note saved</string>
-    <string name="note_created">Note created</string>
-    <string name="note_canceled">Note canceled</string>
-    <string name="no_shopping_lists_found">No shopping lists found</string>
-    <string name="no_reminders_found">No reminders found</string>
-    <string name="no_notes_found">No notes found</string>
-    <string name="no_groups_found">No groups found</string>
-    <string name="no_birthdays_found">No birthdays found</string>
-    <string name="hi_how_can_i_help_you">Hi, how can I help you?</string>
-    <string name="group_saved">Group saved</string>
-    <string name="group_created">Group created</string>
-    <string name="group_canceled">Group canceled</string>
-    <string name="found_one_shopping_list">Found one shopping list</string>
-    <string name="found_one_reminder">Found one reminder</string>
-    <string name="found_one_note">Found one note</string>
-    <string name="found_one_group">Found one group</string>
-    <string name="found_one_birthday">Found one birthday</string>
-    <string name="found">Found</string>
-    <string name="can_not_recognize_your_command">Can not recognize your command</string>
-
     <string name="acc_add">Dodać</string>
     <string name="acc_add_image_to_reminder">Dodaj obraz do przypomnienia</string>
     <string name="acc_add_reminder">Dodaj przypomnienie</string>
@@ -447,7 +417,6 @@
     <string name="acc_select_number_from_contacts">Wybierz numer z kontaktów</string>
     <string name="acc_stop">Zatrzymać</string>
     <string name="acc_type_by_voice">Wpisz tekst głosem</string>
-    <string name="did_you_say_something">Coś powiedziałeś?</string>
     <string name="tell_about_event">Powiedz o wydarzeniach</string>
     <string name="reminder_created_on">Przypomnienie zostało utworzone</string>
     <string name="reminder_channel">Przypomnienie kanału</string>

@@ -82,8 +82,8 @@ class Language(private val prefs: Prefs) {
     context.getString(R.string.ukrainian) + " (" + UK + ")",
     context.getString(R.string.german) + " (" + DE + ") (BETA)",
     context.getString(R.string.spanish) + " (" + ES + ") (BETA)",
-    context.getString(R.string.portuguese) + " (" + PT + ") (BETA)"
-//    context.getString(R.string.polish) + " (" + PL + ") (BETA)"
+    context.getString(R.string.portuguese) + " (" + PT + ") (BETA)",
+    context.getString(R.string.polish) + " (" + PL + ") (BETA)"
   )
 
   fun getTextLanguage(code: Int) = when (code) {

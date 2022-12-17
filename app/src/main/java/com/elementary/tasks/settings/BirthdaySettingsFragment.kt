@@ -135,7 +135,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         val message = if (it == 0) {
           getString(R.string.no_new_birthdays)
         } else {
-          getString(R.string.found) + " $it " + getString(R.string.birthdays)
+          getString(R.string.voice_found) + " $it " + getString(R.string.birthdays)
         }
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         onProgress.invoke(false)

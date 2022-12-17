@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="voice_can_not_recognize_your_command">Не можу розпізнати вашу команду</string>
+    <string name="voice_did_you_say_something">Ви щось cказали?</string>
+    <string name="voice_found">Знайдено</string>
+    <string name="voice_found_one_birthday">Знайдено один день народження</string>
+    <string name="voice_found_one_group">Знайдено одну групу</string>
+    <string name="voice_found_one_note">Знайдено одну нотатку</string>
+    <string name="voice_found_one_reminder">Знайдено одне нагадування</string>
+    <string name="voice_found_one_shopping_list">Знайдено один список покупок</string>
+    <string name="voice_group_canceled">Групу скасовано</string>
+    <string name="voice_group_created">Групу створено</string>
+    <string name="voice_group_saved">Групу збережено</string>
+    <string name="voice_hi_how_can_i_help_you">Привіт, чим я можу допомогти?</string>
+    <string name="voice_no_birthdays_found">Не знайдено жодного дня народження</string>
+    <string name="voice_no_groups_found">Не знайдено жодної групи</string>
+    <string name="voice_no_notes_found">Не знайдено жодної нотатки</string>
+    <string name="voice_no_reminders_found">Не знайдено жодного нагадування</string>
+    <string name="voice_no_shopping_lists_found">Не знайдено жодного списку покупок</string>
+    <string name="voice_note_canceled">Нотатку скасовано</string>
+    <string name="voice_note_created">Нотатку створено</string>
+    <string name="voice_note_saved">Нотатку збережено</string>
+    <string name="voice_note_saved_without_reminder">Нотатку збережено без нагадування</string>
+    <string name="voice_reminder_canceled">Нагадування скасовано</string>
+    <string name="voice_reminder_saved">Нагадування збережено</string>
+    <string name="voice_reminders">Нагадувань</string>
+    <string name="voice_shopping_lists">Спискок покупок</string>
+    <string name="voice_this_command_not_supported_on_that_screen">Ця команда не підтримується на цьому екрані</string>
+    <string name="voice_trash_was_cleared">Кошик було очищено</string>
+    <string name="voice_would_you_like_to_add_reminder">Ви хочете додати нагадування?</string>
+    <string name="voice_would_you_like_to_save_it">Ви хочете зберегти це?</string>
+</resources>

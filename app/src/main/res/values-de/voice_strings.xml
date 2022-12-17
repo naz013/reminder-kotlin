@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="voice_hi_how_can_i_help_you">Hallo, wie kann ich Ihnen helfen?</string>
+    <string name="voice_did_you_say_something">Hast du was gesagt?</string>
+    <string name="voice_can_not_recognize_your_command">Kann Ihren Befehl nicht erkennen</string>
+    <string name="voice_this_command_not_supported_on_that_screen">Dieser Befehl wird auf diesem Bildschirm nicht unterstützt</string>
+    <string name="voice_no_shopping_lists_found">Keine Einkaufslisten gefunden</string>
+    <string name="voice_found_one_shopping_list">Eine Einkaufsliste gefunden</string>
+    <string name="voice_found">Gefunden</string>
+    <string name="voice_shopping_lists">einkaufslisten</string>
+    <string name="voice_no_birthdays_found">Keine Geburtstage gefunden</string>
+    <string name="voice_found_one_birthday">Einen Geburtstag gefunden</string>
+    <string name="voice_no_reminders_found">Keine Erinnerungen gefunden</string>
+    <string name="voice_found_one_reminder">Eine Erinnerung gefunden</string>
+    <string name="voice_reminders">erinnerungen</string>
+    <string name="voice_no_groups_found">Keine Gruppen gefunden</string>
+    <string name="voice_found_one_group">Eine Gruppe gefunden</string>
+    <string name="voice_no_notes_found">Keine Notizen gefunden</string>
+    <string name="voice_found_one_note">Eine Notiz gefunden</string>
+    <string name="voice_group_created">Gruppe erstellt</string>
+    <string name="voice_note_created">Notiz erstellt</string>
+    <string name="voice_would_you_like_to_save_it">Möchten Sie es speichern?</string>
+    <string name="voice_group_saved">Gruppe gespeichert</string>
+    <string name="voice_group_canceled">Gruppe storniert</string>
+    <string name="voice_reminder_saved">Erinnerung gespeichert</string>
+    <string name="voice_reminder_canceled">Erinnerung abgesagt</string>
+    <string name="voice_note_saved">Notiz gespeichert</string>
+    <string name="voice_note_canceled">Hinweis storniert</string>
+    <string name="voice_would_you_like_to_add_reminder">Möchten Sie eine Erinnerung hinzufügen?</string>
+    <string name="voice_note_saved_without_reminder">Notiz ohne Erinnerung gespeichert</string>
+    <string name="voice_trash_was_cleared">Der Müll wurde gelöscht</string>
+</resources>

@@ -71,9 +71,9 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       } else {
         isTtsReady = true
         if (!isRotated || mAdapter.itemCount == 0) {
-          addResponse(getLocalized(R.string.hi_how_can_i_help_you))
+          addResponse(getLocalized(R.string.voice_hi_how_can_i_help_you))
           if (Module.hasMicrophone(this)) {
-            postMicClick({ tryToActivateMic() }, 2000)
+            postMicClick(::tryToActivateMic, 2000)
           }
         }
       }
@@ -160,7 +160,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       when (commands) {
         Commands.TRASH_CLEARED -> {
           stopView()
-          addResponse(getLocalized(R.string.trash_was_cleared))
+          addResponse(getLocalized(R.string.voice_trash_was_cleared))
         }
 
         Commands.DELETED -> {
@@ -190,7 +190,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun showSilentMessage() {
     stopView()
-    playTts(getLocalized(R.string.did_you_say_something))
+    playTts(getLocalized(R.string.voice_did_you_say_something))
   }
 
   private fun getLocalized(id: Int): String {
@@ -214,7 +214,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       performResult(model)
     } else {
       stopView()
-      addResponse(getLocalized(R.string.can_not_recognize_your_command))
+      addResponse(getLocalized(R.string.voice_can_not_recognize_your_command))
     }
   }
 
@@ -290,18 +290,18 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun showUnsupportedMessage() {
     stopView()
-    addResponse(getLocalized(R.string.this_command_not_supported_on_that_screen))
+    addResponse(getLocalized(R.string.voice_this_command_not_supported_on_that_screen))
   }
 
   private fun showShoppingLists(reminders: List<Reminder>?) {
     val items = Container(reminders)
     if (items.isEmpty) {
-      addResponse(getLocalized(R.string.no_shopping_lists_found))
+      addResponse(getLocalized(R.string.voice_no_shopping_lists_found))
     } else {
       if (items.list.size == 1) {
-        addResponse(getLocalized(R.string.found_one_shopping_list))
+        addResponse(getLocalized(R.string.voice_found_one_shopping_list))
       } else {
-        addResponse(getLocalized(R.string.found) + " " + items.list.size + " " + getLocalized(R.string.shopping_lists))
+        addResponse(getLocalized(R.string.voice_found) + " " + items.list.size + " " + getLocalized(R.string.voice_shopping_lists))
       }
       addReminderObject(items.list.removeAt(0))
       if (!items.isEmpty) {
@@ -320,12 +320,12 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showBirthdays(birthdays: List<BirthdayListItem>?) {
     val items = Container(birthdays)
     if (items.isEmpty) {
-      addResponse(getLocalized(R.string.no_birthdays_found))
+      addResponse(getLocalized(R.string.voice_no_birthdays_found))
     } else {
       if (items.list.size == 1) {
-        addResponse(getLocalized(R.string.found_one_birthday))
+        addResponse(getLocalized(R.string.voice_found_one_birthday))
       } else {
-        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.found) +
+        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.voice_found) +
           " " + items.list.size + " " + getLocalized(R.string.birthdays))))
       }
       addObjectResponse(Reply(Reply.BIRTHDAY, items.list.removeAt(0)))
@@ -339,13 +339,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showEnabledReminders(list: List<Reminder>?) {
     val items = Container(list)
     if (items.isEmpty) {
-      addResponse(getLocalized(R.string.no_reminders_found))
+      addResponse(getLocalized(R.string.voice_no_reminders_found))
     } else {
       if (items.list.size == 1) {
-        addResponse(getLocalized(R.string.found_one_reminder))
+        addResponse(getLocalized(R.string.voice_found_one_reminder))
       } else {
-        addResponse(getLocalized(R.string.found) + " " + items.list.size + " " +
-          getLocalized(R.string.reminders))
+        addResponse(getLocalized(R.string.voice_found) + " " + items.list.size + " " +
+          getLocalized(R.string.voice_reminders))
       }
       addReminderObject(items.list.removeAt(0))
       if (!items.isEmpty) {
@@ -358,12 +358,12 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showGroups() {
     val items = Container(viewModel.groups)
     if (items.isEmpty) {
-      addResponse(getLocalized(R.string.no_groups_found))
+      addResponse(getLocalized(R.string.voice_no_groups_found))
     } else {
       if (items.list.size == 1) {
-        addResponse(getLocalized(R.string.found_one_group))
+        addResponse(getLocalized(R.string.voice_found_one_group))
       } else {
-        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.found) +
+        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.voice_found) +
           " " + items.list.size + " " + getLocalized(R.string.groups))))
       }
       addObjectResponse(Reply(Reply.GROUP, items.list.removeAt(0)))
@@ -377,12 +377,12 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showNotes(notes: List<NoteWithImages>?) {
     val items = Container(notes)
     if (items.isEmpty) {
-      addResponse(getLocalized(R.string.no_notes_found))
+      addResponse(getLocalized(R.string.voice_no_notes_found))
     } else {
       if (items.list.size == 1) {
-        addResponse(getLocalized(R.string.found_one_note))
+        addResponse(getLocalized(R.string.voice_found_one_note))
       } else {
-        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.found) +
+        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.voice_found) +
           " " + items.list.size + " " + getLocalized(R.string.notes))))
       }
       addObjectResponse(Reply(Reply.NOTE, items.list.removeAt(0)))
@@ -396,13 +396,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showActiveReminders(list: List<Reminder>?) {
     val items = Container(list)
     if (items.isEmpty) {
-      addResponse(getLocalized(R.string.no_reminders_found))
+      addResponse(getLocalized(R.string.voice_no_reminders_found))
     } else {
       if (items.list.size == 1) {
-        addResponse(getLocalized(R.string.found_one_reminder))
+        addResponse(getLocalized(R.string.voice_found_one_reminder))
       } else {
-        addResponse(getLocalized(R.string.found) + " " + items.list.size + " " +
-          getLocalized(R.string.reminders))
+        addResponse(getLocalized(R.string.voice_found) + " " + items.list.size + " " +
+          getLocalized(R.string.voice_reminders))
       }
       addReminderObject(items.list.removeAt(0))
       if (!items.isEmpty) {
@@ -422,7 +422,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun groupAction(model: Model) {
     stopView()
-    addResponse(getLocalized(R.string.group_created))
+    addResponse(getLocalized(R.string.voice_group_created))
     val item = viewModel.createGroup(model)
     addObjectResponse(Reply(Reply.GROUP, item))
     postMicClick({ askGroupAction(item) }, 1000)
@@ -430,7 +430,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun noteAction(model: Model) {
     stopView()
-    addResponse(getLocalized(R.string.note_created))
+    addResponse(getLocalized(R.string.voice_note_created))
     val item = viewModel.createNote(model.summary)
     addObjectResponse(Reply(Reply.NOTE, item))
     postMicClick({ askNoteAction(item) }, 1000)
@@ -443,7 +443,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     if (prefs.isTellAboutEvent) {
       addResponse(getLocalized(R.string.reminder_created_on) + " " +
         TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormat, prefs.voiceLocale, language) +
-        ". " + getLocalized(R.string.would_you_like_to_save_it))
+        ". " + getLocalized(R.string.voice_would_you_like_to_save_it))
       postMicClick({ askReminderAction(reminder, false) }, 7000)
     } else {
       addResponse(getLocalized(R.string.reminder_created))
@@ -452,47 +452,47 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun askGroupAction(reminderGroup: ReminderGroup) {
-    addResponse(getLocalized(R.string.would_you_like_to_save_it))
+    addResponse(getLocalized(R.string.voice_would_you_like_to_save_it))
     mAskAction = object : AskAction {
       override fun onYes() {
         viewModel.saveGroup(reminderGroup, false)
-        addResponse(getLocalized(R.string.group_saved))
+        addResponse(getLocalized(R.string.voice_group_saved))
         mAskAction = null
       }
 
       override fun onNo() {
-        addResponse(getLocalized(R.string.group_canceled))
+        addResponse(getLocalized(R.string.voice_group_canceled))
         mAskAction = null
       }
     }
     addAskReply()
-    postMicClick({ tryToActivateMic() }, 1000)
+    postMicClick(::tryToActivateMic, 1000)
   }
 
   private fun askReminderAction(reminder: Reminder, ask: Boolean) {
-    if (ask) addResponse(getLocalized(R.string.would_you_like_to_save_it))
+    if (ask) addResponse(getLocalized(R.string.voice_would_you_like_to_save_it))
     mAskAction = object : AskAction {
       override fun onYes() {
         viewModel.saveAndStartReminder(reminder)
-        addResponse(getLocalized(R.string.reminder_saved))
+        addResponse(getLocalized(R.string.voice_reminder_saved))
         mAskAction = null
       }
 
       override fun onNo() {
-        addResponse(getLocalized(R.string.reminder_canceled))
+        addResponse(getLocalized(R.string.voice_reminder_canceled))
         mAskAction = null
       }
     }
     addAskReply()
-    postMicClick({ tryToActivateMic() }, 1000)
+    postMicClick(::tryToActivateMic, 1000)
   }
 
   private fun askNoteAction(note: Note) {
-    addResponse(getLocalized(R.string.would_you_like_to_save_it))
+    addResponse(getLocalized(R.string.voice_would_you_like_to_save_it))
     mAskAction = object : AskAction {
       override fun onYes() {
         viewModel.saveNote(note, showToast = false, addQuickNote = false)
-        addResponse(getLocalized(R.string.note_saved))
+        addResponse(getLocalized(R.string.voice_note_saved))
         if (prefs.isNoteReminderEnabled) {
           postMicClick({ askQuickReminder(note) }, 1000)
         } else {
@@ -501,20 +501,20 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
 
       override fun onNo() {
-        addResponse(getLocalized(R.string.note_canceled))
+        addResponse(getLocalized(R.string.voice_note_canceled))
         mAskAction = null
       }
     }
     addAskReply()
-    postMicClick({ tryToActivateMic() }, 1000)
+    postMicClick(::tryToActivateMic, 1000)
   }
 
   private fun askQuickReminder(note: Note) {
-    addResponse(getLocalized(R.string.would_you_like_to_add_reminder))
+    addResponse(getLocalized(R.string.voice_would_you_like_to_add_reminder))
     mAskAction = object : AskAction {
       override fun onYes() {
         val model = viewModel.findSuggestion(note.summary)
-        addResponse(getLocalized(R.string.reminder_saved))
+        addResponse(getLocalized(R.string.voice_reminder_saved))
         if (model != null && model.type == ActionType.REMINDER) {
           val reminder = viewModel.createReminder(model)
           viewModel.saveAndStartReminder(reminder)
@@ -527,12 +527,12 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
 
       override fun onNo() {
-        addResponse(getLocalized(R.string.note_saved_without_reminder))
+        addResponse(getLocalized(R.string.voice_note_saved_without_reminder))
         mAskAction = null
       }
     }
     addAskReply()
-    postMicClick({ tryToActivateMic() }, 1000)
+    postMicClick(::tryToActivateMic, 1000)
   }
 
   private fun addAskReply() {
@@ -639,9 +639,17 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
+  private fun isSpeaking(): Boolean {
+    return tts?.isSpeaking ?: false
+  }
+
   private fun tryToActivateMic() {
-    permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
-      micClick()
+    if (isSpeaking()) {
+      postMicClick(::tryToActivateMic, 1000)
+    } else {
+      permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+        micClick()
+      }
     }
   }
 

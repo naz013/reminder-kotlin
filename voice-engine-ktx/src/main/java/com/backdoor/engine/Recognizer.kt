@@ -14,28 +14,24 @@ import java.util.Locale
 
 class Recognizer private constructor(
   locale: String,
-  private val times: List<String>,
-  private var contactsInterface: ContactsInterface?
+  private val times: List<String>
 ) {
   private var worker = getWorker(locale)
+  private var contactsInterface: ContactsInterface? = null
 
   fun updateLocale(locale: String) {
     worker = getWorker(locale)
   }
 
-  fun setLocale(locale: Locale) {
-    LOCALE = locale
-  }
-
-  fun parse(input: String): Model? {
+  fun recognize(input: String): Model? {
     return input.lowercase(LOCALE).trim()
       .let { worker.replaceNumbers(it) ?: "" }
       .also { println("parse: $it, worker $worker") }
       .let { s ->
-        val action = worker.getAction(s)
+        val showAction = worker.getShowAction(s)
         val event = getEvent(s)
         when {
-          worker.hasShowAction(s) && action != null -> createAction(s, action)
+          worker.hasShowAction(s) && showAction != null -> createAction(s, showAction)
           worker.hasNote(s) -> getNote(s)
           worker.hasGroup(s) -> getGroup(worker.clearGroup(s))
           worker.hasEvent(s) && event != null -> event
@@ -229,7 +225,7 @@ class Recognizer private constructor(
       }
   }
 
-  private fun createAction(input: String, action: Action): Model? {
+  private fun createAction(input: String, action: Action): Model {
     val hasNext = worker.hasNextModifier(input)
     val multi = LongInternal()
     val date = worker.getMultiplier(input, multi).let {
@@ -353,7 +349,7 @@ class Recognizer private constructor(
     action = Action.TRASH
   )
 
-  private fun getGroup(input: String): Model? {
+  private fun getGroup(input: String): Model {
     return input.let {
       StringUtils.capitalize(worker.clearGroup(it))
     }.let {
@@ -414,14 +410,9 @@ class Recognizer private constructor(
       private val locale: String,
       private val times: List<String>
     ) {
-      private var contactsInterface: ContactsInterface? = null
-      fun setContactsInterface(contactsInterface: ContactsInterface?): ExtraBuilder {
-        this.contactsInterface = contactsInterface
-        return this
-      }
 
       fun build(): Recognizer {
-        return Recognizer(locale, times, contactsInterface)
+        return Recognizer(locale, times)
       }
     }
   }
