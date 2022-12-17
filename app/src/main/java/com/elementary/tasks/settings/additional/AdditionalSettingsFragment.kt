@@ -107,7 +107,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
   }
 
   private fun changeMissedPrefs() {
-    permissionFlow.askPermission(Permissions.READ_PHONE_STATE) {
+    permissionFlow.askPermissions(listOf(Permissions.READ_PHONE_STATE, Permissions.POST_NOTIFICATION)) {
       val isChecked = binding.missedPrefs.isChecked
       binding.missedPrefs.isChecked = !isChecked
       prefs.isMissedReminderEnabled = !isChecked
