@@ -40,13 +40,15 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.filters.SearchModifier
 import com.elementary.tasks.notes.list.filters.SortModifier
 import com.elementary.tasks.notes.preview.NotePreviewActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
-class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<NoteWithImages>) -> Unit {
+class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
+    (List<NoteWithImages>) -> Unit {
 
   private val viewModel by viewModel<NotesViewModel>()
   private val themeProvider = currentStateHolder.theme
@@ -91,7 +93,12 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.fab.setOnClickListener { CreateNoteActivity.openLogged(requireContext()) }
+    binding.fab.setOnClickListener {
+      PinLoginActivity.openLogged(
+        requireContext(),
+        CreateNoteActivity::class.java
+      )
+    }
     binding.fab.setOnLongClickListener {
       buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
       true
@@ -108,10 +115,17 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   }
 
   private fun modifyMenu(menu: Menu) {
-    menu.getItem(1)?.title = if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
+    menu.getItem(1)?.title =
+      if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
 
     ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
-    ViewUtils.tintMenuIcon(requireContext(), menu, 1, if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px, isDark)
+    ViewUtils.tintMenuIcon(
+      requireContext(),
+      menu,
+      1,
+      if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px,
+      isDark
+    )
     ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_twotone_sort_24px, isDark)
 
     mSearchMenu = menu.findItem(R.id.action_search)
@@ -134,6 +148,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         showDialog()
         true
       }
+
       R.id.action_list -> {
         enableGrid = !enableGrid
         prefs.isNotesGridEnabled = enableGrid
@@ -142,6 +157,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         activity?.invalidateOptionsMenu()
         true
       }
+
       else -> false
     }
   }
@@ -195,7 +211,10 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
       LinearLayoutManager(context)
     } else {
       if (resources.getBoolean(R.bool.is_tablet)) {
-        StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+        StaggeredGridLayoutManager(
+          resources.getInteger(R.integer.num_of_cols),
+          StaggeredGridLayoutManager.VERTICAL
+        )
       } else {
         StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
       }
@@ -217,7 +236,9 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     }
     binding.recyclerView.adapter = mAdapter
     binding.recyclerView.itemAnimator = DefaultItemAnimator()
-    ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(
+      binding.recyclerView,
+      { setToolbarAlpha(toAlpha(it.toFloat())) }) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
@@ -226,15 +247,25 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   private fun showMore(view: View, note: NoteWithImages) {
     var showIn = getString(R.string.show_in_status_bar)
     showIn = showIn.substring(0, showIn.length - 1)
-    val items = arrayOf(getString(R.string.open), getString(R.string.share), showIn, getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
+    val items = arrayOf(
+      getString(R.string.open),
+      getString(R.string.share),
+      showIn,
+      getString(R.string.change_color),
+      getString(R.string.edit),
+      getString(R.string.delete)
+    )
     Dialogues.showPopup(view, { item ->
       when (item) {
         0 -> previewNote(note.getKey())
         1 -> viewModel.shareNote(note)
         2 -> showInStatusBar(note)
         3 -> selectColor(note)
-        4 -> CreateNoteActivity.openLogged(requireContext(), Intent(context, CreateNoteActivity::class.java)
-          .putExtra(Constants.INTENT_ID, note.getKey()))
+        4 -> PinLoginActivity.openLogged(
+          requireContext(), Intent(context, CreateNoteActivity::class.java)
+            .putExtra(Constants.INTENT_ID, note.getKey())
+        )
+
         5 -> askConfirmation(note)
       }
     }, *items)
@@ -249,7 +280,12 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   }
 
   private fun showDialog() {
-    val items = arrayOf<CharSequence>(getString(R.string.by_date_az), getString(R.string.by_date_za), getString(R.string.name_az), getString(R.string.name_za))
+    val items = arrayOf<CharSequence>(
+      getString(R.string.by_date_az),
+      getString(R.string.by_date_za),
+      getString(R.string.name_az),
+      getString(R.string.name_za)
+    )
     withContext {
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(getString(R.string.order))
@@ -290,8 +326,10 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   }
 
   private fun selectColor(note: NoteWithImages) {
-    dialogues.showColorDialog(requireActivity(), note.getColor(), getString(R.string.color),
-      themeProvider.noteColorsForSlider(note.getPalette())) {
+    dialogues.showColorDialog(
+      requireActivity(), note.getColor(), getString(R.string.color),
+      themeProvider.noteColorsForSlider(note.getPalette())
+    ) {
       viewModel.saveNoteColor(note, it)
     }
   }

@@ -53,6 +53,7 @@ import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
 import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.notes.preview.NotePreviewActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
@@ -213,7 +214,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     val googleTaskList = pair.first ?: return
     val binding = GoogleTaskHolder(binding.dataContainer) { _, _, listActions ->
       if (listActions == ListActions.EDIT) {
-        TaskActivity.openLogged(
+        PinLoginActivity.openLogged(
           this@ReminderPreviewActivity,
           Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
             .putExtra(Constants.INTENT_ID, googleTask.taskId)

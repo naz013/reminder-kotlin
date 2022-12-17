@@ -94,6 +94,7 @@ import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
+import com.elementary.tasks.notes.create.ImageDecoder
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
@@ -276,7 +277,7 @@ val viewModelModule = module {
   viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
   viewModel { GoogleTasksStateViewModel() }
-  viewModel { CreateNoteViewModel() }
+  viewModel { CreateNoteViewModel(get(), get()) }
   viewModel { CreatePlaceViewModel() }
   viewModel { TimesViewModel() }
   viewModel { LoginStateViewModel() }
@@ -383,6 +384,7 @@ val utilModule = module {
   single { FeatureManager(get()) }
   single { PackageManagerWrapper(get()) }
   single { GroupsUtil(get(), get()) }
+  single { ImageDecoder(get(), get()) }
 
   factory { (fragment: BaseFragment<*>, callback: GoogleLogin.LoginCallback) ->
     GoogleLogin(fragment, get(), get(), get(), callback)

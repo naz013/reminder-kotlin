@@ -1,37 +1,38 @@
 package com.elementary.tasks.notes.create
 
-import android.content.ClipData
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Parcelable
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.BitmapUtils
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.view_models.DispatcherProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
-import java.io.FileNotFoundException
 
-@Parcelize
-object DecodeImages : Parcelable {
+class ImageDecoder(
+  private val context: Context,
+  private val dispatcherProvider: DispatcherProvider
+) {
 
-  fun startDecoding(context: Context, clipData: ClipData,
+  fun startDecoding(scope: CoroutineScope,
+                    list: List<Uri>,
                     startCount: Int = 0,
                     onLoading: (List<ImageFile>) -> Unit,
                     onReady: (Int, ImageFile) -> Unit) {
-    launchDefault {
-      val count = clipData.itemCount
-      val emptyList = createEmpty(count)
+    scope.launch(dispatcherProvider.default()) {
+      val emptyList = createEmpty(list.size)
       withUIContext {
         onLoading.invoke(emptyList)
       }
-      for (i in 0 until count) {
-        val item = clipData.getItemAt(i)
-        val image = addImageFromUri(context, item.uri, emptyList[i])
+      list.forEachIndexed { index, uri ->
+        val image = addImageFromUri(uri, emptyList[index])
         withUIContext {
-          onReady.invoke(i + startCount, image)
+          onReady.invoke(index + startCount, image)
         }
       }
     }
@@ -45,7 +46,7 @@ object DecodeImages : Parcelable {
     return mutableList
   }
 
-  private fun addImageFromUri(context: Context, uri: Uri?, image: ImageFile): ImageFile {
+  private fun addImageFromUri(uri: Uri?, image: ImageFile): ImageFile {
     if (uri == null) {
       image.state = State.Error
       return image
@@ -56,11 +57,9 @@ object DecodeImages : Parcelable {
       image.state = State.Error
       return image
     }
-    var bitmapImage: Bitmap? = null
-    try {
-      bitmapImage = BitmapUtils.decodeUriToBitmap(context, uri)
-    } catch (e: FileNotFoundException) {
-    }
+    val bitmapImage: Bitmap? = runCatching {
+      BitmapUtils.decodeUriToBitmap(context, uri)
+    }.getOrNull()
 
     if (bitmapImage != null) {
       val outputStream = ByteArrayOutputStream()

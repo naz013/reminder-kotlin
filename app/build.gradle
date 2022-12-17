@@ -49,12 +49,14 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
+            buildConfigField "String", "PLACES_API_KEY", "\"$freePlacesApiKey\""
             manifestPlaceholders = [apiKey:"$freeApiKey"]
         }
         pro {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
+            buildConfigField "String", "PLACES_API_KEY", "\"$proPlacesApiKey\""
             versionCode 257
             manifestPlaceholders = [apiKey:"$proApiKey"]
         }

@@ -1,13 +1,11 @@
 package com.elementary.tasks.notes.create
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Typeface
@@ -40,6 +38,7 @@ import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
@@ -96,8 +95,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private val permissionFlow = PermissionFlow(this, dialogues)
   private val viewModel by viewModel<NoteViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<CreateNoteViewModel>()
-  private val photoSelectionUtil: PhotoSelectionUtil by lazy {
-    PhotoSelectionUtil(this, dialogues, true, this)
+  private val photoSelectionUtil = PhotoSelectionUtil(this, dialogues, this)
+  private val loginLauncher = LoginLauncher(this) {
+    if (!it) {
+      finish()
+    } else {
+      stateViewModel.isLogged = true
+    }
   }
 
   private val imagesGridAdapter = ImagesGridAdapter()
@@ -226,7 +230,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     )
 
     if (prefs.hasPinCode && !stateViewModel.isLogged) {
-      PinLoginActivity.verify(this)
+      loginLauncher.askLogin()
     }
   }
 
@@ -235,7 +239,9 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     Timber.d("parseDrop: ${clipData.itemCount}, ${clipData.description}")
     launchDefault {
       var text = ""
+      val uris = mutableListOf<Uri>()
       for (i in 0 until clipData.itemCount) {
+        uris.add(clipData.getItemAt(i).uri)
         if (!clipData.getItemAt(i).text.isNullOrEmpty()) {
           text = clipData.getItemAt(i).text.toString()
         }
@@ -252,7 +258,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         }
       } else {
         withUIContext {
-          stateViewModel.addMultiple(null, clipData, this@CreateNoteActivity)
+          stateViewModel.addMultiple(uris)
         }
       }
     }
@@ -292,7 +298,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun initDefaults(): Pair<Int, Int> {
-    stateViewModel.isLogged = intentBoolean(ARG_LOGGED)
+    stateViewModel.isLogged = intentBoolean(PinLoginActivity.ARG_LOGGED)
 
     val color = if (prefs.isNoteColorRememberingEnabled) {
       prefs.lastNoteColor
@@ -987,24 +993,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     releaseSpeech()
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    photoSelectionUtil.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE) {
-      if (resultCode != Activity.RESULT_OK) {
-        finish()
-      } else {
-        stateViewModel.isLogged = true
-      }
-    } else if (requestCode == EDIT_CODE) {
-      if (resultCode == RESULT_OK) {
-        if (stateViewModel.editPosition != -1) {
-          saveEditedImage()
-        }
-      }
-    }
-  }
-
   private fun handleSendText(intent: Intent) {
     intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
       Timber.d("handleSendText: $it")
@@ -1014,15 +1002,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   private fun handleSendImage(intent: Intent) {
     (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
-      stateViewModel.addMultiple(it, null, this)
+      stateViewModel.addMultiple(listOf(it))
     }
   }
 
   private fun handleSendMultipleImages(intent: Intent) {
     intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM)?.let { list ->
-      list.forEach {
-        stateViewModel.addMultiple(it as? Uri, null, this)
-      }
+      stateViewModel.addMultiple(list.filterNotNull().filterIsInstance<Uri>())
     }
   }
 
@@ -1031,8 +1017,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     Timber.d("onResume: ")
   }
 
-  override fun onImageSelected(uri: Uri?, clipData: ClipData?) {
-    stateViewModel.addMultiple(uri, clipData, this)
+  override fun onImageSelected(uris: List<Uri>) {
+    stateViewModel.addMultiple(uris)
   }
 
   override fun onBitmapReady(bitmap: Bitmap) {
@@ -1050,19 +1036,5 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   companion object {
     const val MENU_ITEM_DELETE = 12
-    private const val EDIT_CODE = 11223
-    private const val ARG_LOGGED = "arg_logged"
-
-    fun openLogged(context: Context, intent: Intent? = null) {
-      if (intent == null) {
-        context.startActivity(
-          Intent(context, CreateNoteActivity::class.java)
-            .putExtra(ARG_LOGGED, true)
-        )
-      } else {
-        intent.putExtra(ARG_LOGGED, true)
-        context.startActivity(intent)
-      }
-    }
   }
 }

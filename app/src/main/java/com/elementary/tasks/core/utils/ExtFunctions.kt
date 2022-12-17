@@ -5,6 +5,7 @@ package com.elementary.tasks.core.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -56,6 +57,16 @@ import java.io.File
 import java.io.InputStream
 import java.util.Calendar
 import java.util.Date
+
+fun <T> Intent.readParcelable(key: String, clazz: Class<T>): T? {
+  return runCatching {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      getParcelableExtra(key, clazz)
+    } else {
+      getParcelableExtra(key) as? T
+    }
+  }.getOrNull()
+}
 
 fun List<String>.append(): String {
   val stringBuilder = StringBuilder()

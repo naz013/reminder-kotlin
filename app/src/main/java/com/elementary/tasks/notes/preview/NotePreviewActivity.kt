@@ -42,6 +42,7 @@ import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -166,7 +167,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editNote() {
     val noteWithImages = viewModel.note.value ?: return
-    CreateNoteActivity.openLogged(
+    PinLoginActivity.openLogged(
       this, Intent(this, CreateNoteActivity::class.java)
         .putExtra(Constants.INTENT_ID, noteWithImages.note?.key)
     )

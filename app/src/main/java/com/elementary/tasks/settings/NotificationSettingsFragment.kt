@@ -1,10 +1,7 @@
 package com.elementary.tasks.settings
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +14,9 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
+import com.elementary.tasks.core.os.datapicker.NotificationPolicyLauncher
 import com.elementary.tasks.core.os.datapicker.PicturePicker
+import com.elementary.tasks.core.os.datapicker.RingtonePicker
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
@@ -26,7 +25,6 @@ import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.RuntimeRequestCode
 import com.elementary.tasks.core.utils.SelectionList
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
@@ -62,6 +60,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
     showImage()
   }
+  private val ringtonePicker = RingtonePicker(this) {
+    prefs.melodyFile = it.toString()
+    showMelody()
+  }
+  private val notificationPolicyLauncher = NotificationPolicyLauncher(this)
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -450,8 +453,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun openNotificationsSettings() {
-    val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-    startActivityForResult(intent, RuntimeRequestCode.obtainNewCode())
+    notificationPolicyLauncher.openSettings()
   }
 
   private fun changeIncrease() {
@@ -717,15 +719,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun pickRingtone() {
-    val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-    intent.putExtra(
-      RingtoneManager.EXTRA_RINGTONE_TITLE,
-      getString(R.string.select_ringtone_for_notifications)
-    )
-    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
-    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
-    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
-    startActivityForResult(intent, RINGTONE_CODE)
+    ringtonePicker.pickRingtone()
   }
 
   private fun isDefaultMelody(): Boolean {
@@ -988,19 +982,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   override fun getTitle() = getString(R.string.notification)
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    when (requestCode) {
-      RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
-        val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-        if (uri != null) {
-          prefs.melodyFile = uri.toString()
-          showMelody()
-        }
-      }
-    }
-  }
-
   override fun onPause() {
     super.onPause()
     if (soundStackHolder.sound?.isPlaying == true) {
@@ -1015,8 +996,4 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     getString(R.string.priority_high) + " " + getString(R.string.and_above),
     getString(R.string.priority_highest)
   )
-
-  companion object {
-    private const val RINGTONE_CODE = 126
-  }
 }

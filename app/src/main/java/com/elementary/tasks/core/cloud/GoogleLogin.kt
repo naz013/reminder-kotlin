@@ -36,9 +36,7 @@ class GoogleLogin(
   private var mode = Mode.DRIVE
   private val resultLauncher = fragment.registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
-  ) { result ->
-    onActivityResult(result.resultCode, result.data)
-  }
+  ) { processResult(it.resultCode, it.data) }
 
   fun logOutDrive() {
     mode = Mode.DRIVE
@@ -96,8 +94,8 @@ class GoogleLogin(
     loginCallback.onFail(mode)
   }
 
-  private fun onActivityResult(resultCode: Int, data: Intent?) {
-    Timber.d("onActivityResult: mode=${mode}, res=$resultCode, data=$data")
+  private fun processResult(resultCode: Int, data: Intent?) {
+    Timber.d("processResult: mode=${mode}, res=$resultCode, data=$data")
     if (resultCode == RESULT_OK) {
       if (data != null) handleSignInResult(data)
       else sendFail()

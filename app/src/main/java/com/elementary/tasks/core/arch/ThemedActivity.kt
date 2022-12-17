@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.arch
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,11 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -33,6 +31,12 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val updatesHelper by inject<UpdatesHelper>()
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
+  private val loginLauncher = LoginLauncher(this) {
+    loginStateViewModel.isLogged = it
+    if (!it) {
+      finish()
+    }
+  }
 
   private val uiHandler = Handler(Looper.getMainLooper())
   protected val isDarkMode = currentStateHolder.theme.isDark
@@ -69,23 +73,12 @@ abstract class ThemedActivity : AppCompatActivity() {
       window.statusBarColor = ThemeProvider.getSecondaryColor(this)
     }
     if (requireLogin() && prefs.hasPinCode && !loginStateViewModel.isLogged) {
-      PinLoginActivity.verify(this)
+      loginLauncher.askLogin()
     }
   }
 
   override fun attachBaseContext(newBase: Context) {
     super.attachBaseContext(language.onAttach(newBase))
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE) {
-      if (resultCode != Activity.RESULT_OK) {
-        finish()
-      } else {
-        loginStateViewModel.isLogged = true
-      }
-    }
   }
 
   protected fun hideKeyboard(token: IBinder? = null) {

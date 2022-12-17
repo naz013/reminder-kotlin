@@ -1,9 +1,6 @@
 package com.elementary.tasks.places.create
 
-import android.app.Activity
 import android.content.ContentResolver
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +12,7 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
@@ -35,6 +33,13 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
   private val stateViewModel by viewModel<CreatePlaceViewModel>()
   private val permissionFlow = PermissionFlow(this, dialogues)
   private var googleMap: AdvancedMapFragment? = null
+  private val loginLauncher = LoginLauncher(this) {
+    if (!it) {
+      finish()
+    } else {
+      stateViewModel.isLogged = true
+    }
+  }
 
   override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
 
@@ -63,14 +68,14 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     loadPlace()
 
     if (savedInstanceState == null) {
-      stateViewModel.isLogged = intentBoolean(ARG_LOGGED)
+      stateViewModel.isLogged = intentBoolean(PinLoginActivity.ARG_LOGGED)
     }
   }
 
   override fun onStart() {
     super.onStart()
     if (prefs.hasPinCode && !stateViewModel.isLogged) {
-      PinLoginActivity.verify(this)
+      loginLauncher.askLogin()
     }
   }
 
@@ -252,29 +257,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE) {
-      if (resultCode != Activity.RESULT_OK) {
-        finish()
-      } else {
-        stateViewModel.isLogged = true
-      }
-    }
-  }
-
   companion object {
     private const val MENU_ITEM_DELETE = 12
-    private const val ARG_LOGGED = "arg_logged"
-
-    fun openLogged(context: Context, intent: Intent? = null) {
-      if (intent == null) {
-        context.startActivity(Intent(context, CreatePlaceActivity::class.java)
-          .putExtra(ARG_LOGGED, true))
-      } else {
-        intent.putExtra(ARG_LOGGED, true)
-        context.startActivity(intent)
-      }
-    }
   }
 }

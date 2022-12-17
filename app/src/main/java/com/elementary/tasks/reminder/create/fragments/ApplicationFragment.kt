@@ -1,24 +1,29 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.apps.SelectApplicationActivity
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBinding>() {
+
+  private val packageManagerWrapper by inject<PackageManagerWrapper>()
+  private val applicationPicker = ApplicationPicker(this) {
+    iFace.state.app = it
+    iFace.state.isAppSaved = true
+    binding.applicationName.text = appName
+  }
 
   private val type: Int
     get() = if (binding.application.isChecked) {
@@ -28,13 +33,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     }
   private val appName: String
     get() {
-      val packageManager = requireContext().packageManager
-      var applicationInfo: ApplicationInfo? = null
-      try {
-        applicationInfo = packageManager.getApplicationInfo(iFace.state.app, 0)
-      } catch (ignored: Exception) {
-      }
-      return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
+      return packageManagerWrapper.getApplicationName(iFace.state.app)
     }
 
   override fun prepare(): Reminder? {
@@ -116,10 +115,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     binding.tuneExtraView.hasAutoExtra = true
     binding.tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
 
-    binding.pickApplication.setOnClickListener {
-      activity?.startActivityForResult(Intent(activity, SelectApplicationActivity::class.java),
-        Constants.REQUEST_CODE_APPLICATION)
-    }
+    binding.pickApplication.setOnClickListener { applicationPicker.pickApplication() }
     binding.urlLayout.visibility = View.GONE
     binding.urlField.setText(iFace.state.link)
     binding.urlField.onChanged {
@@ -162,14 +158,6 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
         binding.browser.isChecked = true
         binding.urlField.setText(iFace.state.link)
       }
-    }
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
-      iFace.state.app = data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
-      iFace.state.isAppSaved = true
-      binding.applicationName.text = appName
     }
   }
 }

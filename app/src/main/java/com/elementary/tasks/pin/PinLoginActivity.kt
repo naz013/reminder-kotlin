@@ -1,6 +1,7 @@
 package com.elementary.tasks.pin
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.biometric.BiometricManager
@@ -46,12 +47,11 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
   }
 
   private fun openPinLogin() {
-    try {
+    runCatching {
       supportFragmentManager.beginTransaction()
         .replace(R.id.fragment_container, PinFragment.newInstance(hasFinger), null)
         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         .commitAllowingStateLoss()
-    } catch (e: Exception) {
     }
   }
 
@@ -105,12 +105,16 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
 
   companion object {
     const val ARG_BACK = "arg_back"
-    const val LOGIN_REQUEST_CODE = 1233
+    const val ARG_LOGGED = "arg_logged"
 
-    @Deprecated("Use LoginLauncher")
-    fun verify(activity: Activity, code: Int = LOGIN_REQUEST_CODE) {
-      activity.startActivityForResult(Intent(activity, PinLoginActivity::class.java)
-        .putExtra(ARG_BACK, true), code)
+    fun openLogged(context: Context, intent: Intent) {
+      intent.putExtra(ARG_LOGGED, true)
+      context.startActivity(intent)
+    }
+
+    fun openLogged(context: Context, clazz: Class<*>) {
+      context.startActivity(Intent(context, clazz)
+        .putExtra(ARG_LOGGED, true))
     }
   }
 }

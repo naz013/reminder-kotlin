@@ -11,7 +11,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemNoteImageBinding
-import com.elementary.tasks.notes.create.DecodeImages
+import com.elementary.tasks.notes.create.ImageDecoder
 
 class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHolder>(ImageDIffCallback()) {
 
@@ -46,7 +46,7 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
     ListItemNoteImageBinding.inflate(parent.inflater(), parent, false)
   ) {
     fun bind(noteImage: ImageFile) {
-      if (noteImage.state is DecodeImages.State.Loading) {
+      if (noteImage.state is ImageDecoder.State.Loading) {
         binding.stateReady.visibility = View.GONE
         binding.stateLoading.visibility = View.VISIBLE
       } else {

@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -26,6 +26,7 @@ class PicturePicker private constructor(
 ), KoinComponent {
 
   private val cacheUtil by inject<CacheUtil>()
+  private val dispatcherProvider by inject<DispatcherProvider>()
   private val scope = CoroutineScope(Job())
 
   constructor(
@@ -49,7 +50,7 @@ class PicturePicker private constructor(
   }
 
   private fun cacheFile(uri: Uri) {
-    scope.launch(Dispatchers.IO) {
+    scope.launch(dispatcherProvider.io()) {
       val path = cacheUtil.cacheFile(uri)
       if (path != null) {
         withUIContext { resultCallback.invoke(path) }

@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.arch
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
@@ -12,6 +11,7 @@ import android.view.MotionEvent
 import androidx.core.app.NotificationCompat
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
@@ -30,27 +30,39 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
   private var tts: TextToSpeech? = null
   private var mWakeLock: PowerManager.WakeLock? = null
   private val soundStackHolder by inject<SoundStackHolder>()
-
-  private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
-    if (status == TextToSpeech.SUCCESS && tts != null) {
-      val result = tts?.setLanguage(ttsLocale)
-      if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-        Timber.d("This Language is not supported")
-      } else {
-        if (!TextUtils.isEmpty(summary)) {
-          try {
-            Thread.sleep(1000)
-          } catch (e: InterruptedException) {
-            e.printStackTrace()
-          }
-
-          tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
-        }
-      }
+  private val ttsLauncher = TtsLauncher(this) {
+    if (it) {
+      tts = TextToSpeech(this, mTextToSpeechListener)
     } else {
-      Timber.d("Initialization Failed!")
+      val installTTSIntent = Intent()
+      installTTSIntent.action = TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA
+      runCatching {
+        startActivity(installTTSIntent)
+      }
     }
   }
+
+  private var mTextToSpeechListener: TextToSpeech.OnInitListener =
+    TextToSpeech.OnInitListener { status ->
+      if (status == TextToSpeech.SUCCESS && tts != null) {
+        val result = tts?.setLanguage(ttsLocale)
+        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+          Timber.d("This Language is not supported")
+        } else {
+          if (!TextUtils.isEmpty(summary)) {
+            try {
+              Thread.sleep(1000)
+            } catch (e: InterruptedException) {
+              e.printStackTrace()
+            }
+
+            tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
+          }
+        }
+      } else {
+        Timber.d("Initialization Failed!")
+      }
+    }
 
   protected abstract val melody: String
   protected abstract val isScreenResumed: Boolean
@@ -129,41 +141,16 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
   }
 
   protected fun removeFlags() {
-    if (tts != null) {
-      tts?.stop()
-      tts?.shutdown()
-    }
+    tts?.stop()
+    tts?.shutdown()
     if (canUnlockScreen()) {
       SuperUtil.unlockOff(this, window)
       SuperUtil.turnScreenOff(this, window, mWakeLock)
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == MY_DATA_CHECK_CODE) {
-      if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-        tts = TextToSpeech(this, mTextToSpeechListener)
-      } else {
-        val installTTSIntent = Intent()
-        installTTSIntent.action = TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA
-        try {
-          startActivity(installTTSIntent)
-        } catch (e: ActivityNotFoundException) {
-          e.printStackTrace()
-        }
-      }
-    }
-  }
-
   protected fun startTts() {
-    val checkTTSIntent = Intent()
-    checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
-    try {
-      startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE)
-    } catch (e: ActivityNotFoundException) {
-      e.printStackTrace()
-    }
+    ttsLauncher.checkTts()
   }
 
   protected fun discardNotification(id: Int) {
@@ -197,14 +184,15 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
       val afd = assets.openFd("sounds/beep.mp3")
       sound?.playAlarm(afd)
     } catch (e: IOException) {
-      e.printStackTrace()
-      sound?.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false, prefs.playbackDuration)
+      sound?.playAlarm(
+        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+        false,
+        prefs.playbackDuration
+      )
     }
   }
 
   companion object {
-    private const val MY_DATA_CHECK_CODE = 111
-
     private val instanceCount = AtomicInteger(0)
   }
 }

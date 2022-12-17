@@ -28,6 +28,7 @@ import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -130,7 +131,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun addNewTask() {
-    TaskActivity.openLogged(requireContext(), Intent(context, TaskActivity::class.java)
+    PinLoginActivity.openLogged(requireContext(), Intent(context, TaskActivity::class.java)
       .putExtra(Constants.INTENT_ID, mId)
       .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
   }
@@ -201,7 +202,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun editTask(googleTask: GoogleTask) {
-    TaskActivity.openLogged(requireContext(), Intent(activity, TaskActivity::class.java)
+    PinLoginActivity.openLogged(requireContext(), Intent(activity, TaskActivity::class.java)
       .putExtra(Constants.INTENT_ID, googleTask.taskId)
       .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
   }

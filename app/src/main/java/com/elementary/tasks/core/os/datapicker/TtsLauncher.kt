@@ -1,17 +1,17 @@
 package com.elementary.tasks.core.os.datapicker
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.toast
 
-class BackupFilePicker private constructor(
+class TtsLauncher private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (Uri) -> Unit
+  private val resultCallback: (Boolean) -> Unit
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
@@ -19,28 +19,33 @@ class BackupFilePicker private constructor(
 
   constructor(
     activity: ComponentActivity,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (Boolean) -> Unit
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (Boolean) -> Unit
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
-  fun pickRbakFile() {
-    launch(getIntent())
+  fun checkTts() {
+    try {
+      launch(getIntent())
+    } catch (e: Throwable) {
+      getActivity().toast(R.string.no_recognizer_found)
+    }
   }
 
   override fun dispatchResult(result: ActivityResult) {
-    if (result.resultCode == Activity.RESULT_OK) {
-      result.data?.data?.also { resultCallback.invoke(it) }
+    if (result.resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+      resultCallback(true)
+    } else {
+      resultCallback(false)
     }
   }
 
   private fun getIntent(): Intent {
-    val intent = Intent()
-    intent.type = "*/*"
-    intent.action = Intent.ACTION_GET_CONTENT
-    return Intent.createChooser(intent, getActivity().getString(R.string.choose_file))
+    val checkTTSIntent = Intent()
+    checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
+    return checkTTSIntent
   }
 }

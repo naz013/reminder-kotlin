@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -29,6 +28,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderType
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
+import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
@@ -36,6 +36,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.reminders.EditReminderViewModel
@@ -77,8 +78,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     showCurrentMelody()
   }
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
-
+    processVoiceResult(it)
   }
+  private val uriPicker = UriPicker(this)
 
   private var fragment: TypeFragment<*>? = null
   private var isEditing: Boolean = false
@@ -490,16 +492,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-      data?.data?.let {
-        fragment?.onAttachmentSelect(it)
-      }
-    }
-    fragment?.onActivityResult(requestCode, resultCode, data)
-  }
-
   private fun handleSendText(intent: Intent) {
     intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
       stateViewModel.reminder.summary = it
@@ -524,9 +516,11 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     intent.addCategory(Intent.CATEGORY_OPENABLE)
     intent.type = "*/*"
     try {
-      startActivityForResult(intent, FILE_REQUEST)
+      uriPicker.launchIntent(intent) { uri ->
+        uri?.also { fragment?.onAttachmentSelect(it) }
+      }
     } catch (e: Exception) {
-      Toast.makeText(this, getString(R.string.app_not_found), Toast.LENGTH_SHORT).show()
+      toast(R.string.app_not_found)
     }
   }
 
@@ -626,7 +620,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     private const val GPS_PLACE = 10
 
     private const val MENU_ITEM_DELETE = 12
-    private const val FILE_REQUEST = 323
 
     fun openLogged(context: Context, intent: Intent? = null) {
       if (intent == null) {

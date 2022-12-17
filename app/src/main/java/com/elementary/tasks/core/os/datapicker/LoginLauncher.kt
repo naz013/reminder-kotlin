@@ -7,7 +7,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.pin.PinLoginActivity
-import org.koin.core.component.KoinComponent
 
 class LoginLauncher private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
@@ -15,7 +14,7 @@ class LoginLauncher private constructor(
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
-), KoinComponent {
+) {
 
   constructor(
     activity: ComponentActivity,

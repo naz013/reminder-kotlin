@@ -2,16 +2,16 @@ package com.elementary.tasks.core.os.datapicker
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.R
+import com.elementary.tasks.core.apps.SelectApplicationActivity
+import com.elementary.tasks.core.utils.Constants
 
-class BackupFilePicker private constructor(
+class ApplicationPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (Uri) -> Unit
+  private val resultCallback: (String) -> Unit
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
@@ -19,28 +19,26 @@ class BackupFilePicker private constructor(
 
   constructor(
     activity: ComponentActivity,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (String) -> Unit
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (String) -> Unit
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
-  fun pickRbakFile() {
+  fun pickApplication() {
     launch(getIntent())
   }
 
   override fun dispatchResult(result: ActivityResult) {
     if (result.resultCode == Activity.RESULT_OK) {
-      result.data?.data?.also { resultCallback.invoke(it) }
+      val appPackage = result.data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
+      resultCallback.invoke(appPackage)
     }
   }
 
   private fun getIntent(): Intent {
-    val intent = Intent()
-    intent.type = "*/*"
-    intent.action = Intent.ACTION_GET_CONTENT
-    return Intent.createChooser(intent, getActivity().getString(R.string.choose_file))
+    return Intent(getActivity(), SelectApplicationActivity::class.java)
   }
 }

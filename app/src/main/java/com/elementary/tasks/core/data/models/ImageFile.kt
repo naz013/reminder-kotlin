@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.elementary.tasks.notes.create.DecodeImages
+import com.elementary.tasks.notes.create.ImageDecoder
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -20,7 +20,7 @@ data class ImageFile(
   var noteId: String = "",
   @Transient
   @Ignore
-  var state: DecodeImages.State = DecodeImages.State.Ready,
+  var state: ImageDecoder.State = ImageDecoder.State.Ready,
   @Transient
   @Ignore
   var uuid: String = UUID.randomUUID().toString(),

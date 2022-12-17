@@ -1,6 +1,5 @@
 package com.elementary.tasks.voice
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -27,6 +26,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
@@ -55,6 +55,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private var mAskAction: AskAction? = null
   private val handler = Handler(Looper.getMainLooper())
   private var mItemSelected: Int = 0
+  private val ttsLauncher = TtsLauncher(this) {
+    if (it) {
+      tts = TextToSpeech(this, mTextToSpeechListener)
+    } else {
+      showInstallTtsDialog()
+    }
+  }
 
   private val mTextToSpeechListener = TextToSpeech.OnInitListener { status ->
     if (status == TextToSpeech.SUCCESS && tts != null) {
@@ -137,7 +144,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
     binding.settingsButton.setOnClickListener { showSettingsPopup() }
     initList()
-    checkTts()
+    ttsLauncher.checkTts()
     initViewModel()
   }
 
@@ -602,18 +609,8 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun playTts(text: String) {
-    if (!isTtsReady || tts == null) return
+    if (!isTtsReady) return
     tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
-  }
-
-  private fun checkTts() {
-    val checkTTSIntent = Intent()
-    checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
-    try {
-      startActivityForResult(checkTTSIntent, CHECK_CODE)
-    } catch (e: ActivityNotFoundException) {
-      e.printStackTrace()
-    }
   }
 
   private fun initList() {
@@ -635,7 +632,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       speech?.setRecognitionListener(mRecognitionListener)
       speech?.startListening(recognizerIntent)
       isListening = true
-    } catch (e: SecurityException) {
+    } catch (e: Throwable) {
       speech = null
       isListening = false
     }
@@ -662,11 +659,9 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun releaseTts() {
-    if (tts != null) {
-      tts?.stop()
-      tts?.shutdown()
-      tts = null
-    }
+    tts?.stop()
+    tts?.shutdown()
+    tts = null
   }
 
   override fun onDestroy() {
@@ -685,17 +680,6 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
     speech = null
     isListening = false
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == CHECK_CODE) {
-      if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-        tts = TextToSpeech(this, mTextToSpeechListener)
-      } else {
-        showInstallTtsDialog()
-      }
-    }
   }
 
   private fun showInstallTtsDialog() {
@@ -729,9 +713,5 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         askAction.onNo()
       }
     }
-  }
-
-  companion object {
-    private const val CHECK_CODE = 1651
   }
 }

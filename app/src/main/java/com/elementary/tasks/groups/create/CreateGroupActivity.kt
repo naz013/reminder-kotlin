@@ -1,8 +1,6 @@
 package com.elementary.tasks.groups.create
 
 import android.content.ContentResolver
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -213,18 +211,5 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   companion object {
     private const val MENU_ITEM_DELETE = 12
     private const val ARG_COLOR = "arg_color"
-    private const val ARG_LOGGED = "arg_logged"
-
-    fun openLogged(context: Context, intent: Intent? = null) {
-      if (intent == null) {
-        context.startActivity(
-          Intent(context, CreateGroupActivity::class.java)
-            .putExtra(ARG_LOGGED, true)
-        )
-      } else {
-        intent.putExtra(ARG_LOGGED, true)
-        context.startActivity(intent)
-      }
-    }
   }
 }

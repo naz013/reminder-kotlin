@@ -1,7 +1,5 @@
 package com.elementary.tasks.google_tasks.create
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -446,18 +444,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   companion object {
     private const val MENU_ITEM_DELETE = 12
     private const val MENU_ITEM_MOVE = 14
-    private const val ARG_LOGGED = "arg_logged"
     private const val ARG_LIST = "arg_list"
     private const val ARG_LOADING = "arg_loading"
-
-    fun openLogged(context: Context, intent: Intent? = null) {
-      if (intent == null) {
-        context.startActivity(Intent(context, TaskActivity::class.java)
-          .putExtra(ARG_LOGGED, true))
-      } else {
-        intent.putExtra(ARG_LOGGED, true)
-        context.startActivity(intent)
-      }
-    }
   }
 }

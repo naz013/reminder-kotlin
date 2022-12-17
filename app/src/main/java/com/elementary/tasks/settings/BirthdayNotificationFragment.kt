@@ -1,9 +1,6 @@
 package com.elementary.tasks.settings
 
-import android.app.Activity
-import android.content.Intent
 import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
+import com.elementary.tasks.core.os.datapicker.RingtonePicker
 import com.elementary.tasks.core.utils.CacheUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
@@ -37,6 +35,10 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
       prefs.birthdayMelody = file.toString()
       showMelody()
     }
+  }
+  private val ringtonePicker = RingtonePicker(this) {
+    prefs.birthdayMelody = it.toString()
+    showMelody()
   }
 
   private var mItemSelect: Int = 0
@@ -243,14 +245,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   }
 
   private fun pickRingtone() {
-    withActivity {
-      val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone_for_notifications))
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
-      startActivityForResult(intent, RINGTONE_CODE)
-    }
+    ringtonePicker.pickRingtone()
   }
 
   private fun pickMelody() {
@@ -448,29 +443,10 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
 
   override fun getTitle(): String = getString(R.string.birthday_notification)
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    when (requestCode) {
-
-      RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
-        val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-        if (uri != null) {
-          prefs.birthdayMelody = uri.toString()
-          showMelody()
-        }
-      }
-    }
-  }
-
   override fun onPause() {
     super.onPause()
     if (soundStackHolder.sound?.isPlaying == true) {
       soundStackHolder.sound?.stop(true)
     }
-  }
-
-  companion object {
-    private const val MELODY_CODE = 125
-    private const val RINGTONE_CODE = 126
   }
 }

@@ -1,6 +1,5 @@
 package com.elementary.tasks.settings
 
-import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.RemotePrefs
@@ -22,14 +22,13 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.databinding.FragmentSettingsBinding
-import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
-  private val remotePrefs: RemotePrefs by inject<RemotePrefs>()
+  private val remotePrefs: RemotePrefs by inject()
   private val prefsObserver: (String) -> Unit = {
     Handler(Looper.getMainLooper()).post {
       if (it == PrefsConstants.DATA_BACKUP) {
@@ -38,6 +37,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
         checkDoNotDisturb()
       }
     }
+  }
+  private val loginLauncher = LoginLauncher(this) {
+    if (it) openSecurity()
   }
 
   override fun inflate(
@@ -168,7 +170,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   private fun askPin() {
     withActivity {
       if (prefs.hasPinCode) {
-        PinLoginActivity.verify(it, PinLoginActivity.LOGIN_REQUEST_CODE)
+        loginLauncher.askLogin()
       } else {
         openSecurity()
       }
@@ -176,13 +178,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   }
 
   override fun getTitle(): String = getString(R.string.action_settings)
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PinLoginActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_OK) {
-      openSecurity()
-    }
-  }
 
   private fun openSecurity() {
     safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToSecuritySettingsFragment())

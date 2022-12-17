@@ -32,6 +32,7 @@ import com.elementary.tasks.google_tasks.list.GoogleTaskAdsViewHolder
 import com.elementary.tasks.google_tasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -138,7 +139,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   private fun addNewTask() {
     val defId = viewModel.defTaskList.value?.listId ?: return
     withContext {
-      TaskActivity.openLogged(it, Intent(context, TaskActivity::class.java)
+      PinLoginActivity.openLogged(it, Intent(context, TaskActivity::class.java)
         .putExtra(Constants.INTENT_ID, defId)
         .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
     }
@@ -216,7 +217,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun editTask(googleTask: GoogleTask) {
-    TaskActivity.openLogged(requireContext(), Intent(activity, TaskActivity::class.java)
+    PinLoginActivity.openLogged(requireContext(), Intent(activity, TaskActivity::class.java)
       .putExtra(Constants.INTENT_ID, googleTask.taskId)
       .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
   }

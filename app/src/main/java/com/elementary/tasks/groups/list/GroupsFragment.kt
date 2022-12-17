@@ -22,6 +22,7 @@ import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
@@ -45,7 +46,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun addGroup() {
-    CreateGroupActivity.openLogged(requireContext())
+    PinLoginActivity.openLogged(requireContext(), CreateGroupActivity::class.java)
   }
 
   private fun initViewModel() {
@@ -120,7 +121,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun editGroup(t: ReminderGroup) {
-    CreateGroupActivity.openLogged(requireContext(), Intent(context, CreateGroupActivity::class.java)
+    PinLoginActivity.openLogged(requireContext(), Intent(context, CreateGroupActivity::class.java)
       .putExtra(Constants.INTENT_ID, t.groupUuId))
   }
 
