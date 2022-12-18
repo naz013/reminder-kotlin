@@ -74,7 +74,7 @@ class VoiceHelpActivity : BindingActivity<ActivityVoiceHelpBinding>() {
             urls: VoiceHelpViewModel.Urls? = null
         ): String? {
             val localeCheck = locale.toString().lowercase()
-            val urlsData = urls?.urls?.first { it.lang == localeCheck } ?: return null
+            val urlsData = urls?.urls?.firstOrNull { it.lang == localeCheck } ?: return null
             return urlsData.url
         }
     }
