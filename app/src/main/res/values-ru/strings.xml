@@ -204,7 +204,6 @@
     <string name="timer">"Таймер"</string>
     <string name="alarm">"Будильник"</string>
     <string name="location">"Место нахождения"</string>
-    <string name="skype">"Skype"</string>
     <string name="day_of_month">"День месяца"</string>
     <string name="shopping_list">"Список покупок"</string>
     <string name="radius_x_meters">"Радиус %s метров"</string>
@@ -316,8 +315,6 @@
     <string name="reminder_is_outdated">"Напоминание устарело, отредактируйте его сначала"</string>
     <string name="reminder_created">"Напоминание создано"</string>
     <string name="everyday">"Каждый день"</string>
-    <string name="skype_call">"Вызов Skype"</string>
-    <string name="skype_chat">"Skype чат"</string>
     <string name="reminder">"Напоминание"</string>
     <string name="export_and_sync">"Экспорт и синхронизация"</string>
     <string name="additional">"Дополнительные"</string>
@@ -384,7 +381,6 @@
     <string name="open_app">Открыть приложение</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="live_conversation">Живой разговор</string>
-    <string name="skype_is_not_installed">Skype не установлен! Вы хотите, установить его?</string>
     <string name="show_more">Показать больше</string>
     <string name="weeks">недели</string>
     <string name="seconds">секунды</string>

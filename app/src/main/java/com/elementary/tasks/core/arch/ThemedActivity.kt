@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -93,7 +94,7 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   protected fun loginSuccessful() = loginStateViewModel.isLogged
 
-  protected fun isLogged() = intentBoolean(ARG_LOGIN_FLAG)
+  protected fun isLogged() = intentBoolean(PinLoginActivity.ARG_LOGGED)
 
   protected fun intentString(key: String, def: String = "") = intent.getStringExtra(key) ?: def
 
@@ -119,9 +120,5 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   protected open fun handleBackPress(): Boolean {
     return false
-  }
-
-  companion object {
-    const val ARG_LOGIN_FLAG = "arg_login_flag"
   }
 }

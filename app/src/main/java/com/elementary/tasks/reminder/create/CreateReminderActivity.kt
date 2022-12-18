@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.create
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -50,7 +49,6 @@ import com.elementary.tasks.reminder.create.fragments.MonthFragment
 import com.elementary.tasks.reminder.create.fragments.PlacesTypeFragment
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface
 import com.elementary.tasks.reminder.create.fragments.ShopFragment
-import com.elementary.tasks.reminder.create.fragments.SkypeFragment
 import com.elementary.tasks.reminder.create.fragments.TimerFragment
 import com.elementary.tasks.reminder.create.fragments.TypeFragment
 import com.elementary.tasks.reminder.create.fragments.WeekFragment
@@ -137,7 +135,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       TIMER -> replaceFragment(TimerFragment())
       WEEK -> replaceFragment(WeekFragment())
       EMAIL -> replaceFragment(EmailFragment())
-      SKYPE -> replaceFragment(SkypeFragment())
       APP -> replaceFragment(ApplicationFragment())
       MONTH -> replaceFragment(MonthFragment())
       SHOP -> replaceFragment(ShopFragment())
@@ -228,7 +225,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
             }
           } else Reminder()
           editReminder(reminder, false, fromFile)
-        } catch (e: java.lang.Exception) {
+        } catch (e: Throwable) {
           Timber.d("loadReminder: ${e.message}")
         }
       }
@@ -261,7 +258,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       Reminder.BY_TIME, Reminder.BY_TIME_CALL, Reminder.BY_TIME_SMS -> toSelect = TIMER
       Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = WEEK
       Reminder.BY_DATE_EMAIL -> toSelect = EMAIL
-      Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> toSelect = SKYPE
       Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = APP
       Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = MONTH
       Reminder.BY_DATE_SHOP -> toSelect = SHOP
@@ -299,7 +295,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     list.add(SpinnerItem(getString(R.string.timer)))
     list.add(SpinnerItem(getString(R.string.alarm)))
     list.add(SpinnerItem(getString(R.string.e_mail)))
-    list.add(SpinnerItem(getString(R.string.skype)))
     list.add(SpinnerItem(getString(R.string.launch_application)))
     list.add(SpinnerItem(getString(R.string.day_of_month)))
     list.add(SpinnerItem(getString(R.string.yearly)))
@@ -386,9 +381,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun selectMelody() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      melodyPicker.pickMelody()
-    }
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) { melodyPicker.pickMelody() }
   }
 
   override fun attachFile() {
@@ -611,26 +604,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     private const val TIMER = 1
     private const val WEEK = 2
     private const val EMAIL = 3
-    private const val SKYPE = 4
-    private const val APP = 5
-    private const val MONTH = 6
-    private const val YEAR = 7
-    private const val SHOP = 8
-    private const val GPS = 9
-    private const val GPS_PLACE = 10
+    private const val APP = 4
+    private const val MONTH = 5
+    private const val YEAR = 6
+    private const val SHOP = 7
+    private const val GPS = 8
+    private const val GPS_PLACE = 9
 
     private const val MENU_ITEM_DELETE = 12
-
-    fun openLogged(context: Context, intent: Intent? = null) {
-      if (intent == null) {
-        context.startActivity(
-          Intent(context, CreateReminderActivity::class.java)
-            .putExtra(ARG_LOGIN_FLAG, true)
-        )
-      } else {
-        intent.putExtra(ARG_LOGIN_FLAG, true)
-        context.startActivity(intent)
-      }
-    }
   }
 }

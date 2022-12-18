@@ -135,15 +135,6 @@ object ReminderUtils {
       Reminder.isKind(type, Reminder.Kind.SMS) -> {
         res = context.getString(R.string.message)
       }
-      Reminder.isSame(type, Reminder.BY_SKYPE_CALL) -> {
-        res = context.getString(R.string.skype_call)
-      }
-      Reminder.isSame(type, Reminder.BY_SKYPE) -> {
-        res = context.getString(R.string.skype_chat)
-      }
-      Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO) -> {
-        res = context.getString(R.string.video_call)
-      }
       Reminder.isSame(type, Reminder.BY_DATE_APP) -> {
         res = context.getString(R.string.application)
       }
@@ -178,7 +169,6 @@ object ReminderUtils {
       Reminder.isBase(type, Reminder.BY_OUT) -> context.getString(R.string.leaving_place)
       Reminder.isSame(type, Reminder.BY_TIME) -> context.getString(R.string.timer)
       Reminder.isBase(type, Reminder.BY_PLACES) -> context.getString(R.string.places)
-      Reminder.isBase(type, Reminder.BY_SKYPE) -> context.getString(R.string.skype)
       Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> context.getString(R.string.e_mail)
       Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> context.getString(R.string.shopping_list)
       Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)

@@ -45,6 +45,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
@@ -358,112 +359,70 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
       binding.timeBlock.visibility = View.GONE
     }
 
-    if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(
-        reminder.type,
-        Reminder.BY_SKYPE_VIDEO
-      )
-    ) {
-      if (!Reminder.isBase(reminder.type, Reminder.BY_SKYPE)) {
-        contactPhoto.visibility = View.VISIBLE
-        val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-          Contacts.getIdFromNumber(reminder.target, this)
-        } else {
-          0L
-        }
-
-        val name = Contacts.getNameFromNumber(reminder.target, this)
-        binding.remText.setText(R.string.make_call)
-        val userTitle = (name ?: "") + "\n" + reminder.target
-
-        val photo = Contacts.getPhoto(conID)
-        if (photo != null) {
-          Picasso.get().load(photo).into(contactPhoto)
-        } else {
-          BitmapUtils.imageFromName(name ?: reminder.target) {
-            contactPhoto.setImageDrawable(it)
-          }
-        }
-
-        binding.contactInfo.text = userTitle
-        binding.contactInfo.contentDescription = userTitle
-        binding.messageView.text = summary
-        binding.messageView.contentDescription = summary
-
-        binding.contactName.text = name
-        binding.contactNumber.text = reminder.target
-
-        binding.contactBlock.visibility = View.VISIBLE
-        binding.buttonAction.text = getString(R.string.make_call)
-        if (prefs.isTelephonyAllowed) {
-          binding.buttonAction.visibility = View.VISIBLE
-        } else {
-          binding.buttonAction.visibility = View.INVISIBLE
-        }
+    if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
+      contactPhoto.visibility = View.VISIBLE
+      val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+        Contacts.getIdFromNumber(reminder.target, this)
       } else {
-        if (Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
-          binding.remText.setText(R.string.video_call)
-        } else {
-          binding.remText.setText(R.string.skype_call)
-        }
-        binding.contactInfo.text = reminder.target
-        binding.contactInfo.contentDescription = reminder.target
-        binding.messageView.text = summary
-        binding.messageView.contentDescription = summary
+        0L
+      }
 
-        binding.contactName.text = reminder.target
-        binding.contactNumber.text = reminder.target
+      val name = Contacts.getNameFromNumber(reminder.target, this)
+      binding.remText.setText(R.string.make_call)
+      val userTitle = (name ?: "") + "\n" + reminder.target
 
-        binding.contactBlock.visibility = View.VISIBLE
-        binding.buttonAction.text = getString(R.string.make_call)
-        binding.buttonAction.visibility = View.VISIBLE
-        if (TextUtils.isEmpty(summary)) {
-          binding.messageView.visibility = View.GONE
-          binding.someView.visibility = View.GONE
+      val photo = Contacts.getPhoto(conID)
+      if (photo != null) {
+        Picasso.get().load(photo).into(contactPhoto)
+      } else {
+        BitmapUtils.imageFromName(name ?: reminder.target) {
+          contactPhoto.setImageDrawable(it)
         }
       }
-      binding.container.visibility = View.VISIBLE
-    } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS) || Reminder.isSame(
-        reminder.type,
-        Reminder.BY_SKYPE
-      )
-    ) {
-      if (!Reminder.isSame(reminder.type, Reminder.BY_SKYPE)) {
-        contactPhoto.visibility = View.VISIBLE
-        val conID = Contacts.getIdFromNumber(reminder.target, this)
-        val name = Contacts.getNameFromNumber(reminder.target, this)
-        binding.remText.setText(R.string.send_sms)
-        val userInfo = (name ?: "") + "\n" + reminder.target
-        binding.contactInfo.text = userInfo
-        binding.contactInfo.contentDescription = userInfo
-        binding.messageView.text = summary
-        binding.messageView.contentDescription = summary
 
-        val photo = Contacts.getPhoto(conID)
-        if (photo != null) {
-          Picasso.get().load(photo).into(contactPhoto)
-        } else {
-          BitmapUtils.imageFromName(name ?: reminder.target) {
-            contactPhoto.setImageDrawable(it)
-          }
-        }
+      binding.contactInfo.text = userTitle
+      binding.contactInfo.contentDescription = userTitle
+      binding.messageView.text = summary
+      binding.messageView.contentDescription = summary
 
-        binding.contactName.text = name
-        binding.contactNumber.text = reminder.target
-        binding.buttonAction.text = getString(R.string.send)
-        if (prefs.isTelephonyAllowed) {
-          binding.buttonAction.visibility = View.VISIBLE
-        } else {
-          binding.buttonAction.visibility = View.INVISIBLE
-        }
+      binding.contactName.text = name
+      binding.contactNumber.text = reminder.target
+
+      binding.contactBlock.visibility = View.VISIBLE
+      binding.buttonAction.text = getString(R.string.make_call)
+      if (prefs.isTelephonyAllowed) {
+        binding.buttonAction.visibility = View.VISIBLE
       } else {
-        binding.remText.setText(R.string.skype_chat)
-        binding.contactInfo.text = reminder.target
-        binding.contactInfo.contentDescription = reminder.target
-        binding.messageView.text = summary
-        binding.messageView.contentDescription = summary
+        binding.buttonAction.visibility = View.INVISIBLE
+      }
+      binding.container.visibility = View.VISIBLE
+    } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
+      contactPhoto.visibility = View.VISIBLE
+      val conID = Contacts.getIdFromNumber(reminder.target, this)
+      val name = Contacts.getNameFromNumber(reminder.target, this)
+      binding.remText.setText(R.string.send_sms)
+      val userInfo = (name ?: "") + "\n" + reminder.target
+      binding.contactInfo.text = userInfo
+      binding.contactInfo.contentDescription = userInfo
+      binding.messageView.text = summary
+      binding.messageView.contentDescription = summary
 
-        binding.contactName.text = reminder.target
-        binding.contactNumber.text = reminder.target
+      val photo = Contacts.getPhoto(conID)
+      if (photo != null) {
+        Picasso.get().load(photo).into(contactPhoto)
+      } else {
+        BitmapUtils.imageFromName(name ?: reminder.target) {
+          contactPhoto.setImageDrawable(it)
+        }
+      }
+
+      binding.contactName.text = name
+      binding.contactNumber.text = reminder.target
+      binding.buttonAction.text = getString(R.string.send)
+      if (prefs.isTelephonyAllowed) {
+        binding.buttonAction.visibility = View.VISIBLE
+      } else {
+        binding.buttonAction.visibility = View.INVISIBLE
       }
       binding.contactBlock.visibility = View.VISIBLE
       binding.buttonAction.text = getString(R.string.send)
@@ -719,7 +678,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
   private fun editReminder() {
     doActions({ it.stop() }, {
-      CreateReminderActivity.openLogged(
+      PinLoginActivity.openLogged(
         this, Intent(this, CreateReminderActivity::class.java)
           .putExtra(Constants.INTENT_ID, it.uuId)
       )
@@ -754,26 +713,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     doActions({ it.next() }, {
       when {
         Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS()
-        Reminder.isBase(it.type, Reminder.BY_SKYPE) -> {
-          if (!SuperUtil.isSkypeClientInstalled(this)) {
-            showInstallSkypeDialog()
-            return@doActions
-          }
-          when {
-            Reminder.isSame(it.type, Reminder.BY_SKYPE_CALL) -> TelephonyUtil.skypeCall(
-              it.target,
-              this
-            )
-
-            Reminder.isSame(
-              it.type,
-              Reminder.BY_SKYPE_VIDEO
-            ) -> TelephonyUtil.skypeVideoCall(it.target, this)
-
-            Reminder.isSame(it.type, Reminder.BY_SKYPE) -> TelephonyUtil.skypeChat(it.target, this)
-          }
-        }
-
         isAppType -> openApplication(it)
         Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
           this, it.target,
@@ -786,17 +725,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         finish()
       }
     })
-  }
-
-  private fun showInstallSkypeDialog() {
-    val builder = dialogues.getMaterialDialog(this)
-    builder.setMessage(R.string.skype_is_not_installed)
-    builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
-      dialogInterface.dismiss()
-      SuperUtil.installSkype(this)
-    }
-    builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
-    builder.create().show()
   }
 
   private fun makeCall() {

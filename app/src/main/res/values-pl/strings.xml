@@ -204,7 +204,6 @@
     <string name="timer">"Minutnik"</string>
     <string name="alarm">"Budzik"</string>
     <string name="location">"Lokalizacja"</string>
-    <string name="skype">"Skype"</string>
     <string name="day_of_month">"Dzień miesiąca"</string>
     <string name="shopping_list">"Lista zakupów"</string>
     <string name="radius_x_meters">"Promień %s metrów"</string>
@@ -316,8 +315,6 @@
     <string name="reminder_is_outdated">"Przypomnienie jest przestarzałe, edytuj go najpierw"</string>
     <string name="reminder_created">"Przypomnienie stworzono"</string>
     <string name="everyday">"Codziennie"</string>
-    <string name="skype_call">"Skype, połączeńie"</string>
-    <string name="skype_chat">"Skype, czat"</string>
     <string name="reminder">"Przypomnienie"</string>
     <string name="export_and_sync">"Eksport i synchronizacja"</string>
     <string name="additional">"Dodatkowe"</string>
@@ -384,7 +381,6 @@
     <string name="open_app">Otwórz aplikację</string>
     <string name="privacy_policy">Polityka Prywatności</string>
     <string name="live_conversation">Rozmowa na żywo</string>
-    <string name="skype_is_not_installed">Skype nie jest zainstalowany! Czy chciałbyś go zainstalować?</string>
     <string name="show_more">Pokaż więcej</string>
     <string name="weeks">tygodni</string>
     <string name="seconds">sekundy</string>

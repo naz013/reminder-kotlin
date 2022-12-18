@@ -204,7 +204,6 @@
     <string name="timer">"Del temporizzatore"</string>
     <string name="alarm">"Sveglia"</string>
     <string name="location">"Posizione"</string>
-    <string name="skype">"Skype"</string>
     <string name="day_of_month">"Giorno del mese"</string>
     <string name="shopping_list">"Lista della spesa"</string>
     <string name="radius_x_meters">"Raggio %s metri"</string>
@@ -316,8 +315,6 @@
     <string name="reminder_is_outdated">"Promemoria è obsoleto, modificarlo prima"</string>
     <string name="reminder_created">"Promemoria creato"</string>
     <string name="everyday">"Ogni giorno"</string>
-    <string name="skype_call">"Chiamata Skype"</string>
-    <string name="skype_chat">"Chat Skype"</string>
     <string name="reminder">"Promemoria"</string>
     <string name="export_and_sync">"Esportazione e di sincronizzazione"</string>
     <string name="additional">"Aggiuntivo"</string>
@@ -384,7 +381,6 @@
     <string name="open_app">Applicazione aperta</string>
     <string name="privacy_policy">Politica sulla riservatezza</string>
     <string name="live_conversation">Conversazione dal vivo</string>
-    <string name="skype_is_not_installed">Skype non è installato! Ti piacerebbe installarlo?</string>
     <string name="show_more">Mostra di più</string>
     <string name="weeks">settimane</string>
     <string name="seconds">secondi</string>

@@ -204,7 +204,6 @@
     <string name="timer">"घड़ी"</string>
     <string name="alarm">"अलार्म घड़ी"</string>
     <string name="location">"स्थान"</string>
-    <string name="skype">"स्काइप"</string>
     <string name="day_of_month">"महीने का दिन"</string>
     <string name="shopping_list">"खरीदारी की सूची"</string>
     <string name="radius_x_meters">"त्रिज्या %s मीटर"</string>
@@ -316,8 +315,6 @@
     <string name="reminder_is_outdated">"अनुस्मारक पुरानी हो चुकी है, यह पहली बार संपादित"</string>
     <string name="reminder_created">"अनुस्मारक बनाया"</string>
     <string name="everyday">"हर दिन"</string>
-    <string name="skype_call">"स्काइप कॉल"</string>
-    <string name="skype_chat">"स्काइप चैट"</string>
     <string name="reminder">"अनुस्मारक"</string>
     <string name="export_and_sync">"निर्यात और सिंक"</string>
     <string name="additional">"अतिरिक्त"</string>
@@ -384,7 +381,6 @@
     <string name="open_app">खुले आवेदन</string>
     <string name="privacy_policy">गोपनीयता नीति</string>
     <string name="live_conversation">लाइव बातचीत</string>
-    <string name="skype_is_not_installed">स्काइप स्थापित नहीं है! आप इसे स्थापित करने के लिए करना चाहते हैं?</string>
     <string name="show_more">और दिखाओ</string>
     <string name="weeks">सप्ताह</string>
     <string name="seconds">सेकंड के</string>

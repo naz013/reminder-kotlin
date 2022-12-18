@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays.create
 
 import android.app.Activity
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -14,9 +13,9 @@ import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.data.ContactData
+import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
@@ -282,18 +281,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   companion object {
 
     private const val MENU_ITEM_DELETE = 12
-
-    fun openLogged(context: Context, intent: Intent? = null) {
-      if (intent == null) {
-        context.startActivity(
-          Intent(context, AddBirthdayActivity::class.java)
-            .putExtra(ARG_LOGIN_FLAG, true)
-        )
-      } else {
-        intent.putExtra(ARG_LOGIN_FLAG, true)
-        context.startActivity(intent)
-      }
-    }
 
     fun createBirthDate(day: Int, month: Int, year: Int): String {
       val calendar = Calendar.getInstance()

@@ -204,7 +204,6 @@
     <string name="timer">计时器</string>
     <string name="alarm">闹钟</string>
     <string name="location">位置</string>
-    <string name="skype">Skype</string>
     <string name="day_of_month">每月</string>
     <string name="shopping_list">购物清单</string>
     <string name="radius_x_meters">"半径 %s 米"</string>
@@ -317,8 +316,6 @@
     <string name="reminder_created">提醒已创建</string>
     <string name="reminder_created_on">提醒创建于</string>
     <string name="everyday">每天</string>
-    <string name="skype_call">Skype电话</string>
-    <string name="skype_chat">Skype聊天</string>
     <string name="reminder">提醒</string>
     <string name="export_and_sync">导出和同步</string>
     <string name="additional">额外</string>
@@ -385,7 +382,6 @@
     <string name="privacy_policy">隐私政策</string>
     <string name="opacity">不透明度</string>
     <string name="live_conversation">实时对话</string>
-    <string name="skype_is_not_installed">Skype未安装！需要安装吗？</string>
     <string name="show_more">显示更多</string>
     <string name="weeks">周</string>
     <string name="seconds">秒</string>

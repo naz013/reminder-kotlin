@@ -204,7 +204,6 @@
     <string name="timer">"Kronometre"</string>
     <string name="alarm">"Alarm saati"</string>
     <string name="location">"Yer"</string>
-    <string name="skype">"Skype"</string>
     <string name="day_of_month">"Ayın Günü"</string>
     <string name="shopping_list">"Alışveriş listesi"</string>
     <string name="radius_x_meters">"Radius %s metre"</string>
@@ -316,8 +315,6 @@
     <string name="reminder_is_outdated">"Hatırlatma modası geçmiş, ilk olarak düzenlemek"</string>
     <string name="reminder_created">"Hatırlatma oluşturuldu"</string>
     <string name="everyday">"Her gün"</string>
-    <string name="skype_call">"Skype araması"</string>
-    <string name="skype_chat">"Skype sohbet"</string>
     <string name="reminder">"Hatırlatma"</string>
     <string name="export_and_sync">"İhracat ve senkronizasyon"</string>
     <string name="additional">"Ek"</string>
@@ -384,7 +381,6 @@
     <string name="open_app">Açık başvuru</string>
     <string name="privacy_policy">Gizlilik Politikası</string>
     <string name="live_conversation">Canlı konuşma</string>
-    <string name="skype_is_not_installed">Skype yüklü değil! Yüklemek ister misiniz?</string>
     <string name="show_more">Daha fazla göster</string>
     <string name="weeks">haftalar</string>
     <string name="seconds">saniye</string>

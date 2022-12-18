@@ -34,6 +34,7 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityConversationBinding
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import org.apache.commons.lang3.StringUtils
@@ -253,11 +254,11 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         when (model.action) {
           Action.BIRTHDAY -> {
             stopView()
-            AddBirthdayActivity.openLogged(this)
+            PinLoginActivity.openLogged(this, AddBirthdayActivity::class.java)
           }
           Action.REMINDER -> {
             stopView()
-            CreateReminderActivity.openLogged(this)
+            PinLoginActivity.openLogged(this, CreateReminderActivity::class.java)
           }
           Action.VOLUME -> {
             stopView()

@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 
@@ -85,7 +86,7 @@ class ReminderResolver(
   }
 
   private fun editReminder(view: View, reminder: Reminder) {
-    CreateReminderActivity.openLogged(view.context,
+    PinLoginActivity.openLogged(view.context,
       Intent(view.context, CreateReminderActivity::class.java)
         .putExtra(Constants.INTENT_ID, reminder.uuId))
   }

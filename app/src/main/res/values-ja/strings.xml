@@ -205,7 +205,6 @@
     <string name="timer">"タイマー"</string>
     <string name="alarm">"目覚まし時計"</string>
     <string name="location">"ロケーション"</string>
-    <string name="skype">"スカイプ"</string>
     <string name="day_of_month">"月の日"</string>
     <string name="shopping_list">"買い物リスト"</string>
     <string name="radius_x_meters">"半径%sメートル"</string>
@@ -317,8 +316,6 @@
     <string name="reminder_is_outdated">"リマインダーが古い、まずそれを編集"</string>
     <string name="reminder_created">"リマインダー作成"</string>
     <string name="everyday">"毎日"</string>
-    <string name="skype_call">"Skypeの通話"</string>
-    <string name="skype_chat">"Skypeのチャット"</string>
     <string name="reminder">"リマインダー"</string>
     <string name="export_and_sync">"エクスポート＆シンク"</string>
     <string name="additional">"追加の"</string>
@@ -385,7 +382,6 @@
     <string name="open_app">公開アプリケーション</string>
     <string name="privacy_policy">個人情報保護方針</string>
     <string name="live_conversation">ライブ会話</string>
-    <string name="skype_is_not_installed">Skypeがインストールされていません！ それをインストールしますか？</string>
     <string name="show_more">もっと見せる</string>
     <string name="weeks">週</string>
     <string name="seconds">秒</string>

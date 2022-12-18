@@ -44,6 +44,7 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
 import com.elementary.tasks.home.BottomNavActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.splash.SplashScreenActivity
@@ -304,8 +305,8 @@ class ConversationViewModel(
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         )
 
-                        Action.BIRTHDAY -> AddBirthdayActivity.openLogged(context)
-                        Action.REMINDER -> CreateReminderActivity.openLogged(context)
+                        Action.BIRTHDAY -> PinLoginActivity.openLogged(context, AddBirthdayActivity::class.java)
+                        Action.REMINDER -> PinLoginActivity.openLogged(context, CreateReminderActivity::class.java)
                         Action.VOLUME -> context.startActivity(
                             Intent(context, VolumeDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)

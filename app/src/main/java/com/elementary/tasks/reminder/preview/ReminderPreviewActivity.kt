@@ -470,7 +470,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun editReminder() {
     withReminder {
-      CreateReminderActivity.openLogged(
+      PinLoginActivity.openLogged(
         this, Intent(this, CreateReminderActivity::class.java)
           .putExtra(Constants.INTENT_ID, it.id)
       )

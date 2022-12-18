@@ -204,7 +204,6 @@
     <string name="timer">"Časoměřič"</string>
     <string name="alarm">"Budík"</string>
     <string name="location">"Umístění"</string>
-    <string name="skype">"Skype"</string>
     <string name="day_of_month">"Den v měsíci"</string>
     <string name="shopping_list">"Nákupní seznam"</string>
     <string name="radius_x_meters">"Poloměr %s metrů"</string>
@@ -316,8 +315,6 @@
     <string name="reminder_is_outdated">"Připomínka je zastaralý, upravit jej nejprve"</string>
     <string name="reminder_created">"Připomenutí vytvořil"</string>
     <string name="everyday">"Každý den"</string>
-    <string name="skype_call">"Skype volání"</string>
-    <string name="skype_chat">"Skype chatu"</string>
     <string name="reminder">"Připomínka"</string>
     <string name="export_and_sync">"Export &amp; sync"</string>
     <string name="additional">"Další"</string>
@@ -384,7 +381,6 @@
     <string name="open_app">Otevřené aplikace</string>
     <string name="privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="live_conversation">Živá rozhovor</string>
-    <string name="skype_is_not_installed">Skype není nainstalován! Chtěli byste ji nainstalovat?</string>
     <string name="show_more">Zobrazit více</string>
     <string name="weeks">týdny</string>
     <string name="seconds">sekundy</string>
