@@ -1,5 +1,3 @@
-apply from: "$rootProject.projectDir/app/keys.gradle"
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -24,24 +22,26 @@ android {
     buildFeatures {
         viewBinding true
     }
-    signingConfigs {
-        freeApp {
-            storeFile file(releaseFreeKey.storeFile)
-            storePassword releaseFreeKey.storePassword
-            keyAlias releaseFreeKey.keyAlias
-            keyPassword releaseFreeKey.keyPassword
-        }
-        proApp {
-            storeFile file(releaseProKey.storeFile)
-            storePassword releaseProKey.storePassword
-            keyAlias releaseProKey.keyAlias
-            keyPassword releaseProKey.keyPassword
-        }
-        debugApp {
-            storeFile file(debugKey.storeFile)
-            storePassword debugKey.storePassword
-            keyAlias debugKey.keyAlias
-            keyPassword debugKey.keyPassword
+    if (hasProperty("signApk")) {
+        signingConfigs {
+            freeApp {
+                storeFile file(releaseFreeKeyStoreFile)
+                storePassword releaseFreeKeyStorePassword
+                keyAlias releaseFreeKeyAlias
+                keyPassword releaseFreeKeyPassword
+            }
+            proApp {
+                storeFile file(releaseProKeyStoreFile)
+                storePassword releaseProKeyStorePassword
+                keyAlias releaseProKeyAlias
+                keyPassword releaseProKeyPassword
+            }
+            debugApp {
+                storeFile file(debugKeyStoreFile)
+                storePassword debugKeyStorePassword
+                keyAlias debugKeyAlias
+                keyPassword debugKeyPassword
+            }
         }
     }
     productFlavors {
@@ -49,16 +49,26 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
-            buildConfigField "String", "PLACES_API_KEY", "\"$freePlacesApiKey\""
-            manifestPlaceholders = [apiKey:"$freeApiKey"]
+            if (hasProperty("signApk")) {
+                buildConfigField "String", "PLACES_API_KEY", "\"$freePlacesApiKey\""
+                manifestPlaceholders = [apiKey: "$freeApiKey"]
+            } else {
+                manifestPlaceholders = [apiKey: "API_KEY"]
+                buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
+            }
         }
         pro {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            buildConfigField "String", "PLACES_API_KEY", "\"$proPlacesApiKey\""
             versionCode 257
-            manifestPlaceholders = [apiKey:"$proApiKey"]
+            if (hasProperty("signApk")) {
+                manifestPlaceholders = [apiKey: "$proApiKey"]
+                buildConfigField "String", "PLACES_API_KEY", "\"$proPlacesApiKey\""
+            } else {
+                manifestPlaceholders = [apiKey: "API_KEY"]
+                buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
+            }
         }
     }
     packagingOptions {
@@ -79,12 +89,16 @@ android {
             debuggable false
             zipAlignEnabled true
             jniDebuggable false
-            productFlavors.free.signingConfig signingConfigs.freeApp
-            productFlavors.pro.signingConfig signingConfigs.proApp
+            if (hasProperty("signApk")) {
+                productFlavors.free.signingConfig signingConfigs.freeApp
+                productFlavors.pro.signingConfig signingConfigs.proApp
+            }
         }
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.debugApp
+            if (hasProperty("signApk")) {
+                signingConfig signingConfigs.debugApp
+            }
         }
     }
     compileOptions {
