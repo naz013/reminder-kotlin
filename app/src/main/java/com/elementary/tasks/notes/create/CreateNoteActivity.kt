@@ -348,8 +348,9 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       speech = SpeechRecognizer.createSpeechRecognizer(this)
       speech?.setRecognitionListener(mRecognitionListener)
       speech?.startListening(recognizerIntent)
-    } catch (e: java.lang.Exception) {
+    } catch (e: Throwable) {
       speech = null
+      toast(R.string.failed_to_start_voice_recognition)
     }
   }
 
