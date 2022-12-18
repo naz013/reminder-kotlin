@@ -9,7 +9,7 @@ import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.RingtonePicker
-import com.elementary.tasks.core.utils.CacheUtil
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
@@ -17,10 +17,10 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
 import org.koin.android.ext.android.inject
 import java.io.File
@@ -367,9 +367,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
 
   private fun initWakePrefs() {
     if (Module.is10) {
-      binding.wakeScreenOptionPrefs.hide()
+      binding.wakeScreenOptionPrefs.gone()
     } else {
-      binding.wakeScreenOptionPrefs.show()
+      binding.wakeScreenOptionPrefs.visible()
       binding.wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
       binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
       binding.wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.analytics
 
 import android.os.Bundle
-import com.elementary.tasks.core.data.ui.UiReminderType
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 sealed class AnalyticEvent(val event: Event) {
   abstract fun getParams(): Bundle

@@ -10,7 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
 import org.koin.android.ext.android.get
@@ -52,13 +52,15 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
 
   private fun updateText(code: Int) {
     if (WidgetUtils.isDarkBg(code)) {
-      binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
+      binding.statusIcon.setImageBitmap(
+        ViewUtils.createIcon(this, R.drawable.ic_check,
         colorOf(R.color.pureWhite)))
       binding.task.setTextColor(colorOf(R.color.pureWhite))
       binding.note.setTextColor(colorOf(R.color.pureWhite))
       binding.taskDate.setTextColor(colorOf(R.color.pureWhite))
     } else {
-      binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
+      binding.statusIcon.setImageBitmap(
+        ViewUtils.createIcon(this, R.drawable.ic_check,
         colorOf(R.color.pureBlack)))
       binding.task.setTextColor(colorOf(R.color.pureBlack))
       binding.note.setTextColor(colorOf(R.color.pureBlack))

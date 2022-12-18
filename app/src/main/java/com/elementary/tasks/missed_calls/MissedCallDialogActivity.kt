@@ -11,9 +11,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.BitmapUtils
+import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast

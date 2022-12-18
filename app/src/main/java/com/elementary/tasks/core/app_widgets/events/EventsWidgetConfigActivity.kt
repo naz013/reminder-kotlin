@@ -8,8 +8,8 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
@@ -60,7 +60,8 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
   private fun updateText(code: Int) {
     val isDark = WidgetUtils.isDarkBg(code)
     if (isDark) {
-      binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
+      binding.statusIcon.setImageBitmap(
+        ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
         colorOf(R.color.pureWhite)))
       binding.taskText.setTextColor(colorOf(R.color.pureWhite))
       binding.taskDate.setTextColor(colorOf(R.color.pureWhite))
@@ -68,7 +69,8 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
       binding.taskTime.setTextColor(colorOf(R.color.pureWhite))
       binding.leftTime.setTextColor(colorOf(R.color.pureWhite))
     } else {
-      binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
+      binding.statusIcon.setImageBitmap(
+        ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
         colorOf(R.color.pureBlack)))
       binding.taskText.setTextColor(colorOf(R.color.pureBlack))
       binding.taskDate.setTextColor(colorOf(R.color.pureBlack))

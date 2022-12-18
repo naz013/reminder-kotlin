@@ -6,12 +6,10 @@ import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.view_models.Commands
@@ -24,20 +22,14 @@ import java.io.File
 
 class NotePreviewViewModel(
   key: String,
-  prefs: Prefs,
-  private val calendarUtils: CalendarUtils,
+  private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  workerLauncher: WorkerLauncher,
   private val backupTool: BackupTool,
   notesDao: NotesDao,
   private val reminderDao: ReminderDao
-) : BaseNotesViewModel(
-  prefs,
-  dispatcherProvider,
-  workManagerProvider,
-  notesDao
-) {
+) : BaseNotesViewModel(dispatcherProvider, workerLauncher, notesDao) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
@@ -58,7 +50,7 @@ class NotePreviewViewModel(
           notesDao.delete(image)
         }
       }
-      startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -82,11 +74,15 @@ class NotePreviewViewModel(
 
   fun deleteReminder(reminder: Reminder) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       eventControlFactory.getController(reminder).stop()
       reminderDao.delete(reminder)
-      calendarUtils.deleteEvents(reminder.uuId)
-      startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      googleCalendarUtils.deleteEvents(reminder.uuId)
+      workerLauncher.startWork(
+        ReminderDeleteBackupWorker::class.java,
+        Constants.INTENT_ID,
+        reminder.uuId
+      )
       postInProgress(false)
       postCommand(Commands.UPDATED)
     }

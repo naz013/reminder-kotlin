@@ -6,9 +6,9 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.*
-import com.elementary.tasks.core.utils.BackupTool
+import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.settings.additional.TemplateActivity

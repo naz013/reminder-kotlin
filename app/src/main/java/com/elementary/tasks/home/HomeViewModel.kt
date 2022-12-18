@@ -1,54 +1,48 @@
 package com.elementary.tasks.home
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.PrefsConstants
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
+import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class HomeViewModel(
-  appDb: AppDb,
   private val currentStateHolder: CurrentStateHolder,
-  calendarUtils: CalendarUtils,
-  eventControlFactory: EventControlFactory,
+  private val eventControlFactory: EventControlFactory,
   private val birthdayModelAdapter: BirthdayModelAdapter,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
-  updatesHelper: UpdatesHelper,
-  private val birthdaysDao: BirthdaysDao
-) : BaseRemindersViewModel(
-  currentStateHolder.preferences,
-  calendarUtils,
-  eventControlFactory,
-  dispatcherProvider,
-  workManagerProvider,
-  updatesHelper,
-  appDb.reminderDao(),
-  appDb.reminderGroupDao(),
-  appDb.placesDao()
-), (String) -> Unit {
+  private val workerLauncher: WorkerLauncher,
+  private val uiReminderListAdapter: UiReminderListAdapter,
+  private val reminderDao: ReminderDao,
+  private val birthdaysDao: BirthdaysDao,
+  private val dateTimeManager: DateTimeManager
+) : BaseProgressViewModel(dispatcherProvider), (String) -> Unit {
 
-  private val _reminders = mutableLiveDataOf<List<Reminder>>()
-  private var liveData: LiveData<List<Reminder>>? = null
-  val reminders: LiveData<List<Reminder>> = _reminders
-  val birthdays = appDb.birthdaysDao().findAll(
-    TimeUtil.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1)
+  private val prefs = currentStateHolder.preferences
+
+  private val _reminders = mutableLiveDataOf<List<UiReminderList>>()
+  private var liveData: LiveData<List<UiReminderList>>? = null
+  val reminders: LiveData<List<UiReminderList>> = _reminders
+  val birthdays = birthdaysDao.findAll(
+    dateTimeManager.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1)
   ).map { list -> list.map { birthdayModelAdapter.convert(it) } }
   var topScrollX = 0
 
@@ -57,30 +51,74 @@ class HomeViewModel(
     initReminders()
   }
 
+  fun skip(reminder: UiReminderList) {
+    withResult {
+      val fromDb = reminderDao.getById(reminder.id)
+      if (fromDb != null) {
+        eventControlFactory.getController(fromDb).skip()
+        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, fromDb.uuId)
+        Commands.SAVED
+      }
+      Commands.FAILED
+    }
+  }
+
+  fun toggleReminder(reminder: UiReminderList) {
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val item = reminderDao.getById(reminder.id) ?: return@launch
+      if (!eventControlFactory.getController(item).onOff()) {
+        postInProgress(false)
+        postCommand(Commands.OUTDATED)
+      } else {
+        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, item.uuId)
+        postInProgress(false)
+        postCommand(Commands.SAVED)
+      }
+    }
+  }
+
+  fun moveToTrash(reminder: UiReminderList) {
+    withResult {
+      reminderDao.getById(reminder.id)?.let {
+        it.isRemoved = true
+        eventControlFactory.getController(it).stop()
+        reminderDao.insert(it)
+        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+        Commands.DELETED
+      } ?: run {
+        Commands.FAILED
+      }
+    }
+  }
+
   private fun initReminders() {
     val remindersLiveData = if (prefs.showPermanentOnHome) {
       reminderDao.loadAllTypesInRangeWithPermanent(
-        fromTime = TimeUtil.getDayStart(),
-        toTime = TimeUtil.getDayEnd()
+        fromTime = dateTimeManager.getDayStart(),
+        toTime = dateTimeManager.getDayEnd()
       )
     } else {
       reminderDao.loadAllTypesInRange(
-        fromTime = TimeUtil.getDayStart(),
-        toTime = TimeUtil.getDayEnd()
+        fromTime = dateTimeManager.getDayStart(),
+        toTime = dateTimeManager.getDayEnd()
       )
     }
-    remindersLiveData.observeForever {
+    val mapped = Transformations.map(remindersLiveData) { list ->
+      list.map { uiReminderListAdapter.create(it) as UiReminderList }
+    }
+    mapped.observeForever {
       _reminders.postValue(it)
     }
-    liveData = remindersLiveData
+    liveData = mapped
   }
 
   fun deleteBirthday(id: String) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       birthdaysDao.delete(id)
       updateBirthdayPermanent()
-      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

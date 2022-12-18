@@ -3,6 +3,7 @@ package com.elementary.tasks.core.view_models.day_view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.dao.BirthdaysDao
@@ -11,12 +12,11 @@ import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.BaseDbViewModel
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.day_view.DayViewProvider
@@ -24,19 +24,19 @@ import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DayViewViewModel(
   private val calculateFuture: Boolean,
   private val eventControlFactory: EventControlFactory,
   dayViewProvider: DayViewProvider,
-  prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  private val workerLauncher: WorkerLauncher,
   private val reminderDao: ReminderDao,
   private val birthdaysDao: BirthdaysDao,
   reminderGroupDao: ReminderGroupDao
-) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
+) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events
@@ -57,59 +57,74 @@ class DayViewViewModel(
   }
 
   fun findEvents(item: EventsPagerItem) {
-    try {
+    runCatching {
       liveData.findEvents(item, true) { eventsPagerItem, list ->
         _events.postValue(Pair(eventsPagerItem, list))
       }
-    } catch (e: UninitializedPropertyAccessException) {
     }
   }
 
   fun saveReminder(reminder: Reminder) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       reminderDao.insert(reminder)
       postInProgress(false)
       postCommand(Commands.SAVED)
-      startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      workerLauncher.startWork(
+        ReminderSingleBackupWorker::class.java,
+        Constants.INTENT_ID,
+        reminder.uuId
+      )
     }
   }
 
   fun deleteBirthday(id: String) {
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       birthdaysDao.delete(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
     }
   }
 
-  fun moveToTrash(reminder: Reminder) {
+  fun moveToTrash(reminder: UiReminderListData) {
     postInProgress(true)
-    launchDefault {
-      val fromDb = reminderDao.getById(reminder.uuId)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val fromDb = reminderDao.getById(reminder.id)
       if (fromDb != null) {
         fromDb.isRemoved = true
         eventControlFactory.getController(fromDb).stop()
         reminderDao.insert(fromDb)
+        postInProgress(false)
+        postCommand(Commands.DELETED)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          fromDb.uuId
+        )
+      } else {
+        postCommand(Commands.FAILED)
       }
-      postInProgress(false)
-      postCommand(Commands.DELETED)
-      startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
     }
   }
 
-  fun skip(reminder: Reminder) {
+  fun skip(reminder: UiReminderListData) {
     postInProgress(true)
-    launchDefault {
-      val fromDb = reminderDao.getById(reminder.uuId)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val fromDb = reminderDao.getById(reminder.id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
+        postInProgress(false)
+        postCommand(Commands.DELETED)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          fromDb.uuId
+        )
+      } else {
+        postCommand(Commands.FAILED)
       }
-      postInProgress(false)
-      postCommand(Commands.DELETED)
-      startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
     }
   }
 
@@ -129,7 +144,7 @@ class DayViewViewModel(
 
     private val birthdayObserver: Observer<in List<Birthday>> = Observer { list ->
       Timber.d("birthdaysChanged: ")
-      launchDefault {
+      viewModelScope.launch(dispatcherProvider.default()) {
         birthdayData.clear()
         birthdayData.addAll(
           list.map { dayViewProvider.toEventModel(it) }
@@ -139,7 +154,7 @@ class DayViewViewModel(
     }
     private val reminderObserver: Observer<in List<Reminder>> = Observer {
       Timber.d("remindersChanged: ")
-      launchDefault {
+      viewModelScope.launch(dispatcherProvider.default()) {
         if (it != null) {
           reminderData.clear()
           reminderData.addAll(dayViewProvider.loadReminders(calculateFuture, it))
@@ -153,7 +168,11 @@ class DayViewViewModel(
       reminders.observeForever(reminderObserver)
     }
 
-    fun findEvents(eventsPagerItem: EventsPagerItem, sort: Boolean, listener: ((EventsPagerItem, List<EventModel>) -> Unit)?) {
+    fun findEvents(
+      eventsPagerItem: EventsPagerItem,
+      sort: Boolean,
+      listener: ((EventsPagerItem, List<EventModel>) -> Unit)?
+    ) {
       if (listener == null) return
       this.listener = listener
       this.eventsPagerItem = eventsPagerItem
@@ -188,9 +207,13 @@ class DayViewViewModel(
       findEvents(item, this.sort, listener)
     }
 
-    private fun findMatches(list: List<EventModel>, eventsPagerItem: EventsPagerItem, sort: Boolean) {
+    private fun findMatches(
+      list: List<EventModel>,
+      eventsPagerItem: EventsPagerItem,
+      sort: Boolean
+    ) {
       this.job?.cancel()
-      this.job = launchDefault {
+      this.job = viewModelScope.launch(dispatcherProvider.default()) {
         val res = ArrayList<EventModel>()
         Timber.d("Search events: $eventsPagerItem")
         for (item in list) {

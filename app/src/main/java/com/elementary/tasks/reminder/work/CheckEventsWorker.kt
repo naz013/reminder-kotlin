@@ -10,11 +10,11 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
@@ -24,7 +24,7 @@ import java.util.*
 class CheckEventsWorker(
   private val appDb: AppDb,
   private val prefs: Prefs,
-  private val calendarUtils: CalendarUtils,
+  private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   context: Context,
   workerParams: WorkerParameters
@@ -41,7 +41,7 @@ class CheckEventsWorker(
   private fun launchCheckEvents() {
     launchDefault {
       val currTime = System.currentTimeMillis()
-      val eventItems = calendarUtils.getEvents(prefs.trackCalendarIds)
+      val eventItems = googleCalendarUtils.getEvents(prefs.trackCalendarIds)
       if (eventItems.isNotEmpty()) {
         val list = appDb.calendarEventsDao().eventIds()
         for (item in eventItems) {

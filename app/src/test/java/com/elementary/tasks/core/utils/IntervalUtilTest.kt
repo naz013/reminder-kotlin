@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils
 
+import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before

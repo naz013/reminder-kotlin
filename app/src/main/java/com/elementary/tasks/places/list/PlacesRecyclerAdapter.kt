@@ -7,7 +7,7 @@ import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemPlaceBinding

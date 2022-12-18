@@ -1,24 +1,24 @@
 package com.elementary.tasks.birthdays.list.filters
 
-import com.elementary.tasks.birthdays.list.BirthdayListItem
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.filter.Modifier
 
 class SearchModifier(
-  modifier: Modifier<BirthdayListItem>? = null,
-  callback: ((List<BirthdayListItem>) -> Unit)? = null
-) : Modifier<BirthdayListItem>(modifier, callback) {
+  modifier: Modifier<UiBirthdayList>? = null,
+  callback: ((List<UiBirthdayList>) -> Unit)? = null
+) : Modifier<UiBirthdayList>(modifier, callback) {
 
   private var searchValue: String = ""
 
-  override fun apply(data: List<BirthdayListItem>): List<BirthdayListItem> {
-    val list = mutableListOf<BirthdayListItem>()
+  override fun apply(data: List<UiBirthdayList>): List<UiBirthdayList> {
+    val list = mutableListOf<UiBirthdayList>()
     for (name in super.apply(data)) {
       if (filter(name)) list.add(name)
     }
     return list
   }
 
-  private fun filter(v: BirthdayListItem): Boolean {
+  private fun filter(v: UiBirthdayList): Boolean {
     return searchValue.isEmpty() || v.name.toLowerCase().contains(searchValue.toLowerCase())
   }
 

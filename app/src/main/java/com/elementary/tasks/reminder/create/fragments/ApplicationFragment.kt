@@ -9,8 +9,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import org.koin.android.ext.android.inject
@@ -60,12 +58,12 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
-    Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
-    if (!TimeCount.isCurrent(startTime)) {
+    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
     }
-    val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
+    val gmtTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.target = number
     reminder.type = type
     reminder.eventTime = gmtTime

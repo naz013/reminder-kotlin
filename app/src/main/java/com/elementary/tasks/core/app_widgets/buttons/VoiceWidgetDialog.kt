@@ -7,7 +7,7 @@ import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

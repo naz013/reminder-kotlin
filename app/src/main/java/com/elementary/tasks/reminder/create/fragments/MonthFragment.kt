@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.toCalendar
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderMonthBinding
+import com.github.naz013.calendarext.getDayOfMonth
+import com.github.naz013.calendarext.newCalendar
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
@@ -25,7 +25,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     val c = Calendar.getInstance()
     c.set(Calendar.HOUR_OF_DAY, hourOfDay)
     c.set(Calendar.MINUTE, minute)
-    binding.timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
+    binding.timeField.text = dateTimeManager.getTime(c.time)
     calculateNextDate()
   }
   private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -73,19 +73,19 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     reminder.target = number
     reminder.type = type
     reminder.dayOfMonth = iFace.state.day
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
     }
-    val startTime = TimeCount.getNextMonthDayTime(reminder)
-    reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+    val startTime = dateTimeManager.getNextMonthDayTime(reminder)
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
     if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
-    Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-    if (!TimeCount.isCurrent(reminder.eventTime)) {
+    Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+    if (!dateTimeManager.isCurrent(reminder.eventTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
     }
@@ -131,14 +131,18 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.monthDayField.setOnClickListener {
-      TimeUtil.showDatePicker(requireContext(), prefs, iFace.state.year, iFace.state.month,
-        iFace.state.day, mDateSelect)
+      dateTimePickerProvider.showDatePicker(
+        requireContext(), iFace.state.year, iFace.state.month,
+        iFace.state.day, mDateSelect
+      )
     }
     binding.timeField.setOnClickListener {
-      TimeUtil.showTimePicker(requireContext(), prefs.is24HourFormat, iFace.state.hour,
-        iFace.state.minute, mTimeSelect)
+      dateTimePickerProvider.showTimePicker(
+        requireContext(), iFace.state.hour,
+        iFace.state.minute, mTimeSelect
+      )
     }
-    binding.timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
+    binding.timeField.text = dateTimeManager.getTime(time)
     binding.repeatView.defaultValue = 1
 
     binding.tuneExtraView.hasAutoExtra = false
@@ -161,13 +165,13 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     val reminder = Reminder()
     reminder.type = Reminder.BY_MONTH
     reminder.dayOfMonth = iFace.state.day
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
     }
     Timber.d("calculateNextDate: $reminder")
-    val startTime = TimeCount.getNextMonthDayTime(reminder)
-    binding.calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
+    val startTime = dateTimeManager.getNextMonthDayTime(reminder)
+    binding.calculatedNextTime.text = dateTimeManager.getFullDateTime(startTime)
   }
 
   override fun updateActions() {
@@ -185,7 +189,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
   private fun showSelectedDay() {
     if (iFace.state.day <= 0) {
-      iFace.state.day = System.currentTimeMillis().toCalendar().get(Calendar.DAY_OF_MONTH)
+      iFace.state.day = newCalendar(System.currentTimeMillis()).getDayOfMonth()
     }
     Timber.d("showSelectedDay: ${iFace.state.day}")
     binding.monthDayField.text = getZeroedInt(iFace.state.day)
@@ -203,8 +207,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   }
 
   private fun updateTime(millis: Long): Date {
-    val cal = Calendar.getInstance()
-    cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
+    val cal = newCalendar(if (millis != 0L) millis else System.currentTimeMillis())
     iFace.state.hour = cal.get(Calendar.HOUR_OF_DAY)
     iFace.state.minute = cal.get(Calendar.MINUTE)
     return cal.time
@@ -212,8 +215,8 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
   private fun editReminder() {
     val reminder = iFace.state.reminder
-    binding.timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-      prefs.is24HourFormat, prefs.appLanguage)
+    binding.timeField.text =
+      dateTimeManager.getTime(updateTime(dateTimeManager.getDateTimeFromGmt(reminder.eventTime)))
     if (iFace.state.isLastDay && reminder.dayOfMonth == 0) {
       binding.lastCheck.isChecked = true
     } else {

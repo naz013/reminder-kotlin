@@ -1,15 +1,13 @@
 package com.elementary.tasks.core.view_models.sms_templates
 
 import com.elementary.tasks.core.data.dao.SmsTemplatesDao
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
+import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class SmsTemplatesViewModel(
-  prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  workerLauncher: WorkerLauncher,
   smsTemplatesDao: SmsTemplatesDao
-) : BaseSmsTemplatesViewModel(prefs, dispatcherProvider, workManagerProvider, smsTemplatesDao) {
+) : BaseSmsTemplatesViewModel(dispatcherProvider, workerLauncher, smsTemplatesDao) {
   val smsTemplates = smsTemplatesDao.loadAll()
 }

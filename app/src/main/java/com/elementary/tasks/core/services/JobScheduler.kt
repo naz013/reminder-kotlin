@@ -14,8 +14,8 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.google.gson.Gson
@@ -176,14 +176,13 @@ class JobScheduler(
     cancelReminder(number)
   }
 
-  fun scheduleReminderRepeat(appDb: AppDb, uuId: String): Boolean {
-    val item = appDb.reminderDao().getById(uuId) ?: return false
+  fun scheduleReminderRepeat(reminder: Reminder): Boolean {
     val minutes = prefs.notificationRepeatTime
     val millis = minutes * INTERVAL_MINUTE
     if (millis <= 0) {
       return false
     }
-    Timber.d("scheduleReminderRepeat: $millis, $uuId")
+    Timber.d("scheduleReminderRepeat: $millis, ${reminder.uuId}")
 
     val bundle = Data.Builder()
       .putBoolean(ARG_REPEAT, true)
@@ -191,7 +190,7 @@ class JobScheduler(
 
     val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
       .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(item.uuId)
+      .addTag(reminder.uuId)
       .setInputData(bundle)
       .setConstraints(getDefaultConstraints())
       .build()

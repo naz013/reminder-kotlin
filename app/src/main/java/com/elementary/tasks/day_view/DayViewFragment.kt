@@ -13,7 +13,7 @@ import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
-import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.elementary.tasks.day_view.day.DayCallback

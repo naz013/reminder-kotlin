@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.settings.BaseSettingsFragment

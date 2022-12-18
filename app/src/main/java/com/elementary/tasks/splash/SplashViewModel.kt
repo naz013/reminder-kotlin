@@ -9,7 +9,7 @@ import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.DispatcherProvider

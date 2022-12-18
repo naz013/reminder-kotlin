@@ -9,7 +9,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 

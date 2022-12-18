@@ -10,4 +10,8 @@ class TextProvider(
   fun getText(@StringRes id: Int): String {
     return context.getString(id)
   }
+
+  fun getText(@StringRes id: Int, vararg args: Any): String {
+    return context.getString(id, *args)
+  }
 }

@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.core.view.children
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PinCodeViewBinding
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.transparent
 
 class PinCodeView : LinearLayout {
@@ -23,7 +23,7 @@ class PinCodeView : LinearLayout {
 
   private fun updateFButton() {
     if (supportFinger) {
-      binding.fingerButton.show()
+      binding.fingerButton.visible()
     } else {
       binding.fingerButton.transparent()
     }

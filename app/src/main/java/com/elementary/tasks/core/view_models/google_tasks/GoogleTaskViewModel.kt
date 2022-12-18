@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.view_models.google_tasks
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -12,33 +11,28 @@ import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import timber.log.Timber
 
 class GoogleTaskViewModel(
   id: String,
-  prefs: Prefs,
-  context: Context,
   gTasks: GTasks,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  private val workerLauncher: WorkerLauncher,
   updatesHelper: UpdatesHelper,
   googleTasksDao: GoogleTasksDao,
   googleTaskListsDao: GoogleTaskListsDao,
   private val reminderDao: ReminderDao,
   private val reminderGroupDao: ReminderGroupDao
 ) : BaseTaskListsViewModel(
-  prefs,
-  context,
   gTasks,
   dispatcherProvider,
-  workManagerProvider,
   updatesHelper,
   googleTasksDao,
   googleTaskListsDao
@@ -74,8 +68,8 @@ class GoogleTaskViewModel(
         }
         if (reminder.groupUuId != "") {
           eventControlFactory.getController(reminder).start()
-          startWork(
-            com.elementary.tasks.reminder.work.ReminderSingleBackupWorker::class.java,
+          workerLauncher.startWork(
+            ReminderSingleBackupWorker::class.java,
             Constants.INTENT_ID, reminder.uuId
           )
         }

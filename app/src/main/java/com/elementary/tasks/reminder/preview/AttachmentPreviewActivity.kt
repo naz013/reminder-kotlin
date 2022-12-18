@@ -7,7 +7,7 @@ import android.view.MenuItem
 import android.view.Window
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityAttachmentPreviewBinding
 import com.squareup.picasso.Picasso
 import java.io.File

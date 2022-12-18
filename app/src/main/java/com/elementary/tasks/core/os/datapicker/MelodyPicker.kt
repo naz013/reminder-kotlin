@@ -8,7 +8,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.CacheUtil
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope

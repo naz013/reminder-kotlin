@@ -11,10 +11,9 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.UiShareData
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -24,20 +23,18 @@ import timber.log.Timber
 class ReminderPreviewViewModel(
   id: String,
   private val appDb: AppDb,
-  prefs: Prefs,
-  calendarUtils: CalendarUtils,
+  googleCalendarUtils: GoogleCalendarUtils,
   eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  workerLauncher: WorkerLauncher,
   private val uiReminderPreviewAdapter: UiReminderPreviewAdapter,
   private val backupTool: BackupTool,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  prefs,
-  calendarUtils,
+  googleCalendarUtils,
   eventControlFactory,
   dispatcherProvider,
-  workManagerProvider,
+  workerLauncher,
   updatesHelper,
   appDb.reminderDao(),
   appDb.reminderGroupDao(),
@@ -50,7 +47,7 @@ class ReminderPreviewViewModel(
   private val _googleTask = mutableLiveDataOf<Pair<GoogleTaskList?, GoogleTask?>>()
   val googleTask = _googleTask.toLiveData()
 
-  private val _calendarEvent = mutableLiveDataOf<List<CalendarUtils.EventItem>>()
+  private val _calendarEvent = mutableLiveDataOf<List<GoogleCalendarUtils.EventItem>>()
   val calendarEvent = _calendarEvent.toLiveData()
 
   private val _sharedFile = mutableLiveDataOf<UiShareData>()
@@ -94,9 +91,9 @@ class ReminderPreviewViewModel(
           )
         )
       }
-      val events = calendarUtils.loadEvents(reminder.id)
+      val events = googleCalendarUtils.loadEvents(reminder.id)
       if (events.isNotEmpty()) {
-        val calendars = calendarUtils.getCalendarsList()
+        val calendars = googleCalendarUtils.getCalendarsList()
         for (c in calendars) {
           for (e in events) {
             if (e.calendarId == c.id) {
@@ -109,12 +106,12 @@ class ReminderPreviewViewModel(
     }
   }
 
-  fun deleteEvent(eventItem: CalendarUtils.EventItem) {
+  fun deleteEvent(eventItem: GoogleCalendarUtils.EventItem) {
     viewModelScope.launch(dispatcherProvider.default()) {
       if (eventItem.localId.isNotBlank()) {
         appDb.calendarEventsDao().deleteById(eventItem.localId)
       }
-      calendarUtils.deleteEvent(eventItem.id)
+      googleCalendarUtils.deleteEvent(eventItem.id)
       loadExtra()
     }
   }

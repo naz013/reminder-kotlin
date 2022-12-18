@@ -15,21 +15,25 @@ import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.SearchMenuHandler
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.SearchMenuHandler
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
-  (List<BirthdayListItem>) -> Unit {
+  (List<UiBirthdayList>) -> Unit {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
+  private val systemServiceProvider by inject<SystemServiceProvider>()
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
@@ -38,7 +42,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
   private val filterController = SearchModifier(SortModifier(), this)
-  private val searchMenuHandler = SearchMenuHandler { filterController.setSearchValue(it) }
+  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+    filterController.setSearchValue(it)
+  }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -84,8 +90,8 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
 
-    mAdapter.actionsListener = object : ActionsListener<BirthdayListItem> {
-      override fun onAction(view: View, position: Int, t: BirthdayListItem?, actions: ListActions) {
+    mAdapter.actionsListener = object : ActionsListener<UiBirthdayList> {
+      override fun onAction(view: View, position: Int, t: UiBirthdayList?, actions: ListActions) {
         if (t != null) {
           birthdayResolver.resolveAction(view, t, actions)
         }
@@ -98,7 +104,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     }
   }
 
-  override fun invoke(result: List<BirthdayListItem>) {
+  override fun invoke(result: List<UiBirthdayList>) {
     val newList = BirthdayAdsViewHolder.updateList(result)
     mAdapter.submitList(newList)
     binding.recyclerView.smoothScrollToPosition(0)

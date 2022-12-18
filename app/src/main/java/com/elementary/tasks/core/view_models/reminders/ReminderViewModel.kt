@@ -2,55 +2,37 @@ package com.elementary.tasks.core.view_models.reminders
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
+import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ReminderViewModel(
   id: String,
-  appDb: AppDb,
-  prefs: Prefs,
-  calendarUtils: CalendarUtils,
-  eventControlFactory: EventControlFactory,
+  private val reminderDao: ReminderDao,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
-  updatesHelper: UpdatesHelper
-) : BaseRemindersViewModel(
-  prefs,
-  calendarUtils,
-  eventControlFactory,
-  dispatcherProvider,
-  workManagerProvider,
-  updatesHelper,
-  appDb.reminderDao(),
-  appDb.reminderGroupDao(),
-  appDb.placesDao()
-) {
+  private val workerLauncher: WorkerLauncher,
+  private val updatesHelper: UpdatesHelper
+) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val _note = mutableLiveDataOf<NoteWithImages>()
-  val note = _note.toLiveData()
+  val reminder = reminderDao.loadById(id)
 
-  private val _googleTask = mutableLiveDataOf<Pair<GoogleTaskList?, GoogleTask?>>()
-  val googleTask = _googleTask.toLiveData()
-
-  val reminder = appDb.reminderDao().loadById(id)
-
-  val db = appDb
-  var hasSameInDb: Boolean = false
-
-  fun findSame(id: String) {
+  fun saveReminder(reminder: Reminder) {
+    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderDao.getById(id)
-      hasSameInDb = reminder != null
+      runBlocking {
+        reminderDao.insert(reminder)
+      }
+      updatesHelper.updateTasksWidget()
+      workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      postInProgress(false)
+      postCommand(Commands.SAVED)
     }
   }
 }

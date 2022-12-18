@@ -4,9 +4,9 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.databinding.FragmentLoginPinBinding
 import org.koin.android.ext.android.inject
 

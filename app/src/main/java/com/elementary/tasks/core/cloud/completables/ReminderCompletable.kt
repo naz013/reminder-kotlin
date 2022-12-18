@@ -4,7 +4,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeCount
 import com.elementary.tasks.groups.GroupsUtil
 
 class ReminderCompletable(

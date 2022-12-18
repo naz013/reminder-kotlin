@@ -8,6 +8,7 @@ import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.os.SystemServiceProvider
 import org.koin.core.component.inject
 import timber.log.Timber
 
@@ -15,14 +16,15 @@ class CallReceiver : BaseBroadcast() {
 
   private val appDb by inject<AppDb>()
   private val jobScheduler by inject<JobScheduler>()
+  private val systemServiceProvider by inject<SystemServiceProvider>()
 
   private var mIncomingNumber: String? = null
   private var prevState: Int = 0
   private var startCallTime: Long = 0
 
   override fun onReceive(context: Context, intent: Intent) {
-    if (intent.action ?: "" == "android.intent.action.PHONE_STATE") {
-      val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+    if ((intent.action ?: "") == "android.intent.action.PHONE_STATE") {
+      val telephony = systemServiceProvider.provideTelephonyManager()
       if (telephony != null && prefs.isTelephonyAllowed) {
         val customPhoneListener = CustomPhoneStateListener(context, jobScheduler)
         telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
@@ -33,11 +35,11 @@ class CallReceiver : BaseBroadcast() {
   inner class CustomPhoneStateListener(
     private val context: Context,
     private val jobScheduler: JobScheduler
-    ) : PhoneStateListener() {
+  ) : PhoneStateListener() {
 
     override fun onCallStateChanged(state: Int, incomingNumber: String?) {
       Timber.d("onCallStateChanged: $incomingNumber")
-      if (incomingNumber != null && incomingNumber.isNotEmpty()) {
+      if (!incomingNumber.isNullOrEmpty()) {
         mIncomingNumber = incomingNumber
       } else {
         return
@@ -47,6 +49,7 @@ class CallReceiver : BaseBroadcast() {
           prevState = state
           startCallTime = System.currentTimeMillis()
         }
+
         TelephonyManager.CALL_STATE_OFFHOOK -> prevState = state
         TelephonyManager.CALL_STATE_IDLE -> {
           if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
@@ -80,7 +83,9 @@ class CallReceiver : BaseBroadcast() {
               Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
               if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                 val number = mIncomingNumber
-                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
+                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all()
+                    .isNotEmpty()
+                ) {
                   QuickSmsActivity.openScreen(context, number)
                 }
               }

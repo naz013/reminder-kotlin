@@ -11,12 +11,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.UsedTime
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.bindProperty
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.TimerPickerView
@@ -64,21 +62,21 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     reminder.delay = 0
     reminder.eventCount = 0
 
-    val startTime = TimeCount.generateNextTimer(reminder, true)
-    Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
+    val startTime = dateTimeManager.generateNextTimer(reminder, true)
+    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
     if (!validBefore(startTime, reminder)) {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
 
-    if (!TimeCount.isCurrent(startTime - reminder.remindBefore)) {
+    if (!dateTimeManager.isCurrent(startTime - reminder.remindBefore)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
     }
 
-    reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
 
     viewModel.saveTime(after)
     return reminder
@@ -143,18 +141,18 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.usedTimeList.observe(viewLifecycleOwner, {
+    viewModel.usedTimeList.observe(viewLifecycleOwner) {
       if (it != null) {
         timesAdapter.updateData(it)
         if (it.isEmpty()) {
-          binding.mostUserTimes.hide()
+          binding.mostUserTimes.gone()
         } else {
-          binding.mostUserTimes.show()
+          binding.mostUserTimes.visible()
         }
       } else {
-        binding.mostUserTimes.hide()
+        binding.mostUserTimes.gone()
       }
-    })
+    }
   }
 
   private fun initMostUsedList() {
@@ -209,7 +207,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
       init {
         binding.chipItem.setOnClickListener {
-          listener?.invoke(data[adapterPosition])
+          listener?.invoke(data[bindingAdapterPosition])
         }
       }
 

@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.append
 import com.elementary.tasks.core.utils.inflater
@@ -27,7 +28,7 @@ class BirthdayHolder(
     binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
   }
 
-  fun setData(item: BirthdayListItem) {
+  fun setData(item: UiBirthdayList) {
     binding.eventText.text = item.name
     binding.eventNumber.visibleGone(item.number.isNotEmpty())
     binding.eventNumber.text = item.number

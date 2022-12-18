@@ -4,7 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

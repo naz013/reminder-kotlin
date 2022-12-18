@@ -3,7 +3,7 @@ package com.elementary.tasks.core.data.models
 import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*

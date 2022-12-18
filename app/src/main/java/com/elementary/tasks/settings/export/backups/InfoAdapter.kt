@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.chart.PieSlice
-import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.databinding.ListItemBackupInfoBinding
 import com.elementary.tasks.settings.export.BackupsFragment
 import java.io.File

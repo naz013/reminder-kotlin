@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider

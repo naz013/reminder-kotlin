@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import timber.log.Timber
@@ -54,9 +52,9 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     reminder.eventCount = 0
     if (binding.attackDelay.isChecked) {
       val startTime = binding.dateView.dateTime
-      val time = TimeUtil.getGmtFromDateTime(startTime)
-      Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-      if (!TimeCount.isCurrent(time)) {
+      val time = dateTimeManager.getGmtFromDateTime(startTime)
+      Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+      if (!dateTimeManager.isCurrent(time)) {
         Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
         return null
       }

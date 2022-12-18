@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.toDate
 import com.elementary.tasks.core.utils.toHm
 import com.elementary.tasks.databinding.FragmentSettingsTimeOfDayBinding

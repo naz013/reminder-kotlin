@@ -16,10 +16,10 @@ import androidx.annotation.IntRange
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.Events
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.dp2px
+import com.elementary.tasks.core.utils.ui.dp2px
 import hirondelle.date4j.DateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

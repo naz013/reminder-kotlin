@@ -2,11 +2,11 @@ package com.elementary.tasks.day_view
 
 import android.app.AlarmManager
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.day_view.day.EventModel
 import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getMonth
@@ -15,7 +15,9 @@ import com.github.naz013.calendarext.newCalendar
 import java.util.Calendar
 
 class DayViewProvider(
-  private val birthdayModelAdapter: BirthdayModelAdapter
+  private val birthdayModelAdapter: BirthdayModelAdapter,
+  private val uiReminderListAdapter: UiReminderListAdapter,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   fun loadReminders(isFuture: Boolean, reminders: List<Reminder>): List<EventModel> {
@@ -33,7 +35,17 @@ class DayViewProvider(
         var mMonth = calendar.get(Calendar.MONTH)
         var mYear = calendar.get(Calendar.YEAR)
         if (eventTime > 0) {
-          data.add(EventModel(item.viewType, item, mDay, mMonth, mYear, eventTime, 0))
+          data.add(
+            EventModel(
+              item.viewType,
+              uiReminderListAdapter.create(item),
+              mDay,
+              mMonth,
+              mYear,
+              eventTime,
+              0
+            )
+          )
         } else {
           continue
         }
@@ -60,9 +72,19 @@ class DayViewProvider(
                 mYear = calendar.get(Calendar.YEAR)
                 days++
                 val localItem = Reminder(item, true).apply {
-                  this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                  this.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
                 }
-                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, eventTime, 0))
+                data.add(
+                  EventModel(
+                    item.viewType,
+                    uiReminderListAdapter.create(localItem),
+                    mDay,
+                    mMonth,
+                    mYear,
+                    eventTime,
+                    0
+                  )
+                )
               }
             } while (days < max)
           } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
@@ -74,7 +96,7 @@ class DayViewProvider(
             val baseTime = item.dateTime
             var localItem = item
             do {
-              eventTime = TimeCount.getNextMonthDayTime(localItem, calendar.timeInMillis)
+              eventTime = dateTimeManager.getNextMonthDayTime(localItem, calendar.timeInMillis)
               calendar.timeInMillis = eventTime
               if (eventTime == baseTime) {
                 continue
@@ -85,9 +107,19 @@ class DayViewProvider(
               if (eventTime > 0) {
                 days++
                 localItem = Reminder(localItem, true).apply {
-                  this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                  this.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
                 }
-                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, eventTime, 0))
+                data.add(
+                  EventModel(
+                    item.viewType,
+                    uiReminderListAdapter.create(localItem),
+                    mDay,
+                    mMonth,
+                    mYear,
+                    eventTime,
+                    0
+                  )
+                )
               }
             } while (days < max)
           } else {
@@ -111,9 +143,19 @@ class DayViewProvider(
               if (eventTime > 0) {
                 days++
                 val localItem = Reminder(item, true).apply {
-                  this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                  this.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
                 }
-                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, eventTime, 0))
+                data.add(
+                  EventModel(
+                    item.viewType,
+                    uiReminderListAdapter.create(localItem),
+                    mDay,
+                    mMonth,
+                    mYear,
+                    eventTime,
+                    0
+                  )
+                )
               }
             } while (days < max)
           }

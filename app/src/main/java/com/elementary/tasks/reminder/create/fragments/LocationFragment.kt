@@ -12,10 +12,9 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.fadeInAnimation
-import com.elementary.tasks.core.utils.fadeOutAnimation
 import com.elementary.tasks.core.utils.isVisible
+import com.elementary.tasks.core.utils.ui.fadeInAnimation
+import com.elementary.tasks.core.utils.ui.fadeOutAnimation
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
@@ -126,9 +125,9 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     reminder.repeatInterval = 0
     if (binding.attackDelay.isChecked) {
       val startTime = binding.dateView.dateTime
-      reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-      reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-      Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+      reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
+      reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
+      Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
     } else {
       reminder.eventTime = ""
       reminder.startTime = ""
@@ -273,9 +272,5 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     } else {
       binding.enterCheck.isChecked = true
     }
-  }
-
-  companion object {
-    const val REQ_FOREGROUND = 2121
   }
 }

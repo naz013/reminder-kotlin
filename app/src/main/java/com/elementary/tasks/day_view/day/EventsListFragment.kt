@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.list.BirthdayListItem
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.launchDefault
@@ -31,11 +31,9 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
-    saveAction = { reminder -> callback?.getViewModel()?.saveReminder(reminder) },
     toggleAction = { },
     deleteAction = { reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
-    skipAction = { reminder -> callback?.getViewModel()?.skip(reminder) },
-    allGroups = { callback?.getViewModel()?.groups ?: listOf() }
+    skipAction = { reminder -> callback?.getViewModel()?.skip(reminder) }
   )
   private var mItem: EventsPagerItem? = null
   private var callback: DayCallback? = null
@@ -70,9 +68,9 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t == null) return
         val item = t.model
-        if (item is BirthdayListItem) {
+        if (item is UiBirthdayList) {
           birthdayResolver.resolveAction(view, item, actions)
-        } else if (item is Reminder) {
+        } else if (item is UiReminderListData) {
           reminderResolver.resolveAction(view, item, actions)
         }
       }

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.KeyEvent
@@ -9,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -20,16 +18,17 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.BitmapUtils
-import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.isVisible
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -41,12 +40,17 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
 class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
+
+  private val systemServiceProvider by inject<SystemServiceProvider>()
+  private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
 
   private var mMap: GoogleMap? = null
 
@@ -61,7 +65,12 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   private var mLat: Double = 0.0
   private var mLng: Double = 0.0
 
-  private var locationTracker: LocationTracker? = null
+  private var locationListener: LocationTracker.Listener = object : LocationTracker.Listener {
+    override fun onUpdate(lat: Double, lng: Double) {
+      mLat = lat
+      mLng = lng
+    }
+  }
 
   private var mMapListener: MapListener? = null
   private var mCallback: MapCallback? = null
@@ -379,7 +388,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun hideKeyboard() {
-    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    val imm = systemServiceProvider.provideInputMethodManager()
     imm?.hideSoftInputFromWindow(binding.cardSearch.windowToken, 0)
   }
 
@@ -430,11 +439,11 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
       }
     })
     if (spinnerArray.size > 0) {
-      binding.placesListCard.show()
+      binding.placesListCard.visible()
       binding.placesList.adapter = placesAdapter
       addMarkers()
     } else {
-      binding.placesListCard.hide()
+      binding.placesListCard.gone()
     }
   }
 
@@ -464,7 +473,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun showStyles() {
-    binding.mapStyleContainer.show()
+    binding.mapStyleContainer.visible()
   }
 
   private fun toggleRadius() {
@@ -491,19 +500,19 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     when {
       isLayersVisible -> hideLayers()
       isStylesVisible -> hideStyles()
-      else -> binding.layersContainer.show()
+      else -> binding.layersContainer.visible()
     }
   }
 
   private fun hideStyles() {
     if (isStylesVisible) {
-      binding.mapStyleContainer.hide()
+      binding.mapStyleContainer.gone()
     }
   }
 
   private fun hideLayers() {
     if (isLayersVisible) {
-      binding.layersContainer.hide()
+      binding.layersContainer.gone()
     }
   }
 
@@ -558,14 +567,11 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun startTracking() {
-    locationTracker = LocationTracker(prefs, context) { lat, lng ->
-      mLat = lat
-      mLng = lng
-    }
+    locationTracker.startUpdates()
   }
 
   private fun cancelTracking() {
-    locationTracker?.removeUpdates()
+    locationTracker.removeUpdates()
   }
 
   override fun onDetach() {

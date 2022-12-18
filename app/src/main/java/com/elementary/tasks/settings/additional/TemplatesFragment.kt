@@ -17,9 +17,9 @@ import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.FragmentSettingsTemplatesListBinding
 import com.elementary.tasks.settings.BaseSettingsFragment

@@ -7,9 +7,8 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -18,18 +17,16 @@ import kotlinx.coroutines.launch
 class EditReminderViewModel(
   id: String,
   appDb: AppDb,
-  prefs: Prefs,
-  calendarUtils: CalendarUtils,
+  googleCalendarUtils: GoogleCalendarUtils,
   eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  workerLauncher: WorkerLauncher,
   updatesHelper: UpdatesHelper
 ) : BaseRemindersViewModel(
-  prefs,
-  calendarUtils,
+  googleCalendarUtils,
   eventControlFactory,
   dispatcherProvider,
-  workManagerProvider,
+  workerLauncher,
   updatesHelper,
   appDb.reminderDao(),
   appDb.reminderGroupDao(),

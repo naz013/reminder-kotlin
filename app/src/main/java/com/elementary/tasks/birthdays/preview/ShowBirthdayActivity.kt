@@ -17,7 +17,7 @@ import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
@@ -25,14 +25,15 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -42,6 +43,7 @@ import java.util.Locale
 class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>() {
 
   private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
+  private val dateTimeManager by inject<DateTimeManager>()
   private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var mBirthday: Birthday? = null
@@ -241,7 +243,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     } else {
       binding.contactPhoto.visibility = View.GONE
     }
-    val years = TimeUtil.getAgeFormatted(this, birthday.date, prefs.appLanguage)
+    val years = dateTimeManager.getAgeFormatted(birthday.date)
     binding.userName.text = birthday.name
     binding.userName.contentDescription = birthday.name
     binding.userYears.text = years
@@ -266,10 +268,10 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     init()
 
     if (isTtsEnabled) {
-      showTTSNotification(TimeUtil.getAge(birthday.date), birthday.name)
+      showTTSNotification(dateTimeManager.getAge(birthday.date), birthday.name)
       startTts()
     } else {
-      showNotification(TimeUtil.getAge(birthday.date), birthday.name)
+      showNotification(dateTimeManager.getAge(birthday.date), birthday.name)
     }
   }
 
@@ -283,7 +285,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(name)
-    builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
+    builder.setContentText(dateTimeManager.getAgeFormatted(years, System.currentTimeMillis()))
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
@@ -320,7 +322,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     Timber.d("showTTSNotification: ")
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(name)
-    builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
+    builder.setContentText(dateTimeManager.getAgeFormatted(years, System.currentTimeMillis()))
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (isScreenResumed) {

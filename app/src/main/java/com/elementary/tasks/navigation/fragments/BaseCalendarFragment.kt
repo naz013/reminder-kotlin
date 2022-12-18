@@ -12,14 +12,14 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.birthdays.list.BirthdayListItem
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.DialogActionPickerBinding
 import com.elementary.tasks.day_view.DayViewFragment
@@ -43,11 +43,9 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
-    saveAction = { },
     toggleAction = { },
     deleteAction = { },
-    skipAction = { },
-    allGroups = { listOf() }
+    skipAction = { }
   )
 
   protected fun showActionDialog(showEvents: Boolean, list: List<EventModel> = listOf()) {
@@ -139,9 +137,9 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t != null) {
           val model = t.model
-          if (model is BirthdayListItem) {
+          if (model is UiBirthdayList) {
             birthdayResolver.resolveAction(view, model, actions)
-          } else if (model is Reminder) {
+          } else if (model is UiReminderListData) {
             reminderResolver.resolveAction(view, model, actions)
           }
         }
@@ -150,8 +148,8 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
     adapter.showMore = false
     adapter.setData(res)
     listView.adapter = adapter
-    listView.show()
-    emptyView.hide()
+    listView.visible()
+    emptyView.gone()
   }
 
   protected fun addReminder() {

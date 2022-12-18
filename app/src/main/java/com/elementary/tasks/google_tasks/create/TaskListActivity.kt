@@ -11,11 +11,11 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.showError
+import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.trimmedText
+import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding

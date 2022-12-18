@@ -3,32 +3,29 @@ package com.elementary.tasks.core.view_models.month_view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.BaseDbViewModel
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.month_view.MonthPagerItem
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MonthViewViewModel(
   private val addReminders: Boolean,
   private val calculateFuture: Boolean,
   dayViewProvider: DayViewProvider,
-  prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
   private val birthdaysDao: BirthdaysDao,
   private val reminderDao: ReminderDao
-) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
+) : BaseProgressViewModel(dispatcherProvider) {
 
   private val liveData: MonthViewLiveData = MonthViewLiveData(dayViewProvider)
   private var _events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()
@@ -56,14 +53,14 @@ class MonthViewViewModel(
     private var sort = false
 
     private val birthdayObserver: Observer<in List<Birthday>> = Observer { list ->
-      launchDefault {
+      viewModelScope.launch(dispatcherProvider.default()) {
         birthdayData.clear()
         birthdayData.addAll(list.map { dayViewProvider.toEventModel(it) })
         repeatSearch()
       }
     }
     private val reminderObserver: Observer<in List<Reminder>> = Observer {
-      launchDefault {
+      viewModelScope.launch(dispatcherProvider.default()) {
         if (it != null) {
           reminderData.clear()
           reminderData.addAll(dayViewProvider.loadReminders(calculateFuture, it))
@@ -119,7 +116,7 @@ class MonthViewViewModel(
 
     private fun findMatches(list: List<EventModel>, monthPagerItem: MonthPagerItem, sort: Boolean) {
       this.job?.cancel()
-      this.job = launchDefault {
+      this.job = viewModelScope.launch(dispatcherProvider.default()) {
         val res = ArrayList<EventModel>()
         Timber.d("Search events: $monthPagerItem")
         for (item in list) {

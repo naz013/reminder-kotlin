@@ -15,9 +15,9 @@ import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogExclusionPickerBinding
 import com.elementary.tasks.core.binding.views.ExclusionPickerViewBinding
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import java.util.*
 
 class ExclusionPickerView : LinearLayout {

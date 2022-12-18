@@ -3,13 +3,13 @@ package com.elementary.tasks.settings.calendar
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemCalendarBinding
 
 class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
 
-  var data: List<CalendarUtils.CalendarItem> = listOf()
+  var data: List<GoogleCalendarUtils.CalendarItem> = listOf()
     set(list) {
       field = list
       notifyDataSetChanged()
@@ -52,7 +52,7 @@ class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
       }
     }
 
-    fun bind(item: CalendarUtils.CalendarItem) {
+    fun bind(item: GoogleCalendarUtils.CalendarItem) {
       binding.itemCheck.isChecked = item.isSelected
       binding.shopText.text = item.name
     }

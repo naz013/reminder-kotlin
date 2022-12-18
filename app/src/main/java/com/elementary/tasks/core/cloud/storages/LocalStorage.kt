@@ -3,7 +3,7 @@ package com.elementary.tasks.core.cloud.storages
 import android.content.Context
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.view_models.DispatcherProvider

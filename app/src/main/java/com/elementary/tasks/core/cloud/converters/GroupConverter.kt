@@ -3,8 +3,8 @@ package com.elementary.tasks.core.cloud.converters
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.CopyByteArrayStream
-import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.io.CopyByteArrayStream
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 

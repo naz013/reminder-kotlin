@@ -12,9 +12,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.home.BottomNavActivity
 import hirondelle.date4j.DateTime
 import java.util.*

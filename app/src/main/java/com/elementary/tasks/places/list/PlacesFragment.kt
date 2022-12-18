@@ -14,20 +14,23 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.SearchMenuHandler
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.SearchMenuHandler
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   private val viewModel by viewModel<PlacesViewModel>()
+  private val systemServiceProvider by inject<SystemServiceProvider>()
 
   private val adapter = PlacesRecyclerAdapter(currentStateHolder, object : ActionsListener<Place> {
     override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
@@ -47,10 +50,12 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     refreshView(it.size)
   }) {
     override fun filter(v: Place): Boolean {
-      return searchValue.isEmpty() || v.name.toLowerCase().contains(searchValue.toLowerCase())
+      return searchValue.isEmpty() || v.name.lowercase().contains(searchValue.lowercase())
     }
   }
-  private val searchMenuHandler = SearchMenuHandler { searchModifier.setSearchValue(it) }
+  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+    searchModifier.setSearchValue(it)
+  }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
@@ -85,11 +90,11 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.places.observe(viewLifecycleOwner, { places ->
+    viewModel.places.observe(viewLifecycleOwner) { places ->
       if (places != null) {
         searchModifier.original = places
       }
-    })
+    }
     viewModel.result.observe(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> {

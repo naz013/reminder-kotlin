@@ -9,9 +9,9 @@ import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeCount
 
 class LocationEvent(
   reminder: Reminder,

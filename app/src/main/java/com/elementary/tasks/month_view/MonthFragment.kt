@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.views.MonthView
@@ -18,7 +18,8 @@ import com.elementary.tasks.day_view.day.EventModel
 import hirondelle.date4j.DateTime
 import kotlinx.coroutines.delay
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
 
@@ -96,12 +97,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     for (model in list) {
       val obj = model.model
       if (obj is Birthday) {
-        var date: Date? = null
-        try {
-          date = TimeUtil.BIRTH_DATE_FORMAT.parse(obj.date)
-        } catch (e: Exception) {
-          e.printStackTrace()
-        }
+        val date: Date? = runCatching { TimeUtil.BIRTH_DATE_FORMAT.parse(obj.date) }.getOrNull()
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
@@ -115,8 +111,8 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
             i++
           }
         }
-      } else if (obj is Reminder) {
-        val eventTime = obj.dateTime
+      } else if (obj is UiReminderListData) {
+        val eventTime = obj.due?.millis ?: continue
         setEvent(eventTime, obj.summary, reminderColor, Events.Type.REMINDER, map)
       }
     }

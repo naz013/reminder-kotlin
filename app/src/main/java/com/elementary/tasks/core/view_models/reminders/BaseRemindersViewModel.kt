@@ -10,12 +10,11 @@ import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.view_models.BaseDbViewModel
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
@@ -26,33 +25,22 @@ import timber.log.Timber
 import java.util.Calendar
 
 abstract class BaseRemindersViewModel(
-  prefs: Prefs,
-  protected val calendarUtils: CalendarUtils,
+  protected val googleCalendarUtils: GoogleCalendarUtils,
   protected val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  protected val workerLauncher: WorkerLauncher,
   protected val updatesHelper: UpdatesHelper,
   protected val reminderDao: ReminderDao,
   protected val reminderGroupDao: ReminderGroupDao,
   protected val placesDao: PlacesDao
-) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
-
-  private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
-  var defaultReminderGroup: LiveData<ReminderGroup> = _defaultReminderGroup
+) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _allGroups: MutableLiveData<List<ReminderGroup>> = MutableLiveData()
   var allGroups: LiveData<List<ReminderGroup>> = _allGroups
 
   val groups = mutableListOf<ReminderGroup>()
-  var defaultGroup: ReminderGroup? = null
 
   init {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      reminderGroupDao.defaultGroup(true)?.also {
-        defaultGroup = it
-        _defaultReminderGroup.postValue(it)
-      }
-    }
     reminderGroupDao.loadAll().observeForever {
       _allGroups.postValue(it)
       if (it != null) {
@@ -127,14 +115,6 @@ abstract class BaseRemindersViewModel(
     }
   }
 
-  fun stopReminder(reminder: Reminder) {
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      eventControlFactory.getController(reminder).stop()
-      postInProgress(false)
-    }
-  }
-
   fun pauseReminder(reminder: Reminder) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -177,7 +157,7 @@ abstract class BaseRemindersViewModel(
 
   private fun backupReminder(uuId: String) {
     Timber.d("backupReminder: start backup")
-    startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
+    workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
   }
 
   fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
@@ -185,16 +165,16 @@ abstract class BaseRemindersViewModel(
       withResult {
         eventControlFactory.getController(reminder).stop()
         reminderDao.delete(reminder)
-        calendarUtils.deleteEvents(reminder.uuId)
-        startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        googleCalendarUtils.deleteEvents(reminder.uuId)
+        workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
         Commands.DELETED
       }
     } else {
       withProgress {
         eventControlFactory.getController(reminder).stop()
         reminderDao.delete(reminder)
-        calendarUtils.deleteEvents(reminder.uuId)
-        startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        googleCalendarUtils.deleteEvents(reminder.uuId)
+        workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
       }
     }
   }

@@ -1,16 +1,12 @@
 package com.elementary.tasks.core.view_models.google_tasks
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -22,35 +18,28 @@ import java.util.Random
 
 class GoogleTaskListViewModel(
   listId: String,
-  appDb: AppDb,
-  prefs: Prefs,
-  context: Context,
   gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper,
   googleTasksDao: GoogleTasksDao,
   googleTaskListsDao: GoogleTaskListsDao
 ) : BaseTaskListsViewModel(
-  prefs,
-  context,
   gTasks,
   dispatcherProvider,
-  workManagerProvider,
   updatesHelper,
   googleTasksDao,
   googleTaskListsDao
 ) {
 
   var googleTaskList: LiveData<GoogleTaskList>
-  val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
+  val defaultTaskList = googleTaskListsDao.loadDefault()
   var googleTasks: LiveData<List<GoogleTask>>
   private var isSyncing = false
 
   init {
     Timber.d("GoogleTaskListViewModel: $listId")
-    googleTaskList = appDb.googleTaskListsDao().loadById(listId)
-    googleTasks = appDb.googleTasksDao().loadAllByList(listId)
+    googleTaskList = googleTaskListsDao.loadById(listId)
+    googleTasks = googleTasksDao.loadAllByList(listId)
   }
 
   fun sync() {

@@ -10,17 +10,17 @@ import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.io.BackupTool
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
@@ -56,7 +56,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     }
   }
 
-  private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
+  private var mDataList: MutableList<GoogleCalendarUtils.CalendarItem> = mutableListOf()
   private var mItemSelect: Int = 0
   private var keepOldData: Boolean = true
 
@@ -65,7 +65,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       return findPosition(mDataList)
     }
   private val onSyncEnd: () -> Unit = {
-    binding.progressView.hide()
+    binding.progressView.gone()
     binding.syncButton.isEnabled = true
     binding.backupButton.isEnabled = true
     binding.exportButton.isEnabled = true
@@ -80,7 +80,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       binding.backupButton.isEnabled = false
       binding.exportButton.isEnabled = false
       binding.importButton.isEnabled = false
-      binding.progressView.show()
+      binding.progressView.visible()
     } else {
       onSyncEnd.invoke()
     }
@@ -141,10 +141,10 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   private fun initImportButton() {
     if (prefs.isBackupEnabled) {
       binding.importButton.isEnabled = true
-      binding.importButton.show()
+      binding.importButton.visible()
       binding.importButton.setOnClickListener { showImportDialog() }
     } else {
-      binding.importButton.hide()
+      binding.importButton.gone()
     }
   }
 
@@ -176,9 +176,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
   private fun initLocalBackupPrefs() {
     if (Module.is10) {
-      binding.localPrefs.hide()
+      binding.localPrefs.gone()
     } else {
-      binding.localPrefs.show()
+      binding.localPrefs.visible()
       binding.localPrefs.isChecked = prefs.localBackup
       binding.localPrefs.setOnClickListener { changeLocalBackupPrefs() }
       binding.localPrefs.setDependentView(binding.backupDataPrefs)
@@ -206,7 +206,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun initBackupFilesPrefs() {
-    binding.backupFilesPrefs.hide()
+    binding.backupFilesPrefs.gone()
 //        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
 //        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
 //        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
@@ -245,7 +245,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     binding.autoSyncFlagsPrefs.setDependentValue(prefs.autoSyncState > 0)
   }
 
-  private fun findPosition(list: List<CalendarUtils.CalendarItem>): Int {
+  private fun findPosition(list: List<GoogleCalendarUtils.CalendarItem>): Int {
     if (list.isEmpty()) return -1
     val id = prefs.defaultCalendarId
     for (i in list.indices) {
@@ -557,7 +557,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
   private fun showSelectCalendarDialog(): Boolean {
     mDataList.clear()
-    mDataList.addAll(calendarUtils.getCalendarsList())
+    mDataList.addAll(googleCalendarUtils.getCalendarsList())
     if (mDataList.isEmpty()) {
       return false
     }
@@ -583,7 +583,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showCurrentCalendar() {
-    val calendars = calendarUtils.getCalendarsList()
+    val calendars = googleCalendarUtils.getCalendarsList()
     val pos = findPosition(calendars)
     if (calendars.isNotEmpty() && pos != -1 && pos < calendars.size) {
       val name = calendars[pos].name

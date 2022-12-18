@@ -15,16 +15,17 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -33,6 +34,7 @@ import java.util.Calendar
 class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
 
   private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
+  private val dateTimeManager by inject<DateTimeManager>()
   private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var mBirthday: Birthday? = null
@@ -108,7 +110,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
     } else {
       binding.contactPhoto.visibility = View.GONE
     }
-    val years = TimeUtil.getAgeFormatted(this, birthday.date, prefs.appLanguage)
+    val years = dateTimeManager.getAgeFormatted(birthday.date)
     binding.userName.text = birthday.name
     binding.userName.contentDescription = birthday.name
     binding.userYears.text = years

@@ -28,7 +28,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeUtil.toGmt
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil.toGmt
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -202,21 +203,21 @@ fun View.transparent() {
   visibility = View.INVISIBLE
 }
 
-fun View.hide() {
+fun View.gone() {
   visibility = View.GONE
 }
 
-fun View.show() {
+fun View.visible() {
   visibility = View.VISIBLE
 }
 
 fun View.visibleGone(value: Boolean) {
-  if (value && !isVisible()) show()
-  else if (!value && !isGone()) hide()
+  if (value && !isVisible()) visible()
+  else if (!value && !isGone()) gone()
 }
 
 fun View.visibleInvisible(value: Boolean) {
-  if (value && !isVisible()) show()
+  if (value && !isVisible()) visible()
   else if (!value && !isTransparent()) transparent()
 }
 
@@ -248,6 +249,7 @@ fun EditText.onChanged(function: (String) -> Unit) {
   })
 }
 
+@Deprecated("Use DateTimeManager")
 fun Long.toGmt() = toCalendar().toGmt()
 
 fun Long.toCalendar() = newCalendar(this)

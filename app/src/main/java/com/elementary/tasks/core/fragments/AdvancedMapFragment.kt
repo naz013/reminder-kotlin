@@ -1,12 +1,10 @@
 package com.elementary.tasks.core.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Criteria
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +16,15 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
-import com.elementary.tasks.core.utils.BitmapUtils
-import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentMapBinding
@@ -35,12 +34,14 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
-  val viewModel by viewModel<PlacesViewModel>()
+  private val viewModel by viewModel<PlacesViewModel>()
+  private val systemServiceProvider by inject<SystemServiceProvider>()
 
   private var mMap: GoogleMap? = null
 
@@ -280,13 +281,13 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
       return
     }
     mMap?.run {
-      val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+      val locationManager = systemServiceProvider.provideLocationManager()
       val criteria = Criteria()
       var location: Location? = null
       try {
         location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false)
           ?: "")
-      } catch (e: IllegalArgumentException) {
+      } catch (e: Throwable) {
         Timber.d("moveToMyLocation: ${e.message}")
       }
 
