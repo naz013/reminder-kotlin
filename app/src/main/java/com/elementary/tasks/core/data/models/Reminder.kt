@@ -252,9 +252,6 @@ data class Reminder(
     const val BY_LOCATION = 40
     const val BY_LOCATION_CALL = 41
     const val BY_LOCATION_SMS = 42
-    const val BY_SKYPE = 50
-    const val BY_SKYPE_CALL = 51
-    const val BY_SKYPE_VIDEO = 52
     const val BY_MONTH = 60
     const val BY_MONTH_CALL = 61
     const val BY_MONTH_SMS = 62

@@ -24,6 +24,7 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
@@ -33,7 +34,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (List<Reminder>) -> Unit {
+class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
+    (List<Reminder>) -> Unit {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val viewModel by viewModel<ActiveRemindersViewModel>()
@@ -56,9 +58,10 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     allGroups = { return@ReminderResolver viewModel.groups }
   )
 
-  private val remindersAdapter = RemindersRecyclerAdapter(currentStateHolder, showHeader = true, isEditable = true) {
-    showData(viewModel.events.value ?: listOf())
-  }
+  private val remindersAdapter =
+    RemindersRecyclerAdapter(currentStateHolder, showHeader = true, isEditable = true) {
+      showData(viewModel.events.value ?: listOf())
+    }
   private val searchModifier = SearchModifier(null, this)
   private val searchMenuHandler = SearchMenuHandler { searchModifier.setSearchValue(it) }
 
@@ -82,7 +85,12 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.fab.setOnClickListener { CreateReminderActivity.openLogged(requireContext()) }
+    binding.fab.setOnClickListener {
+      PinLoginActivity.openLogged(
+        requireContext(),
+        CreateReminderActivity::class.java
+      )
+    }
     binding.fab.setOnLongClickListener {
       buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
       true
@@ -136,7 +144,9 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
     binding.recyclerView.adapter = remindersAdapter
-    ViewUtils.listenScrollableView(binding.recyclerView, listener = { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(
+      binding.recyclerView,
+      listener = { setToolbarAlpha(toAlpha(it.toFloat())) }) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }

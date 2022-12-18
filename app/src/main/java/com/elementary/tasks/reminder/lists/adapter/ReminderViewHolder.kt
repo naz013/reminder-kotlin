@@ -27,7 +27,7 @@ import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.TextDrawable
 import com.elementary.tasks.databinding.ListItemReminderBinding
-import java.util.*
+import java.util.Locale
 
 class ReminderViewHolder(
   parent: ViewGroup,
@@ -141,10 +141,7 @@ class ReminderViewHolder(
   private fun loadContact(model: Reminder) {
     val type = model.type
     val number = model.target
-    if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
-      binding.reminderPhone.show()
-      binding.reminderPhone.text = number
-    } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
+    if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
       binding.reminderPhone.show()
       val name = if (Permissions.checkPermission(binding.reminderPhone.context, Permissions.READ_CONTACTS)) {
         Contacts.getNameFromNumber(number, binding.reminderPhone.context)

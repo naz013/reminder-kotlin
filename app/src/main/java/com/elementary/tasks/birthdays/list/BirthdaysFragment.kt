@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
@@ -66,7 +67,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
   }
 
   private fun addPlace() {
-    withContext { AddBirthdayActivity.openLogged(it) }
+    withContext { PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java) }
   }
 
   private fun initViewModel() {

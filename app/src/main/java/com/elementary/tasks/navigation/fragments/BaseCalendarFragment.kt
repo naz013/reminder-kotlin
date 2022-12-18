@@ -25,11 +25,12 @@ import com.elementary.tasks.databinding.DialogActionPickerBinding
 import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.day_view.day.CalendarEventsAdapter
 import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>() {
 
@@ -156,7 +157,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   protected fun addReminder() {
     if (isAdded) {
       withActivity {
-        CreateReminderActivity.openLogged(it, Intent(it, CreateReminderActivity::class.java)
+        PinLoginActivity.openLogged(it, Intent(it, CreateReminderActivity::class.java)
           .putExtra(Constants.INTENT_DATE, dateMills))
       }
     }
@@ -165,7 +166,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   protected fun addBirthday() {
     if (isAdded) {
       withActivity {
-        AddBirthdayActivity.openLogged(it, Intent(it, AddBirthdayActivity::class.java)
+        PinLoginActivity.openLogged(it, Intent(it, AddBirthdayActivity::class.java)
           .putExtra(Constants.INTENT_DATE, dateMills))
       }
     }

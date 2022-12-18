@@ -255,27 +255,6 @@ object SuperUtil {
     return installed
   }
 
-  fun installSkype(context: Context) {
-    val marketUri = Uri.parse("market://details?id=com.skype.raider")
-    val intent = Intent(Intent.ACTION_VIEW, marketUri)
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    try {
-      context.startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
-      e.printStackTrace()
-    }
-  }
-
-  fun isSkypeClientInstalled(context: Context): Boolean {
-    val myPackageMgr = context.packageManager
-    try {
-      myPackageMgr.getPackageInfo("com.skype.raider", PackageManager.GET_ACTIVITIES)
-    } catch (e: PackageManager.NameNotFoundException) {
-      return false
-    }
-    return true
-  }
-
   fun decrypt(string: String): String {
     var result = ""
     val bytes = Base64.decode(string, Base64.DEFAULT)

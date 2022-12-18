@@ -132,7 +132,6 @@ class UiReminderPreviewAdapter(
       type.isBase(UiReminderType.Base.DATE) -> R.drawable.ic_calendar_illustration
       type.isBase(UiReminderType.Base.WEEKDAY) -> R.drawable.ic_alarm_clock
       type.isBase(UiReminderType.Base.MONTHLY) -> R.drawable.ic_seventeen
-      type.isBase(UiReminderType.Base.SKYPE) -> R.drawable.ic_skype_illustration
       type.isBase(UiReminderType.Base.TIMER) -> R.drawable.ic_stopwatch
       type.isBase(UiReminderType.Base.YEARLY) -> R.drawable.ic_balloons
       else -> R.drawable.ic_bell_illustration
@@ -147,9 +146,6 @@ class UiReminderPreviewAdapter(
       type.isLink() -> textProvider.getText(R.string.open_link)
       type.isShopping() -> textProvider.getText(R.string.shopping_list)
       type.isEmail() -> textProvider.getText(R.string.e_mail)
-      type.isSame(Reminder.BY_SKYPE_CALL) -> textProvider.getText(R.string.skype_call)
-      type.isSame(Reminder.BY_SKYPE) -> textProvider.getText(R.string.skype_chat)
-      type.isSame(Reminder.BY_SKYPE_VIDEO) -> textProvider.getText(R.string.video_call)
       else -> getType(type)
     }
   }
@@ -162,7 +158,6 @@ class UiReminderPreviewAdapter(
       type.isBase(UiReminderType.Base.LOCATION_OUT) -> textProvider.getText(R.string.leaving_place)
       type.isBase(UiReminderType.Base.TIMER) -> textProvider.getText(R.string.timer)
       type.isBase(UiReminderType.Base.PLACE) -> textProvider.getText(R.string.places)
-      type.isBase(UiReminderType.Base.SKYPE) -> textProvider.getText(R.string.skype)
       type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
       else -> textProvider.getText(R.string.by_date)
     }

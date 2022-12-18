@@ -3,6 +3,7 @@ package com.elementary.tasks.core.cloud.converters
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.UiReminderType
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.TimeUtil
@@ -35,7 +36,7 @@ class ReminderConverter : Convertible<Reminder> {
         this.type = IndexTypes.TYPE_REMINDER
         this.readyToBackup = true
       }
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
       Timber.e(e)
       null
     }
@@ -45,10 +46,14 @@ class ReminderConverter : Convertible<Reminder> {
     return try {
       val reminder = MemoryUtil.fromStream(stream, Reminder::class.java)
       stream.close()
-      return reminder
-    } catch (e: Exception) {
+      return reminder?.takeIf { !isDeprecatedType(it.type) }
+    } catch (e: Throwable) {
       Timber.e(e)
       null
     }
+  }
+
+  private fun isDeprecatedType(type: Int): Boolean {
+    return UiReminderType(type).isBase(UiReminderType.Base.SKYPE)
   }
 }

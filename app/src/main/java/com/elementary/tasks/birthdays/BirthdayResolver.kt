@@ -8,6 +8,7 @@ import com.elementary.tasks.birthdays.list.BirthdayListItem
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.pin.PinLoginActivity
 
 class BirthdayResolver(
   private val dialogAction: () -> Dialogues,
@@ -42,7 +43,7 @@ class BirthdayResolver(
   }
 
   private fun openBirthday(view: View, birthday: BirthdayListItem) {
-    AddBirthdayActivity.openLogged(view.context, Intent(view.context, AddBirthdayActivity::class.java)
+    PinLoginActivity.openLogged(view.context, Intent(view.context, AddBirthdayActivity::class.java)
       .putExtra(Constants.INTENT_ID, birthday.uuId))
   }
 }

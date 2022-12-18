@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,7 +43,7 @@ class VoiceResultDialog : BaseDialog() {
     alert.setCancelable(true)
     alert.setNegativeButton(R.string.edit) { dialogInterface, _ ->
       dialogInterface.dismiss()
-      CreateReminderActivity.openLogged(this,
+      PinLoginActivity.openLogged(this,
         Intent(this@VoiceResultDialog, CreateReminderActivity::class.java)
           .putExtra(Constants.INTENT_ID, reminder.uuId))
       finish()

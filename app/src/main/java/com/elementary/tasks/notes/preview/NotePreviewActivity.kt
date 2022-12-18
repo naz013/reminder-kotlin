@@ -116,7 +116,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editReminder() {
     val reminder = viewModel.reminder.value ?: return
-    CreateReminderActivity.openLogged(
+    PinLoginActivity.openLogged(
       this, Intent(this, CreateReminderActivity::class.java)
         .putExtra(Constants.INTENT_ID, reminder.uuId)
     )

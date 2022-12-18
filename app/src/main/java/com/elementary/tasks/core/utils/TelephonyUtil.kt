@@ -163,37 +163,4 @@ object TelephonyUtil {
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
   }
-
-  fun skypeCall(number: String, context: Context) {
-    val uri = "skype:$number?call"
-    val sky = Intent("android.intent.action.VIEW")
-    sky.data = Uri.parse(uri)
-    try {
-      context.startActivity(sky)
-    } catch (e: Exception) {
-      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-    }
-  }
-
-  fun skypeVideoCall(number: String, context: Context) {
-    val uri = "skype:$number?call&video=true"
-    val sky = Intent("android.intent.action.VIEW")
-    sky.data = Uri.parse(uri)
-    try {
-      context.startActivity(sky)
-    } catch (e: Exception) {
-      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-    }
-  }
-
-  fun skypeChat(number: String, context: Context) {
-    val uri = "skype:$number?chat"
-    val sky = Intent("android.intent.action.VIEW")
-    sky.data = Uri.parse(uri)
-    try {
-      context.startActivity(sky)
-    } catch (e: Exception) {
-      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-    }
-  }
 }
