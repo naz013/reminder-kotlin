@@ -265,7 +265,7 @@ class ConversationViewModel(
 
     fun findSuggestion(suggestion: String): Model? {
         recognizer.setContactHelper(ContactHelper())
-        return recognizer.parse(suggestion)
+        return recognizer.recognize(suggestion)
     }
 
     fun findResults(matches: List<*>): Reminder? {
@@ -273,7 +273,7 @@ class ConversationViewModel(
         for (i in matches.indices) {
             val key = matches[i]
             val keyStr = key.toString()
-            val model = recognizer.parse(keyStr)
+            val model = recognizer.recognize(keyStr)
             if (model != null) {
                 Timber.d("findResults: $model")
                 return createReminder(model)

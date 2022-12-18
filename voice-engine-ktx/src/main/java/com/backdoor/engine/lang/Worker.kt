@@ -16,15 +16,6 @@ internal abstract class Worker : WorkerInterface {
   )
   internal val hourFormat = SimpleDateFormat("HH:mm", Recognizer.LOCALE)
 
-  internal fun isCorrectTime(hourOfDay: Int, minuteOfHour: Int): Boolean {
-    return hourOfDay < 24 && minuteOfHour < 60
-  }
-
-  internal fun isLeapYear(year: Int): Boolean {
-    return year % 4 == 0 && year % 100 != 0 ||
-      year % 4 == 0 && year % 100 == 0 && year % 400 == 0
-  }
-
   fun <T> ignoreAny(f: () -> T): T? {
     return try {
       f.invoke()
@@ -42,15 +33,14 @@ internal abstract class Worker : WorkerInterface {
   }
 
   protected abstract val weekdays: List<String>
-  protected abstract fun findNumber(input: String?): Float
-  protected abstract fun hasHours(input: String?): Int
-  protected abstract fun hasMinutes(input: String?): Int
-  protected abstract fun hasSeconds(input: String?): Boolean
-  protected abstract fun hasDays(input: String?): Boolean
-  protected abstract fun hasWeeks(input: String?): Boolean
-  protected abstract fun hasMonth(input: String?): Boolean
-
-  protected abstract fun getMonth(input: String?): Int
+  abstract fun findNumber(input: String?): Float
+  abstract fun hasHours(input: String?): Int
+  abstract fun hasMinutes(input: String?): Int
+  abstract fun hasSeconds(input: String?): Boolean
+  abstract fun hasDays(input: String?): Boolean
+  abstract fun hasWeeks(input: String?): Boolean
+  abstract fun hasMonth(input: String?): Boolean
+  abstract fun getMonth(input: String?): Int
 
   override fun getWeekDays(input: String) =
     input.splitByWhitespaces().forEach { part ->
@@ -298,7 +288,5 @@ internal abstract class Worker : WorkerInterface {
     val WHITESPACE = "\\s".toRegex()
 
     fun getNumberOfSelectedWeekdays(days: List<Int>) = days.count { it == 1 }
-
-    fun getSelectedWeekday(days: List<Int>) = days.firstOrNull { it == 1 } ?: -1
   }
 }

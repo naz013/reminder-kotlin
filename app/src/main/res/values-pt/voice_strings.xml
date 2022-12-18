@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="voice_hi_how_can_i_help_you">Olá, como posso ajudá-lo?</string>
+    <string name="voice_did_you_say_something">Você disse alguma coisa?</string>
+    <string name="voice_can_not_recognize_your_command">Não pode reconhecer o seu comando</string>
+    <string name="voice_no_shopping_lists_found">Nenhuma lista de compras encontrada</string>
+    <string name="voice_found_one_shopping_list">Encontrei uma lista de compras</string>
+    <string name="voice_found">Encontrado</string>
+    <string name="voice_shopping_lists">listas de compras</string>
+    <string name="voice_no_birthdays_found">Nenhum aniversário encontrado</string>
+    <string name="voice_found_one_birthday">Encontrou um aniversário</string>
+    <string name="voice_no_reminders_found">Nenhum lembrete encontrado</string>
+    <string name="voice_found_one_reminder">Encontrou um lembrete</string>
+    <string name="voice_reminders">lembretes</string>
+    <string name="voice_no_groups_found">Nenhum grupo encontrado</string>
+    <string name="voice_found_one_group">Encontrou um grupo</string>
+    <string name="voice_no_notes_found">Nenhuma nota encontrada</string>
+    <string name="voice_found_one_note">Encontrei uma nota</string>
+    <string name="voice_group_created">Grupo criado</string>
+    <string name="voice_note_created">Nota criada</string>
+    <string name="voice_would_you_like_to_save_it">Você gostaria de salvá-lo?</string>
+    <string name="voice_group_saved">Grupo salvo</string>
+    <string name="voice_group_canceled">Grupo cancelado</string>
+    <string name="voice_reminder_saved">Lembrete salvo</string>
+    <string name="voice_reminder_canceled">Lembrete cancelado</string>
+    <string name="voice_note_saved">Nota salva</string>
+    <string name="voice_note_canceled">Nota cancelada</string>
+    <string name="voice_would_you_like_to_add_reminder">Gostaria de adicionar lembrete?</string>
+    <string name="voice_note_saved_without_reminder">Nota salva sem lembrete</string>
+    <string name="voice_trash_was_cleared">Lixeira foi apagada</string>
+    <string name="voice_this_command_not_supported_on_that_screen">Este comando não é suportado nessa tela</string>
+</resources>
