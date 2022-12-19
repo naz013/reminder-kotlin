@@ -26,6 +26,16 @@ jobs:
       env:
         DATA: ${{ secrets.GOOGLE_SERVICES }}
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/google-services.json
+
+    - name: Voice Unit Test
+      run: ./gradlew :voice-engine-ktx:test
+    - name: Upload Voice Test Reports Folder
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+      with:
+        name: voice_reports
+        path: voice-engine-ktx/build/test-results # path to where the xml test results are stored
+
     - name: Unit Test
       run: ./gradlew testProDebugUnitTest
     - name: Upload Test Reports Folder
