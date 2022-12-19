@@ -1,5 +1,3 @@
-apply from: "$rootProject.projectDir/app/keys.gradle"
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -24,24 +22,33 @@ android {
     buildFeatures {
         viewBinding true
     }
-    signingConfigs {
-        freeApp {
-            storeFile file(releaseFreeKey.storeFile)
-            storePassword releaseFreeKey.storePassword
-            keyAlias releaseFreeKey.keyAlias
-            keyPassword releaseFreeKey.keyPassword
-        }
-        proApp {
-            storeFile file(releaseProKey.storeFile)
-            storePassword releaseProKey.storePassword
-            keyAlias releaseProKey.keyAlias
-            keyPassword releaseProKey.keyPassword
-        }
-        debugApp {
-            storeFile file(debugKey.storeFile)
-            storePassword debugKey.storePassword
-            keyAlias debugKey.keyAlias
-            keyPassword debugKey.keyPassword
+
+    def propsFile = rootProject.file('keystore.properties')
+    def Properties props = new Properties()
+    if (propsFile.exists() && propsFile.canRead()) {
+        props.load(new FileInputStream(propsFile))
+    }
+
+    if (props.hasProperty("signApk")) {
+        signingConfigs {
+            freeApp {
+                storeFile file(props['releaseFreeKeyStoreFile'])
+                storePassword props['releaseFreeKeyStorePassword']
+                keyAlias props['releaseFreeKeyAlias']
+                keyPassword props['releaseFreeKeyPassword']
+            }
+            proApp {
+                storeFile file(props['releaseProKeyStoreFile'])
+                storePassword props['releaseProKeyStorePassword']
+                keyAlias props['releaseProKeyAlias']
+                keyPassword props['releaseProKeyPassword']
+            }
+            debugApp {
+                storeFile file(props['debugKeyStoreFile'])
+                storePassword props['debugKeyStorePassword']
+                keyAlias props['debugKeyAlias']
+                keyPassword props['debugKeyPassword']
+            }
         }
     }
     productFlavors {
@@ -49,16 +56,26 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
-            buildConfigField "String", "PLACES_API_KEY", "\"$freePlacesApiKey\""
-            manifestPlaceholders = [apiKey:"$freeApiKey"]
+            if (props.hasProperty("signApk")) {
+                buildConfigField "String", "PLACES_API_KEY", "\"$props['freePlacesApiKey']\""
+                manifestPlaceholders = [apiKey: props['freeApiKey']]
+            } else {
+                manifestPlaceholders = [apiKey: "API_KEY"]
+                buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
+            }
         }
         pro {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            buildConfigField "String", "PLACES_API_KEY", "\"$proPlacesApiKey\""
             versionCode 257
-            manifestPlaceholders = [apiKey:"$proApiKey"]
+            if (props.hasProperty("signApk")) {
+                manifestPlaceholders = [apiKey: props['proApiKey']]
+                buildConfigField "String", "PLACES_API_KEY", "\"$props['proPlacesApiKey']\""
+            } else {
+                manifestPlaceholders = [apiKey: "API_KEY"]
+                buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
+            }
         }
     }
     packagingOptions {
@@ -79,12 +96,16 @@ android {
             debuggable false
             zipAlignEnabled true
             jniDebuggable false
-            productFlavors.free.signingConfig signingConfigs.freeApp
-            productFlavors.pro.signingConfig signingConfigs.proApp
+            if (hasProperty("signApk")) {
+                productFlavors.free.signingConfig signingConfigs.freeApp
+                productFlavors.pro.signingConfig signingConfigs.proApp
+            }
         }
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.debugApp
+            if (hasProperty("signApk")) {
+                signingConfig signingConfigs.debugApp
+            }
         }
     }
     compileOptions {
