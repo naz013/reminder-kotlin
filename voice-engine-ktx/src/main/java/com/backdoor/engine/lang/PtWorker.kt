@@ -2,11 +2,12 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
-import com.backdoor.engine.misc.LongInternal
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
 import java.util.regex.Pattern
 
-internal class PtWorker : Worker() {
+internal class PtWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override val weekdays = listOf(
     "doming",
@@ -162,17 +163,17 @@ internal class PtWorker : Worker() {
 
   override fun getShortTime(input: String?) = input?.let { s ->
     val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
-    var date: Date? = null
+    var localTime: LocalTime? = null
     if (matcher.find()) {
       val time = matcher.group().trim()
       for (format in hourFormats) {
         if (ignoreAny {
-            date = format.parse(time)
-            date
+            localTime = LocalTime.parse(time, format)
+            localTime
           } != null) break
       }
     }
-    date
+    localTime
   }
 
   override fun clearTime(input: String?) =
@@ -219,18 +220,18 @@ internal class PtWorker : Worker() {
 
   override fun getMonth(input: String?) = when {
     input == null -> -1
-    input.contains("janeiro") -> 0
-    input.contains("fevereiro") -> 1
-    input.contains("março") || input.contains("marcha") -> 2
-    input.contains("abril") -> 3
-    input.contains("maio") -> 4
-    input.contains("junho") -> 5
-    input.contains("julho") -> 6
-    input.contains("agosto") -> 7
-    input.contains("setembro") -> 8
-    input.contains("outubro") -> 9
-    input.contains("novembro") -> 10
-    input.contains("dezembro") -> 11
+    input.contains("janeiro") -> 1
+    input.contains("fevereiro") -> 2
+    input.contains("março") || input.contains("marcha") -> 3
+    input.contains("abril") -> 4
+    input.contains("maio") -> 5
+    input.contains("junho") -> 6
+    input.contains("julho") -> 7
+    input.contains("agosto") -> 8
+    input.contains("setembro") -> 9
+    input.contains("outubro") -> 10
+    input.contains("novembro") -> 11
+    input.contains("dezembro") -> 12
     else -> -1
   }
 
@@ -260,26 +261,27 @@ internal class PtWorker : Worker() {
       }
     }.clip().trim()
 
-  override fun getDate(input: String, res: LongInternal): String? {
-    var mills: Long = 0
+  override fun getDate(input: String, result: (LocalDate?) -> Unit): String? {
+    var localDate: LocalDate? = null
     return input.splitByWhitespaces().toMutableList().also { list ->
       list.forEachIndexed { index, s ->
         val month = getMonth(s)
         if (month != -1) {
-          val integer = ignoreAny({
+          val dayOfMonth = ignoreAny({
             list[index - 1].toInt().also { list[index - 1] = "" }
           }) { 1 }
-          val calendar = Calendar.getInstance()
-          calendar.timeInMillis = System.currentTimeMillis()
-          calendar[Calendar.MONTH] = month
-          calendar[Calendar.DAY_OF_MONTH] = integer
-          mills = calendar.timeInMillis
+
+          val parsedDate = LocalDate.now(zoneId)
+            .withDayOfMonth(dayOfMonth)
+            .withMonth(month)
+
+          localDate = parsedDate
           list[index] = ""
           return@forEachIndexed
         }
       }
     }.clip().also {
-      res.value = mills
+      result(localDate)
     }
   }
 

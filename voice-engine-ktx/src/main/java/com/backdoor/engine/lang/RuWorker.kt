@@ -2,11 +2,12 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
-import com.backdoor.engine.misc.LongInternal
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
 import java.util.regex.Pattern
 
-internal class RuWorker : Worker() {
+internal class RuWorker(zoneId: ZoneId) : Worker(zoneId) {
   override val weekdays = listOf(
     "воскресен",
     "понедельн",
@@ -152,17 +153,17 @@ internal class RuWorker : Worker() {
 
   override fun getShortTime(input: String?) = input?.let { s ->
     val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
-    var date: Date? = null
+    var localTime: LocalTime? = null
     if (matcher.find()) {
       val time = matcher.group().trim()
       for (format in hourFormats) {
         if (ignoreAny {
-            date = format.parse(time)
-            date
+            localTime = LocalTime.parse(time, format)
+            localTime
           } != null) break
       }
     }
-    date
+    localTime
   }
 
   override fun clearTime(input: String?) =
@@ -209,18 +210,18 @@ internal class RuWorker : Worker() {
 
   override fun getMonth(input: String?) = when {
     input == null -> -1
-    input.contains("январь") || input.contains("января") -> 0
-    input.contains("февраль") || input.contains("февраля") -> 1
-    input.contains("март") || input.contains("марта") -> 2
-    input.contains("апрель") || input.contains("апреля") -> 3
-    input.contains("май") || input.contains("мая") -> 4
-    input.contains("июнь") || input.contains("июня") -> 5
-    input.contains("июль") || input.contains("июля") -> 6
-    input.contains("август") || input.contains("августа") -> 7
-    input.contains("сентябрь") || input.contains("сентября") -> 8
-    input.contains("октябрь") || input.contains("октября") -> 9
-    input.contains("ноябрь") || input.contains("ноября") -> 10
-    input.contains("декабрь") || input.contains("декабря") -> 11
+    input.contains("январь") || input.contains("января") -> 1
+    input.contains("февраль") || input.contains("февраля") -> 2
+    input.contains("март") || input.contains("марта") -> 3
+    input.contains("апрель") || input.contains("апреля") -> 4
+    input.contains("май") || input.contains("мая") -> 5
+    input.contains("июнь") || input.contains("июня") -> 6
+    input.contains("июль") || input.contains("июля") -> 7
+    input.contains("август") || input.contains("августа") -> 8
+    input.contains("сентябрь") || input.contains("сентября") -> 9
+    input.contains("октябрь") || input.contains("октября") -> 10
+    input.contains("ноябрь") || input.contains("ноября") -> 11
+    input.contains("декабрь") || input.contains("декабря") -> 12
     else -> -1
   }
 
@@ -339,26 +340,28 @@ internal class RuWorker : Worker() {
 
   override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (да|нет) .*")
 
-  override fun getDate(input: String, res: LongInternal): String? {
-    var mills: Long = 0
+  override fun getDate(input: String, result: (LocalDate?) -> Unit): String? {
+    var localDate: LocalDate? = null
     return input.splitByWhitespaces().toMutableList().also { list ->
       list.forEachIndexed { index, s ->
         val month = getMonth(s)
         if (month != -1) {
-          val integer = ignoreAny({
+          val dayOfMonth = ignoreAny({
             list[index - 1].toInt().also { list[index - 1] = "" }
           }) { 1 }
-          val calendar = Calendar.getInstance()
-          calendar.timeInMillis = System.currentTimeMillis()
-          calendar[Calendar.MONTH] = month
-          calendar[Calendar.DAY_OF_MONTH] = integer
-          mills = calendar.timeInMillis
+
+          val parsedDate = LocalDate.now(zoneId)
+            .withDayOfMonth(dayOfMonth)
+            .withMonth(month)
+
+          localDate = parsedDate
+
           list[index] = ""
           return@forEachIndexed
         }
       }
     }.clip().also {
-      res.value = mills
+      result(localDate)
     }
   }
 

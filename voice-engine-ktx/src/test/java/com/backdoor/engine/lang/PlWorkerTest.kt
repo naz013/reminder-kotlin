@@ -3,6 +3,7 @@ package com.backdoor.engine.lang
 import com.backdoor.engine.misc.Action
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.threeten.bp.ZoneId
 
 /**
  * Test commands
@@ -16,7 +17,7 @@ import org.junit.Test
  */
 class PlWorkerTest {
 
-  private val worker = PlWorker()
+  private val worker = PlWorker(ZoneId.of("GMT"))
 
   @Test
   fun testReplaceNumbers() {

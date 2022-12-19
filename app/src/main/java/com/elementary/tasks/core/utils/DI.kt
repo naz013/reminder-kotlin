@@ -410,4 +410,5 @@ fun providesRecognizer(prefs: Prefs, language: Language) =
         prefs.nightTime
       )
     )
+    .setTimeZone("GMT")
     .build()

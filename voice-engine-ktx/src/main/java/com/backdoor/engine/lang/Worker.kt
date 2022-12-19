@@ -4,17 +4,21 @@ import com.backdoor.engine.Recognizer
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.LongInternal
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 
-internal abstract class Worker : WorkerInterface {
+internal abstract class Worker(
+  protected val zoneId: ZoneId
+) : WorkerInterface {
   internal val weekdayArray = intArrayOf(0, 0, 0, 0, 0, 0, 0)
   internal val hourFormats = listOf(
-    SimpleDateFormat("HH mm", Recognizer.LOCALE),
-    SimpleDateFormat("HH:mm", Recognizer.LOCALE)
+    DateTimeFormatter.ofPattern("HH mm", Recognizer.LOCALE),
+    DateTimeFormatter.ofPattern("HH:mm", Recognizer.LOCALE),
+    DateTimeFormatter.ofPattern("HH mm a", Recognizer.LOCALE),
+    DateTimeFormatter.ofPattern("HH:mm a", Recognizer.LOCALE)
   )
-  internal val hourFormat = SimpleDateFormat("HH:mm", Recognizer.LOCALE)
+  internal val hourFormat = DateTimeFormatter.ofPattern("HH:mm", Recognizer.LOCALE)
 
   fun <T> ignoreAny(f: () -> T): T? {
     return try {
@@ -54,7 +58,7 @@ internal abstract class Worker : WorkerInterface {
 
   override fun getMultiplier(input: String, res: LongInternal): String {
     println("getMultiplier: $input")
-    return input.splitByWhitespace().toMutableList().let {
+    return input.splitByWhitespace().toMutableList().also {
       it.forEachIndexed lit@{ index, s ->
         try {
           var number = 0f
@@ -63,7 +67,7 @@ internal abstract class Worker : WorkerInterface {
             if (number != -1f) {
               it[index] = ""
             }
-            for (j in index until it.size) {
+            for (j in index + 1 until it.size) {
               val multi = getMulti(it[j])
               if (multi != -1f) {
                 number *= multi
@@ -86,7 +90,6 @@ internal abstract class Worker : WorkerInterface {
         } catch (e: Exception) {
         }
       }
-      it
     }.clip().also {
       println("getMultiplier: out -> " + it + ", res -> " + res.value)
     }
@@ -96,16 +99,18 @@ internal abstract class Worker : WorkerInterface {
     hasSeconds(input) -> SECOND.toFloat()
     hasMinutes(input) != -1 -> MINUTE.toFloat()
     hasHours(input) != -1 -> HOUR.toFloat()
-    hasDays(input) -> DAY.toFloat()
     hasWeeks(input) -> (7 * DAY).toFloat()
+    hasDays(input) -> DAY.toFloat()
     hasMonth(input) -> (30 * DAY).toFloat()
-    else -> (-1).toFloat()
+    else -> -1f
   }
 
   override fun replaceNumbers(input: String?): String? {
-    var parts = input?.splitByWhitespaces()?.toMutableList() ?: mutableListOf()
+    val parts = input?.splitByWhitespaces()?.toMutableList() ?: mutableListOf()
+
     var allNumber = 0f
     var beginIndex = -1
+
     for (i in parts.indices) {
       var number = findNumber(parts[i])
       if (number != -1f) {
@@ -117,32 +122,22 @@ internal abstract class Worker : WorkerInterface {
       } else {
         number = findFloat(parts[i])
         if (number != -1f) {
+          parts[i] = ""
           allNumber += number
           if (beginIndex == -1) {
             beginIndex = i
           }
+        } else if (beginIndex != -1 && (hasHours(parts[i]) != -1 || hasMinutes(parts[i]) != -1)) {
+          parts[beginIndex] = allNumber.toString()
+          allNumber = 0f
+          beginIndex = -1
         }
       }
+    }
+    if (beginIndex != -1) {
+      parts[beginIndex] = allNumber.toString()
     }
     println("replaceNumbers: parts -> $parts")
-    if (beginIndex != -1 && allNumber != 0f) {
-      val newP = arrayOfNulls<String>(parts.size + 1)
-      for (i in parts.indices) {
-        when {
-          i > beginIndex -> {
-            newP[i + 1] = parts[i]
-          }
-          i == beginIndex -> {
-            newP[beginIndex] = allNumber.toString()
-            newP[i + 1] = parts[i]
-          }
-          else -> {
-            newP[i] = parts[i]
-          }
-        }
-      }
-      parts = newP.filterNotNull().toMutableList()
-    }
     return clearFloats(parts.clip()).also {
       println("replaceNumbers: out -> $it")
     }
@@ -152,11 +147,9 @@ internal abstract class Worker : WorkerInterface {
 
   protected abstract fun findFloat(input: String?): Float
 
-  override fun getTime(input: String, ampm: Ampm?, times: List<String>): Long {
+  override fun getTime(input: String, ampm: Ampm?, times: List<String>): LocalTime? {
     println("getTime: $ampm, input $input")
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = 0
-    val parts = input.split("\\s+").toTypedArray()
+    val parts = input.splitByWhitespaces().toTypedArray()
     var h = -1f
     var m = -1f
     var reserveHour = 0f
@@ -190,62 +183,59 @@ internal abstract class Worker : WorkerInterface {
       }
       ignoreAny { reserveHour = parts[i].toFloat() }
     }
-    val date = getShortTime(input)
-    if (date != null) {
-      calendar.time = date
+    var localTime: LocalTime? = null
+    val parsedTime = getShortTime(input)
+
+    if (parsedTime != null) {
+      localTime = parsedTime
       if (ampm == Ampm.EVENING) {
-        val hour = calendar[Calendar.HOUR_OF_DAY]
-        calendar[Calendar.HOUR_OF_DAY] = if (hour < 12) hour + 12 else hour
+        val hour = localTime.hour
+        localTime = localTime.withHour(if (hour < 12) hour + 12 else hour)
       }
-      return calendar.timeInMillis
+      return localTime
     }
     if (h != -1f) {
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar[Calendar.HOUR_OF_DAY] = h.toInt()
-      if (m != -1f) {
-        calendar[Calendar.MINUTE] = m.toInt()
+      localTime = LocalTime.now(zoneId)
+      localTime = localTime.withHour(h.toInt())
+      localTime = if (m != -1f) {
+        localTime.withMinute(m.toInt())
       } else {
-        calendar[Calendar.MINUTE] = 0
+        localTime.withMinute(0)
       }
-      calendar[Calendar.SECOND] = 0
-      calendar[Calendar.MILLISECOND] = 0
-      return calendar.timeInMillis
+      return localTime.withSecond(0)
     }
-    if (calendar.timeInMillis == 0L && reserveHour != 0f) {
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar[Calendar.HOUR_OF_DAY] = reserveHour.toInt()
-      calendar[Calendar.MINUTE] = 0
-      calendar[Calendar.SECOND] = 0
-      calendar[Calendar.MILLISECOND] = 0
-      if (calendar.timeInMillis < System.currentTimeMillis()) {
-        calendar.add(Calendar.DAY_OF_MONTH, 1)
-      }
+    if (reserveHour != 0f) {
+      localTime = LocalTime.now(zoneId)
+        .withHour(reserveHour.toInt())
+        .withMinute(0)
+        .withSecond(0)
+
       if (ampm == Ampm.EVENING) {
-        calendar.add(Calendar.HOUR_OF_DAY, 12)
+        localTime = localTime?.withHour(12)
       }
     }
-    if (calendar.timeInMillis == 0L && ampm != null) {
-      calendar.timeInMillis = System.currentTimeMillis()
+    if (localTime == null && ampm != null) {
+      localTime = LocalTime.now(zoneId)
       ignoreAny {
         val hourFormat = hourFormat
         if (ampm == Ampm.MORNING) {
-          calendar.time = hourFormat.parse(times[0])
+          localTime = LocalTime.parse(times[0], hourFormat)
         }
         if (ampm == Ampm.NOON) {
-          calendar.time = hourFormat.parse(times[1])
+          localTime = LocalTime.parse(times[1], hourFormat)
         }
         if (ampm == Ampm.EVENING) {
-          calendar.time = hourFormat.parse(times[2])
+          localTime = LocalTime.parse(times[2], hourFormat)
         }
         if (ampm == Ampm.NIGHT) {
-          calendar.time = hourFormat.parse(times[3])
+          localTime = LocalTime.parse(times[3], hourFormat)
         }
       }
     }
-    return calendar.timeInMillis
+    return localTime
   }
 
-  protected abstract fun getShortTime(input: String?): Date?
+  protected abstract fun getShortTime(input: String?): LocalTime?
 
   override fun clearToday(input: String): String {
     return input.let { s ->
@@ -264,6 +254,10 @@ internal abstract class Worker : WorkerInterface {
   override fun clearAfterTomorrow(input: String) = input.takeIf {
     hasAfterTomorrow(it)
   }?.replace(afterTomorrow, "") ?: input
+
+  override fun clearShowAction(input: String): String {
+    return input
+  }
 
   protected abstract val afterTomorrow: String
 

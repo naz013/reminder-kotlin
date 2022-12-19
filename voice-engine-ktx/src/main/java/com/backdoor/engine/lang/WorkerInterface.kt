@@ -3,6 +3,8 @@ package com.backdoor.engine.lang
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.LongInternal
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
 
 internal interface WorkerInterface {
   fun hasCalendar(input: String): Boolean
@@ -18,9 +20,9 @@ internal interface WorkerInterface {
   fun clearMessage(input: String): String?
   fun clearMessageType(input: String): String?
   fun clearAmpm(input: String): String?
-  fun getTime(input: String, ampm: Ampm?, times: List<String>): Long
+  fun getTime(input: String, ampm: Ampm?, times: List<String>): LocalTime?
   fun clearTime(input: String?): String
-  fun getDate(input: String, res: LongInternal): String?
+  fun getDate(input: String, result: (LocalDate?) -> Unit): String?
   fun clearCall(input: String): String?
   fun cleanTimer(input: String): String?
   fun clearSender(input: String): String?
@@ -44,6 +46,7 @@ internal interface WorkerInterface {
   fun getAnswer(input: String): Action?
   fun hasShowAction(input: String): Boolean
   fun getShowAction(input: String): Action?
+  fun clearShowAction(input: String): String
   fun hasNextModifier(input: String): Boolean
   fun hasCall(input: String): Boolean
   fun hasSender(input: String): Boolean
