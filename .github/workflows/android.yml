@@ -34,5 +34,3 @@ jobs:
       with:
         name: reports
         path: app/build/test-results # path to where the xml test results are stored
-    - name: Build with Gradle
-      run: ./gradlew build
