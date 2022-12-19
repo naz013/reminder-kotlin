@@ -22,25 +22,32 @@ android {
     buildFeatures {
         viewBinding true
     }
-    if (hasProperty("signApk")) {
+
+    def propsFile = rootProject.file('keystore.properties')
+    def Properties props = new Properties()
+    if (propsFile.exists() && propsFile.canRead()) {
+        props.load(new FileInputStream(propsFile))
+    }
+
+    if (props.hasProperty("signApk")) {
         signingConfigs {
             freeApp {
-                storeFile file(releaseFreeKeyStoreFile)
-                storePassword releaseFreeKeyStorePassword
-                keyAlias releaseFreeKeyAlias
-                keyPassword releaseFreeKeyPassword
+                storeFile file(props['releaseFreeKeyStoreFile'])
+                storePassword props['releaseFreeKeyStorePassword']
+                keyAlias props['releaseFreeKeyAlias']
+                keyPassword props['releaseFreeKeyPassword']
             }
             proApp {
-                storeFile file(releaseProKeyStoreFile)
-                storePassword releaseProKeyStorePassword
-                keyAlias releaseProKeyAlias
-                keyPassword releaseProKeyPassword
+                storeFile file(props['releaseProKeyStoreFile'])
+                storePassword props['releaseProKeyStorePassword']
+                keyAlias props['releaseProKeyAlias']
+                keyPassword props['releaseProKeyPassword']
             }
             debugApp {
-                storeFile file(debugKeyStoreFile)
-                storePassword debugKeyStorePassword
-                keyAlias debugKeyAlias
-                keyPassword debugKeyPassword
+                storeFile file(props['debugKeyStoreFile'])
+                storePassword props['debugKeyStorePassword']
+                keyAlias props['debugKeyAlias']
+                keyPassword props['debugKeyPassword']
             }
         }
     }
@@ -49,9 +56,9 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
-            if (hasProperty("signApk")) {
-                buildConfigField "String", "PLACES_API_KEY", "\"$freePlacesApiKey\""
-                manifestPlaceholders = [apiKey: "$freeApiKey"]
+            if (props.hasProperty("signApk")) {
+                buildConfigField "String", "PLACES_API_KEY", "\"$props['freePlacesApiKey']\""
+                manifestPlaceholders = [apiKey: props['freeApiKey']]
             } else {
                 manifestPlaceholders = [apiKey: "API_KEY"]
                 buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
@@ -62,9 +69,9 @@ android {
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
             versionCode 257
-            if (hasProperty("signApk")) {
-                manifestPlaceholders = [apiKey: "$proApiKey"]
-                buildConfigField "String", "PLACES_API_KEY", "\"$proPlacesApiKey\""
+            if (props.hasProperty("signApk")) {
+                manifestPlaceholders = [apiKey: props['proApiKey']]
+                buildConfigField "String", "PLACES_API_KEY", "\"$props['proPlacesApiKey']\""
             } else {
                 manifestPlaceholders = [apiKey: "API_KEY"]
                 buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
