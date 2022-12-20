@@ -274,13 +274,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       ActionType.ANSWER -> performAnswer(model)
       ActionType.SHOW -> {
         stopView()
-        Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true)}")
+        Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getMillisFromGmt(model.dateTime), true)}")
         when (model.action) {
-          Action.REMINDERS -> viewModel.getReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
+          Action.REMINDERS -> viewModel.getReminders(TimeUtil.getMillisFromGmt(model.dateTime))
           Action.NOTES -> viewModel.getNotes()
           Action.GROUPS -> showGroups()
-          Action.ACTIVE_REMINDERS -> viewModel.getEnabledReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
-          Action.BIRTHDAYS -> viewModel.getBirthdays(TimeUtil.getDateTimeFromGmt(model.dateTime))
+          Action.ACTIVE_REMINDERS -> viewModel.getEnabledReminders(TimeUtil.getMillisFromGmt(model.dateTime))
+          Action.BIRTHDAYS -> viewModel.getBirthdays(TimeUtil.getMillisFromGmt(model.dateTime))
           Action.SHOP_LISTS -> viewModel.getShoppingReminders()
           else -> showUnsupportedMessage()
         }

@@ -27,14 +27,7 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
         it.forEachIndexed { index, s ->
           if (s.matches(".*календар.*")) {
             it[index] = ""
-            if (index > 0 && (it[index - 1].equals("до", ignoreCase = true) ||
-                it[index - 1].matches(".*дода.*"))) {
-              it[index - 1] = ""
-            }
-            if (index > 1 && (it[index - 2].equals("до", ignoreCase = true) ||
-                it[index - 2].matches(".*дода.*"))) {
-              it[index - 2] = ""
-            }
+            clearAllBackward(it, index - 1, 3, "до", ".*дода.*", "і")
             return@forEachIndexed
           }
         }
@@ -42,26 +35,17 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
       }
 
   override fun clearWeekDays(input: String): String {
-    val sb = StringBuilder()
-    input.splitByWhitespaces().toMutableList().also {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         for (day in weekdays) {
           if (s.matches(".*$day.*")) {
             it[index] = ""
-            if (index > 0) {
-              if (it[index - 1].matches("в") || it[index - 1].matches("і")) {
-                it[index - 1] = ""
-              }
-            }
+            clearAllBackward(it, index - 1, 2, "(в|у)", "і", "кожн(ого|ий)")
             break
           }
         }
       }
-    }.clip().splitByWhitespaces().forEach { s ->
-      val part = s.trim()
-      if (!part.matches("в")) sb.append(" ").append(part)
-    }
-    return sb.toString().trim()
+    }.clip()
   }
 
   override fun getDaysRepeat(input: String) =
@@ -84,14 +68,15 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
   override fun hasRepeat(input: String) = input.matches(".*повторю.*") ||
     input.matches(".*кожн.*") || hasEveryDay(input)
 
-  override fun hasEveryDay(input: String) =
-    input.matches(".*щоден.*") || input.matches(".*щодня.*")
+  override fun hasEveryDay(input: String) = input.matches(".*щоден.*") ||
+    input.matches(".*щодня.*") || input.matches(".*кожн(ого|ен) (день|дня).*")
 
   override fun clearRepeat(input: String) =
     input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasRepeat(s)) {
           it[index] = ""
+          clearAllBackward(it, index - 1, 1, "і")
           return@forEachIndexed
         }
       }
@@ -161,9 +146,7 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (getAmpm(s) != null) {
           it[index] = ""
-          if (index > 0 && it[index - 1].matches("в")) {
-            it[index - 1] = ""
-          }
+          clearAllBackward(it, index - 1, 1, "в")
           return@forEachIndexed
         }
       }
@@ -302,9 +285,7 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (s.matches(".*нотатк(у|а).*")) {
           it[index] = ""
-          if (index > 0 && (it[index - 1].matches(".*нов.*") || it[index - 1].matches(".*дода(й|ти).*"))) {
-            it[index - 1] = ""
-          }
+          clearAllBackward(it, index - 1, 1, ".*нов.*", ".*дода(й|ти).*")
           return@forEachIndexed
         }
       }
@@ -339,9 +320,7 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (s.matches(".*групу.*")) {
           it[index] = ""
-          if (index > 0 && (it[index - 1].matches(".*нов.*") || it[index - 1].matches(".*дода(й|ти).*"))) {
-            it[index - 1] = ""
-          }
+          clearAllBackward(it, index - 1, 1, ".*нов.*", ".*дода(й|ти).*")
           return@forEachIndexed
         }
       }
@@ -373,7 +352,8 @@ internal class UkWorker(zoneId: ZoneId) : Worker(zoneId) {
   override fun hasSeconds(input: String?) = input.matchesOrFalse(".*секунд.*")
 
   override fun hasDays(input: String?) = input.matchesOrFalse(".*дні.*") ||
-    input.matchesOrFalse(".*день.*") || input.matchesOrFalse(".*дня.*")
+    input.matchesOrFalse(".*день.*") || input.matchesOrFalse(".*дня.*") ||
+    input.matchesOrFalse(".*щоден(но|ь).*")
 
   override fun hasWeeks(input: String?) =
     input.matchesOrFalse(".*тиждень.*") || input.matchesOrFalse(".*тижні.*")

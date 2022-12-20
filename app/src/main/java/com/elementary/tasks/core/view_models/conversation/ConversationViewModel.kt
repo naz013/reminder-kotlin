@@ -11,7 +11,6 @@ import com.backdoor.engine.Model
 import com.backdoor.engine.Recognizer
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
-import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -409,7 +408,7 @@ class ConversationViewModel(
         val weekdays = model.weekdays
         val isCalendar = model.hasCalendar
         val startTime = model.dateTime
-        var eventTime = TimeUtil.getDateTimeFromGmt(startTime)
+        var eventTime = TimeUtil.getMillisFromGmt(startTime)
         var typeT = Reminder.BY_DATE
         if (action == Action.WEEK || action == Action.WEEK_CALL || action == Action.WEEK_SMS) {
             typeT = Reminder.BY_WEEK
@@ -520,71 +519,55 @@ class ConversationViewModel(
 
     inner class ContactHelper : ContactsInterface {
 
-        override fun findEmail(input: String?): ContactOutput? {
+        override fun findEmail(input: String?): String? {
             if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || input == null) {
                 return null
             }
-            var s: String = input
+            var part: String = input
             var number: String? = null
-            val parts = s.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            for (part in parts) {
-                var res = part
-                while (part.length > 1) {
-                    val selection =
-                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
-                    val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
-                    val c = context.contentResolver.query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        projection, selection, null, null
-                    )
-                    if (c != null && c.moveToFirst()) {
-                        number = c.getString(0)
-                        c.close()
-                    }
-                    if (number != null)
-                        break
-                    res = part.substring(0, part.length - 2)
+            while (part.length > 1) {
+                val selection =
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
+                val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
+                val c = context.contentResolver.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    projection, selection, null, null
+                )
+                if (c != null && c.moveToFirst()) {
+                    number = c.getString(0)
+                    c.close()
                 }
-                if (number != null) {
-                    s = s.replace(res, "")
+                if (number != null)
                     break
-                }
+                part = part.substring(0, part.length - 2)
             }
-            return ContactOutput(s, number ?: "")
+            return number
         }
 
-        override fun findNumber(input: String?): ContactOutput? {
+        override fun findNumber(input: String?): String? {
             if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || input == null) {
                 return null
             }
-            var s: String = input
+            var part: String = input
             var number: String? = null
-            val parts = s.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            for (part in parts) {
-                var res = part
-                while (part.length > 1) {
-                    val selection =
-                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
-                    val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    val c = context.contentResolver.query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        projection, selection, null, null
-                    )
-                    if (c != null && c.moveToFirst()) {
-                        number = c.getString(0)
-                        c.close()
-                    }
-                    if (number != null) {
-                        break
-                    }
-                    res = part.substring(0, part.length - 1)
+            while (part.length > 1) {
+                val selection =
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
+                val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                val c = context.contentResolver.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    projection, selection, null, null
+                )
+                if (c != null && c.moveToFirst()) {
+                    number = c.getString(0)
+                    c.close()
                 }
                 if (number != null) {
-                    s = s.replace(res, "")
                     break
                 }
+                part = part.substring(0, part.length - 1)
             }
-            return ContactOutput(s.trim(), number ?: "")
+            return number
         }
     }
 }

@@ -21,34 +21,28 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
   override fun hasCalendar(input: String) = input.matches(".*calendar.*")
 
   override fun clearCalendar(input: String) =
-    input.splitByWhitespaces()
-      .toMutableList()
-      .let {
-        it.forEachIndexed { index, s ->
-          if (s.matches(".*calendar.*")) {
-            it[index] = ""
-            return@forEachIndexed
-          }
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*calendar.*")) {
+          it[index] = ""
+          clearAllBackward(it, index - 1, 3, "and", "add", "to")
+          return@forEachIndexed
         }
-        it.clip()
       }
+    }.clip()
 
   override fun clearWeekDays(input: String): String {
-    val sb = StringBuilder()
-    input.splitByWhitespaces().toMutableList().also {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         for (day in weekdays) {
           if (s.matches(".*$day.*")) {
             it[index] = ""
+            clearAllBackward(it, index - 1, 1, "and")
             break
           }
         }
       }
-    }.clip().splitByWhitespaces().forEach { s ->
-      val part = s.trim()
-      if (!part.matches("on") && !part.matches("at")) sb.append(" ").append(part)
-    }
-    return sb.toString().trim()
+    }.clip()
   }
 
   override fun getDaysRepeat(input: String) =
@@ -72,13 +66,22 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override fun hasRepeat(input: String) = input.matches(".*every.*") || hasEveryDay(input)
 
-  override fun hasEveryDay(input: String) = input.matches(".*everyday.*")
+  override fun hasEveryDay(input: String) = input.matches(".*every ?day.*")
 
   override fun clearRepeat(input: String) =
     input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasRepeat(s)) {
           it[index] = ""
+          clearAllForward(it, index + 1, 1, "days?")
+          return@forEachIndexed
+        }
+      }
+    }.clip().splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches("repeat")) {
+          it[index] = ""
+          clearAllBackward(it, index - 1, 1, "and")
           return@forEachIndexed
         }
       }
@@ -124,7 +127,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override fun getMessageType(input: String) = when {
     input.matches(".*message.*") -> Action.MESSAGE
-    input.matches(".*letter.*") -> Action.MAIL
+    input.matches(".*letter.*") || input.matches(".*e?( |-)?mail.*") -> Action.MAIL
     else -> null
   }
 
@@ -133,10 +136,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (getMessageType(s) != null) {
           it[index] = ""
-          val nextIndex = index + 1
-          if (nextIndex < it.size && it[nextIndex].matches("to")) {
-            it[nextIndex] = ""
-          }
+          clearAllForward(it, index + 1, 1, "to")
           return@forEachIndexed
         }
       }
@@ -147,12 +147,8 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
     input.matches(".*evening.*") -> Ampm.EVENING
     input.matches(".*noon.*") -> Ampm.NOON
     input.matches(".*night.*") -> Ampm.NIGHT
-    input.matches(".*a m.*") -> Ampm.MORNING
-    input.matches(".*a.m..*") -> Ampm.MORNING
-    input.matches(".*am.*") -> Ampm.MORNING
-    input.matches(".*p m.*") -> Ampm.EVENING
-    input.matches(".*p.m..*") -> Ampm.EVENING
-    input.matches(".*pm.*") -> Ampm.EVENING
+    input.matches(".*a(.| )?m(.| )?.*") -> Ampm.MORNING
+    input.matches(".*p(.| )?m(.| )?.*") -> Ampm.EVENING
     else -> null
   }
 
@@ -161,6 +157,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (getAmpm(s) != null) {
           it[index] = ""
+          clearAllBackward(it, index - 1, 1, "at")
           return@forEachIndexed
         }
       }
@@ -182,39 +179,56 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
       localTime
     }
 
-  override fun clearTime(input: String?) =
-    input?.splitByWhitespaces()?.toMutableList()?.also {
+  override fun clearTime(input: String?): String {
+    val pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]")
+    return input?.splitByWhitespaces()?.toMutableList()?.also {
       it.forEachIndexed { i, s ->
         if (hasHours(s) != -1) {
           val index = hasHours(s)
           it[i] = ""
           ignoreAny {
-            it[i - index].toInt()
+            it[i - index].toFloat()
             it[i - index] = ""
           }
         }
         if (hasMinutes(s) != -1) {
           val index = hasMinutes(s)
           ignoreAny {
-            it[i - index].toInt()
+            it[i - index].toFloat()
             it[i - index] = ""
           }
           it[i] = ""
         }
+        ignoreAny {
+          val f = s.toFloat()
+          if (f >= 0f && f < 24f) {
+            it[i] = ""
+            clearAllBackward(it, i - 1, 1, "(at|on)")
+            if (i < it.size - 1) {
+              val minutes = it[i + 1]
+              val matcher = pattern.matcher("$s:$minutes")
+              if (matcher.find()) {
+                it[i + 1] = ""
+              }
+            }
+          }
+        }
+        ignoreAny {
+          val matcher = pattern.matcher(s)
+          if (matcher.find()) {
+            it[i] = ""
+            clearAllBackward(it, i - 1, 1, "(at|on)")
+          }
+        }
       }
     }?.clip()?.let { s ->
-      val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
+      val matcher = pattern.matcher(s)
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
       } else s
-    }?.splitByWhitespaces()?.toMutableList()?.let { list ->
-      val sb = StringBuilder()
-      list.forEach { s ->
-        if (!s.matches("at")) sb.append(" ").append(s.trim())
-      }
-      sb.toString().trim()
     } ?: ""
+  }
 
   override fun getMonth(input: String?) = when {
     input == null -> -1
@@ -246,7 +260,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
     }.clip()
 
   override fun hasTimer(input: String) = input.let { " $it " }.let {
-    it.matches(".*after.*") || it.matches(".* in .*")
+    (it.matches(".*after.*") || it.matches(".* in .*")) && getMonth(it) == -1
   }
 
   override fun cleanTimer(input: String) =
@@ -259,22 +273,28 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
       }
     }.clip().trim()
 
-  override fun getDate(input: String, result: (LocalDate?) -> Unit): String? {
+  override fun getDate(input: String, result: (LocalDate?) -> Unit): String {
     var localDate: LocalDate? = null
     return input.splitByWhitespaces().toMutableList().also { list ->
       list.forEachIndexed { index, s ->
         val month = getMonth(s)
         if (month != -1) {
-          val dayOfMonth = ignoreAny({
-            list[index - 1].toInt().also { list[index - 1] = "" }
-          }) { 1 }
+          var dayOfMonth = ignoreAny({
+            list[index + 1].toFloat().also { list[index + 1] = "" }
+          }) { -1f }
+          if (dayOfMonth == -1f) {
+            dayOfMonth = ignoreAny({
+              list[index - 1].toFloat().also { list[index - 1] = "" }
+            }) { 1f }
+          }
 
           val parsedDate = LocalDate.now(zoneId)
-            .withDayOfMonth(dayOfMonth)
+            .withDayOfMonth(dayOfMonth.toInt())
             .withMonth(month)
 
           localDate = parsedDate
           list[index] = ""
+          clearAllBackward(list, index - 1, 1, "(on|at)")
           return@forEachIndexed
         }
       }
@@ -297,7 +317,16 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override fun hasNote(input: String) = input.contains("note")
 
-  override fun clearNote(input: String) = input.replace("note", "").trim()
+  override fun clearNote(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*note.*")) {
+          it[index] = ""
+          clearAllBackward(it, index - 1, 1, ".*create.*", ".*add.*")
+          return@forEachIndexed
+        }
+      }
+    }.clip()
 
   override fun hasAction(input: String): Boolean {
     return (input.startsWith("open")
@@ -326,9 +355,9 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override fun hasEmptyTrash(input: String) = input.matches(".*empty trash.*")
 
-  override fun hasDisableReminders(input: String) = input.matches(".*disable reminder.*")
+  override fun hasDisableReminders(input: String) = input.matches(".*disable (all )?reminders?.*")
 
-  override fun hasGroup(input: String) = input.matches(".*add group.*")
+  override fun hasGroup(input: String) = input.matches(".*(add|create|new) group.*")
 
   override fun clearGroup(input: String): String {
     val sb = StringBuilder()
@@ -357,6 +386,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
     input == null -> -1
     input.matches(".*hour.*") || input.matches(".*o'clock.*") ||
       input.matches(".*am.*") || input.matches(".*pm.*") -> 1
+
     else -> -1
   }
 
@@ -365,13 +395,14 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> -1
   }
 
-  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*second.*")
+  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*seconds?.*")
 
-  override fun hasDays(input: String?) = input.matchesOrFalse(".* day.*")
+  override fun hasDays(input: String?) = input.matchesOrFalse(".* days?.*") &&
+    !input.matchesOrFalse(".*birthdays?.*")
 
-  override fun hasWeeks(input: String?) = input.matchesOrFalse(".*week.*")
+  override fun hasWeeks(input: String?) = input.matchesOrFalse(".*weeks?.*")
 
-  override fun hasMonth(input: String?) = input.matchesOrFalse(".*month.*")
+  override fun hasMonth(input: String?) = input.matchesOrFalse(".*months?.*")
 
   override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (yes|yeah|no) .*")
 
@@ -412,7 +443,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
     input.matches("fifteen") || input.matches("fifteenth") -> 15f
     input.matches("sixteen") || input.matches("sixteenth") -> 16f
     input.matches("seventeen") || input.matches("seventeenth") -> 17f
-    input.matches("eighteen") || input.matches("eighteenth") -> 18f
+    input.matches("eighteens?") || input.matches("eighteenth") -> 18f
     input.matches("nineteen") || input.matches("nineteenth") -> 19f
     input.matches("twenty") || input.matches("twentieth") -> 20f
     input.matches("thirty") || input.matches("thirtieth") -> 30f
@@ -439,4 +470,8 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
   }
 
   override fun hasNextModifier(input: String) = input.matches(".*next.*")
+
+  override fun hasConnectSpecialWord(input: String): Boolean {
+    return input.matches("(at|on)")
+  }
 }

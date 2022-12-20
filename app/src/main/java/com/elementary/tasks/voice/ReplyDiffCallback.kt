@@ -1,7 +1,6 @@
 package com.elementary.tasks.voice
 
 import androidx.recyclerview.widget.DiffUtil
-import timber.log.Timber
 
 class ReplyDiffCallback(
   private val oldList: List<Reply>,
@@ -29,7 +28,6 @@ class ReplyDiffCallback(
     } else {
       oldItem == newItem
     }
-    Timber.d("areContentsTheSame: $res, $oldItem, $newItem")
     return res
   }
 }

@@ -2,10 +2,14 @@ package com.backdoor.engine
 
 import com.backdoor.engine.lang.Worker
 import com.backdoor.engine.lang.WorkerFactory.getWorker
+import com.backdoor.engine.lang.clip
+import com.backdoor.engine.lang.splitByWhitespaces
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.ContactsInterface
+import com.backdoor.engine.misc.Logger
+import com.backdoor.engine.misc.Logger.log
 import com.backdoor.engine.misc.LongInternal
 import com.backdoor.engine.misc.TimeUtil.getGmtFromDateTime
 import org.apache.commons.lang3.StringUtils
@@ -20,6 +24,12 @@ class Recognizer private constructor(
   private val times: List<String>,
   timeZone: String
 ) {
+
+  var enableLogging: Boolean = true
+    set(value) {
+      field = value
+      Logger.LOG_ENABLED = value
+    }
   private var contactsInterface: ContactsInterface? = null
   private var zoneId = ZoneId.of(timeZone)
   private var worker = getWorker(locale, zoneId)
@@ -29,10 +39,10 @@ class Recognizer private constructor(
   }
 
   fun recognize(input: String): Model? {
-    println("parse: input = $input, worker = $worker")
+    log("parse: input = $input, worker = $worker")
     return input.lowercase(LOCALE).trim()
       .let { worker.replaceNumbers(it) ?: "" }
-      .also { println("parse: after numbers replaced = $it") }
+      .also { log("parse: after numbers replaced = $it") }
       .let { s ->
         val showAction = worker.getShowAction(s)
         val event = getEvent(s)
@@ -52,6 +62,7 @@ class Recognizer private constructor(
   }
 
   private fun parseReminder(input: String, origin: String): Model? {
+    log("parseReminder: $input")
     return Proc(input = input)
       .also { proc ->
         if (worker.hasCall(proc.input)) {
@@ -71,45 +82,45 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
+        log("parse: has repeat -> $proc")
         if (worker.hasRepeat(proc.input).also { proc.isRepeating = it }) {
           proc.isEveryDay = worker.hasEveryDay(proc.input)
           proc.updateInput { worker.clearRepeat(it) }
-          println("parse: has repeat -> $proc")
           proc.repeatMillis = worker.getDaysRepeat(proc.input)
           if (proc.repeatMillis != 0L) {
             proc.updateInput { worker.clearDaysRepeat(it) }
           }
-          if (proc.isEveryDay) {
-            proc.weekdays = listOf(1, 1, 1, 1, 1, 1, 1)
-            proc.action = when (proc.action) {
-              Action.CALL -> Action.WEEK_CALL
-              Action.MESSAGE -> Action.WEEK_SMS
-              else -> Action.WEEK
-            }
+          if (proc.repeatMillis == 0L && proc.isEveryDay) {
+            proc.repeatMillis = Worker.DAY
           }
         }
       }
       .also { proc ->
+        log("parse: calendar $proc")
         proc.hasCalendar = worker.hasCalendar(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearCalendar(it) }
         }
       }
       .also { proc ->
+        log("parse: today $proc")
         proc.hasToday = worker.hasToday(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearToday(it) }
         }
       }
       .also { proc ->
+        log("parse: after tomorrow $proc")
         proc.hasAfterTomorrow = worker.hasAfterTomorrow(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearAfterTomorrow(it) }
         }
       }
       .also { proc ->
+        log("parse: tomorrow $proc")
         proc.hasTomorrow = worker.hasTomorrow(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearTomorrow(it) }
         }
       }
       .also { proc ->
+        log("parse: timer check $proc")
         proc.hasTimer = worker.hasTimer(proc.input).also { b ->
           if (b) {
             proc.updateInput { worker.cleanTimer(it) }
@@ -118,14 +129,15 @@ class Recognizer private constructor(
             }
           }
         }
-        println("parse: ${proc.afterTime}, input: ${proc.input}")
       }
       .also { proc ->
+        log("parse: ampm $proc")
         proc.ampm = worker.getAmpm(proc.input)?.also {
           proc.updateInput { worker.clearAmpm(it) }
         }
       }
       .also { proc ->
+        log("parse: before weekdays $proc")
         if (!proc.isEveryDay) {
           proc.weekdays = worker.getWeekDays(proc.input)
           proc.hasWeekday = proc.weekdays.any { it == 1 }.also { b ->
@@ -135,47 +147,44 @@ class Recognizer private constructor(
                 Action.MESSAGE -> Action.WEEK_SMS
                 else -> Action.WEEK
               }
-              proc.updateInput { worker.clearWeekDays(it) }
+              proc.input = worker.clearWeekDays(proc.input)
             }
           }
         }
       }
       .also { proc ->
+        log("parse: date ${proc.input}")
         proc.updateInput { s ->
           worker.getDate(s) { proc.date = it }
         }
-        println("parse: date ${proc.input}")
       }
       .also { proc ->
+        log("parse: time $proc")
         proc.time = worker.getTime(proc.input, proc.ampm, times)?.also {
           proc.updateInput { worker.clearTime(it) }
         }
-        println("parse: ${proc.input}, time ${proc.time}, date ${proc.date}")
       }
       .also { proc ->
         if (proc.hasToday) {
-          println("parse: today")
+          log("parse: today")
           proc.dateTime = getTodayTime(proc.time)
         } else if (proc.hasAfterTomorrow) {
-          println("parse: after tomorrow")
+          log("parse: after tomorrow")
           proc.dateTime = getAfterTomorrowTime(proc.time)
         } else if (proc.hasTomorrow) {
-          println("parse: tomorrow")
+          log("parse: tomorrow")
           proc.dateTime = getTomorrowTime(proc.time)
-        } else if (proc.isEveryDay) {
-          println("parse: everyday")
-          proc.dateTime = getDayTime(proc.time, proc.weekdays)
         } else if (proc.hasWeekday && !proc.isRepeating) {
-          println("parse: on weekday")
+          log("parse: on weekday")
           proc.dateTime = getDayTime(proc.time, proc.weekdays)
         } else if (proc.isRepeating) {
-          println("parse: repeating")
+          log("parse: repeating")
           proc.dateTime = getDateTime(proc.date, proc.time)
         } else if (proc.hasTimer) {
-          println("parse: timer")
+          log("parse: timer")
           proc.dateTime = LocalDateTime.now().plusSeconds(proc.afterTime.value / 1000L)
         } else if (proc.date != null || proc.time != null) {
-          println("parse: date/time")
+          log("parse: date/time")
           proc.dateTime = getDateTime(proc.date, proc.time)
         } else {
           proc.skipNext = true
@@ -183,6 +192,7 @@ class Recognizer private constructor(
       }
       .takeIf { !it.skipNext }
       ?.also { proc ->
+        log("parse: message -> $proc")
         if (proc.hasAction && (proc.action == Action.MESSAGE || proc.action == Action.MAIL)) {
           proc.message = worker.getMessage(proc.input)
           proc.updateInput { worker.clearMessage(it) }
@@ -194,19 +204,9 @@ class Recognizer private constructor(
       ?.also { proc ->
         if (proc.hasAction) {
           if (proc.action == Action.CALL || proc.action == Action.MESSAGE) {
-            contactsInterface?.findNumber(proc.input.trim()).also { output ->
-              if (output == null) {
-                proc.skipNext = true
-              } else {
-                proc.updateInput { output.output }
-                proc.number = output.number
-              }
-            }
+            contactsInterface?.also { findNumber(proc, it) }
           } else if (proc.action == Action.MAIL) {
-            contactsInterface?.findEmail(proc.input.trim()).also { output ->
-              proc.number = output?.number
-              proc.updateInput { output?.output }
-            }
+            contactsInterface?.also { findEmail(proc, it) }
           }
           proc.skipNext = proc.number == null
         }
@@ -240,7 +240,43 @@ class Recognizer private constructor(
           afterMillis = it.afterTime.value
         )
       }
-      ?.also { println("parse: out = $it") }
+      ?.also { log("parse: out = $it") }
+  }
+
+  private fun findNumber(proc: Proc, contactsInterface: ContactsInterface) {
+    var number: String? = null
+    val output = proc.input.trim().splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        val res = contactsInterface.findNumber(s)
+        if (res != null) {
+          number = res
+          it[index] = ""
+          return@forEachIndexed
+        }
+      }
+    }.clip()
+    if (number == null) {
+      proc.skipNext = true
+    } else {
+      proc.number = number
+      proc.input = output
+    }
+  }
+
+  private fun findEmail(proc: Proc, contactsInterface: ContactsInterface) {
+    var email: String? = null
+    val output = proc.input.trim().splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        val res = contactsInterface.findEmail(s)
+        if (res != null) {
+          email = res
+          it[index] = ""
+          return@forEachIndexed
+        }
+      }
+    }.clip()
+    proc.number = email
+    proc.input = output
   }
 
   private fun createAction(input: String, action: Action): Model {
@@ -342,14 +378,10 @@ class Recognizer private constructor(
   )
 
   private fun getGroup(input: String): Model {
-    return input.let {
-      StringUtils.capitalize(worker.clearGroup(it))
-    }.let {
-      Model(
-        type = ActionType.GROUP,
-        summary = it
-      )
-    }
+    return Model(
+      type = ActionType.GROUP,
+      summary = input.let { StringUtils.capitalize(it) }
+    )
   }
 
   private fun getEvent(input: String?): Model? {

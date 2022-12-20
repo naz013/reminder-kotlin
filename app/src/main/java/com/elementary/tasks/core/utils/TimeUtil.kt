@@ -23,6 +23,9 @@ import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import hirondelle.date4j.DateTime
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -34,6 +37,7 @@ object TimeUtil {
 
   val BIRTH_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
   val BIRTH_FORMAT = SimpleDateFormat("dd|MM", Locale.US)
+  private val NEW_GMT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
   private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
   private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
   private val TIME_24 = SimpleDateFormat("HH:mm", Locale.US)
@@ -322,6 +326,15 @@ object TimeUtil {
       GMT_DATE_FORMAT.format(time)
     } catch (e: Exception) {
       ""
+    }
+  }
+
+  fun getMillisFromGmt(dateTime: String?): Long {
+    if (dateTime.isNullOrEmpty()) return 0
+    return try {
+      LocalDateTime.parse(dateTime, NEW_GMT_DATE_FORMAT).toInstant(ZoneOffset.UTC).toEpochMilli()
+    } catch (e: Exception) {
+      0
     }
   }
 

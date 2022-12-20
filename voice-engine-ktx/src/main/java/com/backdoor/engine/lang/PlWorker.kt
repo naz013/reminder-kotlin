@@ -2,6 +2,7 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
+import com.backdoor.engine.misc.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
@@ -14,13 +15,13 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
   }
 
   override val weekdays = listOf(
+    "niedzie",
     "poniedzia",
     "wtor",
     "środ",
     "czwart",
     "piąt",
-    "sobot",
-    "niedzie"
+    "sobot"
   )
 
   override fun hasCalendar(input: String) = input.matches(".*$CALENDAR_KEY.*")
@@ -32,8 +33,13 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         it.forEachIndexed { index, s ->
           if (s.matches(".*$CALENDAR_KEY.*")) {
             it[index] = ""
-            if (index > 0 && it[index - 1].equals("do", ignoreCase = true)) {
+            if (index > 0 && (it[index - 1].equals("do", ignoreCase = true) ||
+                it[index - 1].matches("doda(ć|j)"))) {
               it[index - 1] = ""
+            }
+            if (index > 1 && (it[index - 2].equals("do", ignoreCase = true) ||
+                it[index - 2].matches("doda(ć|j)"))) {
+              it[index - 2] = ""
             }
             return@forEachIndexed
           }
@@ -42,22 +48,26 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
       }
 
   override fun clearWeekDays(input: String): String {
-    val sb = StringBuilder()
-    input.splitByWhitespaces().toMutableList().also {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         for (day in weekdays) {
           if (s.matches(".*$day.*")) {
             it[index] = ""
+            if (index > 0) {
+              if (it[index - 1].matches("we?") || it[index - 1].matches("i")) {
+                it[index - 1] = ""
+              } else if (it[index - 1].matches("każd(y|e)")) {
+                it[index - 1] = ""
+                if (index > 1 && it[index - 2].matches("we?")) {
+                  it[index - 2] = ""
+                }
+              }
+            }
             break
           }
         }
       }
-    }.clip().splitByWhitespaces().forEach { s ->
-      val part = s.trim()
-      if (!part.matches("w")) sb.append(" ").append(part)
-      else if (!part.matches("we")) sb.append(" ").append(part)
-    }
-    return sb.toString().trim()
+    }.clip()
   }
 
   override fun getDaysRepeat(input: String) =
@@ -77,7 +87,8 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
       }
     }.clip()
 
-  override fun hasRepeat(input: String) = input.matches(".*każdego.*") || hasEveryDay(input)
+  override fun hasRepeat(input: String) = input.matches(".*każdego.*") ||
+    input.matches(".*powtarza(j|ć).*") || hasEveryDay(input)
 
   override fun hasEveryDay(input: String) =
     input.matches(".*codzie(n|ń).*") || input.matches(".*każdego dnia.*")
@@ -87,6 +98,9 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (hasRepeat(s)) {
           it[index] = ""
+          if (index > 0 && it[index - 1].matches("i")) {
+            it[index - 1] = ""
+          }
           return@forEachIndexed
         }
       }
@@ -109,7 +123,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     var isStart = false
     return input.splitByWhitespaces().forEach {
       if (isStart) sb.append(" ").append(it)
-      if (it.matches("tekst(em)?")) isStart = true
+      if (it.matches("tekst(em)?") || it.matches("treścią")) isStart = true
     }.let {
       sb.toString().trim()
     }
@@ -177,53 +191,11 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     localTime
   }
 
-  override fun clearTime(input: String?) =
-    input?.splitByWhitespaces()?.toMutableList()?.also {
-      it.forEachIndexed { i, s ->
-        if (hasHours(s) != -1) {
-          val index = hasHours(s)
-          it[i] = ""
-          var hourSuccess = false
-          ignoreAny {
-            it[i - index].toInt()
-            hourSuccess = true
-            it[i - index] = ""
-          }
-          if (hourSuccess) {
-            ignoreAny {
-              it[i + 1].toInt()
-              it[i + 1] = ""
-            }
-          }
-        }
-        if (hasMinutes(s) != -1) {
-          val index = hasMinutes(s)
-          ignoreAny {
-            it[i - index].toInt()
-            it[i - index] = ""
-          }
-          it[i] = ""
-        }
-      }
-    }?.clip()?.let { s ->
-      val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
-      if (matcher.find()) {
-        val time = matcher.group().trim()
-        s.replace(time, "")
-      } else s
-    }?.splitByWhitespaces()?.toMutableList()?.let { list ->
-      val sb = StringBuilder()
-      list.forEach { s ->
-        if (!s.matches("o")) sb.append(" ").append(s.trim())
-      }
-      sb.toString().trim()
-    } ?: ""
-
   override fun getMonth(input: String?) = when {
     input == null -> -1
     input.contains("styczeń") || input.contains("styczn") -> 1
     input.contains("luty") || input.contains("lutego") -> 2
-    input.contains("marzec") || input.contains("marzca") -> 3
+    input.contains("marzec") || input.contains("marca") -> 3
     input.contains("kwiecień") || input.contains("kwietnia") -> 4
     input.contains("maj") || input.contains("maja") -> 5
     input.contains("czerwiec") || input.contains("czerwca") -> 6
@@ -253,7 +225,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
   override fun cleanTimer(input: String) =
     input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
-        if (hasTimer(s)) {
+        if (s.matches("za")) {
           it[index] = ""
           return@forEachIndexed
         }
@@ -275,7 +247,18 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override fun hasNote(input: String) = input.contains("notatka")
 
-  override fun clearNote(input: String) = input.replace("notatka", "").trim()
+  override fun clearNote(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*notatk(ę|a).*")) {
+          it[index] = ""
+          if (index > 0 && (it[index - 1].matches(".*nowa?.*") || it[index - 1].matches(".*doda(j|ć).*"))) {
+            it[index - 1] = ""
+          }
+          return@forEachIndexed
+        }
+      }
+    }.clip()
 
   override fun hasAction(input: String): Boolean {
     return (input.matches(".*otw(orzyć|órz).*") || input.matches(".*pomoc.*")
@@ -362,7 +345,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         val month = getMonth(s)
         if (month != -1) {
           val dayOfMonth = ignoreAny({
-            list[index - 1].toInt().also { list[index - 1] = "" }
+            list[index - 1].toFloat().toInt().also { list[index - 1] = "" }
           }) { 1 }
 
           val parsedDate = LocalDate.now(zoneId)
@@ -427,16 +410,16 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     input.matches("dziewięćdziesiąt.*") || input.matches("dziewięćdziesięc.*") -> 90f
 
     input.matches("zero") -> 0f
-    input.matches("jeden") || input.matches("jedn.*") || input.matches("pierwsz(y|a)") -> 1f
+    input.matches("jeden") || input.matches("jedn.*") || input.matches("pierwsz(y|a|ego)") -> 1f
     input.matches("dwaj?") || input.matches("dwie") || input.matches("dwóch") ||
-      input.matches("drug(i|a)") -> 2f
+      input.matches("drug(i|a|iego)") -> 2f
     input.matches("trzy") || input.matches("trzej") || input.matches("trzech") ||
-      input.matches("trzecia?") -> 3f
-    input.matches("cztery") || input.matches("czterech") || input.matches("czwart(y|a)") -> 4f
-    input.matches("pięć") || input.matches("piąt(y|a)") -> 5f
-    input.matches("sześć") || input.matches("szóst(y|a)") -> 6f
-    input.matches("siedem") || input.matches("siódm(y|a)") || input.matches("siódmej") -> 7f
-    input.matches("osiem") || input.matches("ośmiu") || input.matches("ósm(y|a)") -> 8f
+      input.matches("trzecia?(ego)?") -> 3f
+    input.matches("cztery") || input.matches("czterech") || input.matches("czwart(y|a|ego)") -> 4f
+    input.matches("pięć") || input.matches("piąt(y|a|ego)") -> 5f
+    input.matches("sześć") || input.matches("szóst(y|a|ego)") -> 6f
+    input.matches("siedem") || input.matches("siódm(y|a|ego)") || input.matches("siódmej") -> 7f
+    input.matches("osiem") || input.matches("ośmiu") || input.matches("ósm(y|a|ego)") -> 8f
     input.matches("dziewięć") || input.matches("dziewię.*") || input.matches("dziewiąt.*") -> 9f
     input.matches("dziesięć") || input.matches("dziesię.*") || input.matches("dziesiąt.*") -> 10f
     else -> -1f
@@ -451,9 +434,160 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     input.matches(".*wydarzeni.*") -> Action.EVENTS
     input.matches(".*notatk.*") -> Action.NOTES
     input.matches(".*grup.*") -> Action.GROUPS
-    input.matches(".*lista? zakupów.*") -> Action.SHOP_LISTS
+    input.matches(".*list(y|ę) zakupów.*") -> Action.SHOP_LISTS
     else -> null
   }
 
   override fun hasNextModifier(input: String) = input.matches(".*następn.*")
+
+  override fun getTime(input: String, ampm: Ampm?, times: List<String>): LocalTime? {
+    Logger.log("getTime: $ampm, input $input")
+    val parts = input.splitByWhitespaces().toTypedArray()
+
+    var localTime: LocalTime? = null
+    val parsedTime = getShortTime(input)
+
+    if (parsedTime != null) {
+      localTime = parsedTime
+      if (ampm == Ampm.EVENING) {
+        val hour = localTime.hour
+        localTime = localTime.withHour(if (hour < 12) hour + 12 else hour)
+      }
+      return localTime
+    }
+
+    var h = -1f
+    var m = -1f
+    var reserveHour = 0f
+    for (i in parts.indices.reversed()) {
+      val part = parts[i]
+      val hoursIndex = hasHours(part)
+      val minutesIndex = hasMinutes(part)
+      if (hoursIndex != -1) {
+        var integer = 1f
+        var hourSuccess = false
+        ignoreAny {
+          integer = parts[i - hoursIndex].toFloat()
+          hourSuccess = true
+          parts[i - hoursIndex] = ""
+        }
+        if (!hourSuccess) {
+          ignoreAny {
+            integer = parts[i + hoursIndex].toFloat()
+            hourSuccess = true
+            parts[i + hoursIndex] = ""
+          }
+        }
+        if (ampm == Ampm.EVENING) {
+          integer += 12f
+        }
+        h = integer
+        if (hourSuccess) {
+          ignoreAny {
+            m = parts[i + 1].toInt().toFloat()
+            parts[i + 1] = ""
+          }
+        }
+      }
+      if (minutesIndex != -1) {
+        m = ignoreAny({
+          parts[i - minutesIndex].toFloat()
+        }) { 0f }
+      }
+      ignoreAny { reserveHour = parts[i].toFloat() }
+    }
+
+    if (h != -1f) {
+      localTime = LocalTime.now(zoneId)
+      localTime = localTime.withHour(h.toInt())
+      localTime = if (m != -1f) {
+        localTime.withMinute(m.toInt())
+      } else {
+        localTime.withMinute(0)
+      }
+      return localTime.withSecond(0)
+    }
+    if (reserveHour != 0f) {
+      localTime = LocalTime.now(zoneId)
+        .withHour(reserveHour.toInt())
+        .withMinute(0)
+        .withSecond(0)
+
+      if (ampm == Ampm.EVENING) {
+        localTime = localTime?.withHour(12)
+      }
+    }
+    if (localTime == null && ampm != null) {
+      localTime = LocalTime.now(zoneId)
+      ignoreAny {
+        val hourFormat = hourFormat
+        if (ampm == Ampm.MORNING) {
+          localTime = LocalTime.parse(times[0], hourFormat)
+        }
+        if (ampm == Ampm.NOON) {
+          localTime = LocalTime.parse(times[1], hourFormat)
+        }
+        if (ampm == Ampm.EVENING) {
+          localTime = LocalTime.parse(times[2], hourFormat)
+        }
+        if (ampm == Ampm.NIGHT) {
+          localTime = LocalTime.parse(times[3], hourFormat)
+        }
+      }
+    }
+    return localTime
+  }
+
+  override fun clearTime(input: String?) =
+    input?.let { s ->
+      val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
+      if (matcher.find()) {
+        val time = matcher.group().trim()
+        s.replace(time, "")
+      } else s
+    }?.splitByWhitespaces()?.toMutableList()?.also {
+      it.forEachIndexed { i, s ->
+        if (hasHours(s) != -1) {
+          val index = hasHours(s)
+          it[i] = ""
+          var hourSuccess = false
+          ignoreAny {
+            it[i - index].toFloat()
+            hourSuccess = true
+            it[i - index] = ""
+          }
+          if (!hourSuccess) {
+            ignoreAny {
+              it[i + index].toFloat()
+              hourSuccess = true
+              it[i + index] = ""
+            }
+          }
+          if (hourSuccess) {
+            ignoreAny {
+              it[i + 1].toFloat()
+              it[i + 1] = ""
+            }
+          } else {
+            if (i > 0 && it[i - 1].matches("o")) {
+              it[i - 1] = ""
+            }
+          }
+        }
+        if (hasMinutes(s) != -1) {
+          val index = hasMinutes(s)
+          ignoreAny {
+            it[i - index].toInt()
+            it[i - index] = ""
+          }
+          it[i] = ""
+        }
+      }
+    }?.clip()?.splitByWhitespaces()?.toMutableList()?.let { list ->
+      val sb = StringBuilder()
+      list.forEach { s ->
+        if (!s.matches("we?") && !s.matches("o")) sb.append(" ").append(s.trim())
+      }
+      sb.toString().trim()
+    } ?: ""
 }

@@ -45,6 +45,9 @@ internal abstract class Worker(
   abstract fun hasWeeks(input: String?): Boolean
   abstract fun hasMonth(input: String?): Boolean
   abstract fun getMonth(input: String?): Int
+  open fun hasConnectSpecialWord(input: String): Boolean {
+    return false
+  }
 
   override fun getWeekDays(input: String) =
     input.splitByWhitespaces().forEach { part ->
@@ -95,12 +98,12 @@ internal abstract class Worker(
     }
   }
 
-  private fun getMulti(input: String?) = when {
+  protected fun getMulti(input: String?) = when {
     hasSeconds(input) -> SECOND.toFloat()
     hasMinutes(input) != -1 -> MINUTE.toFloat()
     hasHours(input) != -1 -> HOUR.toFloat()
     hasWeeks(input) -> (7 * DAY).toFloat()
-    hasDays(input) -> DAY.toFloat()
+    hasDays(" $input") -> DAY.toFloat()
     hasMonth(input) -> (30 * DAY).toFloat()
     else -> -1f
   }
@@ -112,7 +115,8 @@ internal abstract class Worker(
     var beginIndex = -1
 
     for (i in parts.indices) {
-      var number = findNumber(parts[i])
+      val part = parts[i]
+      var number = findNumber(part)
       if (number != -1f) {
         allNumber += number
         parts[i] = ""
@@ -120,14 +124,15 @@ internal abstract class Worker(
           beginIndex = i
         }
       } else {
-        number = findFloat(parts[i])
+        number = findFloat(part)
         if (number != -1f) {
           parts[i] = ""
           allNumber += number
           if (beginIndex == -1) {
             beginIndex = i
           }
-        } else if (beginIndex != -1 && (hasHours(parts[i]) != -1 || hasMinutes(parts[i]) != -1)) {
+        } else if (beginIndex != -1 &&
+          (hasHours(part) != -1 || hasMinutes(part) != -1 || hasConnectSpecialWord(part))) {
           parts[beginIndex] = allNumber.toString()
           allNumber = 0f
           beginIndex = -1
@@ -152,7 +157,7 @@ internal abstract class Worker(
     val parts = input.splitByWhitespaces().toTypedArray()
     var h = -1f
     var m = -1f
-    var reserveHour = 0f
+    var reserveHour = -1f
     for (i in parts.indices.reversed()) {
       val part = parts[i]
       val hoursIndex = hasHours(part)
@@ -171,7 +176,7 @@ internal abstract class Worker(
         h = integer
         if (hourSuccess) {
           ignoreAny {
-            m = parts[i + 1].toInt().toFloat()
+            m = parts[i + 1].toFloat()
             parts[i + 1] = ""
           }
         }
@@ -181,7 +186,9 @@ internal abstract class Worker(
           parts[i - minutesIndex].toFloat()
         }) { 0f }
       }
-      ignoreAny { reserveHour = parts[i].toFloat() }
+      ignoreAny {
+        reserveHour = parts[i].toFloat()
+      }
     }
     var localTime: LocalTime? = null
     val parsedTime = getShortTime(input)
@@ -204,14 +211,14 @@ internal abstract class Worker(
       }
       return localTime.withSecond(0)
     }
-    if (reserveHour != 0f) {
+    if (reserveHour != -1f) {
       localTime = LocalTime.now(zoneId)
         .withHour(reserveHour.toInt())
         .withMinute(0)
         .withSecond(0)
 
       if (ampm == Ampm.EVENING) {
-        localTime = localTime?.withHour(12)
+        localTime = localTime?.plusHours(12)
       }
     }
     if (localTime == null && ampm != null) {
@@ -257,6 +264,43 @@ internal abstract class Worker(
 
   override fun clearShowAction(input: String): String {
     return input
+  }
+
+  protected fun clearAllBackward(
+    list: MutableList<String>,
+    index: Int,
+    numberOfSteps: Int,
+    vararg marchers: String
+  ) {
+    for (i in index downTo  index - numberOfSteps + 1) {
+      if (i >= 0) {
+        val s = list[i]
+        val areAnyMatches = marchers.any { s.matches(it) }
+        if (areAnyMatches) {
+          list[i] = ""
+        }
+      } else {
+        break
+      }
+    }
+  }
+
+  protected fun clearAllForward(
+    list: MutableList<String>,
+    index: Int,
+    numberOfSteps: Int,
+    vararg marchers: String
+  ) {
+    for (i in index until index + numberOfSteps) {
+      if (i < list.size) {
+        val s = list[i]
+        if (marchers.any { s.matches(it) }) {
+          list[i] = ""
+        }
+      } else {
+        break
+      }
+    }
   }
 
   protected abstract val afterTomorrow: String
