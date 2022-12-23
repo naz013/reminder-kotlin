@@ -7,15 +7,17 @@ import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Locale
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
-class EnWorkerTest {
+@Ignore
+class DeWorkerTest {
 
   private val contactsInterface = mockk<ContactsInterface>()
   private val recognizer = Recognizer.Builder()
-    .setLocale(Locale.EN)
+    .setLocale(Locale.DE)
     .setTimes(TIMES)
     .setTimeZone("GMT")
     .build()
@@ -23,21 +25,21 @@ class EnWorkerTest {
   @Before
   fun setUp() {
     every { contactsInterface.findNumber(any()) }.answers { null }
-    every { contactsInterface.findNumber("home") }.answers { "123456" }
+    every { contactsInterface.findNumber("büro") }.answers { "123456" }
     every { contactsInterface.findEmail(any()) }.answers { null }
-    every { contactsInterface.findEmail("home") }.answers { "test@mail.com" }
+    every { contactsInterface.findEmail("büro") }.answers { "test@mail.com" }
     recognizer.setContactHelper(contactsInterface)
   }
 
   @Test
   fun testResponseYes() {
-    val model = recognizer.recognize("yes of course")
+    val model = recognizer.recognize("ja natürlich")
 
     assertEquals(true, model != null)
     assertEquals(ActionType.ANSWER, model?.type)
     assertEquals(Action.YES, model?.action)
 
-    val model2 = recognizer.recognize("yes")
+    val model2 = recognizer.recognize("ja")
 
     assertEquals(true, model2 != null)
     assertEquals(ActionType.ANSWER, model2?.type)
@@ -46,13 +48,13 @@ class EnWorkerTest {
 
   @Test
   fun testResponseNo() {
-    val model = recognizer.recognize("no don't save")
+    val model = recognizer.recognize("nein nicht speichern")
 
     assertEquals(true, model != null)
     assertEquals(ActionType.ANSWER, model?.type)
     assertEquals(Action.NO, model?.action)
 
-    val model2 = recognizer.recognize("no")
+    val model2 = recognizer.recognize("nein")
 
     assertEquals(true, model2 != null)
     assertEquals(ActionType.ANSWER, model2?.type)
@@ -61,7 +63,7 @@ class EnWorkerTest {
 
   @Test
   fun testShowBirthdaysForNextWeek() {
-    val input = "show birthdays for next week"
+    val input = "Geburtstage für nächste Woche anzeigen"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -72,7 +74,7 @@ class EnWorkerTest {
 
   @Test
   fun testShowRemindersForNext3Days() {
-    val input = "show reminders for next 3 days"
+    val input = "Erinnerungen für die nächsten 3 Tage anzeigen"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -83,7 +85,7 @@ class EnWorkerTest {
 
   @Test
   fun testDisableReminders() {
-    val input = "disable all reminders"
+    val input = "alle Erinnerungen deaktivieren"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -92,18 +94,8 @@ class EnWorkerTest {
   }
 
   @Test
-  fun testEmptyArchivedReminders() {
-    val input = "empty trash"
-    val model = recognizer.recognize(input)
-
-    assertEquals(true, model != null)
-    assertEquals(ActionType.ACTION, model?.type)
-    assertEquals(Action.TRASH, model?.action)
-  }
-
-  @Test
   fun testClearArchivedReminders() {
-    val input = "clear trash"
+    val input = "leerer Müll"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -113,7 +105,7 @@ class EnWorkerTest {
 
   @Test
   fun testAddGroup() {
-    val input = "create group work"
+    val input = "Gruppenarbeit erstellen"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -128,7 +120,7 @@ class EnWorkerTest {
 
   @Test
   fun testAddGroup2() {
-    val input = "add group work"
+    val input = "Gruppenarbeit hinzufügen"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -143,7 +135,7 @@ class EnWorkerTest {
 
   @Test
   fun testAddGroup3() {
-    val input = "add new group work"
+    val input = "neue Gruppenarbeit hinzufügen"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)

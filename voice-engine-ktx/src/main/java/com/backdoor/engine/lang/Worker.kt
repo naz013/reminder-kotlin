@@ -69,6 +69,7 @@ internal abstract class Worker(
             number = s.toFloat()
             if (number != -1f) {
               it[index] = ""
+              clearArticleForMulti(it, index)
             }
             for (j in index + 1 until it.size) {
               val multi = getMulti(it[j])
@@ -98,7 +99,10 @@ internal abstract class Worker(
     }
   }
 
-  protected fun getMulti(input: String?) = when {
+  protected open fun clearArticleForMulti(it: MutableList<String>, index: Int) {
+  }
+
+  private fun getMulti(input: String?) = when {
     hasSeconds(input) -> SECOND.toFloat()
     hasMinutes(input) != -1 -> MINUTE.toFloat()
     hasHours(input) != -1 -> HOUR.toFloat()
@@ -270,12 +274,12 @@ internal abstract class Worker(
     list: MutableList<String>,
     index: Int,
     numberOfSteps: Int,
-    vararg marchers: String
+    vararg matchers: String
   ) {
     for (i in index downTo  index - numberOfSteps + 1) {
       if (i >= 0) {
         val s = list[i]
-        val areAnyMatches = marchers.any { s.matches(it) }
+        val areAnyMatches = matchers.any { s.matches(it) }
         if (areAnyMatches) {
           list[i] = ""
         }
@@ -289,12 +293,12 @@ internal abstract class Worker(
     list: MutableList<String>,
     index: Int,
     numberOfSteps: Int,
-    vararg marchers: String
+    vararg matchers: String
   ) {
     for (i in index until index + numberOfSteps) {
       if (i < list.size) {
         val s = list[i]
-        if (marchers.any { s.matches(it) }) {
+        if (matchers.any { s.matches(it) }) {
           list[i] = ""
         }
       } else {

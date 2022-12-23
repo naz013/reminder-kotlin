@@ -49,7 +49,7 @@ class Recognizer private constructor(
         when {
           worker.hasShowAction(s) && showAction != null ->
             createAction(worker.clearShowAction(s), showAction)
-          worker.hasNote(s) -> getNote(s)
+          worker.hasNote(s) -> getNote(input)
           worker.hasGroup(s) -> getGroup(worker.clearGroup(s))
           worker.hasEvent(s) && event != null -> event
           worker.hasAction(s) -> getAction(s)

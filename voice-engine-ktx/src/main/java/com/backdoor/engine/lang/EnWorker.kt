@@ -322,7 +322,7 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
       it.forEachIndexed { index, s ->
         if (s.matches(".*note.*")) {
           it[index] = ""
-          clearAllBackward(it, index - 1, 1, ".*create.*", ".*add.*")
+          clearAllBackward(it, index - 1, 1, "create", "add")
           return@forEachIndexed
         }
       }
@@ -353,27 +353,22 @@ internal class EnWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> Action.NO_EVENT
   }
 
-  override fun hasEmptyTrash(input: String) = input.matches(".*empty trash.*")
+  override fun hasEmptyTrash(input: String) = input.matches(".*(empty|clear) (trash|completed reminders?).*")
 
   override fun hasDisableReminders(input: String) = input.matches(".*disable (all )?reminders?.*")
 
   override fun hasGroup(input: String) = input.matches(".*(add|create|new) group.*")
 
   override fun clearGroup(input: String): String {
-    val sb = StringBuilder()
-    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
-    var st = false
-    for (s in parts) {
-      if (s.matches(".*group.*")) {
-        st = true
-        continue
+    return input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*group.*")) {
+          it[index] = ""
+          clearAllBackward(it, index - 1, 2, "an?", "(add|create|new)")
+          return@forEachIndexed
+        }
       }
-      if (st) {
-        sb.append(s)
-        sb.append(" ")
-      }
-    }
-    return sb.toString().trim()
+    }.clip()
   }
 
   override fun hasToday(input: String) = input.matches(".*today.*")
