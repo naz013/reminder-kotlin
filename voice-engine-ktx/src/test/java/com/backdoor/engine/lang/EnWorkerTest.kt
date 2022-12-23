@@ -545,6 +545,21 @@ class EnWorkerTest {
   }
 
   @Test
+  fun testByDateReminderJulyWithSmsYesText() {
+    val input = "on july 5 at 16:33 send message to home with text yes, i came"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.MESSAGE, model?.action)
+    assertEquals("123456", model?.target)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(getExpectedDateTime(7, 5, 16, 33), model?.dateTime)
+    assertEquals("yes, i came", model?.summary?.lowercase())
+  }
+
+  @Test
   fun testByDateReminderAugustWithEmail() {
     val input = "on august 25 in the evening send email to home with text run tests"
     val model = recognizer.recognize(input)

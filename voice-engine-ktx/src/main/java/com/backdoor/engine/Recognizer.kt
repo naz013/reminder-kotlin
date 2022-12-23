@@ -2,8 +2,6 @@ package com.backdoor.engine
 
 import com.backdoor.engine.lang.Worker
 import com.backdoor.engine.lang.WorkerFactory.getWorker
-import com.backdoor.engine.lang.clip
-import com.backdoor.engine.lang.splitByWhitespaces
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.Ampm
@@ -32,62 +30,93 @@ class Recognizer private constructor(
     }
   private var contactsInterface: ContactsInterface? = null
   private var zoneId = ZoneId.of(timeZone)
-  private var worker = getWorker(locale, zoneId)
+
+  private val ci = object : ContactsInterface {
+    override fun findEmail(input: String?): String? {
+      return contactsInterface?.findEmail(input)
+    }
+
+    override fun findNumber(input: String?): String? {
+      return contactsInterface?.findNumber(input)
+    }
+  }
+  private var worker = getWorker(locale, zoneId, ci)
 
   fun updateLocale(locale: String) {
-    worker = getWorker(locale, zoneId)
+    worker = getWorker(locale, zoneId, ci)
   }
 
   fun recognize(input: String): Model? {
-    log("parse: input = $input, worker = $worker")
+    log("recognize: input = $input, worker = $worker")
     return input.lowercase(LOCALE).trim()
       .let { worker.replaceNumbers(it) ?: "" }
-      .also { log("parse: after numbers replaced = $it") }
+      .also { log("recognize: after numbers replaced = $it") }
       .let { s ->
-        val showAction = worker.getShowAction(s)
+        val showAction = if (worker.hasShowAction(s)) {
+          worker.getShowAction(s)
+        } else {
+          null
+        }
         val event = getEvent(s)
+        var date: LocalDate? = null
+        runCatching {
+          worker.getDateAndClear(s) { date = it }
+        }
+        val ampm = worker.getAmpm(s)
+        val time = runCatching { worker.getTime(s, ampm, times) }.getOrNull()
+        val canBeReminder = worker.hasCall(s) || worker.hasSender(s) || date != null || time != null
+        log("recognize: action=$showAction, event=$event, can=$canBeReminder")
         when {
-          worker.hasShowAction(s) && showAction != null ->
-            createAction(worker.clearShowAction(s), showAction)
+          showAction != null -> createAction(worker.clearShowAction(s), showAction)
           worker.hasNote(s) -> getNote(input)
-          worker.hasGroup(s) -> getGroup(worker.clearGroup(s))
+          worker.hasGroup(s) && !canBeReminder -> getGroup(worker.clearGroup(s))
           worker.hasEvent(s) && event != null -> event
-          worker.hasAction(s) -> getAction(s)
-          worker.hasEmptyTrash(s) -> emptyTrash
-          worker.hasDisableReminders(s) -> disableAction
-          worker.hasAnswer(s) -> getAnswer(s)
+          worker.hasAction(s) && !canBeReminder -> getAction(s)
+          worker.hasEmptyTrash(s) && !canBeReminder -> emptyTrash
+          worker.hasDisableReminders(s) && !canBeReminder -> disableAction
+          worker.hasAnswer(s) && !canBeReminder -> getAnswer(s)
           else -> parseReminder(s, input)
         }
       }
   }
 
   private fun parseReminder(input: String, origin: String): Model? {
-    log("parseReminder: $input")
+    log("parse: reminder $input")
     return Proc(input = input)
       .also { proc ->
+        log("parse: call $proc")
         if (worker.hasCall(proc.input)) {
-          proc.updateInput { worker.clearCall(it) }
           proc.hasAction = true
           proc.action = Action.CALL
+          proc.input = worker.findSenderAndClear(proc.input, proc.action) {
+            proc.number = it
+          }
+          proc.input = worker.clearCall(proc.input) ?: ""
         }
       }
       .also { proc ->
+        log("parse: sender $proc")
         if (worker.hasSender(proc.input)) {
-          proc.updateInput { worker.clearSender(it) }
           worker.getMessageType(proc.input)?.also { action ->
-            proc.updateInput { worker.clearMessageType(it) }
             proc.hasAction = true
             proc.action = action
           }
+          proc.input = worker.findSenderAndClear(proc.input, proc.action) {
+            proc.number = it
+          }
+          if (proc.action == Action.MESSAGE || proc.action == Action.MAIL) {
+            proc.updateInput { worker.clearMessageType(it) }
+          }
+          proc.input = worker.clearSender(proc.input) ?: ""
         }
       }
       .also { proc ->
-        log("parse: has repeat -> $proc")
+        log("parse: has repeat $proc")
         if (worker.hasRepeat(proc.input).also { proc.isRepeating = it }) {
           proc.isEveryDay = worker.hasEveryDay(proc.input)
           proc.updateInput { worker.clearRepeat(it) }
           proc.repeatMillis = worker.getDaysRepeat(proc.input)
-          if (proc.repeatMillis != 0L) {
+          if (proc.repeatMillis != 0L || proc.isEveryDay) {
             proc.updateInput { worker.clearDaysRepeat(it) }
           }
           if (proc.repeatMillis == 0L && proc.isEveryDay) {
@@ -137,7 +166,7 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: before weekdays $proc")
+        log("parse: weekdays $proc")
         if (!proc.isEveryDay) {
           proc.weekdays = worker.getWeekDays(proc.input)
           proc.hasWeekday = proc.weekdays.any { it == 1 }.also { b ->
@@ -153,9 +182,9 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: date ${proc.input}")
+        log("parse: date $proc")
         proc.updateInput { s ->
-          worker.getDate(s) { proc.date = it }
+          worker.getDateAndClear(s) { proc.date = it }
         }
       }
       .also { proc ->
@@ -165,6 +194,7 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
+        log("parse: calculate date time $proc")
         if (proc.hasToday) {
           log("parse: today")
           proc.dateTime = getTodayTime(proc.time)
@@ -192,23 +222,13 @@ class Recognizer private constructor(
       }
       .takeIf { !it.skipNext }
       ?.also { proc ->
-        log("parse: message -> $proc")
+        log("parse: message  $proc")
         if (proc.hasAction && (proc.action == Action.MESSAGE || proc.action == Action.MAIL)) {
           proc.message = worker.getMessage(proc.input)
           proc.updateInput { worker.clearMessage(it) }
           proc.message?.also { message ->
             proc.updateInput { it.replace(message, "") }
           }
-        }
-      }
-      ?.also { proc ->
-        if (proc.hasAction) {
-          if (proc.action == Action.CALL || proc.action == Action.MESSAGE) {
-            contactsInterface?.also { findNumber(proc, it) }
-          } else if (proc.action == Action.MAIL) {
-            contactsInterface?.also { findEmail(proc, it) }
-          }
-          proc.skipNext = proc.number == null
         }
       }
       ?.takeIf { !it.skipNext }
@@ -243,42 +263,6 @@ class Recognizer private constructor(
       ?.also { log("parse: out = $it") }
   }
 
-  private fun findNumber(proc: Proc, contactsInterface: ContactsInterface) {
-    var number: String? = null
-    val output = proc.input.trim().splitByWhitespaces().toMutableList().also {
-      it.forEachIndexed { index, s ->
-        val res = contactsInterface.findNumber(s)
-        if (res != null) {
-          number = res
-          it[index] = ""
-          return@forEachIndexed
-        }
-      }
-    }.clip()
-    if (number == null) {
-      proc.skipNext = true
-    } else {
-      proc.number = number
-      proc.input = output
-    }
-  }
-
-  private fun findEmail(proc: Proc, contactsInterface: ContactsInterface) {
-    var email: String? = null
-    val output = proc.input.trim().splitByWhitespaces().toMutableList().also {
-      it.forEachIndexed { index, s ->
-        val res = contactsInterface.findEmail(s)
-        if (res != null) {
-          email = res
-          it[index] = ""
-          return@forEachIndexed
-        }
-      }
-    }.clip()
-    proc.number = email
-    proc.input = output
-  }
-
   private fun createAction(input: String, action: Action): Model {
     val hasNext = worker.hasNextModifier(input)
     val multi = LongInternal()
@@ -287,7 +271,7 @@ class Recognizer private constructor(
         nowDateTime().plusSeconds(multi.value / 1000L)
       } else {
         var date: LocalDate? = null
-        worker.getDate(output) { date = it }
+        worker.getDateAndClear(output) { date = it }
         date?.atTime(12, 0)
       }
     }
@@ -405,6 +389,7 @@ class Recognizer private constructor(
   }
 
   private fun getNote(input: String?): Model? {
+    log("getNote: $input")
     return input?.let { StringUtils.capitalize(worker.clearNote(input)) }?.let {
       Model(
         summary = it,

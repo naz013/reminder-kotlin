@@ -1,20 +1,27 @@
 package com.backdoor.engine.lang
 
+import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Locale
 import org.threeten.bp.ZoneId
 
 internal object WorkerFactory {
 
-  fun getWorker(locale: String, zoneId: ZoneId) = when (locale) {
-    Locale.EN -> EnWorker(zoneId)
-    Locale.UK -> UkWorker(zoneId)
-    Locale.RU -> RuWorker(zoneId)
-    Locale.DE -> DeWorker(zoneId)
-    Locale.ES -> EsWorker(zoneId)
-    Locale.PT -> PtWorker(zoneId)
-    Locale.PL -> PlWorker(zoneId)
-    else -> EnWorker(zoneId)
-  }.also {
-    println("getWorker: $locale, $it")
+  fun getWorker(
+    locale: String,
+    zoneId: ZoneId,
+    contactsInterface: ContactsInterface?
+  ): WorkerInterface {
+    return when (locale) {
+      Locale.EN -> EnWorker(zoneId, contactsInterface)
+      Locale.UK -> UkWorker(zoneId, contactsInterface)
+      Locale.RU -> RuWorker(zoneId, contactsInterface)
+      Locale.DE -> DeWorker(zoneId, contactsInterface)
+      Locale.ES -> EsWorker(zoneId, contactsInterface)
+      Locale.PT -> PtWorker(zoneId, contactsInterface)
+      Locale.PL -> PlWorker(zoneId, contactsInterface)
+      else -> EnWorker(zoneId, contactsInterface)
+    }.also {
+      println("getWorker: $locale, $it")
+    }
   }
 }

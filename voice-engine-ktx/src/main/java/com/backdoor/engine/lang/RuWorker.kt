@@ -2,12 +2,14 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
+import com.backdoor.engine.misc.ContactsInterface
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import java.util.regex.Pattern
 
-internal class RuWorker(zoneId: ZoneId) : Worker(zoneId) {
+internal class RuWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
+  Worker(zoneId, contactsInterface) {
   override val weekdays = listOf(
     "воскресен",
     "понедельн",
@@ -340,7 +342,7 @@ internal class RuWorker(zoneId: ZoneId) : Worker(zoneId) {
 
   override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (да|нет) .*")
 
-  override fun getDate(input: String, result: (LocalDate?) -> Unit): String? {
+  override fun getDateAndClear(input: String, result: (LocalDate?) -> Unit): String? {
     var localDate: LocalDate? = null
     return input.splitByWhitespaces().toMutableList().also { list ->
       list.forEachIndexed { index, s ->

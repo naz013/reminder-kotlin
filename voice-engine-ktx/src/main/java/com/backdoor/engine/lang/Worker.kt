@@ -3,13 +3,15 @@ package com.backdoor.engine.lang
 import com.backdoor.engine.Recognizer
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
+import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.LongInternal
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 internal abstract class Worker(
-  protected val zoneId: ZoneId
+  protected val zoneId: ZoneId,
+  protected val contactsInterface: ContactsInterface?
 ) : WorkerInterface {
   internal val weekdayArray = intArrayOf(0, 0, 0, 0, 0, 0, 0)
   internal val hourFormats = listOf(
@@ -268,6 +270,119 @@ internal abstract class Worker(
 
   override fun clearShowAction(input: String): String {
     return input
+  }
+
+  override fun findSenderAndClear(
+    input: String,
+    action: Action,
+    result: (String) -> Unit
+  ): String {
+    if (action != Action.CALL && action != Action.MESSAGE && action != Action.MAIL) {
+      return input
+    }
+    return input.splitByWhitespaces().toMutableList().also { list ->
+      list.forEachIndexed { index, s ->
+        when (action) {
+          Action.CALL -> {
+            if (hasCall(s)) {
+              val phoneNumber = crawlForward(list, index + 1, 2, true, {
+                findPhoneNumber(it)
+              }) {
+                list[it] = ""
+              }
+              if (phoneNumber != null) {
+                result(phoneNumber)
+              }
+              return@forEachIndexed
+            }
+          }
+          Action.MESSAGE -> {
+            if (getMessageType(s) != null) {
+              val phoneNumber = crawlForward(list, index + 1, 2, true, {
+                findPhoneNumber(it)
+              }) {
+                list[it] = ""
+              }
+              if (phoneNumber != null) {
+                result(phoneNumber)
+              }
+              return@forEachIndexed
+            }
+          }
+          else -> {
+            if (getMessageType(s) != null) {
+              val email = crawlForward(list, index + 1, 2, true, {
+                findEmail(it)
+              }) {
+                list[it] = ""
+              }
+              if (email != null) {
+                result(email)
+              }
+              return@forEachIndexed
+            }
+          }
+        }
+      }
+    }.clip()
+  }
+
+  protected fun findPhoneNumber(input: String): String? {
+    return contactsInterface?.findNumber(input)
+  }
+
+  protected fun findEmail(input: String): String? {
+    return contactsInterface?.findEmail(input)
+  }
+
+  protected fun <T> crawlBackward(
+    list: MutableList<String>,
+    index: Int,
+    numberOfSteps: Int,
+    clear: Boolean,
+    transform: (String) -> T?,
+    onClear: (Int) -> Unit
+  ): T? {
+    var t: T? = null
+    for (i in index downTo  index - numberOfSteps + 1) {
+      if (i >= 0) {
+        t = ignoreAny({ transform.invoke(list[i]) }) { null }
+        if (t != null) {
+          if (clear) {
+            onClear.invoke(i)
+          }
+          break
+        }
+      } else {
+        break
+      }
+    }
+    return t
+  }
+
+  protected fun <T> crawlForward(
+    list: MutableList<String>,
+    index: Int,
+    numberOfSteps: Int,
+    clear: Boolean,
+    transform: (String) -> T?,
+    onClear: (Int) -> Unit
+  ): T? {
+    var t: T? = null
+    for (i in index until index + numberOfSteps) {
+      if (i < list.size) {
+        t = ignoreAny({ transform.invoke(list[i]) }) { null }
+        if (t != null) {
+          if (clear) {
+            onClear.invoke(i)
+          }
+          break
+        }
+      } else {
+        break
+      }
+    }
+    return t
   }
 
   protected fun clearAllBackward(

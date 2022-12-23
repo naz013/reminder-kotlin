@@ -575,6 +575,21 @@ class EsWorkerTest {
   }
 
   @Test
+  fun testByDateReminderJulyWithSmsYesText() {
+    val input = "el primero de julio a las 16:33 envía un mensaje a casa con el texto si, vine"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.MESSAGE, model?.action)
+    assertEquals("123456", model?.target)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(getExpectedDateTime(7, 1, 16, 33), model?.dateTime)
+    assertEquals("si, vine", model?.summary?.lowercase())
+  }
+
+  @Test
   fun testByDateReminderAugustWithEmail() {
     val input = "el 25 de agosto por la tarde enviar correo electrónico a casa con texto ejecutar pruebas"
     val model = recognizer.recognize(input)

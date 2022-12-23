@@ -22,10 +22,12 @@ internal interface WorkerInterface {
   fun clearAmpm(input: String): String?
   fun getTime(input: String, ampm: Ampm?, times: List<String>): LocalTime?
   fun clearTime(input: String?): String
-  fun getDate(input: String, result: (LocalDate?) -> Unit): String?
+  fun getDateAndClear(input: String, result: (LocalDate?) -> Unit): String?
   fun clearCall(input: String): String?
   fun cleanTimer(input: String): String?
+  fun hasSender(input: String): Boolean
   fun clearSender(input: String): String?
+  fun findSenderAndClear(input: String, action: Action, result: (String) -> Unit): String
   fun hasNote(input: String): Boolean
   fun clearNote(input: String): String
   fun hasAction(input: String): Boolean
@@ -49,7 +51,6 @@ internal interface WorkerInterface {
   fun clearShowAction(input: String): String
   fun hasNextModifier(input: String): Boolean
   fun hasCall(input: String): Boolean
-  fun hasSender(input: String): Boolean
   fun hasRepeat(input: String): Boolean
   fun hasEveryDay(input: String): Boolean
   fun getMessageType(input: String): Action?

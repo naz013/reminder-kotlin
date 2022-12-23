@@ -2,19 +2,21 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
+import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import java.util.regex.Pattern
 
-internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
+internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
+  Worker(zoneId, contactsInterface) {
 
   companion object {
     const val CALENDAR_KEY = "kalendarz"
   }
 
-  override val weekdays = listOf(
+  override val weekdays: List<String> = listOf(
     "niedzie",
     "poniedzia",
     "wtor",
@@ -24,12 +26,12 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     "sobot"
   )
 
-  override fun hasCalendar(input: String) = input.matches(".*$CALENDAR_KEY.*")
+  override fun hasCalendar(input: String): Boolean = input.matches(".*$CALENDAR_KEY.*")
 
-  override fun clearCalendar(input: String) =
-    input.splitByWhitespaces()
+  override fun clearCalendar(input: String): String {
+    return input.splitByWhitespaces()
       .toMutableList()
-      .let {
+      .also {
         it.forEachIndexed { index, s ->
           if (s.matches(".*$CALENDAR_KEY.*")) {
             it[index] = ""
@@ -44,8 +46,8 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
             return@forEachIndexed
           }
         }
-        it.clip()
-      }
+      }.clip()
+  }
 
   override fun clearWeekDays(input: String): String {
     return input.splitByWhitespaces().toMutableList().also {
@@ -70,11 +72,11 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     }.clip()
   }
 
-  override fun getDaysRepeat(input: String) =
+  override fun getDaysRepeat(input: String): Long =
     input.splitByWhitespaces().firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
 
-  override fun clearDaysRepeat(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearDaysRepeat(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasDays(s)) {
           ignoreAny {
@@ -86,15 +88,16 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun hasRepeat(input: String) = input.matches(".*każdego.*") ||
+  override fun hasRepeat(input: String): Boolean = input.matches(".*każdego.*") ||
     input.matches(".*powtarza(j|ć).*") || hasEveryDay(input)
 
-  override fun hasEveryDay(input: String) =
+  override fun hasEveryDay(input: String): Boolean =
     input.matches(".*codzie(n|ń).*") || input.matches(".*każdego dnia.*")
 
-  override fun clearRepeat(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearRepeat(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasRepeat(s)) {
           it[index] = ""
@@ -105,11 +108,12 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun hasTomorrow(input: String) = input.matches(".*jutr(o|a).*")
+  override fun hasTomorrow(input: String): Boolean = input.matches(".*jutr(o|a).*")
 
-  override fun clearTomorrow(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearTomorrow(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches(".*jutr(o|a).*")) {
           it[index] = ""
@@ -117,6 +121,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
   override fun getMessage(input: String): String {
     val sb = StringBuilder()
@@ -129,8 +134,8 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     }
   }
 
-  override fun clearMessage(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearMessage(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches("tekst(em)?")) {
           ignoreAny {
@@ -140,15 +145,16 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun getMessageType(input: String) = when {
+  override fun getMessageType(input: String): Action? = when {
     input.matches(".*wiadomoś.*") -> Action.MESSAGE
     input.matches(".*list.*") -> Action.MAIL
     else -> null
   }
 
-  override fun clearMessageType(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearMessageType(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (getMessageType(s) != null) {
           it[index] = ""
@@ -156,8 +162,9 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun getAmpm(input: String) = when {
+  override fun getAmpm(input: String): Ampm? = when {
     input.matches(".*wcześnie.*") || input.matches(".*rankiem.*") ||
       input.matches(".*rano.*") -> Ampm.MORNING
     input.matches(".*wiecz(orem|ór).*") -> Ampm.EVENING
@@ -166,8 +173,8 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> null
   }
 
-  override fun clearAmpm(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearAmpm(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (getAmpm(s) != null) {
           it[index] = ""
@@ -175,8 +182,9 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun getShortTime(input: String?) = input?.let { s ->
+  override fun getShortTime(input: String?): LocalTime? = input?.let { s ->
     val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
     var localTime: LocalTime? = null
     if (matcher.find()) {
@@ -191,7 +199,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     localTime
   }
 
-  override fun getMonth(input: String?) = when {
+  override fun getMonth(input: String?): Int = when {
     input == null -> -1
     input.contains("styczeń") || input.contains("styczn") -> 1
     input.contains("luty") || input.contains("lutego") -> 2
@@ -208,10 +216,10 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> -1
   }
 
-  override fun hasCall(input: String) = input.matches(".*(za)?dzwo(n|ń).*")
+  override fun hasCall(input: String): Boolean = input.matches(".*(za)?dzwo(n|ń).*")
 
-  override fun clearCall(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearCall(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasCall(s)) {
           it[index] = ""
@@ -219,11 +227,12 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun hasTimer(input: String) = input.matches(".* za .*")
+  override fun hasTimer(input: String): Boolean = input.matches(".* za .*")
 
-  override fun cleanTimer(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun cleanTimer(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches("za")) {
           it[index] = ""
@@ -231,12 +240,13 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip().trim()
+  }
 
-  override fun hasSender(input: String) = input.matches(".*wyś.*") ||
-    input.matches(".*wyslij.*")
+  override fun hasSender(input: String): Boolean =
+    input.matches(".*wyś.*") || input.matches(".*wyslij.*")
 
-  override fun clearSender(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearSender(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasSender(s)) {
           it[index] = ""
@@ -244,21 +254,21 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
         }
       }
     }.clip()
+  }
 
-  override fun hasNote(input: String) = input.contains("notatka")
+  override fun hasNote(input: String): Boolean = input.contains("notatka")
 
-  override fun clearNote(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearNote(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches(".*notatk(ę|a).*")) {
           it[index] = ""
-          if (index > 0 && (it[index - 1].matches(".*nowa?.*") || it[index - 1].matches(".*doda(j|ć).*"))) {
-            it[index - 1] = ""
-          }
+          clearAllBackward(it, index - 1, 1, "nowa?", "doda(j|ć)")
           return@forEachIndexed
         }
       }
     }.clip()
+  }
 
   override fun hasAction(input: String): Boolean {
     return (input.matches(".*otw(orzyć|órz).*") || input.matches(".*pomoc.*")
@@ -266,7 +276,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
       || input.matches(".*poinform.*") || input.matches(".*zgło.*"))
   }
 
-  override fun getAction(input: String) = when {
+  override fun getAction(input: String): Action = when {
     input.matches(".*pomoc.*") -> Action.HELP
     input.matches(".*głośno.*") -> Action.VOLUME
     input.matches(".*ustawienia.*") -> Action.SETTINGS
@@ -274,15 +284,15 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> Action.APP
   }
 
-  override fun hasEvent(input: String) =
+  override fun hasEvent(input: String): Boolean =
     input.startsWith("doda") || input.matches("nowy?a?e?.*")
 
-  override fun hasEmptyTrash(input: String) = input.matches(".*opróżni(ć|j)? kosz.*")
+  override fun hasEmptyTrash(input: String): Boolean = input.matches(".*opróżni(ć|j)? kosz.*")
 
-  override fun hasDisableReminders(input: String) =
+  override fun hasDisableReminders(input: String): Boolean =
     input.matches(".*wyłącz(yć)? (wszystkie)? ?przypomnien.*")
 
-  override fun hasGroup(input: String) = input.matches(".*doda(j|ć)? grup.*")
+  override fun hasGroup(input: String): Boolean = input.matches(".*doda(j|ć)? grup.*")
 
   override fun clearGroup(input: String): String {
     val sb = StringBuilder()
@@ -298,47 +308,48 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     return sb.toString().trim()
   }
 
-  override fun getEvent(input: String) = when {
+  override fun getEvent(input: String): Action = when {
     input.matches(".*urodzin.*") -> Action.BIRTHDAY
     input.matches(".*przypomnien.*") -> Action.REMINDER
     else -> Action.NO_EVENT
   }
 
-  override fun hasToday(input: String) = input.matches(".*dziś.*") ||
+  override fun hasToday(input: String): Boolean = input.matches(".*dziś.*") ||
     input.matches(".*dzisia.*")
 
-  override fun hasAfterTomorrow(input: String) = input.matches(".*pojutrz.*")
+  override fun hasAfterTomorrow(input: String): Boolean = input.matches(".*pojutrz.*")
 
-  override val afterTomorrow = "pojutrze"
+  override val afterTomorrow: String = "pojutrze"
 
-  override fun hasHours(input: String?) = when {
+  override fun hasHours(input: String?): Int = when {
     input.matchesOrFalse(".*godzin.*") -> 1
     else -> -1
   }
 
-  override fun hasMinutes(input: String?) = when {
+  override fun hasMinutes(input: String?): Int = when {
     input.matchesOrFalse(".*minut.*") -> 1
     else -> -1
   }
 
-  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*sekund.*")
+  override fun hasSeconds(input: String?): Boolean = input.matchesOrFalse(".*sekund.*")
 
-  override fun hasDays(input: String?) = input.matchesOrFalse(".*dni.*") ||
+  override fun hasDays(input: String?): Boolean = input.matchesOrFalse(".*dni.*") ||
     input.matchesOrFalse(".*dzień.*") || input.matchesOrFalse(".*dnia.*")
 
-  override fun hasWeeks(input: String?) =
+  override fun hasWeeks(input: String?): Boolean =
     input.matchesOrFalse(".*tydzień.*") || input.matchesOrFalse(".*tygodn.*")
 
-  override fun hasMonth(input: String?) = input.matchesOrFalse(".*miesią.*")
+  override fun hasMonth(input: String?): Boolean = input.matchesOrFalse(".*miesią.*")
 
-  override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (tak|nie) .*")
+  override fun hasAnswer(input: String): Boolean =
+    input.let { " $it " }.matches(".* (tak|nie) .*")
 
-  override fun getAnswer(input: String) = when {
+  override fun getAnswer(input: String): Action = when {
     input.matches(".* ?tak ?.*") -> Action.YES
     else -> Action.NO
   }
 
-  override fun getDate(input: String, result: (LocalDate?) -> Unit): String {
+  override fun getDateAndClear(input: String, result: (LocalDate?) -> Unit): String {
     var localDate: LocalDate? = null
     return input.splitByWhitespaces().toMutableList().also { list ->
       list.forEachIndexed { index, s ->
@@ -362,7 +373,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     }
   }
 
-  override fun findFloat(input: String?) = when {
+  override fun findFloat(input: String?): Float = when {
     input == null -> -1f
     input.contains("półtor") -> 1.5f
     input.contains("pół") -> 0.5f
@@ -388,7 +399,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
       }
   }
 
-  override fun findNumber(input: String?) = when {
+  override fun findNumber(input: String?): Float = when {
     input == null -> -1f
     input.matches("jedenaś.*") || input.matches("jedenast.*") -> 11f
     input.matches("dwanaś.*") || input.matches("dwunast.*") -> 12f
@@ -425,9 +436,9 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> -1f
   }
 
-  override fun hasShowAction(input: String) = input.matches(".*poka(zać|ż)?.*")
+  override fun hasShowAction(input: String): Boolean = input.matches(".*poka(zać|ż)?.*")
 
-  override fun getShowAction(input: String) = when {
+  override fun getShowAction(input: String): Action? = when {
     input.matches(".*urodzin.*") -> Action.BIRTHDAYS
     input.matches(".*aktywne przypomnien.*") -> Action.ACTIVE_REMINDERS
     input.matches(".*przypomnien.*") -> Action.REMINDERS
@@ -438,7 +449,7 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     else -> null
   }
 
-  override fun hasNextModifier(input: String) = input.matches(".*następn.*")
+  override fun hasNextModifier(input: String): Boolean = input.matches(".*następn.*")
 
   override fun getTime(input: String, ampm: Ampm?, times: List<String>): LocalTime? {
     Logger.log("getTime: $ampm, input $input")
@@ -538,8 +549,8 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
     return localTime
   }
 
-  override fun clearTime(input: String?) =
-    input?.let { s ->
+  override fun clearTime(input: String?): String {
+    return input?.let { s ->
       val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
       if (matcher.find()) {
         val time = matcher.group().trim()
@@ -590,4 +601,5 @@ internal class PlWorker(zoneId: ZoneId) : Worker(zoneId) {
       }
       sb.toString().trim()
     } ?: ""
+  }
 }
