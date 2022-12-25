@@ -12,12 +12,12 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
@@ -132,7 +132,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     val wasDefault = mItem?.isDefaultGroup ?: false
     val item = (mItem ?: ReminderGroup()).apply {
       this.groupColor = binding.colorSlider.selectedItem
-      this.groupDateTime = TimeUtil.gmtDateTime
+      this.groupDateTime = DateTimeManager.gmtDateTime
       this.groupTitle = text
       this.isDefaultGroup = binding.defaultCheck.isChecked
     }

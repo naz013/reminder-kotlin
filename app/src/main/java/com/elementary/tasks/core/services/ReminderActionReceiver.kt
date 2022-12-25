@@ -12,8 +12,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
@@ -26,6 +26,8 @@ class ReminderActionReceiver : BaseBroadcast() {
   private val appDb by inject<AppDb>()
   private val eventControlFactory by inject<EventControlFactory>()
   private val jobScheduler by inject<JobScheduler>()
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val doNotDisturbManager by inject<DoNotDisturbManager>()
 
   override fun onReceive(context: Context, intent: Intent?) {
     if (intent != null) {
@@ -33,12 +35,21 @@ class ReminderActionReceiver : BaseBroadcast() {
       Timber.d("onReceive: $action")
       if (action != null) {
         when {
-          action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID)
-            ?: "")
-          action.matches(ACTION_SNOOZE.toRegex()) -> snoozeReminder(intent.getStringExtra(Constants.INTENT_ID)
-            ?: "")
-          action.matches(ACTION_RUN.toRegex()) -> resolveAction(context, intent.getStringExtra(Constants.INTENT_ID)
-            ?: "")
+          action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(
+            context, intent.getStringExtra(Constants.INTENT_ID)
+              ?: ""
+          )
+
+          action.matches(ACTION_SNOOZE.toRegex()) -> snoozeReminder(
+            intent.getStringExtra(Constants.INTENT_ID)
+              ?: ""
+          )
+
+          action.matches(ACTION_RUN.toRegex()) -> resolveAction(
+            context, intent.getStringExtra(Constants.INTENT_ID)
+              ?: ""
+          )
+
           else -> showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
         }
       }
@@ -75,11 +86,15 @@ class ReminderActionReceiver : BaseBroadcast() {
     jobScheduler.cancelReminder(id)
     val reminder = appDb.reminderDao().getById(id) ?: return
     eventControlFactory.getController(reminder).next()
-    ContextCompat.startForegroundService(context,
-      EventOperationalService.getIntent(context, reminder.uuId,
+    ContextCompat.startForegroundService(
+      context,
+      EventOperationalService.getIntent(
+        context, reminder.uuId,
         EventOperationalService.TYPE_REMINDER,
         EventOperationalService.ACTION_STOP,
-        reminder.uniqueId))
+        reminder.uniqueId
+      )
+    )
     endService(reminder.uniqueId)
   }
 
@@ -102,9 +117,13 @@ class ReminderActionReceiver : BaseBroadcast() {
         windowType = reminder.windowType
       }
       Timber.d("start: ignore -> $ignore, event -> $reminder")
-      if (prefs.applyDoNotDisturb(reminder.priority)) {
+      if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
         if (prefs.doNotDisturbAction == 0) {
-          val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis() - TimeCount.MINUTE)
+          val delayTime = dateTimeManager.millisToEndDnd(
+            prefs.doNotDisturbFrom,
+            prefs.doNotDisturbTo,
+            System.currentTimeMillis() - DateTimeManager.MINUTE
+          )
           if (delayTime > 0) {
             jobScheduler.scheduleReminderDelay(delayTime, id)
           }
@@ -128,11 +147,15 @@ class ReminderActionReceiver : BaseBroadcast() {
 
   private fun qAction(reminder: Reminder, context: Context) {
     sendCloseBroadcast(context, reminder.uuId)
-    ContextCompat.startForegroundService(context,
-      EventOperationalService.getIntent(context, reminder.uuId,
+    ContextCompat.startForegroundService(
+      context,
+      EventOperationalService.getIntent(
+        context, reminder.uuId,
         EventOperationalService.TYPE_REMINDER,
         EventOperationalService.ACTION_PLAY,
-        reminder.uniqueId))
+        reminder.uniqueId
+      )
+    )
   }
 
   companion object {

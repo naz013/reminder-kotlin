@@ -1,41 +1,45 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
 
 class DateEvent(
   reminder: Reminder,
-  appDb: AppDb,
+  reminderDao: ReminderDao,
   prefs: Prefs,
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
   updatesHelper: UpdatesHelper,
-  textProvider: TextProvider
+  textProvider: TextProvider,
+  private val dateTimeManager: DateTimeManager,
+  googleTasksDao: GoogleTasksDao
 ) : RepeatableEventManager(
   reminder,
-  appDb,
+  reminderDao,
   prefs,
   googleCalendarUtils,
   notifier,
   jobScheduler,
   updatesHelper,
-  textProvider
+  textProvider,
+  dateTimeManager,
+  googleTasksDao
 ) {
 
   override val isActive: Boolean
     get() = reminder.isActive
 
   override fun start(): Boolean {
-    if (TimeCount.isCurrent(reminder.eventTime)) {
+    if (dateTimeManager.isCurrent(reminder.eventTime)) {
       reminder.isActive = true
       reminder.isRemoved = false
       super.save()
@@ -48,12 +52,12 @@ class DateEvent(
 
   override fun skip(): Boolean {
     if (canSkip()) {
-      val time = TimeCount.generateDateTime(
+      val time = dateTimeManager.generateDateTime(
         reminder.eventTime,
         reminder.repeatInterval,
-        TimeUtil.getDateTimeFromGmt(reminder.eventTime)
+        dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
       )
-      reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+      reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       start()
       return true
     }
@@ -64,7 +68,7 @@ class DateEvent(
     reminder.delay = 0
     return if (canSkip()) {
       val time = calculateTime(false)
-      reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+      reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       reminder.eventCount = reminder.eventCount + 1
       start()
     } else {
@@ -95,6 +99,6 @@ class DateEvent(
   }
 
   override fun calculateTime(isNew: Boolean): Long {
-    return TimeCount.generateDateTime(reminder.eventTime, reminder.repeatInterval)
+    return dateTimeManager.generateDateTime(reminder.eventTime, reminder.repeatInterval)
   }
 }

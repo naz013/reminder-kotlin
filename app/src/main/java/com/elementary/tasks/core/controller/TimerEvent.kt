@@ -1,42 +1,46 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber
 
 class TimerEvent(
   reminder: Reminder,
-  appDb: AppDb,
+  reminderDao: ReminderDao,
   prefs: Prefs,
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
   updatesHelper: UpdatesHelper,
-  textProvider: TextProvider
+  textProvider: TextProvider,
+  private val dateTimeManager: DateTimeManager,
+  googleTasksDao: GoogleTasksDao
 ) : RepeatableEventManager(
   reminder,
-  appDb,
+  reminderDao,
   prefs,
   googleCalendarUtils,
   notifier,
   jobScheduler,
   updatesHelper,
-  textProvider
+  textProvider,
+  dateTimeManager,
+  googleTasksDao
 ) {
 
   override val isActive: Boolean
     get() = reminder.isActive
 
   override fun start(): Boolean {
-    if (TimeCount.isCurrent(reminder.eventTime)) {
+    if (dateTimeManager.isCurrent(reminder.eventTime)) {
       reminder.isActive = true
       reminder.isRemoved = false
       super.save()
@@ -50,7 +54,7 @@ class TimerEvent(
     reminder.delay = 0
     if (canSkip()) {
       val time = calculateTime(false)
-      reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+      reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       start()
       return true
     }
@@ -62,11 +66,11 @@ class TimerEvent(
     return if (canSkip()) {
       var time = calculateTime(false)
       while (time < System.currentTimeMillis()) {
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
         time = calculateTime(false)
       }
-      Timber.d("next: ${TimeUtil.getFullDateTime(time, true)}")
-      reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+      Timber.d("next: ${dateTimeManager.logDateTime(time)}")
+      reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       reminder.eventCount = reminder.eventCount + 1
       start()
     } else {
@@ -80,10 +84,10 @@ class TimerEvent(
     } else {
       var time = calculateTime(true)
       while (time < System.currentTimeMillis()) {
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
         time = calculateTime(true)
       }
-      reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+      reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       reminder.eventCount = 0
       start()
     }
@@ -104,6 +108,6 @@ class TimerEvent(
   }
 
   override fun calculateTime(isNew: Boolean): Long {
-    return TimeCount.generateNextTimer(reminder, isNew)
+    return dateTimeManager.generateNextTimer(reminder, isNew)
   }
 }

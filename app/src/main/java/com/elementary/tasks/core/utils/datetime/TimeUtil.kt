@@ -25,7 +25,6 @@ import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import hirondelle.date4j.DateTime
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,18 +36,12 @@ object TimeUtil {
 
   val BIRTH_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
   val BIRTH_FORMAT = SimpleDateFormat("dd|MM", Locale.US)
-  private val NEW_GMT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
   private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
-  private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
   private val TIME_24 = SimpleDateFormat("HH:mm", Locale.US)
 
   private fun localizedDateFormat(pattern: String, lang: Int = 0): SimpleDateFormat = SimpleDateFormat(pattern,
     Language.getScreenLanguage(lang)
   )
-
-  private fun dateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm", lang)
-
-  private fun dateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, h:mm a", lang)
 
   private fun fullDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy HH:mm", lang)
 
@@ -84,73 +77,9 @@ object TimeUtil {
   }
 
   @Deprecated("Use DateTimeManager")
-  val gmtDateTime: String
-    get() {
-      GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-      return try {
-        GMT_DATE_FORMAT.format(Date())
-      } catch (e: Exception) {
-        ""
-      }
-    }
-
-  @Deprecated("Use DateTimeManager")
-  fun getFireMillis(gmt: String?): Long {
-    if (gmt.isNullOrEmpty()) return 0
-    try {
-      FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-      val date = FIRE_DATE_FORMAT.parse(gmt) ?: return 0
-      return date.time
-    } catch (e: Exception) {
-      return 0
-    }
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun getFireFormatted(prefs: Prefs, gmt: String?): String? {
-    return gmt?.toDate(FIRE_DATE_FORMAT, TimeZone.getTimeZone(GMT)).takeIf {
-      it != null
-    }?.let {
-      if (prefs.is24HourFormat) {
-        dateTime24(prefs.appLanguage).format(it)
-      } else {
-        dateTime12(prefs.appLanguage).format(it)
-      }
-    }
-  }
-
-  @Deprecated("Use DateTimeManager")
   fun showTimePicker(context: Context, is24: Boolean, hour: Int, minute: Int,
                      listener: TimePickerDialog.OnTimeSetListener): TimePickerDialog {
     val dialog = TimePickerDialog(context, listener, hour, minute, is24)
-    dialog.show()
-    return dialog
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun showTimePicker(context: Context, is24: Boolean, old: Calendar?,
-                     listener: (Calendar) -> Unit): TimePickerDialog {
-    val calendar = old ?: newCalendar()
-    val dialog = TimePickerDialog(
-      context,
-      { _, hourOfDay, minute ->
-        newCalendar()
-          .setTime(hourOfDay, minute)
-          .also { listener.invoke(it) }
-      },
-      calendar.getHourOfDay(),
-      calendar.getMinute(),
-      is24
-    )
-    dialog.show()
-    return dialog
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun showDatePicker(context: Context, prefs: Prefs, year: Int, month: Int, dayOfMonth: Int,
-                     listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
-    val dialog = DatePickerDialog(context, listener, year, month, dayOfMonth)
-    dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
     dialog.show()
     return dialog
   }
@@ -193,11 +122,6 @@ object TimeUtil {
         time12(lang).format(it)
       }
     } ?: ""
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun millisToEndDnd(from: String?, to: String?, current: Long): Long {
-    return doNotDisturbRange(from, to).last - current
   }
 
   @Deprecated("Use DateTimeManager")
@@ -326,11 +250,6 @@ object TimeUtil {
   }
 
   @Deprecated("Use DateTimeManager")
-  fun logTime(date: Long = System.currentTimeMillis()): String {
-    return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date(date))
-  }
-
-  @Deprecated("Use DateTimeManager")
   fun getFullDateTime(input: Calendar?, is24: Boolean, lang: Int = 0): String {
     val calendar = input ?: newCalendar()
     return if (is24) {
@@ -366,29 +285,6 @@ object TimeUtil {
   }
 
   @Deprecated("Use DateTimeManager")
-  fun getRealDateTime(gmt: String?, delay: Int, is24: Boolean, lang: Int = 0): String {
-    if (gmt.isNullOrEmpty()) {
-      return ""
-    }
-    val calendar = Calendar.getInstance()
-    try {
-      GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-      val date = GMT_DATE_FORMAT.parse(gmt) ?: return ""
-      calendar.time = date
-      calendar.timeInMillis = calendar.timeInMillis + delay * TimeCount.MINUTE
-    } catch (e: Exception) {
-      FirebaseCrashlytics.getInstance().recordException(e)
-      return ""
-    }
-
-    return if (is24) {
-      fullDateTime24(lang).format(calendar.time)
-    } else {
-      fullDateTime12(lang).format(calendar.time)
-    }
-  }
-
-  @Deprecated("Use DateTimeManager")
   fun getDateTimeFromGmt(dateTime: String?, is24: Boolean, lang: Int = 0): String {
     if (dateTime.isNullOrEmpty()) return ""
     val calendar = Calendar.getInstance()
@@ -408,30 +304,11 @@ object TimeUtil {
   }
 
   @Deprecated("Use DateTimeManager")
-  fun getSimpleDate(gmtDate: String?, lang: Int = 0): String {
-    return getSimpleDate(getDateTimeFromGmt(gmtDate), lang)
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun getSimpleDate(date: Long, lang: Int = 0): String {
-    return simpleDate(lang).format(newCalendar(date).time)
-  }
-
-  @Deprecated("Use DateTimeManager")
   fun getDate(date: String): Date? {
     return try {
       TIME_24.parse(date)
     } catch (e: Exception) {
       null
-    }
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun getDateTime(date: Date, is24: Boolean, lang: Int = 0): String {
-    return if (is24) {
-      dateTime24(lang).format(date)
-    } else {
-      dateTime12(lang).format(date)
     }
   }
 

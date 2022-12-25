@@ -4,14 +4,16 @@ import android.app.AlarmManager
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class WidgetDataProvider(
-  private val appDb: AppDb
+  private val appDb: AppDb,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   private val data: MutableList<Item> = ArrayList()
@@ -121,8 +123,8 @@ class WidgetDataProvider(
               max = limit - count
             }
             do {
-              item.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-              eventTime = TimeCount.getNextMonthDayTime(item)
+              item.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
+              eventTime = dateTimeManager.getNextMonthDayTime(item)
               calendar1.timeInMillis = eventTime
               days++
               val sDay = calendar1.get(Calendar.DAY_OF_MONTH)

@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -45,7 +45,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
     calendar.timeInMillis = System.currentTimeMillis()
     val year = calendar.get(Calendar.YEAR)
     item.showedYear = year
-    item.updatedAt = TimeUtil.gmtDateTime
+    item.updatedAt = DateTimeManager.gmtDateTime
     launchDefault {
       appDb.birthdaysDao().insert(item)
     }

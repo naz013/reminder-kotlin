@@ -9,9 +9,7 @@ import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.google.android.gms.maps.GoogleMap
-import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -50,21 +48,6 @@ class Prefs(
     observers.forEach {
       it.invoke(key)
     }
-  }
-
-  fun applyDoNotDisturb(priority: Int, millis: Long = System.currentTimeMillis()): Boolean {
-    if (isDoNotDisturbEnabled) {
-      Timber.d("applyDoNotDisturb: enabled, $millis")
-      val range = TimeUtil.doNotDisturbRange(doNotDisturbFrom, doNotDisturbTo)
-      return if (range.contains(millis)) {
-        if (doNotDisturbIgnore == 5) {
-          true
-        } else priority < doNotDisturbIgnore
-      } else {
-        false
-      }
-    }
-    return false
   }
 
   var trackCalendarIds: Array<Long>

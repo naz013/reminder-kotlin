@@ -3,27 +3,30 @@ package com.elementary.tasks.core.controller
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.params.Prefs
 
 abstract class RepeatableEventManager(
   reminder: Reminder,
-  appDb: AppDb,
+  reminderDao: ReminderDao,
   prefs: Prefs,
   private val googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
-  jobScheduler: JobScheduler,
+  private val jobScheduler: JobScheduler,
   updatesHelper: UpdatesHelper,
-  private val textProvider: TextProvider
-) : EventManager(reminder, appDb, prefs, notifier, jobScheduler, updatesHelper) {
+  private val textProvider: TextProvider,
+  private val dateTimeManager: DateTimeManager,
+  private val googleTasksDao: GoogleTasksDao
+) : EventManager(reminder, reminderDao, prefs, notifier, updatesHelper) {
 
   protected fun enableReminder() {
     jobScheduler.scheduleReminder(reminder)
@@ -31,7 +34,7 @@ abstract class RepeatableEventManager(
 
   protected fun export() {
     if (reminder.exportToTasks) {
-      val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
+      val due = dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
       val googleTask = GoogleTask()
       googleTask.listId = ""
       googleTask.status = GTasks.TASKS_NEED_ACTION
@@ -45,7 +48,7 @@ abstract class RepeatableEventManager(
       if (prefs.isStockCalendarEnabled) {
         googleCalendarUtils.addEventToStock(
           reminder.summary,
-          TimeUtil.getDateTimeFromGmt(reminder.eventTime)
+          dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
         )
       }
       if (prefs.isCalendarEnabled) {
@@ -57,7 +60,7 @@ abstract class RepeatableEventManager(
   private fun makeGoogleTaskDone() {
     if (reminder.exportToTasks) {
       launchIo {
-        val googleTask = db.googleTasksDao().getByReminderId(reminder.uuId)
+        val googleTask = googleTasksDao.getByReminderId(reminder.uuId)
         if (googleTask != null && googleTask.status == GTasks.TASKS_NEED_ACTION) {
           jobScheduler.scheduleTaskDone(googleTask, reminder.uuId)
         }

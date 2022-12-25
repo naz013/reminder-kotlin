@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.RepeatViewBinding
-import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import timber.log.Timber
 
 class RepeatView : LinearLayout, TextWatcher {
@@ -29,12 +29,12 @@ class RepeatView : LinearLayout, TextWatcher {
   private val multiplier: Long
     get() {
       return when (mState) {
-        SECONDS -> TimeCount.SECOND
-        MINUTES -> TimeCount.MINUTE
-        HOURS -> TimeCount.HOUR
-        DAYS -> TimeCount.DAY
-        WEEKS -> TimeCount.DAY * 7
-        else -> TimeCount.DAY
+        SECONDS -> DateTimeManager.SECOND
+        MINUTES -> DateTimeManager.MINUTE
+        HOURS -> DateTimeManager.HOUR
+        DAYS -> DateTimeManager.DAY
+        WEEKS -> DateTimeManager.DAY * 7
+        else -> DateTimeManager.DAY
       }
     }
 
@@ -57,28 +57,28 @@ class RepeatView : LinearLayout, TextWatcher {
         return
       }
       when {
-        fitInterval(mills, TimeCount.DAY * 7) -> {
-          val progress = mills / (TimeCount.DAY * 7)
+        fitInterval(mills, DateTimeManager.DAY * 7) -> {
+          val progress = mills / (DateTimeManager.DAY * 7)
           setProgress(progress.toInt())
           selectState(WEEKS)
         }
-        fitInterval(mills, TimeCount.DAY) -> {
-          val progress = mills / TimeCount.DAY
+        fitInterval(mills, DateTimeManager.DAY) -> {
+          val progress = mills / DateTimeManager.DAY
           setProgress(progress.toInt())
           selectState(DAYS)
         }
-        fitInterval(mills, TimeCount.HOUR) -> {
-          val progress = mills / TimeCount.HOUR
+        fitInterval(mills, DateTimeManager.HOUR) -> {
+          val progress = mills / DateTimeManager.HOUR
           setProgress(progress.toInt())
           selectState(HOURS)
         }
-        fitInterval(mills, TimeCount.MINUTE) -> {
-          val progress = mills / TimeCount.MINUTE
+        fitInterval(mills, DateTimeManager.MINUTE) -> {
+          val progress = mills / DateTimeManager.MINUTE
           setProgress(progress.toInt())
           selectState(MINUTES)
         }
-        fitInterval(mills, TimeCount.SECOND) -> {
-          val progress = mills / TimeCount.SECOND
+        fitInterval(mills, DateTimeManager.SECOND) -> {
+          val progress = mills / DateTimeManager.SECOND
           setProgress(progress.toInt())
           selectState(SECONDS)
         }

@@ -14,11 +14,11 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ViewNoteCardBinding
 import com.elementary.tasks.databinding.ViewNoteReminderCardBinding
@@ -89,7 +89,7 @@ class QuickNoteCoordinator(
     binding.buttonSave.isEnabled = false
     val item = Note()
     item.summary = text
-    item.date = TimeUtil.gmtDateTime
+    item.date = DateTimeManager.gmtDateTime
     if (prefs.isNoteColorRememberingEnabled) {
       item.color = prefs.lastNoteColor
     } else {
@@ -143,7 +143,7 @@ class QuickNoteCoordinator(
     reminder.isActive = true
     reminder.isRemoved = false
     reminder.summary = SuperUtil.normalizeSummary(note.summary)
-    val prefsTime = prefs.noteReminderTime * TimeCount.MINUTE
+    val prefsTime = prefs.noteReminderTime * DateTimeManager.MINUTE
     val startTime = System.currentTimeMillis() + prefsTime
     reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
     reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)

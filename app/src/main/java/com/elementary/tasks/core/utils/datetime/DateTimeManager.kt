@@ -31,9 +31,7 @@ import com.github.naz013.calendarext.setTime
 import com.github.naz013.calendarext.toCalendar
 import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
-import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
-import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
@@ -48,6 +46,77 @@ class DateTimeManager(
   private val prefs: Prefs,
   private val textProvider: TextProvider
 ) {
+
+  fun getFireMillis(gmt: String?): Long {
+    if (gmt.isNullOrEmpty()) return 0
+    try {
+      FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
+      val date = FIRE_DATE_FORMAT.parse(gmt) ?: return 0
+      return date.time
+    } catch (e: Exception) {
+      return 0
+    }
+  }
+
+  fun getFireFormatted(gmt: String?): String? {
+    return gmt?.toDate(FIRE_DATE_FORMAT, TimeZone.getTimeZone(GMT)).takeIf {
+      it != null
+    }?.let {
+      if (prefs.is24HourFormat) {
+        dateTime24().format(it)
+      } else {
+        dateTime12().format(it)
+      }
+    }
+  }
+
+  fun millisToEndDnd(from: String?, to: String?, current: Long): Long {
+    return doNotDisturbRange(from, to).last - current
+  }
+
+  fun doNotDisturbRange(from: String?, to: String?): LongRange {
+    var fromMillis = 0L
+    var toMillis = 0L
+    if (from != null) {
+      fromMillis = toMillis(from)
+    }
+    if (to != null) {
+      toMillis = toMillis(to)
+    }
+    val fromHm = hourMinute(fromMillis)
+    val toHm = hourMinute(toMillis)
+    Timber.d("doNotDisturbRange: HM $fromHm, $toHm")
+    val compare = compareHm(fromHm, toHm)
+    if (compare < 0) {
+      if (toMillis < fromMillis) {
+        toMillis += AlarmManager.INTERVAL_DAY
+      }
+    } else if (compare == 0) {
+      return LongRange(0, 0)
+    }
+    Timber.d("doNotDisturbRange: millis $fromMillis, $toMillis")
+    return if (fromMillis > toMillis) {
+      LongRange(toMillis, fromMillis)
+    } else {
+      LongRange(fromMillis, toMillis)
+    }
+  }
+
+  private fun compareHm(from: Pair<Int, Int>, to: Pair<Int, Int>): Int {
+    return when {
+      from.first == to.first -> when {
+        from.second == to.second -> 0
+        from.second > to.second -> -1
+        else -> 1
+      }
+      from.first > to.first -> -1
+      else -> 1
+    }
+  }
+
+  private fun hourMinute(millis: Long): Pair<Int, Int> {
+    return newCalendar(millis).map { Pair(it.getHourOfDay(), it.getMinute()) }
+  }
 
   fun getMillisFromGmtVoiceEngine(dateTime: String?): Long {
     if (dateTime.isNullOrEmpty()) return 0
@@ -437,6 +506,14 @@ class DateTimeManager(
     return millis > System.currentTimeMillis()
   }
 
+  fun getDateTime(date: java.util.Date): String {
+    return if (prefs.is24HourFormat) {
+      dateTime24().format(date)
+    } else {
+      dateTime12().format(date)
+    }
+  }
+
   fun getNextMonthDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
@@ -557,6 +634,22 @@ class DateTimeManager(
     calendar.dropSeconds()
     calendar.dropMilliseconds()
     return calendar.timeInMillis
+  }
+
+  fun generateDateTime(
+    eventTime: String,
+    repeat: Long,
+    fromTime: Long = System.currentTimeMillis()
+  ): Long {
+    return if (eventTime.isEmpty()) {
+      0
+    } else {
+      var time = getDateTimeFromGmt(eventTime)
+      while (time <= fromTime) {
+        time += repeat
+      }
+      time
+    }
   }
 
   fun generateNextTimer(reminder: Reminder, isNew: Boolean): Long {

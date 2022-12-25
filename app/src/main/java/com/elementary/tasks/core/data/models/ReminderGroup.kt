@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -21,7 +21,7 @@ data class ReminderGroup(
   @SerializedName("color")
   var groupColor: Int = 0,
   @SerializedName("dateTime")
-  var groupDateTime: String = TimeUtil.gmtDateTime,
+  var groupDateTime: String = DateTimeManager.gmtDateTime,
   @SerializedName("isDefaultGroup")
   var isDefaultGroup: Boolean = false
 ) : Parcelable

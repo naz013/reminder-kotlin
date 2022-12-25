@@ -23,11 +23,11 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.contacts.Contacts
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.FollowReminderViewModel
@@ -41,6 +41,8 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
 
   private val gTasks by inject<GTasks>()
   private val featureManager by inject<FeatureManager>()
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private val viewModel by viewModel<FollowReminderViewModel>()
 
   private var mHour = 0
@@ -92,7 +94,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
       c.set(Calendar.MONTH, monthOfYear)
       c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-      binding.customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
+      binding.customDate.text = dateTimeManager.date().format(c.time)
     }
 
   private var mTimeCallBack: TimePickerDialog.OnTimeSetListener =
@@ -104,7 +106,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
       c.set(Calendar.HOUR_OF_DAY, hourOfDay)
       c.set(Calendar.MINUTE, minute)
 
-      binding.customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
+      binding.customTime.text = dateTimeManager.getTime(c.time)
     }
 
   private val type: Int
@@ -198,7 +200,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
       else -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24
     }
     mNextWorkTime = c.timeInMillis
-    binding.nextWorkingTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
+    binding.nextWorkingTime.text = dateTimeManager.getDateTime(c.time)
   }
 
   private fun initTomorrowTime() {
@@ -210,7 +212,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
     mYear = c.get(Calendar.YEAR)
     mMonth = c.get(Calendar.MONTH)
     mDay = c.get(Calendar.DAY_OF_MONTH)
-    binding.tomorrowTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
+    binding.tomorrowTime.text = dateTimeManager.getDateTime(c.time)
   }
 
   private fun initSpinner() {
@@ -220,8 +222,8 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
   private fun initCustomTime() {
     val c = Calendar.getInstance()
     c.timeInMillis = mCurrentTime
-    binding.customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
-    binding.customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
+    binding.customDate.text = dateTimeManager.date().format(c.time)
+    binding.customTime.text = dateTimeManager.getTime(c.time)
     mCustomHour = c.get(Calendar.HOUR_OF_DAY)
     mCustomMinute = c.get(Calendar.MINUTE)
     mCustomYear = c.get(Calendar.YEAR)
@@ -274,11 +276,11 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
   }
 
   private fun dateDialog() {
-    TimeUtil.showDatePicker(this, prefs, mYear, mMonth, mDay, mDateCallBack)
+    dateTimePickerProvider.showDatePicker(this, mYear, mMonth, mDay, mDateCallBack)
   }
 
   private fun timeDialog() {
-    TimeUtil.showTimePicker(this, prefs.is24HourFormat, mCustomHour, mCustomMinute, mTimeCallBack)
+    dateTimePickerProvider.showTimePicker(this, mCustomHour, mCustomMinute, mTimeCallBack)
   }
 
   private fun saveDateTask() {
@@ -291,7 +293,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
     val type = type
     setUpTimes()
     val due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
-    if (!TimeCount.isCurrent(due)) {
+    if (!dateTimeManager.isCurrent(due)) {
       Toast.makeText(this, getString(R.string.select_date_in_future), Toast.LENGTH_SHORT).show()
       return
     }
@@ -301,8 +303,8 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
     if (def != null) {
       reminder.groupUuId = def.groupUuId
     }
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(due)
-    reminder.startTime = TimeUtil.getGmtFromDateTime(due)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(due)
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(due)
     reminder.type = type
     reminder.summary = text
     reminder.target = mNumber

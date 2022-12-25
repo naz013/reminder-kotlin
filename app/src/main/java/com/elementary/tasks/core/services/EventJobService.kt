@@ -13,7 +13,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.datetime.TimeUtil.BIRTH_FORMAT
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
@@ -36,11 +37,13 @@ class EventJobService(
   private val appDb by inject<AppDb>()
   private val notifier by inject<Notifier>()
   private val jobScheduler by inject<JobScheduler>()
+  private val doNotDisturbManager by inject<DoNotDisturbManager>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   override fun doWork(): Result {
     Timber.d(
       "onRunJob: %s, tag -> %s",
-      TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
+      dateTimeManager.logDateTime(),
       params.tags.toList()
     )
     val bundle = params.inputData
@@ -99,7 +102,7 @@ class EventJobService(
   }
 
   private fun missedCallAction(tag: String) {
-    if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
+    if (!doNotDisturbManager.applyDoNotDisturb(prefs.missedCallPriority)) {
       jobScheduler.scheduleMissedCall(tag)
       if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
         ContextCompat.startForegroundService(
@@ -125,7 +128,7 @@ class EventJobService(
     jobScheduler.scheduleDailyBirthday()
     launchDefault {
       val daysBefore = prefs.daysToBirthday
-      val applyDnd = prefs.applyDoNotDisturb(prefs.birthdayPriority)
+      val applyDnd = doNotDisturbManager.applyDoNotDisturb(prefs.birthdayPriority)
       val cal = Calendar.getInstance()
       cal.timeInMillis = System.currentTimeMillis()
       val mYear = cal.get(Calendar.YEAR)

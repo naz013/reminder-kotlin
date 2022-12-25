@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -33,7 +33,7 @@ data class Place(
   @SerializedName("address")
   var address: String = "",
   @SerializedName("dateTime")
-  var dateTime: String = TimeUtil.gmtDateTime,
+  var dateTime: String = DateTimeManager.gmtDateTime,
   @SerializedName("tags")
   var tags: List<String> = listOf()
 ) : Parcelable {

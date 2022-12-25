@@ -56,6 +56,7 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
@@ -156,7 +157,7 @@ val workerModule = module {
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
   worker { TemplateSingleBackupWorker(get(), get(), get()) }
   worker { TemplateDeleteBackupWorker(get(), get(), get()) }
-  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get()) }
+  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get()) }
   worker { SingleBackupWorker(get(), get(), get(), get()) }
 }
 
@@ -166,7 +167,7 @@ val viewModelModule = module {
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
-  viewModel { FollowReminderViewModel(get(), get(), get(), get(), get()) }
+  viewModel { FollowReminderViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
     EditReminderViewModel(
       id,
@@ -310,7 +311,7 @@ val converterModule = module {
 }
 
 val completableModule = module {
-  single { ReminderCompletable(get(), get(), get(), get()) }
+  single { ReminderCompletable(get(), get(), get(), get(), get()) }
   single { ReminderDeleteCompletable(get()) }
   single { CompletableManager(get(), get()) }
 }
@@ -365,16 +366,29 @@ val utilModule = module {
   single { GlobalButtonObservable() }
   single { ImagesSingleton() }
   single { SyncManagers(get(), get(), get(), get()) }
-  single { EventControlFactory(get(), get(), get(), get(), get(), get(), get(), get()) }
+  single {
+    EventControlFactory(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
 
   single { RemotePrefs(get(), get()) }
 
   single { Notifier(get(), get(), get(), get()) }
-  single { JobScheduler(get(), get()) }
+  single { JobScheduler(get(), get(), get()) }
   single { UpdatesHelper(get()) }
   single { SystemServiceProvider(get()) }
 
-  factory { WidgetDataProvider(get()) }
+  factory { WidgetDataProvider(get(), get()) }
 
   single { SyncWorker(get(), get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }
@@ -404,6 +418,7 @@ val utilModule = module {
   single { ContactsReader(get()) }
 
   single { DateTimePickerProvider(get()) }
+  single { DoNotDisturbManager(get(), get()) }
 
   factory { (fragment: BaseFragment<*>, callback: GoogleLogin.LoginCallback) ->
     GoogleLogin(fragment, get(), get(), get(), callback)

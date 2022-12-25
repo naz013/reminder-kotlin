@@ -5,9 +5,9 @@ import android.util.Base64InputStream
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SettingsModel
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.PrefsConstants
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
@@ -21,7 +21,7 @@ class SettingsConverter : Convertible<SettingsModel> {
       "app",
       FileConfig.FILE_NAME_SETTINGS,
       FileConfig.FILE_NAME_SETTINGS_EXT,
-      TimeUtil.gmtDateTime,
+      DateTimeManager.gmtDateTime,
       "Settings Backup"
     )
   }
@@ -44,7 +44,7 @@ class SettingsConverter : Convertible<SettingsModel> {
           this.stream = outputBytes
           this.ext = FileConfig.FILE_NAME_SETTINGS_EXT
           this.id = "app"
-          this.updatedAt = TimeUtil.gmtDateTime
+          this.updatedAt = DateTimeManager.gmtDateTime
           this.type = IndexTypes.TYPE_SETTINGS
           this.readyToBackup = true
         }

@@ -5,10 +5,10 @@ import android.text.TextUtils
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.settings.export.backups.UserItem
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -256,7 +256,7 @@ class GDrive(
         "",
         IndexDataFile.FILE_NAME,
         FileConfig.FILE_NAME_JSON,
-        TimeUtil.gmtDateTime,
+        DateTimeManager.gmtDateTime,
         "Index file"
       ))
     }

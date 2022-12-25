@@ -9,6 +9,7 @@ import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
@@ -23,7 +24,8 @@ class FollowReminderViewModel(
   private val reminderGroupDao: ReminderGroupDao,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher
+  private val workerLauncher: WorkerLauncher,
+  private val dateTimeManager: DateTimeManager
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()

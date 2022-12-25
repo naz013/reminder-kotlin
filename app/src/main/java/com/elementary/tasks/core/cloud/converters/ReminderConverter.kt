@@ -4,9 +4,9 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import timber.log.Timber
 import java.io.InputStream
 
@@ -32,7 +32,7 @@ class ReminderConverter : Convertible<Reminder> {
         this.ext = FileConfig.FILE_NAME_REMINDER
         this.id = t.uuId
         this.melody = t.melodyPath
-        this.updatedAt = t.updatedAt ?: TimeUtil.gmtDateTime
+        this.updatedAt = t.updatedAt ?: DateTimeManager.gmtDateTime
         this.type = IndexTypes.TYPE_REMINDER
         this.readyToBackup = true
       }

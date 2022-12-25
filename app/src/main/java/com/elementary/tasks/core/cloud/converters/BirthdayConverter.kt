@@ -3,9 +3,9 @@ package com.elementary.tasks.core.cloud.converters
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import timber.log.Timber
 import java.io.InputStream
 
@@ -29,7 +29,7 @@ class BirthdayConverter : Convertible<Birthday> {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_BIRTHDAY
         this.id = t.uuId
-        this.updatedAt = t.updatedAt ?: TimeUtil.gmtDateTime
+        this.updatedAt = t.updatedAt ?: DateTimeManager.gmtDateTime
         this.type = IndexTypes.TYPE_BIRTHDAY
         this.readyToBackup = true
       }
