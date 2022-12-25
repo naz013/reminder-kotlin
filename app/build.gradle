@@ -63,8 +63,8 @@ android {
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
 
-            def api = props.get('freeApiKey', "API_KEY")
-            def placesApiKey = props.get('freePlacesApiKey', "API_KEY")
+            def api = props.get('freeApiKey', "\"API_KEY\"")
+            def placesApiKey = props.get('freePlacesApiKey', "\"API_KEY\"")
             buildConfigField "String", "PLACES_API_KEY", "$placesApiKey"
             manifestPlaceholders = [apiKey: api]
         }
@@ -74,8 +74,8 @@ android {
             buildConfigField "boolean", "IS_PRO", "true"
             versionCode 257
 
-            def api = props.get('proApiKey', "API_KEY")
-            def placesApiKey = props.get('proPlacesApiKey', "API_KEY")
+            def api = props.get('proApiKey', "\"API_KEY\"")
+            def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
             manifestPlaceholders = [apiKey: api]
             buildConfigField "String", "PLACES_API_KEY", "$placesApiKey"
         }

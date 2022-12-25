@@ -15,7 +15,7 @@ object RequestBuilder {
       return locale.language
     }
 
-  private const val key: String = BuildConfig.PLACES_API_KEY
+  private val key: String = BuildConfig.PLACES_API_KEY
 
   fun getNearby(lat: Double, lng: Double, name: String): Call<PlacesResponse> {
     val req = name.replace("\\s+".toRegex(), "+")
