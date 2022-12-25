@@ -7,7 +7,7 @@ import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Locale
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -17,7 +17,7 @@ class PtWorkerTest {
   private val recognizer = Recognizer.Builder()
     .setLocale(Locale.PT)
     .setTimes(TIMES)
-    .setTimeZone("GMT")
+    .setTimeZone(TIME_ZONE_ID)
     .build()
 
   @Before

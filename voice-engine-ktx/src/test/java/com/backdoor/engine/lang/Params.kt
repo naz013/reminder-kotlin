@@ -2,14 +2,20 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.TimeUtil
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
+const val TIME_ZONE_ID = "GMT"
 const val SECOND = 1000L
 const val MINUTE = SECOND * 60
 const val HOUR = MINUTE * 60
 const val DAY = HOUR * 24
 
+fun getTimeZone(): ZoneId {
+  return ZoneId.of(TIME_ZONE_ID)
+}
+
 fun getExpectedDateTime(month: Int, day: Int, hour: Int, minute: Int): String {
-  val dateTime = LocalDateTime.now()
+  val dateTime = LocalDateTime.now(getTimeZone())
     .withMonth(month)
     .withDayOfMonth(day)
     .withHour(hour)
@@ -19,14 +25,14 @@ fun getExpectedDateTime(month: Int, day: Int, hour: Int, minute: Int): String {
 }
 
 fun getDateTimeWithShiftedYearIfNeeded(month: Int, day: Int, hour: Int, minute: Int): String {
-  var dateTime = LocalDateTime.now()
+  var dateTime = LocalDateTime.now(getTimeZone())
     .withMonth(month)
     .withDayOfMonth(day)
     .withHour(hour)
     .withMinute(minute)
     .withSecond(0)
 
-  if (dateTime.isBefore(LocalDateTime.now())) {
+  if (dateTime.isBefore(LocalDateTime.now(getTimeZone()))) {
     dateTime = dateTime.plusYears(1)
   }
 

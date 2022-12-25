@@ -212,7 +212,7 @@ class Recognizer private constructor(
           proc.dateTime = getDateTime(proc.date, proc.time)
         } else if (proc.hasTimer) {
           log("parse: timer")
-          proc.dateTime = LocalDateTime.now().plusSeconds(proc.afterTime.value / 1000L)
+          proc.dateTime = LocalDateTime.now(zoneId).plusSeconds(proc.afterTime.value / 1000L)
         } else if (proc.date != null || proc.time != null) {
           log("parse: date/time")
           proc.dateTime = getDateTime(proc.date, proc.time)
@@ -248,6 +248,7 @@ class Recognizer private constructor(
       }
       ?.takeIf { !it.skipNext }
       ?.let {
+        log("parse: now time ${LocalDateTime.now(zoneId)}")
         Model(
           type = it.actionType,
           summary = it.summary,
@@ -298,12 +299,18 @@ class Recognizer private constructor(
     val localDate = date ?: LocalDate.now(zoneId)
     val localTime = time ?: LocalTime.now(zoneId)
 
-    return nowDateTime().withYear(localDate.year)
+    val dateTime = nowDateTime().withYear(localDate.year)
       .withMonth(localDate.monthValue)
       .withDayOfMonth(localDate.dayOfMonth)
       .withHour(localTime.hour)
       .withMinute(localTime.minute)
       .withSecond(0)
+
+    return if (dateTime.isBefore(nowDateTime())) {
+      dateTime.plusYears(1)
+    } else {
+      dateTime
+    }
   }
 
   private fun getDayTime(time: LocalTime?, weekdays: List<Int>): LocalDateTime? {

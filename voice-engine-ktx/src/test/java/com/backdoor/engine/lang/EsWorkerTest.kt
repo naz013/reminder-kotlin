@@ -17,7 +17,7 @@ class EsWorkerTest {
   private val recognizer = Recognizer.Builder()
     .setLocale(Locale.ES)
     .setTimes(TIMES)
-    .setTimeZone("GMT")
+    .setTimeZone(TIME_ZONE_ID)
     .build()
 
   @Before

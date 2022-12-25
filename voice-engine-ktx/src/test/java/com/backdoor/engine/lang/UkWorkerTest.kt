@@ -17,7 +17,7 @@ class UkWorkerTest {
   private val recognizer = Recognizer.Builder()
     .setLocale(Locale.UK)
     .setTimes(TIMES)
-    .setTimeZone("GMT")
+    .setTimeZone(TIME_ZONE_ID)
     .build()
 
   @Before
