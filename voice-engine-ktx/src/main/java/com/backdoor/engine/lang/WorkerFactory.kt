@@ -14,8 +14,6 @@ internal object WorkerFactory {
     return when (locale) {
       Locale.EN -> EnWorker(zoneId, contactsInterface)
       Locale.UK -> UkWorker(zoneId, contactsInterface)
-      Locale.RU -> RuWorker(zoneId, contactsInterface)
-      Locale.DE -> DeWorker(zoneId, contactsInterface)
       Locale.ES -> EsWorker(zoneId, contactsInterface)
       Locale.PT -> PtWorker(zoneId, contactsInterface)
       Locale.PL -> PlWorker(zoneId, contactsInterface)
