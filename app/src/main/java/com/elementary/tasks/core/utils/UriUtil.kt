@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.annotation.RequiresPermission
 import androidx.core.content.FileProvider
 import com.elementary.tasks.BuildConfig
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 import java.io.File

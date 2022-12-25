@@ -7,9 +7,9 @@ import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMapPlaceBinding
 
@@ -32,6 +32,14 @@ class RecentPlacesAdapter(
     return mData.size
   }
 
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    ViewHolder(parent, currentStateHolder)
+
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    holder.bind(holder.getItem(position))
+  }
+
+
   inner class ViewHolder(
     parent: ViewGroup,
     currentStateHolder: CurrentStateHolder
@@ -51,21 +59,17 @@ class RecentPlacesAdapter(
         .withColor(theme.getNoteLightColor(item.marker))
         .tint()
         .applyTo(binding.markerImage)
-    }
 
-    init {
       binding.itemCard.setOnClickListener { view ->
-        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+        actionsListener?.onAction(
+          view,
+          adapterPosition,
+          getItem(adapterPosition),
+          ListActions.OPEN
+        )
       }
     }
-  }
 
-  fun getItem(position: Int) = mData[position]
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-    ViewHolder(parent, currentStateHolder)
-
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    holder.bind(getItem(position))
+    fun getItem(position: Int) = mData[position]
   }
 }

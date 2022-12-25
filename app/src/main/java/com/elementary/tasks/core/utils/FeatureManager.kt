@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.utils
 
+import com.elementary.tasks.core.utils.params.Prefs
+
 class FeatureManager(
   private val prefs: Prefs
 ) {

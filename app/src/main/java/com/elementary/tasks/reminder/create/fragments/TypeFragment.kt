@@ -14,18 +14,20 @@ import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Configs
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.copyExtra
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -47,6 +49,8 @@ import timber.log.Timber
 
 abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
+  protected val dateTimeManager by inject<DateTimeManager>()
+  protected val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private val contactPicker = ContactPicker(this) { actionView?.number = it.phone }
 
   lateinit var iFace: ReminderInterface
@@ -54,10 +58,10 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   protected val prefs by inject<Prefs>()
   protected val themeUtil by inject<ThemeProvider>()
-  protected val calendarUtils by inject<CalendarUtils>()
+  protected val googleCalendarUtils by inject<GoogleCalendarUtils>()
 
-  private val calendars: List<CalendarUtils.CalendarItem> by lazy {
-    calendarUtils.getCalendarsList()
+  private val calendars: List<GoogleCalendarUtils.CalendarItem> by lazy {
+    googleCalendarUtils.getCalendarsList()
   }
 
   private var melodyView: MelodyView? = null
@@ -109,7 +113,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
     actionView?.let {
       if (prefs.isTelephonyAllowed) {
-        it.show()
+        it.visible()
         it.setPermissionHandle(permissionFlow)
         it.setContactClickListener {
           permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
@@ -127,7 +131,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           }
         }
       } else {
-        it.hide()
+        it.gone()
       }
     }
     loudnessPickerView?.let {
@@ -142,9 +146,9 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     }
     windowTypeView?.let {
       if (Module.is10) {
-        it.hide()
+        it.gone()
       } else {
-        it.show()
+        it.visible()
         it.bindProperty(iFace.state.reminder.windowType) { type ->
           iFace.state.reminder.windowType = type
         }
@@ -231,38 +235,38 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     }
     ledPickerView?.let {
       if (Module.isPro) {
-        it.show()
+        it.visible()
         it.bindProperty(iFace.state.reminder.color) { color ->
           iFace.state.reminder.color = color
         }
       } else {
-        it.hide()
+        it.gone()
       }
     }
     calendarCheck?.let {
       if (iFace.canExportToCalendar) {
-        it.show()
+        it.visible()
         it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
           iFace.state.reminder.exportToCalendar = isChecked
           if (isChecked) {
-            calendarPicker?.show()
+            calendarPicker?.visible()
           } else {
-            calendarPicker?.hide()
+            calendarPicker?.gone()
           }
         }
       } else {
-        it.hide()
-        calendarPicker?.hide()
+        it.gone()
+        calendarPicker?.gone()
       }
     }
     tasksCheck?.let {
       if (iFace.canExportToTasks) {
-        it.show()
+        it.visible()
         it.bindProperty(iFace.state.reminder.exportToTasks) { isChecked ->
           iFace.state.reminder.exportToTasks = isChecked
         }
       } else {
-        it.hide()
+        it.gone()
       }
     }
     extraView?.let {
@@ -291,12 +295,12 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         it.selectItem(index)
       }
       if (calendarCheck?.isChecked == true) {
-        calendarPicker?.show()
+        calendarPicker?.visible()
       } else {
-        calendarPicker?.hide()
+        calendarPicker?.gone()
       }
     } else {
-      calendarPicker?.hide()
+      calendarPicker?.gone()
     }
     updateHeader()
   }

@@ -10,7 +10,7 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.reminders.FullScreenMapViewModel
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +19,7 @@ import org.koin.core.parameter.parametersOf
 class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
 
   private var mGoogleMap: AdvancedMapFragment? = null
-  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+  private val viewModel by viewModel<FullScreenMapViewModel> { parametersOf(getId()) }
 
   private var reminder: Reminder? = null
   private var placeIndex = 0

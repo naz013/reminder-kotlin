@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding
 import com.elementary.tasks.settings.BaseSettingsFragment

@@ -11,8 +11,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.ActionViewBinding
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.visible
 
 class ActionView : LinearLayout, TextWatcher {
 
@@ -58,7 +58,7 @@ class ActionView : LinearLayout, TextWatcher {
     orientation = VERTICAL
     binding = ActionViewBinding(this)
 
-    binding.actionBlock.hide()
+    binding.actionBlock.gone()
 
     binding.numberView.isFocusableInTouchMode = true
     binding.numberView.setOnFocusChangeListener { _, hasFocus ->
@@ -86,7 +86,7 @@ class ActionView : LinearLayout, TextWatcher {
           binding.actionCheck.isChecked = false
         }
       } else {
-        binding.actionBlock.hide()
+        binding.actionBlock.gone()
       }
       listener?.onStateChanged(hasAction(), type, number)
     }
@@ -96,7 +96,7 @@ class ActionView : LinearLayout, TextWatcher {
   }
 
   private fun openAction() {
-    binding.actionBlock.show()
+    binding.actionBlock.visible()
     refreshState()
   }
 

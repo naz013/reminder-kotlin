@@ -18,31 +18,31 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.data.ui.UiAppTarget
-import com.elementary.tasks.core.data.ui.UiCallTarget
-import com.elementary.tasks.core.data.ui.UiEmailTarget
-import com.elementary.tasks.core.data.ui.UiLinkTarget
-import com.elementary.tasks.core.data.ui.UiReminderDueData
 import com.elementary.tasks.core.data.ui.UiReminderPreview
-import com.elementary.tasks.core.data.ui.UiReminderStatus
-import com.elementary.tasks.core.data.ui.UiReminderTarget
-import com.elementary.tasks.core.data.ui.UiReminderType
-import com.elementary.tasks.core.data.ui.UiSmsTarget
+import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
+import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
+import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
+import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
+import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
+import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
+import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
+import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.visibleInvisible
 import com.elementary.tasks.core.view_models.Commands
@@ -91,12 +91,12 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
     override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
       Timber.d("onBitmapFailed: $e")
-      binding.attachmentsView.hide()
+      binding.attachmentsView.gone()
     }
 
     override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
       Timber.d("onBitmapLoaded: ${bitmap != null}")
-      binding.attachmentsView.show()
+      binding.attachmentsView.visible()
       binding.attachmentImage.setImageBitmap(bitmap)
       binding.attachmentsView.setOnClickListener {
         withReminder { openAttachmentPreview(it.attachmentFile) }
@@ -119,16 +119,16 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun loadAds() {
     if (!Module.isPro) {
-      binding.adsCard.show()
+      binding.adsCard.visible()
       adsProvider.showBanner(
         binding.adsHolder,
         AdsProvider.REMINDER_PREVIEW_BANNER_ID,
         R.layout.list_item_ads_hor
       ) {
-        binding.adsCard.show()
+        binding.adsCard.visible()
       }
     } else {
-      binding.adsCard.show()
+      binding.adsCard.visible()
     }
   }
 
@@ -184,7 +184,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
   }
 
-  private fun showCalendarEvents(events: List<CalendarUtils.EventItem>) {
+  private fun showCalendarEvents(events: List<GoogleCalendarUtils.EventItem>) {
     Timber.d("showCalendarEvents: $events")
     for (e in events) {
       val binding =
@@ -242,8 +242,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun showMapData(reminder: UiReminderPreview) {
-    binding.mapContainer.show()
-    binding.location.show()
+    binding.mapContainer.visible()
+    binding.location.visible()
 
     var places = ""
     reminder.places.forEach {
@@ -283,15 +283,15 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     if (reminder.type.isGpsType()) {
       initMap()
     } else {
-      binding.locationView.hide()
-      binding.mapContainer.hide()
+      binding.locationView.gone()
+      binding.mapContainer.gone()
     }
 
     if (reminder.shopList.isNotEmpty()) {
-      binding.todoList.show()
+      binding.todoList.visible()
       loadData(reminder.shopList)
     } else {
-      binding.todoList.hide()
+      binding.todoList.gone()
     }
 
     if (reminder.status.canMakeAction) {
@@ -300,9 +300,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
           if (prefs.isTelephonyAllowed) {
             binding.fab.setIconResource(R.drawable.ic_twotone_send_24px)
             binding.fab.text = getString(R.string.send_sms)
-            binding.fab.show()
+            binding.fab.visible()
           } else {
-            binding.fab.hide()
+            binding.fab.gone()
           }
         }
 
@@ -310,34 +310,34 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
           if (prefs.isTelephonyAllowed) {
             binding.fab.setIconResource(R.drawable.ic_twotone_call_24px)
             binding.fab.text = getString(R.string.make_call)
-            binding.fab.show()
+            binding.fab.visible()
           } else {
-            binding.fab.hide()
+            binding.fab.gone()
           }
         }
 
         reminder.type.isApp() -> {
           binding.fab.setIconResource(R.drawable.ic_twotone_open_in_new_24px)
           binding.fab.text = getString(R.string.open_app)
-          binding.fab.show()
+          binding.fab.visible()
         }
 
         reminder.type.isLink() -> {
           binding.fab.setIconResource(R.drawable.ic_twotone_open_in_browser_24px)
           binding.fab.text = getString(R.string.open_link)
-          binding.fab.show()
+          binding.fab.visible()
         }
 
         reminder.type.isEmail() -> {
           binding.fab.setIconResource(R.drawable.ic_twotone_local_post_office_24px)
           binding.fab.text = getString(R.string.send)
-          binding.fab.show()
+          binding.fab.visible()
         }
 
-        else -> binding.fab.hide()
+        else -> binding.fab.gone()
       }
     } else {
-      binding.fab.hide()
+      binding.fab.gone()
     }
   }
 
@@ -363,40 +363,40 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun showDue(due: UiReminderDueData?) {
     due?.before?.let {
-      binding.beforeView.show()
+      binding.beforeView.visible()
       binding.before.text = it
-    } ?: run { binding.beforeView.hide() }
+    } ?: run { binding.beforeView.gone() }
 
     due?.dateTime?.let {
-      binding.timeView.show()
+      binding.timeView.visible()
       binding.time.text = it
-    } ?: run { binding.timeView.hide() }
+    } ?: run { binding.timeView.gone() }
 
     due?.repeat?.let {
-      binding.repeatView.show()
+      binding.repeatView.visible()
       binding.repeat.text = it
-    } ?: run { binding.repeatView.hide() }
+    } ?: run { binding.repeatView.gone() }
   }
 
   private fun showPhoneContact(target: UiReminderTarget?) {
     if (target == null) {
-      binding.numberView.hide()
+      binding.numberView.gone()
       return
     }
     when (target) {
       is UiCallTarget -> {
         binding.number.text = target.target
-        binding.numberView.show()
+        binding.numberView.visible()
       }
       is UiSmsTarget -> {
         binding.number.text = target.target
-        binding.numberView.show()
+        binding.numberView.visible()
       }
       is UiEmailTarget -> {
         binding.number.text = target.target
-        binding.numberView.show()
+        binding.numberView.visible()
       }
-      else -> binding.numberView.hide()
+      else -> binding.numberView.gone()
     }
   }
 
@@ -428,7 +428,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     Timber.d("showAttachment: ${reminder.attachmentFile}")
     reminder.attachmentFile?.let {
       binding.attachment.text = it
-      binding.attachmentView.show()
+      binding.attachmentView.visible()
       val file = File(it)
       if (file.exists()) {
         Picasso.get().load(file).into(imageTarget)
@@ -437,8 +437,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         Picasso.get().load(uri).into(imageTarget)
       }
     } ?: run {
-      binding.attachmentView.hide()
-      binding.attachmentsView.hide()
+      binding.attachmentView.gone()
+      binding.attachmentsView.gone()
     }
   }
 
@@ -546,9 +546,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun initViews() {
     binding.switchWrapper.setOnClickListener { switchClick() }
     binding.fab.setOnClickListener { fabClick() }
-    binding.mapContainer.hide()
-    binding.attachmentsView.hide()
-    binding.fab.hide()
+    binding.mapContainer.gone()
+    binding.attachmentsView.gone()
+    binding.fab.gone()
   }
 
   private fun fabClick() {

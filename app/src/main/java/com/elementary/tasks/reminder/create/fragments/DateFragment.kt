@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderDateBinding
 import timber.log.Timber
@@ -40,8 +38,8 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
     Timber.d("prepare: $type")
 
     val startTime = binding.dateView.dateTime
-    Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
-    if (!TimeCount.isCurrent(startTime)) {
+    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(string(R.string.reminder_is_outdated))
       return null
     }
@@ -51,7 +49,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
       return null
     }
 
-    val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
+    val gmtTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.target = number
     reminder.type = type
     reminder.eventTime = gmtTime

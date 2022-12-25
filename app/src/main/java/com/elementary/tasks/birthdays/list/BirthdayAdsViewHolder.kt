@@ -5,6 +5,7 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemBirthdayAdsBinding
 
@@ -29,7 +30,7 @@ class BirthdayAdsViewHolder(
 
   companion object {
 
-    fun updateList(list: List<BirthdayListItem>): List<BirthdayListItem> {
+    fun updateList(list: List<UiBirthdayList>): List<UiBirthdayList> {
       return if (AdsProvider.hasAds() && list.isNotEmpty()) {
         val mutable = list.toMutableList()
         if (list.size > 6) {
@@ -43,6 +44,6 @@ class BirthdayAdsViewHolder(
       }
     }
 
-    private fun adsItem() = BirthdayListItem(AdsProvider.BIRTHDAY_BANNER_ID)
+    private fun adsItem() = UiBirthdayList(AdsProvider.BIRTHDAY_BANNER_ID)
   }
 }

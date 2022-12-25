@@ -18,17 +18,17 @@ import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.listenScrollableView
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
-import com.elementary.tasks.core.utils.showError
-import com.elementary.tasks.core.utils.text
-import com.elementary.tasks.core.utils.trimmedText
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.listenScrollableView
+import com.elementary.tasks.core.utils.ui.showError
+import com.elementary.tasks.core.utils.ui.text
+import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.CreateBirthdayViewModel
@@ -68,13 +68,13 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun initContact() {
     if (prefs.isTelephonyAllowed) {
-      binding.contactCheck.show()
+      binding.contactCheck.visible()
       binding.contactCheck.setOnCheckedChangeListener { _, isChecked ->
         if (isChecked && !prefs.isTelephonyAllowed) return@setOnCheckedChangeListener
         viewModel.onContactAttached(isChecked)
       }
     } else {
-      binding.contactCheck.hide()
+      binding.contactCheck.gone()
     }
   }
 

@@ -10,7 +10,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import org.koin.android.ext.android.inject
 
 abstract class BindingFragment<B : ViewBinding> : Fragment() {

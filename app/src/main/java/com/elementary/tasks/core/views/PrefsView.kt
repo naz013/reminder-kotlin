@@ -14,8 +14,8 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.transparent
 import timber.log.Timber
 import java.util.*
@@ -66,7 +66,7 @@ class PrefsView : RelativeLayout {
     binding = PrefsViewBinding(this)
     descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
 
-    binding.progressView.hide()
+    binding.progressView.gone()
 
     if (attrs != null) {
       val a = context.theme.obtainStyledAttributes(
@@ -100,7 +100,7 @@ class PrefsView : RelativeLayout {
         a.recycle()
       }
       if (iconId != 0 && SHOW_ICON) {
-        binding.iconView.show()
+        binding.iconView.visible()
         binding.iconView.setImageResource(iconId)
       } else {
         binding.iconView.transparent()
@@ -119,9 +119,9 @@ class PrefsView : RelativeLayout {
 
   fun setLoading(isLoading: Boolean) {
     if (isLoading) {
-      binding.progressView.show()
+      binding.progressView.visible()
     } else {
-      binding.progressView.hide()
+      binding.progressView.gone()
     }
   }
 
@@ -217,18 +217,18 @@ class PrefsView : RelativeLayout {
   private fun setView() {
     hideAll()
     when (viewType) {
-      CHECK -> binding.prefsCheck.show()
-      SWITCH -> binding.prefsSwitch.show()
-      TEXT -> binding.prefsValue.show()
-      VIEW -> binding.prefsView.show()
+      CHECK -> binding.prefsCheck.visible()
+      SWITCH -> binding.prefsSwitch.visible()
+      TEXT -> binding.prefsValue.visible()
+      VIEW -> binding.prefsView.visible()
     }
   }
 
   private fun hideAll() {
-    binding.prefsCheck.hide()
-    binding.prefsSwitch.hide()
-    binding.prefsValue.hide()
-    binding.prefsView.hide()
+    binding.prefsCheck.gone()
+    binding.prefsSwitch.gone()
+    binding.prefsValue.gone()
+    binding.prefsView.gone()
   }
 
   private fun setTitleText(text: String) {
@@ -242,13 +242,13 @@ class PrefsView : RelativeLayout {
       } else {
         binding.prefsSecondaryText.text = mOffText
       }
-      binding.prefsSecondaryText.show()
+      binding.prefsSecondaryText.visible()
     } else {
       if (TextUtils.isEmpty(text)) {
-        binding.prefsSecondaryText.hide()
+        binding.prefsSecondaryText.gone()
       } else {
         binding.prefsSecondaryText.text = text
-        binding.prefsSecondaryText.show()
+        binding.prefsSecondaryText.visible()
       }
     }
   }
@@ -306,17 +306,17 @@ class PrefsView : RelativeLayout {
 
   private fun setDividerTop(divider: Boolean) {
     if (divider) {
-      binding.dividerTop.show()
+      binding.dividerTop.visible()
     } else {
-      binding.dividerTop.hide()
+      binding.dividerTop.gone()
     }
   }
 
   private fun setDividerBottom(divider: Boolean) {
     if (divider) {
-      binding.dividerBottom.show()
+      binding.dividerBottom.visible()
     } else {
-      binding.dividerBottom.hide()
+      binding.dividerBottom.gone()
     }
   }
 

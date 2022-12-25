@@ -7,24 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.databinding.FragmentReminderYearBinding
+import com.github.naz013.calendarext.dropMilliseconds
+import com.github.naz013.calendarext.dropSeconds
+import com.github.naz013.calendarext.newCalendar
+import com.github.naz013.calendarext.setHourOfDay
+import com.github.naz013.calendarext.setMinute
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
 
   private val time: Long
     get() {
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-      calendar.set(Calendar.MINUTE, iFace.state.minute)
-      calendar.set(Calendar.SECOND, 0)
-      calendar.set(Calendar.MILLISECOND, 0)
+      val calendar = newCalendar(System.currentTimeMillis())
+      calendar.setHourOfDay(iFace.state.hour)
+      calendar.setMinute(iFace.state.minute)
+      calendar.dropSeconds()
+      calendar.dropMilliseconds()
       return calendar.timeInMillis
     }
 
@@ -60,18 +62,18 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     reminder.eventCount = 0
     reminder.repeatInterval = 0
 
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
-    val startTime = TimeCount.getNextYearDayTime(reminder)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
+    val startTime = dateTimeManager.getNextYearDayTime(reminder)
 
     if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
 
-    reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-    Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-    if (!TimeCount.isCurrent(reminder.eventTime)) {
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
+    Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+    if (!dateTimeManager.isCurrent(reminder.eventTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
     }
@@ -115,7 +117,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     super.onViewCreated(view, savedInstanceState)
     binding.tuneExtraView.hasAutoExtra = false
 
-    binding.dateView.setDateFormat(TimeUtil.simpleDate(prefs.appLanguage))
+    binding.dateView.setDateFormat(dateTimeManager.simpleDate())
     binding.dateView.setEventListener(object : DateTimeView.OnSelectListener {
       override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
         iFace.state.day = day
@@ -129,8 +131,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
       }
     })
 
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = System.currentTimeMillis()
+    val calendar = newCalendar(System.currentTimeMillis())
     calendar.set(Calendar.DAY_OF_MONTH, iFace.state.day)
     calendar.set(Calendar.MONTH, iFace.state.month)
     calendar.set(Calendar.YEAR, iFace.state.year)
@@ -155,7 +156,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
 
   private fun updateDateTime(reminder: Reminder) {
     val calendar = Calendar.getInstance()
-    calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
+    calendar.timeInMillis = dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
     iFace.state.hour = calendar.get(Calendar.HOUR_OF_DAY)
     iFace.state.minute = calendar.get(Calendar.MINUTE)
     calendar.timeInMillis = System.currentTimeMillis()

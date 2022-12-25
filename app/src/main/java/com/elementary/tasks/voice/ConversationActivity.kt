@@ -17,19 +17,22 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.birthdays.list.BirthdayListItem
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.UiReminderList
+import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
+import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -294,7 +297,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     addResponse(getLocalized(R.string.voice_this_command_not_supported_on_that_screen))
   }
 
-  private fun showShoppingLists(reminders: List<Reminder>?) {
+  private fun showShoppingLists(reminders: List<UiReminderList>?) {
     val items = Container(reminders)
     if (items.isEmpty) {
       addResponse(getLocalized(R.string.voice_no_shopping_lists_found))
@@ -318,7 +321,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
-  private fun showBirthdays(birthdays: List<BirthdayListItem>?) {
+  private fun showBirthdays(birthdays: List<UiBirthdayList>?) {
     val items = Container(birthdays)
     if (items.isEmpty) {
       addResponse(getLocalized(R.string.voice_no_birthdays_found))
@@ -337,7 +340,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
-  private fun showEnabledReminders(list: List<Reminder>?) {
+  private fun showEnabledReminders(list: List<UiReminderList>?) {
     val items = Container(list)
     if (items.isEmpty) {
       addResponse(getLocalized(R.string.voice_no_reminders_found))
@@ -394,7 +397,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
-  private fun showActiveReminders(list: List<Reminder>?) {
+  private fun showActiveReminders(list: List<UiReminderList>?) {
     val items = Container(list)
     if (items.isEmpty) {
       addResponse(getLocalized(R.string.voice_no_reminders_found))
@@ -413,11 +416,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
-  private fun addReminderObject(reminder: Reminder) {
-    if (reminder.viewType == Reminder.REMINDER) {
-      addObjectResponse(Reply(Reply.REMINDER, reminder))
-    } else {
-      addObjectResponse(Reply(Reply.SHOPPING, reminder))
+  private fun addReminderObject(reminder: UiReminderList) {
+    when (reminder) {
+      is UiReminderListActiveShop, is UiReminderListRemovedShop -> {
+        addObjectResponse(Reply(Reply.SHOPPING, reminder))
+      }
+      else -> {
+        addObjectResponse(Reply(Reply.REMINDER, reminder))
+      }
     }
   }
 
@@ -440,7 +446,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun reminderAction(model: Model) {
     stopView()
     val reminder = viewModel.createReminder(model)
-    addObjectResponse(Reply(Reply.REMINDER, reminder))
+    addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
     if (prefs.isTellAboutEvent) {
       addResponse(getLocalized(R.string.reminder_created_on) + " " +
         TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormat, prefs.voiceLocale, language) +
@@ -519,10 +525,10 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         if (model != null && model.type == ActionType.REMINDER) {
           val reminder = viewModel.createReminder(model)
           viewModel.saveAndStartReminder(reminder)
-          addObjectResponse(Reply(Reply.REMINDER, reminder))
+          addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
         } else {
           val reminder = viewModel.saveQuickReminder(note.key, note.summary)
-          addObjectResponse(Reply(Reply.REMINDER, reminder))
+          addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
         }
         mAskAction = null
       }

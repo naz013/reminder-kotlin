@@ -10,9 +10,9 @@ import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import java.text.DateFormat
 import java.text.SimpleDateFormat

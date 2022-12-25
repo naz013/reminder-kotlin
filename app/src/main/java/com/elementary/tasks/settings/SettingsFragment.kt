@@ -14,13 +14,13 @@ import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.PrefsConstants
-import com.elementary.tasks.core.utils.RemotePrefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.elementary.tasks.core.utils.params.RemotePrefs
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -78,19 +78,19 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
 
   private fun checkBackupPrefs() {
     if (prefs.isBackupEnabled) {
-      binding.backupBadge.hide()
+      binding.backupBadge.gone()
     } else {
-      binding.backupBadge.show()
+      binding.backupBadge.visible()
     }
   }
 
   private fun checkDoNotDisturb() {
     if (prefs.applyDoNotDisturb(0)) {
       Timber.d("checkDoNotDisturb: active")
-      binding.doNoDisturbIcon.show()
+      binding.doNoDisturbIcon.visible()
     } else {
       Timber.d("checkDoNotDisturb: not active")
-      binding.doNoDisturbIcon.hide()
+      binding.doNoDisturbIcon.gone()
     }
   }
 
@@ -100,18 +100,18 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
       setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
     }
 
-    binding.saleBadge.hide()
-    binding.updateBadge.hide()
-    binding.doNoDisturbIcon.hide()
+    binding.saleBadge.gone()
+    binding.updateBadge.gone()
+    binding.doNoDisturbIcon.gone()
     if (Module.isPro) {
-      binding.appNameBannerPro.show()
+      binding.appNameBannerPro.visible()
     } else {
-      binding.appNameBannerPro.hide()
+      binding.appNameBannerPro.gone()
     }
     if (SuperUtil.isGooglePlayServicesAvailable(requireContext())) {
-      binding.playServicesWarning.hide()
+      binding.playServicesWarning.gone()
     } else {
-      binding.playServicesWarning.show()
+      binding.playServicesWarning.visible()
     }
 
     binding.generalSettings.setOnClickListener {
@@ -150,9 +150,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     }
     binding.buySettings.setOnClickListener { showProDialog() }
     if (!Module.isPro && !SuperUtil.isAppInstalled(requireContext(), "com.cray.software.justreminderpro")) {
-      binding.buySettings.show()
+      binding.buySettings.visible()
     } else {
-      binding.buySettings.hide()
+      binding.buySettings.gone()
     }
 
     withContext {

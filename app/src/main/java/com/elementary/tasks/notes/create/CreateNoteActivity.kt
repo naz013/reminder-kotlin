@@ -39,32 +39,32 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.AssetsUtil
+import com.elementary.tasks.core.utils.io.BackupTool
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
-import com.elementary.tasks.core.utils.tintOverflowButton
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.trimmedText
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.tintOverflowButton
+import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -76,6 +76,12 @@ import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.calendarext.getDayOfMonth
+import com.github.naz013.calendarext.getHourOfDay
+import com.github.naz013.calendarext.getMinute
+import com.github.naz013.calendarext.getMonth
+import com.github.naz013.calendarext.getYear
+import com.github.naz013.calendarext.newCalendar
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -90,6 +96,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private val themeUtil by inject<ThemeProvider>()
   private val backupTool by inject<BackupTool>()
   private val imagesSingleton by inject<ImagesSingleton>()
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private var isBgDark = false
 
   private val permissionFlow = PermissionFlow(this, dialogues)
@@ -273,10 +281,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       updateIcons()
     }
     stateViewModel.time.nonNullObserve(this) {
-      binding.remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
+      binding.remindTime.text = dateTimeManager.getTime(it)
     }
     stateViewModel.date.nonNullObserve(this) {
-      binding.remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
+      binding.remindDate.text = dateTimeManager.getDate(it)
     }
     stateViewModel.isReminderAttached.nonNullObserve(this) {
       binding.remindContainer.visibleGone(it)
@@ -329,11 +337,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun showRecording() {
-    binding.recordingView.show()
+    binding.recordingView.visible()
   }
 
   private fun hideRecording() {
-    binding.recordingView.hide()
+    binding.recordingView.gone()
   }
 
   private fun initRecognizer() {
@@ -620,11 +628,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun hideProgress() {
-    binding.recordingView.hide()
+    binding.recordingView.gone()
   }
 
   private fun showProgress() {
-    binding.recordingView.show()
+    binding.recordingView.visible()
   }
 
   private fun shareNote() {
@@ -664,7 +672,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     if (eventTime == null) {
       calendar.timeInMillis = System.currentTimeMillis()
     } else {
-      calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(eventTime)
+      calendar.timeInMillis = dateTimeManager.getDateTimeFromGmt(eventTime)
     }
     stateViewModel.date.postValue(calendar.timeInMillis)
     stateViewModel.time.postValue(calendar.timeInMillis)
@@ -683,7 +691,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       note = Note()
     }
     note.summary = text
-    note.date = TimeUtil.gmtDateTime
+    note.date = DateTimeManager.gmtDateTime
     note.color = pair.first
     note.style = stateViewModel.fontStyle.value ?: 0
     note.palette = palette()
@@ -743,11 +751,9 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun dateTime(): Long {
-    val result = Calendar.getInstance()
-    result.timeInMillis = System.currentTimeMillis()
+    val result = newCalendar(System.currentTimeMillis())
 
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
+    val calendar = newCalendar(stateViewModel.date.value ?: System.currentTimeMillis())
 
     result.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
     result.set(Calendar.MONTH, calendar.get(Calendar.MONTH))
@@ -778,9 +784,9 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     reminder.summary = SuperUtil.normalizeSummary(note.summary)
 
     val startTime = dateTime()
-    reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.eventTime = reminder.startTime
-    if (!TimeCount.isCurrent(reminder.eventTime)) {
+    if (!dateTimeManager.isCurrent(reminder.eventTime)) {
       toast(R.string.reminder_is_outdated)
       return null
     }
@@ -968,21 +974,19 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun dateDialog() {
-    val c = Calendar.getInstance()
-    c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
-    TimeUtil.showDatePicker(
-      this, prefs, c.get(Calendar.YEAR),
-      c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack
+    val c = newCalendar(stateViewModel.date.value ?: System.currentTimeMillis())
+    dateTimePickerProvider.showDatePicker(
+      this,
+      c.getYear(),
+      c.getMonth(),
+      c.getDayOfMonth(),
+      mDateCallBack
     )
   }
 
   private fun timeDialog() {
-    val c = Calendar.getInstance()
-    c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
-    TimeUtil.showTimePicker(
-      this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
-      c.get(Calendar.MINUTE), mCallBack
-    )
+    val c = newCalendar(stateViewModel.time.value ?: System.currentTimeMillis())
+    dateTimePickerProvider.showTimePicker(this, c.getHourOfDay(), c.getMinute(), mCallBack)
   }
 
   override fun onDestroy() {

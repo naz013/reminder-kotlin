@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Parcelable
 import com.elementary.tasks.core.data.models.ImageFile
-import com.elementary.tasks.core.utils.BitmapUtils
+import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope

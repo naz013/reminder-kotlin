@@ -2,7 +2,7 @@ package com.elementary.tasks.core.cloud.storages
 
 import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.converters.IndexTypes
-import com.elementary.tasks.core.utils.CopyByteArrayStream
+import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 

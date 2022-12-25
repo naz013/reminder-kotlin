@@ -11,10 +11,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
 import com.elementary.tasks.core.binding.views.TuneExtraViewBinding
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.fromReminder
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.gone
 
 class TuneExtraView : LinearLayout {
 
@@ -63,8 +63,8 @@ class TuneExtraView : LinearLayout {
       binding.vibrationCheck.isEnabled = !extra.useGlobal
       binding.voiceCheck.isEnabled = !extra.useGlobal
       if (Module.is10) {
-        binding.autoCheck.hide()
-        binding.unlockCheck.hide()
+        binding.autoCheck.gone()
+        binding.unlockCheck.gone()
       } else {
         if (hasAutoExtra && hint != "") {
           binding.autoCheck.visibility = View.VISIBLE

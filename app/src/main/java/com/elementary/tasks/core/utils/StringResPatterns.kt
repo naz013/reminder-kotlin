@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.datetime.IntervalUtil
 
 object StringResPatterns {
 

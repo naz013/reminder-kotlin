@@ -1,8 +1,7 @@
 package com.elementary.tasks.day_view.day
 
-import com.elementary.tasks.birthdays.list.BirthdayListItem
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.UiReminderListActive
 
 data class EventModel(
   val viewType: Int,
@@ -15,8 +14,8 @@ data class EventModel(
 ) {
   fun getMillis(): Long {
     return when (val o = model) {
-      is Reminder -> TimeUtil.getDateTimeFromGmt(o.eventTime)
-      is BirthdayListItem -> o.nextBirthdayDate
+      is UiReminderListActive -> o.due.millis
+      is UiBirthdayList -> o.nextBirthdayDate
       else -> 0
     }
   }

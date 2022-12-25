@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.RepeatViewBinding
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeCount
 import timber.log.Timber
 
 class RepeatView : LinearLayout, TextWatcher {

@@ -1,49 +1,66 @@
 package com.elementary.tasks.core.view_models.reminders
 
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
+import kotlinx.coroutines.launch
 
 class ArchiveRemindersViewModel(
-  appDb: AppDb,
-  prefs: Prefs,
-  calendarUtils: CalendarUtils,
-  eventControlFactory: EventControlFactory,
+  private val reminderDao: ReminderDao,
+  private val googleCalendarUtils: GoogleCalendarUtils,
+  private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
-  updatesHelper: UpdatesHelper
-) : BaseRemindersViewModel(
-  prefs,
-  calendarUtils,
-  eventControlFactory,
-  dispatcherProvider,
-  workManagerProvider,
-  updatesHelper,
-  appDb.reminderDao(),
-  appDb.reminderGroupDao(),
-  appDb.placesDao()
-) {
+  private val workerLauncher: WorkerLauncher,
+  private val uiReminderListAdapter: UiReminderListAdapter
+) : BaseProgressViewModel(dispatcherProvider) {
 
-  val events = reminderDao.loadNotRemoved(removed = true)
+  private val reminders = reminderDao.loadNotRemoved(removed = true)
+  val events = Transformations.map(reminders) { list ->
+    list.map { uiReminderListAdapter.create(it) }
+  }
 
-  fun deleteAll(data: List<Reminder>) {
+  fun deleteReminder(reminder: UiReminderListData) {
+    withResult {
+      reminderDao.getById(reminder.id)?.let {
+        eventControlFactory.getController(it).stop()
+        reminderDao.delete(it)
+        googleCalendarUtils.deleteEvents(it.uuId)
+        workerLauncher.startWork(
+          ReminderDeleteBackupWorker::class.java,
+          Constants.INTENT_ID,
+          it.uuId
+        )
+        Commands.DELETED
+      } ?: run {
+        Commands.FAILED
+      }
+    }
+  }
+
+  fun deleteAll() {
+    val reminders = reminders.value ?: return
     postInProgress(true)
-    launchDefault {
-      data.forEach {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      reminders.forEach {
         eventControlFactory.getController(it).stop()
       }
-      reminderDao.deleteAll(data)
-      data.forEach {
-        startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+      reminderDao.deleteAll(reminders)
+      reminders.forEach {
+        workerLauncher.startWork(
+          ReminderDeleteBackupWorker::class.java,
+          Constants.INTENT_ID,
+          it.uuId
+        )
       }
       postInProgress(false)
       postCommand(Commands.DELETED)

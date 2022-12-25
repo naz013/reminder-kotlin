@@ -12,19 +12,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdayAdsViewHolder
-import com.elementary.tasks.birthdays.list.BirthdayListItem
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.UiReminderList
+import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
+import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.PrefsConstants
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.databinding.HomeFragmentBinding
@@ -32,7 +34,7 @@ import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
-import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
+import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -41,8 +43,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val featureManager by inject<FeatureManager>()
   private val viewModel by viewModel<HomeViewModel>()
-  private val remindersAdapter =
-    RemindersRecyclerAdapter(currentStateHolder, showHeader = false, isEditable = true) {
+  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true) {
       showReminders(viewModel.reminders.value ?: listOf())
     }
   private val birthdaysAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
@@ -52,19 +53,20 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
   private val reminderResolver = ReminderResolver(
     dialogAction = { return@ReminderResolver dialogues },
-    saveAction = { reminder -> viewModel.saveReminder(reminder) },
     toggleAction = { reminder ->
-      if (Reminder.isGpsType(reminder.type)) {
-        permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
+      when (reminder) {
+        is UiReminderListActiveGps -> {
+          permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
+            viewModel.toggleReminder(reminder)
+          }
+        }
+        else -> {
           viewModel.toggleReminder(reminder)
         }
-      } else {
-        viewModel.toggleReminder(reminder)
       }
     },
     deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
-    skipAction = { reminder -> viewModel.skip(reminder) },
-    allGroups = { return@ReminderResolver viewModel.groups }
+    skipAction = { reminder -> viewModel.skip(reminder) }
   )
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
@@ -164,9 +166,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
   private fun updatePrivacyBanner() {
     if (prefs.isPrivacyPolicyShowed) {
-      binding.privacyBanner.hide()
+      binding.privacyBanner.gone()
     } else {
-      binding.privacyBanner.show()
+      binding.privacyBanner.visible()
       binding.privacyButton.setOnClickListener {
         startActivity(
           Intent(
@@ -184,9 +186,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
       if (prefs.isUserLogged ||
         !featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
       ) {
-        binding.loginBanner.hide()
+        binding.loginBanner.gone()
       } else {
-        binding.loginBanner.show()
+        binding.loginBanner.visible()
         binding.loginDismissButton.setOnClickListener { prefs.isUserLogged = true }
         binding.loginButton.setOnClickListener {
           prefs.isUserLogged = true
@@ -194,13 +196,13 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         }
       }
     } else {
-      binding.loginBanner.hide()
+      binding.loginBanner.gone()
     }
   }
 
   private fun initRemindersList() {
-    remindersAdapter.actionsListener = object : ActionsListener<Reminder> {
-      override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
+    remindersAdapter.actionsListener = object : ActionsListener<UiReminderListData> {
+      override fun onAction(view: View, position: Int, t: UiReminderListData?, actions: ListActions) {
         if (t != null) {
           mPosition = position
           reminderResolver.resolveAction(view, t, actions)
@@ -212,8 +214,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun initBirthdaysList() {
-    birthdaysAdapter.actionsListener = object : ActionsListener<BirthdayListItem> {
-      override fun onAction(view: View, position: Int, t: BirthdayListItem?, actions: ListActions) {
+    birthdaysAdapter.actionsListener = object : ActionsListener<UiBirthdayList> {
+      override fun onAction(view: View, position: Int, t: UiBirthdayList?, actions: ListActions) {
         if (t != null) {
           birthdayResolver.resolveAction(view, t, actions)
         }
@@ -223,9 +225,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     binding.birthdaysList.adapter = birthdaysAdapter
 
     if (prefs.isBirthdayReminderEnabled) {
-      binding.birthdaysBlock.show()
+      binding.birthdaysBlock.visible()
     } else {
-      binding.birthdaysBlock.hide()
+      binding.birthdaysBlock.gone()
     }
   }
 
@@ -254,14 +256,14 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     }
   }
 
-  private fun showBirthdays(list: List<BirthdayListItem>) {
+  private fun showBirthdays(list: List<UiBirthdayList>) {
     val newList = BirthdayAdsViewHolder.updateList(list)
     birthdaysAdapter.submitList(newList)
     updateBirthdaysEmpty(newList.size)
   }
 
-  private fun showReminders(list: List<Reminder>) {
-    val newList = ReminderAdsViewHolder.updateList(list)
+  private fun showReminders(list: List<UiReminderList>) {
+    val newList = ReminderAdsViewHolder.addAdsIfNeeded(list)
     remindersAdapter.submitList(newList)
     updateRemindersEmpty(newList.size)
   }

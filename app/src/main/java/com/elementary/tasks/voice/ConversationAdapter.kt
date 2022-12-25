@@ -7,12 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.birthdays.list.BirthdayListItem
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.UiReminderListActive
+import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
@@ -48,19 +49,19 @@ class ConversationAdapter(
     diffResult.dispatchUpdatesTo(this)
     handler.postDelayed({
       if (!list.isNullOrEmpty()) {
-        try {
+        runCatching {
           if (oldSize == list.size) {
             notifyItemChanged(0)
           } else {
             notifyDataSetChanged()
           }
-        } catch (e: Exception) {
         }
       }
     }, 250)
   }
 
-  fun getItem(position: Int): Reply? = if (position != -1 && position < data.size) data[position] else null
+  fun getItem(position: Int): Reply? =
+    if (position != -1 && position < data.size) data[position] else null
 
   override fun getItemCount(): Int {
     return data.size
@@ -70,12 +71,18 @@ class ConversationAdapter(
     return when (viewType) {
       Reply.REPLY -> VoiceHolder(parent)
       Reply.RESPONSE -> VoiceResponseHolder(parent)
-      Reply.REMINDER -> ReminderViewHolder(parent, currentStateHolder, hasHeader = false, editable = false, showMore = false)
+      Reply.REMINDER -> ReminderViewHolder(parent, editable = false, showMore = false)
       Reply.NOTE -> NoteViewHolder(parent, currentStateHolder, imagesSingleton, null)
       Reply.GROUP -> GroupHolder(parent, null)
       Reply.SHOW_MORE -> ShowMoreHolder(parent)
       Reply.BIRTHDAY -> BirthdayHolder(parent, currentStateHolder, false)
-      Reply.SHOPPING -> ShoppingViewHolder(parent, currentStateHolder, editable = false, showMore = false)
+      Reply.SHOPPING -> ShoppingViewHolder(
+        parent,
+        editable = false,
+        showMore = false,
+        isDark = currentStateHolder.theme.isDark
+      )
+
       else -> AskHolder(parent)
     }
   }
@@ -85,11 +92,11 @@ class ConversationAdapter(
     when {
       holder is VoiceHolder -> holder.bind(content as String)
       holder is VoiceResponseHolder -> holder.bind(content as String)
-      holder is ReminderViewHolder -> holder.setData(content as Reminder)
+      holder is ReminderViewHolder -> holder.setData(content as UiReminderListActive)
       holder is NoteViewHolder && content is NoteWithImages -> holder.setData(content)
       holder is GroupHolder -> holder.setData(content as ReminderGroup)
-      holder is BirthdayHolder -> holder.setData(content as BirthdayListItem)
-      holder is ShoppingViewHolder -> holder.setData(content as Reminder)
+      holder is BirthdayHolder -> holder.setData(content as UiBirthdayList)
+      holder is ShoppingViewHolder -> holder.setData(content as UiReminderListActiveShop)
       holder is AskHolder -> holder.setAskAction(content as AskAction)
     }
   }
@@ -114,7 +121,8 @@ class ConversationAdapter(
         askAction?.onNo()
       }
       binding.replyNo.text = currentStateHolder.language.getLocalized(itemView.context, R.string.no)
-      binding.replyYes.text = currentStateHolder.language.getLocalized(itemView.context, R.string.yes)
+      binding.replyYes.text =
+        currentStateHolder.language.getLocalized(itemView.context, R.string.yes)
     }
 
     fun setAskAction(askAction: AskAction) {
@@ -149,7 +157,7 @@ class ConversationAdapter(
   ) {
     init {
       binding.replyText.setOnClickListener {
-        showMore?.invoke(adapterPosition)
+        showMore?.invoke(bindingAdapterPosition)
         showMore = null
       }
     }

@@ -2,9 +2,9 @@ package com.elementary.tasks.reminder.create.fragments
 
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.StringResPatterns
+import com.elementary.tasks.core.utils.datetime.IntervalUtil
 
 abstract class RepeatableTypeFragment<B : ViewBinding> : TypeFragment<B>() {
 

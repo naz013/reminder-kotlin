@@ -12,11 +12,11 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.TimeUtil.BIRTH_FORMAT
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil.BIRTH_FORMAT
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
@@ -73,7 +73,7 @@ class EventJobService(
     if (item != null) {
       Timber.d("repeatedReminderAction: ${item.uuId}")
       reminderAction(context, item.uuId)
-      jobScheduler.scheduleReminderRepeat(appDb, item.uuId)
+      jobScheduler.scheduleReminderRepeat(item)
     }
   }
 

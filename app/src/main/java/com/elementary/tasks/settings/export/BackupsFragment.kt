@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
@@ -118,11 +118,11 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   }
 
   private fun showProgress() {
-    binding.progressView.show()
+    binding.progressView.visible()
   }
 
   private fun hideProgress() {
-    binding.progressView.hide()
+    binding.progressView.gone()
   }
 
   private fun deleteFiles(params: List<File?>, type: Info) {

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module.is10
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import com.elementary.tasks.splash.SplashScreenActivity

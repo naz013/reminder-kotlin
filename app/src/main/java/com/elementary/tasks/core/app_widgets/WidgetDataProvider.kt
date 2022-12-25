@@ -4,8 +4,8 @@ import android.app.AlarmManager
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

@@ -7,6 +7,7 @@ import android.text.TextUtils
 import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.params.Prefs
 import java.util.Calendar
 
 object ReminderUtils {
@@ -80,6 +81,7 @@ object ReminderUtils {
     return calendar.timeInMillis + after
   }
 
+  @Deprecated("Use DateTimeManager")
   fun getRepeatString(context: Context, prefs: Prefs, repCode: List<Int>): String {
     val sb = StringBuilder()
     val first = prefs.startDay
@@ -122,7 +124,7 @@ object ReminderUtils {
     }
   }
 
-  fun isAllChecked(repCode: List<Int>): Boolean {
+  private fun isAllChecked(repCode: List<Int>): Boolean {
     return repCode.none { it == 0 }
   }
 
@@ -161,7 +163,7 @@ object ReminderUtils {
     }
   }
 
-  fun getType(context: Context, type: Int): String {
+  private fun getType(context: Context, type: Int): String {
     return when {
       Reminder.isBase(type, Reminder.BY_MONTH) -> context.getString(R.string.day_of_month)
       Reminder.isBase(type, Reminder.BY_WEEK) -> context.getString(R.string.alarm)

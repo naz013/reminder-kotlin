@@ -19,10 +19,10 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
@@ -118,12 +118,12 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
 
   private fun updateGoogleStatus(isLogged: Boolean) {
     if (!isLogged) {
-      binding.notLoggedView.show()
+      binding.notLoggedView.visible()
       binding.notLoggedView.setOnClickListener { }
       binding.fab.hide()
     } else {
-      binding.listsScrollView.show()
-      binding.notLoggedView.hide()
+      binding.listsScrollView.visible()
+      binding.notLoggedView.gone()
       binding.fab.show()
     }
   }

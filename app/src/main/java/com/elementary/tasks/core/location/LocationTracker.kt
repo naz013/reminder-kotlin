@@ -8,7 +8,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.utils.params.Prefs
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -18,9 +19,10 @@ import com.google.android.gms.location.LocationSettingsRequest
 import timber.log.Timber
 
 class LocationTracker(
+  private val listener: Listener,
   private val prefs: Prefs,
-  private val context: Context?,
-  private val callback: ((lat: Double, lng: Double) -> Unit)?
+  private val context: Context,
+  private val systemServiceProvider: SystemServiceProvider
 ) : LocationListener {
 
   private var mLocationManager: LocationManager? = null
@@ -31,13 +33,13 @@ class LocationTracker(
       for (location in locationResult.locations) {
         val latitude = location.latitude
         val longitude = location.longitude
-        callback?.invoke(latitude, longitude)
+        listener.onUpdate(latitude, longitude)
         break
       }
     }
   }
 
-  init {
+  fun startUpdates() {
     updateListener()
   }
 
@@ -48,11 +50,8 @@ class LocationTracker(
 
   @SuppressLint("MissingPermission")
   private fun updateListener() {
-    if (context == null) {
-      return
-    }
     val time = (prefs.trackTime * 1000 * 2).toLong()
-    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+    val locationManager = systemServiceProvider.provideLocationManager()
     if (locationManager != null) {
       val criteria = Criteria()
       val bestProvider = locationManager.getBestProvider(criteria, false)
@@ -84,7 +83,7 @@ class LocationTracker(
     Timber.d("onLocationResult: $location")
     val latitude = location.latitude
     val longitude = location.longitude
-    callback?.invoke(latitude, longitude)
+    listener.onUpdate(latitude, longitude)
   }
 
   override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
@@ -100,5 +99,9 @@ class LocationTracker(
   override fun onProviderDisabled(provider: String) {
     Timber.d("onProviderDisabled: $provider")
     updateListener()
+  }
+
+  interface Listener {
+    fun onUpdate(lat: Double, lng: Double)
   }
 }

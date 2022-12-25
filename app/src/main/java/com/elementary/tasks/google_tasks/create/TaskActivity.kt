@@ -13,15 +13,12 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.TimeUtil.fromGmt
-import com.elementary.tasks.core.utils.TimeUtil.toGmt
-import com.elementary.tasks.core.utils.TimeUtil.toGoogleTaskDate
-import com.elementary.tasks.core.utils.TimeUtil.toTime
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.normalizeSummary
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.trimmedText
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
@@ -30,11 +27,14 @@ import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds
 import com.github.naz013.calendarext.newCalendar
 import com.github.naz013.calendarext.takeTimeFrom
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  private val dateTimeManager by inject<DateTimeManager>()
   private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
   private val viewModel by viewModel<GoogleTaskViewModel> { parametersOf(getId()) }
 
@@ -132,7 +132,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun showReminder(reminder: Reminder) {
-    stateViewModel.time.postValue(reminder.eventTime.fromGmt())
+    stateViewModel.time.postValue(dateTimeManager.fromGmt(reminder.eventTime))
     stateViewModel.isReminder.postValue(true)
   }
 
@@ -253,14 +253,11 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun showDate() {
-    binding.dateField.text = stateViewModel.takeDate().toGoogleTaskDate(prefs.appLanguage)
+    binding.dateField.text = dateTimeManager.toGoogleTaskDate(stateViewModel.takeDate())
   }
 
   private fun showTime() {
-    binding.timeField.text = stateViewModel.takeTime().toTime(
-      prefs.is24HourFormat,
-      prefs.appLanguage
-    )
+    binding.timeField.text = dateTimeManager.toTime(stateViewModel.takeTime())
   }
 
   private fun moveTask(listId: String) {
@@ -352,7 +349,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     isActive = true
     isRemoved = false
     summary = task.normalizeSummary()
-    startTime = dateTime().toGmt()
+    startTime = dateTimeManager.toGmt(dateTime())
     eventTime = startTime
   }
 
@@ -405,13 +402,13 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun dateDialog() {
-    TimeUtil.showDatePicker(this, prefs, stateViewModel.takeDate()) {
+    dateTimePickerProvider.showDatePicker(this, stateViewModel.takeDate()) {
       stateViewModel.date.postValue(it)
     }
   }
 
   private fun timeDialog() {
-    TimeUtil.showTimePicker(this, prefs.is24HourFormat, stateViewModel.takeTime()) {
+    dateTimePickerProvider.showTimePicker(this, stateViewModel.takeTime()) {
       stateViewModel.time.postValue(it)
     }
   }

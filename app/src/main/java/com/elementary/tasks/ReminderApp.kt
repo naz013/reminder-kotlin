@@ -6,7 +6,7 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.bumptech.glide.Glide
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.RemotePrefs
+import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.adapterModule
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule

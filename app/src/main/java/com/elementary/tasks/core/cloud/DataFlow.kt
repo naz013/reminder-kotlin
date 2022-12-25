@@ -6,7 +6,7 @@ import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.elementary.tasks.core.cloud.storages.Storage
 import com.elementary.tasks.core.cloud.storages.StorageManager
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import timber.log.Timber
 
 class DataFlow<T>(

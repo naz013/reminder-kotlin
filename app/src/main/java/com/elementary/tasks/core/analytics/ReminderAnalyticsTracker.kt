@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.analytics
 
-import com.elementary.tasks.core.data.ui.UiReminderType
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 class ReminderAnalyticsTracker(
   private val analyticsEventSender: AnalyticsEventSender

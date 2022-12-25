@@ -12,7 +12,7 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.dp2px
+import com.elementary.tasks.core.utils.ui.dp2px
 import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
@@ -60,11 +60,11 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.events.observe(viewLifecycleOwner, { reminders ->
+    viewModel.events.observe(viewLifecycleOwner) { reminders ->
       if (reminders != null && mGoogleMap != null) {
         showData(reminders)
       }
-    })
+    }
   }
 
   private fun initMap() {

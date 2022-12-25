@@ -15,10 +15,10 @@ import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
@@ -41,7 +41,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
-  private var list: List<CalendarUtils.CalendarItem> = listOf()
+  private var list: List<GoogleCalendarUtils.CalendarItem> = listOf()
   private var mJob: Job? = null
 
   private val intervalPosition: Int
@@ -126,7 +126,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
   private fun loadCalendars() {
     permissionFlow.askPermission(Permissions.READ_CALENDAR) {
-      list = calendarUtils.getCalendarsList()
+      list = googleCalendarUtils.getCalendarsList()
       if (list.isEmpty()) {
         toast(R.string.no_calendars_found)
       }
@@ -191,7 +191,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     mJob = launchDefault {
       val currTime = System.currentTimeMillis()
       var eventsCount = 0
-      val eventItems = calendarUtils.getEvents(ids)
+      val eventItems = googleCalendarUtils.getEvents(ids)
       if (eventItems.isNotEmpty()) {
         val list = appDb.calendarEventsDao().eventIds()
         for (item in eventItems) {

@@ -18,21 +18,21 @@ import com.elementary.tasks.core.os.datapicker.NotificationPolicyLauncher
 import com.elementary.tasks.core.os.datapicker.PicturePicker
 import com.elementary.tasks.core.os.datapicker.RingtonePicker
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.CacheUtil
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.SelectionList
+import com.elementary.tasks.core.utils.ui.SelectionList
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import org.koin.android.ext.android.inject
@@ -117,9 +117,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun initUnlockPriorityPrefs() {
     if (Module.is10) {
-      binding.unlockPriorityPrefs.hide()
+      binding.unlockPriorityPrefs.gone()
     } else {
-      binding.unlockPriorityPrefs.show()
+      binding.unlockPriorityPrefs.visible()
       binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
       binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
       showPriority()
@@ -177,9 +177,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun initIgnoreWindowTypePrefs() {
     if (Module.is10) {
-      binding.ignoreWindowType.hide()
+      binding.ignoreWindowType.gone()
     } else {
-      binding.ignoreWindowType.show()
+      binding.ignoreWindowType.visible()
       binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
       binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
     }
@@ -361,9 +361,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun initAutoCallPrefs() {
     if (Module.is10) {
-      binding.autoCallPrefs.hide()
+      binding.autoCallPrefs.gone()
     } else {
-      binding.autoCallPrefs.show()
+      binding.autoCallPrefs.visible()
       binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
       binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
       binding.autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
@@ -378,9 +378,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun initAutoLaunchPrefs() {
     if (Module.is10) {
-      binding.autoLaunchPrefs.hide()
+      binding.autoLaunchPrefs.gone()
     } else {
-      binding.autoLaunchPrefs.show()
+      binding.autoLaunchPrefs.visible()
       binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
       binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
     }
@@ -394,9 +394,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun initUnlockPrefs() {
     if (Module.is10) {
-      binding.unlockScreenPrefs.hide()
+      binding.unlockScreenPrefs.gone()
     } else {
-      binding.unlockScreenPrefs.show()
+      binding.unlockScreenPrefs.visible()
       binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
       binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
     }
@@ -538,9 +538,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun initReminderTypePrefs() {
     if (Module.is10) {
-      binding.typePrefs.hide()
+      binding.typePrefs.gone()
     } else {
-      binding.typePrefs.show()
+      binding.typePrefs.visible()
       binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
       showReminderType()
     }

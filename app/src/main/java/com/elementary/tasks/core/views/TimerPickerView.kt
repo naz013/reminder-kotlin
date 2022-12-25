@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.TimerPickerViewBinding
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 
 class TimerPickerView : LinearLayout, View.OnClickListener {
 
@@ -18,7 +18,7 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
   var timerValue: Long
     get() = SuperUtil.getAfterTime(timeString)
     set(mills) {
-      timeString = TimeUtil.generateAfterString(mills)
+      timeString = DateTimeManager.generateViewAfterString(mills)
       updateTimeView()
     }
 

@@ -2,7 +2,7 @@ package com.elementary.tasks.settings.voice
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 
 class TimesViewModel : ViewModel(), LifecycleObserver {

@@ -4,7 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.view_models.DispatcherProvider
@@ -15,8 +15,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class VoiceHelpViewModel(
-    private val prefs: Prefs,
-    private val dispatcherProvider: DispatcherProvider
+  private val prefs: Prefs,
+  private val dispatcherProvider: DispatcherProvider
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private val _urls = mutableLiveDataOf<Urls>()

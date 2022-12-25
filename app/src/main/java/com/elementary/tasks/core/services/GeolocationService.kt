@@ -14,26 +14,37 @@ import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeCount
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import kotlin.math.roundToInt
 
 class GeolocationService : Service() {
 
-  private var mTracker: LocationTracker? = null
   private var isNotificationEnabled: Boolean = false
   private var stockRadius: Int = 0
+
   private val prefs by inject<Prefs>()
   private val appDb by inject<AppDb>()
   private val notifier by inject<Notifier>()
 
+  private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
+  private var locationListener: LocationTracker.Listener = object : LocationTracker.Listener {
+    override fun onUpdate(lat: Double, lng: Double) {
+      val locationA = Location("point A")
+      locationA.latitude = lat
+      locationA.longitude = lng
+      checkReminders(locationA)
+    }
+  }
+
   override fun onDestroy() {
     super.onDestroy()
-    mTracker?.removeUpdates()
+    locationTracker.removeUpdates()
     stopForeground(true)
     Timber.d("onDestroy: ")
   }
@@ -52,12 +63,7 @@ class GeolocationService : Service() {
     showDefaultNotification()
     isNotificationEnabled = prefs.isDistanceNotificationEnabled
     stockRadius = prefs.radius
-    mTracker = LocationTracker(prefs, applicationContext) { lat, lng ->
-      val locationA = Location("point A")
-      locationA.latitude = lat
-      locationA.longitude = lng
-      checkReminders(locationA)
-    }
+    locationTracker.startUpdates()
     return START_STICKY
   }
 

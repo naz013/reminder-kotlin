@@ -1,130 +1,108 @@
 package com.elementary.tasks.reminder.lists.adapter
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseViewHolder
-import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ListItemParams
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.dp2px
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
-import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.views.TextDrawable
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.databinding.ListItemShopItemBinding
 
 class ShoppingViewHolder(
   parent: ViewGroup,
-  currentStateHolder: CurrentStateHolder,
-  val editable: Boolean,
+  editable: Boolean,
   showMore: Boolean = true,
+  private val isDark: Boolean,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : BaseViewHolder<ListItemReminderBinding>(
-  ListItemReminderBinding.inflate(parent.inflater(), parent, false),
-  currentStateHolder
+) : BaseUiReminderListViewHolder<ListItemReminderBinding, UiReminderListActiveShop>(
+  ListItemReminderBinding.inflate(parent.inflater(), parent, false)
 ) {
-
-  val listHeader: TextView = binding.listHeader
 
   init {
     if (editable) {
-      binding.itemCheck.show()
+      binding.itemCheck.visible()
     } else {
-      binding.itemCheck.hide()
+      binding.itemCheck.gone()
     }
-    binding.reminderPhone.hide()
-    binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-    binding.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+    binding.reminderPhone.gone()
+    binding.itemCard.setOnClickListener {
+      listener?.invoke(
+        it,
+        bindingAdapterPosition,
+        ListActions.OPEN
+      )
+    }
+    binding.itemCheck.setOnClickListener {
+      listener?.invoke(
+        it,
+        bindingAdapterPosition,
+        ListActions.SWITCH
+      )
+    }
 
     if (showMore) {
-      binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-      binding.buttonMore.show()
+      binding.buttonMore.setOnClickListener {
+        listener?.invoke(
+          it,
+          bindingAdapterPosition,
+          ListActions.MORE
+        )
+      }
+      binding.buttonMore.visible()
     } else {
-      binding.buttonMore.hide()
+      binding.buttonMore.gone()
     }
   }
 
-  fun setData(reminder: Reminder) {
+  override fun setData(reminder: UiReminderListActiveShop) {
     binding.taskText.text = reminder.summary
     loadCheck(reminder)
     loadGroup(reminder)
     loadShoppingDate(reminder)
-    loadItems(reminder.shoppings)
+    loadLeft(reminder)
+    loadItems(reminder.shopList)
   }
 
-  private fun loadCheck(item: Reminder?) {
-    if (item == null || item.isRemoved) {
-      binding.itemCheck.hide()
-      return
-    }
-    binding.itemCheck.isChecked = item.isActive
+  private fun loadCheck(reminder: UiReminderListActiveShop) {
+    binding.itemCheck.isChecked = reminder.status.active
   }
 
-  private fun loadGroup(reminder: Reminder) {
-    val priority = ReminderUtils.getPriorityTitle(itemView.context, reminder.priority)
-    val typeLabel = ReminderUtils.getTypeString(itemView.context, reminder.type)
-    binding.reminderTypeGroup.text = "$typeLabel (${reminder.groupTitle}, $priority)"
+  @SuppressLint("SetTextI18n")
+  private fun loadGroup(reminder: UiReminderListActiveShop) {
+    val priority = reminder.priority
+    val typeLabel = reminder.illustration.title
+    val groupName = reminder.group?.name ?: ""
+    binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }
 
-  private fun loadLeft(reminder: Reminder) {
-    binding.badgesView.show()
-    if (reminder.isActive && !reminder.isRemoved) {
-      val context = binding.itemCard.context
-      val remainingText = TimeCount.getRemaining(
-        context,
-        reminder.eventTime,
-        reminder.delay,
-        prefs.appLanguage
-      )
-      binding.timeToBadge.setImageDrawable(
-        createBadge(context, remainingText, context.dp2px(ListItemParams.BADGE_WIDTH_INCREASED_DP))
-      )
-      binding.timeToBadge.show()
-    } else {
-      binding.timeToBadge.hide()
-    }
-  }
+  private fun loadLeft(reminder: UiReminderListActiveShop) {
+    binding.badgesView.visible()
+    binding.timeToBadge.visibleGone(reminder.isRunning)
 
-  private fun createBadge(
-    context: Context,
-    text: String,
-    width: Int = context.dp2px(ListItemParams.BADGE_WIDTH_DP),
-    backgroundColor: Int = ThemeProvider.getSecondaryColor(context),
-    textColor: Int = ThemeProvider.getOnSecondaryColor(context)
-  ): TextDrawable {
-    return TextDrawable.builder()
-      .beginConfig()
-      .textColor(textColor)
-      .height(context.dp2px(ListItemParams.BADGE_HEIGHT_DP))
-      .width(width)
-      .toUpperCase()
-      .bold()
-      .endConfig()
-      .buildRoundRect(text, backgroundColor, context.dp2px(ListItemParams.BADGE_CORNERS_DP))
+    binding.timeToBadge.text = reminder.due.remaining
   }
 
   private fun loadItems(shoppings: List<ShopItem>) {
-    val isDark = theme.isDark
-    binding.todoList.show()
+    binding.todoList.visible()
     binding.todoList.isFocusableInTouchMode = false
     binding.todoList.isFocusable = false
     binding.todoList.removeAllViewsInLayout()
     var count = 0
     for (list in shoppings) {
-      val bind = ListItemShopItemBinding.inflate(LayoutInflater.from(binding.todoList.context), binding.todoList, false)
+      val bind = ListItemShopItemBinding.inflate(
+        LayoutInflater.from(binding.todoList.context),
+        binding.todoList,
+        false
+      )
       val checkView = bind.checkView
       val textView = bind.shopText
       if (list.isChecked) {
@@ -149,26 +127,21 @@ class ShoppingViewHolder(
         binding.todoList.addView(bind.root)
         break
       } else {
-        checkView.show()
+        checkView.visible()
         textView.text = list.summary
         binding.todoList.addView(bind.root)
       }
     }
   }
 
-  private fun loadShoppingDate(reminder: Reminder) {
-    val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-    if (due > 0) {
-      binding.taskDate.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormat, prefs.appLanguage)
-      binding.taskDate.show()
-      if (reminder.isActive && !reminder.isRemoved) {
-        loadLeft(reminder)
-      } else {
-        binding.badgesView.hide()
-      }
+  private fun loadShoppingDate(reminder: UiReminderListActiveShop) {
+    val due = reminder.due.dateTime
+    if (due != null) {
+      binding.taskDate.text = reminder.due.dateTime
+      binding.taskDate.visible()
     } else {
-      binding.taskDate.hide()
-      binding.badgesView.hide()
+      binding.taskDate.gone()
+      binding.badgesView.gone()
     }
   }
 }

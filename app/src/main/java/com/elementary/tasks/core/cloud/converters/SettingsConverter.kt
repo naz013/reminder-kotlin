@@ -5,9 +5,9 @@ import android.util.Base64InputStream
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SettingsModel
-import com.elementary.tasks.core.utils.CopyByteArrayStream
-import com.elementary.tasks.core.utils.PrefsConstants
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.io.CopyByteArrayStream
+import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream

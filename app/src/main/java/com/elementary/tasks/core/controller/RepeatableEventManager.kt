@@ -7,18 +7,18 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
 
 abstract class RepeatableEventManager(
   reminder: Reminder,
   appDb: AppDb,
   prefs: Prefs,
-  private val calendarUtils: CalendarUtils,
+  private val googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
   updatesHelper: UpdatesHelper,
@@ -43,13 +43,13 @@ abstract class RepeatableEventManager(
     }
     if (reminder.exportToCalendar) {
       if (prefs.isStockCalendarEnabled) {
-        calendarUtils.addEventToStock(
+        googleCalendarUtils.addEventToStock(
           reminder.summary,
           TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         )
       }
       if (prefs.isCalendarEnabled) {
-        calendarUtils.addEvent(reminder)
+        googleCalendarUtils.addEvent(reminder)
       }
     }
   }

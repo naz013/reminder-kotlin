@@ -8,8 +8,8 @@ import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.datetime.TimeUtil
 import hirondelle.date4j.DateTime
 import java.text.SimpleDateFormat
 import java.util.*

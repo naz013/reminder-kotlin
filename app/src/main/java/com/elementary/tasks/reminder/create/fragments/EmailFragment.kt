@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding
 import timber.log.Timber
@@ -28,9 +26,9 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
       return null
     }
     val startTime = binding.dateView.dateTime
-    Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
+    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
-    if (!TimeCount.isCurrent(startTime)) {
+    if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
     }
@@ -39,7 +37,7 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
-    val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
+    val gmtTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.subject = subjectString
     reminder.target = email
     reminder.type = Reminder.BY_DATE_EMAIL

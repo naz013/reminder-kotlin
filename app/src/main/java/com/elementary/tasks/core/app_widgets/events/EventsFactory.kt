@@ -14,20 +14,20 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import java.util.*
+import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
+import java.util.Calendar
+import java.util.Locale
 
 class EventsFactory(
   private val context: Context,
   intent: Intent,
   private val prefs: Prefs,
-  private val appDb: AppDb
+  private val appDb: AppDb,
+  private val dateTimeManager: DateTimeManager,
+  private val contactsReader: ContactsReader
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private var data = mutableListOf<CalendarItem>()
@@ -42,8 +42,9 @@ class EventsFactory(
   override fun onDataSetChanged() {
     data.clear()
     map.clear()
-    val is24 = prefs.is24HourFormat
+
     val reminderItems = appDb.reminderDao().getAll(active = true, removed = false)
+
     for (item in reminderItems) {
       val type = item.type
       val summary = item.summary
@@ -62,18 +63,18 @@ class EventsFactory(
         Reminder.isBase(type, Reminder.BY_WEEK) -> {
           val calendar = Calendar.getInstance()
           calendar.timeInMillis = eventTime
-          date = ReminderUtils.getRepeatString(context, prefs, item.weekdays)
-          time = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
+          date = dateTimeManager.getRepeatString(item.weekdays)
+          time = dateTimeManager.getTime(calendar.time)
         }
         Reminder.isBase(type, Reminder.BY_MONTH) -> {
           val calendar1 = Calendar.getInstance()
           calendar1.timeInMillis = eventTime
-          date = TimeUtil.date(prefs.appLanguage).format(calendar1.time)
-          time = TimeUtil.getTime(calendar1.time, is24, prefs.appLanguage)
+          date = dateTimeManager.date().format(calendar1.time)
+          time = dateTimeManager.getTime(calendar1.time)
         }
         Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> {
           if (item.hasReminder) {
-            val dT = TimeCount.getNextDateTime(eventTime, prefs)
+            val dT = dateTimeManager.getNextDateTime(eventTime)
             date = dT[0]
             time = dT[1]
           }
@@ -81,7 +82,7 @@ class EventsFactory(
           map[id] = item
         }
         else -> {
-          val dT = TimeCount.getNextDateTime(eventTime, prefs)
+          val dT = dateTimeManager.getNextDateTime(eventTime)
           date = dT[0]
           time = dT[1]
         }
@@ -93,7 +94,7 @@ class EventsFactory(
       var mDay: Int
       var mMonth: Int
       var n = 0
-      val birthTime = TimeUtil.getBirthdayTime(prefs.birthdayTime)
+      val birthTime = dateTimeManager.getBirthdayTime()
       val calendar = Calendar.getInstance()
       calendar.timeInMillis = System.currentTimeMillis()
       do {
@@ -103,7 +104,7 @@ class EventsFactory(
         for (item in list) {
           val birthday = item.date
           val name = item.name
-          val millis = TimeUtil.getFutureBirthdayDate(birthTime, item.date)?.millis ?: 0L
+          val millis = dateTimeManager.getFutureBirthdayDate(birthTime, item.date).millis
 
           data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, context.getString(R.string.birthday), name, item.key, birthday, "", millis, 1, item))
         }
@@ -158,8 +159,8 @@ class EventsFactory(
       rv.setImageViewBitmap(R.id.statusIcon, icon)
 
       var task = item.name
-      if (task == null || task.isBlank() && Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
-        task = Contacts.getNameFromNumber(item.number, context)
+      if (task.isNullOrBlank()) {
+        task = contactsReader.getNameFromNumber(item.number)
       }
       rv.setTextViewText(R.id.taskText, task)
 
@@ -170,7 +171,7 @@ class EventsFactory(
       rv.setTextViewTextSize(R.id.leftTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
       val number = item.number
-      if (number != null && number.isNotBlank()) {
+      if (!number.isNullOrBlank()) {
         rv.setTextViewText(R.id.taskNumber, number)
         rv.setViewVisibility(R.id.taskNumber, View.VISIBLE)
       } else {
@@ -178,7 +179,7 @@ class EventsFactory(
       }
       rv.setTextViewText(R.id.taskDate, item.dayDate)
       rv.setTextViewText(R.id.taskTime, item.time)
-      rv.setTextViewText(R.id.leftTime, TimeCount.getRemaining(context, item.date, prefs.appLanguage))
+      rv.setTextViewText(R.id.leftTime, dateTimeManager.getRemaining(item.date))
 
       if (item.id != null) {
         val fillInIntent = Intent()

@@ -1,6 +1,12 @@
 package com.elementary.tasks.core.data.ui
 
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
+import com.elementary.tasks.core.data.ui.reminder.UiReminderIllustration
+import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
+import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
+import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 data class UiReminderPreview(
   val id: String,

@@ -20,11 +20,14 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.services.ReminderActionReceiver
-import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.splash.SplashScreenActivity
@@ -33,11 +36,13 @@ import java.util.*
 
 class Notifier(
   private val context: Context,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val dateTimeManager: DateTimeManager,
+  private val systemServiceProvider: SystemServiceProvider
 ) {
 
   fun createChannels() {
-    val manager = context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
+    val manager = systemServiceProvider.provideNotificationManager()
     manager?.run {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         createNotificationChannel(createReminderChannel())
@@ -120,7 +125,7 @@ class Notifier(
 
   private fun getManager(): NotificationManager? {
     createChannels()
-    return context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
+    return systemServiceProvider.provideNotificationManager()
   }
 
   // Checked for Notification permission
@@ -273,6 +278,9 @@ class Notifier(
   }
 
   fun showBirthdayPermanent() {
+    if (!prefs.isBirthdayPermanentEnabled) {
+      return
+    }
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()
     val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -293,17 +301,13 @@ class Notifier(
       builder.setContentTitle(context.getString(R.string.events))
       val item = list[0]
       builder.setContentText(
-        item.date + " | " + item.name + " | " + TimeUtil.getAgeFormatted(
-          context,
-          item.date,
-          prefs.appLanguage
-        )
+        item.date + " | " + item.name + " | " + dateTimeManager.getAgeFormatted(item.date)
       )
       if (list.size > 1) {
         val stringBuilder = StringBuilder()
         for (birthday in list) {
           stringBuilder.append(birthday.date).append(" | ").append(birthday.name).append(" | ")
-            .append(TimeUtil.getAgeFormatted(context, birthday.date, prefs.appLanguage))
+            .append(dateTimeManager.getAgeFormatted(birthday.date))
           stringBuilder.append("\n")
         }
         builder.setStyle(NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()))
@@ -444,7 +448,9 @@ class Notifier(
     } else {
       context.getString(R.string.app_name)
     }
-    if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
+    if (!SuperUtil.isDoNotDisturbEnabled(context) ||
+      SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled
+    ) {
       ReminderUtils.getSoundUri(context, prefs, reminder.melodyPath).let {
         context.grantUriPermission(
           "com.android.systemui",

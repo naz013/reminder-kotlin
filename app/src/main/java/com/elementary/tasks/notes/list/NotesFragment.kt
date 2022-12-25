@@ -21,15 +21,15 @@ import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.visibleGone
@@ -168,11 +168,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
   }
 
   private fun hideProgress() {
-    binding.progressView.hide()
+    binding.progressView.gone()
   }
 
   private fun showProgress() {
-    binding.progressView.show()
+    binding.progressView.visible()
   }
 
   private fun initViewModel() {

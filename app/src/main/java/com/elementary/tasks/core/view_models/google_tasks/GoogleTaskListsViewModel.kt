@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.view_models.google_tasks
 
-import android.content.Context
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.WorkManagerProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -20,20 +17,14 @@ import java.io.IOException
 import java.util.Random
 
 class GoogleTaskListsViewModel(
-  prefs: Prefs,
-  context: Context,
   gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
   updatesHelper: UpdatesHelper,
   googleTasksDao: GoogleTasksDao,
   googleTaskListsDao: GoogleTaskListsDao
 ) : BaseTaskListsViewModel(
-  prefs,
-  context,
   gTasks,
   dispatcherProvider,
-  workManagerProvider,
   updatesHelper,
   googleTasksDao,
   googleTaskListsDao

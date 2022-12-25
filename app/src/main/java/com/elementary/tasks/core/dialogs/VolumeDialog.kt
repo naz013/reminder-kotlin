@@ -3,7 +3,7 @@ package com.elementary.tasks.core.dialogs
 import android.os.Bundle
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
 class VolumeDialog : BaseDialog() {

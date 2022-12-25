@@ -18,23 +18,22 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.contacts.Contacts
+import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.reminders.FollowReminderViewModel
 import com.elementary.tasks.databinding.ActivityFollowBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import java.util.Calendar
 
 class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
@@ -42,7 +41,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
 
   private val gTasks by inject<GTasks>()
   private val featureManager by inject<FeatureManager>()
-  private val viewModel by viewModel<ReminderViewModel> { parametersOf("") }
+  private val viewModel by viewModel<FollowReminderViewModel>()
 
   private var mHour = 0
   private var mCustomHour = 0
@@ -147,10 +146,10 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
       null
     }
     if (photo != null) {
-      binding.contactPhoto.show()
+      binding.contactPhoto.visible()
       binding.contactPhoto.setImageURI(photo)
     } else {
-      binding.contactPhoto.hide()
+      binding.contactPhoto.gone()
     }
 
     initViews()
@@ -240,14 +239,14 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(),
 
   private fun initExportChecks() {
     if (mCalendar || mStock) {
-      binding.exportCheck.show()
+      binding.exportCheck.visible()
     } else {
-      binding.exportCheck.hide()
+      binding.exportCheck.gone()
     }
     if (canExportToTasks) {
-      binding.taskExport.show()
+      binding.taskExport.visible()
     } else {
-      binding.taskExport.hide()
+      binding.taskExport.gone()
     }
   }
 

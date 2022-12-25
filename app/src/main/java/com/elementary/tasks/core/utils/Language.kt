@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.params.Prefs
 import java.util.*
 
 class Language(private val prefs: Prefs) {

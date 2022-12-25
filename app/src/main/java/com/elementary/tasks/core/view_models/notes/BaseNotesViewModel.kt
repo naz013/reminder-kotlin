@@ -1,36 +1,35 @@
 package com.elementary.tasks.core.view_models.notes
 
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.WorkManagerProvider
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.view_models.BaseDbViewModel
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 abstract class BaseNotesViewModel(
-  prefs: Prefs,
   dispatcherProvider: DispatcherProvider,
-  workManagerProvider: WorkManagerProvider,
+  protected val workerLauncher: WorkerLauncher,
   protected val notesDao: NotesDao
-) : BaseDbViewModel(prefs, dispatcherProvider, workManagerProvider) {
+) : BaseProgressViewModel(dispatcherProvider) {
 
   fun deleteNote(noteWithImages: NoteWithImages) {
     val note = noteWithImages.note ?: return
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       notesDao.delete(note)
       for (image in noteWithImages.images) {
         notesDao.delete(image)
       }
-      startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -40,10 +39,10 @@ abstract class BaseNotesViewModel(
     val v = note.note ?: return
     note.note?.color = color
     postInProgress(true)
-    launchDefault {
-      v.updatedAt = TimeUtil.gmtDateTime
+    viewModelScope.launch(dispatcherProvider.default()) {
+      v.updatedAt = DateTimeManager.gmtDateTime
       notesDao.insert(v)
-      startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+      workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -52,11 +51,11 @@ abstract class BaseNotesViewModel(
   fun saveNote(note: NoteWithImages) {
     val v = note.note ?: return
     postInProgress(true)
-    launchDefault {
-      v.updatedAt = TimeUtil.gmtDateTime
+    viewModelScope.launch(dispatcherProvider.default()) {
+      v.updatedAt = DateTimeManager.gmtDateTime
       saveImages(note.images, v.key)
       notesDao.insert(v)
-      startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+      workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

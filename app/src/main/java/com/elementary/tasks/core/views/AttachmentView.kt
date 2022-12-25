@@ -9,11 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.AttachmentViewBinding
-import com.elementary.tasks.core.utils.CacheUtil
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.visible
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -30,7 +30,7 @@ class AttachmentView : LinearLayout, KoinComponent {
       field = value
       if (value != "") {
         binding.text.text = value
-        binding.removeButton.show()
+        binding.removeButton.visible()
         onFileUpdateListener?.invoke(value)
       } else {
         noFile()
@@ -65,7 +65,7 @@ class AttachmentView : LinearLayout, KoinComponent {
   }
 
   private fun noFile() {
-    binding.removeButton.hide()
+    binding.removeButton.gone()
     binding.text.text = context.getString(R.string.not_selected)
   }
 

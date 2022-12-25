@@ -23,20 +23,20 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PendingIntentWrapper
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.contacts.Contacts
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
 import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import org.koin.android.ext.android.inject
@@ -54,6 +54,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
   private val notifier by inject<Notifier>()
   private val jobScheduler by inject<JobScheduler>()
   private val analyticsEventSender by inject<AnalyticsEventSender>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val ttsLocale: Locale? = language.getLocale(false)
 
@@ -149,7 +150,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                 increment()
                 showReminderNotification(reminder)
                 if (isRepeatEnabled(reminder)) {
-                  jobScheduler.scheduleReminderRepeat(appDb, id)
+                  jobScheduler.scheduleReminderRepeat(reminder)
                 }
               }
 
@@ -272,11 +273,9 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     builder.priority = priority(prefs.birthdayPriority)
     builder.setContentTitle(birthday.name)
     builder.setContentText(
-      TimeUtil.getAgeFormatted(
-        this,
-        TimeUtil.getAge(birthday.date),
-        System.currentTimeMillis(),
-        prefs.appLanguage
+      dateTimeManager.getAgeFormatted(
+        dateTimeManager.getAge(birthday.date),
+        System.currentTimeMillis()
       )
     )
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
@@ -331,7 +330,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
   private fun increment() {
     val current = instanceCount.incrementAndGet()
-    Timber.d("PLAY: $current, ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true)}")
+    Timber.d("PLAY: $current, ${dateTimeManager.logDateTime()}")
   }
 
   private fun decrement(stop: Boolean) {

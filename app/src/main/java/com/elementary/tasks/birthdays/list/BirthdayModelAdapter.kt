@@ -1,33 +1,20 @@
 package com.elementary.tasks.birthdays.list
 
-import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 
-class BirthdayModelAdapter(
-  private val currentStateHolder: CurrentStateHolder
-) {
+class BirthdayModelAdapter(private val dateTimeManager: DateTimeManager) {
 
-  private val prefs = currentStateHolder.preferences
+  fun convert(birthday: Birthday): UiBirthdayList {
+    val birthTime = dateTimeManager.getBirthdayTime()
+    val birthDate = dateTimeManager.getReadableBirthDate(birthday.date)
+    val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
+    val ageFormatted = dateTimeManager.getAgeFormatted(dateItem.year, dateItem.millis)
+    val nextBirthdayDateTime = dateTimeManager.getFullDateTime(dateItem.millis)
+    val remainingTime =  dateTimeManager.getRemaining(dateItem.millis)
 
-  fun convert(birthday: Birthday): BirthdayListItem {
-    val birthTime = TimeUtil.getBirthdayTime(prefs.birthdayTime)
-    val language = prefs.appLanguage
-
-    val birthDate = TimeUtil.getReadableBirthDate(birthday.date, language)
-    val dateItem = TimeUtil.getFutureBirthdayDate(birthTime, birthday.date)
-    val ageFormatted = if (dateItem != null) {
-      TimeUtil.getAgeFormatted(currentStateHolder.context, dateItem.year, dateItem.millis, language)
-    } else ""
-    val nextBirthdayDateTime = if (dateItem != null) {
-      TimeUtil.getFullDateTime(dateItem.millis, prefs.is24HourFormat, language)
-    } else ""
-    val remainingTime = if (dateItem != null) {
-      TimeCount.getRemaining(currentStateHolder.context, dateItem.millis, language)
-    } else ""
-
-    return BirthdayListItem(
+    return UiBirthdayList(
       uuId = birthday.uuId,
       name = birthday.name,
       number = birthday.number,
@@ -35,7 +22,7 @@ class BirthdayModelAdapter(
       ageFormatted = ageFormatted,
       remainingTimeFormatted = remainingTime,
       nextBirthdayDateFormatted = nextBirthdayDateTime,
-      nextBirthdayDate = TimeUtil.getFutureBirthdayDate(birthTime, birthday.date)?.millis ?: 0L,
+      nextBirthdayDate = dateItem.millis,
     )
   }
 }

@@ -19,22 +19,22 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.AssetsUtil
+import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.show
-import com.elementary.tasks.core.utils.tintOverflowButton
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
@@ -79,16 +79,16 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun loadAds() {
     if (!Module.isPro) {
-      binding.adsCard.show()
+      binding.adsCard.visible()
       adsProvider.showBanner(
         binding.adsHolder,
         AdsProvider.NOTE_PREVIEW_BANNER_ID,
         R.layout.list_item_ads_hor
       ) {
-        binding.adsCard.show()
+        binding.adsCard.visible()
       }
     } else {
-      binding.adsCard.show()
+      binding.adsCard.visible()
     }
   }
 
@@ -109,7 +109,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun initReminderCard() {
-    binding.reminderContainer.hide()
+    binding.reminderContainer.gone()
     binding.editReminder.setOnClickListener { editReminder() }
     binding.deleteReminder.setOnClickListener { showReminderDeleteDialog() }
   }
@@ -223,9 +223,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
         prefs.appLanguage
       )
       binding.reminderTime.text = dateTime
-      binding.reminderContainer.show()
+      binding.reminderContainer.visible()
     } else {
-      binding.reminderContainer.hide()
+      binding.reminderContainer.gone()
     }
   }
 

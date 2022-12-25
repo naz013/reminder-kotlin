@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.cloud.storages
 
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.view_models.DispatcherProvider
 
 class StorageManager(
