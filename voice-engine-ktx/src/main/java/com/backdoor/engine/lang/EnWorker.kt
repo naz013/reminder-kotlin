@@ -302,9 +302,13 @@ internal class EnWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
             }) { 1f }
           }
 
-          val parsedDate = LocalDate.now(zoneId)
+          var parsedDate = LocalDate.now(zoneId)
             .withDayOfMonth(dayOfMonth.toInt())
             .withMonth(month)
+
+          if (parsedDate.isBefore(LocalDate.now(zoneId))) {
+            parsedDate = parsedDate.plusYears(1)
+          }
 
           localDate = parsedDate
           list[index] = ""

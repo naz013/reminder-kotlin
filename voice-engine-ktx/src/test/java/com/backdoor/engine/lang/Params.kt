@@ -18,6 +18,21 @@ fun getExpectedDateTime(month: Int, day: Int, hour: Int, minute: Int): String {
   return TimeUtil.getGmtFromDateTime(dateTime)
 }
 
+fun getDateTimeWithShiftedYearIfNeeded(month: Int, day: Int, hour: Int, minute: Int): String {
+  var dateTime = LocalDateTime.now()
+    .withMonth(month)
+    .withDayOfMonth(day)
+    .withHour(hour)
+    .withMinute(minute)
+    .withSecond(0)
+
+  if (dateTime.isBefore(LocalDateTime.now())) {
+    dateTime = dateTime.plusYears(1)
+  }
+
+  return TimeUtil.getGmtFromDateTime(dateTime)
+}
+
 val TIMES = listOf(
   "07:00",
   "12:00",

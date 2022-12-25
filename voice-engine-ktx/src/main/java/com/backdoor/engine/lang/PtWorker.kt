@@ -313,9 +313,13 @@ internal class PtWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
           }
 
           if (dayOfMonth != null) {
-            val parsedDate = LocalDate.now(zoneId)
+            var parsedDate = LocalDate.now(zoneId)
               .withDayOfMonth(dayOfMonth)
               .withMonth(month)
+
+            if (parsedDate.isBefore(LocalDate.now(zoneId))) {
+              parsedDate = parsedDate.plusYears(1)
+            }
 
             localDate = parsedDate
             list[index] = ""

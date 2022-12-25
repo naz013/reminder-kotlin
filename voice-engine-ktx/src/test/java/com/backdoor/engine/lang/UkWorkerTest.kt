@@ -395,7 +395,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(12, 25, 17, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(12, 25, 17, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -410,7 +410,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(1, 5, 12, 30), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(1, 5, 12, 30), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -425,7 +425,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(2, 5, 19, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(2, 5, 19, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -440,7 +440,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(3, 18, 13, 45), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(3, 18, 13, 45), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -455,7 +455,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(4, 29, 11, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(4, 29, 11, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -470,7 +470,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(5, 11, 15, 30), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(5, 11, 15, 30), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -485,7 +485,7 @@ class UkWorkerTest {
     assertEquals("123456", model?.target)
     assertEquals(false, model?.hasCalendar)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(6, 10, 7, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(6, 10, 7, 0), model?.dateTime)
     assertEquals(input, model?.summary?.lowercase())
   }
 
@@ -500,7 +500,7 @@ class UkWorkerTest {
     assertEquals("123456", model?.target)
     assertEquals(false, model?.hasCalendar)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(7, 1, 16, 33), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(7, 1, 16, 33), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -515,7 +515,7 @@ class UkWorkerTest {
     assertEquals("test@mail.com", model?.target)
     assertEquals(false, model?.hasCalendar)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(8, 25, 19, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(8, 25, 19, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -530,7 +530,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(DAY, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(9, 10, 23, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(9, 10, 23, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -545,7 +545,7 @@ class UkWorkerTest {
     assertEquals(true, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(10, 8, 12, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(10, 8, 12, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -560,7 +560,7 @@ class UkWorkerTest {
     assertEquals(true, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(10, 8, 12, 0), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(10, 8, 12, 0), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 
@@ -575,7 +575,7 @@ class UkWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getExpectedDateTime(11, 11, 11, 11), model?.dateTime)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(11, 11, 11, 11), model?.dateTime)
     assertEquals("випустити реліз", model?.summary?.lowercase())
   }
 }

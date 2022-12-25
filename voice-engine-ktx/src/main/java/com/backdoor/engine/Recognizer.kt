@@ -328,7 +328,7 @@ class Recognizer private constructor(
         if (weekdays[datOfWeek - 1] == 1 && tmpDateTime.isAfter(nowDateTime)) {
           break
         }
-        tmpDateTime = tmpDateTime.plusDays(1L)
+        tmpDateTime = tmpDateTime.plusDays(1)
       }
       tmpDateTime
     } else {
@@ -344,9 +344,17 @@ class Recognizer private constructor(
 
   private fun getTime(time: LocalTime?, days: Int): LocalDateTime? {
     if (time == null) return null
+    val now = nowDateTime()
     val dateTime = nowDateTime().withHour(time.hour).withMinute(time.minute)
-    if (days == 0) return dateTime
-    return dateTime.plusDays(days.toLong())
+    return if (days == 0) {
+      if (now.isAfter(dateTime)) {
+        dateTime
+      } else {
+        dateTime.plusDays(1)
+      }
+    } else {
+      dateTime.plusDays(days.toLong())
+    }
   }
 
   private fun nowDateTime() = LocalDateTime.now(zoneId)
