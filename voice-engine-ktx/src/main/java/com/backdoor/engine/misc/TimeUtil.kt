@@ -1,6 +1,7 @@
 package com.backdoor.engine.misc
 
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
@@ -10,6 +11,6 @@ internal object TimeUtil {
 
   fun getGmtFromDateTime(dateTime: LocalDateTime?): String {
     if (dateTime == null) return ""
-    return dateTime.format(GMT_DATE_FORMAT)
+    return dateTime.format(GMT_DATE_FORMAT.withZone(ZoneId.of("GMT")))
   }
 }

@@ -134,6 +134,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.threeten.bp.ZoneId
 
 val workerModule = module {
   worker { BirthdayDeleteBackupWorker(get(), get(), get()) }
@@ -433,7 +434,7 @@ fun providesRecognizer(prefs: Prefs, language: Language) =
         prefs.nightTime
       )
     )
-    .setTimeZone("GMT")
+    .setTimeZone(ZoneId.systemDefault().id)
     .build()
     .apply {
       enableLogging = BuildConfig.DEBUG

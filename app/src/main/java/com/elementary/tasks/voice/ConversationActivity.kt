@@ -17,12 +17,12 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
@@ -277,13 +277,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       ActionType.ANSWER -> performAnswer(model)
       ActionType.SHOW -> {
         stopView()
-        Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getMillisFromGmt(model.dateTime), true)}")
+        Timber.d("performResult: gmt ${model.dateTime}")
         when (model.action) {
-          Action.REMINDERS -> viewModel.getReminders(TimeUtil.getMillisFromGmt(model.dateTime))
+          Action.REMINDERS -> viewModel.getReminders(model.dateTime)
           Action.NOTES -> viewModel.getNotes()
           Action.GROUPS -> showGroups()
-          Action.ACTIVE_REMINDERS -> viewModel.getEnabledReminders(TimeUtil.getMillisFromGmt(model.dateTime))
-          Action.BIRTHDAYS -> viewModel.getBirthdays(TimeUtil.getMillisFromGmt(model.dateTime))
+          Action.ACTIVE_REMINDERS -> viewModel.getEnabledReminders(model.dateTime)
+          Action.BIRTHDAYS -> viewModel.getBirthdays(model.dateTime)
           Action.SHOP_LISTS -> viewModel.getShoppingReminders()
           else -> showUnsupportedMessage()
         }

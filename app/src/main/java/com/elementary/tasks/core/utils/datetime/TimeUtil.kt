@@ -25,8 +25,6 @@ import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import hirondelle.date4j.DateTime
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -304,15 +302,6 @@ object TimeUtil {
       GMT_DATE_FORMAT.format(time)
     } catch (e: Exception) {
       ""
-    }
-  }
-
-  fun getMillisFromGmt(dateTime: String?): Long {
-    if (dateTime.isNullOrEmpty()) return 0
-    return try {
-      LocalDateTime.parse(dateTime, NEW_GMT_DATE_FORMAT).toInstant(ZoneOffset.UTC).toEpochMilli()
-    } catch (e: Exception) {
-      0
     }
   }
 

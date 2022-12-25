@@ -32,7 +32,9 @@ import com.github.naz013.calendarext.toCalendar
 import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.text.DateFormat
@@ -47,11 +49,15 @@ class DateTimeManager(
   private val textProvider: TextProvider
 ) {
 
-  fun getMillisFromGmt(dateTime: String?): Long {
+  fun getMillisFromGmtVoiceEngine(dateTime: String?): Long {
     if (dateTime.isNullOrEmpty()) return 0
     return try {
-      LocalDateTime.parse(dateTime, NEW_GMT_DATE_FORMAT).toInstant(ZoneOffset.UTC).toEpochMilli()
+      ZonedDateTime.parse(
+        dateTime,
+        NEW_GMT_DATE_FORMAT.withZone(ZoneId.of("GMT"))
+      ).toInstant().toEpochMilli()
     } catch (e: Exception) {
+      e.printStackTrace()
       0
     }
   }
@@ -616,6 +622,24 @@ class DateTimeManager(
       calendar.addMillis(DAY)
     }
     return calendar.timeInMillis
+  }
+
+  fun getNextWeekdayTime(startTime: Long, weekdays: List<Int>, delay: Long): Long {
+    val calendar = newCalendar(startTime).also {
+      it.dropSeconds()
+      it.dropMilliseconds()
+    }
+    return if (delay > 0) {
+      startTime + delay * MINUTE
+    } else {
+      while (true) {
+        if (weekdays[calendar.getDayOfWeek() - 1] == 1 && calendar.timeInMillis > System.currentTimeMillis()) {
+          break
+        }
+        calendar.timeInMillis = calendar.timeInMillis + DAY
+      }
+      calendar.timeInMillis
+    }
   }
 
   private fun calendarFromEventTime(eventTime: String, fromTime: Long) =
