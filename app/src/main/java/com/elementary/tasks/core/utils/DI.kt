@@ -174,12 +174,20 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
       get()
     )
   }
   viewModel { (id: String) ->
     ReminderPreviewViewModel(
       id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
       get(),
       get(),
       get(),
