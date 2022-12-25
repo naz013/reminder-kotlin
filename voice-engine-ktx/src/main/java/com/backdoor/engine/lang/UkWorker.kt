@@ -2,12 +2,16 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
-import com.backdoor.engine.misc.LongInternal
-import java.util.*
+import com.backdoor.engine.misc.ContactsInterface
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
 import java.util.regex.Pattern
 
-internal class UkWorker : Worker() {
-  override val weekdays = listOf(
+internal class UkWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
+  Worker(zoneId, contactsInterface) {
+
+  override val weekdays: List<String> = listOf(
     " неділ",
     "понеділ",
     "вівтор",
@@ -17,47 +21,42 @@ internal class UkWorker : Worker() {
     "субот"
   )
 
-  override fun hasCalendar(input: String) = input.matches(".*календар.*")
+  override fun hasCalendar(input: String): Boolean = input.matches(".*календар.*")
 
-  override fun clearCalendar(input: String) =
-    input.splitByWhitespaces()
+  override fun clearCalendar(input: String): String {
+    return input.splitByWhitespaces()
       .toMutableList()
       .let {
         it.forEachIndexed { index, s ->
           if (s.matches(".*календар.*")) {
             it[index] = ""
-            if (index > 0 && it[index - 1].equals("до", ignoreCase = true)) {
-              it[index - 1] = ""
-            }
+            clearAllBackward(it, index - 1, 3, "до", ".*дода.*", "і")
             return@forEachIndexed
           }
         }
         it.clip()
       }
+  }
 
   override fun clearWeekDays(input: String): String {
-    val sb = StringBuilder()
-    input.splitByWhitespaces().toMutableList().also {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         for (day in weekdays) {
           if (s.matches(".*$day.*")) {
             it[index] = ""
+            clearAllBackward(it, index - 1, 2, "(в|у)", "і", "кожн(ого|ий)")
             break
           }
         }
       }
-    }.clip().splitByWhitespaces().forEach { s ->
-      val part = s.trim()
-      if (!part.matches("в")) sb.append(" ").append(part)
-    }
-    return sb.toString().trim()
+    }.clip()
   }
 
-  override fun getDaysRepeat(input: String) =
+  override fun getDaysRepeat(input: String): Long =
     input.splitByWhitespaces().firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
 
-  override fun clearDaysRepeat(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearDaysRepeat(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasDays(s)) {
           ignoreAny {
@@ -69,26 +68,30 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip()
+  }
 
-  override fun hasRepeat(input: String) = input.matches(".*кожн.*") || hasEveryDay(input)
+  override fun hasRepeat(input: String): Boolean = input.matches(".*повторю.*") ||
+    input.matches(".*кожн.*") || hasEveryDay(input)
 
-  override fun hasEveryDay(input: String) =
-    input.matches(".*щоден.*") || input.matches(".*щодня.*")
+  override fun hasEveryDay(input: String): Boolean = input.matches(".*щоден.*") ||
+    input.matches(".*щодня.*") || input.matches(".*кожн(ого|ен) (день|дня).*")
 
-  override fun clearRepeat(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearRepeat(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasRepeat(s)) {
           it[index] = ""
+          clearAllBackward(it, index - 1, 1, "і")
           return@forEachIndexed
         }
       }
     }.clip()
+  }
 
-  override fun hasTomorrow(input: String) = input.matches(".*завтра.*")
+  override fun hasTomorrow(input: String): Boolean = input.matches(".*завтра.*")
 
-  override fun clearTomorrow(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearTomorrow(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches(".*завтра.*")) {
           it[index] = ""
@@ -96,6 +99,7 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip()
+  }
 
   override fun getMessage(input: String): String {
     val sb = StringBuilder()
@@ -108,8 +112,8 @@ internal class UkWorker : Worker() {
     }
   }
 
-  override fun clearMessage(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearMessage(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches("текст(ом)?")) {
           ignoreAny {
@@ -119,15 +123,16 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip()
+  }
 
-  override fun getMessageType(input: String) = when {
+  override fun getMessageType(input: String): Action? = when {
     input.matches(".*повідомлення.*") -> Action.MESSAGE
     input.matches(".*листа?.*") -> Action.MAIL
     else -> null
   }
 
-  override fun clearMessageType(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearMessageType(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (getMessageType(s) != null) {
           it[index] = ""
@@ -135,8 +140,9 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip()
+  }
 
-  override fun getAmpm(input: String) = when {
+  override fun getAmpm(input: String): Ampm? = when {
     input.matches(".*з?ран(ку|о)?.*") || input.matches(".*вранці.*") -> Ampm.MORNING
     input.matches(".*в?веч(о|е)р.*") -> Ampm.EVENING
     input.matches(".*в?день.*") -> Ampm.NOON
@@ -144,46 +150,50 @@ internal class UkWorker : Worker() {
     else -> null
   }
 
-  override fun clearAmpm(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearAmpm(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (getAmpm(s) != null) {
           it[index] = ""
+          clearAllBackward(it, index - 1, 1, "в")
           return@forEachIndexed
         }
       }
     }.clip()
-
-  override fun getShortTime(input: String?) = input?.let { s ->
-    val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
-    var date: Date? = null
-    if (matcher.find()) {
-      val time = matcher.group().trim()
-      for (format in hourFormats) {
-        if (ignoreAny {
-            date = format.parse(time)
-            date
-          } != null) break
-      }
-    }
-    date
   }
 
-  override fun clearTime(input: String?) =
-    input?.splitByWhitespaces()?.toMutableList()?.also {
+  override fun getShortTime(input: String?): LocalTime? {
+    return input?.let { s ->
+      val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
+      var localTime: LocalTime? = null
+      if (matcher.find()) {
+        val time = matcher.group().trim()
+        for (format in hourFormats) {
+          if (ignoreAny {
+              localTime = LocalTime.parse(time, format)
+              localTime
+            } != null) break
+        }
+      }
+      localTime
+    }
+  }
+
+  override fun clearTime(input: String?): String {
+    return input?.splitByWhitespaces()?.toMutableList()?.also {
       it.forEachIndexed { i, s ->
         if (hasHours(s) != -1) {
           val index = hasHours(s)
           it[i] = ""
           var hourSuccess = false
           ignoreAny {
-            it[i - index].toInt()
+            it[i - index].toFloat()
             hourSuccess = true
             it[i - index] = ""
           }
           if (hourSuccess) {
             ignoreAny {
-              it[i + 1].toInt()
+              it[i + 1].toFloat()
               it[i + 1] = ""
             }
           }
@@ -191,7 +201,7 @@ internal class UkWorker : Worker() {
         if (hasMinutes(s) != -1) {
           val index = hasMinutes(s)
           ignoreAny {
-            it[i - index].toInt()
+            it[i - index].toFloat()
             it[i - index] = ""
           }
           it[i] = ""
@@ -205,33 +215,48 @@ internal class UkWorker : Worker() {
       } else s
     }?.splitByWhitespaces()?.toMutableList()?.let { list ->
       val sb = StringBuilder()
+      var hasAt = false
       list.forEach { s ->
-        if (!s.matches("об?")) sb.append(" ").append(s.trim())
+        if (!s.matches("об?")) {
+          if (hasAt) {
+            try {
+              s.trim().toFloat()
+            } catch (e: Throwable) {
+              sb.append(" ").append(s.trim())
+            }
+            hasAt = false
+          } else {
+            sb.append(" ").append(s.trim())
+          }
+        } else {
+          hasAt = true
+        }
       }
       sb.toString().trim()
     } ?: ""
+  }
 
-  override fun getMonth(input: String?) = when {
+  override fun getMonth(input: String?): Int = when {
     input == null -> -1
-    input.contains("січень") || input.contains("січня") -> 0
-    input.contains("лютий") || input.contains("лютого") -> 1
-    input.contains("березень") || input.contains("березня") -> 2
-    input.contains("квітень") || input.contains("квітня") -> 3
-    input.contains("травень") || input.contains("травня") -> 4
-    input.contains("червень") || input.contains("червня") -> 5
-    input.contains("липень") || input.contains("липня") -> 6
-    input.contains("серпень") || input.contains("серпня") -> 7
-    input.contains("вересень") || input.contains("вересня") -> 8
-    input.contains("жовтень") || input.contains("жовтня") -> 9
-    input.contains("листопад") || input.contains("листопада") -> 10
-    input.contains("грудень") || input.contains("грудня") -> 11
+    input.contains("січень") || input.contains("січня") -> 1
+    input.contains("лютий") || input.contains("лютого") -> 2
+    input.contains("березень") || input.contains("березня") -> 3
+    input.contains("квітень") || input.contains("квітня") -> 4
+    input.contains("травень") || input.contains("травня") -> 5
+    input.contains("червень") || input.contains("червня") -> 6
+    input.contains("липень") || input.contains("липня") -> 7
+    input.contains("серпень") || input.contains("серпня") -> 8
+    input.contains("вересень") || input.contains("вересня") -> 9
+    input.contains("жовтень") || input.contains("жовтня") -> 10
+    input.contains("листопад") || input.contains("листопада") -> 11
+    input.contains("грудень") || input.contains("грудня") -> 12
     else -> -1
   }
 
-  override fun hasCall(input: String) = input.matches(".*дзвонити.*")
+  override fun hasCall(input: String): Boolean = input.matches(".*дзвонити.*")
 
-  override fun clearCall(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearCall(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasCall(s)) {
           it[index] = ""
@@ -239,11 +264,12 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip()
+  }
 
-  override fun hasTimer(input: String) = input.matches(".*через.*")
+  override fun hasTimer(input: String): Boolean = input.matches(".*через.*")
 
-  override fun cleanTimer(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun cleanTimer(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasTimer(s)) {
           it[index] = ""
@@ -251,11 +277,12 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip().trim()
+  }
 
-  override fun hasSender(input: String) = input.matches(".*надісл.*")
+  override fun hasSender(input: String): Boolean = input.matches(".*надісл.*")
 
-  override fun clearSender(input: String) =
-    input.splitByWhitespaces().toMutableList().also {
+  override fun clearSender(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasSender(s)) {
           it[index] = ""
@@ -263,112 +290,127 @@ internal class UkWorker : Worker() {
         }
       }
     }.clip()
+  }
 
-  override fun hasNote(input: String) = input.contains("нотатка")
+  override fun hasNote(input: String): Boolean = input.matches(".*нотатк(у|а).*")
 
-  override fun clearNote(input: String) = input.replace("нотатка", "").trim()
+  override fun clearNote(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*нотатк(у|а).*")) {
+          it[index] = ""
+          clearAllBackward(it, index - 1, 1, ".*нов.*", ".*дода(й|ти).*")
+          return@forEachIndexed
+        }
+      }
+    }.clip()
+  }
 
   override fun hasAction(input: String): Boolean {
-    return (input.startsWith("відкрити") || input.matches(".*допом.*")
-      || input.matches(".*гучніст.*") || input.matches(".*налаштув.*")
+    return (input.startsWith("відкри") || input.matches(".*допом.*")
+      || input.matches(".*гучн(і|о)ст.*") || input.matches(".*налаштув.*")
       || input.matches(".*повідомити.*"))
   }
 
-  override fun getAction(input: String) = when {
+  override fun getAction(input: String): Action = when {
     input.matches(".*допомог.*") -> Action.HELP
-    input.matches(".*гучніст.*") -> Action.VOLUME
+    input.matches(".*гучн(і|о)ст.*") -> Action.VOLUME
     input.matches(".*налаштування.*") -> Action.SETTINGS
     input.matches(".*повідомити.*") -> Action.REPORT
     else -> Action.APP
   }
 
-  override fun hasEvent(input: String) =
-    input.startsWith("додати") || input.matches("нове?и?й?.*")
+  override fun hasEvent(input: String): Boolean =
+    input.startsWith("дода") || input.matches("нове?и?й?.*")
 
-  override fun hasEmptyTrash(input: String) = input.matches(".*очисти(ти)? кошик.*")
+  override fun hasEmptyTrash(input: String): Boolean = input.matches(".*очисти(ти)? кошик.*")
 
-  override fun hasDisableReminders(input: String) =
+  override fun hasDisableReminders(input: String): Boolean =
     input.matches(".*вимкн(и|ути)? (всі)? ?нагадування.*")
 
-  override fun hasGroup(input: String) = input.matches(".*дода(ти|й)? групу.*")
+  override fun hasGroup(input: String): Boolean = input.matches(".*дода(ти|й)? групу.*")
 
   override fun clearGroup(input: String): String {
-    val sb = StringBuilder()
-    val parts: Array<String> = input.splitByWhitespaces().toTypedArray()
-    var st = false
-    for (s in parts) {
-      if (s.matches(".*групу.*")) {
-        st = true
-        continue
+    return input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*групу.*")) {
+          it[index] = ""
+          clearAllBackward(it, index - 1, 1, ".*нов.*", ".*дода(й|ти).*")
+          return@forEachIndexed
+        }
       }
-      if (st) sb.append(s).append(" ")
-    }
-    return sb.toString().trim()
+    }.clip()
   }
 
-  override fun getEvent(input: String) = when {
+  override fun getEvent(input: String): Action = when {
     input.matches(".*день народжен.*") -> Action.BIRTHDAY
     input.matches(".*нагадуван.*") -> Action.REMINDER
     else -> Action.NO_EVENT
   }
 
-  override fun hasToday(input: String) = input.matches(".*сьогодн.*")
+  override fun hasToday(input: String): Boolean = input.matches(".*сьогодн.*")
 
-  override fun hasAfterTomorrow(input: String) = input.matches(".*післязавтр.*")
+  override fun hasAfterTomorrow(input: String): Boolean = input.matches(".*післязавтр.*")
 
-  override val afterTomorrow = "післязавтра"
+  override val afterTomorrow: String = "післязавтра"
 
-  override fun hasHours(input: String?) = when {
+  override fun hasHours(input: String?): Int = when {
     input.matchesOrFalse(".*годині?у?.*") -> 1
     else -> -1
   }
 
-  override fun hasMinutes(input: String?) = when {
+  override fun hasMinutes(input: String?): Int = when {
     input.matchesOrFalse(".*хвилин.*") -> 1
     else -> -1
   }
 
-  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*секунд.*")
+  override fun hasSeconds(input: String?): Boolean = input.matchesOrFalse(".*секунд.*")
 
-  override fun hasDays(input: String?) = input.matchesOrFalse(".*дні.*") ||
-    input.matchesOrFalse(".*день.*") || input.matchesOrFalse(".*дня.*")
+  override fun hasDays(input: String?): Boolean = input.matchesOrFalse(".*дні.*") ||
+    input.matchesOrFalse(".*день.*") || input.matchesOrFalse(".*дня.*") ||
+    input.matchesOrFalse(".*щоден(но|ь).*")
 
-  override fun hasWeeks(input: String?) =
+  override fun hasWeeks(input: String?): Boolean =
     input.matchesOrFalse(".*тиждень.*") || input.matchesOrFalse(".*тижні.*")
 
-  override fun hasMonth(input: String?) = input.matchesOrFalse(".*місяц.*")
+  override fun hasMonth(input: String?): Boolean = input.matchesOrFalse(".*місяц.*")
 
-  override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (так|ні) .*")
+  override fun hasAnswer(input: String): Boolean = input.let { " $it " }.matches(".* (так|ні) .*")
 
-  override fun getAnswer(input: String) = when {
+  override fun getAnswer(input: String): Action = when {
     input.matches(".* ?так ?.*") -> Action.YES
     else -> Action.NO
   }
 
-  override fun getDate(input: String, res: LongInternal): String? {
-    var mills: Long = 0
+  override fun getDateAndClear(input: String, result: (LocalDate?) -> Unit): String {
+    var localDate: LocalDate? = null
     return input.splitByWhitespaces().toMutableList().also { list ->
       list.forEachIndexed { index, s ->
         val month = getMonth(s)
-        if (month != -1) {
-          val integer = ignoreAny({
-            list[index - 1].toInt().also { list[index - 1] = "" }
+        if (month > 0) {
+          val dayOfMonth = ignoreAny({
+            list[index - 1].toFloat().toInt().also { list[index - 1] = "" }
           }) { 1 }
-          val calendar = Calendar.getInstance()
-          calendar.timeInMillis = System.currentTimeMillis()
-          calendar[Calendar.MONTH] = month
-          calendar[Calendar.DAY_OF_MONTH] = integer
-          mills = calendar.timeInMillis
+
+          var parsedDate = LocalDate.now(zoneId)
+            .withDayOfMonth(dayOfMonth)
+            .withMonth(month)
+
+          if (parsedDate.isBefore(LocalDate.now(zoneId))) {
+            parsedDate = parsedDate.plusYears(1)
+          }
+
+          localDate = parsedDate
           list[index] = ""
           return@forEachIndexed
         }
       }
     }.clip().also {
-      res.value = mills
+      result(localDate)
     }
   }
 
-  override fun findFloat(input: String?) = when {
+  override fun findFloat(input: String?): Float = when {
     input == null -> -1f
     input.contains("півтор") -> 1.5f
     input.contains("половин") || input.contains("пів") -> 0.5f
@@ -394,7 +436,7 @@ internal class UkWorker : Worker() {
       }
   }
 
-  override fun findNumber(input: String?) = when {
+  override fun findNumber(input: String?): Float = when {
     input == null -> -1f
     input.matches("нуль") -> 0f
     input.matches("один") || input.matches("одну") || input.matches("одна") -> 1f
@@ -454,18 +496,35 @@ internal class UkWorker : Worker() {
     else -> -1f
   }
 
-  override fun hasShowAction(input: String) = input.matches(".*пока(зати|жи)?.*")
+  override fun hasShowAction(input: String): Boolean = input.matches(".*пока(зати|жи).*")
 
-  override fun getShowAction(input: String) = when {
-    input.matches(".*д?е?н?і?ь? народжен.*") -> Action.BIRTHDAYS
+  override fun getShowAction(input: String): Action? = when {
+    input.matches(".*де?н?і?ь? народжен.*") -> Action.BIRTHDAYS
     input.matches(".*активні нагадуван.*") -> Action.ACTIVE_REMINDERS
     input.matches(".*нагадуван.*") -> Action.REMINDERS
     input.matches(".*події.*") -> Action.EVENTS
-    input.matches(".*нотатки.*") -> Action.NOTES
-    input.matches(".*групи.*") -> Action.GROUPS
+    input.matches(".*нотатк(и|у).*") -> Action.NOTES
+    input.matches(".*груп(и|у).*") -> Action.GROUPS
     input.matches(".*списо?ки? покупок.*") -> Action.SHOP_LISTS
     else -> null
   }
 
-  override fun hasNextModifier(input: String) = input.matches(".*наступн.*")
+  override fun hasNextModifier(input: String): Boolean = input.matches(".*наступн.*")
+
+  override fun clearShowAction(input: String): String {
+    return input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*пока(зати|жи).*")) {
+          it[index] = ""
+          if (index < it.size - 1 && getShowAction(it[index + 1]) != null) {
+            it[index + 1] = ""
+          } else if (index < it.size - 2 && getShowAction(it[index + 1] + " " + it[index + 2]) != null) {
+            it[index + 1] = ""
+            it[index + 2] = ""
+          }
+          return@forEachIndexed
+        }
+      }
+    }.clip()
+  }
 }

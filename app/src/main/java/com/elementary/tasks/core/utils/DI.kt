@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
@@ -410,4 +411,8 @@ fun providesRecognizer(prefs: Prefs, language: Language) =
         prefs.nightTime
       )
     )
+    .setTimeZone("GMT")
     .build()
+    .apply {
+      enableLogging = BuildConfig.DEBUG
+    }

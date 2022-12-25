@@ -77,56 +77,46 @@ class Language(private val prefs: Prefs) {
   }
 
   fun getLanguages(context: Context) = listOf(
-    context.getString(R.string.english) + " (" + EN + ")",
-    context.getString(R.string.russian) + " (" + RU + ")",
-    context.getString(R.string.ukrainian) + " (" + UK + ")",
-    context.getString(R.string.german) + " (" + DE + ") (BETA)",
-    context.getString(R.string.spanish) + " (" + ES + ") (BETA)",
-    context.getString(R.string.portuguese) + " (" + PT + ") (BETA)",
-    context.getString(R.string.polish) + " (" + PL + ") (BETA)"
+    context.getString(R.string.english),
+    context.getString(R.string.ukrainian),
+    context.getString(R.string.spanish),
+    context.getString(R.string.portuguese),
+    context.getString(R.string.polish)
   )
 
   fun getTextLanguage(code: Int) = when (code) {
     0 -> ENGLISH
-    1 -> RUSSIAN
-    2 -> UKRAINIAN
-    3 -> GERMAN
-    4 -> SPANISH
-    5 -> PORTUGUESE
-    6 -> POLISH
+    1 -> UKRAINIAN
+    2 -> SPANISH
+    3 -> PORTUGUESE
+    4 -> POLISH
     else -> ENGLISH
   }
 
   fun getLanguage(code: Int) = when (code) {
     0 -> EN
-    1 -> RU
-    2 -> UK
-    3 -> DE
-    4 -> ES
-    5 -> PT
-    6 -> PL
+    1 -> UK
+    2 -> ES
+    3 -> PT
+    4 -> PL
     else -> EN
   }
 
   fun getVoiceLocale(code: Int): Locale = when (code) {
     0 -> Locale.ENGLISH
-    1 -> Locale("ru", "")
-    2 -> Locale("uk", "")
-    3 -> Locale.GERMAN
-    4 -> Locale("es", "")
-    5 -> Locale("pt", "")
-    6 -> Locale("pl", "")
+    1 -> Locale("uk", "")
+    2 -> Locale("es", "")
+    3 -> Locale("pt", "")
+    4 -> Locale("pl", "")
     else -> Locale.ENGLISH
   }
 
   fun getVoiceLanguage(code: Int) = when (code) {
     0 -> com.backdoor.engine.misc.Locale.EN
-    1 -> com.backdoor.engine.misc.Locale.RU
-    2 -> com.backdoor.engine.misc.Locale.UK
-    3 -> com.backdoor.engine.misc.Locale.DE
-    4 -> com.backdoor.engine.misc.Locale.ES
-    5 -> com.backdoor.engine.misc.Locale.PT
-    6 -> com.backdoor.engine.misc.Locale.PL
+    1 -> com.backdoor.engine.misc.Locale.UK
+    2 -> com.backdoor.engine.misc.Locale.ES
+    3 -> com.backdoor.engine.misc.Locale.PT
+    4 -> com.backdoor.engine.misc.Locale.PL
     else -> com.backdoor.engine.misc.Locale.EN
   }
 
@@ -195,9 +185,7 @@ class Language(private val prefs: Prefs) {
     const val PORTUGUESE = "pt"
 
     private const val EN = "en-US"
-    private const val RU = "ru-RU"
     private const val UK = "uk-UA"
-    private const val DE = "de-DE"
     private const val ES = "es-ES"
     private const val PT = "pt-PT"
     private const val PL = "pl"

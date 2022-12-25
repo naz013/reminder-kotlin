@@ -9,7 +9,8 @@ data class Model(
   val dateTime: String? = null,
   val repeatInterval: Long = 0,
   val type: ActionType? = null,
-  val weekdays: List<Int> = listOf(),
+  val weekdays: List<Int> = emptyList(),
   val action: Action = Action.NONE,
-  val hasCalendar: Boolean = false
+  val hasCalendar: Boolean = false,
+  val afterMillis: Long = 0
 )

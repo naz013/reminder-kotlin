@@ -10,14 +10,12 @@ import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.threeten.bp.ZoneId
 
-class PlWorkerTest {
+class EsWorkerTest {
 
-  private val worker = PlWorker(ZoneId.of("GMT"), null)
   private val contactsInterface = mockk<ContactsInterface>()
   private val recognizer = Recognizer.Builder()
-    .setLocale(Locale.PL)
+    .setLocale(Locale.ES)
     .setTimes(TIMES)
     .setTimeZone(TIME_ZONE_ID)
     .build()
@@ -25,21 +23,21 @@ class PlWorkerTest {
   @Before
   fun setUp() {
     every { contactsInterface.findNumber(any()) }.answers { null }
-    every { contactsInterface.findNumber("domu") }.answers { "123456" }
+    every { contactsInterface.findNumber("casa") }.answers { "123456" }
     every { contactsInterface.findEmail(any()) }.answers { null }
-    every { contactsInterface.findEmail("domu") }.answers { "test@mail.com" }
+    every { contactsInterface.findEmail("casa") }.answers { "test@mail.com" }
     recognizer.setContactHelper(contactsInterface)
   }
 
   @Test
   fun testResponseYes() {
-    val model = recognizer.recognize("Oczywiście, że tak")
+    val model = recognizer.recognize("sí, por supuesto")
 
     assertEquals(true, model != null)
     assertEquals(ActionType.ANSWER, model?.type)
     assertEquals(Action.YES, model?.action)
 
-    val model2 = recognizer.recognize("tak")
+    val model2 = recognizer.recognize("si")
 
     assertEquals(true, model2 != null)
     assertEquals(ActionType.ANSWER, model2?.type)
@@ -48,13 +46,13 @@ class PlWorkerTest {
 
   @Test
   fun testResponseNo() {
-    val model = recognizer.recognize("nie, nie zapisuj")
+    val model = recognizer.recognize("no, no guardes")
 
     assertEquals(true, model != null)
     assertEquals(ActionType.ANSWER, model?.type)
     assertEquals(Action.NO, model?.action)
 
-    val model2 = recognizer.recognize("nie")
+    val model2 = recognizer.recognize("no")
 
     assertEquals(true, model2 != null)
     assertEquals(ActionType.ANSWER, model2?.type)
@@ -63,7 +61,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowBirthdaysForNextWeek() {
-    val input = "pokaż urodziny na następny tydzień"
+    val input = "mostrar cumpleaños para la próxima semana"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -74,7 +72,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowRemindersForNext3Days() {
-    val input = "pokaż przypomnienia na następne 3 dni"
+    val input = "mostrar recordatorios para los próximos 3 días"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -85,7 +83,7 @@ class PlWorkerTest {
 
   @Test
   fun testDisableReminders() {
-    val input = "wyłącz wszystkie przypomnienia"
+    val input = "desactivar todos los recordatorios"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -95,7 +93,17 @@ class PlWorkerTest {
 
   @Test
   fun testClearArchivedReminders() {
-    val input = "opróżnij kosz"
+    val input = "limpiar la basura"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.ACTION, model?.type)
+    assertEquals(Action.TRASH, model?.action)
+  }
+
+  @Test
+  fun testEmptyArchivedReminders() {
+    val input = "papelera vacía"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -105,7 +113,7 @@ class PlWorkerTest {
 
   @Test
   fun testAddGroup() {
-    val input = "dodaj grupę praca"
+    val input = "crear trabajo en grupo"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -115,12 +123,42 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(0L, model?.afterMillis)
-    assertEquals("praca", model?.summary?.lowercase())
+    assertEquals("trabajo", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testAddGroup2() {
+    val input = "añadir trabajo en grupo"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.GROUP, model?.type)
+    assertEquals(Action.NONE, model?.action)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("trabajo", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testAddGroup3() {
+    val input = "añadir nuevo trabajo en grupo"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.GROUP, model?.type)
+    assertEquals(Action.NONE, model?.action)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("trabajo", model?.summary?.lowercase())
   }
 
   @Test
   fun testAddNote() {
-    val input = "nowa notatka wypuścić nową wersję w następny wtorek"
+    val input = "se publica la actualización de crear una nueva nota"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -130,12 +168,27 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(0L, model?.afterMillis)
-    assertEquals("wypuścić nową wersję w następny wtorek", model?.summary?.lowercase())
+    assertEquals("se publica la actualización", model?.summary?.lowercase())
   }
 
   @Test
   fun testShowBirthdays() {
-    val input = "pokaż urodziny"
+    val input = "mostrar cumpleaños"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.SHOW, model?.type)
+    assertEquals(Action.BIRTHDAYS, model?.action)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testShowBirthdays2() {
+    val input = "mostrar los cumpleaños"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -150,7 +203,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowActiveReminders() {
-    val input = "pokaż aktywne przypomnienia"
+    val input = "mostrar recordatorios activos"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -165,7 +218,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowReminders() {
-    val input = "pokaż przypomnienie"
+    val input = "mostrar recordatorios"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -180,7 +233,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowGroups() {
-    val input = "pokaż grupy"
+    val input = "mostrar grupos"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -195,7 +248,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowNotes() {
-    val input = "pokaż notatkę"
+    val input = "Mostrar notas"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -210,7 +263,7 @@ class PlWorkerTest {
 
   @Test
   fun testShowShoppingLists() {
-    val input = "pokaż listy zakupów"
+    val input = "mostrar listas de compras"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -225,7 +278,7 @@ class PlWorkerTest {
 
   @Test
   fun testOpenApp() {
-    val input = "otwórz aplikację"
+    val input = "Aplicación abierta"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -240,7 +293,7 @@ class PlWorkerTest {
 
   @Test
   fun testOpenSettings() {
-    val input = "Otwórz ustawienia"
+    val input = "configuración abierta"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -255,7 +308,22 @@ class PlWorkerTest {
 
   @Test
   fun testOpenVolumeSettings() {
-    val input = "otwórz ustawienia głośności"
+    val input = "cambiar la configuración de volumen"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.ACTION, model?.type)
+    assertEquals(Action.VOLUME, model?.action)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testOpenVolumeSettings2() {
+    val input = "configuración de volumen abierto"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -270,7 +338,7 @@ class PlWorkerTest {
 
   @Test
   fun testOpenHelp() {
-    val input = "otwórz pomoc"
+    val input = "abrir ayuda"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -285,7 +353,7 @@ class PlWorkerTest {
 
   @Test
   fun testTimerMinutes() {
-    val input = "wydać nową wersję za 15 minut"
+    val input = "después de 15 minutos abra la aplicación"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -295,12 +363,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(15 * MINUTE, model?.afterMillis)
-    assertEquals("wydać nową wersję", model?.summary?.lowercase())
+    assertEquals("abra la aplicación", model?.summary?.lowercase())
   }
 
   @Test
   fun testTimerHours() {
-    val input = "wydać nową wersję za 3 godziny"
+    val input = "después de 3 horas sal a caminar"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -310,12 +378,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(3 * HOUR, model?.afterMillis)
-    assertEquals("wydać nową wersję", model?.summary?.lowercase())
+    assertEquals("sal a caminar", model?.summary?.lowercase())
   }
 
   @Test
   fun testTimerDays() {
-    val input = "wydać nową wersję za 2 dni"
+    val input = "después de 1 día de aplicación de liberación"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -324,13 +392,13 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(DAY * 2, model?.afterMillis)
-    assertEquals("wydać nową wersję", model?.summary?.lowercase())
+    assertEquals(DAY, model?.afterMillis)
+    assertEquals("de aplicación de liberación", model?.summary?.lowercase())
   }
 
   @Test
   fun testTimerHalfHour() {
-    val input = "zadzwoń do domu za pół godziny"
+    val input = "después de media hora llamar a casa"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -345,7 +413,7 @@ class PlWorkerTest {
 
   @Test
   fun testWeekdayMondayFriday() {
-    val input = "wydawaj nową wersję w każdy poniedziałek i piątek o 17:00"
+    val input = "pruebas de control todos los lunes y viernes a las 19"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -355,12 +423,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(listOf(0, 1, 0, 0, 0, 1, 0), model?.weekdays)
-    assertEquals("wydawaj nową wersję", model?.summary?.lowercase())
+    assertEquals("pruebas de control", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateEveryDay() {
-    val input = "wydawaj nową wersję codziennie o 14 30"
+    val input = "pruebas de control todos los días a las 14 30"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -369,12 +437,12 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(DAY, model?.repeatInterval)
-    assertEquals("wydawaj nową wersję", model?.summary?.lowercase())
+    assertEquals("pruebas de control", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateEveryDay2() {
-    val input = "wydawaj nową wersję każdego dnia o 14:30"
+    val input = "comprobar las pruebas todos los días a las 14:30"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -383,12 +451,12 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(DAY, model?.repeatInterval)
-    assertEquals("wydawaj nową wersję", model?.summary?.lowercase())
+    assertEquals("comprobar las pruebas", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderDecember() {
-    val input = "opublikuj nową wersję 25 grudnia o godzinie 17:00"
+    val input = "actualización de lanzamiento el 25 de diciembre a las 17 en punto"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -398,12 +466,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(12, 25, 17, 0), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderJanuary() {
-    val input = "opublikuj nową wersję piątego stycznia o godzinie 12 30"
+    val input = "actualización de lanzamiento el 2 de enero a las 12 30"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -412,13 +480,13 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getDateTimeWithShiftedYearIfNeeded(1, 5, 12, 30), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(1, 2, 12, 30), model?.dateTime)
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderFebruary() {
-    val input = "opublikuj nową wersję 5 lutego o godzinie siódmej wieczorem"
+    val input = "actualización de lanzamiento el cinco de febrero a las siete en punto"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -427,13 +495,13 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getDateTimeWithShiftedYearIfNeeded(2, 5, 19, 0), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(2, 5, 7, 0), model?.dateTime)
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderMarch() {
-    val input = "wydać komunikat osiemnasty marca o godzinie 13:45"
+    val input = "actualización de lanzamiento el dieciocho de marzo a las 13 45"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -443,12 +511,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(3, 18, 13, 45), model?.dateTime)
-    assertEquals("wydać komunikat", model?.summary?.lowercase())
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderApril() {
-    val input = "29 kwietnia o godzinie 11:00 opublikować nową wersję"
+    val input = "el 29 de abril a las 11 actualización de lanzamiento"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -458,12 +526,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(4, 29, 11, 0), model?.dateTime)
-    assertEquals("opublikować nową wersję", model?.summary?.lowercase())
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderMay() {
-    val input = "opublikować nową wersję 11 maja o 15:30"
+    val input = "actualización de lanzamiento el 11 de mayo a las 15:30"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -473,12 +541,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(5, 11, 15, 30), model?.dateTime)
-    assertEquals("opublikować nową wersję", model?.summary?.lowercase())
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderJuneWithCall() {
-    val input = "rano 10 czerwca zadzwonić do domu"
+    val input = "el 10 de junio por la mañana llamar a casa"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -493,7 +561,7 @@ class PlWorkerTest {
 
   @Test
   fun testByDateReminderJulyWithSms() {
-    val input = "1 lipca o 16:33 wyślij wiadomość do domu z tekstem opublikuj nową wersję"
+    val input = "el primero de julio a las 16:33 envía un mensaje a casa con el texto run forest run"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -503,12 +571,27 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(7, 1, 16, 33), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
+    assertEquals("run forest run", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testByDateReminderJulyWithSmsYesText() {
+    val input = "el primero de julio a las 16:33 envía un mensaje a casa con el texto si, vine"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.MESSAGE, model?.action)
+    assertEquals("123456", model?.target)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(7, 1, 16, 33), model?.dateTime)
+    assertEquals("si, vine", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderAugustWithEmail() {
-    val input = "Wieczorem 25 sierpnia wyślij list do domu z treścią opublikuj nową wersję"
+    val input = "el 25 de agosto por la tarde enviar correo electrónico a casa con texto ejecutar pruebas"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -518,12 +601,27 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(8, 25, 19, 0), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
+    assertEquals("ejecutar pruebas", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testByDateReminderAugustWithLetter() {
+    val input = "el 20 de agosto por la mañana enviar carta a casa con texto ejecutar pruebas"
+    val model = recognizer.recognize(input)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.MAIL, model?.action)
+    assertEquals("test@mail.com", model?.target)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(8, 20, 7, 0), model?.dateTime)
+    assertEquals("ejecutar pruebas", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderSeptemberWithRepeat() {
-    val input = "wypuść nową wersję w nocy dziesiąty września i powtarzaj codziennie"
+    val input = "el diez de septiembre por la noche, actualice y repita todos los días"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -533,12 +631,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(DAY, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(9, 10, 23, 0), model?.dateTime)
-    assertEquals("wypuść nową wersję", model?.summary?.lowercase())
+    assertEquals("actualice y repita", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderOctoberWithCalendar() {
-    val input = "opublikuj nową wersję 8 października o godzinie 12:00 dodaj do kalendarza"
+    val input = "lance la actualización el 8 de octubre al mediodía y agréguela al calendario"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -548,12 +646,12 @@ class PlWorkerTest {
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
     assertEquals(getDateTimeWithShiftedYearIfNeeded(10, 8, 12, 0), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
+    assertEquals("lance la actualización", model?.summary?.lowercase())
   }
 
   @Test
   fun testByDateReminderNovember() {
-    val input = "opublikuj nową wersję 11 listopada o godzinie 11 11"
+    val input = "actualización de lanzamiento el 11 de noviembre a las once en punto"
     val model = recognizer.recognize(input)
 
     assertEquals(true, model != null)
@@ -562,46 +660,7 @@ class PlWorkerTest {
     assertEquals(false, model?.hasCalendar)
     assertEquals(null, model?.target)
     assertEquals(0L, model?.repeatInterval)
-    assertEquals(getDateTimeWithShiftedYearIfNeeded(11, 11, 11, 11), model?.dateTime)
-    assertEquals("opublikuj nową wersję", model?.summary?.lowercase())
-  }
-
-  @Test
-  fun testReplaceNumbers() {
-    assertEquals(
-      "w każdy wtorek pobudka o 7 rano",
-      worker.replaceNumbers("w każdy wtorek pobudka o 7 rano")
-    )
-
-    assertEquals(
-      "w każdy wtorek pobudka o 7.0 rano",
-      worker.replaceNumbers("w każdy wtorek pobudka o siódmej rano")
-    )
-  }
-
-  @Test
-  fun testHasCalendar() {
-    val input = "jutro o 15:40 odwiedzić lekarzy i dodać wydarzenie do kalendarza"
-
-    assertEquals(true, worker.hasCalendar(input))
-
-    assertEquals("jutro o 15:40 odwiedzić lekarzy i dodać wydarzenie", worker.clearCalendar(input))
-  }
-
-  @Test
-  fun testHasNoCalendar() {
-    val input = "w każdy wtorek pobudka o 7 rano"
-
-    assertEquals(false, worker.hasCalendar(input))
-
-    assertEquals("w każdy wtorek pobudka o 7 rano", worker.clearCalendar(input))
-  }
-
-  @Test
-  fun testShowAction() {
-    val input = "pokaż aktywne przypomnienie"
-
-    assertEquals(true, worker.hasShowAction(input))
-    assertEquals(Action.ACTIVE_REMINDERS, worker.getShowAction(input))
+    assertEquals(getDateTimeWithShiftedYearIfNeeded(11, 11, 11, 0), model?.dateTime)
+    assertEquals("actualización de lanzamiento", model?.summary?.lowercase())
   }
 }

@@ -24,12 +24,18 @@ android {
     }
 
     def propsFile = rootProject.file('keystore.properties')
-    def Properties props = new Properties()
+    Properties props = new Properties()
     if (propsFile.exists() && propsFile.canRead()) {
+        println '> Property file exist'
         props.load(new FileInputStream(propsFile))
+    } else {
+        println '> Property file does not exist'
     }
 
-    if (props.hasProperty("signApk")) {
+    def shouldSign = props.get('signApk', false)
+    println "> Should sign APK = ${shouldSign}"
+
+    if (shouldSign) {
         signingConfigs {
             freeApp {
                 storeFile file(props['releaseFreeKeyStoreFile'])
@@ -56,26 +62,22 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
-            if (props.hasProperty("signApk")) {
-                buildConfigField "String", "PLACES_API_KEY", "\"$props['freePlacesApiKey']\""
-                manifestPlaceholders = [apiKey: props['freeApiKey']]
-            } else {
-                manifestPlaceholders = [apiKey: "API_KEY"]
-                buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
-            }
+
+            def api = props.get('freeApiKey', "\"API_KEY\"")
+            def placesApiKey = props.get('freePlacesApiKey', "\"API_KEY\"")
+            buildConfigField "String", "PLACES_API_KEY", "$placesApiKey"
+            manifestPlaceholders = [apiKey: api]
         }
         pro {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
             versionCode 257
-            if (props.hasProperty("signApk")) {
-                manifestPlaceholders = [apiKey: props['proApiKey']]
-                buildConfigField "String", "PLACES_API_KEY", "\"$props['proPlacesApiKey']\""
-            } else {
-                manifestPlaceholders = [apiKey: "API_KEY"]
-                buildConfigField "String", "PLACES_API_KEY", "\"API_KEY\""
-            }
+
+            def api = props.get('proApiKey', "\"API_KEY\"")
+            def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
+            manifestPlaceholders = [apiKey: api]
+            buildConfigField "String", "PLACES_API_KEY", "$placesApiKey"
         }
     }
     packagingOptions {
@@ -96,14 +98,14 @@ android {
             debuggable false
             zipAlignEnabled true
             jniDebuggable false
-            if (hasProperty("signApk")) {
+            if (shouldSign) {
                 productFlavors.free.signingConfig signingConfigs.freeApp
                 productFlavors.pro.signingConfig signingConfigs.proApp
             }
         }
         debug {
             minifyEnabled false
-            if (hasProperty("signApk")) {
+            if (shouldSign) {
                 signingConfig signingConfigs.debugApp
             }
         }
@@ -168,7 +170,6 @@ dependencies {
     implementation "androidx.collection:collection-ktx:1.2.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03"
-    implementation "com.google.android.play:core-ktx:1.8.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
@@ -190,6 +191,8 @@ dependencies {
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
     implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
+
+    implementation "com.google.android.play:core-ktx:1.8.1"
 
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
 
@@ -227,12 +230,15 @@ dependencies {
     implementation 'com.airbnb.android:lottie:4.2.2'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'org.threeten:threetenbp:1.6.5'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test:core:1.5.0'
     testImplementation 'org.mockito:mockito-core:4.1.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation 'io.mockk:mockk:1.13.3'
 
+    androidTestImplementation 'io.mockk:mockk-android:1.13.3'
     androidTestImplementation 'androidx.test:runner:1.5.1'
     androidTestImplementation 'androidx.test:rules:1.5.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
