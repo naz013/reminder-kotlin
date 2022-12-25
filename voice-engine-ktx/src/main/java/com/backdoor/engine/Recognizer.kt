@@ -212,7 +212,7 @@ class Recognizer private constructor(
           proc.dateTime = getDateTime(proc.date, proc.time)
         } else if (proc.hasTimer) {
           log("parse: timer")
-          proc.dateTime = LocalDateTime.now(zoneId).plusSeconds(proc.afterTime.value / 1000L)
+          proc.dateTime = nowDateTime().plusSeconds(proc.afterTime.value / 1000L)
         } else if (proc.date != null || proc.time != null) {
           log("parse: date/time")
           proc.dateTime = getDateTime(proc.date, proc.time)

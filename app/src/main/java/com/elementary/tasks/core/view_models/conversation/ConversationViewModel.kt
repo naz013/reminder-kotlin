@@ -3,7 +3,6 @@ package com.elementary.tasks.core.view_models.conversation
 import android.content.Context
 import android.content.Intent
 import android.provider.ContactsContract
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,8 +40,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -163,6 +160,7 @@ class ConversationViewModel(
     }
   }
 
+  @Suppress("UNCHECKED_CAST")
   private fun addRemindersToList(container: Container<*>) {
     val reversed = ArrayList((container as Container<UiReminderList>).list).reversed()
     for (item in reversed) {
@@ -247,41 +245,42 @@ class ConversationViewModel(
     }
   }
 
-  fun getEnabledReminders(dateTime: Long) {
+  fun getEnabledReminders(gmtDateTime: String?) {
     postInProgress(true)
-    Timber.d("getEnabledReminders: ${dateTimeManager.getGmtFromDateTime(dateTime)}")
+    Timber.d("getEnabledReminders: gmt $gmtDateTime")
     viewModelScope.launch(dispatcherProvider.default()) {
       val list = reminderDao.getAllTypesInRange(
         active = true,
         removed = false,
         fromTime = dateTimeManager.getGmtFromDateTime(System.currentTimeMillis()),
-        toTime = dateTimeManager.getGmtFromDateTime(dateTime)
+        toTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime))
       ).map { uiReminderListAdapter.create(it) }
       postInProgress(false)
       _enabledReminders.postValue(list)
     }
   }
 
-  fun getReminders(dateTime: Long) {
+  fun getReminders(gmtDateTime: String?) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val list = reminderDao.getActiveInRange(
         false,
         dateTimeManager.getGmtFromDateTime(System.currentTimeMillis()),
-        dateTimeManager.getGmtFromDateTime(dateTime)
+        dateTimeManager.getGmtFromDateTime(dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime))
       ).map { uiReminderListAdapter.create(it) }
       postInProgress(false)
       _activeReminders.postValue(list)
     }
   }
 
-  fun getBirthdays(dateTime: Long) {
+  fun getBirthdays(gmtDateTime: String?) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val list = birthdaysDao.all()
         .map { birthdayModelAdapter.convert(it) }
         .filter {
-          it.nextBirthdayDate >= System.currentTimeMillis() && it.nextBirthdayDate < dateTime
+          it.nextBirthdayDate >= System.currentTimeMillis() &&
+            it.nextBirthdayDate < dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime)
         }
       postInProgress(false)
       _birthdays.postValue(list)
@@ -438,19 +437,13 @@ class ConversationViewModel(
 
   fun createReminder(model: Model): Reminder {
     val action = model.action
-    val number = model.target ?: ""
-    val summary = model.summary
-    val repeat = model.repeatInterval
     val weekdays = model.weekdays
-    val isCalendar = model.hasCalendar
-    val startTime = model.dateTime
-    var eventTime = dateTimeManager.getMillisFromGmt(startTime)
+    var eventTime = dateTimeManager.getMillisFromGmtVoiceEngine(model.dateTime)
     var typeT = Reminder.BY_DATE
     if (action == Action.WEEK || action == Action.WEEK_CALL || action == Action.WEEK_SMS) {
       typeT = Reminder.BY_WEEK
-      eventTime =
-        TimeCount.getNextWeekdayTime(dateTimeManager.getDateTimeFromGmt(startTime), weekdays, 0)
-      if (!TextUtils.isEmpty(number)) {
+      eventTime = dateTimeManager.getNextWeekdayTime(eventTime, weekdays, 0)
+      if (model.target.isNullOrEmpty()) {
         typeT = if (action == Action.WEEK_CALL)
           Reminder.BY_WEEK_CALL
         else
@@ -475,13 +468,14 @@ class ConversationViewModel(
       reminder.groupUuId = group.groupUuId
     }
     reminder.type = typeT
-    reminder.summary = summary
+    reminder.summary = model.summary
     reminder.weekdays = weekdays
-    reminder.repeatInterval = repeat
-    reminder.target = number
+    reminder.repeatInterval = model.repeatInterval
+    reminder.after = model.afterMillis
+    reminder.target = model.target ?: ""
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(eventTime)
-    reminder.exportToCalendar = isCalendar && (isCal || isStock)
+    reminder.exportToCalendar = model.hasCalendar && (isCal || isStock)
     Timber.d("createReminder: $reminder")
     return reminder
   }
@@ -522,7 +516,7 @@ class ConversationViewModel(
     val item = Note()
     item.color = color
     item.summary = note
-    item.date = TimeUtil.gmtDateTime
+    item.date = DateTimeManager.gmtDateTime
     return item
   }
 
@@ -531,7 +525,7 @@ class ConversationViewModel(
       saveQuickReminder(note.key, note.summary)
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      note.updatedAt = TimeUtil.gmtDateTime
+      note.updatedAt = DateTimeManager.gmtDateTime
       notesDao.insert(note)
     }
     updatesHelper.updateNotesWidget()

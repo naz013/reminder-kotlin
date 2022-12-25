@@ -1,11 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
-import android.content.Context
 import android.text.TextUtils
-import androidx.annotation.StringRes
-import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Language
 import com.github.naz013.calendarext.addMillis
 import com.github.naz013.calendarext.addMonths
 import com.github.naz013.calendarext.addYear
@@ -103,114 +99,6 @@ object TimeCount {
         time += repeat
       }
       time
-    }
-  }
-
-  fun getRemaining(context: Context, dateTime: String?, delay: Int, lang: Int): String {
-    if (TextUtils.isEmpty(dateTime)) {
-      return getRemaining(context, 0, lang)
-    }
-    val time = TimeUtil.getDateTimeFromGmt(dateTime)
-    return getRemaining(context, time + delay * MINUTE, lang)
-  }
-
-  private fun getRemaining(context: Context, eventTime: Long, lang: Int = 0): String {
-    val difference = eventTime - System.currentTimeMillis()
-    val days = difference / DAY
-    var hours = (difference - DAY * days) / HOUR
-    var minutes = (difference - DAY * days - HOUR * hours) / MINUTE
-    hours = if (hours < 0) -hours else hours
-    val result = StringBuilder()
-    val language = Language.getScreenLanguage(lang).toString().toLowerCase()
-    if (difference > DAY) {
-      if (language.startsWith("uk") || language.startsWith("ru")) {
-        var last = days
-        while (last > 10) {
-          last -= 10
-        }
-        if (last == 1L && days != 11L) {
-          result.append(String.format(getString(context, R.string.x_day), days.toString()))
-        } else if (last < 5 && (days < 12 || days > 14)) {
-          result.append(String.format(getString(context, R.string.x_dayzz), days.toString()))
-        } else {
-          result.append(String.format(getString(context, R.string.x_days), days.toString()))
-        }
-      } else {
-        if (days < 2) {
-          result.append(String.format(getString(context, R.string.x_day), days.toString()))
-        } else {
-          result.append(String.format(getString(context, R.string.x_days), days.toString()))
-        }
-      }
-    } else if (difference > HOUR) {
-      hours += days * 24
-      if (language.startsWith("uk") || language.startsWith("ru")) {
-        var last = hours
-        while (last > 10) {
-          last -= 10
-        }
-        if (last == 1L && hours != 11L) {
-          result.append(String.format(getString(context, R.string.x_hour), hours.toString()))
-        } else if (last < 5 && (hours < 12 || hours > 14)) {
-          result.append(String.format(getString(context, R.string.x_hourzz), hours.toString()))
-        } else {
-          result.append(String.format(getString(context, R.string.x_hours), hours.toString()))
-        }
-      } else {
-        if (hours < 2) {
-          result.append(String.format(getString(context, R.string.x_hour), hours.toString()))
-        } else {
-          result.append(String.format(getString(context, R.string.x_hours), hours.toString()))
-        }
-      }
-    } else if (difference > MINUTE) {
-      minutes += hours * 60
-      if (language.startsWith("uk") || language.startsWith("ru")) {
-        var last = minutes
-        while (last > 10) {
-          last -= 10
-        }
-        if (last == 1L && minutes != 11L) {
-          result.append(String.format(getString(context, R.string.x_minute), minutes.toString()))
-        } else if (last < 5 && (minutes < 12 || minutes > 14)) {
-          result.append(String.format(getString(context, R.string.x_minutezz), minutes.toString()))
-        } else {
-          result.append(String.format(getString(context, R.string.x_minutes), minutes.toString()))
-        }
-      } else {
-        if (hours < 2) {
-          result.append(String.format(getString(context, R.string.x_minute), minutes.toString()))
-        } else {
-          result.append(String.format(getString(context, R.string.x_minutes), minutes.toString()))
-        }
-      }
-    } else if (difference > 0) {
-      result.append(getString(context, R.string.less_than_minute))
-    } else {
-      result.append(getString(context, R.string.overdue))
-    }
-    return result.toString()
-  }
-
-  private fun getString(context: Context, @StringRes res: Int): String {
-    return context.getString(res)
-  }
-
-  fun getNextWeekdayTime(startTime: Long, weekdays: List<Int>, delay: Long): Long {
-    val calendar = newCalendar(startTime).also {
-      it.dropSeconds()
-      it.dropMilliseconds()
-    }
-    return if (delay > 0) {
-      startTime + delay * MINUTE
-    } else {
-      while (true) {
-        if (weekdays[calendar.getDayOfWeek() - 1] == 1 && calendar.timeInMillis > System.currentTimeMillis()) {
-          break
-        }
-        calendar.timeInMillis = calendar.timeInMillis + DAY
-      }
-      calendar.timeInMillis
     }
   }
 
