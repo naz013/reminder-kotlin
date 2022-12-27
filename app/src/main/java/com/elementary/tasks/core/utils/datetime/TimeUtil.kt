@@ -25,7 +25,6 @@ import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import hirondelle.date4j.DateTime
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,12 +49,6 @@ object TimeUtil {
   private fun time24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("HH:mm", lang)
 
   private fun time12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("h:mm a", lang)
-
-  @Deprecated("Use DateTimeManager")
-  fun simpleDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM", lang)
-
-  @Deprecated("Use DateTimeManager")
-  fun date(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy", lang)
 
   @Deprecated("Use DateTimeManager")
   fun day(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd", lang)
@@ -122,51 +115,6 @@ object TimeUtil {
         time12(lang).format(it)
       }
     } ?: ""
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun doNotDisturbRange(from: String?, to: String?): LongRange {
-    var fromMillis = 0L
-    var toMillis = 0L
-    if (from != null) {
-      fromMillis = toMillis(from)
-    }
-    if (to != null) {
-      toMillis = toMillis(to)
-    }
-    val fromHm = hourMinute(fromMillis)
-    val toHm = hourMinute(toMillis)
-    Timber.d("doNotDisturbRange: HM $fromHm, $toHm")
-    val compare = compareHm(fromHm, toHm)
-    if (compare < 0) {
-      if (toMillis < fromMillis) {
-        toMillis += AlarmManager.INTERVAL_DAY
-      }
-    } else if (compare == 0) {
-      return LongRange(0, 0)
-    }
-    Timber.d("doNotDisturbRange: millis $fromMillis, $toMillis")
-    return if (fromMillis > toMillis) {
-      LongRange(toMillis, fromMillis)
-    } else {
-      LongRange(fromMillis, toMillis)
-    }
-  }
-
-  private fun compareHm(from: Pair<Int, Int>, to: Pair<Int, Int>): Int {
-    return when {
-      from.first == to.first -> when {
-        from.second == to.second -> 0
-        from.second > to.second -> -1
-        else -> 1
-      }
-      from.first > to.first -> -1
-      else -> 1
-    }
-  }
-
-  private fun hourMinute(millis: Long): Pair<Int, Int> {
-    return newCalendar(millis).map { Pair(it.getHourOfDay(), it.getMinute()) }
   }
 
   private fun toMillis(time24: String): Long {

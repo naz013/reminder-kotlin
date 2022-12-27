@@ -8,25 +8,27 @@ import android.provider.ContactsContract
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.io.readLong
 import com.elementary.tasks.core.utils.io.readString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class ContactsReader(
-  private val context: Context
-) {
+class ContactsReader(private val context: Context) {
 
-  fun getPhoto(contactId: Long): Uri? {
+  suspend fun getPhoto(contactId: Long): Uri? {
     if (contactId == 0L || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
       return null
     }
-    val contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
-    return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.DISPLAY_PHOTO)
+    return withContext(Dispatchers.IO) {
+      val contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
+      Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.DISPLAY_PHOTO)
+    }
   }
 
-  fun getIdFromNumber(phoneNumber: String?): Long {
+  suspend fun getIdFromNumber(phoneNumber: String?): Long = withContext(Dispatchers.IO) {
     if (phoneNumber == null || !Permissions.checkPermission(
         context,
         Permissions.READ_CONTACTS
       )
-    ) return 0
+    ) return@withContext 0
     var phoneContactID = 0L
     try {
       val contact = Uri.encode(phoneNumber)
@@ -38,7 +40,7 @@ class ContactsReader(
           null,
           null
         )
-        ?: return 0
+        ?: return@withContext 0
       while (contactLookupCursor.moveToNext()) {
         phoneContactID = contactLookupCursor.getLong(
           contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID)
@@ -46,14 +48,16 @@ class ContactsReader(
       }
       contactLookupCursor.close()
     } catch (iae: IllegalArgumentException) {
-      return 0
+      return@withContext 0
     }
 
-    return phoneContactID
+    return@withContext phoneContactID
   }
 
-  fun getIdFromMail(eMail: String?): Long {
-    if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
+  suspend fun getIdFromMail(eMail: String?): Long = withContext(Dispatchers.IO) {
+    if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+      return@withContext 0
+    }
     val uri = Uri.withAppendedPath(
       ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
       Uri.encode(eMail)
@@ -68,7 +72,7 @@ class ContactsReader(
         contactId = look.readLong(ContactsContract.PhoneLookup._ID) ?: 0
       }
     }
-    return contactId
+    return@withContext contactId
   }
 
   fun getNameFromMail(eMail: String?): String? {

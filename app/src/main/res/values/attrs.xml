@@ -9,6 +9,20 @@
     <attr name="alphaEmphasisMedium" format="float"/>
     <attr name="alphaEmphasisDisabled" format="float"/>
 
+    <declare-styleable name="UiSelectorView">
+        <attr name="selector_canShowDialog" format="boolean" />
+        <attr name="selector_leftButtonBackground" format="color" />
+        <attr name="selector_rightButtonBackground" format="color" />
+        <attr name="selector_textBackground" format="color" />
+        <attr name="selector_emptyText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="UiCheckableImageView">
+        <attr name="civ_checked" format="boolean" />
+        <attr name="civ_checkedIcon" format="reference" />
+        <attr name="civ_uncheckedIcon" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="PrefsView">
         <attr name="prefs_primary_text" format="string" />
         <attr name="prefs_primary_text_color" format="color" />

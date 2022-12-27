@@ -68,20 +68,22 @@ class CreateBirthdayViewModel(
   }
 
   fun prepare(name: String, number: String?, dateString: String?, newId: Boolean = false) {
-    val contactId = contactsReader.getIdFromNumber(number)
-    val calendar = date.value ?: newCalendar()
-    val birthday = editableBirthday.apply {
-      this.name = name
-      this.contactId = contactId
-      this.date = dateString ?: ""
-      this.number = number ?: ""
-      this.day = calendar.getDayOfMonth()
-      this.month = calendar.getYear()
-      this.dayMonth = "${this.day}|${this.month}"
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val contactId = contactsReader.getIdFromNumber(number)
+      val calendar = date.value ?: newCalendar()
+      val birthday = editableBirthday.apply {
+        this.name = name
+        this.contactId = contactId
+        this.date = dateString ?: ""
+        this.number = number ?: ""
+        this.day = calendar.getDayOfMonth()
+        this.month = calendar.getYear()
+        this.dayMonth = "${this.day}|${this.month}"
+      }
+      if (newId) {
+        birthday.uuId = UUID.randomUUID().toString()
+      }
+      preparedBirthday = birthday
     }
-    if (newId) {
-      birthday.uuId = UUID.randomUUID().toString()
-    }
-    preparedBirthday = birthday
   }
 }

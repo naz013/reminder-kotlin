@@ -6,8 +6,29 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.elementary.tasks.core.data.dao.*
-import com.elementary.tasks.core.data.models.*
+import com.elementary.tasks.core.data.dao.BirthdaysDao
+import com.elementary.tasks.core.data.dao.CalendarEventsDao
+import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
+import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.dao.MissedCallsDao
+import com.elementary.tasks.core.data.dao.NotesDao
+import com.elementary.tasks.core.data.dao.PlacesDao
+import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.dao.ReminderGroupDao
+import com.elementary.tasks.core.data.dao.SmsTemplatesDao
+import com.elementary.tasks.core.data.dao.UsedTimeDao
+import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.CalendarEvent
+import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.data.models.UsedTime
 
 @Database(entities = [
     Reminder::class,
@@ -21,7 +42,6 @@ import com.elementary.tasks.core.data.models.*
     UsedTime::class,
     Birthday::class,
     ImageFile::class,
-//    ReminderChain::class,
     SmsTemplate::class
 ], version = 5, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
@@ -37,7 +57,6 @@ abstract class AppDb : RoomDatabase() {
   abstract fun googleTaskListsDao(): GoogleTaskListsDao
   abstract fun googleTasksDao(): GoogleTasksDao
   abstract fun usedTimeDao(): UsedTimeDao
-//    abstract fun reminderChainDao(): ReminderChainDao
 
   companion object {
 
@@ -45,56 +64,29 @@ abstract class AppDb : RoomDatabase() {
 
     private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
       override fun migrate(database: SupportSQLiteDatabase) {
-        try {
-          database.execSQL("DROP INDEX index_UsedTime_id")
-        } catch (e: Exception) {
-        }
+        runCatching { database.execSQL("DROP INDEX index_UsedTime_id") }
       }
     }
     private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
       override fun migrate(database: SupportSQLiteDatabase) {
-        try {
-          database.execSQL("DROP INDEX index_UsedTime_timeMills")
-        } catch (e: Exception) {
-        }
-        try {
-          database.execSQL("DROP INDEX index_UsedTime_timeString")
-        } catch (e: Exception) {
-        }
+        runCatching { database.execSQL("DROP INDEX index_UsedTime_timeMills") }
+        runCatching { database.execSQL("DROP INDEX index_UsedTime_timeString") }
       }
     }
     private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
       override fun migrate(database: SupportSQLiteDatabase) {
-        try {
-          database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
-        } catch (e: Exception) {
-        }
-        try {
-          database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
-        } catch (e: Exception) {
-        }
-        try {
+        runCatching { database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT") }
+        runCatching { database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT") }
+        runCatching {
           database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
-        } catch (e: Exception) {
         }
-        try {
-          database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
-        } catch (e: Exception) {
-        }
-
-//                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
-//                        previousId TEXT NOT NULL,
-//                        nextId TEXT NOT NULL,
-//                        gmtTime TEXT NOT NULL,
-//                        activationType INTEGER DEFAULT 0 NOT NULL,
-//                        PRIMARY KEY(uuId))""")
+        runCatching { database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT") }
       }
     }
     private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
       override fun migrate(database: SupportSQLiteDatabase) {
-        try {
+        runCatching {
           database.execSQL("ALTER TABLE Reminder ADD COLUMN calendarId INTEGER DEFAULT 0 NOT NULL")
-        } catch (e: Exception) {
         }
       }
     }

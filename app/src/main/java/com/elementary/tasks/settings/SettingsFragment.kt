@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -190,13 +189,12 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
 
   @SuppressLint("SetTextI18n")
   override fun onSale(discount: String, expiryDate: String) {
-    val expiry = dateTimeManager.getFireFormatted(expiryDate)
-    val millis = dateTimeManager.getFireMillis(expiryDate)
-    if (TextUtils.isEmpty(expiry) || millis < System.currentTimeMillis()) {
-      binding.saleBadge.visibility = View.GONE
-    } else {
+    if (dateTimeManager.isAfterNow(expiryDate)) {
+      val expiry = dateTimeManager.getFireFormatted(expiryDate)
       binding.saleBadge.visibility = View.VISIBLE
       binding.saleBadge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+    } else {
+      binding.saleBadge.visibility = View.GONE
     }
   }
 

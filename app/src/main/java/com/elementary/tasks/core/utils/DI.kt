@@ -162,12 +162,24 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get()) }
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
-  viewModel { FollowReminderViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel {
+    FollowReminderViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { (id: String) ->
     EditReminderViewModel(
       id,

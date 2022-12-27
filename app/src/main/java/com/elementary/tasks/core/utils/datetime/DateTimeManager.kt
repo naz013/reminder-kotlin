@@ -31,6 +31,9 @@ import com.github.naz013.calendarext.setTime
 import com.github.naz013.calendarext.toCalendar
 import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -47,26 +50,33 @@ class DateTimeManager(
   private val textProvider: TextProvider
 ) {
 
-  fun getFireMillis(gmt: String?): Long {
-    if (gmt.isNullOrEmpty()) return 0
-    try {
-      FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-      val date = FIRE_DATE_FORMAT.parse(gmt) ?: return 0
-      return date.time
-    } catch (e: Exception) {
-      return 0
+  fun fromMillis(millis: Long): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
+  }
+
+  fun isAfterNow(gmt: String?): Boolean {
+    return try {
+      gmtToLocal(gmt, DateTimeFormatter.ofPattern(FIRE_DATE_PATTERN, Locale.US))
+        ?.isAfter(LocalDateTime.now()) ?: false
+    } catch (e: Throwable) {
+      false
     }
   }
 
   fun getFireFormatted(gmt: String?): String? {
-    return gmt?.toDate(FIRE_DATE_FORMAT, TimeZone.getTimeZone(GMT)).takeIf {
-      it != null
-    }?.let {
-      if (prefs.is24HourFormat) {
-        dateTime24().format(it)
-      } else {
-        dateTime12().format(it)
-      }
+    return gmtToLocal(gmt, DateTimeFormatter.ofPattern(FIRE_DATE_PATTERN, Locale.US))
+      ?.let { getDateTime(it) }
+  }
+
+  private fun gmtToLocal(gmt: String?, pattern: String): LocalDateTime? {
+    return gmtToLocal(gmt, DateTimeFormatter.ofPattern(pattern))
+  }
+
+  private fun gmtToLocal(gmt: String?, formatter: DateTimeFormatter): LocalDateTime? {
+    return if (gmt == null) {
+      null
+    } else {
+      ZonedDateTime.parse(gmt, formatter).toLocalDateTime()
     }
   }
 
@@ -123,7 +133,7 @@ class DateTimeManager(
     return try {
       ZonedDateTime.parse(
         dateTime,
-        NEW_GMT_DATE_FORMAT.withZone(ZoneId.of("GMT"))
+        VOICE_ENGINE_GMT_DATE_FORMAT.withZone(ZoneId.of("GMT"))
       ).toInstant().toEpochMilli()
     } catch (e: Exception) {
       e.printStackTrace()
@@ -409,6 +419,14 @@ class DateTimeManager(
     }
   }
 
+  fun getGmtFromDateTime(dateTime: LocalDateTime): String {
+    return try {
+      dateTime.format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
+    } catch (e: Throwable) {
+      ""
+    }
+  }
+
   private fun toMillis(time24: String): Long {
     return try {
       time24.toDateWithException(TIME_24, TimeZone.getDefault()).toCalendar().let {
@@ -486,11 +504,23 @@ class DateTimeManager(
     return SimpleDateFormat(pattern, Language.getScreenLanguage(prefs.appLanguage))
   }
 
+  private fun localizedDateFormatter(pattern: String): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern(pattern, Language.getScreenLanguage(prefs.appLanguage))
+  }
+
   fun getTime(date: java.util.Date): String {
     return if (prefs.is24HourFormat) {
       time24().format(date)
     } else {
       time12().format(date)
+    }
+  }
+
+  fun getTime(time: LocalTime): String {
+    return if (prefs.is24HourFormat) {
+      time.format(time24Formatter())
+    } else {
+      time.format(time12Formatter())
     }
   }
 
@@ -506,11 +536,23 @@ class DateTimeManager(
     return millis > System.currentTimeMillis()
   }
 
+  fun isCurrent(dateTime: LocalDateTime): Boolean {
+    return dateTime.isAfter(LocalDateTime.now())
+  }
+
   fun getDateTime(date: java.util.Date): String {
     return if (prefs.is24HourFormat) {
       dateTime24().format(date)
     } else {
       dateTime12().format(date)
+    }
+  }
+
+  fun getDateTime(dateTime: LocalDateTime): String {
+    return if (prefs.is24HourFormat) {
+      dateTime.format(dateTime24Formatter())
+    } else {
+      dateTime.format(dateTime12Formatter())
     }
   }
 
@@ -750,6 +792,10 @@ class DateTimeManager(
     this.dropMilliseconds()
   }
 
+  private fun dateTime24Formatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy, HH:mm")
+
+  private fun dateTime12Formatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy, h:mm a")
+
   private fun dateTime24(): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm")
 
   private fun dateTime12(): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, h:mm a")
@@ -764,11 +810,17 @@ class DateTimeManager(
 
   private fun time24(): SimpleDateFormat = localizedDateFormat("HH:mm")
 
+  private fun time24Formatter(): DateTimeFormatter = localizedDateFormatter("HH:mm")
+
   private fun time12(): SimpleDateFormat = localizedDateFormat("h:mm a")
+
+  private fun time12Formatter(): DateTimeFormatter = localizedDateFormatter("h:mm a")
 
   fun simpleDate(): SimpleDateFormat = localizedDateFormat("d MMMM")
 
   fun date(): SimpleDateFormat = localizedDateFormat("dd MMM yyyy")
+
+  fun dateFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy")
 
   fun day(): SimpleDateFormat = localizedDateFormat("dd")
 
@@ -788,9 +840,13 @@ class DateTimeManager(
 
     val BIRTH_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     val BIRTH_FORMAT = SimpleDateFormat("dd|MM", Locale.US)
-    private val NEW_GMT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
+    private val VOICE_ENGINE_GMT_DATE_FORMAT =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
     private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
+    private val GMT_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
     private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+    private val FIRE_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"
     private val TIME_24 = SimpleDateFormat("HH:mm", Locale.US)
 
     val gmtDateTime: String

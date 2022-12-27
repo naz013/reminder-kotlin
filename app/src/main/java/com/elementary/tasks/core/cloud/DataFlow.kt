@@ -80,13 +80,12 @@ class DataFlow<T>(
     }
     System.gc()
     Timber.d("delete: $id")
-    try {
+    runCatching {
       val t = repository.get(id)
       if (t != null) {
         completable?.action(t)
         repository.delete(t)
       }
-    } catch (e: Exception) {
     }
     storage.delete(fileName)
     storage.removeIndex(id)
