@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         android:foreground="?selectableItemBackground"
         android:scaleType="centerInside"
-        app:iconTint="?colorOnBackground"
-        app:srcCompat="@drawable/ic_twotone_keyboard_arrow_right_24px" />
+        app:srcCompat="@drawable/ic_twotone_keyboard_arrow_right_24px"
+        app:tint="?colorOnBackground" />
 
 </LinearLayout>

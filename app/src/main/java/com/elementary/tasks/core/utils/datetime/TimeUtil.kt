@@ -1,20 +1,15 @@
 package com.elementary.tasks.core.utils.datetime
 
 import android.app.AlarmManager
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.map
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds
-import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getHourOfDay
 import com.github.naz013.calendarext.getMinute
-import com.github.naz013.calendarext.getMonth
-import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
 import com.github.naz013.calendarext.setDate
 import com.github.naz013.calendarext.setHourOfDay
@@ -73,26 +68,6 @@ object TimeUtil {
   fun showTimePicker(context: Context, is24: Boolean, hour: Int, minute: Int,
                      listener: TimePickerDialog.OnTimeSetListener): TimePickerDialog {
     val dialog = TimePickerDialog(context, listener, hour, minute, is24)
-    dialog.show()
-    return dialog
-  }
-
-  @Deprecated("Use DateTimeManager")
-  fun showDatePicker(context: Context, prefs: Prefs, old: Calendar?,
-                     listener: (Calendar) -> Unit): DatePickerDialog {
-    val calendar = old ?: newCalendar()
-    val dialog = DatePickerDialog(
-      context,
-      { _, year, monthOfYear, dayOfMonth ->
-        newCalendar()
-          .setDate(year, monthOfYear, dayOfMonth)
-          .also { listener.invoke(it) }
-      },
-      calendar.getYear(),
-      calendar.getMonth(),
-      calendar.getDayOfMonth()
-    )
-    dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
     dialog.show()
     return dialog
   }

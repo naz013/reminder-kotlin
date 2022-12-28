@@ -14,7 +14,11 @@
         <attr name="selector_leftButtonBackground" format="color" />
         <attr name="selector_rightButtonBackground" format="color" />
         <attr name="selector_textBackground" format="color" />
+        <attr name="selector_leftIconTintColor" format="color" />
+        <attr name="selector_rightIconTintColor" format="color" />
         <attr name="selector_emptyText" format="string" />
+        <attr name="selector_leftIcon" format="reference" />
+        <attr name="selector_rightIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="UiCheckableImageView">

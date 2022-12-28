@@ -163,7 +163,9 @@ val workerModule = module {
 
 val viewModelModule = module {
   viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get()) }
-  viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
+
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
@@ -260,6 +262,7 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -269,7 +272,6 @@ val viewModelModule = module {
   viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
     MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get())
   }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
   viewModel { SmsTemplatesViewModel(get(), get(), get()) }
   viewModel {
     ConversationViewModel(

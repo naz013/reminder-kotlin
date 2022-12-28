@@ -19,31 +19,31 @@ import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.text
 import com.elementary.tasks.core.utils.ui.trimmedText
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.CreateBirthdayViewModel
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
-import com.github.naz013.calendarext.newCalendar
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
-import java.util.Calendar
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private val viewModel by viewModel<CreateBirthdayViewModel> { parametersOf(idFromIntent()) }
-  private val permissionFlow = PermissionFlow(this, dialogues)
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
+  private val permissionFlow = PermissionFlow(this, dialogues)
   private val contactPicker = ContactPicker(this) { showContact(it) }
 
   override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
@@ -89,7 +89,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   }
 
   private fun showBirthday(birthday: Birthday?, fromFile: Boolean = false) {
-    val calendar = newCalendar()
     binding.toolbar.setTitle(R.string.add_birthday)
 
     birthday?.also {
@@ -99,12 +98,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
       if (viewModel.isEdited) return
       binding.birthName.setText(it.name)
-      runCatching {
-        val dt = TimeUtil.BIRTH_DATE_FORMAT.parse(it.date)
-        if (dt != null) calendar.time = dt
-      }
-
-      viewModel.onDateChanged(calendar.timeInMillis)
 
       if (!TextUtils.isEmpty(it.number)) {
         binding.numberView.setText(it.number)
@@ -128,11 +121,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       }
       intent.hasExtra(Constants.INTENT_ITEM) -> showBirthday(birthdayFromIntent(), true)
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
-      else -> {
-        if ((viewModel.date.value ?: 0L) == 0L) {
-          viewModel.onDateChanged(System.currentTimeMillis())
-        }
-      }
+      else -> viewModel.onDateChanged(System.currentTimeMillis())
     }
   }
 
@@ -167,9 +156,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
         }
       }
     }
-    viewModel.date.nonNullObserve(this) {
-      Timber.d("initViewModel: ${TimeUtil.getFullDateTime(it, true)}")
-      binding.birthDate.text = TimeUtil.BIRTH_DATE_FORMAT.format(it.time)
+    viewModel.formattedDate.nonNullObserve(this) {
+      Timber.d("onDateChanged: $it")
+      binding.birthDate.text = it
     }
     viewModel.isContactAttached.nonNullObserve(this) { binding.container.visibleGone(it) }
   }
@@ -271,7 +260,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   }
 
   private fun dateDialog() {
-    TimeUtil.showDatePicker(this, prefs, viewModel.date.value) {
+    dateTimePickerProvider.showDatePicker(this, viewModel.selectedDate) {
       viewModel.onDateChanged(it)
     }
   }
@@ -279,16 +268,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   override fun requireLogin() = true
 
   companion object {
-
     private const val MENU_ITEM_DELETE = 12
-
-    fun createBirthDate(day: Int, month: Int, year: Int): String {
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.YEAR, year)
-      calendar.set(Calendar.MONTH, month)
-      calendar.set(Calendar.DAY_OF_MONTH, day)
-      return TimeUtil.BIRTH_DATE_FORMAT.format(calendar.time)
-    }
   }
 }

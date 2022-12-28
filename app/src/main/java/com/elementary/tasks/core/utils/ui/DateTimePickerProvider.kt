@@ -30,7 +30,8 @@ class DateTimePickerProvider(
   }
 
   fun showTimePicker(
-    context: Context, time: LocalTime,
+    context: Context,
+    time: LocalTime,
     listener: (LocalTime) -> Unit
   ): TimePickerDialog {
     val dialog = TimePickerDialog(context, { _, h, m ->
@@ -41,7 +42,8 @@ class DateTimePickerProvider(
   }
 
   fun showTimePicker(
-    context: Context, old: Calendar?,
+    context: Context,
+    old: Calendar?,
     listener: (Calendar) -> Unit
   ): TimePickerDialog {
     val calendar = old ?: newCalendar()
@@ -71,7 +73,8 @@ class DateTimePickerProvider(
   }
 
   fun showDatePicker(
-    context: Context, date: LocalDate,
+    context: Context,
+    date: LocalDate,
     listener: (LocalDate) -> Unit
   ): DatePickerDialog {
     val dialog = DatePickerDialog(

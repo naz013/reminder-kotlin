@@ -32,6 +32,7 @@ import com.github.naz013.calendarext.toCalendar
 import com.github.naz013.calendarext.toDate
 import com.github.naz013.calendarext.toDateWithException
 import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
@@ -49,6 +50,14 @@ class DateTimeManager(
   private val prefs: Prefs,
   private val textProvider: TextProvider
 ) {
+
+  fun formatBirthdayDate(date: LocalDate): String {
+    return date.format(BIRTH_DATE_FORMATTER)
+  }
+
+  fun parseBirthdayDate(date: String): LocalDate {
+    return LocalDate.parse(date, BIRTH_DATE_FORMATTER)
+  }
 
   fun fromMillis(millis: Long): LocalDateTime {
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
@@ -76,7 +85,9 @@ class DateTimeManager(
     return if (gmt == null) {
       null
     } else {
-      ZonedDateTime.parse(gmt, formatter).toLocalDateTime()
+      ZonedDateTime.parse(gmt, formatter)
+        .withZoneSameInstant(ZoneId.systemDefault())
+        .toLocalDateTime()
     }
   }
 
@@ -133,7 +144,7 @@ class DateTimeManager(
     return try {
       ZonedDateTime.parse(
         dateTime,
-        VOICE_ENGINE_GMT_DATE_FORMAT.withZone(ZoneId.of("GMT"))
+        VOICE_ENGINE_GMT_DATE_FORMAT.withZone(GMT_ZONE_ID)
       ).toInstant().toEpochMilli()
     } catch (e: Exception) {
       e.printStackTrace()
@@ -141,30 +152,34 @@ class DateTimeManager(
     }
   }
 
-  fun fromGmt(dateTime: String?, def: Calendar = newCalendar()): Calendar {
+  fun fromGmtToLocal(dateTime: String?, def: LocalDateTime = LocalDateTime.now()): LocalDateTime {
     if (dateTime.isNullOrEmpty()) return def
     return try {
-      newCalendar(dateTime.toDate(GMT_DATE_FORMAT, TimeZone.getTimeZone(GMT)))
+      gmtToLocal(dateTime, GMT_DATE_FORMATTER) ?: def
     } catch (e: Throwable) {
       def
     }
   }
 
-  fun toGmt(calendar: Calendar): String {
-    GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
+  fun getGmtFromDateTime(dateTime: LocalDateTime): String {
     return try {
-      GMT_DATE_FORMAT.format(calendar.time)
+      dateTime.atZone(ZoneId.systemDefault()).format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
     } catch (e: Throwable) {
+      e.printStackTrace()
       ""
     }
   }
 
-  fun toTime(calendar: Calendar): String {
-    return getTime(calendar.time)
+  fun toMillis(localDateTime: LocalDateTime): Long {
+    return ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
   }
 
-  fun toGoogleTaskDate(calendar: Calendar): String {
-    return fullDate().format(calendar.time)
+  fun toTime(localTime: LocalTime): String {
+    return getTime(localTime)
+  }
+
+  fun toGoogleTaskDate(localDate: LocalDate): String {
+    return localDate.format(fullDateFormatter())
   }
 
   fun getDate(date: java.util.Date, format: DateFormat): String {
@@ -414,14 +429,6 @@ class DateTimeManager(
     GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
     return try {
       GMT_DATE_FORMAT.format(Date(date))
-    } catch (e: Throwable) {
-      ""
-    }
-  }
-
-  fun getGmtFromDateTime(dateTime: LocalDateTime): String {
-    return try {
-      dateTime.format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
     } catch (e: Throwable) {
       ""
     }
@@ -802,6 +809,8 @@ class DateTimeManager(
 
   fun fullDate(): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy")
 
+  fun fullDateFormatter(): DateTimeFormatter = localizedDateFormatter("EEE, dd MMM yyyy")
+
   private fun fullDateTime24(): SimpleDateFormat =
     localizedDateFormat("EEE, dd MMM yyyy HH:mm")
 
@@ -837,8 +846,10 @@ class DateTimeManager(
     const val WEEK: Long = DAY * 7
 
     private const val GMT = "GMT"
+    private val GMT_ZONE_ID = ZoneId.of(GMT)
 
     val BIRTH_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
     val BIRTH_FORMAT = SimpleDateFormat("dd|MM", Locale.US)
     private val VOICE_ENGINE_GMT_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)

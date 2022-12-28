@@ -1,12 +1,17 @@
 package com.elementary.tasks.core.views.viewgroup
 
 import android.content.Context
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.elementary.tasks.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import timber.log.Timber
@@ -19,8 +24,8 @@ class UiSelectorView : LinearLayout {
   private var emptyText = ""
   private val items = mutableListOf<String>()
 
-  private lateinit var buttonLeft: ImageView
-  private lateinit var buttonRight: ImageView
+  private lateinit var buttonLeft: AppCompatImageView
+  private lateinit var buttonRight: AppCompatImageView
   private lateinit var labelView: TextView
 
   constructor(context: Context) : super(context) {
@@ -51,6 +56,7 @@ class UiSelectorView : LinearLayout {
       index = 0
     }
     updateSelection()
+    updateButtons()
   }
 
   private fun init(context: Context, attrs: AttributeSet?) {
@@ -77,6 +83,32 @@ class UiSelectorView : LinearLayout {
         val rightBackgroundColor =
           a.getColor(R.styleable.UiSelectorView_selector_rightButtonBackground, 0)
         val labelBackgroundColor = a.getColor(R.styleable.UiSelectorView_selector_textBackground, 0)
+
+        val leftIconColor = a.getColor(R.styleable.UiSelectorView_selector_leftIconTintColor, 0)
+        val rightIconColor = a.getColor(R.styleable.UiSelectorView_selector_rightIconTintColor, 0)
+
+        a.getDrawable(R.styleable.UiSelectorView_selector_leftIcon)
+          ?.let { DrawableCompat.wrap(it).mutate() }
+          ?.also {
+            if (leftIconColor != 0) {
+              it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                leftIconColor,
+                BlendModeCompat.SRC_ATOP
+              )
+            }
+          }
+          ?.also { buttonLeft.setImageDrawable(it) }
+        a.getDrawable(R.styleable.UiSelectorView_selector_rightIcon)
+          ?.let { DrawableCompat.wrap(it).mutate() }
+          ?.also {
+            if (rightIconColor != 0) {
+              it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                rightIconColor,
+                BlendModeCompat.SRC_ATOP
+              )
+            }
+          }
+          ?.also { buttonRight.setImageDrawable(it) }
 
         if (leftBackgroundColor != 0) {
           buttonLeft.setBackgroundColor(leftBackgroundColor)
