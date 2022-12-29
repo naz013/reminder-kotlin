@@ -6,6 +6,6 @@ import org.koin.android.ext.android.get
 
 class CalendarWeekdayService : RemoteViewsService() {
   override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-    return CalendarWeekdayFactory(applicationContext, intent, get())
+    return CalendarWeekdayFactory(applicationContext, intent, get(), get())
   }
 }

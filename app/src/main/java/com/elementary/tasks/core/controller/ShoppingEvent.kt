@@ -11,6 +11,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import org.threeten.bp.LocalDateTime
 
 class ShoppingEvent(
   reminder: Reminder,
@@ -63,7 +64,7 @@ class ShoppingEvent(
       val time = dateTimeManager.generateDateTime(
         reminder.eventTime,
         reminder.repeatInterval,
-        dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
+        dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
       )
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       start()
@@ -98,7 +99,7 @@ class ShoppingEvent(
     super.setDelay(delay)
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
     return dateTimeManager.generateDateTime(reminder.eventTime, reminder.repeatInterval)
   }
 }

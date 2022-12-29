@@ -7,28 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.databinding.FragmentReminderYearBinding
-import com.github.naz013.calendarext.dropMilliseconds
-import com.github.naz013.calendarext.dropSeconds
-import com.github.naz013.calendarext.newCalendar
-import com.github.naz013.calendarext.setHourOfDay
-import com.github.naz013.calendarext.setMinute
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import timber.log.Timber
-import java.util.Calendar
 
 class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
-
-  private val time: Long
-    get() {
-      val calendar = newCalendar(System.currentTimeMillis())
-      calendar.setHourOfDay(iFace.state.hour)
-      calendar.setMinute(iFace.state.minute)
-      calendar.dropSeconds()
-      calendar.dropMilliseconds()
-      return calendar.timeInMillis
-    }
 
   override fun prepare(): Reminder? {
     val reminder = iFace.state.reminder
@@ -62,10 +50,12 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     reminder.eventCount = 0
     reminder.repeatInterval = 0
 
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(getDateTime())
     val startTime = dateTimeManager.getNextYearDayTime(reminder)
 
-    if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+    if (reminder.remindBefore > 0 &&
+      !dateTimeManager.isCurrent(startTime.minusMillis(reminder.remindBefore))
+    ) {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
@@ -78,6 +68,10 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
       return null
     }
     return reminder
+  }
+
+  private fun getDateTime(): LocalDateTime {
+    return LocalDateTime.of(LocalDate.now(), iFace.state.time.withSecond(0))
   }
 
   override fun inflate(
@@ -117,27 +111,18 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     super.onViewCreated(view, savedInstanceState)
     binding.tuneExtraView.hasAutoExtra = false
 
-    binding.dateView.setDateFormat(dateTimeManager.simpleDate())
-    binding.dateView.setEventListener(object : DateTimeView.OnSelectListener {
-      override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
-        iFace.state.day = day
-        iFace.state.month = month
-        iFace.state.year = year
+    binding.dateView.setDateFormat(dateTimeManager.simpleDateFormatter())
+    binding.dateView.setOnSelectListener(object : DateTimeView.OnSelectListener {
+      override fun onDateSelect(date: LocalDate) {
+        iFace.state.date = date
       }
 
-      override fun onTimeSelect(mills: Long, hour: Int, minute: Int) {
-        iFace.state.hour = hour
-        iFace.state.minute = minute
+      override fun onTimeSelect(time: LocalTime) {
+        iFace.state.time = time
       }
     })
 
-    val calendar = newCalendar(System.currentTimeMillis())
-    calendar.set(Calendar.DAY_OF_MONTH, iFace.state.day)
-    calendar.set(Calendar.MONTH, iFace.state.month)
-    calendar.set(Calendar.YEAR, iFace.state.year)
-    calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-    calendar.set(Calendar.MINUTE, iFace.state.minute)
-    binding.dateView.dateTime = calendar.timeInMillis
+    binding.dateView.selectedDateTime = LocalDateTime.of(iFace.state.date, iFace.state.time)
     editReminder()
   }
 
@@ -155,18 +140,10 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
   }
 
   private fun updateDateTime(reminder: Reminder) {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
-    iFace.state.hour = calendar.get(Calendar.HOUR_OF_DAY)
-    iFace.state.minute = calendar.get(Calendar.MINUTE)
-    calendar.timeInMillis = System.currentTimeMillis()
-    calendar.set(Calendar.DAY_OF_MONTH, reminder.dayOfMonth)
-    calendar.set(Calendar.MONTH, reminder.monthOfYear)
-    calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-    calendar.set(Calendar.MINUTE, iFace.state.minute)
-    binding.dateView.dateTime = calendar.timeInMillis
-    iFace.state.day = reminder.dayOfMonth
-    iFace.state.month = reminder.monthOfYear
+    val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    binding.dateView.selectedDateTime = dateTime
+    iFace.state.date = dateTime.toLocalDate()
+    iFace.state.time = dateTime.toLocalTime()
   }
 
   private fun editReminder() {

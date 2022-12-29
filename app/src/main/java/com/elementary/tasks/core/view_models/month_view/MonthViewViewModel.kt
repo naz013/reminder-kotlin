@@ -120,12 +120,9 @@ class MonthViewViewModel(
         val res = ArrayList<EventModel>()
         Timber.d("Search events: $monthPagerItem")
         for (item in list) {
-          val mMonth = item.month
-          val mYear = item.year
-          val type = item.viewType
-          if (type == EventModel.BIRTHDAY && mMonth == monthPagerItem.month) {
+          if (item.viewType == EventModel.BIRTHDAY && item.monthValue == monthPagerItem.monthValue) {
             res.add(item)
-          } else if (mMonth == monthPagerItem.month && mYear == monthPagerItem.year) {
+          } else if (item.monthValue == monthPagerItem.monthValue && item.year == monthPagerItem.year) {
             res.add(item)
           }
         }

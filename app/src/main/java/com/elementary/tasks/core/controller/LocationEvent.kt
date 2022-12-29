@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import org.threeten.bp.LocalDateTime
 
 class LocationEvent(
   reminder: Reminder,
@@ -137,7 +138,7 @@ class LocationEvent(
 
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
     return dateTimeManager.generateDateTime(reminder.eventTime, reminder.repeatInterval)
   }
 }

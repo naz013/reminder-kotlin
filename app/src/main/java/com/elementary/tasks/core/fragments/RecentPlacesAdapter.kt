@@ -7,14 +7,15 @@ import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.databinding.ListItemMapPlaceBinding
 
 class RecentPlacesAdapter(
-  private val currentStateHolder: CurrentStateHolder
+  private val currentStateHolder: CurrentStateHolder,
+  private val dateTimeManager: DateTimeManager
 ) : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>() {
 
   private val mData = mutableListOf<Place>()
@@ -50,21 +51,21 @@ class RecentPlacesAdapter(
     fun bind(item: Place) {
       binding.textView.text = item.name
 
-      val dmy = TimeUtil.getPlaceDateTimeFromGmt(item.dateTime, prefs.appLanguage)
-      binding.dayView.text = dmy.day
-      binding.monthYearView.text = "${dmy.month}\n${dmy.year}"
+      val date = dateTimeManager.getPlaceDateTimeFromGmt(item.dateTime)
+      binding.dayView.text = date.day
+      binding.monthYearView.text = "${date.month}\n${date.year}"
 
       DrawableHelper.withContext(itemView.context)
         .withDrawable(R.drawable.ic_twotone_place_24px)
-        .withColor(theme.getNoteLightColor(item.marker))
+        .withColor(theme.getMarkerLightColor(item.marker))
         .tint()
         .applyTo(binding.markerImage)
 
       binding.itemCard.setOnClickListener { view ->
         actionsListener?.onAction(
           view,
-          adapterPosition,
-          getItem(adapterPosition),
+          bindingAdapterPosition,
+          getItem(bindingAdapterPosition),
           ListActions.OPEN
         )
       }

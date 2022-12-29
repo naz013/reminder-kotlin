@@ -7,9 +7,8 @@ data class EventModel(
   val viewType: Int,
   var model: Any,
   val day: Int,
-  val month: Int,
+  val monthValue: Int,
   val year: Int,
-  val dt: Long,
   val color: Int
 ) {
   fun getMillis(): Long {

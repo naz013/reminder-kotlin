@@ -6,7 +6,9 @@ import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.elementary.tasks.core.cloud.storages.Storage
 import com.elementary.tasks.core.cloud.storages.StorageManager
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class DataFlow<T>(
@@ -14,7 +16,9 @@ class DataFlow<T>(
   private val convertible: Convertible<T>,
   private val storage: Storage,
   private val completable: Completable<T>? = null
-) {
+) : KoinComponent {
+
+  private val dateTimeManager by inject<DateTimeManager>()
 
   suspend fun saveIndex() {
     storage.saveIndex()
@@ -61,7 +65,7 @@ class DataFlow<T>(
     val needUpdate = if (localItem != null) {
       val metadata = convertible.metadata(item)
       val metadataLocal = convertible.metadata(localItem)
-      TimeUtil.isAfterDate(metadata.updatedAt, metadataLocal.updatedAt)
+      dateTimeManager.isAfterDate(metadata.updatedAt, metadataLocal.updatedAt)
     } else {
       true
     }

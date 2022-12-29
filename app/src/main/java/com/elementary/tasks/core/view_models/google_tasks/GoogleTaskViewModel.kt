@@ -85,7 +85,7 @@ class GoogleTaskViewModel(
 
   fun onTimeSet(localTime: LocalTime) {
     time = localTime
-    _formattedTime.postValue(dateTimeManager.toTime(time))
+    _formattedTime.postValue(dateTimeManager.getTime(time))
   }
 
   fun save(summary: String, note: String) {
@@ -183,7 +183,7 @@ class GoogleTaskViewModel(
       val reminder = reminderDao.getById(uuId) ?: return@launch
       if (!isReminderEdited) {
         editedReminder = reminder
-        time = dateTimeManager.fromGmtToLocal(reminder.eventTime).toLocalTime()
+        time = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime() ?: LocalTime.now()
         isReminderEdited = true
         onReminderStateChanged(true)
       }

@@ -37,7 +37,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
     }
     Timber.d("prepare: $type")
 
-    val startTime = binding.dateView.dateTime
+    val startTime = binding.dateView.selectedDateTime
     Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
     if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(string(R.string.reminder_is_outdated))

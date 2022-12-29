@@ -3,7 +3,7 @@ package com.elementary.tasks.core.cloud.repositories
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.ReminderGroup
 
-class GroupRepository(appDb: AppDb) : DatabaseRepository<ReminderGroup>(appDb) {
+class GroupDataFlowRepository(appDb: AppDb) : DatabaseRepository<ReminderGroup>(appDb) {
   override suspend fun get(id: String): ReminderGroup? {
     return appDb.reminderGroupDao().getById(id)
   }

@@ -21,6 +21,7 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.Serializable
 
 abstract class ThemedActivity : AppCompatActivity() {
 
@@ -108,6 +109,16 @@ abstract class ThemedActivity : AppCompatActivity() {
         intent.getParcelableExtra(key, clazz)
       } else {
         intent.getParcelableExtra(key) as? T
+      }
+    }.getOrNull()
+  }
+
+  protected fun <T : Serializable> intentSerializable(key: String, clazz: Class<T>): T? {
+    return runCatching {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        intent.getSerializableExtra(key, clazz)
+      } else {
+        intent.getSerializableExtra(key) as? T
       }
     }.getOrNull()
   }

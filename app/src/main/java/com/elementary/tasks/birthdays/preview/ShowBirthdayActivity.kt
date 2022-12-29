@@ -17,7 +17,6 @@ import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
@@ -26,6 +25,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
@@ -285,7 +285,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(name)
-    builder.setContentText(dateTimeManager.getAgeFormatted(years, System.currentTimeMillis()))
+    builder.setContentText(dateTimeManager.getAgeFormatted(years))
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
@@ -322,7 +322,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     Timber.d("showTTSNotification: ")
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(name)
-    builder.setContentText(dateTimeManager.getAgeFormatted(years, System.currentTimeMillis()))
+    builder.setContentText(dateTimeManager.getAgeFormatted(years))
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (isScreenResumed) {

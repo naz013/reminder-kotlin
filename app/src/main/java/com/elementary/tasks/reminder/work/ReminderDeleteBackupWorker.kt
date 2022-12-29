@@ -21,7 +21,7 @@ class ReminderDeleteBackupWorker(
     if (uuId.isNotEmpty()) {
       launchDefault {
         DataFlow(
-          syncManagers.repositoryManager.reminderRepository,
+          syncManagers.repositoryManager.reminderDataFlowRepository,
           syncManagers.converterManager.reminderConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null

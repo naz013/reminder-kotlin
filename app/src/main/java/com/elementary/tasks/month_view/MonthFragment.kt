@@ -9,19 +9,23 @@ import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.UiReminderListData
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.databinding.FragmentMonthViewBinding
 import com.elementary.tasks.day_view.day.EventModel
 import hirondelle.date4j.DateTime
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
+import org.threeten.bp.LocalDate
 import timber.log.Timber
-import java.util.Calendar
-import java.util.Date
 
 class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
+
+  private val prefs by inject<Prefs>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private var callback: MonthCallback? = null
   private var mItem: MonthPagerItem? = null
@@ -32,7 +36,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     this.mItem = monthPagerItem
     Timber.d("setModel: $monthPagerItem, $isAdded, $isResumed")
     if (isResumed) {
-      binding.monthView.setDate(monthPagerItem.year, monthPagerItem.month + 1)
+      binding.monthView.setDate(monthPagerItem.year, monthPagerItem.monthValue)
     }
   }
 
@@ -55,18 +59,21 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.monthView.setTodayColor(prefs.todayColor)
+    binding.monthView.setStartDayOfWeek(prefs.startDay)
+
     binding.monthView.setDateClick(object : MonthView.OnDateClick {
-      override fun onClick(dateTime: DateTime) {
-        callback?.onDateClick(TimeUtil.convertDateTimeToDate(dateTime))
+      override fun onClick(date: LocalDate) {
+        callback?.onDateClick(date)
       }
     })
     binding.monthView.setDateLongClick(object : MonthView.OnDateLongClick {
-      override fun onLongClick(dateTime: DateTime) {
-        callback?.onDateLongClick(TimeUtil.convertDateTimeToDate(dateTime))
+      override fun onLongClick(date: LocalDate) {
+        callback?.onDateLongClick(date)
       }
     })
     mItem?.let {
-      binding.monthView.setDate(it.year, it.month + 1)
+      binding.monthView.setDate(it.year, it.monthValue)
     }
   }
 
@@ -97,37 +104,39 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     for (model in list) {
       val obj = model.model
       if (obj is Birthday) {
-        val date: Date? = runCatching { TimeUtil.BIRTH_DATE_FORMAT.parse(obj.date) }.getOrNull()
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        val year = calendar.get(Calendar.YEAR)
+        var date = dateTimeManager.parseBirthdayDate(obj.date)
+        val year = LocalDate.now().year
         if (date != null) {
-          calendar.time = date
           var i = -1
           while (i < 2) {
-            calendar.set(Calendar.YEAR, year + i)
-            setEvent(calendar.timeInMillis, obj.name, birthdayColor, Events.Type.BIRTHDAY, map)
+            date = date?.withYear(year + 1)
+            date?.also { setEvent(it, obj.name, birthdayColor, Events.Type.BIRTHDAY, map) }
             i++
           }
         }
       } else if (obj is UiReminderListData) {
-        val eventTime = obj.due?.millis ?: continue
-        setEvent(eventTime, obj.summary, reminderColor, Events.Type.REMINDER, map)
+        val eventTime = obj.due?.localDateTime ?: continue
+        setEvent(eventTime.toLocalDate(), obj.summary, reminderColor, Events.Type.REMINDER, map)
       }
     }
     Timber.d("mapData: $map")
     return map
   }
 
-  private fun setEvent(eventTime: Long, summary: String, color: Int, type: Events.Type, map: MutableMap<DateTime, Events>) {
-    val key = TimeUtil.convertToDateTime(eventTime)
+  private fun setEvent(
+    date: LocalDate,
+    summary: String,
+    color: Int,
+    type: Events.Type,
+    map: MutableMap<DateTime, Events>
+  ) {
+    val key = DateTime(date.year, date.monthValue, date.dayOfMonth, 12, 0, 0, 0)
     if (map.containsKey(key)) {
       val events = map[key] ?: Events()
-      events.addEvent(summary, color, type, eventTime)
+      events.addEvent(summary, color, type, date)
       map[key] = events
     } else {
-      val events = Events(summary, color, type, eventTime)
+      val events = Events(summary, color, type, date)
       map[key] = events
     }
   }

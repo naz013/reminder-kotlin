@@ -42,7 +42,9 @@ class HomeViewModel(
   private var liveData: LiveData<List<UiReminderList>>? = null
   val reminders: LiveData<List<UiReminderList>> = _reminders
   val birthdays = birthdaysDao.findAll(
-    dateTimeManager.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1)
+    dateTimeManager.getBirthdayDayMonthList(
+      duration = prefs.birthdayDurationInDays + 1
+    )
   ).map { list -> list.map { birthdayModelAdapter.convert(it) } }
   var topScrollX = 0
 

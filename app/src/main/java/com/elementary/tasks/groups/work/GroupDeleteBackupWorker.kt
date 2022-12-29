@@ -21,7 +21,7 @@ class GroupDeleteBackupWorker(
     if (uuId.isNotEmpty()) {
       launchDefault {
         DataFlow(
-          syncManagers.repositoryManager.groupRepository,
+          syncManagers.repositoryManager.groupDataFlowRepository,
           syncManagers.converterManager.groupConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null

@@ -3,7 +3,7 @@ package com.elementary.tasks.core.cloud.repositories
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Place
 
-class PlaceRepository(appDb: AppDb) : DatabaseRepository<Place>(appDb) {
+class PlaceDataFlowRepository(appDb: AppDb) : DatabaseRepository<Place>(appDb) {
   override suspend fun get(id: String): Place? {
     return appDb.placesDao().getByKey(id)
   }

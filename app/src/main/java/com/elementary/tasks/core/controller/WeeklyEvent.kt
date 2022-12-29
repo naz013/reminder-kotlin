@@ -10,6 +10,8 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.plusMillis
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
 class WeeklyEvent(
@@ -56,7 +58,8 @@ class WeeklyEvent(
     if (canSkip()) {
       val time = dateTimeManager.getNextWeekdayTime(
         reminder,
-        dateTimeManager.getDateTimeFromGmt(reminder.eventTime) + 1000L
+        dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000)
+          ?: LocalDateTime.now()
       )
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       start()
@@ -84,7 +87,8 @@ class WeeklyEvent(
       if (!dateTimeManager.isCurrent(reminder.eventTime)) {
         val time = dateTimeManager.getNextWeekdayTime(
           reminder,
-          dateTimeManager.getDateTimeFromGmt(reminder.eventTime) + 1000L
+          dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000)
+            ?: LocalDateTime.now()
         )
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
         reminder.startTime = dateTimeManager.getGmtFromDateTime(time)
@@ -108,7 +112,7 @@ class WeeklyEvent(
     super.setDelay(delay)
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
     return dateTimeManager.getNextWeekdayTime(reminder)
   }
 }

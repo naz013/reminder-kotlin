@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.controller
 
+import org.threeten.bp.LocalDateTime
+
 interface EventControl {
   val isActive: Boolean
   fun start(): Boolean
@@ -11,5 +13,5 @@ interface EventControl {
   fun onOff(): Boolean
   fun canSkip(): Boolean
   fun setDelay(delay: Int)
-  fun calculateTime(isNew: Boolean): Long
+  fun calculateTime(isNew: Boolean): LocalDateTime
 }

@@ -29,7 +29,7 @@ class SingleBackupWorker(
       scope.launch {
         withContext(dispatcherProvider.default()) {
           DataFlow(
-            syncManagers.repositoryManager.birthdayRepository,
+            syncManagers.repositoryManager.birthdayDataFlowRepository,
             syncManagers.converterManager.birthdayConverter,
             CompositeStorage(syncManagers.storageManager),
             completable = null

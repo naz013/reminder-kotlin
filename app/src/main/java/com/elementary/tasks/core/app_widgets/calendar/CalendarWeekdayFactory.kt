@@ -8,21 +8,22 @@ import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import hirondelle.date4j.DateTime
-import java.text.SimpleDateFormat
-import java.util.*
+import org.threeten.bp.LocalDate
 
 class CalendarWeekdayFactory(
   private val context: Context,
   intent: Intent,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val dateTimeManager: DateTimeManager
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private val mWeekdaysList = ArrayList<String>()
-  private val mWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-  private val startDayOfWeek = SUNDAY
+  private val mWidgetId: Int = intent.getIntExtra(
+    AppWidgetManager.EXTRA_APPWIDGET_ID,
+    AppWidgetManager.INVALID_APPWIDGET_ID
+  )
 
   override fun onCreate() {
     mWeekdaysList.clear()
@@ -30,17 +31,14 @@ class CalendarWeekdayFactory(
 
   override fun onDataSetChanged() {
     mWeekdaysList.clear()
-    val fmt = SimpleDateFormat("EEE", Locale.getDefault())
-
-    val sunday = DateTime(2013, 2, 17, 0, 0, 0, 0)
-    var nextDay = sunday.plusDays(startDayOfWeek - SUNDAY)
-    if (prefs.startDay == 1) {
-      nextDay = nextDay.plusDays(1)
+    var date = if (isSunday()) {
+      LocalDate.of(2022, 12, 25)
+    } else {
+      LocalDate.of(2022, 12, 26)
     }
-    for (i in 0..6) {
-      val date = TimeUtil.convertDateTimeToDate(nextDay)
-      mWeekdaysList.add(fmt.format(date).toUpperCase())
-      nextDay = nextDay.plusDays(1)
+    for (i in 0 until 7) {
+      mWeekdaysList.add(dateTimeManager.formatCalendarWeekday(date).uppercase())
+      date = date.plusDays(1)
     }
   }
 
@@ -83,7 +81,7 @@ class CalendarWeekdayFactory(
     return true
   }
 
-  companion object {
-    private const val SUNDAY = 1
+  private fun isSunday(): Boolean {
+    return prefs.startDay == 0
   }
 }

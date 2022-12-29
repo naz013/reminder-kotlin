@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import org.koin.core.component.inject
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
 class ReminderActionReceiver : BaseBroadcast() {
@@ -122,7 +123,7 @@ class ReminderActionReceiver : BaseBroadcast() {
           val delayTime = dateTimeManager.millisToEndDnd(
             prefs.doNotDisturbFrom,
             prefs.doNotDisturbTo,
-            System.currentTimeMillis() - DateTimeManager.MINUTE
+            LocalDateTime.now().minusMinutes(1)
           )
           if (delayTime > 0) {
             jobScheduler.scheduleReminderDelay(delayTime, id)

@@ -21,7 +21,7 @@ class TemplateDeleteBackupWorker(
     if (uuId.isNotEmpty()) {
       launchDefault {
         DataFlow(
-          syncManagers.repositoryManager.templateRepository,
+          syncManagers.repositoryManager.templateDataFlowRepository,
           syncManagers.converterManager.templateConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null

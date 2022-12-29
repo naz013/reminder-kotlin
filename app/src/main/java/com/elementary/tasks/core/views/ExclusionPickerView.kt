@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.TimePickerDialog
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -15,22 +13,29 @@ import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogExclusionPickerBinding
 import com.elementary.tasks.core.binding.views.ExclusionPickerViewBinding
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.threeten.bp.LocalTime
 import java.util.*
 
-class ExclusionPickerView : LinearLayout {
+class ExclusionPickerView : LinearLayout, KoinComponent {
+
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val dialogues by inject<Dialogues>()
 
   private lateinit var binding: ExclusionPickerViewBinding
   var onExclusionUpdateListener: ((hours: List<Int>, from: String, to: String) -> Unit)? = null
   private val mHours = mutableListOf<Int>()
   private var mFrom: String = ""
   private var mTo: String = ""
-  private var fromHour: Int = 0
-  private var fromMinute: Int = 0
-  private var toHour: Int = 0
-  private var toMinute: Int = 0
+
+  private var fromTime: LocalTime = LocalTime.now()
+  private var toTime: LocalTime = fromTime.plusHours(3)
+
   private val buttons = mutableListOf<ToggleButton>()
 
   private val selectedList: MutableList<Int>
@@ -45,27 +50,21 @@ class ExclusionPickerView : LinearLayout {
 
   private val customizationView: DialogExclusionPickerBinding
     get() {
-      val binding = DialogExclusionPickerBinding(LayoutInflater.from(context).inflate(R.layout.dialog_exclusion_picker, null))
+      val binding = DialogExclusionPickerBinding(
+        LayoutInflater.from(context).inflate(R.layout.dialog_exclusion_picker, null)
+      )
       binding.selectInterval.isChecked = true
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
-      fromHour = calendar.get(Calendar.HOUR_OF_DAY)
-      fromMinute = calendar.get(Calendar.MINUTE)
-      binding.from.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true, lang())
-      calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_HOUR * 3
-      toHour = calendar.get(Calendar.HOUR_OF_DAY)
-      toMinute = calendar.get(Calendar.MINUTE)
-      binding.to.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true, lang())
+
+      showFromTime(binding.from, fromTime)
+      showToTime(binding.to, toTime)
+
       binding.from.setOnClickListener { fromTime(binding.from) }
       binding.to.setOnClickListener { toTime(binding.to) }
+
       initButtons(binding)
-      if (mFrom != "" && mTo != "") {
-        calendar.time = TimeUtil.getDate(mFrom) ?: Date()
-        fromHour = calendar.get(Calendar.HOUR_OF_DAY)
-        fromMinute = calendar.get(Calendar.MINUTE)
-        calendar.time = TimeUtil.getDate(mTo) ?: Date()
-        toHour = calendar.get(Calendar.HOUR_OF_DAY)
-        toMinute = calendar.get(Calendar.MINUTE)
+      if (mFrom.isNotEmpty() && mTo.isNotEmpty()) {
+        fromTime = dateTimeManager.toLocalTime(mFrom) ?: LocalTime.now()
+        toTime = dateTimeManager.toLocalTime(mTo) ?: LocalTime.now()
         binding.selectInterval.isChecked = true
       }
       if (mHours.isNotEmpty()) {
@@ -73,9 +72,6 @@ class ExclusionPickerView : LinearLayout {
       }
       return binding
     }
-
-  var dialogues: Dialogues? = null
-  var prefs: Prefs? = null
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -88,8 +84,6 @@ class ExclusionPickerView : LinearLayout {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
     init(context)
   }
-
-  private fun lang(): Int = prefs?.appLanguage ?: 0
 
   fun setRangeHours(fromHour: String, toHour: String) {
     mFrom = fromHour
@@ -119,7 +113,6 @@ class ExclusionPickerView : LinearLayout {
   }
 
   private fun openExclusionDialog() {
-    val dialogues = dialogues ?: return
     val builder = dialogues.getMaterialDialog(context)
     builder.setTitle(R.string.exclusion)
     val b = customizationView
@@ -133,6 +126,9 @@ class ExclusionPickerView : LinearLayout {
     mHours.clear()
     mFrom = ""
     mTo = ""
+    fromTime = LocalTime.now()
+    toTime = fromTime.plusHours(3)
+    showNoExclusion()
     onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
   }
 
@@ -145,8 +141,8 @@ class ExclusionPickerView : LinearLayout {
         onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
       }
       b.selectInterval.isChecked -> {
-        mFrom = getHour(fromHour, fromMinute)
-        mTo = getHour(toHour, toMinute)
+        mFrom = getHour(fromTime)
+        mTo = getHour(toTime)
         showRange()
         onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
       }
@@ -184,8 +180,8 @@ class ExclusionPickerView : LinearLayout {
     }
   }
 
-  private fun getHour(hour: Int, minute: Int): String {
-    return "$hour:$minute"
+  private fun getHour(time: LocalTime): String {
+    return dateTimeManager.to24HourString(time)
   }
 
   private fun initButtons(b: DialogExclusionPickerBinding) {
@@ -208,29 +204,32 @@ class ExclusionPickerView : LinearLayout {
     }
   }
 
+  @SuppressLint("SetTextI18n")
   private fun fromTime(textView: TextView) {
-    val listener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-      fromHour = hourOfDay
-      fromMinute = minute
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-      calendar.set(Calendar.MINUTE, minute)
-      textView.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true, lang())
+    dateTimePickerProvider.showTimePicker(context, fromTime) {
+      fromTime = it
+      showFromTime(textView, it)
     }
-    TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, fromHour, fromMinute, listener)
   }
 
+  @SuppressLint("SetTextI18n")
   private fun toTime(textView: TextView) {
-    val listener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-      toHour = hourOfDay
-      toMinute = minute
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-      calendar.set(Calendar.MINUTE, minute)
-      textView.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true, lang())
+    dateTimePickerProvider.showTimePicker(context, toTime) {
+      toTime = it
+      showToTime(textView, it)
     }
-    TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, toHour, toMinute, listener)
+  }
+
+  private fun showFromTime(textView: TextView, time: LocalTime) {
+    showTime(textView, context.getString(R.string.from), time)
+  }
+
+  private fun showToTime(textView: TextView, time: LocalTime) {
+    showTime(textView, context.getString(R.string.to), time)
+  }
+
+  @SuppressLint("SetTextI18n")
+  private fun showTime(textView: TextView, prefix: String, time: LocalTime) {
+    textView.text = "$prefix ${dateTimeManager.getTime(time)}"
   }
 }

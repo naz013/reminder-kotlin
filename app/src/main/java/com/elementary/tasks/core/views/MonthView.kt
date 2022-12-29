@@ -9,31 +9,31 @@ import android.graphics.Rect
 import android.graphics.Shader
 import android.graphics.Typeface
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.Events
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.dp2px
 import hirondelle.date4j.DateTime
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.threeten.bp.LocalDate
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.*
 
-class MonthView : View, View.OnTouchListener, KoinComponent {
+class MonthView : View, View.OnTouchListener {
 
   private var mYear: Int = 0
   private var mMonth: Int = 0
   private var currentYear: Int = 0
   private var currentMonth: Int = 0
   private var currentDay: Int = 0
+  private var startDayOfWeek: Int = 1
   private var mDateTimeList: MutableList<DateTime>? = null
   private var eventsMap: Map<DateTime, Events> = HashMap()
 
@@ -66,21 +66,19 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
   private var mNormalTypeface: Typeface? = null
   private var mBoldTypeface: Typeface? = null
 
-  private val mLongClickHandler = Handler()
+  private val mLongClickHandler = Handler(Looper.getMainLooper())
   private var mDateClick: OnDateClick? = null
   private var mDateLongClick: OnDateLongClick? = null
   private val mLongRunnable = object : Runnable {
     override fun run() {
       mLongClickHandler.removeCallbacks(this)
       if (mTouchRect != null && mDateLongClick != null) {
-        mDateLongClick?.onLongClick(mDateTimeList!![mTouchPosition])
+        mDateLongClick?.onLongClick(dateTimeToDate(mDateTimeList?.get(mTouchPosition)))
       }
       cancelTouch()
       invalidate()
     }
   }
-
-  private val prefs by inject<Prefs>()
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -98,7 +96,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     val colorSecondary = ThemeProvider.getThemeSecondaryColor(context)
 
     this.mDefaultColor = colorOf(R.color.color_on_background)
-    this.mTodayColor = ThemeProvider.themedColor(context, prefs.todayColor)
+    this.mTodayColor = ThemeProvider.themedColor(context, 0)
 
     this.mNormalTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular)
     this.mBoldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold)
@@ -119,13 +117,20 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     this.circlePaint = Paint()
     this.circlePaint.isAntiAlias = true
 
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = System.currentTimeMillis()
-    this.currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-    this.currentMonth = calendar.get(Calendar.MONTH) + 1
-    this.currentYear = calendar.get(Calendar.YEAR)
-    setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
+    val date = LocalDate.now()
+    this.currentDay = date.dayOfMonth
+    this.currentMonth = date.monthValue
+    this.currentYear = date.year
+    setDate(date.year, date.monthValue)
     setOnTouchListener(this)
+  }
+
+  fun setTodayColor(@ColorInt color: Int) {
+    this.mTodayColor = ThemeProvider.themedColor(context, color)
+  }
+
+  fun setStartDayOfWeek(startDayOfWeek: Int) {
+    this.startDayOfWeek = startDayOfWeek + 1
   }
 
   fun setDateClick(dateClick: OnDateClick) {
@@ -148,7 +153,6 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     val firstDateOfMonth = DateTime(mYear, mMonth, 1, 0, 0, 0, 0)
     val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
     var weekdayOfFirstDate = firstDateOfMonth.weekDay
-    val startDayOfWeek = prefs.startDay + 1
     if (weekdayOfFirstDate < startDayOfWeek) {
       weekdayOfFirstDate += 7
     }
@@ -161,7 +165,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
       weekdayOfFirstDate--
     }
     for (i in 0 until lastDateOfMonth.day) {
-      mDateTimeList!!.add(firstDateOfMonth.plusDays(i))
+      mDateTimeList?.add(firstDateOfMonth.plusDays(i))
     }
     var endDayOfWeek = startDayOfWeek - 1
     if (endDayOfWeek == 0) {
@@ -327,10 +331,18 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     val y = motionEvent.y.toInt()
     mLongClickHandler.removeCallbacks(mLongRunnable)
     if (mTouchRect != null && mTouchRect?.contains(x, y) == true && mDateClick != null) {
-      mDateClick?.onClick(mDateTimeList!![mTouchPosition])
+      mDateClick?.onClick(dateTimeToDate(mDateTimeList?.get(mTouchPosition)))
     }
     cancelTouch()
     invalidate()
+  }
+
+  private fun dateTimeToDate(dateTime: DateTime?): LocalDate {
+    return if (dateTime == null) {
+      LocalDate.now()
+    } else {
+      LocalDate.of(dateTime.year, dateTime.month, dateTime.day)
+    }
   }
 
   private fun performMove(motionEvent: MotionEvent) {
@@ -363,11 +375,11 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
   }
 
   interface OnDateClick {
-    fun onClick(dateTime: DateTime)
+    fun onClick(date: LocalDate)
   }
 
   interface OnDateLongClick {
-    fun onLongClick(dateTime: DateTime)
+    fun onLongClick(date: LocalDate)
   }
 
   companion object {

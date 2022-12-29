@@ -37,7 +37,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
@@ -61,6 +61,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -73,6 +74,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private var mGoogleMap: AdvancedMapFragment? = null
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val list = ArrayList<Long>()
 
@@ -514,7 +516,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     var minute = 0
     list.clear()
     val time = ArrayList<String>()
-    val is24 = prefs.is24HourFormat
     do {
       if (hour == 23 && minute == 30) {
         hour = -1
@@ -523,7 +524,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         hour = calendar.get(Calendar.HOUR_OF_DAY)
         minute = calendar.get(Calendar.MINUTE)
         list.add(tmp)
-        time.add(TimeUtil.getTime(calendar.time, is24, prefs.appLanguage))
+        time.add(dateTimeManager.getTime(calendar.time))
         calendar.timeInMillis = tmp + AlarmManager.INTERVAL_HALF_HOUR
       }
     } while (hour != -1)

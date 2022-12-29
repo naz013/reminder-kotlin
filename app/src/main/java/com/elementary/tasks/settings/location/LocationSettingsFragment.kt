@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import com.google.android.gms.maps.GoogleMap
 import org.koin.android.ext.android.inject
-import java.util.*
+import java.util.Locale
 
 class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
 
@@ -83,7 +83,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     withContext {
       val pointer = DrawableHelper.withContext(it)
         .withDrawable(R.drawable.ic_twotone_place_24px)
-        .withColor(themeUtil.getNoteLightColor(prefs.markerStyle))
+        .withColor(themeUtil.getMarkerLightColor(prefs.markerStyle))
         .tint()
         .get()
       binding.markerStylePrefs.setViewDrawable(pointer)

@@ -1,22 +1,21 @@
 package com.elementary.tasks.settings
 
-import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import android.widget.TimePicker
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
@@ -24,15 +23,17 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Calendar
+import org.threeten.bp.LocalTime
 
-class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>(),
-  TimePickerDialog.OnTimeSetListener {
+class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>() {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
   private val scanContactsWorker by inject<ScanContactsWorker>()
   private val jobScheduler by inject<JobScheduler>()
   private val updatesHelper by inject<UpdatesHelper>()
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
+
   private var mItemSelect: Int = 0
 
   private val onProgress: (Boolean) -> Unit = {
@@ -188,15 +189,19 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
   private fun initBirthdayTimePrefs() {
     binding.reminderTimePrefs.setOnClickListener { showTimeDialog() }
-    binding.reminderTimePrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.birthdayTime, prefs.is24HourFormat, prefs.appLanguage))
+    binding.reminderTimePrefs.setValueText(dateTimeManager.getBirthdayVisualTime())
     binding.reminderTimePrefs.setDependentView(binding.birthReminderPrefs)
   }
 
   private fun showTimeDialog() {
-    val calendar = TimeUtil.getBirthdayCalendar(prefs.birthdayTime)
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute = calendar.get(Calendar.MINUTE)
-    TimeUtil.showTimePicker(requireContext(), prefs.is24HourFormat, hour, minute, this)
+    val time = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
+    dateTimePickerProvider.showTimePicker(requireContext(), time) {
+      prefs.birthdayTime = dateTimeManager.to24HourString(it)
+      initBirthdayTimePrefs()
+      if (prefs.isBirthdayReminderEnabled) {
+        jobScheduler.scheduleDailyBirthday()
+      }
+    }
   }
 
   private fun initHomeDaysPrefs() {
@@ -352,12 +357,4 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
   }
 
   override fun getTitle(): String = getString(R.string.birthdays)
-
-  override fun onTimeSet(timePicker: TimePicker, i: Int, i1: Int) {
-    prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
-    initBirthdayTimePrefs()
-    if (prefs.isBirthdayReminderEnabled) {
-      jobScheduler.scheduleDailyBirthday()
-    }
-  }
 }

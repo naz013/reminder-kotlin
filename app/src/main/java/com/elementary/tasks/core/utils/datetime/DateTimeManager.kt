@@ -6,42 +6,27 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.map
+import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.calendarext.addMillis
-import com.github.naz013.calendarext.addMonths
-import com.github.naz013.calendarext.addYear
+import com.elementary.tasks.core.utils.plusMillis
 import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds
-import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getDayOfWeek
-import com.github.naz013.calendarext.getHourOfDay
-import com.github.naz013.calendarext.getLastDayOfMonth
-import com.github.naz013.calendarext.getMinute
-import com.github.naz013.calendarext.getMonth
-import com.github.naz013.calendarext.getSecond
 import com.github.naz013.calendarext.getYear
 import com.github.naz013.calendarext.newCalendar
-import com.github.naz013.calendarext.setDayOfMonth
-import com.github.naz013.calendarext.setHourOfDay
-import com.github.naz013.calendarext.setMillis
-import com.github.naz013.calendarext.setMinute
-import com.github.naz013.calendarext.setMonth
-import com.github.naz013.calendarext.setTime
-import com.github.naz013.calendarext.toCalendar
 import com.github.naz013.calendarext.toDate
-import com.github.naz013.calendarext.toDateWithException
+import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import org.threeten.bp.YearMonth
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 import timber.log.Timber
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -51,12 +36,30 @@ class DateTimeManager(
   private val textProvider: TextProvider
 ) {
 
+  fun getPlaceDateTimeFromGmt(dateTime: String?): DMY {
+    return try {
+      fromGmtToLocal(dateTime)?.toLocalDate()?.let {
+        DMY(
+          it.format(dayFormatter()),
+          it.format(monthFormatter()),
+          it.format(yearFormatter())
+        )
+      } ?: DMY()
+    } catch (e: Throwable) {
+      DMY()
+    }
+  }
+
   fun formatBirthdayDate(date: LocalDate): String {
     return date.format(BIRTH_DATE_FORMATTER)
   }
 
-  fun parseBirthdayDate(date: String): LocalDate {
-    return LocalDate.parse(date, BIRTH_DATE_FORMATTER)
+  fun parseBirthdayDate(date: String): LocalDate? {
+    return try {
+      LocalDate.parse(date, BIRTH_DATE_FORMATTER)
+    } catch (e: Throwable) {
+      null
+    }
   }
 
   fun fromMillis(millis: Long): LocalDateTime {
@@ -91,23 +94,18 @@ class DateTimeManager(
     }
   }
 
-  fun millisToEndDnd(from: String?, to: String?, current: Long): Long {
-    return doNotDisturbRange(from, to).last - current
+  fun millisToEndDnd(from: String?, to: String?, current: LocalDateTime): Long {
+    return doNotDisturbRange(from, to).last - toMillis(current)
   }
 
   fun doNotDisturbRange(from: String?, to: String?): LongRange {
-    var fromMillis = 0L
-    var toMillis = 0L
-    if (from != null) {
-      fromMillis = toMillis(from)
-    }
-    if (to != null) {
-      toMillis = toMillis(to)
-    }
-    val fromHm = hourMinute(fromMillis)
-    val toHm = hourMinute(toMillis)
-    Timber.d("doNotDisturbRange: HM $fromHm, $toHm")
-    val compare = compareHm(fromHm, toHm)
+    val fromTime = toLocalTime(from) ?: return LongRange(0, 0)
+    val toTime = toLocalTime(to) ?: return LongRange(0, 0)
+
+    Timber.d("doNotDisturbRange: HM $fromTime, $toTime")
+    val compare = compareHm(fromTime, toTime)
+    val fromMillis = toMillis(LocalDateTime.of(LocalDate.now(), fromTime))
+    var toMillis = toMillis(LocalDateTime.of(LocalDate.now(), toTime))
     if (compare < 0) {
       if (toMillis < fromMillis) {
         toMillis += AlarmManager.INTERVAL_DAY
@@ -123,20 +121,17 @@ class DateTimeManager(
     }
   }
 
-  private fun compareHm(from: Pair<Int, Int>, to: Pair<Int, Int>): Int {
+  private fun compareHm(from: LocalTime, to: LocalTime): Int {
     return when {
-      from.first == to.first -> when {
-        from.second == to.second -> 0
-        from.second > to.second -> -1
+      from.hour == to.hour -> when {
+        from.minute == to.minute -> 0
+        from.minute > to.minute -> -1
         else -> 1
       }
-      from.first > to.first -> -1
+
+      from.hour > to.hour -> -1
       else -> 1
     }
-  }
-
-  private fun hourMinute(millis: Long): Pair<Int, Int> {
-    return newCalendar(millis).map { Pair(it.getHourOfDay(), it.getMinute()) }
   }
 
   fun getMillisFromGmtVoiceEngine(dateTime: String?): Long {
@@ -152,12 +147,23 @@ class DateTimeManager(
     }
   }
 
-  fun fromGmtToLocal(dateTime: String?, def: LocalDateTime = LocalDateTime.now()): LocalDateTime {
-    if (dateTime.isNullOrEmpty()) return def
+  fun fromGmtToLocal(dateTime: String?): LocalDateTime? {
+    if (dateTime.isNullOrEmpty()) return null
     return try {
-      gmtToLocal(dateTime, GMT_DATE_FORMATTER) ?: def
+      gmtToLocal(dateTime, GMT_DATE_FORMATTER)
     } catch (e: Throwable) {
-      def
+      null
+    }
+  }
+
+  fun getGmtFromDateTime(date: LocalDate): String {
+    return try {
+      LocalDateTime.of(date, LocalTime.now())
+        .atZone(ZoneId.systemDefault())
+        .format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
+    } catch (e: Throwable) {
+      e.printStackTrace()
+      ""
     }
   }
 
@@ -174,33 +180,20 @@ class DateTimeManager(
     return ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
   }
 
-  fun toTime(localTime: LocalTime): String {
-    return getTime(localTime)
-  }
-
   fun toGoogleTaskDate(localDate: LocalDate): String {
     return localDate.format(fullDateFormatter())
-  }
-
-  fun getDate(date: java.util.Date, format: DateFormat): String {
-    format.timeZone = TimeZone.getDefault()
-    return format.format(date)
   }
 
   fun getDate(date: Long): String {
     return date().format(newCalendar(date).time)
   }
 
-  fun getDate(date: String): java.util.Date? {
-    return try {
-      TIME_24.parse(date)
-    } catch (e: Throwable) {
-      null
-    }
-  }
-
   fun logDateTime(millis: Long = System.currentTimeMillis()): String {
     return fullDateTime24().format(newCalendar(millis).time)
+  }
+
+  fun logDateTime(dateTime: LocalDateTime): String {
+    return dateTime.format(fullDateTime24Formatter())
   }
 
   fun getDateTimeFromGmt(dateTime: String?): Long {
@@ -212,151 +205,147 @@ class DateTimeManager(
     }
   }
 
-  fun getNextDateTime(millis: Long): Array<String> {
-    return if (millis == 0L) {
+  fun getNextDateTime(dateTime: LocalDateTime?): Array<String> {
+    return if (dateTime == null) {
       arrayOf("", "")
     } else {
-      val date = Date(millis)
       arrayOf(
-        date().format(date),
-        getTime(date)
+        dateTime.toLocalDate().format(dateFormatter()),
+        getTime(dateTime.toLocalTime())
       )
     }
   }
 
   fun getRemaining(dateTime: String?, delay: Int): String {
     if (dateTime.isNullOrEmpty()) {
-      return getRemaining(0)
+      return getRemaining(null)
     }
-    val time = getDateTimeFromGmt(dateTime)
-    return getRemaining(time + delay * MINUTE)
+    return getRemaining(fromGmtToLocal(dateTime)?.plusMinutes(delay.toLong()))
   }
 
-  fun getRemaining(eventTime: Long): String {
-    val difference = eventTime - System.currentTimeMillis()
-    val days = difference / DAY
-    var hours = (difference - DAY * days) / HOUR
-    var minutes = (difference - DAY * days - HOUR * hours) / MINUTE
-    hours = if (hours < 0) -hours else hours
-    val result = StringBuilder()
+  fun getRemaining(eventTime: LocalDateTime?): String {
+    if (eventTime == null) return textProvider.getText(R.string.overdue)
+
+    val days = ChronoUnit.DAYS.between(LocalDateTime.now(), eventTime)
+    val hours = ChronoUnit.HOURS.between(LocalDateTime.now(), eventTime)
+    val minutes = ChronoUnit.MINUTES.between(LocalDateTime.now(), eventTime)
+    val seconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), eventTime)
+
     val language = Language.getScreenLanguage(prefs.appLanguage).toString().lowercase()
-    if (difference > DAY) {
+
+    return if (days > 0) {
       if (language.startsWith("uk")) {
         var last = days
         while (last > 10) {
           last -= 10
         }
         if (last == 1L && days != 11L) {
-          result.append(textProvider.getText(R.string.x_day, days.toString()))
+          textProvider.getText(R.string.x_day, days.toString())
         } else if (last < 5 && (days < 12 || days > 14)) {
-          result.append(textProvider.getText(R.string.x_dayzz, days.toString()))
+          textProvider.getText(R.string.x_dayzz, days.toString())
         } else {
-          result.append(textProvider.getText(R.string.x_days, days.toString()))
+          textProvider.getText(R.string.x_days, days.toString())
         }
       } else {
         if (days < 2) {
-          result.append(textProvider.getText(R.string.x_day, days.toString()))
+          textProvider.getText(R.string.x_day, days.toString())
         } else {
-          result.append(textProvider.getText(R.string.x_days, days.toString()))
+          textProvider.getText(R.string.x_days, days.toString())
         }
       }
-    } else if (difference > HOUR) {
-      hours += days * 24
+    } else if (hours > 0) {
       if (language.startsWith("uk")) {
         var last = hours
         while (last > 10) {
           last -= 10
         }
         if (last == 1L && hours != 11L) {
-          result.append(textProvider.getText(R.string.x_hour, hours.toString()))
+          textProvider.getText(R.string.x_hour, hours.toString())
         } else if (last < 5 && (hours < 12 || hours > 14)) {
-          result.append(textProvider.getText(R.string.x_hourzz, hours.toString()))
+          textProvider.getText(R.string.x_hourzz, hours.toString())
         } else {
-          result.append(textProvider.getText(R.string.x_hours, hours.toString()))
+          textProvider.getText(R.string.x_hours, hours.toString())
         }
       } else {
         if (hours < 2) {
-          result.append(textProvider.getText(R.string.x_hour, hours.toString()))
+          textProvider.getText(R.string.x_hour, hours.toString())
         } else {
-          result.append(textProvider.getText(R.string.x_hours, hours.toString()))
+          textProvider.getText(R.string.x_hours, hours.toString())
         }
       }
-    } else if (difference > MINUTE) {
-      minutes += hours * 60
+    } else if (minutes > 0) {
       if (language.startsWith("uk")) {
         var last = minutes
         while (last > 10) {
           last -= 10
         }
         if (last == 1L && minutes != 11L) {
-          result.append(textProvider.getText(R.string.x_minute, minutes.toString()))
+          textProvider.getText(R.string.x_minute, minutes.toString())
         } else if (last < 5 && (minutes < 12 || minutes > 14)) {
-          result.append(textProvider.getText(R.string.x_minutezz, minutes.toString()))
+          textProvider.getText(R.string.x_minutezz, minutes.toString())
         } else {
-          result.append(textProvider.getText(R.string.x_minutes, minutes.toString()))
+          textProvider.getText(R.string.x_minutes, minutes.toString())
         }
       } else {
-        if (hours < 2) {
-          result.append(textProvider.getText(R.string.x_minute, minutes.toString()))
+        if (minutes < 2) {
+          textProvider.getText(R.string.x_minute, minutes.toString())
         } else {
-          result.append(textProvider.getText(R.string.x_minutes, minutes.toString()))
+          textProvider.getText(R.string.x_minutes, minutes.toString())
         }
       }
-    } else if (difference > 0) {
-      result.append(textProvider.getText(R.string.less_than_minute))
+    } else if (seconds > 0) {
+      textProvider.getText(R.string.less_than_minute)
     } else {
-      result.append(textProvider.getText(R.string.overdue))
+      textProvider.getText(R.string.overdue)
     }
-    return result.toString()
   }
 
-  fun getFullDateTime(date: Long): String {
-    val calendar = newCalendar(date)
+  fun getFullDateTime(dateTime: LocalDateTime): String {
     return if (prefs.is24HourFormat) {
-      fullDateTime24().format(calendar.time)
+      dateTime.format(fullDateTime24Formatter())
     } else {
-      fullDateTime12().format(calendar.time)
+      dateTime.format(fullDateTime12Formatter())
     }
   }
 
-  fun getFutureBirthdayDate(birthdayTime: Long, fullDate: String): BirthDate {
-    return fullDate.toDate(BIRTH_DATE_FORMAT).let { date ->
-      val calendar = newCalendar(date)
-      val bDay = calendar.get(Calendar.DAY_OF_MONTH)
-      val bMonth = calendar.get(Calendar.MONTH)
-      val year = calendar.get(Calendar.YEAR)
-      calendar.timeInMillis = birthdayTime
-      val hour = calendar.get(Calendar.HOUR_OF_DAY)
-      val minute = calendar.get(Calendar.MINUTE)
-      calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.MONTH, bMonth)
-      calendar.set(Calendar.DAY_OF_MONTH, bDay)
-      calendar.set(Calendar.HOUR_OF_DAY, hour)
-      calendar.set(Calendar.MINUTE, minute)
-      if (calendar.timeInMillis < System.currentTimeMillis()) {
-        calendar.add(Calendar.YEAR, 1)
+  fun getFutureBirthdayDate(birthdayTime: LocalTime, fullDate: String): BirthDate {
+    return (parseBirthdayDate(fullDate) ?: LocalDate.now()).let { date ->
+      var dateTime = LocalDateTime.of(LocalDate.now(), birthdayTime)
+        .withDayOfMonth(date.dayOfMonth)
+      if (dateTime.isBefore(LocalDateTime.now())) {
+        dateTime = dateTime.plusYears(1)
       }
-      BirthDate(calendar.timeInMillis, year)
+      BirthDate(dateTime, date.year)
     }
   }
 
   fun getReadableBirthDate(dateOfBirth: String?): String {
     if (dateOfBirth.isNullOrEmpty()) return ""
-    val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return try {
-      dateOfBirth.toDate(format).let { date().format(it) }
+      parseBirthdayDate(dateOfBirth)?.format(BIRTH_DATE_FORMATTER) ?: dateOfBirth
     } catch (e: Throwable) {
       dateOfBirth
     }
   }
 
-  fun getBirthdayTime(): Long {
-    val time = prefs.birthdayTime
-    var millis = toMillis(time)
-    if (millis < System.currentTimeMillis()) {
-      millis += AlarmManager.INTERVAL_DAY
+  fun getMillisToBirthdayTime(): Long {
+    var dateTime = LocalDateTime.of(LocalDate.now(), getBirthdayLocalTime())
+    if (dateTime.isBefore(LocalDateTime.now())) {
+      dateTime = dateTime.plusDays(1)
     }
-    return millis
+    return ChronoUnit.MILLIS.between(LocalDateTime.now(), dateTime)
+  }
+
+  fun getBirthdayLocalTime(): LocalTime? {
+    var time = toLocalTime(prefs.birthdayTime) ?: return null
+    if (time.isBefore(LocalTime.now())) {
+      time = time.plusHours(24)
+    }
+    return time
+  }
+
+  fun getBirthdayVisualTime(): String {
+    return getBirthdayLocalTime()?.let { getTime(it) } ?: ""
   }
 
   fun getAgeFormatted(date: String?): String {
@@ -367,7 +356,7 @@ class DateTimeManager(
 
   fun getAgeFormatted(
     yearOfBirth: Int,
-    at: Long = System.currentTimeMillis()
+    at: LocalDateTime = LocalDateTime.now()
   ): String {
     val years = getAge(yearOfBirth, at)
     val language = Language.getScreenLanguage(prefs.appLanguage).toString().lowercase()
@@ -375,51 +364,47 @@ class DateTimeManager(
   }
 
   private fun buildYearString(language: String, years: Int): String {
-    val result = StringBuilder()
-    if (language.startsWith("uk") || language.startsWith("ru")) {
+    return if (language.startsWith("uk")) {
       var last = years.toLong()
       while (last > 10) {
         last -= 10
       }
       if (last == 1L && years != 11) {
-        result.append(textProvider.getText(R.string.x_year, years.toString()))
+        textProvider.getText(R.string.x_year, years.toString())
       } else if (last < 5 && (years < 12 || years > 14)) {
-        result.append(textProvider.getText(R.string.x_yearzz, years.toString()))
+        textProvider.getText(R.string.x_yearzz, years.toString())
       } else {
-        result.append(textProvider.getText(R.string.x_years, years.toString()))
+        textProvider.getText(R.string.x_years, years.toString())
       }
     } else {
       if (years < 2) {
-        result.append(textProvider.getText(R.string.x_year, years.toString()))
+        textProvider.getText(R.string.x_year, years.toString())
       } else {
-        result.append(textProvider.getText(R.string.x_years, years.toString()))
+        textProvider.getText(R.string.x_years, years.toString())
       }
     }
-    return result.toString()
   }
 
-  fun getDayStart(millis: Long = System.currentTimeMillis()): String {
-    return newCalendar(millis).apply {
-      this.setHourOfDay(0)
-      this.setMinute(0)
-      this.dropSeconds()
-      this.dropMilliseconds()
-    }.map { getGmtFromDateTime(it.timeInMillis) }
+  fun getDayStart(dateTime: LocalDateTime = LocalDateTime.now()): String {
+    return dateTime.withHour(0)
+      .withMinute(0)
+      .withSecond(0)
+      .let { getGmtFromDateTime(it) }
   }
 
-  fun getDayEnd(millis: Long = System.currentTimeMillis()): String {
-    return getDayStart(millis + AlarmManager.INTERVAL_DAY)
+  fun getDayEnd(dateTime: LocalDateTime = LocalDateTime.now()): String {
+    return getDayStart(dateTime.plusDays(1))
   }
 
   fun getBirthdayDayMonthList(
-    start: Long = System.currentTimeMillis(),
+    start: LocalDateTime = LocalDateTime.now(),
     duration: Int = 1
   ): List<String> {
     val list = mutableListOf<String>()
-    val calendar = newCalendar()
+    var dateTime = start
     for (n in 0 until duration) {
-      calendar.timeInMillis = start + (AlarmManager.INTERVAL_DAY * n)
-      list.add("${calendar.getDayOfMonth()}|${calendar.getMonth()}")
+      dateTime = start.plusDays(n.toLong())
+      list.add("${dateTime.dayOfMonth}|${dateTime.monthValue - 1}")
     }
     Timber.d("getBirthdayDayMonthList: $list")
     return list
@@ -434,25 +419,24 @@ class DateTimeManager(
     }
   }
 
-  private fun toMillis(time24: String): Long {
+  fun toLocalTime(time24: String?): LocalTime? {
     return try {
-      time24.toDateWithException(TIME_24, TimeZone.getDefault()).toCalendar().let {
-        val hour = it.getHourOfDay()
-        val minute = it.getMinute()
-        it.timeInMillis = System.currentTimeMillis()
-        it.setHourOfDay(hour)
-        it.setMinute(minute)
-        it.dropSeconds()
-        it.dropMilliseconds()
-        it.timeInMillis
-      }
+      LocalTime.parse(time24, TIME_24_FORMATTER)
     } catch (e: Throwable) {
-      0
+      try {
+        LocalTime.parse(time24, TIME_24_FORMATTER_SHORT)
+      } catch (t: Throwable) {
+        null
+      }
     }
   }
 
-  private fun getAge(year: Int, at: Long = System.currentTimeMillis()): Int {
-    return newCalendar(at).getYear() - year
+  fun to24HourString(time: LocalTime): String {
+    return time.format(TIME_24_FORMATTER)
+  }
+
+  private fun getAge(year: Int, at: LocalDateTime = LocalDateTime.now()): Int {
+    return at.year - year
   }
 
   fun getAge(dateOfBirth: String?): Int {
@@ -515,6 +499,7 @@ class DateTimeManager(
     return DateTimeFormatter.ofPattern(pattern, Language.getScreenLanguage(prefs.appLanguage))
   }
 
+  @Deprecated("")
   fun getTime(date: java.util.Date): String {
     return if (prefs.is24HourFormat) {
       time24().format(date)
@@ -532,11 +517,11 @@ class DateTimeManager(
   }
 
   fun getTime(millis: Long): String {
-    return getTime(newCalendar(millis).time)
+    return getTime(fromMillis(millis).toLocalTime())
   }
 
   fun isCurrent(eventTime: String?): Boolean {
-    return getDateTimeFromGmt(eventTime) > System.currentTimeMillis()
+    return LocalDateTime.now().isBefore(fromGmtToLocal(eventTime))
   }
 
   fun isCurrent(millis: Long): Boolean {
@@ -547,14 +532,6 @@ class DateTimeManager(
     return dateTime.isAfter(LocalDateTime.now())
   }
 
-  fun getDateTime(date: java.util.Date): String {
-    return if (prefs.is24HourFormat) {
-      dateTime24().format(date)
-    } else {
-      dateTime12().format(date)
-    }
-  }
-
   fun getDateTime(dateTime: LocalDateTime): String {
     return if (prefs.is24HourFormat) {
       dateTime.format(dateTime24Formatter())
@@ -563,7 +540,10 @@ class DateTimeManager(
     }
   }
 
-  fun getNextMonthDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
+  fun getNewNextMonthDayTime(
+    reminder: Reminder,
+    fromTime: LocalDateTime = LocalDateTime.now()
+  ): LocalDateTime {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
 
@@ -575,195 +555,225 @@ class DateTimeManager(
       return getSmartMonthDayTime(fromTime, reminder)
     }
 
-    val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
-    calendar.setDayOfMonth(dayOfMonth)
-    var interval = reminder.repeatInterval.toInt()
-    if (interval <= 0) {
-      interval = 1
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+      .withDayOfMonth(dayOfMonth)
+
+    val interval = if (reminder.repeatInterval <= 0L) {
+      1L
+    } else {
+      reminder.repeatInterval
     }
-    var isAfter = calendar.timeInMillis - beforeValue > fromTime
-    if (calendar.getDayOfMonth() == dayOfMonth && isAfter) {
-      calendar.dropSeconds()
-      calendar.dropMilliseconds()
-      return calendar.timeInMillis
+
+    var isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
+    if (dateTime.dayOfMonth == dayOfMonth && isAfter) {
+      return dateTime.withSecond(0)
     }
     while (true) {
-      isAfter = calendar.timeInMillis - beforeValue > fromTime
-      if (calendar.getDayOfMonth() == dayOfMonth && isAfter) {
+      isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
+      if (dateTime.dayOfMonth == dayOfMonth && isAfter) {
         break
       }
-      calendar.addMonths(interval)
+      dateTime = dateTime.plusMonths(interval)
     }
-    calendar.dropSeconds()
-    calendar.dropMilliseconds()
-    return calendar.timeInMillis
+    return dateTime.withSecond(0)
   }
 
-  private fun getSmartMonthDayTime(fromTime: Long, reminder: Reminder): Long {
+  private fun getSmartMonthDayTime(fromTime: LocalDateTime, reminder: Reminder): LocalDateTime {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
-    val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
-    var interval = reminder.repeatInterval.toInt()
-    if (interval <= 0) {
-      interval = 1
-    }
-    var lastDay = calendar.getLastDayOfMonth()
-    if (dayOfMonth <= lastDay) {
-      calendar.setDayOfMonth(dayOfMonth)
+
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+    var yearMonth = YearMonth.from(dateTime)
+
+    val interval = if (reminder.repeatInterval <= 0L) {
+      1L
     } else {
-      calendar.setDayOfMonth(lastDay)
+      reminder.repeatInterval
     }
-    var isAfter = calendar.timeInMillis - beforeValue > fromTime
+
+    var lastDay = yearMonth.atEndOfMonth().dayOfMonth
+    dateTime = if (dayOfMonth <= lastDay) {
+      dateTime.withDayOfMonth(dayOfMonth)
+    } else {
+      dateTime.withDayOfMonth(lastDay)
+    }
+    var isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
     if (isAfter) {
-      calendar.dropSeconds()
-      calendar.dropMilliseconds()
-      return calendar.timeInMillis
+      return dateTime.withSecond(0)
     }
     while (true) {
-      isAfter = calendar.timeInMillis - beforeValue > fromTime
+      isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
       if (isAfter) {
         break
       }
-      calendar.setDayOfMonth(1)
-      calendar.addMonths(interval)
-      lastDay = calendar.getLastDayOfMonth()
-      if (dayOfMonth <= lastDay) {
-        calendar.setDayOfMonth(dayOfMonth)
+
+      dateTime = dateTime.withDayOfMonth(1).plusMonths(interval)
+
+      yearMonth = YearMonth.from(dateTime)
+      lastDay = yearMonth.atEndOfMonth().dayOfMonth
+      dateTime = if (dayOfMonth <= lastDay) {
+        dateTime.withDayOfMonth(dayOfMonth)
       } else {
-        calendar.setDayOfMonth(lastDay)
+        dateTime.withDayOfMonth(lastDay)
       }
     }
-    calendar.dropSeconds()
-    calendar.dropMilliseconds()
-    return calendar.timeInMillis
+    return dateTime.withSecond(0)
   }
 
-  private fun getLastMonthDayTime(fromTime: Long, reminder: Reminder): Long {
-    val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
-    var interval = reminder.repeatInterval.toInt()
-    if (interval <= 0) {
-      interval = 1
+  private fun getLastMonthDayTime(fromTime: LocalDateTime, reminder: Reminder): LocalDateTime {
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+
+    val interval = if (reminder.repeatInterval <= 0L) {
+      1L
+    } else {
+      reminder.repeatInterval
     }
+    var yearMonth: YearMonth?
+
     while (true) {
-      calendar.setDayOfMonth(calendar.getLastDayOfMonth())
-      if (calendar.timeInMillis - reminder.remindBefore > fromTime) {
+      yearMonth = YearMonth.from(dateTime)
+      dateTime = dateTime.withDayOfMonth(yearMonth.atEndOfMonth().dayOfMonth)
+
+      if (dateTime.minusMillis(reminder.remindBefore).isAfter(fromTime)) {
         break
       }
-      calendar.setDayOfMonth(1)
-      calendar.addMonths(interval)
+
+      dateTime = dateTime.withDayOfMonth(1)
+        .plusMonths(interval)
     }
-    calendar.dropSeconds()
-    calendar.dropMilliseconds()
-    return calendar.timeInMillis
+    return dateTime.withSecond(0)
   }
 
-  fun getNextYearDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
+  fun getNextYearDayTime(
+    reminder: Reminder,
+    fromTime: LocalDateTime = LocalDateTime.now()
+  ): LocalDateTime {
     val dayOfMonth = reminder.dayOfMonth
-    val monthOfYear = reminder.monthOfYear
+    val monthOfYear = reminder.monthOfYear + 1
     val beforeValue = reminder.remindBefore
-    val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
-    calendar.setMonth(monthOfYear)
-    calendar.setDayOfMonth(with(calendar.getLastDayOfMonth()) {
-      if (dayOfMonth <= this) dayOfMonth
-      else this
-    })
-    if (calendar.timeInMillis - beforeValue <= fromTime) {
+
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+      .withMonth(monthOfYear)
+    var yearMonth = YearMonth.from(dateTime)
+
+    dateTime = if (dayOfMonth <= yearMonth.atEndOfMonth().dayOfMonth) {
+      dateTime.withDayOfMonth(dayOfMonth)
+    } else {
+      dateTime.withDayOfMonth(yearMonth.atEndOfMonth().dayOfMonth)
+    }
+
+    if (dateTime.minusMillis(beforeValue) <= fromTime) {
       while (true) {
-        if (calendar.timeInMillis - beforeValue > fromTime) {
+        if (dateTime.minusMillis(beforeValue) > fromTime) {
           break
         }
-        calendar.setDayOfMonth(1)
-        calendar.addYear()
-        calendar.setDayOfMonth(with(calendar.getLastDayOfMonth()) {
-          if (dayOfMonth <= this) dayOfMonth
-          else this
-        })
+        dateTime = dateTime.plusYears(1)
+          .withDayOfMonth(1)
+
+        yearMonth = YearMonth.from(dateTime)
+        dateTime = if (dayOfMonth <= yearMonth.atEndOfMonth().dayOfMonth) {
+          dateTime.withDayOfMonth(dayOfMonth)
+        } else {
+          dateTime.withDayOfMonth(yearMonth.atEndOfMonth().dayOfMonth)
+        }
       }
     }
-    calendar.dropSeconds()
-    calendar.dropMilliseconds()
-    return calendar.timeInMillis
+    return dateTime.withSecond(0)
   }
 
   fun generateDateTime(
     eventTime: String,
     repeat: Long,
-    fromTime: Long = System.currentTimeMillis()
-  ): Long {
-    return if (eventTime.isEmpty()) {
-      0
-    } else {
-      var time = getDateTimeFromGmt(eventTime)
-      while (time <= fromTime) {
-        time += repeat
-      }
-      time
+    fromTime: LocalDateTime = LocalDateTime.now()
+  ): LocalDateTime {
+    var time = fromGmtToLocal(eventTime) ?: return LocalDateTime.now()
+    while (time <= fromTime) {
+      time = time.plusMillis(repeat)
     }
+    return time
   }
 
-  fun generateNextTimer(reminder: Reminder, isNew: Boolean): Long {
+  fun generateNextTimer(reminder: Reminder, isNew: Boolean): LocalDateTime {
     val hours = reminder.hours
     val fromHour = reminder.from
     val toHour = reminder.to
-    val calendar = if (isNew) {
-      newCalendar(System.currentTimeMillis() + reminder.after)
+    var dateTime = if (isNew) {
+      fromMillis(System.currentTimeMillis() + reminder.after)
     } else {
-      newCalendar(getDateTimeFromGmt(reminder.eventTime) + reminder.repeatInterval)
+      (fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now())
+        .plusMillis(reminder.repeatInterval)
     }
     if (hours.isNotEmpty()) {
-      while (hours.contains(calendar.getHourOfDay())) {
-        calendar.timeInMillis = calendar.timeInMillis + reminder.repeatInterval
+      while (hours.contains(dateTime.hour)) {
+        dateTime = dateTime.minusMillis(reminder.repeatInterval)
       }
-      return calendar.timeInMillis
+      return dateTime
     }
-    var eventTime = calendar.timeInMillis
-    if (fromHour != "" && toHour != "") {
-      val fromDate = getDate(fromHour)
-      val toDate = getDate(toHour)
-      if (fromDate != null && toDate != null) {
-        calendar.time = fromDate
-        var hour = calendar.getHourOfDay()
-        var minute = calendar.getMinute()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.setHourOfDay(hour)
-        calendar.setMinute(minute)
-        val start = calendar.timeInMillis
-        calendar.time = toDate
-        hour = calendar.getHourOfDay()
-        minute = calendar.getMinute()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.setHourOfDay(hour)
-        calendar.setMinute(minute)
-        val end = calendar.timeInMillis
-        while (isRange(eventTime, start, end)) {
-          eventTime += reminder.repeatInterval
+
+    if (fromHour.isNotEmpty() && toHour.isNotEmpty()) {
+      val fromTime = toLocalTime(fromHour)
+      val toTime = toLocalTime(toHour)
+      val currentDate = LocalDate.now()
+      if (fromTime != null && toTime != null) {
+        val start = LocalDateTime.of(currentDate, fromTime)
+        val end = LocalDateTime.of(currentDate, toTime)
+        while (isRange(dateTime, start, end)) {
+          dateTime = dateTime.plusSeconds(reminder.repeatInterval / 1000L)
         }
       }
     }
-    return eventTime
+    return dateTime
   }
 
-  private fun isRange(time: Long, start: Long, end: Long): Boolean {
+  private fun isRange(dateTime: LocalDateTime, start: LocalDateTime, end: LocalDateTime): Boolean {
     return if (start > end) {
-      time >= start || time < end
+      dateTime.isAfter(start) && dateTime.isBefore(end)
     } else {
-      time in start..end
+      dateTime.isAfter(start) && dateTime.isBefore(end)
     }
   }
 
-  fun getNextWeekdayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
+  fun getNextWeekdayTime(
+    reminder: Reminder,
+    fromTime: LocalDateTime = LocalDateTime.now()
+  ): LocalDateTime {
     val weekdays = reminder.weekdays
     val beforeValue = reminder.remindBefore
-    val calendar = (if (reminder.eventTime != "") {
-      newCalendar(getDateTimeFromGmt(reminder.eventTime))
-    } else droppedCalendar())
+
+    var dateTIme = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+
     while (true) {
-      if (weekdays[calendar.getDayOfWeek() - 1] == 1 && calendar.timeInMillis - beforeValue > fromTime) {
+      if (weekdays[localDayOfWeekToOld(dateTIme.dayOfWeek) - 1] == 1 &&
+        dateTIme.minusMillis(beforeValue) > fromTime
+      ) {
         break
       }
-      calendar.addMillis(DAY)
+      dateTIme = dateTIme.plusDays(1)
     }
-    return calendar.timeInMillis
+    return dateTIme
+  }
+
+  fun oldDayOfWeekToLocal(dayOfWeek: Int): Int {
+    // sunday = 1 - saturday = 7
+    return if (dayOfWeek == 1) {
+      DayOfWeek.SUNDAY.value
+    } else {
+      dayOfWeek - 1
+    }
+  }
+
+  fun localDayOfWeekToOld(dayOfWeek: DayOfWeek): Int {
+    // monday = 1 - sunday = 7
+    return if (dayOfWeek == DayOfWeek.SUNDAY) {
+      1
+    } else {
+      dayOfWeek.value + 1
+    }
   }
 
   fun getNextWeekdayTime(startTime: Long, weekdays: List<Int>, delay: Long): Long {
@@ -784,38 +794,49 @@ class DateTimeManager(
     }
   }
 
-  private fun calendarFromEventTime(eventTime: String, fromTime: Long) =
-    newCalendar().takeIf { eventTime != "" }?.apply {
-      this.setMillis(getDateTimeFromGmt(eventTime))
-      val time = Time(getHourOfDay(), getMinute(), getSecond())
-      this.setMillis(fromTime)
-      this.setTime(time.hour, time.minute)
-      this.dropSeconds()
-      this.dropMilliseconds()
-    } ?: droppedCalendar()
-
-  private fun droppedCalendar() = newCalendar().apply {
-    this.dropSeconds()
-    this.dropMilliseconds()
+  fun isAfterDate(gmt1: String?, gmt2: String?): Boolean {
+    if (gmt1.isNullOrEmpty()) return false
+    if (gmt2.isNullOrEmpty()) return true
+    val dateTime1 = fromGmtToLocal(gmt1) ?: return false
+    val dateTime2 = fromGmtToLocal(gmt2) ?: return true
+    return dateTime1 > dateTime2
   }
 
-  private fun dateTime24Formatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy, HH:mm")
+  fun getBirthdayDateSearch(date: LocalDate): String {
+    return date.format(birthdaySearchDayMonth())
+  }
 
-  private fun dateTime12Formatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy, h:mm a")
+  fun formatCalendarDate(date: LocalDate): String {
+    return date.format(calendarFullDate())
+  }
 
-  private fun dateTime24(): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm")
+  fun formatCalendarMonthYear(date: LocalDate): String {
+    return date.format(calendarMonthYear())
+  }
 
-  private fun dateTime12(): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, h:mm a")
+  fun formatCalendarWeekday(date: LocalDate): String {
+    return date.format(shortWeekDay())
+  }
 
-  fun fullDate(): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy")
+  private fun dateTime24Formatter(): DateTimeFormatter =
+    localizedDateFormatter("dd MMM yyyy, HH:mm")
+
+  private fun dateTime12Formatter(): DateTimeFormatter =
+    localizedDateFormatter("dd MMM yyyy, h:mm a")
 
   fun fullDateFormatter(): DateTimeFormatter = localizedDateFormatter("EEE, dd MMM yyyy")
 
   private fun fullDateTime24(): SimpleDateFormat =
     localizedDateFormat("EEE, dd MMM yyyy HH:mm")
 
+  private fun fullDateTime24Formatter(): DateTimeFormatter =
+    localizedDateFormatter("EEE, dd MMM yyyy HH:mm")
+
   private fun fullDateTime12(): SimpleDateFormat =
     localizedDateFormat("EEE, dd MMM yyyy h:mm a")
+
+  private fun fullDateTime12Formatter(): DateTimeFormatter =
+    localizedDateFormatter("EEE, dd MMM yyyy h:mm a")
 
   private fun time24(): SimpleDateFormat = localizedDateFormat("HH:mm")
 
@@ -825,23 +846,31 @@ class DateTimeManager(
 
   private fun time12Formatter(): DateTimeFormatter = localizedDateFormatter("h:mm a")
 
-  fun simpleDate(): SimpleDateFormat = localizedDateFormat("d MMMM")
+  fun simpleDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM")
 
   fun date(): SimpleDateFormat = localizedDateFormat("dd MMM yyyy")
 
   fun dateFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy")
 
-  fun day(): SimpleDateFormat = localizedDateFormat("dd")
+  private fun dayFormatter(): DateTimeFormatter = localizedDateFormatter("dd")
 
-  fun month(): SimpleDateFormat = localizedDateFormat("MMM")
+  private fun monthFormatter(): DateTimeFormatter = localizedDateFormatter("MMM")
 
-  fun year(): SimpleDateFormat = localizedDateFormat("yyyy")
+  private fun yearFormatter(): DateTimeFormatter = localizedDateFormatter("yyyy")
+
+  private fun birthdaySearchDayMonth(): DateTimeFormatter = localizedDateFormatter("dd|MM")
+
+  private fun calendarFullDate(): DateTimeFormatter = localizedDateFormatter("MMMM dd, yyyy")
+
+  private fun calendarMonthYear(): DateTimeFormatter = localizedDateFormatter("MMMM yyyy")
+
+  private fun shortWeekDay(): DateTimeFormatter = localizedDateFormatter("EEE")
 
   companion object {
     const val SECOND: Long = 1000
     const val MINUTE: Long = 60 * SECOND
     const val HOUR: Long = MINUTE * 60
-    const val HALF_DAY: Long = HOUR * 12
+    private const val HALF_DAY: Long = HOUR * 12
     const val DAY: Long = HALF_DAY * 2
     const val WEEK: Long = DAY * 7
 
@@ -856,9 +885,9 @@ class DateTimeManager(
     private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
     private val GMT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
-    private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
-    private val FIRE_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"
-    private val TIME_24 = SimpleDateFormat("HH:mm", Locale.US)
+    private const val FIRE_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"
+    private val TIME_24_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.US)
+    private val TIME_24_FORMATTER_SHORT = DateTimeFormatter.ofPattern("H[H]:m[m]", Locale.US)
 
     val gmtDateTime: String
       get() {
@@ -898,5 +927,6 @@ class DateTimeManager(
 
   data class Date(val year: Int, val month: Int, val day: Int)
   data class Time(val hour: Int, val minute: Int, val second: Int)
-  data class BirthDate(val millis: Long, val year: Int)
+  data class BirthDate(val dateTime: LocalDateTime, val year: Int)
+  data class DMY(val day: String = "", val month: String = "", val year: String = "")
 }

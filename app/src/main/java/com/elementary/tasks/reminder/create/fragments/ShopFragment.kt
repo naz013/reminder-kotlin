@@ -51,7 +51,7 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     reminder.delay = 0
     reminder.eventCount = 0
     if (binding.attackDelay.isChecked) {
-      val startTime = binding.dateView.dateTime
+      val startTime = binding.dateView.selectedDateTime
       val time = dateTimeManager.getGmtFromDateTime(startTime)
       Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
       if (!dateTimeManager.isCurrent(time)) {

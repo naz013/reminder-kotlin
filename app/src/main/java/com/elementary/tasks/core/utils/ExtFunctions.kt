@@ -28,12 +28,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil.toGmt
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
-import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.ExclusionPickerView
 import com.elementary.tasks.core.views.LedPickerView
 import com.elementary.tasks.core.views.LoudnessPickerView
@@ -43,9 +40,6 @@ import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
 import com.elementary.tasks.core.views.WindowTypeView
-import com.github.naz013.calendarext.newCalendar
-import com.github.naz013.calendarext.setHourOfDay
-import com.github.naz013.calendarext.setMinute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -53,11 +47,19 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import java.util.Calendar
-import java.util.Date
+
+fun LocalDateTime.minusMillis(millis: Long): LocalDateTime {
+  return minusSeconds(millis / 1000L)
+}
+
+fun LocalDateTime.plusMillis(millis: Long): LocalDateTime {
+  return plusSeconds(millis / 1000L)
+}
 
 fun <T> Intent.readParcelable(key: String, clazz: Class<T>): T? {
   return runCatching {
@@ -179,20 +181,6 @@ fun <ViewT : View> Activity.bindView(@IdRes idRes: Int): Lazy<ViewT> {
   }
 }
 
-fun Date?.toHm(): TimeUtil.HM {
-  val calendar = Calendar.getInstance()
-  calendar.timeInMillis = System.currentTimeMillis()
-  if (this != null) calendar.time = this
-  val hour = calendar.get(Calendar.HOUR_OF_DAY)
-  val minute = calendar.get(Calendar.MINUTE)
-  return TimeUtil.HM(hour, minute)
-}
-
-fun TimeUtil.HM.toDate(): Date = newCalendar()
-  .setHourOfDay(hour)
-  .setMinute(minute)
-  .time
-
 fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
 fun View.isGone(): Boolean = visibility == View.GONE
@@ -248,11 +236,6 @@ fun EditText.onChanged(function: (String) -> Unit) {
     }
   })
 }
-
-@Deprecated("Use DateTimeManager")
-fun Long.toGmt() = toCalendar().toGmt()
-
-fun Long.toCalendar() = newCalendar(this)
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
   this.useGlobal = reminder.useGlobal
@@ -321,15 +304,6 @@ fun BeforePickerView.bindProperty(value: Long, listener: ((Long) -> Unit)?) {
   this.onBeforeChangedListener = object : BeforePickerView.OnBeforeChangedListener {
     override fun onChanged(beforeMills: Long) {
       listener?.invoke(beforeMills)
-    }
-  }
-}
-
-fun DateTimeView.bindProperty(value: String, listener: ((String) -> Unit)) {
-  this.setDateTime(value)
-  this.onDateChangeListener = object : DateTimeView.OnDateChangeListener {
-    override fun onChanged(mills: Long) {
-      listener.invoke(TimeUtil.getGmtFromDateTime(mills))
     }
   }
 }

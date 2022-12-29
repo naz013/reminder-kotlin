@@ -33,7 +33,7 @@ class DeleteFileWorker(
         when {
           fileName.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
             DataFlow(
-              syncManagers.repositoryManager.reminderRepository,
+              syncManagers.repositoryManager.reminderDataFlowRepository,
               syncManagers.converterManager.reminderConverter,
               storage,
               syncManagers.completableManager.reminderDeleteCompletable
@@ -41,7 +41,7 @@ class DeleteFileWorker(
           }
           fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
             DataFlow(
-              syncManagers.repositoryManager.birthdayRepository,
+              syncManagers.repositoryManager.birthdayDataFlowRepository,
               syncManagers.converterManager.birthdayConverter,
               storage,
               completable = null
@@ -49,7 +49,7 @@ class DeleteFileWorker(
           }
           fileName.endsWith(FileConfig.FILE_NAME_GROUP) -> {
             DataFlow(
-              syncManagers.repositoryManager.groupRepository,
+              syncManagers.repositoryManager.groupDataFlowRepository,
               syncManagers.converterManager.groupConverter,
               storage,
               completable = null
@@ -57,7 +57,7 @@ class DeleteFileWorker(
           }
           fileName.endsWith(FileConfig.FILE_NAME_NOTE) -> {
             DataFlow(
-              syncManagers.repositoryManager.noteRepository,
+              syncManagers.repositoryManager.noteDataFlowRepository,
               syncManagers.converterManager.noteConverter,
               storage,
               completable = null
@@ -65,7 +65,7 @@ class DeleteFileWorker(
           }
           fileName.endsWith(FileConfig.FILE_NAME_PLACE) -> {
             DataFlow(
-              syncManagers.repositoryManager.placeRepository,
+              syncManagers.repositoryManager.placeDataFlowRepository,
               syncManagers.converterManager.placeConverter,
               storage,
               completable = null
@@ -73,7 +73,7 @@ class DeleteFileWorker(
           }
           fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
             DataFlow(
-              syncManagers.repositoryManager.templateRepository,
+              syncManagers.repositoryManager.templateDataFlowRepository,
               syncManagers.converterManager.templateConverter,
               storage,
               completable = null

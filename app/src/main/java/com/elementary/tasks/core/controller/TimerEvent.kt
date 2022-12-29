@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
 class TimerEvent(
@@ -65,7 +66,7 @@ class TimerEvent(
     reminder.delay = 0
     return if (canSkip()) {
       var time = calculateTime(false)
-      while (time < System.currentTimeMillis()) {
+      while (!dateTimeManager.isCurrent(time)) {
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
         time = calculateTime(false)
       }
@@ -83,7 +84,7 @@ class TimerEvent(
       stop()
     } else {
       var time = calculateTime(true)
-      while (time < System.currentTimeMillis()) {
+      while (!dateTimeManager.isCurrent(time)) {
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
         time = calculateTime(true)
       }
@@ -107,7 +108,7 @@ class TimerEvent(
     super.setDelay(delay)
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
     return dateTimeManager.generateNextTimer(reminder, isNew)
   }
 }

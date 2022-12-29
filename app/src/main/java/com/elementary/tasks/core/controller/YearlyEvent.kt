@@ -10,6 +10,8 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.plusMillis
+import org.threeten.bp.LocalDateTime
 
 class YearlyEvent(
   reminder: Reminder,
@@ -53,7 +55,8 @@ class YearlyEvent(
     if (canSkip()) {
       val time = dateTimeManager.getNextYearDayTime(
         reminder,
-        dateTimeManager.getDateTimeFromGmt(reminder.eventTime) + 1000L
+        dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000L)
+          ?: LocalDateTime.now()
       )
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       start()
@@ -81,7 +84,8 @@ class YearlyEvent(
       if (!dateTimeManager.isCurrent(reminder.eventTime)) {
         val time = dateTimeManager.getNextYearDayTime(
           reminder,
-          dateTimeManager.getDateTimeFromGmt(reminder.eventTime) - 1000L
+          dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000L)
+            ?: LocalDateTime.now()
         )
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       }
@@ -104,7 +108,7 @@ class YearlyEvent(
     super.setDelay(delay)
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
     return dateTimeManager.getNextYearDayTime(reminder)
   }
 }

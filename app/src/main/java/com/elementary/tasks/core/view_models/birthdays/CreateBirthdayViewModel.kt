@@ -60,11 +60,6 @@ class CreateBirthdayViewModel(
     _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
   }
 
-  fun onDateChanged(millis: Long) {
-    selectedDate = dateTimeManager.fromMillis(millis).toLocalDate()
-    _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
-  }
-
   fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val birthday = birthdaysDao.getById(id)

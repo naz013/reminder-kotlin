@@ -11,9 +11,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
@@ -21,23 +19,28 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.contacts.Contacts
+import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
-import java.sql.Date
 
 class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
+
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val contactsReader by inject<ContactsReader>()
 
   private var mMissedCall: MissedCall? = null
   private var isEventShowed = false
@@ -148,12 +151,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
   private fun showInfo(missedCall: MissedCall) {
     if (isEventShowed) return
     this.mMissedCall = missedCall
-    var formattedTime = ""
-    try {
-      formattedTime = TimeUtil.getTime(Date(missedCall.dateTime), prefs.is24HourFormat, prefs.appLanguage)
-    } catch (e: NullPointerException) {
-      Timber.d("showInfo: ${e.message}")
-    }
+    val formattedTime = dateTimeManager.getTime(missedCall.dateTime)
     val name: String
     if (missedCall.number.isNotEmpty() && Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
       name = Contacts.getNameFromNumber(missedCall.number, this) ?: missedCall.number

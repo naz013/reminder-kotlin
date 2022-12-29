@@ -26,9 +26,9 @@ import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.isVisible
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DrawableHelper
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -323,7 +323,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   private fun createStyleDrawable() {
     mMarkerStyle = DrawableHelper.withContext(requireContext())
       .withDrawable(R.drawable.ic_twotone_place_24px)
-      .withColor(themeUtil.getNoteLightColor(markerStyle))
+      .withColor(themeUtil.getMarkerLightColor(markerStyle))
       .tint()
       .get()
   }

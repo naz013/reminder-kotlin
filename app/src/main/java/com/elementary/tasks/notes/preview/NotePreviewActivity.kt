@@ -19,22 +19,22 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
@@ -56,6 +56,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private val mAdapter = ImagesGridAdapter()
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val mUiHandler = Handler(Looper.getMainLooper())
 
@@ -218,10 +219,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun showReminder(reminder: Reminder?) {
     if (reminder != null) {
-      val dateTime = TimeUtil.getDateTimeFromGmt(
-        reminder.eventTime, prefs.is24HourFormat,
-        prefs.appLanguage
-      )
+      val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.let {
+        dateTimeManager.getFullDateTime(it)
+      }
       binding.reminderTime.text = dateTime
       binding.reminderContainer.visible()
     } else {

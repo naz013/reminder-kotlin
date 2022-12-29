@@ -3,6 +3,7 @@ package com.elementary.tasks.month_view
 import androidx.annotation.ColorInt
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.day_view.day.EventModel
+import org.threeten.bp.LocalDate
 import java.util.*
 
 interface MonthCallback {
@@ -12,6 +13,6 @@ interface MonthCallback {
   fun birthdayColor(): Int
   @ColorInt
   fun reminderColor(): Int
-  fun onDateClick(date: Date)
-  fun onDateLongClick(date: Date)
+  fun onDateClick(date: LocalDate)
+  fun onDateLongClick(date: LocalDate)
 }

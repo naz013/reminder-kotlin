@@ -139,7 +139,7 @@ class JobScheduler(
   }
 
   fun scheduleDailyBirthday() {
-    val millis = dateTimeManager.getBirthdayTime() - System.currentTimeMillis()
+    val millis = dateTimeManager.getMillisToBirthdayTime()
     if (millis <= 0) return
 
     val work = OneTimeWorkRequest.Builder(EventJobService::class.java)

@@ -7,6 +7,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.FeatureManager
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
 import java.util.Calendar
 
 class ReminderStateViewModel(
@@ -35,7 +37,9 @@ class ReminderStateViewModel(
   var link: String = ""
   var email: String = ""
   var subject: String = ""
-  var skypeContact: String = ""
+
+  var date: LocalDate = LocalDate.now()
+  var time: LocalTime = LocalTime.now()
 
   var day: Int = 0
   var month: Int = 0

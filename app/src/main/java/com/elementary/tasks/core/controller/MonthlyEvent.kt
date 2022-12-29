@@ -10,6 +10,8 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.plusMillis
+import org.threeten.bp.LocalDateTime
 
 class MonthlyEvent(
   reminder: Reminder,
@@ -53,9 +55,10 @@ class MonthlyEvent(
   override fun skip(): Boolean {
     reminder.delay = 0
     if (canSkip()) {
-      val time = dateTimeManager.getNextMonthDayTime(
+      val time = dateTimeManager.getNewNextMonthDayTime(
         reminder,
-        dateTimeManager.getDateTimeFromGmt(reminder.eventTime) + 1000L
+        dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000L)
+          ?: LocalDateTime.now()
       )
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       start()
@@ -81,9 +84,10 @@ class MonthlyEvent(
       stop()
     } else {
       if (!dateTimeManager.isCurrent(reminder.eventTime)) {
-        val time = dateTimeManager.getNextMonthDayTime(
+        val time = dateTimeManager.getNewNextMonthDayTime(
           reminder,
-          dateTimeManager.getDateTimeFromGmt(reminder.eventTime) + 1000L
+          dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000L)
+            ?: LocalDateTime.now()
         )
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       }
@@ -106,7 +110,7 @@ class MonthlyEvent(
     super.setDelay(delay)
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
-    return dateTimeManager.getNextMonthDayTime(reminder)
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
+    return dateTimeManager.getNewNextMonthDayTime(reminder)
   }
 }

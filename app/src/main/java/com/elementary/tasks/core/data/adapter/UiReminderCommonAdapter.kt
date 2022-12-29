@@ -81,10 +81,9 @@ class UiReminderCommonAdapter(
     } else {
       IntervalUtil.getBeforeTime(data.remindBefore) { getBeforePattern(it) }
     }
+    val dateTime = dateTimeManager.fromGmtToLocal(data.eventTime)
     val dueMillis = dateTimeManager.getDateTimeFromGmt(data.eventTime)
-    val due = dueMillis.takeIf { it > 0L }?.let {
-      dateTimeManager.getFullDateTime(it)
-    }
+    val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
     val repeatValue = when {
       type.isBase(UiReminderType.Base.MONTHLY) ->
         String.format(textProvider.getText(R.string.xM), data.repeatInterval.toString())
@@ -98,7 +97,8 @@ class UiReminderCommonAdapter(
       repeat = repeatValue,
       dateTime = due,
       remaining = getRemaining(data),
-      millis = dueMillis
+      millis = dueMillis,
+      localDateTime = dateTime
     )
   }
 

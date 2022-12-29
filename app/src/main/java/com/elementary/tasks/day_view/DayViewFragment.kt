@@ -1,6 +1,5 @@
 package com.elementary.tasks.day_view
 
-import android.app.AlarmManager
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -20,11 +19,10 @@ import com.elementary.tasks.day_view.day.DayCallback
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.day_view.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
-import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.Calendar
+import org.threeten.bp.LocalDate
 
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
@@ -46,7 +44,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     super.onCreate(savedInstanceState)
     val bundle = arguments
     if (bundle != null) {
-      dateMills = DayViewFragmentArgs.fromBundle(bundle).date
+      date = DayViewFragmentArgs.fromBundle(bundle).date
     }
   }
 
@@ -98,8 +96,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   }
 
   private fun updateMenuTitles(): String {
-    val mills = if (dateMills != 0L) dateMills else System.currentTimeMillis()
-    val monthTitle = StringUtils.capitalize(DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString())
+    val monthTitle = dateTimeManager.formatCalendarDate(date)
     callback?.onTitleChange(monthTitle)
     return monthTitle
   }
@@ -107,27 +104,18 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   override fun getTitle(): String = updateMenuTitles()
 
   private fun loadData() {
-    if (dateMills != 0L) {
-      showEvents(dateMills)
-    } else {
-      showEvents(System.currentTimeMillis())
-    }
+    showEvents(date)
   }
 
-  private fun fromMills(mills: Long): EventsPagerItem {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = mills
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
-    val month = calendar.get(Calendar.MONTH)
-    val year = calendar.get(Calendar.YEAR)
-    return EventsPagerItem(day, month, year)
+  private fun fromDate(date: LocalDate): EventsPagerItem {
+    return EventsPagerItem(date.dayOfMonth, date.monthValue, date.year)
   }
 
-  private fun showEvents(date: Long) {
-    dateMills = date
+  private fun showEvents(date: LocalDate) {
+    this.date = date
     updateMenuTitles()
 
-    datePageChangeListener.setCurrentDateTime(dateMills)
+    datePageChangeListener.setCurrentDateTime(date)
     binding.pager.isEnabled = true
     binding.pager.addOnPageChangeListener(datePageChangeListener)
     binding.pager.currentItem = InfiniteViewPager.OFFSET + 1
@@ -147,10 +135,10 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
     var currentPage = InfiniteViewPager.OFFSET + 1
       private set
-    private var currentDateTime: Long = System.currentTimeMillis()
+    private var currentDate: LocalDate = LocalDate.now()
 
-    fun setCurrentDateTime(dateTime: Long) {
-      this.currentDateTime = dateTime
+    fun setCurrentDateTime(date: LocalDate) {
+      this.currentDate = date
     }
 
     private fun getNext(position: Int): Int {
@@ -179,17 +167,17 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
       val nextFragment = dayPagerAdapter.fragments[getNext(position)]
       when {
         position == currentPage -> {
-          currentFragment.setModel(fromMills(currentDateTime))
-          prevFragment.setModel(fromMills(currentDateTime - AlarmManager.INTERVAL_DAY))
-          nextFragment.setModel(fromMills(currentDateTime + AlarmManager.INTERVAL_DAY))
+          currentFragment.setModel(fromDate(currentDate))
+          prevFragment.setModel(fromDate(currentDate.minusDays(1)))
+          nextFragment.setModel(fromDate(currentDate.plusDays(1)))
         }
         position > currentPage -> {
-          currentDateTime += AlarmManager.INTERVAL_DAY
-          nextFragment.setModel(fromMills(currentDateTime + AlarmManager.INTERVAL_DAY))
+          currentDate = currentDate.plusDays(1)
+          nextFragment.setModel(fromDate(currentDate.plusDays(1)))
         }
         else -> {
-          currentDateTime -= AlarmManager.INTERVAL_DAY
-          prevFragment.setModel(fromMills(currentDateTime - AlarmManager.INTERVAL_DAY))
+          currentDate = currentDate.minusDays(1)
+          prevFragment.setModel(fromDate(currentDate.minusDays(1)))
         }
       }
       currentPage = position
@@ -199,15 +187,12 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
       refreshAdapters(position)
       dayPagerAdapter.fragments[getCurrent(position)].requestData()
       val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
-      val calendar = Calendar.getInstance()
-      calendar.set(item.year, item.month, item.day)
-      dateMills = calendar.timeInMillis
+      date = LocalDate.of(item.year, item.month, item.day)
       updateMenuTitles()
     }
   }
 
   companion object {
     private const val NUMBER_OF_PAGES = 4
-    const val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR)
   }
 }

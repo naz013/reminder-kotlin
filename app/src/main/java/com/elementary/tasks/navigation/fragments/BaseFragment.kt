@@ -74,13 +74,15 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   protected fun safeNavigation(navDirections: NavDirections) {
-    safeNavigation {
-      findNavController().navigate(navDirections)
-    }
+    safeNavigation { findNavController().navigate(navDirections) }
   }
 
   protected fun safeNavigation(function: () -> Unit) {
-    runCatching { function.invoke() }
+    try {
+      function.invoke()
+    } catch (e: Throwable) {
+      e.printStackTrace()
+    }
   }
 
   protected fun addMenu(

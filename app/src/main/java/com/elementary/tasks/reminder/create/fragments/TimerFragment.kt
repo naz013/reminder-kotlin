@@ -14,6 +14,7 @@ import com.elementary.tasks.core.data.models.UsedTime
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
@@ -70,7 +71,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
       return null
     }
 
-    if (!dateTimeManager.isCurrent(startTime - reminder.remindBefore)) {
+    if (!dateTimeManager.isCurrent(startTime.minusMillis(reminder.remindBefore))) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
     }
@@ -125,9 +126,6 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
         iFace.state.reminder.after = time
       }
     })
-
-    binding.exclusionView.dialogues = dialogues
-    binding.exclusionView.prefs = prefs
 
     binding.exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
       iFace.state.reminder.to) { hours, from, to ->

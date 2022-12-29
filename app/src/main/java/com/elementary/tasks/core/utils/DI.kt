@@ -31,14 +31,14 @@ import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
 import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.BirthdayRepository
-import com.elementary.tasks.core.cloud.repositories.GroupRepository
-import com.elementary.tasks.core.cloud.repositories.NoteRepository
-import com.elementary.tasks.core.cloud.repositories.PlaceRepository
-import com.elementary.tasks.core.cloud.repositories.ReminderRepository
+import com.elementary.tasks.core.cloud.repositories.BirthdayDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.GroupDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.NoteDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.RepositoryManager
-import com.elementary.tasks.core.cloud.repositories.SettingsRepository
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
+import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.TemplateDataFlowRepository
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.storages.LocalStorage
@@ -49,6 +49,8 @@ import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
+import com.elementary.tasks.core.data.repository.BirthdayRepository
+import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.os.PackageManagerWrapper
@@ -307,7 +309,7 @@ val viewModelModule = module {
   viewModel { GoogleTasksStateViewModel() }
   viewModel { CreateNoteViewModel(get(), get()) }
   viewModel { CreatePlaceViewModel() }
-  viewModel { TimesViewModel() }
+  viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
@@ -338,13 +340,13 @@ val storageModule = module {
 }
 
 val repositoryModule = module {
-  single { BirthdayRepository(get()) }
-  single { GroupRepository(get()) }
-  single { NoteRepository(get()) }
-  single { PlaceRepository(get()) }
-  single { ReminderRepository(get()) }
-  single { SettingsRepository(get()) }
-  single { TemplateRepository(get()) }
+  single { BirthdayDataFlowRepository(get()) }
+  single { GroupDataFlowRepository(get()) }
+  single { NoteDataFlowRepository(get()) }
+  single { PlaceDataFlowRepository(get()) }
+  single { ReminderDataFlowRepository(get()) }
+  single { SettingsDataFlowRepository(get()) }
+  single { TemplateDataFlowRepository(get()) }
   single { RepositoryManager(get(), get(), get(), get(), get(), get(), get()) }
 }
 
@@ -363,6 +365,9 @@ fun dbModule(context: Context): Module {
     single { appDb.placesDao() }
     single { appDb.smsTemplatesDao() }
     single { appDb.usedTimeDao() }
+
+    single { ReminderRepository(get()) }
+    single { BirthdayRepository(get()) }
   }
 }
 
@@ -397,12 +402,12 @@ val utilModule = module {
 
   single { RemotePrefs(get(), get()) }
 
-  single { Notifier(get(), get(), get(), get()) }
+  single { Notifier(get(), get(), get(), get(), get()) }
   single { JobScheduler(get(), get(), get()) }
   single { UpdatesHelper(get()) }
   single { SystemServiceProvider(get()) }
 
-  factory { WidgetDataProvider(get(), get()) }
+  factory { WidgetDataProvider(get(), get(), get()) }
 
   single { SyncWorker(get(), get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }

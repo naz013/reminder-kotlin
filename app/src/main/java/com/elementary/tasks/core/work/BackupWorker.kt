@@ -50,7 +50,7 @@ class BackupWorker(
     mJob = launchIo {
       notifyMsg(context.getString(R.string.syncing_groups))
       BulkDataFlow(
-        syncManagers.repositoryManager.groupRepository,
+        syncManagers.repositoryManager.groupDataFlowRepository,
         syncManagers.converterManager.groupConverter,
         storage,
         completable = null
@@ -58,7 +58,7 @@ class BackupWorker(
 
       notifyMsg(context.getString(R.string.syncing_reminders))
       BulkDataFlow(
-        syncManagers.repositoryManager.reminderRepository,
+        syncManagers.repositoryManager.reminderDataFlowRepository,
         syncManagers.converterManager.reminderConverter,
         storage,
         syncManagers.completableManager.reminderCompletable
@@ -66,7 +66,7 @@ class BackupWorker(
 
       notifyMsg(context.getString(R.string.syncing_notes))
       BulkDataFlow(
-        syncManagers.repositoryManager.noteRepository,
+        syncManagers.repositoryManager.noteDataFlowRepository,
         syncManagers.converterManager.noteConverter,
         storage,
         completable = null
@@ -74,7 +74,7 @@ class BackupWorker(
 
       notifyMsg(context.getString(R.string.syncing_birthdays))
       BulkDataFlow(
-        syncManagers.repositoryManager.birthdayRepository,
+        syncManagers.repositoryManager.birthdayDataFlowRepository,
         syncManagers.converterManager.birthdayConverter,
         storage,
         completable = null
@@ -82,7 +82,7 @@ class BackupWorker(
 
       notifyMsg(context.getString(R.string.syncing_places))
       BulkDataFlow(
-        syncManagers.repositoryManager.placeRepository,
+        syncManagers.repositoryManager.placeDataFlowRepository,
         syncManagers.converterManager.placeConverter,
         storage,
         completable = null
@@ -90,13 +90,13 @@ class BackupWorker(
 
       notifyMsg(context.getString(R.string.syncing_templates))
       BulkDataFlow(
-        syncManagers.repositoryManager.templateRepository,
+        syncManagers.repositoryManager.templateDataFlowRepository,
         syncManagers.converterManager.templateConverter,
         storage,
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,
         storage,
         completable = null

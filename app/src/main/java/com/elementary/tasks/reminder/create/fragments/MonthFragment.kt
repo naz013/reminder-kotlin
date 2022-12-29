@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderMonthBinding
 import com.github.naz013.calendarext.getDayOfMonth
@@ -77,10 +78,12 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
     }
-    val startTime = dateTimeManager.getNextMonthDayTime(reminder)
+    val startTime = dateTimeManager.getNewNextMonthDayTime(reminder)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
-    if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+    if (reminder.remindBefore > 0 &&
+      !dateTimeManager.isCurrent(startTime.minusMillis(reminder.remindBefore))
+    ) {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
@@ -170,7 +173,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
       reminder.repeatInterval = 1
     }
     Timber.d("calculateNextDate: $reminder")
-    val startTime = dateTimeManager.getNextMonthDayTime(reminder)
+    val startTime = dateTimeManager.getNewNextMonthDayTime(reminder)
     binding.calculatedNextTime.text = dateTimeManager.getFullDateTime(startTime)
   }
 

@@ -55,7 +55,7 @@ class SyncWorker(
     val storage = CompositeStorage(syncManagers.storageManager)
     mJob = launchIo {
       notifyMsg(textProvider.getText(R.string.syncing_groups))
-      val groupRepository = syncManagers.repositoryManager.groupRepository
+      val groupRepository = syncManagers.repositoryManager.groupDataFlowRepository
       val groupConverter = syncManagers.converterManager.groupConverter
       BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_GROUP, deleteFile = true)
@@ -71,7 +71,7 @@ class SyncWorker(
       BulkDataFlow(groupRepository, groupConverter, storage, completable = null).backup()
 
       notifyMsg(textProvider.getText(R.string.syncing_reminders))
-      val reminderRepository = syncManagers.repositoryManager.reminderRepository
+      val reminderRepository = syncManagers.repositoryManager.reminderDataFlowRepository
       val reminderConverter = syncManagers.converterManager.reminderConverter
       BulkDataFlow(
         reminderRepository,
@@ -82,35 +82,35 @@ class SyncWorker(
       BulkDataFlow(reminderRepository, reminderConverter, storage, completable = null).backup()
 
       notifyMsg(textProvider.getText(R.string.syncing_notes))
-      val noteRepository = syncManagers.repositoryManager.noteRepository
+      val noteRepository = syncManagers.repositoryManager.noteDataFlowRepository
       val noteConverter = syncManagers.converterManager.noteConverter
       BulkDataFlow(noteRepository, noteConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_NOTE, deleteFile = true)
       BulkDataFlow(noteRepository, noteConverter, storage, completable = null).backup()
 
       notifyMsg(textProvider.getText(R.string.syncing_birthdays))
-      val birthdayRepository = syncManagers.repositoryManager.birthdayRepository
+      val birthdayRepository = syncManagers.repositoryManager.birthdayDataFlowRepository
       val birthdayConverter = syncManagers.converterManager.birthdayConverter
       BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_BIRTHDAY, deleteFile = true)
       BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null).backup()
 
       notifyMsg(textProvider.getText(R.string.syncing_places))
-      val placeRepository = syncManagers.repositoryManager.placeRepository
+      val placeRepository = syncManagers.repositoryManager.placeDataFlowRepository
       val placeConverter = syncManagers.converterManager.placeConverter
       BulkDataFlow(placeRepository, placeConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_PLACE, deleteFile = true)
       BulkDataFlow(placeRepository, placeConverter, storage, completable = null).backup()
 
       notifyMsg(textProvider.getText(R.string.syncing_templates))
-      val templateRepository = syncManagers.repositoryManager.templateRepository
+      val templateRepository = syncManagers.repositoryManager.templateDataFlowRepository
       val templateConverter = syncManagers.converterManager.templateConverter
       BulkDataFlow(templateRepository, templateConverter, storage, completable = null)
         .restore(IndexTypes.TYPE_TEMPLATE, deleteFile = true)
       BulkDataFlow(templateRepository, templateConverter, storage, completable = null).backup()
 
       BulkDataFlow(
-        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,
         storage,
         completable = null

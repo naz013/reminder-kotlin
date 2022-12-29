@@ -36,6 +36,7 @@ import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.threeten.bp.LocalDate
 import timber.log.Timber
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
@@ -121,15 +122,16 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       }
       intent.hasExtra(Constants.INTENT_ITEM) -> showBirthday(birthdayFromIntent(), true)
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
-      else -> viewModel.onDateChanged(System.currentTimeMillis())
+      else -> viewModel.onDateChanged(LocalDate.now())
     }
   }
 
-  private fun idFromIntent() = intentString(Constants.INTENT_ID)
+  private fun idFromIntent(): String = intentString(Constants.INTENT_ID)
 
-  private fun dateFromIntent() = intentLong(Constants.INTENT_DATE, System.currentTimeMillis())
+  private fun dateFromIntent(): LocalDate =
+    intentSerializable(Constants.INTENT_DATE, LocalDate::class.java) ?: LocalDate.now()
 
-  private fun birthdayFromIntent() = intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
+  private fun birthdayFromIntent(): Birthday? = intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
 
   private fun readUri() {
     intent.data?.let {

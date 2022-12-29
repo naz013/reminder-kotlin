@@ -21,7 +21,7 @@ class BirthdayDeleteBackupWorker(
     if (uuId.isNotEmpty()) {
       launchDefault {
         DataFlow(
-          syncManagers.repositoryManager.birthdayRepository,
+          syncManagers.repositoryManager.birthdayDataFlowRepository,
           syncManagers.converterManager.birthdayConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null
