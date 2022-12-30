@@ -35,13 +35,6 @@ class NoteViewModel(
 
   var hasSameInDb: Boolean = false
 
-  fun findSame(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val note = notesDao.getById(id)
-      hasSameInDb = note?.note != null
-    }
-  }
-
   fun saveNote(note: NoteWithImages, reminder: Reminder?) {
     val v = note.note ?: return
     postInProgress(true)

@@ -55,16 +55,6 @@ class DateTimeManagerTest {
   }
 
   @Test
-  fun testGmtToLocal() {
-    val gmtDateTime = "2023-01-20 15:05:00.000+0000"
-
-    assertEquals(
-      LocalDateTime.of(2023, 1, 20, 16, 5, 0),
-      dateTimeManager.fromGmtToLocal(gmtDateTime)
-    )
-  }
-
-  @Test
   fun testToGmtFormat() {
     val millis = getMillis(2022, 12, 25, 15, 15, 15)
     val localDateTime = getDateTime(2022, 12, 25, 15, 15, 15)

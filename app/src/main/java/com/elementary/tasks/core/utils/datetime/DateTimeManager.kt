@@ -9,8 +9,6 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.plusMillis
-import com.github.naz013.calendarext.newCalendar
-import com.github.naz013.calendarext.toDate
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
@@ -22,9 +20,7 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.TimeZone
 
 class DateTimeManager(
   private val prefs: Prefs,
@@ -217,16 +213,6 @@ class DateTimeManager(
 
   fun logDateTime(dateTime: String?): String {
     return fromGmtToLocal(dateTime)?.let { logDateTime(it) } ?: ""
-  }
-
-  @Deprecated("")
-  fun getDateTimeFromGmt(dateTime: String?): Long {
-    if (dateTime.isNullOrEmpty()) return 0
-    return try {
-      newCalendar(dateTime.toDate(GMT_DATE_FORMAT, TimeZone.getTimeZone(GMT))).timeInMillis
-    } catch (e: Throwable) {
-      0
-    }
   }
 
   fun getNextDateTime(dateTime: LocalDateTime?): Array<String> {
@@ -516,11 +502,6 @@ class DateTimeManager(
 
   private fun isAllChecked(repCode: List<Int>): Boolean {
     return repCode.none { it == 0 }
-  }
-
-  @Deprecated("")
-  private fun localizedDateFormat(pattern: String): SimpleDateFormat {
-    return SimpleDateFormat(pattern, Language.getScreenLanguage(prefs.appLanguage))
   }
 
   private fun localizedDateFormatter(pattern: String): DateTimeFormatter {
@@ -901,7 +882,6 @@ class DateTimeManager(
     private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
     private val VOICE_ENGINE_GMT_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
-    private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
     private val GMT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
     private const val FIRE_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"

@@ -53,6 +53,7 @@ import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
+import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.JobScheduler
@@ -307,7 +308,25 @@ val viewModelModule = module {
   viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
   viewModel { GoogleTasksStateViewModel() }
-  viewModel { CreateNoteViewModel(get(), get()) }
+  viewModel {
+    CreateNoteViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { CreatePlaceViewModel(get()) }
   viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
@@ -435,6 +454,7 @@ val utilModule = module {
   single { GroupsUtil(get(), get(), get()) }
   single { ImageDecoder(get(), get()) }
   single { ContactsReader(get()) }
+  single { ContextProvider(get()) }
 
   single { DateTimePickerProvider(get()) }
   single { DoNotDisturbManager(get(), get()) }
