@@ -102,8 +102,8 @@ class CheckEventsWorker(
     reminder.groupUuId = categoryId
     reminder.summary = summary
     reminder.calendarId = calendarId
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(dtStart)
-    reminder.startTime = dateTimeManager.getGmtFromDateTime(dtStart)
+    reminder.eventTime = dateTimeManager.getGmtDateTimeFromMillis(dtStart)
+    reminder.startTime = dateTimeManager.getGmtDateTimeFromMillis(dtStart)
     appDb.reminderDao().insert(reminder)
     eventControlFactory.getController(reminder).start()
     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))

@@ -39,7 +39,7 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.contacts.Contacts
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -61,6 +61,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
 
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
   private val jobScheduler by inject<JobScheduler>()
+  private val dateTimeManager by inject<DateTimeManager>()
   private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
@@ -270,7 +271,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     if (!isMockedTest) {
       this.mControl = get<EventControlFactory>().getController(reminder)
     }
-    Timber.d("showInfo: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime), true)}")
+    Timber.d("showInfo: ${dateTimeManager.logDateTime(reminder.eventTime)}")
     if (reminder.attachmentFile != "") showAttachmentButton()
     else binding.buttonAttachment.hide()
 
@@ -284,9 +285,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     binding.remText.text = ""
 
     if (!TextUtils.isEmpty(reminder.eventTime) && !Reminder.isGpsType(reminder.type)) {
-      binding.reminderTime.text = TimeUtil.getFullDateTime(
-        TimeUtil.getDateTimeFromGmt(reminder.eventTime),
-        prefs.is24HourFormat, prefs.appLanguage)
+      binding.reminderTime.text = dateTimeManager.getFullDateTime(reminder.eventTime)
       binding.timeBlock.visibility = View.VISIBLE
     } else {
       binding.timeBlock.visibility = View.GONE

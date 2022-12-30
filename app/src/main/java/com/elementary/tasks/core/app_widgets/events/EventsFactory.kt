@@ -71,7 +71,7 @@ class EventsFactory(
           time = dateTimeManager.getTime(eventTime.toLocalTime())
         }
         Reminder.isBase(type, Reminder.BY_MONTH) && eventTime != null -> {
-          date = eventTime.toLocalDate().format(dateTimeManager.dateFormatter())
+          date = dateTimeManager.getDate(eventTime.toLocalDate())
           time = dateTimeManager.getTime(eventTime.toLocalTime())
         }
         Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> {

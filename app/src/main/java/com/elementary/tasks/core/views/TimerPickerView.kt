@@ -8,8 +8,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.TimerPickerViewBinding
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import timber.log.Timber
 
-class TimerPickerView : LinearLayout, View.OnClickListener {
+class TimerPickerView : LinearLayout {
 
   private lateinit var binding: TimerPickerViewBinding
   private var timeString = "000000"
@@ -18,7 +19,7 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
   var timerValue: Long
     get() = SuperUtil.getAfterTime(timeString)
     set(mills) {
-      timeString = DateTimeManager.generateViewAfterString(mills)
+      timeString = DateTimeManager.generateViewAfterString(mills, divider = "")
       updateTimeView()
     }
 
@@ -54,26 +55,16 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
   }
 
   private fun initButtons() {
-    binding.b1.id = Integer.valueOf(101)
-    binding.b2.id = Integer.valueOf(102)
-    binding.b3.id = Integer.valueOf(103)
-    binding.b4.id = Integer.valueOf(104)
-    binding.b5.id = Integer.valueOf(105)
-    binding.b6.id = Integer.valueOf(106)
-    binding.b7.id = Integer.valueOf(107)
-    binding.b8.id = Integer.valueOf(108)
-    binding.b9.id = Integer.valueOf(109)
-    binding.b0.id = Integer.valueOf(100)
-    binding.b1.setOnClickListener(this)
-    binding.b2.setOnClickListener(this)
-    binding.b3.setOnClickListener(this)
-    binding.b4.setOnClickListener(this)
-    binding.b5.setOnClickListener(this)
-    binding.b6.setOnClickListener(this)
-    binding.b7.setOnClickListener(this)
-    binding.b8.setOnClickListener(this)
-    binding.b9.setOnClickListener(this)
-    binding.b0.setOnClickListener(this)
+    binding.b1.setOnClickListener { onDigitClicked(1) }
+    binding.b2.setOnClickListener { onDigitClicked(2) }
+    binding.b3.setOnClickListener { onDigitClicked(3) }
+    binding.b4.setOnClickListener { onDigitClicked(4) }
+    binding.b5.setOnClickListener { onDigitClicked(5) }
+    binding.b6.setOnClickListener { onDigitClicked(6) }
+    binding.b7.setOnClickListener { onDigitClicked(7) }
+    binding.b8.setOnClickListener { onDigitClicked(8) }
+    binding.b9.setOnClickListener { onDigitClicked(9) }
+    binding.b0.setOnClickListener { onDigitClicked(0) }
   }
 
   fun setListener(listener: TimerListener) {
@@ -93,15 +84,12 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     }
   }
 
-  override fun onClick(view: View) {
-    val ids = view.id
-    if (ids in 100..109) {
-      val charS = timeString[0].toString()
-      if (charS.matches("0".toRegex())) {
-        timeString = timeString.substring(1, timeString.length)
-        timeString += (ids - 100).toString()
-        updateTimeView()
-      }
+  private fun onDigitClicked(d: Int) {
+    Timber.d("onDigitClicked: $d, $timeString")
+    if (timeString[0] == '0') {
+      timeString = timeString.substring(1, timeString.length)
+      timeString += d.toString()
+      updateTimeView()
     }
   }
 

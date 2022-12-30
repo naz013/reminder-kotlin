@@ -142,7 +142,7 @@ import org.threeten.bp.ZoneId
 val workerModule = module {
   worker { BirthdayDeleteBackupWorker(get(), get(), get()) }
   worker { BackupDataWorker(get(), get(), get()) }
-  worker { CheckBirthdaysWorker(get(), get(), get()) }
+  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get()) }
   worker { LoadFileWorker(get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get()) }
@@ -164,7 +164,7 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get()) }
+  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
   viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
 
@@ -308,7 +308,7 @@ val viewModelModule = module {
   viewModel { ReminderStateViewModel(get(), get()) }
   viewModel { GoogleTasksStateViewModel() }
   viewModel { CreateNoteViewModel(get(), get()) }
-  viewModel { CreatePlaceViewModel() }
+  viewModel { CreatePlaceViewModel(get()) }
   viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
@@ -316,12 +316,12 @@ val viewModelModule = module {
 }
 
 val converterModule = module {
-  single { BirthdayConverter() }
+  single { BirthdayConverter(get()) }
   single { GroupConverter() }
   single { NoteConverter() }
   single { PlaceConverter() }
-  single { ReminderConverter() }
-  single { SettingsConverter() }
+  single { ReminderConverter(get()) }
+  single { SettingsConverter(get()) }
   single { TemplateConverter() }
   single { ConverterManager(get(), get(), get(), get(), get(), get(), get()) }
 }
@@ -333,8 +333,8 @@ val completableModule = module {
 }
 
 val storageModule = module {
-  single { Dropbox(get(), get()) }
-  single { GDrive(get(), get(), get()) }
+  single { Dropbox(get(), get(), get()) }
+  single { GDrive(get(), get(), get(), get()) }
   single { LocalStorage(get(), get()) }
   single { StorageManager(get(), get(), get(), get(), get()) }
 }
@@ -376,10 +376,10 @@ val utilModule = module {
   single { GTasks(get(), get(), get()) }
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
-  single { BackupTool(get(), get(), get()) }
+  single { BackupTool(get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get()) }
-  single { GoogleCalendarUtils(get(), get(), get()) }
+  single { GoogleCalendarUtils(get(), get(), get(), get()) }
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get()) }
   single { GlobalButtonObservable() }
@@ -412,7 +412,7 @@ val utilModule = module {
   single { SyncWorker(get(), get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }
   single { ExportAllDataWorker(get()) }
-  single { ScanContactsWorker(get(), get()) }
+  single { ScanContactsWorker(get(), get(), get(), get()) }
 
   factory { EnableThread(get(), get()) }
 
@@ -428,11 +428,11 @@ val utilModule = module {
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
   single { ReminderAnalyticsTracker(get()) }
 
-  single { DateTimeManager(get(), get()) }
+  single { DateTimeManager(get(), get(), get()) }
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
   single { PackageManagerWrapper(get()) }
-  single { GroupsUtil(get(), get()) }
+  single { GroupsUtil(get(), get(), get()) }
   single { ImageDecoder(get(), get()) }
   single { ContactsReader(get()) }
 

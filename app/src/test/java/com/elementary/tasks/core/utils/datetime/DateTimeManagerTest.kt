@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import io.mockk.every
@@ -20,7 +21,8 @@ class DateTimeManagerTest {
 
   private val prefs = mockk<Prefs>()
   private val textProvider = mockk<TextProvider>()
-  private val dateTimeManager = DateTimeManager(prefs, textProvider)
+  private val language = mockk<Language>()
+  private val dateTimeManager = DateTimeManager(prefs, textProvider, language)
   private val oldTimeUtil = OldTimeUtil()
 
   @Before

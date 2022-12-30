@@ -18,7 +18,8 @@ class BirthdayViewModel(
   private val birthdaysDao: BirthdaysDao,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier
+  private val notifier: Notifier,
+  private val dateTimeManager: DateTimeManager
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   val birthday = birthdaysDao.loadById(id)
@@ -26,7 +27,7 @@ class BirthdayViewModel(
   fun saveBirthday(birthday: Birthday) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthday.updatedAt = DateTimeManager.gmtDateTime
+      birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
       birthdaysDao.insert(birthday)
       notifier.showBirthdayPermanent()
       workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)

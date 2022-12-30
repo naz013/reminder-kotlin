@@ -2,33 +2,23 @@ package com.elementary.tasks.birthdays.work
 
 import android.content.Context
 import android.provider.ContactsContract
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.contacts.Contacts
+import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.io.readLong
+import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class ScanContactsWorker(
-  private val appDb: AppDb,
-  private val context: Context
+  private val birthdaysDao: BirthdaysDao,
+  private val context: Context,
+  private val dateTimeManager: DateTimeManager,
+  private val contactsReader: ContactsReader
 ) {
-
-  private val birthdayFormats = arrayOf<DateFormat>(
-    SimpleDateFormat("yyyy-MM-dd", Locale.US),
-    SimpleDateFormat("yyyyMMdd", Locale.US),
-    SimpleDateFormat("yyyy.MM.dd", Locale.US),
-    SimpleDateFormat("yy.MM.dd", Locale.US),
-    SimpleDateFormat("MMM dd, yyyy", Locale.US),
-    SimpleDateFormat("yy/MM/dd", Locale.US)
-  )
 
   private var mJob: Job? = null
   var onEnd: ((Int) -> Unit)? = null
@@ -67,7 +57,7 @@ class ScanContactsWorker(
         return@launchIo
       }
       while (cur.moveToNext()) {
-        val contactId = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID))
+        val contactId = cur.readString(ContactsContract.Data._ID) ?: continue
         val columns = arrayOf(
           ContactsContract.CommonDataKinds.Event.START_DATE,
           ContactsContract.CommonDataKinds.Event.TYPE,
@@ -80,48 +70,31 @@ class ScanContactsWorker(
             " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
             "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
         val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-        val dao = appDb.birthdaysDao()
-        val contacts = dao.all()
+        val contacts = birthdaysDao.all()
         val birthdayCur =
           cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
         if (birthdayCur != null && birthdayCur.count > 0) {
           while (birthdayCur.moveToNext()) {
-            val birthday =
-              birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
-            val name =
-              birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME))
-            val id =
-              birthdayCur.getLong(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-            val number = Contacts.getNumber(name, context)
-            val calendar = Calendar.getInstance()
-            for (f in birthdayFormats) {
-              var date: Date? = null
-              try {
-                date = f.parse(birthday)
-              } catch (e: Exception) {
-                e.printStackTrace()
+            val birthday = birthdayCur.readString(ContactsContract.CommonDataKinds.Event.START_DATE)
+            val name = birthdayCur.readString(ContactsContract.PhoneLookup.DISPLAY_NAME, "")
+            val id = birthdayCur.readLong(ContactsContract.Contacts._ID)
+            val number = contactsReader.getNumber(name)
+            val date = birthday?.let { dateTimeManager.findBirthdayDate(it) }
+            if (id != null && date != null) {
+              val birthdayItem = Birthday(
+                name,
+                dateTimeManager.formatBirthdayDate(date),
+                number,
+                0,
+                id,
+                date.dayOfMonth,
+                date.monthValue - 1
+              )
+              if (!contacts.contains(birthdayItem)) {
+                i += 1
               }
-
-              if (date != null) {
-                calendar.time = date
-                val day = calendar.get(Calendar.DAY_OF_MONTH)
-                val month = calendar.get(Calendar.MONTH)
-                val birthdayItem = Birthday(
-                  name,
-                  DateTimeManager.BIRTH_DATE_FORMAT.format(calendar.time),
-                  number,
-                  0,
-                  id,
-                  day,
-                  month
-                )
-                if (!contacts.contains(birthdayItem)) {
-                  i += 1
-                }
-                birthdayItem.updatedAt = DateTimeManager.gmtDateTime
-                dao.insert(birthdayItem)
-                break
-              }
+              birthdayItem.updatedAt = dateTimeManager.getNowGmtDateTime()
+              birthdaysDao.insert(birthdayItem)
             }
           }
         }

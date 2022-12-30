@@ -21,6 +21,7 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.UUID
@@ -28,6 +29,8 @@ import java.util.UUID
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   private val viewModel by viewModel<GroupViewModel> { parametersOf(getId()) }
+  private val dateTimeManager by inject<DateTimeManager>()
+
   private val permissionFlow = PermissionFlow(this, dialogues)
   private var mItem: ReminderGroup? = null
 
@@ -130,9 +133,9 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
       return
     }
     val wasDefault = mItem?.isDefaultGroup ?: false
-    val item = (mItem ?: ReminderGroup()).apply {
+    val item = (mItem ?: ReminderGroup(groupDateTime = dateTimeManager.getNowGmtDateTime())).apply {
       this.groupColor = binding.colorSlider.selectedItem
-      this.groupDateTime = DateTimeManager.gmtDateTime
+      this.groupDateTime = dateTimeManager.getNowGmtDateTime()
       this.groupTitle = text
       this.isDefaultGroup = binding.defaultCheck.isChecked
     }

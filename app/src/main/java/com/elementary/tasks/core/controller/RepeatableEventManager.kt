@@ -34,7 +34,7 @@ abstract class RepeatableEventManager(
 
   protected fun export() {
     if (reminder.exportToTasks) {
-      val due = dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
+      val due = dateTimeManager.toMillis(reminder.eventTime)
       val googleTask = GoogleTask()
       googleTask.listId = ""
       googleTask.status = GTasks.TASKS_NEED_ACTION
@@ -48,7 +48,7 @@ abstract class RepeatableEventManager(
       if (prefs.isStockCalendarEnabled) {
         googleCalendarUtils.addEventToStock(
           reminder.summary,
-          dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
+          dateTimeManager.toMillis(reminder.eventTime)
         )
       }
       if (prefs.isCalendarEnabled) {

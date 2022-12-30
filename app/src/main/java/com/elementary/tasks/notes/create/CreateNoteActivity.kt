@@ -59,12 +59,12 @@ import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -281,10 +281,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       updateIcons()
     }
     stateViewModel.time.nonNullObserve(this) {
-      binding.remindTime.text = dateTimeManager.getTime(it)
+      binding.remindTime.text = dateTimeManager.getTime(dateTimeManager.fromMillis(it).toLocalTime())
     }
     stateViewModel.date.nonNullObserve(this) {
-      binding.remindDate.text = dateTimeManager.getDate(it)
+      binding.remindDate.text = dateTimeManager.getDate(dateTimeManager.fromMillis(it).toLocalDate())
     }
     stateViewModel.isReminderAttached.nonNullObserve(this) {
       binding.remindContainer.visibleGone(it)
@@ -691,7 +691,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       note = Note()
     }
     note.summary = text
-    note.date = DateTimeManager.gmtDateTime
+    note.date = dateTimeManager.getNowGmtDateTime()
     note.color = pair.first
     note.style = stateViewModel.fontStyle.value ?: 0
     note.palette = palette()
@@ -784,7 +784,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     reminder.summary = SuperUtil.normalizeSummary(note.summary)
 
     val startTime = dateTime()
-    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
+    reminder.startTime = dateTimeManager.getGmtDateTimeFromMillis(startTime)
     reminder.eventTime = reminder.startTime
     if (!dateTimeManager.isCurrent(reminder.eventTime)) {
       toast(R.string.reminder_is_outdated)

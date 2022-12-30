@@ -29,7 +29,8 @@ import java.util.Collections
 class GDrive(
   private val context: Context,
   private val prefs: Prefs,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val dateTimeManager: DateTimeManager
 ) : Storage() {
 
   private var driveService: Drive? = null
@@ -48,9 +49,11 @@ class GDrive(
         val about = service.about().get().setFields("user, storageQuota").execute()
           ?: return null
         val quota = about.storageQuota ?: return null
-        return UserItem(name = about.user.displayName ?: "", quota = quota.limit,
+        return UserItem(
+          name = about.user.displayName ?: "", quota = quota.limit,
           used = quota.usage, count = countFiles(), photo = about.user.photoLink
-            ?: "")
+            ?: ""
+        )
       } catch (e: Throwable) {
         Timber.d(e, "Failed to get user data")
       }
@@ -65,7 +68,10 @@ class GDrive(
   fun login(user: String) {
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
       Timber.d("GDrive: user -> $user")
-      val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(DriveScopes.DRIVE_APPDATA))
+      val credential = GoogleAccountCredential.usingOAuth2(
+        context,
+        Collections.singleton(DriveScopes.DRIVE_APPDATA)
+      )
       credential.selectedAccountName = user
       driveService = Drive.Builder(NetHttpTransport(), GsonFactory(), credential)
         .setApplicationName(APPLICATION_NAME)
@@ -252,13 +258,15 @@ class GDrive(
   private suspend fun saveIndexFile() {
     withContext(dispatcherProvider.default()) {
       val json = indexDataFile.toJson() ?: return@withContext
-      backup(json, Metadata(
-        "",
-        IndexDataFile.FILE_NAME,
-        FileConfig.FILE_NAME_JSON,
-        DateTimeManager.gmtDateTime,
-        "Index file"
-      ))
+      backup(
+        json, Metadata(
+          "",
+          IndexDataFile.FILE_NAME,
+          FileConfig.FILE_NAME_JSON,
+          dateTimeManager.getNowGmtDateTime(),
+          "Index file"
+        )
+      )
     }
   }
 

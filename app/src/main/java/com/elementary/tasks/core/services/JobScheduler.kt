@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
@@ -217,7 +218,7 @@ class JobScheduler(
   }
 
   fun scheduleGpsDelay(reminder: Reminder): Boolean {
-    val due = dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
+    val due = dateTimeManager.toMillis(reminder.eventTime)
     val millis = due - System.currentTimeMillis()
     if (due == 0L || millis <= 0) {
       return false
@@ -241,23 +242,22 @@ class JobScheduler(
 
   fun scheduleReminder(reminder: Reminder?) {
     if (reminder == null) return
-    var due = dateTimeManager.getDateTimeFromGmt(reminder.eventTime)
-    Timber.d("scheduleReminder: ${dateTimeManager.logDateTime(due)}")
+    var due = dateTimeManager.fromGmtToLocal(reminder.eventTime)
     Timber.d("scheduleReminder: noe -> ${dateTimeManager.logDateTime()}")
-    if (due == 0L) {
+    if (due == null) {
       return
     }
+    Timber.d("scheduleReminder: ${dateTimeManager.logDateTime(due)}")
     if (reminder.remindBefore != 0L) {
-      due -= reminder.remindBefore
+      due = due.minusMillis(reminder.remindBefore)
     }
     if (!Reminder.isBase(reminder.type, Reminder.BY_TIME)) {
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = due
-      calendar.set(Calendar.SECOND, 0)
-      calendar.set(Calendar.MILLISECOND, 0)
-      due = calendar.timeInMillis
+      due = due.withSecond(0)
     }
-    var millis = due - System.currentTimeMillis()
+    if (due == null) {
+      return
+    }
+    var millis = dateTimeManager.toMillis(due) - System.currentTimeMillis()
     if (millis < 0) {
       millis = 100L
     }

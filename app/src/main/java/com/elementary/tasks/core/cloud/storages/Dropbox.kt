@@ -24,7 +24,8 @@ import java.io.InputStream
 
 class Dropbox(
   private val prefs: Prefs,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val dateTimeManager: DateTimeManager
 ) : Storage() {
 
   private val rootFolder = "/"
@@ -190,7 +191,7 @@ class Dropbox(
           "",
           IndexDataFile.FILE_NAME,
           FileConfig.FILE_NAME_JSON,
-          DateTimeManager.gmtDateTime,
+          dateTimeManager.getNowGmtDateTime(),
           "Index file"
         )
       )

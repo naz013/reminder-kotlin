@@ -95,7 +95,7 @@ class CreateBirthdayViewModel(
   private fun saveBirthday(birthday: Birthday) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthday.updatedAt = DateTimeManager.gmtDateTime
+      birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
       birthdaysDao.insert(birthday)
       notifier.showBirthdayPermanent()
       workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)

@@ -10,7 +10,9 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
-class ReminderConverter : Convertible<Reminder> {
+class ReminderConverter(
+  private val dateTimeManager: DateTimeManager
+) : Convertible<Reminder> {
 
   override fun metadata(t: Reminder): Metadata {
     return Metadata(
@@ -32,7 +34,7 @@ class ReminderConverter : Convertible<Reminder> {
         this.ext = FileConfig.FILE_NAME_REMINDER
         this.id = t.uuId
         this.melody = t.melodyPath
-        this.updatedAt = t.updatedAt ?: DateTimeManager.gmtDateTime
+        this.updatedAt = t.updatedAt ?: dateTimeManager.getNowGmtDateTime()
         this.type = IndexTypes.TYPE_REMINDER
         this.readyToBackup = true
       }

@@ -108,12 +108,16 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       }
     }
     val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
-    reminder.places = listOf(Place(
-      radius = radius,
-      marker = map.markerStyle,
-      latitude = pos.latitude,
-      longitude = pos.longitude,
-      name = reminder.summary))
+    reminder.places = listOf(
+      Place(
+        radius = radius,
+        marker = map.markerStyle,
+        latitude = pos.latitude,
+        longitude = pos.longitude,
+        name = reminder.summary,
+        dateTime = dateTimeManager.getNowGmtDateTime()
+      )
+    )
     reminder.target = number
     reminder.type = type
     reminder.exportToCalendar = false

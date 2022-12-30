@@ -131,7 +131,12 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
       binding.shopLayout.isErrorEnabled = true
       return
     }
-    mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
+    mAdapter.addItem(
+      ShopItem(
+        task.replace("\n".toRegex(), " "),
+        createTime = dateTimeManager.getNowGmtDateTime()
+      )
+    )
     binding.shopEdit.setText("")
     iFace.state.shopItems = mAdapter.data
   }

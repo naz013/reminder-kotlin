@@ -9,7 +9,9 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
-class BirthdayConverter : Convertible<Birthday> {
+class BirthdayConverter(
+  private val dateTimeManager: DateTimeManager
+) : Convertible<Birthday> {
 
   override fun metadata(t: Birthday): Metadata {
     return Metadata(
@@ -29,7 +31,7 @@ class BirthdayConverter : Convertible<Birthday> {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_BIRTHDAY
         this.id = t.uuId
-        this.updatedAt = t.updatedAt ?: DateTimeManager.gmtDateTime
+        this.updatedAt = t.updatedAt ?: dateTimeManager.getNowGmtDateTime()
         this.type = IndexTypes.TYPE_BIRTHDAY
         this.readyToBackup = true
       }

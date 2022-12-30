@@ -32,7 +32,7 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -42,12 +42,14 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.Locale
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
+  private val dateTimeManager by inject<DateTimeManager>()
   private val permissionFlow = PermissionFlow(this, dialogues)
   private var speech: SpeechRecognizer? = null
   private val mAdapter = ConversationAdapter(currentStateHolder, get())
@@ -259,20 +261,26 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
             stopView()
             PinLoginActivity.openLogged(this, AddBirthdayActivity::class.java)
           }
+
           Action.REMINDER -> {
             stopView()
             PinLoginActivity.openLogged(this, CreateReminderActivity::class.java)
           }
+
           Action.VOLUME -> {
             stopView()
-            startActivity(Intent(this, VolumeDialog::class.java)
-              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
+            startActivity(
+              Intent(this, VolumeDialog::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+            )
           }
+
           Action.TRASH -> clearTrash()
           Action.DISABLE -> disableReminders()
           else -> showUnsupportedMessage()
         }
       }
+
       ActionType.GROUP -> groupAction(model)
       ActionType.ANSWER -> performAnswer(model)
       ActionType.SHOW -> {
@@ -288,6 +296,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           else -> showUnsupportedMessage()
         }
       }
+
       else -> showUnsupportedMessage()
     }
   }
@@ -305,7 +314,11 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       if (items.list.size == 1) {
         addResponse(getLocalized(R.string.voice_found_one_shopping_list))
       } else {
-        addResponse(getLocalized(R.string.voice_found) + " " + items.list.size + " " + getLocalized(R.string.voice_shopping_lists))
+        addResponse(
+          getLocalized(R.string.voice_found) + " " + items.list.size + " " + getLocalized(
+            R.string.voice_shopping_lists
+          )
+        )
       }
       addReminderObject(items.list.removeAt(0))
       if (!items.isEmpty) {
@@ -329,8 +342,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       if (items.list.size == 1) {
         addResponse(getLocalized(R.string.voice_found_one_birthday))
       } else {
-        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.voice_found) +
-          " " + items.list.size + " " + getLocalized(R.string.birthdays))))
+        addResponse(
+          StringUtils.capitalize(
+            StringUtils.lowerCase(
+              getLocalized(R.string.voice_found) +
+                " " + items.list.size + " " + getLocalized(R.string.birthdays)
+            )
+          )
+        )
       }
       addObjectResponse(Reply(Reply.BIRTHDAY, items.list.removeAt(0)))
       if (!items.isEmpty) {
@@ -348,8 +367,10 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       if (items.list.size == 1) {
         addResponse(getLocalized(R.string.voice_found_one_reminder))
       } else {
-        addResponse(getLocalized(R.string.voice_found) + " " + items.list.size + " " +
-          getLocalized(R.string.voice_reminders))
+        addResponse(
+          getLocalized(R.string.voice_found) + " " + items.list.size + " " +
+            getLocalized(R.string.voice_reminders)
+        )
       }
       addReminderObject(items.list.removeAt(0))
       if (!items.isEmpty) {
@@ -367,8 +388,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       if (items.list.size == 1) {
         addResponse(getLocalized(R.string.voice_found_one_group))
       } else {
-        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.voice_found) +
-          " " + items.list.size + " " + getLocalized(R.string.groups))))
+        addResponse(
+          StringUtils.capitalize(
+            StringUtils.lowerCase(
+              getLocalized(R.string.voice_found) +
+                " " + items.list.size + " " + getLocalized(R.string.groups)
+            )
+          )
+        )
       }
       addObjectResponse(Reply(Reply.GROUP, items.list.removeAt(0)))
       if (!items.isEmpty) {
@@ -386,8 +413,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       if (items.list.size == 1) {
         addResponse(getLocalized(R.string.voice_found_one_note))
       } else {
-        addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.voice_found) +
-          " " + items.list.size + " " + getLocalized(R.string.notes))))
+        addResponse(
+          StringUtils.capitalize(
+            StringUtils.lowerCase(
+              getLocalized(R.string.voice_found) +
+                " " + items.list.size + " " + getLocalized(R.string.notes)
+            )
+          )
+        )
       }
       addObjectResponse(Reply(Reply.NOTE, items.list.removeAt(0)))
       if (!items.isEmpty) {
@@ -405,8 +438,10 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       if (items.list.size == 1) {
         addResponse(getLocalized(R.string.voice_found_one_reminder))
       } else {
-        addResponse(getLocalized(R.string.voice_found) + " " + items.list.size + " " +
-          getLocalized(R.string.voice_reminders))
+        addResponse(
+          getLocalized(R.string.voice_found) + " " + items.list.size + " " +
+            getLocalized(R.string.voice_reminders)
+        )
       }
       addReminderObject(items.list.removeAt(0))
       if (!items.isEmpty) {
@@ -421,6 +456,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       is UiReminderListActiveShop, is UiReminderListRemovedShop -> {
         addObjectResponse(Reply(Reply.SHOPPING, reminder))
       }
+
       else -> {
         addObjectResponse(Reply(Reply.REMINDER, reminder))
       }
@@ -445,12 +481,14 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun reminderAction(model: Model) {
     stopView()
-    val reminder = viewModel.createReminder(model)
+    val reminder = viewModel.createReminder(model) ?: return
     addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
     if (prefs.isTellAboutEvent) {
-      addResponse(getLocalized(R.string.reminder_created_on) + " " +
-        TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormat, prefs.voiceLocale, language) +
-        ". " + getLocalized(R.string.voice_would_you_like_to_save_it))
+      addResponse(
+        getLocalized(R.string.reminder_created_on) + " " +
+          dateTimeManager.getVoiceDateTime(reminder.eventTime) +
+          ". " + getLocalized(R.string.voice_would_you_like_to_save_it)
+      )
       postMicClick({ askReminderAction(reminder, false) }, 7000)
     } else {
       addResponse(getLocalized(R.string.reminder_created))
@@ -523,7 +561,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         val model = viewModel.findSuggestion(note.summary)
         addResponse(getLocalized(R.string.voice_reminder_saved))
         if (model != null && model.type == ActionType.REMINDER) {
-          val reminder = viewModel.createReminder(model)
+          val reminder = viewModel.createReminder(model) ?: return
           viewModel.saveAndStartReminder(reminder)
           addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
         } else {
@@ -576,14 +614,17 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           showLanguageDialog()
           return@setOnMenuItemClickListener true
         }
+
         R.id.action_tell -> {
           prefs.isTellAboutEvent = !prefs.isTellAboutEvent
           return@setOnMenuItemClickListener true
         }
+
         R.id.action_report -> {
           startActivity(Intent(this@ConversationActivity, SendFeedbackActivity::class.java))
           return@setOnMenuItemClickListener true
         }
+
         R.id.action_help -> {
           startActivity(Intent(this@ConversationActivity, VoiceHelpActivity::class.java))
           return@setOnMenuItemClickListener true
@@ -630,9 +671,15 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun initRecognizer() {
     try {
       val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-      recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
+      recognizerIntent.putExtra(
+        RecognizerIntent.EXTRA_LANGUAGE,
+        language.getLanguage(prefs.voiceLocale)
+      )
       recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.packageName)
-      recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+      recognizerIntent.putExtra(
+        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+        RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
+      )
       recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
       recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
       speech = SpeechRecognizer.createSpeechRecognizer(this)

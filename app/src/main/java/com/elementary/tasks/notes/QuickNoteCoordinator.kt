@@ -17,12 +17,12 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ViewNoteCardBinding
 import com.elementary.tasks.databinding.ViewNoteReminderCardBinding
 import com.elementary.tasks.databinding.ViewNoteStatusCardBinding
+import org.threeten.bp.LocalDateTime
 import java.util.Random
 
 @SuppressLint("ClickableViewAccessibility")
@@ -32,7 +32,8 @@ class QuickNoteCoordinator(
   private val noteList: ViewGroup,
   private var noteViewModel: NoteViewModel,
   private val prefs: Prefs,
-  private val notifier: Notifier
+  private val notifier: Notifier,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   val isNoteVisible: Boolean
@@ -89,7 +90,7 @@ class QuickNoteCoordinator(
     binding.buttonSave.isEnabled = false
     val item = Note()
     item.summary = text
-    item.date = DateTimeManager.gmtDateTime
+    item.date = dateTimeManager.getNowGmtDateTime()
     if (prefs.isNoteColorRememberingEnabled) {
       item.color = prefs.lastNoteColor
     } else {
@@ -143,10 +144,9 @@ class QuickNoteCoordinator(
     reminder.isActive = true
     reminder.isRemoved = false
     reminder.summary = SuperUtil.normalizeSummary(note.summary)
-    val prefsTime = prefs.noteReminderTime * DateTimeManager.MINUTE
-    val startTime = System.currentTimeMillis() + prefsTime
-    reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+    val startTime = LocalDateTime.now().plusMinutes(prefs.noteReminderTime.toLong())
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
 
     noteViewModel.saveNote(item, reminder)
     addNotificationCard(item)

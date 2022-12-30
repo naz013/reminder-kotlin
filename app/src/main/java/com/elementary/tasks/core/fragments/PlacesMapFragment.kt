@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.isVisible
@@ -50,6 +51,7 @@ import java.util.*
 class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   private val systemServiceProvider by inject<SystemServiceProvider>()
+  private val dateTimeManager by inject<DateTimeManager>()
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
 
   private var mMap: GoogleMap? = null
@@ -127,7 +129,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
                   longitude = model.longitude,
                   name = model.name,
                   address = model.address,
-                  tags = model.types
+                  tags = model.types,
+                  dateTime = dateTimeManager.getNowGmtDateTime()
                 )
               )
             }

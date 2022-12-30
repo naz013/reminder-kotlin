@@ -99,7 +99,9 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
   private fun showInfo(missedCall: MissedCall) {
     if (isEventShowed) return
     this.mMissedCall = missedCall
-    val formattedTime = dateTimeManager.getTime(missedCall.dateTime)
+    val formattedTime = dateTimeManager.getTime(
+      dateTimeManager.fromMillis(missedCall.dateTime).toLocalTime()
+    )
     val name: String
     if (missedCall.number.isNotEmpty() && Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
       name = Contacts.getNameFromNumber(missedCall.number, this) ?: missedCall.number

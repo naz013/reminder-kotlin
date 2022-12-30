@@ -10,10 +10,10 @@ import android.provider.CalendarContract
 import android.text.TextUtils
 import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.CalendarEventsDao
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber
 import java.util.*
@@ -21,7 +21,8 @@ import java.util.*
 class GoogleCalendarUtils(
   private val context: Context,
   private val prefs: Prefs,
-  private val appDb: AppDb
+  private val calendarEventsDao: CalendarEventsDao,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   /**
@@ -34,7 +35,9 @@ class GoogleCalendarUtils(
       val timeZone = tz.displayName
       val cr = context.contentResolver
       val values = ContentValues()
-      val startTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
+      val startTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.let {
+        dateTimeManager.toMillis(it)
+      } ?: return
       values.put(CalendarContract.Events.DTSTART, startTime)
       values.put(CalendarContract.Events.DTEND, startTime + 60 * 1000 * prefs.calendarEventDuration)
       if (!TextUtils.isEmpty(reminder.summary)) {
@@ -51,7 +54,7 @@ class GoogleCalendarUtils(
         event = cr.insert(lEventUri, values)
         if (event != null) {
           val eventID = java.lang.Long.parseLong(event.lastPathSegment ?: "")
-          appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, event.toString(), eventID))
+          calendarEventsDao.insert(CalendarEvent(reminder.uuId, event.toString(), eventID))
         }
       } catch (e: Exception) {
         Timber.d("addEvent: ${e.message}")
@@ -63,13 +66,13 @@ class GoogleCalendarUtils(
     if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
       return
     }
-    val events = appDb.calendarEventsDao().getByReminder(id).toMutableList()
+    val events = calendarEventsDao.getByReminder(id).toMutableList()
     val cr = context.contentResolver
     for (i in events.indices.reversed()) {
       val event = events.removeAt(i)
       cr.delete(CalendarContract.Events.CONTENT_URI,
         CalendarContract.Events._ID + "='" + event.eventId + "'", null)
-      appDb.calendarEventsDao().delete(event)
+      calendarEventsDao.delete(event)
     }
   }
 
@@ -86,7 +89,7 @@ class GoogleCalendarUtils(
       return listOf()
     }
     val list = mutableListOf<EventItem>()
-    val events = appDb.calendarEventsDao().getByReminder(reminderId).toMutableList()
+    val events = calendarEventsDao.getByReminder(reminderId).toMutableList()
     for (e in events) {
       val event = getEvent(e.eventId, e.uuId)
       if (event != null) {

@@ -18,7 +18,6 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
@@ -38,6 +37,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   private val appDb by inject<AppDb>()
   private val jobScheduler by inject<JobScheduler>()
   private val updatesHelper by inject<UpdatesHelper>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
@@ -268,8 +268,8 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     reminder.groupUuId = categoryId
     reminder.summary = summary
     reminder.calendarId = calendarId
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
-    reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
     appDb.reminderDao().insert(reminder)
     eventControlFactory.getController(reminder).start()
     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))

@@ -31,7 +31,8 @@ import java.lang.ref.WeakReference
 class BackupTool(
   private val appDb: AppDb,
   private val reminderCompletable: ReminderCompletable,
-  private val context: Context
+  private val context: Context,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   fun importAll(
@@ -167,7 +168,7 @@ class BackupTool(
     val file: File
     val dir = context.externalCacheDir ?: context.cacheDir
     return if (dir != null) {
-      val exportFileName = DateTimeManager.gmtDateTime + FileConfig.FILE_NAME_FULL_BACKUP
+      val exportFileName = dateTimeManager.getNowGmtDateTime() + FileConfig.FILE_NAME_FULL_BACKUP
       file = File(dir, exportFileName)
       try {
         writeFileNoEncryption(file, jsonData.get())

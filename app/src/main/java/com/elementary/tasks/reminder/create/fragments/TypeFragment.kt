@@ -330,7 +330,9 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {
       groupView?.reminderGroup = iFace.defGroup
     } else {
-      groupView?.reminderGroup = ReminderGroup().apply {
+      groupView?.reminderGroup = ReminderGroup(
+        groupDateTime = dateTimeManager.getNowGmtDateTime()
+      ).apply {
         this.groupUuId = reminder.groupUuId
         this.groupColor = reminder.groupColor
         this.groupTitle = reminder.groupTitle ?: ""

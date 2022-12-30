@@ -101,7 +101,7 @@ class FollowReminderViewModel(
 
   fun updateCustomDate(localDate: LocalDate): String {
     this.customDate = localDate
-    return localDate.format(dateTimeManager.dateFormatter())
+    return dateTimeManager.getDate(localDate)
   }
 
   fun updateCustomTime(localTime: LocalTime): String {

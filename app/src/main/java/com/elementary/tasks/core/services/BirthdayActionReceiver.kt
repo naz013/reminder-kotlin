@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.Actions
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
@@ -21,7 +21,8 @@ import java.util.Calendar
 
 class BirthdayActionReceiver : BaseBroadcast() {
 
-  private val appDb by inject<AppDb>()
+  private val birthdaysDao by inject<BirthdaysDao>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   override fun onReceive(context: Context, intent: Intent?) {
     if (intent != null) {
@@ -45,15 +46,14 @@ class BirthdayActionReceiver : BaseBroadcast() {
     calendar.timeInMillis = System.currentTimeMillis()
     val year = calendar.get(Calendar.YEAR)
     item.showedYear = year
-    item.updatedAt = DateTimeManager.gmtDateTime
+    item.updatedAt = dateTimeManager.getNowGmtDateTime()
     launchDefault {
-      appDb.birthdaysDao().insert(item)
+      birthdaysDao.insert(item)
     }
   }
 
   private fun sendSms(context: Context, intent: Intent) {
-    val item = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
-      ?: "")
+    val item = birthdaysDao.getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
     if (item != null) {
       TelephonyUtil.sendSms(item.number, context)
       updateBirthday(item)
@@ -64,8 +64,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
   }
 
   private fun makeCall(context: Context, intent: Intent) {
-    val item = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
-      ?: "")
+    val item = birthdaysDao.getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
     if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
       TelephonyUtil.makeCall(item.number, context)
       updateBirthday(item)
@@ -76,8 +75,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
   }
 
   private fun showReminder(context: Context, intent: Intent) {
-    val birthday = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
-      ?: "") ?: return
+    val birthday = birthdaysDao.getById(intent.getStringExtra(Constants.INTENT_ID) ?: "") ?: return
     sendCloseBroadcast(context, birthday.uuId)
     if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
       qAction(birthday, context)
@@ -100,7 +98,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
 
   private fun hidePermanent(id: String) {
     if (id.isEmpty()) return
-    val item = appDb.birthdaysDao().getById(id)
+    val item = birthdaysDao.getById(id)
     if (item != null) {
       updateBirthday(item)
       finish(item.uniqueId)
