@@ -25,9 +25,9 @@ import com.elementary.tasks.core.utils.copyExtra
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -45,6 +45,7 @@ import com.elementary.tasks.core.views.WindowTypeView
 import com.github.florent37.expansionpanel.ExpansionLayout
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
 abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
@@ -161,8 +162,11 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
     }
     dateTimeView?.let {
-      it.bindProperty(iFace.state.reminder.eventTime) { dateTime ->
-        iFace.state.reminder.eventTime = dateTime
+      it.setDateTime(iFace.state.reminder.eventTime)
+      it.onDateChangeListener = object : DateTimeView.OnDateChangeListener {
+        override fun onChanged(dateTime: LocalDateTime) {
+          iFace.state.reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+        }
       }
     }
     repeatView?.let {
@@ -326,7 +330,9 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {
       groupView?.reminderGroup = iFace.defGroup
     } else {
-      groupView?.reminderGroup = ReminderGroup().apply {
+      groupView?.reminderGroup = ReminderGroup(
+        groupDateTime = dateTimeManager.getNowGmtDateTime()
+      ).apply {
         this.groupUuId = reminder.groupUuId
         this.groupColor = reminder.groupColor
         this.groupTitle = reminder.groupTitle ?: ""

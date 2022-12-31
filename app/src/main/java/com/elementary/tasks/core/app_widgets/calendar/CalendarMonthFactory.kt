@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.app_widgets.calendar
 
-import android.app.AlarmManager
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -12,18 +11,22 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.home.BottomNavActivity
 import hirondelle.date4j.DateTime
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import java.util.Calendar
+import java.util.TimeZone
 
 class CalendarMonthFactory(
   intent: Intent,
   private val context: Context,
   private val prefs: Prefs,
-  private val widgetDataProvider: WidgetDataProvider
+  private val widgetDataProvider: WidgetDataProvider,
+  private val dateTimeManager: DateTimeManager
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private val mDateTimeList = ArrayList<DateTime>()
@@ -103,35 +106,37 @@ class CalendarMonthFactory(
   }
 
   private fun showEvents() {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = TimeUtil.getBirthdayTime(prefs.birthdayTime)
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute = calendar.get(Calendar.MINUTE)
+    val birthdayTime = dateTimeManager.getBirthdayLocalTime()
+
     val isFeature = prefs.isFutureEventEnabled
     val isRemindersEnabled = prefs.isRemindersInCalendarEnabled
 
-    widgetDataProvider.setTime(hour, minute)
+    birthdayTime?.also { widgetDataProvider.setTime(it) }
+
     if (isRemindersEnabled) {
       widgetDataProvider.setFeature(isFeature)
     }
-    widgetDataProvider.fillArray()
+    widgetDataProvider.prepare()
     mPagerData.clear()
 
-    calendar.timeInMillis = System.currentTimeMillis()
-    var currentDay: Int
-    var currentMonth: Int
-    var currentYear: Int
+    var dateTime = LocalDateTime.of(LocalDate.now(), birthdayTime)
+
     var position = 0
     do {
-      currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-      currentMonth = calendar.get(Calendar.MONTH)
-      currentYear = calendar.get(Calendar.YEAR)
-      val hasReminders = widgetDataProvider.hasReminder(currentDay, currentMonth, currentYear)
-      val hasBirthdays = widgetDataProvider.hasBirthday(currentDay, currentMonth)
-      mPagerData.add(WidgetItem(currentDay, currentMonth, currentYear,
-        hasReminders, hasBirthdays))
+      val hasReminders =
+        widgetDataProvider.hasReminder(dateTime.dayOfMonth, dateTime.monthValue, dateTime.year)
+      val hasBirthdays = widgetDataProvider.hasBirthday(dateTime.dayOfMonth, dateTime.monthValue)
+      mPagerData.add(
+        WidgetItem(
+          dateTime.dayOfMonth,
+          dateTime.monthValue,
+          dateTime.year,
+          hasReminders,
+          hasBirthdays
+        )
+      )
       position++
-      calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_DAY
+      dateTime = dateTime.plusDays(1)
     } while (position < Configs.MAX_DAYS_COUNT)
   }
 

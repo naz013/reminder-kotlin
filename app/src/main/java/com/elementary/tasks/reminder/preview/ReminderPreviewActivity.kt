@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
 import android.app.ActivityOptions
-import android.app.AlarmManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -37,7 +36,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
@@ -61,11 +60,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.threeten.bp.LocalTime
 import timber.log.Timber
 import java.io.File
-import java.util.Calendar
 import java.util.Locale
 
 class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>() {
@@ -73,8 +73,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private var mGoogleMap: AdvancedMapFragment? = null
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
-
-  private val list = ArrayList<Long>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
   private val adsProvider = AdsProvider()
@@ -188,7 +187,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     Timber.d("showCalendarEvents: $events")
     for (e in events) {
       val binding =
-        GoogleEventViewHolder(binding.dataContainer, currentStateHolder) { _, event, listActions ->
+        GoogleEventViewHolder(
+          binding.dataContainer,
+          currentStateHolder,
+          dateTimeManager
+        ) { _, event, listActions ->
           if (listActions == ListActions.OPEN && event != null) {
             openCalendar(event.id)
           } else if (listActions == ListActions.REMOVE && event != null) {
@@ -339,6 +342,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     } else {
       binding.fab.gone()
     }
+    invalidateOptionsMenu()
   }
 
   private fun loadData(shopList: List<ShopItem>) {
@@ -450,6 +454,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDarkMode)
     ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDarkMode)
 
+    menu.getItem(2)?.isVisible = getReminder()?.type?.isBase(UiReminderType.Base.DATE) == true
+
     return true
   }
 
@@ -493,7 +499,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun makeCopy() {
     withReminder {
-      if (it.type.isBase(UiReminderType.Base.TIMER)) {
+      if (it.type.isBase(UiReminderType.Base.DATE)) {
         showDialog()
       }
     }
@@ -504,42 +510,32 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun showDialog() {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = System.currentTimeMillis()
-    calendar.set(Calendar.HOUR_OF_DAY, 0)
-    calendar.set(Calendar.MINUTE, 0)
-    calendar.set(Calendar.SECOND, 0)
-    calendar.set(Calendar.MILLISECOND, 0)
-    var hour = 0
-    var minute = 0
-    list.clear()
-    val time = ArrayList<String>()
-    val is24 = prefs.is24HourFormat
+    var time = LocalTime.of(0, 0)
+    val list = mutableListOf<LocalTime>()
+    val times = mutableListOf<String>()
+    var isRunning = true
     do {
-      if (hour == 23 && minute == 30) {
-        hour = -1
+      if (time.hour == 23 && time.minute == 30) {
+        isRunning = false
       } else {
-        val tmp = calendar.timeInMillis
-        hour = calendar.get(Calendar.HOUR_OF_DAY)
-        minute = calendar.get(Calendar.MINUTE)
-        list.add(tmp)
-        time.add(TimeUtil.getTime(calendar.time, is24, prefs.appLanguage))
-        calendar.timeInMillis = tmp + AlarmManager.INTERVAL_HALF_HOUR
+        list.add(time)
+        times.add(dateTimeManager.getTime(time))
+        time = time.plusMinutes(30)
       }
-    } while (hour != -1)
+    } while (isRunning)
     val builder = dialogues.getMaterialDialog(this)
     builder.setTitle(R.string.choose_time)
-    builder.setItems(time.toTypedArray()) { dialog, which ->
+    builder.setItems(times.toTypedArray()) { dialog, which ->
       dialog.dismiss()
-      saveCopy(which)
+      saveCopy(list[which])
     }
     builder.create().show()
   }
 
-  private fun saveCopy(which: Int) {
-    Timber.d("saveCopy: $which")
+  private fun saveCopy(time: LocalTime) {
+    Timber.d("saveCopy: $time")
     withReminder {
-      viewModel.copyReminder(list[which], it.summary + " - " + getString(R.string.copy))
+      viewModel.copyReminder(time, it.summary + " - " + getString(R.string.copy))
     }
   }
 

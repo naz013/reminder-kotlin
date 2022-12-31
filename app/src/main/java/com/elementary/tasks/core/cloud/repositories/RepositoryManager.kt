@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.cloud.repositories
 
 class RepositoryManager(
-  val birthdayRepository: BirthdayRepository,
-  val groupRepository: GroupRepository,
-  val noteRepository: NoteRepository,
-  val placeRepository: PlaceRepository,
-  val reminderRepository: ReminderRepository,
-  val settingsRepository: SettingsRepository,
-  val templateRepository: TemplateRepository
+  val birthdayDataFlowRepository: BirthdayDataFlowRepository,
+  val groupDataFlowRepository: GroupDataFlowRepository,
+  val noteDataFlowRepository: NoteDataFlowRepository,
+  val placeDataFlowRepository: PlaceDataFlowRepository,
+  val reminderDataFlowRepository: ReminderDataFlowRepository,
+  val settingsDataFlowRepository: SettingsDataFlowRepository,
+  val templateDataFlowRepository: TemplateDataFlowRepository
 )

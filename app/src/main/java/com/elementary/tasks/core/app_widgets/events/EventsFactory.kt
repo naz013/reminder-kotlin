@@ -11,28 +11,34 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.repository.BirthdayRepository
+import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.contacts.ContactsReader
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
-import java.util.Calendar
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import java.util.Locale
 
 class EventsFactory(
   private val context: Context,
   intent: Intent,
   private val prefs: Prefs,
-  private val appDb: AppDb,
   private val dateTimeManager: DateTimeManager,
-  private val contactsReader: ContactsReader
+  private val contactsReader: ContactsReader,
+  private val reminderRepository: ReminderRepository,
+  private val birthdayRepository: BirthdayRepository
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private var data = mutableListOf<CalendarItem>()
   private val map = mutableMapOf<String, Reminder>()
-  private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+  private val widgetID: Int = intent.getIntExtra(
+    AppWidgetManager.EXTRA_APPWIDGET_ID,
+    AppWidgetManager.INVALID_APPWIDGET_ID
+  )
 
   override fun onCreate() {
     data.clear()
@@ -43,43 +49,39 @@ class EventsFactory(
     data.clear()
     map.clear()
 
-    val reminderItems = appDb.reminderDao().getAll(active = true, removed = false)
+    val reminders = reminderRepository.getActive()
 
-    for (item in reminderItems) {
-      val type = item.type
-      val summary = item.summary
-      val eventTime = item.dateTime
-      val id = item.uuId
+    for (reminder in reminders) {
+      val type = reminder.type
+      val summary = reminder.summary
+      val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+      val id = reminder.uuId
 
       var time = ""
       var date = ""
       var viewType = 1
       when {
         Reminder.isGpsType(type) -> {
-          val place = item.places[0]
+          val place = reminder.places[0]
           date = String.format(Locale.getDefault(), "%.5f", place.latitude)
           time = String.format(Locale.getDefault(), "%.5f", place.longitude)
         }
-        Reminder.isBase(type, Reminder.BY_WEEK) -> {
-          val calendar = Calendar.getInstance()
-          calendar.timeInMillis = eventTime
-          date = dateTimeManager.getRepeatString(item.weekdays)
-          time = dateTimeManager.getTime(calendar.time)
+        Reminder.isBase(type, Reminder.BY_WEEK) && eventTime != null -> {
+          date = dateTimeManager.getRepeatString(reminder.weekdays)
+          time = dateTimeManager.getTime(eventTime.toLocalTime())
         }
-        Reminder.isBase(type, Reminder.BY_MONTH) -> {
-          val calendar1 = Calendar.getInstance()
-          calendar1.timeInMillis = eventTime
-          date = dateTimeManager.date().format(calendar1.time)
-          time = dateTimeManager.getTime(calendar1.time)
+        Reminder.isBase(type, Reminder.BY_MONTH) && eventTime != null -> {
+          date = dateTimeManager.getDate(eventTime.toLocalDate())
+          time = dateTimeManager.getTime(eventTime.toLocalTime())
         }
         Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> {
-          if (item.hasReminder) {
+          if (reminder.hasReminder && eventTime != null) {
             val dT = dateTimeManager.getNextDateTime(eventTime)
             date = dT[0]
             time = dT[1]
           }
           viewType = 2
-          map[id] = item
+          map[id] = reminder
         }
         else -> {
           val dT = dateTimeManager.getNextDateTime(eventTime)
@@ -87,32 +89,49 @@ class EventsFactory(
           time = dT[1]
         }
       }
-      data.add(CalendarItem(CalendarItem.Type.REMINDER, summary, item.target, id, time, date, eventTime, viewType, item))
+      data.add(
+        CalendarItem(
+          type = CalendarItem.Type.REMINDER,
+          summary = summary,
+          number = reminder.target,
+          id = id,
+          timeFormatted = time,
+          dateFormatted = date,
+          dateTime = eventTime,
+          viewType = viewType,
+          item = reminder
+        )
+      )
     }
 
     if (prefs.isBirthdayInWidgetEnabled) {
-      var mDay: Int
-      var mMonth: Int
       var n = 0
-      val birthTime = dateTimeManager.getBirthdayTime()
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
+      val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
+      var dateTime = LocalDateTime.now()
       do {
-        mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        mMonth = calendar.get(Calendar.MONTH)
-        val list = appDb.birthdaysDao().getAll("$mDay|$mMonth")
+        val list = birthdayRepository.getByDayMonth(dateTime.dayOfMonth, dateTime.monthValue - 1)
         for (item in list) {
           val birthday = item.date
           val name = item.name
-          val millis = dateTimeManager.getFutureBirthdayDate(birthTime, item.date).millis
-
-          data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, context.getString(R.string.birthday), name, item.key, birthday, "", millis, 1, item))
+          data.add(
+            CalendarItem(
+              type = CalendarItem.Type.BIRTHDAY,
+              summary = context.getString(R.string.birthday),
+              number = name,
+              timeFormatted = "",
+              dateFormatted = birthday,
+              id = item.key,
+              dateTime = dateTimeManager.getFutureBirthdayDate(birthTime, item.date).dateTime,
+              viewType = 1,
+              item = item
+            )
+          )
         }
-        calendar.timeInMillis = calendar.timeInMillis + 1000 * 60 * 60 * 24
+        dateTime = dateTime.plusDays(1)
         n++
       } while (n <= 7)
     }
-    data = data.sortedBy { it.date }.toMutableList()
+    data = data.sortedBy { it.dateTime }.toMutableList()
   }
 
   override fun onDestroy() {
@@ -158,7 +177,7 @@ class EventsFactory(
       }
       rv.setImageViewBitmap(R.id.statusIcon, icon)
 
-      var task = item.name
+      var task = item.summary
       if (task.isNullOrBlank()) {
         task = contactsReader.getNameFromNumber(item.number)
       }
@@ -177,9 +196,9 @@ class EventsFactory(
       } else {
         rv.setViewVisibility(R.id.taskNumber, View.GONE)
       }
-      rv.setTextViewText(R.id.taskDate, item.dayDate)
-      rv.setTextViewText(R.id.taskTime, item.time)
-      rv.setTextViewText(R.id.leftTime, dateTimeManager.getRemaining(item.date))
+      rv.setTextViewText(R.id.taskDate, item.dateFormatted)
+      rv.setTextViewText(R.id.taskTime, item.timeFormatted)
+      rv.setTextViewText(R.id.leftTime, dateTimeManager.getRemaining(item.dateTime))
 
       if (item.id != null) {
         val fillInIntent = Intent()
@@ -203,7 +222,7 @@ class EventsFactory(
 
       rv.setImageViewBitmap(R.id.statusIcon, ViewUtils.createIcon(context, R.drawable.ic_twotone_shopping_cart_24px, textColor))
 
-      val task = item.name
+      val task = item.summary
       rv.setTextViewText(R.id.taskText, task)
       rv.setTextColor(R.id.taskText, textColor)
       rv.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
@@ -212,8 +231,8 @@ class EventsFactory(
       val lists = reminder?.shoppings ?: listOf()
 
       if (reminder != null && reminder.hasReminder) {
-        rv.setTextViewText(R.id.taskDate, item.dayDate)
-        rv.setTextViewText(R.id.taskTime, item.time)
+        rv.setTextViewText(R.id.taskDate, item.dateFormatted)
+        rv.setTextViewText(R.id.taskTime, item.timeFormatted)
         rv.setViewVisibility(R.id.dateTimeView, View.VISIBLE)
       } else {
         rv.setViewVisibility(R.id.dateTimeView, View.GONE)

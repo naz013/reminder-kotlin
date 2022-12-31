@@ -163,7 +163,7 @@ class ThemeProvider(
   }
 
   @ColorInt
-  fun getNoteLightColor(code: Int = Color.RED): Int {
+  fun getMarkerLightColor(code: Int = Color.RED): Int {
     val color: Int
     when (code) {
       Color.RED -> color = R.color.redAccentOld

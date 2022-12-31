@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.calendar
 
+import org.threeten.bp.LocalDate
+
 class Events {
   private var events = mutableListOf<Event>()
   private var mPosition = 0
@@ -43,22 +45,20 @@ class Events {
     events.clear()
   }
 
-  constructor(event: Event) : this() {
+  constructor(task: String, color: Int, type: Type, date: LocalDate) : this() {
+    val event = Event(task, color, type, date)
     events.add(event)
-  }
-
-  constructor(task: String, color: Int, type: Type, time: Long) : this() {
-    val event = Event(task, color, type, time)
-    events.add(event)
-    events.sortWith(Comparator { event1, t1 -> (event1.time - t1.time).toInt() })
+    val sorted = events.sortedBy { it.date }
+    events.clear()
+    events.addAll(sorted)
   }
 
   fun moveToStart() {
     mPosition = 0
   }
 
-  fun addEvent(task: String, color: Int, type: Type, time: Long): Int {
-    val event = Event(task, color, type, time)
+  fun addEvent(task: String, color: Int, type: Type, date: LocalDate): Int {
+    val event = Event(task, color, type, date)
     events.add(event)
     return events.indexOf(event)
   }
@@ -80,5 +80,5 @@ class Events {
     BIRTHDAY
   }
 
-  data class Event(var task: String?, var color: Int, var type: Type?, var time: Long)
+  data class Event(var task: String?, var color: Int, var type: Type?, var date: LocalDate)
 }

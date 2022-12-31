@@ -7,30 +7,21 @@ import android.provider.ContactsContract
 import androidx.annotation.RequiresPermission
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.launchDefault
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 class CheckBirthdaysWorker(
-  private val appDb: AppDb,
+  private val birthdaysDao: BirthdaysDao,
   context: Context,
-  workerParams: WorkerParameters
+  workerParams: WorkerParameters,
+  private val dateTimeManager: DateTimeManager,
+  private val contactsReader: ContactsReader
 ) : Worker(context, workerParams) {
-
-  private val birthdayFormats = arrayOf<DateFormat>(
-    SimpleDateFormat("yyyy-MM-dd", Locale.US),
-    SimpleDateFormat("yyyyMMdd", Locale.US),
-    SimpleDateFormat("yyyy.MM.dd", Locale.US),
-    SimpleDateFormat("yy.MM.dd", Locale.US),
-    SimpleDateFormat("MMM dd, yyyy", Locale.US),
-    SimpleDateFormat("yy/MM/dd", Locale.US))
 
   override fun doWork(): Result {
     if (!Permissions.checkPermission(applicationContext, Permissions.READ_CONTACTS)) {
@@ -45,20 +36,28 @@ class CheckBirthdaysWorker(
     var i = 0
     val projection = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
     val cur = try {
-      cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
-        ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC")
+      cr.query(
+        ContactsContract.Contacts.CONTENT_URI, projection, null, null,
+        ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
+      )
     } catch (e: Exception) {
       null
     } ?: return@launchDefault
     while (cur.moveToNext()) {
-      val contactId = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID))
-      val columns = arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE, ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.MIMETYPE, ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.Contacts._ID)
-      val where = ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
-        " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
-        "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
+      val contactId = cur.readString(ContactsContract.Data._ID) ?: continue
+      val columns = arrayOf(
+        ContactsContract.CommonDataKinds.Event.START_DATE,
+        ContactsContract.CommonDataKinds.Event.TYPE,
+        ContactsContract.CommonDataKinds.Event.MIMETYPE,
+        ContactsContract.PhoneLookup.DISPLAY_NAME,
+        ContactsContract.Contacts._ID
+      )
+      val where =
+        ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
+          " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
+          "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
       val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-      val dao = appDb.birthdaysDao()
-      val contacts = dao.all()
+      val contacts = birthdaysDao.all()
       val birthdayCur = try {
         cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
       } catch (e: Exception) {
@@ -66,7 +65,7 @@ class CheckBirthdaysWorker(
       }
       if (birthdayCur != null && birthdayCur.count > 0) {
         while (birthdayCur.moveToNext()) {
-          i += loadBirthday(birthdayCur, contacts, dao)
+          i += loadBirthday(birthdayCur, contacts, birthdaysDao)
         }
       }
       birthdayCur?.close()
@@ -80,33 +79,28 @@ class CheckBirthdaysWorker(
     contacts: List<Birthday>,
     dao: BirthdaysDao
   ): Int {
-    val birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
-    val name = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME))
+    val birthday = birthdayCur.readString(ContactsContract.CommonDataKinds.Event.START_DATE)
+    val name = birthdayCur.readString(ContactsContract.PhoneLookup.DISPLAY_NAME)
     if (name.isNullOrEmpty()) return 0
     val id = birthdayCur.getLong(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-    val number = Contacts.getNumber(name, applicationContext)
-    val calendar = Calendar.getInstance()
+    val number = contactsReader.getNumber(name)
     var counter = 0
-    for (f in birthdayFormats) {
-      var date: Date? = null
-      try {
-        date = f.parse(birthday)
-      } catch (e: Exception) {
-        e.printStackTrace()
+    val date = birthday?.let { dateTimeManager.findBirthdayDate(it) }
+    if (date != null) {
+      val birthdayItem = Birthday(
+        name,
+        dateTimeManager.formatBirthdayDate(date),
+        number,
+        0,
+        id,
+        date.dayOfMonth,
+        date.monthValue - 1
+      )
+      if (!contacts.contains(birthdayItem)) {
+        counter += 1
       }
-
-      if (date != null) {
-        calendar.time = date
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH)
-        val birthdayItem = Birthday(name, TimeUtil.BIRTH_DATE_FORMAT.format(calendar.time), number, 0, id, day, month)
-        if (!contacts.contains(birthdayItem)) {
-          counter += 1
-        }
-        birthdayItem.updatedAt = TimeUtil.gmtDateTime
-        dao.insert(birthdayItem)
-        break
-      }
+      birthdayItem.updatedAt = dateTimeManager.getNowGmtDateTime()
+      dao.insert(birthdayItem)
     }
     return counter
   }

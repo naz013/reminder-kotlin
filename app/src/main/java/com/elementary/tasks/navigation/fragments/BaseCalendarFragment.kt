@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.fragments
 
 import android.content.Intent
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -17,24 +16,27 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.DialogActionPickerBinding
-import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.day_view.day.CalendarEventsAdapter
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.coroutines.Job
+import org.koin.android.ext.android.inject
+import org.threeten.bp.LocalDate
 import timber.log.Timber
-import java.util.Calendar
 
 abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>() {
 
-  protected var dateMills: Long = 0
+  protected val dateTimeManager by inject<DateTimeManager>()
+
+  protected var date: LocalDate = LocalDate.now()
   private var mDialog: AlertDialog? = null
   private var job: Job? = null
   private val birthdayResolver = BirthdayResolver(
@@ -75,10 +77,8 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
       } else {
         binding.loadingView.visibility = View.GONE
       }
-      if (dateMills != 0L) {
-        val monthTitle = DateUtils.formatDateTime(activity, dateMills, DayViewFragment.MONTH_YEAR_FLAG).toString()
-        binding.dateLabel.text = monthTitle
-      }
+      val monthTitle = dateTimeManager.formatCalendarDate(date)
+      binding.dateLabel.text = monthTitle
       builder.setView(binding.root)
       builder.setOnDismissListener {
         job?.cancel()
@@ -99,29 +99,21 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   }
 
   protected fun loadEvents(listView: RecyclerView, emptyView: View, list: List<EventModel>) {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = dateMills
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
-
     this.job?.cancel()
     this.job = launchDefault {
       val res = ArrayList<EventModel>()
       for (item in list) {
-        val mDay = item.day
-        val mMonth = item.month
-        val mYear = item.year
-        val type = item.viewType
-        if (type == EventModel.BIRTHDAY && mDay == day && mMonth == month) {
+        if (item.viewType == EventModel.BIRTHDAY && item.day == date.dayOfMonth &&
+          item.monthValue == date.monthValue
+        ) {
           res.add(item)
-        } else {
-          if (mDay == day && mMonth == month && mYear == year) {
-            res.add(item)
-          }
+        } else if (item.day == date.dayOfMonth && item.monthValue == date.monthValue &&
+          item.year == date.year
+        ) {
+          res.add(item)
         }
       }
-      Timber.d("Search events: found -> %d", res.size)
+      Timber.d("Search events: found -> ${res.size}")
       val sorted = try {
         res.asSequence().sortedBy { it.getMillis() }.toList()
       } catch (e: IllegalArgumentException) {
@@ -155,8 +147,10 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   protected fun addReminder() {
     if (isAdded) {
       withActivity {
-        PinLoginActivity.openLogged(it, Intent(it, CreateReminderActivity::class.java)
-          .putExtra(Constants.INTENT_DATE, dateMills))
+        PinLoginActivity.openLogged(
+          it, Intent(it, CreateReminderActivity::class.java)
+            .putExtra(Constants.INTENT_DATE, date)
+        )
       }
     }
   }
@@ -164,8 +158,10 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   protected fun addBirthday() {
     if (isAdded) {
       withActivity {
-        PinLoginActivity.openLogged(it, Intent(it, AddBirthdayActivity::class.java)
-          .putExtra(Constants.INTENT_DATE, dateMills))
+        PinLoginActivity.openLogged(
+          it, Intent(it, AddBirthdayActivity::class.java)
+            .putExtra(Constants.INTENT_DATE, date)
+        )
       }
     }
   }

@@ -4,11 +4,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.TextProvider
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import java.util.Random
 
 class GroupsUtil(
   private val textProvider: TextProvider,
-  private val reminderGroupDao: ReminderGroupDao
+  private val reminderGroupDao: ReminderGroupDao,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   private val random = Random()
@@ -22,7 +24,8 @@ class GroupsUtil(
   fun initDefault(): String {
     val def = ReminderGroup(
       groupTitle = textProvider.getText(R.string.general),
-      groupColor = random.nextInt(16)
+      groupColor = random.nextInt(16),
+      groupDateTime = dateTimeManager.getNowGmtDateTime()
     )
     def.isDefaultGroup = true
     runCatching {
@@ -30,13 +33,15 @@ class GroupsUtil(
       reminderGroupDao.insert(
         ReminderGroup(
           groupTitle = textProvider.getText(R.string.work),
-          groupColor = random.nextInt(16)
+          groupColor = random.nextInt(16),
+          groupDateTime = dateTimeManager.getNowGmtDateTime()
         )
       )
       reminderGroupDao.insert(
         ReminderGroup(
           groupTitle = textProvider.getText(R.string.personal),
-          groupColor = random.nextInt(16)
+          groupColor = random.nextInt(16),
+          groupDateTime = dateTimeManager.getNowGmtDateTime()
         )
       )
     }

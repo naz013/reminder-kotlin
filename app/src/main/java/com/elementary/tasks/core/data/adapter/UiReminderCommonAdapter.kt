@@ -81,10 +81,9 @@ class UiReminderCommonAdapter(
     } else {
       IntervalUtil.getBeforeTime(data.remindBefore) { getBeforePattern(it) }
     }
-    val dueMillis = dateTimeManager.getDateTimeFromGmt(data.eventTime)
-    val due = dueMillis.takeIf { it > 0L }?.let {
-      dateTimeManager.getFullDateTime(it)
-    }
+    val dateTime = dateTimeManager.fromGmtToLocal(data.eventTime)
+    val dueMillis = dateTimeManager.toMillis(data.eventTime)
+    val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
     val repeatValue = when {
       type.isBase(UiReminderType.Base.MONTHLY) ->
         String.format(textProvider.getText(R.string.xM), data.repeatInterval.toString())
@@ -98,7 +97,8 @@ class UiReminderCommonAdapter(
       repeat = repeatValue,
       dateTime = due,
       remaining = getRemaining(data),
-      millis = dueMillis
+      millis = dueMillis,
+      localDateTime = dateTime
     )
   }
 
@@ -139,7 +139,7 @@ class UiReminderCommonAdapter(
     }
   }
 
-  fun getType(type: UiReminderType): String {
+  private fun getType(type: UiReminderType): String {
     return when {
       type.isBase(UiReminderType.Base.MONTHLY) -> textProvider.getText(R.string.day_of_month)
       type.isBase(UiReminderType.Base.WEEKDAY) -> textProvider.getText(R.string.alarm)
@@ -160,7 +160,7 @@ class UiReminderCommonAdapter(
     )
   }
 
-  fun getReminderStatusTitle(isActive: Boolean, isRemoved: Boolean): String {
+  private fun getReminderStatusTitle(isActive: Boolean, isRemoved: Boolean): String {
     return when {
       isRemoved -> textProvider.getText(R.string.deleted)
       isActive -> textProvider.getText(R.string.enabled4)
@@ -182,7 +182,7 @@ class UiReminderCommonAdapter(
     }
   }
 
-  fun getIntervalPattern(type: IntervalUtil.PatternType): String {
+  private fun getIntervalPattern(type: IntervalUtil.PatternType): String {
     return when (type) {
       IntervalUtil.PatternType.SECONDS -> "0"
       IntervalUtil.PatternType.MINUTES -> textProvider.getText(R.string.x_min)
@@ -192,7 +192,7 @@ class UiReminderCommonAdapter(
     }
   }
 
-  fun getBeforePattern(type: IntervalUtil.PatternType): String {
+  private fun getBeforePattern(type: IntervalUtil.PatternType): String {
     return when (type) {
       IntervalUtil.PatternType.SECONDS -> textProvider.getText(R.string.x_seconds)
       IntervalUtil.PatternType.MINUTES -> textProvider.getText(R.string.x_minutes)

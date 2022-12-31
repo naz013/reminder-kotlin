@@ -4,14 +4,15 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.groups.GroupsUtil
 
 class ReminderCompletable(
   private val reminderGroupDao: ReminderGroupDao,
   private val reminderDao: ReminderDao,
   private val eventControlFactory: EventControlFactory,
-  private val groupsUtil: GroupsUtil
+  private val groupsUtil: GroupsUtil,
+  private val dateTimeManager: DateTimeManager
 ) : Completable<Reminder> {
 
   override suspend fun action(t: Reminder) {
@@ -28,7 +29,7 @@ class ReminderCompletable(
     if (!t.isActive || t.isRemoved) {
       t.isActive = false
     }
-    if (!Reminder.isGpsType(t.type) && !TimeCount.isCurrent(t.eventTime)) {
+    if (!Reminder.isGpsType(t.type) && !dateTimeManager.isCurrent(t.eventTime)) {
       if (!Reminder.isSame(t.type, Reminder.BY_DATE_SHOP) || t.hasReminder) {
         t.isActive = false
       }

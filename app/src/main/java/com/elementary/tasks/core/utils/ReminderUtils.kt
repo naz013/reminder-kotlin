@@ -6,9 +6,7 @@ import android.net.Uri
 import android.text.TextUtils
 import androidx.core.net.toUri
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.params.Prefs
-import java.util.Calendar
 
 object ReminderUtils {
 
@@ -75,12 +73,6 @@ object ReminderUtils {
     }
   }
 
-  fun getTime(day: Int, month: Int, year: Int, hour: Int, minute: Int, after: Long): Long {
-    val calendar = Calendar.getInstance()
-    calendar.set(year, month, day, hour, minute, 0)
-    return calendar.timeInMillis + after
-  }
-
   @Deprecated("Use DateTimeManager")
   fun getRepeatString(context: Context, prefs: Prefs, repCode: List<Int>): String {
     val sb = StringBuilder()
@@ -128,30 +120,6 @@ object ReminderUtils {
     return repCode.none { it == 0 }
   }
 
-  fun getTypeString(context: Context, type: Int): String {
-    val res: String
-    when {
-      Reminder.isKind(type, Reminder.Kind.CALL) -> {
-        res = context.getString(R.string.make_call)
-      }
-      Reminder.isKind(type, Reminder.Kind.SMS) -> {
-        res = context.getString(R.string.message)
-      }
-      Reminder.isSame(type, Reminder.BY_DATE_APP) -> {
-        res = context.getString(R.string.application)
-      }
-      Reminder.isSame(type, Reminder.BY_DATE_LINK) -> {
-        res = context.getString(R.string.open_link)
-      }
-      Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> res = context.getString(R.string.shopping_list)
-      Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> res = context.getString(R.string.e_mail)
-      else -> {
-        res = getType(context, type)
-      }
-    }
-    return res
-  }
-
   fun getPriorityTitle(context: Context, priority: Int): String {
     return when (priority) {
       0 -> context.getString(R.string.priority_lowest)
@@ -160,21 +128,6 @@ object ReminderUtils {
       3 -> context.getString(R.string.priority_high)
       4 -> context.getString(R.string.priority_highest)
       else -> context.getString(R.string.priority_normal)
-    }
-  }
-
-  private fun getType(context: Context, type: Int): String {
-    return when {
-      Reminder.isBase(type, Reminder.BY_MONTH) -> context.getString(R.string.day_of_month)
-      Reminder.isBase(type, Reminder.BY_WEEK) -> context.getString(R.string.alarm)
-      Reminder.isBase(type, Reminder.BY_LOCATION) -> context.getString(R.string.entering_place)
-      Reminder.isBase(type, Reminder.BY_OUT) -> context.getString(R.string.leaving_place)
-      Reminder.isSame(type, Reminder.BY_TIME) -> context.getString(R.string.timer)
-      Reminder.isBase(type, Reminder.BY_PLACES) -> context.getString(R.string.places)
-      Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> context.getString(R.string.e_mail)
-      Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> context.getString(R.string.shopping_list)
-      Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
-      else -> context.getString(R.string.by_date)
     }
   }
 

@@ -6,7 +6,7 @@ import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.visible
@@ -15,6 +15,7 @@ import com.elementary.tasks.databinding.ListItemGoogleCalendarEventBinding
 class GoogleEventViewHolder(
   parent: ViewGroup,
   currentStateHolder: CurrentStateHolder,
+  private val dateTimeManager: DateTimeManager,
   listener: ((View, GoogleCalendarUtils.EventItem?, ListActions) -> Unit)?
 ) : BaseViewHolder<ListItemGoogleCalendarEventBinding>(
   ListItemGoogleCalendarEventBinding.inflate(parent.inflater(), parent, false),
@@ -38,10 +39,10 @@ class GoogleEventViewHolder(
       binding.calendarName.visible()
     }
     if (eventItem.dtStart != 0L) {
-      binding.dtStart.text = TimeUtil.getFullDateTime(eventItem.dtStart, prefs.is24HourFormat, prefs.appLanguage)
+      binding.dtStart.text = dateTimeManager.getFullDateTime(eventItem.dtStart)
     }
     if (eventItem.dtEnd != 0L) {
-      binding.dtEnd.text = TimeUtil.getFullDateTime(eventItem.dtEnd, prefs.is24HourFormat, prefs.appLanguage)
+      binding.dtEnd.text = dateTimeManager.getFullDateTime(eventItem.dtEnd)
     }
   }
 }

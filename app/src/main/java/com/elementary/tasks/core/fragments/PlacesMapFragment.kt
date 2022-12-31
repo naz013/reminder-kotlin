@@ -23,12 +23,13 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.isVisible
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DrawableHelper
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -50,6 +51,7 @@ import java.util.*
 class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   private val systemServiceProvider by inject<SystemServiceProvider>()
+  private val dateTimeManager by inject<DateTimeManager>()
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
 
   private var mMap: GoogleMap? = null
@@ -127,7 +129,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
                   longitude = model.longitude,
                   name = model.name,
                   address = model.address,
-                  tags = model.types
+                  tags = model.types,
+                  dateTime = dateTimeManager.getNowGmtDateTime()
                 )
               )
             }
@@ -323,7 +326,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   private fun createStyleDrawable() {
     mMarkerStyle = DrawableHelper.withContext(requireContext())
       .withDrawable(R.drawable.ic_twotone_place_24px)
-      .withColor(themeUtil.getNoteLightColor(markerStyle))
+      .withColor(themeUtil.getMarkerLightColor(markerStyle))
       .tint()
       .get()
   }

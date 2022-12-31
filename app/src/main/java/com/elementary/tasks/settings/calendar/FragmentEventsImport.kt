@@ -17,8 +17,7 @@ import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.withUIContext
@@ -38,6 +37,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   private val appDb by inject<AppDb>()
   private val jobScheduler by inject<JobScheduler>()
   private val updatesHelper by inject<UpdatesHelper>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
@@ -205,13 +205,13 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
                 val interval = rule.interval
                 val freq = rule.freq
                 repeat = when {
-                  freq === Freq.SECONDLY -> interval * TimeCount.SECOND
-                  freq === Freq.MINUTELY -> interval * TimeCount.MINUTE
-                  freq === Freq.HOURLY -> interval * TimeCount.HOUR
-                  freq === Freq.WEEKLY -> interval.toLong() * 7 * TimeCount.DAY
-                  freq === Freq.MONTHLY -> interval.toLong() * 30 * TimeCount.DAY
-                  freq === Freq.YEARLY -> interval.toLong() * 365 * TimeCount.DAY
-                  else -> interval * TimeCount.DAY
+                  freq === Freq.SECONDLY -> interval * DateTimeManager.SECOND
+                  freq === Freq.MINUTELY -> interval * DateTimeManager.MINUTE
+                  freq === Freq.HOURLY -> interval * DateTimeManager.HOUR
+                  freq === Freq.WEEKLY -> interval.toLong() * 7 * DateTimeManager.DAY
+                  freq === Freq.MONTHLY -> interval.toLong() * 30 * DateTimeManager.DAY
+                  freq === Freq.YEARLY -> interval.toLong() * 365 * DateTimeManager.DAY
+                  else -> interval * DateTimeManager.DAY
                 }
               } catch (e: InvalidRecurrenceRuleException) {
                 e.printStackTrace()
@@ -268,8 +268,8 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     reminder.groupUuId = categoryId
     reminder.summary = summary
     reminder.calendarId = calendarId
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
-    reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
+    reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+    reminder.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
     appDb.reminderDao().insert(reminder)
     eventControlFactory.getController(reminder).start()
     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))

@@ -1,18 +1,14 @@
 package com.elementary.tasks.day_view
 
-import android.app.AlarmManager
 import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.plusMillis
 import com.elementary.tasks.day_view.day.EventModel
-import com.github.naz013.calendarext.getDayOfMonth
-import com.github.naz013.calendarext.getMonth
-import com.github.naz013.calendarext.getYear
-import com.github.naz013.calendarext.newCalendar
-import java.util.Calendar
 
 class DayViewProvider(
   private val birthdayModelAdapter: BirthdayModelAdapter,
@@ -22,143 +18,114 @@ class DayViewProvider(
 
   fun loadReminders(isFuture: Boolean, reminders: List<Reminder>): List<EventModel> {
     val data = mutableListOf<EventModel>()
-    for (item in reminders) {
-      val mType = item.type
-      if (!Reminder.isGpsType(mType)) {
-        var eventTime = item.dateTime
-        val repeatTime = item.repeatInterval
-        val limit = item.repeatLimit.toLong()
-        val count = item.eventCount
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = eventTime
-        var mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        var mMonth = calendar.get(Calendar.MONTH)
-        var mYear = calendar.get(Calendar.YEAR)
-        if (eventTime > 0) {
-          data.add(
-            EventModel(
-              item.viewType,
-              uiReminderListAdapter.create(item),
-              mDay,
-              mMonth,
-              mYear,
-              eventTime,
-              0
-            )
-          )
-        } else {
-          continue
-        }
-        if (isFuture) {
-          calendar.timeInMillis = item.startDateTime
-          if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
-            var days: Long = 0
-            var max = Configs.MAX_DAYS_COUNT
-            if (item.isLimited()) {
-              max = limit - count
-            }
-            val weekdays = item.weekdays
-            val baseTime = item.dateTime
-            do {
-              calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_DAY
-              eventTime = calendar.timeInMillis
-              if (eventTime == baseTime) {
-                continue
-              }
-              val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
-              if (weekdays[weekDay - 1] == 1 && eventTime > 0) {
-                mDay = calendar.get(Calendar.DAY_OF_MONTH)
-                mMonth = calendar.get(Calendar.MONTH)
-                mYear = calendar.get(Calendar.YEAR)
-                days++
-                val localItem = Reminder(item, true).apply {
-                  this.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
-                }
-                data.add(
-                  EventModel(
-                    item.viewType,
-                    uiReminderListAdapter.create(localItem),
-                    mDay,
-                    mMonth,
-                    mYear,
-                    eventTime,
-                    0
-                  )
-                )
-              }
-            } while (days < max)
-          } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
-            var days: Long = 0
-            var max = Configs.MAX_DAYS_COUNT
-            if (item.isLimited()) {
-              max = limit - count
-            }
-            val baseTime = item.dateTime
-            var localItem = item
-            do {
-              eventTime = dateTimeManager.getNextMonthDayTime(localItem, calendar.timeInMillis)
-              calendar.timeInMillis = eventTime
-              if (eventTime == baseTime) {
-                continue
-              }
-              mDay = calendar.get(Calendar.DAY_OF_MONTH)
-              mMonth = calendar.get(Calendar.MONTH)
-              mYear = calendar.get(Calendar.YEAR)
-              if (eventTime > 0) {
-                days++
-                localItem = Reminder(localItem, true).apply {
-                  this.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
-                }
-                data.add(
-                  EventModel(
-                    item.viewType,
-                    uiReminderListAdapter.create(localItem),
-                    mDay,
-                    mMonth,
-                    mYear,
-                    eventTime,
-                    0
-                  )
-                )
-              }
-            } while (days < max)
-          } else {
-            if (repeatTime == 0L) {
+    val filtered = reminders.filterNot { UiReminderType(it.type).isGpsType() }
+    for (reminder in filtered) {
+      val type = reminder.type
+      val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: continue
+      val repeatTime = reminder.repeatInterval
+      val limit = reminder.repeatLimit.toLong()
+      val count = reminder.eventCount
+
+      data.add(
+        EventModel(
+          reminder.viewType,
+          uiReminderListAdapter.create(reminder),
+          eventTime.dayOfMonth,
+          eventTime.monthValue,
+          eventTime.year,
+          0
+        )
+      )
+      if (isFuture) {
+        var dateTime = dateTimeManager.fromGmtToLocal(reminder.startTime) ?: continue
+        if (Reminder.isBase(type, Reminder.BY_WEEK)) {
+          var days: Long = 0
+          var max = Configs.MAX_DAYS_COUNT
+          if (reminder.isLimited()) {
+            max = limit - count
+          }
+          val weekdays = reminder.weekdays
+          val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: continue
+          do {
+            dateTime = dateTime.plusDays(1)
+            if (dateTime == baseTime) {
               continue
             }
-            var days: Long = 0
-            var max = Configs.MAX_DAYS_COUNT
-            if (item.isLimited()) {
-              max = limit - count
-            }
-            do {
-              calendar.timeInMillis = calendar.timeInMillis + repeatTime
-              eventTime = calendar.timeInMillis
-              if (eventTime == item.dateTime) {
-                continue
+            val weekDay = dateTimeManager.localDayOfWeekToOld(eventTime.dayOfWeek)
+            if (weekdays[weekDay - 1] == 1) {
+              days++
+              val localItem = Reminder(reminder, true).apply {
+                this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
               }
-              mDay = calendar.get(Calendar.DAY_OF_MONTH)
-              mMonth = calendar.get(Calendar.MONTH)
-              mYear = calendar.get(Calendar.YEAR)
-              if (eventTime > 0) {
-                days++
-                val localItem = Reminder(item, true).apply {
-                  this.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
-                }
-                data.add(
-                  EventModel(
-                    item.viewType,
-                    uiReminderListAdapter.create(localItem),
-                    mDay,
-                    mMonth,
-                    mYear,
-                    eventTime,
-                    0
-                  )
+              data.add(
+                EventModel(
+                  reminder.viewType,
+                  uiReminderListAdapter.create(localItem),
+                  dateTime.dayOfMonth,
+                  dateTime.monthValue,
+                  dateTime.year,
+                  0
                 )
-              }
-            } while (days < max)
+              )
+            }
+          } while (days < max)
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
+          var days: Long = 0
+          var max = Configs.MAX_DAYS_COUNT
+          if (reminder.isLimited()) {
+            max = limit - count
           }
+          val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: continue
+          var localItem = reminder
+          do {
+            dateTime = dateTimeManager.getNewNextMonthDayTime(localItem, eventTime)
+            if (dateTime == baseTime) {
+              continue
+            }
+            days++
+            localItem = Reminder(localItem, true).apply {
+              this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+            }
+            data.add(
+              EventModel(
+                reminder.viewType,
+                uiReminderListAdapter.create(localItem),
+                dateTime.dayOfMonth,
+                dateTime.monthValue,
+                dateTime.year,
+                0
+              )
+            )
+          } while (days < max)
+        } else {
+          if (repeatTime == 0L) {
+            continue
+          }
+          var days: Long = 0
+          var max = Configs.MAX_DAYS_COUNT
+          if (reminder.isLimited()) {
+            max = limit - count
+          }
+          do {
+            dateTime = dateTime.plusMillis(repeatTime)
+            if (eventTime == dateTime) {
+              continue
+            }
+            days++
+            val localItem = Reminder(reminder, true).apply {
+              this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+            }
+            data.add(
+              EventModel(
+                reminder.viewType,
+                uiReminderListAdapter.create(localItem),
+                dateTime.dayOfMonth,
+                dateTime.monthValue,
+                dateTime.year,
+                0
+              )
+            )
+          } while (days < max)
         }
       }
     }
@@ -167,14 +134,13 @@ class DayViewProvider(
 
   fun toEventModel(birthday: Birthday): EventModel {
     val birthdayListItem = birthdayModelAdapter.convert(birthday)
-    val calendar = newCalendar(birthdayListItem.nextBirthdayDate)
+    val dateTime = dateTimeManager.fromMillis(birthdayListItem.nextBirthdayDate)
     return EventModel(
       EventModel.BIRTHDAY,
       birthdayListItem,
-      calendar.getDayOfMonth(),
-      calendar.getMonth(),
-      calendar.getYear(),
-      calendar.timeInMillis,
+      dateTime.dayOfMonth,
+      dateTime.monthValue,
+      dateTime.year,
       0
     )
   }

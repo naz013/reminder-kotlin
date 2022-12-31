@@ -21,7 +21,7 @@ class DeleteNoteBackupWorker(
     if (uuId.isNotEmpty()) {
       launchDefault {
         DataFlow(
-          syncManagers.repositoryManager.noteRepository,
+          syncManagers.repositoryManager.noteDataFlowRepository,
           syncManagers.converterManager.noteConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null

@@ -1,12 +1,12 @@
 package com.elementary.tasks.settings
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +15,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -29,6 +30,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
   private val remotePrefs: RemotePrefs by inject()
+  private val doNotDisturbManager by inject<DoNotDisturbManager>()
+  private val dateTimeManager by inject<DateTimeManager>()
+
   private val prefsObserver: (String) -> Unit = {
     Handler(Looper.getMainLooper()).post {
       if (it == PrefsConstants.DATA_BACKUP) {
@@ -85,7 +89,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   }
 
   private fun checkDoNotDisturb() {
-    if (prefs.applyDoNotDisturb(0)) {
+    if (doNotDisturbManager.applyDoNotDisturb(0)) {
       Timber.d("checkDoNotDisturb: active")
       binding.doNoDisturbIcon.visible()
     } else {
@@ -183,14 +187,14 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToSecuritySettingsFragment())
   }
 
+  @SuppressLint("SetTextI18n")
   override fun onSale(discount: String, expiryDate: String) {
-    val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
-    val millis = TimeUtil.getFireMillis(expiryDate)
-    if (TextUtils.isEmpty(expiry) || millis < System.currentTimeMillis()) {
-      binding.saleBadge.visibility = View.GONE
-    } else {
+    if (dateTimeManager.isAfterNow(expiryDate)) {
+      val expiry = dateTimeManager.getFireFormatted(expiryDate)
       binding.saleBadge.visibility = View.VISIBLE
       binding.saleBadge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+    } else {
+      binding.saleBadge.visibility = View.GONE
     }
   }
 
@@ -198,6 +202,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     binding.saleBadge.visibility = View.GONE
   }
 
+  @SuppressLint("SetTextI18n")
   override fun onUpdate(version: String) {
     binding.updateBadge.visibility = View.VISIBLE
     binding.updateBadge.text = getString(R.string.update_available) + ": " + version

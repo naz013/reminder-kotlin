@@ -6,6 +6,6 @@ import org.koin.android.ext.android.get
 
 class EventsService : RemoteViewsService() {
   override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-    return EventsFactory(applicationContext, intent, get(), get(), get(), get())
+    return EventsFactory(applicationContext, intent, get(), get(), get(), get(), get())
   }
 }

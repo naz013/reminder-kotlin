@@ -15,8 +15,8 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil.writeFileNoEncryption
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.google.gson.Gson
@@ -31,7 +31,8 @@ import java.lang.ref.WeakReference
 class BackupTool(
   private val appDb: AppDb,
   private val reminderCompletable: ReminderCompletable,
-  private val context: Context
+  private val context: Context,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   fun importAll(
@@ -167,7 +168,7 @@ class BackupTool(
     val file: File
     val dir = context.externalCacheDir ?: context.cacheDir
     return if (dir != null) {
-      val exportFileName = TimeUtil.gmtDateTime + FileConfig.FILE_NAME_FULL_BACKUP
+      val exportFileName = dateTimeManager.getNowGmtDateTime() + FileConfig.FILE_NAME_FULL_BACKUP
       file = File(dir, exportFileName)
       try {
         writeFileNoEncryption(file, jsonData.get())

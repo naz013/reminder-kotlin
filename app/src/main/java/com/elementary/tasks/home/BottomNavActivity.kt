@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -30,6 +31,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
   FragmentCallback, GlobalAction {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
+  private val dateTimeManager by inject<DateTimeManager>()
   private val viewModel by viewModel<ConversationViewModel>()
   private val noteViewModel by viewModel<NoteViewModel> { parametersOf("") }
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
@@ -41,7 +43,8 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
       binding.quickNoteView,
       noteViewModel,
       prefs,
-      notifier
+      notifier,
+      dateTimeManager
     ).also { it.hideNoteView() }
   }
   private var mFragment: BaseFragment<*>? = null

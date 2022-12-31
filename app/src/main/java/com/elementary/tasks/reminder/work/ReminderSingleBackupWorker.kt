@@ -22,7 +22,7 @@ class ReminderSingleBackupWorker(
     if (uuId.isNotEmpty()) {
       withContext(dispatcherProvider.default()) {
         DataFlow(
-          syncManagers.repositoryManager.reminderRepository,
+          syncManagers.repositoryManager.reminderDataFlowRepository,
           syncManagers.converterManager.reminderConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null

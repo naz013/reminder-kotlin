@@ -1,59 +1,63 @@
 package com.elementary.tasks.core.view_models.birthdays
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
+import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.github.naz013.calendarext.getDayOfMonth
-import com.github.naz013.calendarext.getYear
-import com.github.naz013.calendarext.newCalendar
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import org.threeten.bp.LocalDate
 import java.util.UUID
 
 class CreateBirthdayViewModel(
   id: String,
-  birthdaysDao: BirthdaysDao,
+  private val birthdaysDao: BirthdaysDao,
   dispatcherProvider: DispatcherProvider,
-  workerLauncher: WorkerLauncher,
-  notifier: Notifier,
-  private val contactsReader: ContactsReader
-) : BaseBirthdaysViewModel(birthdaysDao, dispatcherProvider, workerLauncher, notifier) {
+  private val workerLauncher: WorkerLauncher,
+  private val notifier: Notifier,
+  private val contactsReader: ContactsReader,
+  private val dateTimeManager: DateTimeManager
+) : BaseProgressViewModel(dispatcherProvider) {
 
   val birthday = birthdaysDao.loadById(id)
   var editableBirthday: Birthday = Birthday()
 
-  private val _date = mutableLiveDataOf<Calendar>()
-  val date: LiveData<Calendar> = _date
+  private val _formattedDate = mutableLiveDataOf<String>()
+  val formattedDate = _formattedDate.toLiveData()
 
   private val _isContactAttached = mutableLiveDataOf<Boolean>()
-  val isContactAttached: LiveData<Boolean> = _isContactAttached
+  val isContactAttached = _isContactAttached.toLiveData()
 
   var isEdited = false
   var hasSameInDb = false
   var isFromFile = false
+  var selectedDate = LocalDate.now()
 
   private var preparedBirthday: Birthday? = null
 
   fun editBirthday(birthday: Birthday) {
     editableBirthday = birthday
+    selectedDate = dateTimeManager.parseBirthdayDate(birthday.date)
+    _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
   }
 
   fun onContactAttached(value: Boolean) {
     _isContactAttached.postValue(value)
   }
 
-  fun onDateChanged(calendar: Calendar) {
-    _date.postValue(calendar)
-  }
-
-  fun onDateChanged(millis: Long) {
-    newCalendar(millis).also { _date.postValue(it) }
+  fun onDateChanged(localDate: LocalDate) {
+    selectedDate = localDate
+    _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
   }
 
   fun findSame(id: String) {
@@ -64,24 +68,50 @@ class CreateBirthdayViewModel(
   }
 
   fun save() {
-    preparedBirthday?.also { saveBirthday(it) }
+    preparedBirthday?.also {
+      saveBirthday(it)
+    }
   }
 
   fun prepare(name: String, number: String?, dateString: String?, newId: Boolean = false) {
-    val contactId = contactsReader.getIdFromNumber(number)
-    val calendar = date.value ?: newCalendar()
-    val birthday = editableBirthday.apply {
-      this.name = name
-      this.contactId = contactId
-      this.date = dateString ?: ""
-      this.number = number ?: ""
-      this.day = calendar.getDayOfMonth()
-      this.month = calendar.getYear()
-      this.dayMonth = "${this.day}|${this.month}"
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val contactId = contactsReader.getIdFromNumber(number)
+      val birthday = editableBirthday.apply {
+        this.name = name
+        this.contactId = contactId
+        this.date = dateString ?: ""
+        this.number = number ?: ""
+        this.day = selectedDate.dayOfMonth
+        this.month = selectedDate.monthValue - 1
+        this.dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}"
+      }
+      if (newId) {
+        birthday.uuId = UUID.randomUUID().toString()
+      }
+      preparedBirthday = birthday
     }
-    if (newId) {
-      birthday.uuId = UUID.randomUUID().toString()
+  }
+
+  private fun saveBirthday(birthday: Birthday) {
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
+      birthdaysDao.insert(birthday)
+      notifier.showBirthdayPermanent()
+      workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+      postInProgress(false)
+      postCommand(Commands.SAVED)
     }
-    preparedBirthday = birthday
+  }
+
+  fun deleteBirthday(id: String) {
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      birthdaysDao.delete(id)
+      notifier.showBirthdayPermanent()
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
+    }
   }
 }

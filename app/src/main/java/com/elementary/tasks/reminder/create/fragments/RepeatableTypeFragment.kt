@@ -5,6 +5,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.StringResPatterns
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
+import org.threeten.bp.LocalDateTime
 
 abstract class RepeatableTypeFragment<B : ViewBinding> : TypeFragment<B>() {
 
@@ -24,8 +25,8 @@ abstract class RepeatableTypeFragment<B : ViewBinding> : TypeFragment<B>() {
     return summary
   }
 
-  protected fun validBefore(millis: Long, reminder: Reminder): Boolean {
-    if ((millis - reminder.remindBefore - 100) < System.currentTimeMillis()) {
+  protected fun validBefore(dateTime: LocalDateTime, reminder: Reminder): Boolean {
+    if ((dateTimeManager.toMillis(dateTime) - reminder.remindBefore - 100) < System.currentTimeMillis()) {
       return false
     }
     return true

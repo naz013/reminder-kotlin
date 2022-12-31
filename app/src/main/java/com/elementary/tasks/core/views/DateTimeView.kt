@@ -1,57 +1,37 @@
 package com.elementary.tasks.core.views
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.DatePicker
 import android.widget.LinearLayout
-import android.widget.TimePicker
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.DateTimeViewBinding
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.github.naz013.calendarext.getDayOfMonth
-import com.github.naz013.calendarext.getHourOfDay
-import com.github.naz013.calendarext.getMinute
-import com.github.naz013.calendarext.getMonth
-import com.github.naz013.calendarext.getYear
-import com.github.naz013.calendarext.newCalendar
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.text.DateFormat
-import java.util.Calendar
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
+import org.threeten.bp.format.DateTimeFormatter
 
-class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener,
-  TimePickerDialog.OnTimeSetListener, KoinComponent {
+class DateTimeView : LinearLayout, KoinComponent {
 
   private val dateTimeManager by inject<DateTimeManager>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private lateinit var binding: DateTimeViewBinding
-  private var mHour: Int = 0
-  private var mMinute: Int = 0
-  private var mYear: Int = 0
-  private var mMonth: Int = 0
-  private var mDay: Int = 0
+  private var date: LocalDate = LocalDate.now()
+  private var time: LocalTime = LocalTime.now()
   private var isSingleMode = false
-  private var mListener: OnSelectListener? = null
+  private var onSelectListener: OnSelectListener? = null
   var onDateChangeListener: OnDateChangeListener? = null
-  private var mDateFormat: DateFormat = dateTimeManager.fullDate()
+  private var dateTimeFormatter = dateTimeManager.fullDateFormatter()
 
-  private val mDateClick = OnClickListener { selectDate() }
-
-  var dateTime: Long
-    get() {
-      val calendar = Calendar.getInstance()
-      calendar.set(mYear, mMonth, mDay, mHour, mMinute, 0)
-      calendar.set(Calendar.MILLISECOND, 0)
-      return calendar.timeInMillis
-    }
-    set(dateTime) = updateDateTime(dateTime)
+  var selectedDateTime: LocalDateTime
+    get() = LocalDateTime.of(date, time)
+    set(value) = updateDateTime(value)
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -65,8 +45,17 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener,
     init(context)
   }
 
-  fun setEventListener(listener: OnSelectListener) {
-    mListener = listener
+  fun setDateFormat(formatter: DateTimeFormatter) {
+    this.dateTimeFormatter = formatter
+    this.invalidate()
+  }
+
+  fun setDateTime(dateTime: String) {
+    updateDateTime(dateTimeManager.fromGmtToLocal(dateTime) ?: LocalDateTime.now())
+  }
+
+  fun setOnSelectListener(listener: OnSelectListener) {
+    onSelectListener = listener
   }
 
   private fun init(context: Context) {
@@ -77,16 +66,11 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener,
     descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
     val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     layoutParams = params
-    setDateFormat(dateTimeManager.fullDate())
+    setDateFormat(dateTimeManager.fullDateFormatter())
 
-    binding.dateField.setOnClickListener(mDateClick)
+    binding.dateField.setOnClickListener { selectDate() }
     binding.timeField.setOnClickListener { selectTime() }
-    updateDateTime(0)
-  }
-
-  fun setDateFormat(format: DateFormat) {
-    this.mDateFormat = format
-    this.invalidate()
+    updateDateTime(LocalDateTime.now())
   }
 
   override fun setOnClickListener(l: OnClickListener?) {
@@ -98,74 +82,46 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener,
     binding.timeField.setOnLongClickListener(l)
   }
 
-  fun setDateTime(dateTime: String) {
-    val mills = dateTimeManager.getDateTimeFromGmt(dateTime)
-    updateDateTime(mills)
+  private fun updateDateTime(localDateTime: LocalDateTime) {
+    date = localDateTime.toLocalDate()
+    time = localDateTime.toLocalTime()
+    updateTime(time)
+    updateDate(date)
   }
 
-  private fun updateDateTime(mills: Long) {
-    var milliseconds = mills
-    if (milliseconds == 0L) {
-      milliseconds = System.currentTimeMillis()
-    }
-    val calendar = newCalendar(milliseconds)
-    mYear = calendar.getYear()
-    mMonth = calendar.getMonth()
-    mDay = calendar.getDayOfMonth()
-    mHour = calendar.getHourOfDay()
-    mMinute = calendar.getMinute()
-    updateTime(milliseconds)
-    updateDate(milliseconds)
+  private fun updateDate(localDate: LocalDate) {
+    binding.dateField.text = localDate.format(dateTimeFormatter)
+    onSelectListener?.onDateSelect(localDate)
+    onDateChangeListener?.onChanged(LocalDateTime.of(date, time))
   }
 
-  private fun updateDate(mills: Long) {
-    val cal = newCalendar(mills)
-    binding.dateField.text = dateTimeManager.getDate(cal.time, mDateFormat)
-    mListener?.onDateSelect(mills, mDay, mMonth, mYear)
-    onDateChangeListener?.onChanged(dateTime)
-  }
-
-  private fun updateTime(mills: Long) {
-    val cal = Calendar.getInstance()
-    cal.timeInMillis = mills
-    binding.timeField.text = dateTimeManager.getTime(cal.time)
-    mListener?.onTimeSelect(mills, mHour, mMinute)
-    onDateChangeListener?.onChanged(dateTime)
+  private fun updateTime(localTime: LocalTime) {
+    binding.timeField.text = dateTimeManager.getTime(localTime)
+    onSelectListener?.onTimeSelect(localTime)
+    onDateChangeListener?.onChanged(LocalDateTime.of(date, time))
   }
 
   private fun selectDate() {
-    dateTimePickerProvider.showDatePicker(context, mYear, mMonth, mDay, this)
+    dateTimePickerProvider.showDatePicker(context, date) {
+      this.date = it
+      updateDate(it)
+    }
   }
 
   private fun selectTime() {
-    dateTimePickerProvider.showTimePicker(context, mHour, mMinute, this)
-  }
-
-  override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-    this.mYear = year
-    this.mMonth = monthOfYear
-    this.mDay = dayOfMonth
-    val cal = newCalendar()
-    cal.set(year, monthOfYear, dayOfMonth)
-    updateDate(cal.timeInMillis)
-  }
-
-  override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-    this.mHour = hourOfDay
-    this.mMinute = minute
-    val cal = newCalendar()
-    cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
-    cal.set(Calendar.MINUTE, minute)
-    updateTime(cal.timeInMillis)
+    dateTimePickerProvider.showTimePicker(context, time) {
+      this.time = it
+      updateTime(it)
+    }
   }
 
   interface OnSelectListener {
-    fun onDateSelect(mills: Long, day: Int, month: Int, year: Int)
+    fun onDateSelect(date: LocalDate)
 
-    fun onTimeSelect(mills: Long, hour: Int, minute: Int)
+    fun onTimeSelect(time: LocalTime)
   }
 
   interface OnDateChangeListener {
-    fun onChanged(mills: Long)
+    fun onChanged(dateTime: LocalDateTime)
   }
 }

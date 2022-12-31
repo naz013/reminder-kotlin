@@ -21,7 +21,7 @@ class BackupSettingsWorker(
   override fun doWork(): Result {
     launchIo {
       DataFlow(
-        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,
         CompositeStorage(syncManagers.storageManager),
         completable = null

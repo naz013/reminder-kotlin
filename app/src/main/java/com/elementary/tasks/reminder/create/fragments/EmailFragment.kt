@@ -25,7 +25,7 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
       iFace.showSnackbar(getString(R.string.you_dont_insert_any_message))
       return null
     }
-    val startTime = binding.dateView.dateTime
+    val startTime = binding.dateView.selectedDateTime
     Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
     if (!dateTimeManager.isCurrent(startTime)) {

@@ -5,16 +5,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.normalizeSummary
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
@@ -23,10 +18,6 @@ import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
-import com.github.naz013.calendarext.dropMilliseconds
-import com.github.naz013.calendarext.dropSeconds
-import com.github.naz013.calendarext.newCalendar
-import com.github.naz013.calendarext.takeTimeFrom
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -34,8 +25,6 @@ import org.koin.core.parameter.parametersOf
 class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
-  private val dateTimeManager by inject<DateTimeManager>()
-  private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
   private val viewModel by viewModel<GoogleTaskViewModel> { parametersOf(getId()) }
 
   override fun inflateBinding() = ActivityCreateGoogleTaskBinding.inflate(layoutInflater)
@@ -54,15 +43,15 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     updateProgress(false)
 
     if (savedInstanceState == null) {
-      stateViewModel.action = intentString(TasksConstants.INTENT_ACTION).also {
-        if (it.isEmpty()) stateViewModel.action = TasksConstants.CREATE
+      viewModel.action = intentString(TasksConstants.INTENT_ACTION).also {
+        if (it.isEmpty()) viewModel.action = TasksConstants.CREATE
       }
-      initDefaults()
+      viewModel.initDefaults()
     } else {
       updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
     }
 
-    if (stateViewModel.action == TasksConstants.CREATE) {
+    if (viewModel.action == TasksConstants.CREATE) {
       val tmp = if (savedInstanceState != null) {
         savedInstanceState.getString(ARG_LIST, "")
       } else getId()
@@ -74,37 +63,19 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   private fun getId() = intentString(Constants.INTENT_ID)
 
-  override fun onStart() {
-    super.onStart()
-    observeStates()
-  }
-
-  private fun observeStates() {
-    stateViewModel.time.observe(this) { switchDate() }
-    stateViewModel.date.observe(this) { switchDate() }
-    stateViewModel.isDateEnabled.observe(this) { switchDate(isDate = it) }
-    stateViewModel.isReminder.observe(this) { switchDate(isReminder = it) }
-    stateViewModel.reminderValue.observe(this) { showReminder(it) }
-  }
-
-  private fun initDefaults() {
-    stateViewModel.time.postValue(newCalendar())
-    stateViewModel.date.postValue(newCalendar())
-  }
-
   override fun onSaveInstanceState(outState: Bundle) {
-    outState.putString(ARG_LIST, stateViewModel.listId)
-    outState.putBoolean(ARG_LOADING, stateViewModel.isLoading)
+    outState.putString(ARG_LIST, viewModel.listId)
+    outState.putBoolean(ARG_LOADING, viewModel.isLoading)
     super.onSaveInstanceState(outState)
   }
 
   private fun updateProgress(b: Boolean) {
-    stateViewModel.isLoading = b
+    viewModel.isLoading = b
     binding.progressView.visibleGone(b)
   }
 
   private fun initViewModel(listId: String) {
-    stateViewModel.listId = listId
+    viewModel.listId = listId
     viewModel.isInProgress.observe(this) { updateProgress(it) }
     viewModel.result.observe(this) { commands ->
       when (commands) {
@@ -113,37 +84,31 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         }
       }
     }
-    viewModel.googleTask.observe(this) { editTask(it) }
-    viewModel.googleTaskLists.observe(this) { selectCurrent(it) }
+    viewModel.googleTask.nonNullObserve(this) { editTask(it) }
+    viewModel.googleTaskLists.nonNullObserve(this) { selectCurrent(it) }
     viewModel.defaultTaskList.observe(this) { googleTaskList ->
       if (googleTaskList != null && listId == "") {
         showTaskList(googleTaskList)
       }
     }
-    viewModel.reminder.observe(this) { reminder ->
-      if (reminder != null) {
-        if (!stateViewModel.isReminderEdited) {
-          stateViewModel.reminderValue.postValue(reminder)
-          stateViewModel.isReminderEdited = true
-        }
-      }
-    }
-    lifecycle.addObserver(stateViewModel)
-  }
 
-  private fun showReminder(reminder: Reminder) {
-    stateViewModel.time.postValue(dateTimeManager.fromGmt(reminder.eventTime))
-    stateViewModel.isReminder.postValue(true)
+    viewModel.formattedTime.nonNullObserve(this) { showTime(it) }
+    viewModel.formattedDate.nonNullObserve(this) { showDate(it) }
+    viewModel.isDateEnabled.nonNullObserve(this) { switchDate(isDate = it) }
+    viewModel.isReminder.nonNullObserve(this) { switchTime(isReminder = it) }
+    viewModel.taskList.nonNullObserve(this) { showTaskList(it) }
+
+    lifecycle.addObserver(viewModel)
   }
 
   private fun showTaskList(googleTaskList: GoogleTaskList) {
-    stateViewModel.listId = googleTaskList.listId
+    viewModel.listId = googleTaskList.listId
     binding.listText.text = googleTaskList.title
   }
 
   private fun selectCurrent(googleTaskLists: List<GoogleTaskList>) {
     for (googleTaskList in googleTaskLists) {
-      if (googleTaskList.listId == stateViewModel.listId) {
+      if (googleTaskList.listId == viewModel.listId) {
         showTaskList(googleTaskList)
         break
       }
@@ -151,32 +116,19 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun editTask(googleTask: GoogleTask) {
-    stateViewModel.editedTask = googleTask
-    stateViewModel.listId = googleTask.listId
+    viewModel.onEditTask(googleTask)
     binding.toolbar.setTitle(R.string.edit_task)
-    if (!stateViewModel.isEdited) {
+    if (binding.editField.trimmedText().isEmpty()) {
       binding.editField.setText(googleTask.title)
+    }
+    if (binding.detailsField.trimmedText().isEmpty()) {
       googleTask.notes
         .takeIf { it.isNotEmpty() }
         ?.also {
           binding.detailsField.setText(it)
           binding.detailsField.setSelection(binding.detailsField.trimmedText().length)
         }
-      googleTask.dueDate
-        .takeIf { it != 0L }
-        ?.also {
-          stateViewModel.date.postValue(newCalendar(it))
-          stateViewModel.isDateEnabled.postValue(true)
-        }
-      viewModel.googleTaskLists.value?.forEach {
-        if (it.listId == googleTask.listId) {
-          showTaskList(it)
-          return@forEach
-        }
-      }
-      stateViewModel.isEdited = true
     }
-    viewModel.loadReminder(googleTask.uuId)
   }
 
   private fun initFields() {
@@ -196,9 +148,10 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   private fun selectDateAction(type: Int) {
     val builder = dialogues.getMaterialDialog(this)
-    var types = arrayOf(getString(R.string.no_date), getString(R.string.select_date))
-    if (type == 2) {
-      types = arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
+    val types = if (type == 2) {
+      arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
+    } else {
+      arrayOf(getString(R.string.no_date), getString(R.string.select_date))
     }
     val adapter = ArrayAdapter(this,
       android.R.layout.simple_list_item_single_choice, types)
@@ -214,18 +167,18 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         dialog.dismiss()
         if (type == 1) {
           when (which) {
-            0 -> stateViewModel.isDateEnabled.postValue(false)
+            0 -> viewModel.onDateStateChanged(false)
             1 -> {
-              stateViewModel.isDateEnabled.postValue(true)
+              viewModel.onDateStateChanged(true)
               dateDialog()
             }
           }
         }
         if (type == 2) {
           when (which) {
-            0 -> stateViewModel.isReminder.postValue(false)
+            0 -> viewModel.onReminderStateChanged(false)
             1 -> {
-              stateViewModel.isReminder.postValue(true)
+              viewModel.onReminderStateChanged(true)
               timeDialog()
             }
           }
@@ -235,33 +188,40 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     builder.create().show()
   }
 
-  private fun isDate(): Boolean = stateViewModel.isDateEnabled.value ?: false
+  private fun isDate(): Boolean = viewModel.isDateEnabled.value ?: false
 
-  private fun isReminder(): Boolean = stateViewModel.isReminder.value ?: false
+  private fun isReminder(): Boolean = viewModel.isReminder.value ?: false
 
-  private fun switchDate(isDate: Boolean = isDate(), isReminder: Boolean = isReminder()) {
+  private fun switchDate(isDate: Boolean) {
     if (!isDate) {
       binding.dateField.text = getString(R.string.no_date)
-    } else {
-      showDate()
     }
+  }
+
+  private fun switchTime(isReminder: Boolean) {
     if (!isReminder) {
       binding.timeField.text = getString(R.string.no_reminder)
-    } else {
-      showTime()
     }
   }
 
-  private fun showDate() {
-    binding.dateField.text = dateTimeManager.toGoogleTaskDate(stateViewModel.takeDate())
+  private fun showDate(dateFormatted: String? = null) {
+    if (isDate()) {
+      binding.dateField.text = dateFormatted
+    } else {
+      binding.dateField.text = getString(R.string.no_date)
+    }
   }
 
-  private fun showTime() {
-    binding.timeField.text = dateTimeManager.toTime(stateViewModel.takeTime())
+  private fun showTime(timeFormatted: String? = null) {
+    if (isReminder()) {
+      binding.timeField.text = timeFormatted
+    } else {
+      binding.timeField.text = getString(R.string.no_reminder)
+    }
   }
 
   private fun moveTask(listId: String) {
-    stateViewModel.editedTask?.also {
+    viewModel.editedTask?.also {
       val initListId = it.listId
       if (!listId.matches(initListId.toRegex())) {
         it.listId = listId
@@ -279,7 +239,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     var position = 0
     list.forEachIndexed { index, googleTaskList ->
       names.add(googleTaskList.title)
-      if (googleTaskList.listId.isNotEmpty() && googleTaskList.listId == stateViewModel.listId) {
+      if (googleTaskList.listId.isNotEmpty() && googleTaskList.listId == viewModel.listId) {
         position = index
       }
     }
@@ -303,54 +263,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
       return
     }
     val note = binding.detailsField.trimmedText()
-    val reminder = createReminder(summary).takeIf { isReminder() }
-    val item = stateViewModel.editedTask
-    if (stateViewModel.action == TasksConstants.EDIT && item != null) {
-      val initListId = item.listId
-      item.update(summary, note, reminder)
-      if (stateViewModel.listId.isNotEmpty()) {
-        viewModel.updateAndMoveGoogleTask(item, initListId, reminder)
-      } else {
-        viewModel.updateGoogleTask(item, reminder)
-      }
-    } else {
-      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK))
-      viewModel.newGoogleTask(GoogleTask().update(summary, note, reminder), reminder)
-    }
-  }
-
-  private fun GoogleTask.update(
-    summary: String,
-    note: String,
-    reminder: Reminder?
-  ) =
-    this.apply {
-      listId = stateViewModel.listId
-      status = GTasks.TASKS_NEED_ACTION
-      title = summary
-      notes = note
-      dueDate = stateViewModel.takeDate().takeIf { isDate() }?.timeInMillis ?: 0L
-      uuId = reminder?.uuId ?: ""
-    }
-
-  private fun dateTime() =
-    stateViewModel.takeDate()
-      .takeTimeFrom(stateViewModel.takeTime())
-      .apply {
-        dropSeconds()
-        dropMilliseconds()
-      }
-
-  private fun createReminder(task: String) = Reminder().apply {
-    type = Reminder.BY_DATE
-    delay = 0
-    eventCount = 0
-    useGlobal = true
-    isActive = true
-    isRemoved = false
-    summary = task.normalizeSummary()
-    startTime = dateTimeManager.toGmt(dateTime())
-    eventTime = startTime
+    viewModel.save(summary, note)
   }
 
   private fun deleteDialog() {
@@ -367,12 +280,12 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun deleteTask() {
-    doIfPossible { stateViewModel.editedTask?.let { viewModel.deleteGoogleTask(it) } }
+    doIfPossible { viewModel.editedTask?.let { viewModel.deleteGoogleTask(it) } }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.menu_create_task, menu)
-    stateViewModel.editedTask?.also {
+    viewModel.editedTask?.also {
       menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_task)
       menu.add(Menu.NONE, MENU_ITEM_MOVE, 100, R.string.move_to_another_list)
     }
@@ -402,21 +315,16 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun dateDialog() {
-    dateTimePickerProvider.showDatePicker(this, stateViewModel.takeDate()) {
-      stateViewModel.date.postValue(it)
-    }
+    dateTimePickerProvider.showDatePicker(this, viewModel.date) { viewModel.onDateSet(it) }
   }
 
   private fun timeDialog() {
-    dateTimePickerProvider.showTimePicker(this, stateViewModel.takeTime()) {
-      stateViewModel.time.postValue(it)
-    }
+    dateTimePickerProvider.showTimePicker(this, viewModel.time) { viewModel.onTimeSet(it) }
   }
 
   override fun onDestroy() {
     super.onDestroy()
     runCatching {
-      lifecycle.removeObserver(stateViewModel)
       lifecycle.removeObserver(viewModel)
     }
     hideKeyboard()
@@ -429,7 +337,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun doIfPossible(f: () -> Unit) {
-    if (stateViewModel.isLoading) {
+    if (viewModel.isLoading) {
       toast(R.string.please_wait)
     } else {
       f.invoke()

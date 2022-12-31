@@ -20,7 +20,7 @@ class PlaceDeleteBackupWorker(
     if (uuId.isNotEmpty()) {
       launchDefault {
         DataFlow(
-          syncManagers.repositoryManager.placeRepository,
+          syncManagers.repositoryManager.placeDataFlowRepository,
           syncManagers.converterManager.placeConverter,
           CompositeStorage(syncManagers.storageManager),
           completable = null

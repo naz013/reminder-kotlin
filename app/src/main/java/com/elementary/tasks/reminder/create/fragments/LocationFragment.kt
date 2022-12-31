@@ -108,12 +108,16 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       }
     }
     val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
-    reminder.places = listOf(Place(
-      radius = radius,
-      marker = map.markerStyle,
-      latitude = pos.latitude,
-      longitude = pos.longitude,
-      name = reminder.summary))
+    reminder.places = listOf(
+      Place(
+        radius = radius,
+        marker = map.markerStyle,
+        latitude = pos.latitude,
+        longitude = pos.longitude,
+        name = reminder.summary,
+        dateTime = dateTimeManager.getNowGmtDateTime()
+      )
+    )
     reminder.target = number
     reminder.type = type
     reminder.exportToCalendar = false
@@ -124,7 +128,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     reminder.eventCount = 0
     reminder.repeatInterval = 0
     if (binding.attackDelay.isChecked) {
-      val startTime = binding.dateView.dateTime
+      val startTime = binding.dateView.selectedDateTime
       reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
       Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))

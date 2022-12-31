@@ -353,7 +353,7 @@
     <string name="application_not_selected">Aplikację nie wybrano</string>
     <string name="app_title">"Tytuł"</string>
     <string name="move_backward">Powrócić</string>
-    <string name="create_task">Tworzenie zadania</string>
+    <string name="create_task">Stworzyć zadanie</string>
     <string name="move_forward">Idź naprzód</string>
     <string name="refresh">Odświeżyć</string>
     <string name="could_not_launch_market">Nie można uruchomić Google Play</string>

@@ -31,14 +31,14 @@ import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
 import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.BirthdayRepository
-import com.elementary.tasks.core.cloud.repositories.GroupRepository
-import com.elementary.tasks.core.cloud.repositories.NoteRepository
-import com.elementary.tasks.core.cloud.repositories.PlaceRepository
-import com.elementary.tasks.core.cloud.repositories.ReminderRepository
+import com.elementary.tasks.core.cloud.repositories.BirthdayDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.GroupDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.NoteDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.RepositoryManager
-import com.elementary.tasks.core.cloud.repositories.SettingsRepository
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
+import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
+import com.elementary.tasks.core.cloud.repositories.TemplateDataFlowRepository
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.storages.LocalStorage
@@ -49,13 +49,17 @@ import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
+import com.elementary.tasks.core.data.repository.BirthdayRepository
+import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
+import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
@@ -139,7 +143,7 @@ import org.threeten.bp.ZoneId
 val workerModule = module {
   worker { BirthdayDeleteBackupWorker(get(), get(), get()) }
   worker { BackupDataWorker(get(), get(), get()) }
-  worker { CheckBirthdaysWorker(get(), get(), get()) }
+  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get()) }
   worker { LoadFileWorker(get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get()) }
@@ -156,17 +160,31 @@ val workerModule = module {
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
   worker { TemplateSingleBackupWorker(get(), get(), get()) }
   worker { TemplateDeleteBackupWorker(get(), get(), get()) }
-  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get()) }
+  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get()) }
   worker { SingleBackupWorker(get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
   viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
+
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
-  viewModel { FollowReminderViewModel(get(), get(), get(), get(), get()) }
+  viewModel {
+    FollowReminderViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { (id: String) ->
     EditReminderViewModel(
       id,
@@ -247,6 +265,7 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -256,7 +275,6 @@ val viewModelModule = module {
   viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
     MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get())
   }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
   viewModel { SmsTemplatesViewModel(get(), get(), get()) }
   viewModel {
     ConversationViewModel(
@@ -290,46 +308,64 @@ val viewModelModule = module {
   viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
   viewModel { GoogleTasksStateViewModel() }
-  viewModel { CreateNoteViewModel(get(), get()) }
-  viewModel { CreatePlaceViewModel() }
-  viewModel { TimesViewModel() }
+  viewModel {
+    CreateNoteViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+  viewModel { CreatePlaceViewModel(get()) }
+  viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
 }
 
 val converterModule = module {
-  single { BirthdayConverter() }
+  single { BirthdayConverter(get()) }
   single { GroupConverter() }
   single { NoteConverter() }
   single { PlaceConverter() }
-  single { ReminderConverter() }
-  single { SettingsConverter() }
+  single { ReminderConverter(get()) }
+  single { SettingsConverter(get()) }
   single { TemplateConverter() }
   single { ConverterManager(get(), get(), get(), get(), get(), get(), get()) }
 }
 
 val completableModule = module {
-  single { ReminderCompletable(get(), get(), get(), get()) }
+  single { ReminderCompletable(get(), get(), get(), get(), get()) }
   single { ReminderDeleteCompletable(get()) }
   single { CompletableManager(get(), get()) }
 }
 
 val storageModule = module {
-  single { Dropbox(get(), get()) }
-  single { GDrive(get(), get(), get()) }
+  single { Dropbox(get(), get(), get()) }
+  single { GDrive(get(), get(), get(), get()) }
   single { LocalStorage(get(), get()) }
   single { StorageManager(get(), get(), get(), get(), get()) }
 }
 
 val repositoryModule = module {
-  single { BirthdayRepository(get()) }
-  single { GroupRepository(get()) }
-  single { NoteRepository(get()) }
-  single { PlaceRepository(get()) }
-  single { ReminderRepository(get()) }
-  single { SettingsRepository(get()) }
-  single { TemplateRepository(get()) }
+  single { BirthdayDataFlowRepository(get()) }
+  single { GroupDataFlowRepository(get()) }
+  single { NoteDataFlowRepository(get()) }
+  single { PlaceDataFlowRepository(get()) }
+  single { ReminderDataFlowRepository(get()) }
+  single { SettingsDataFlowRepository(get()) }
+  single { TemplateDataFlowRepository(get()) }
   single { RepositoryManager(get(), get(), get(), get(), get(), get(), get()) }
 }
 
@@ -348,6 +384,9 @@ fun dbModule(context: Context): Module {
     single { appDb.placesDao() }
     single { appDb.smsTemplatesDao() }
     single { appDb.usedTimeDao() }
+
+    single { ReminderRepository(get()) }
+    single { BirthdayRepository(get()) }
   }
 }
 
@@ -356,30 +395,43 @@ val utilModule = module {
   single { GTasks(get(), get(), get()) }
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
-  single { BackupTool(get(), get(), get()) }
+  single { BackupTool(get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get()) }
-  single { GoogleCalendarUtils(get(), get(), get()) }
+  single { GoogleCalendarUtils(get(), get(), get(), get()) }
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get()) }
   single { GlobalButtonObservable() }
   single { ImagesSingleton() }
   single { SyncManagers(get(), get(), get(), get()) }
-  single { EventControlFactory(get(), get(), get(), get(), get(), get(), get(), get()) }
+  single {
+    EventControlFactory(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
 
   single { RemotePrefs(get(), get()) }
 
-  single { Notifier(get(), get(), get(), get()) }
-  single { JobScheduler(get(), get()) }
+  single { Notifier(get(), get(), get(), get(), get()) }
+  single { JobScheduler(get(), get(), get()) }
   single { UpdatesHelper(get()) }
   single { SystemServiceProvider(get()) }
 
-  factory { WidgetDataProvider(get()) }
+  factory { WidgetDataProvider(get(), get(), get()) }
 
   single { SyncWorker(get(), get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }
   single { ExportAllDataWorker(get()) }
-  single { ScanContactsWorker(get(), get()) }
+  single { ScanContactsWorker(get(), get(), get(), get()) }
 
   factory { EnableThread(get(), get()) }
 
@@ -395,15 +447,17 @@ val utilModule = module {
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
   single { ReminderAnalyticsTracker(get()) }
 
-  single { DateTimeManager(get(), get()) }
+  single { DateTimeManager(get(), get(), get()) }
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
   single { PackageManagerWrapper(get()) }
-  single { GroupsUtil(get(), get()) }
+  single { GroupsUtil(get(), get(), get()) }
   single { ImageDecoder(get(), get()) }
   single { ContactsReader(get()) }
+  single { ContextProvider(get()) }
 
   single { DateTimePickerProvider(get()) }
+  single { DoNotDisturbManager(get(), get()) }
 
   factory { (fragment: BaseFragment<*>, callback: GoogleLogin.LoginCallback) ->
     GoogleLogin(fragment, get(), get(), get(), callback)

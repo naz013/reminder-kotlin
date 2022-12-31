@@ -11,11 +11,11 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
@@ -153,7 +153,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
       binding.messageLayout.isErrorEnabled = true
       return
     }
-    val date = TimeUtil.gmtDateTime
+    val date = DateTimeManager.gmtDateTime
     val item = (mItem ?: SmsTemplate()).apply {
       this.date = date
       this.title = text

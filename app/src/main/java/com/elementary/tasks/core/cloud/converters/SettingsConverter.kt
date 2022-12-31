@@ -5,23 +5,25 @@ import android.util.Base64InputStream
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SettingsModel
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.PrefsConstants
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-class SettingsConverter : Convertible<SettingsModel> {
+class SettingsConverter(
+  private val dateTimeManager: DateTimeManager
+) : Convertible<SettingsModel> {
 
   override fun metadata(t: SettingsModel): Metadata {
     return Metadata(
       "app",
       FileConfig.FILE_NAME_SETTINGS,
       FileConfig.FILE_NAME_SETTINGS_EXT,
-      TimeUtil.gmtDateTime,
+      dateTimeManager.getNowGmtDateTime(),
       "Settings Backup"
     )
   }
@@ -44,7 +46,7 @@ class SettingsConverter : Convertible<SettingsModel> {
           this.stream = outputBytes
           this.ext = FileConfig.FILE_NAME_SETTINGS_EXT
           this.id = "app"
-          this.updatedAt = TimeUtil.gmtDateTime
+          this.updatedAt = dateTimeManager.getNowGmtDateTime()
           this.type = IndexTypes.TYPE_SETTINGS
           this.readyToBackup = true
         }

@@ -217,16 +217,14 @@ class DayViewViewModel(
         val res = ArrayList<EventModel>()
         Timber.d("Search events: $eventsPagerItem")
         for (item in list) {
-          val mDay = item.day
-          val mMonth = item.month
-          val mYear = item.year
-          val type = item.viewType
-          if (type == EventModel.BIRTHDAY && mDay == eventsPagerItem.day && mMonth == eventsPagerItem.month) {
+          if (item.viewType == EventModel.BIRTHDAY && item.day == eventsPagerItem.day &&
+            item.monthValue == eventsPagerItem.month
+          ) {
             res.add(item)
-          } else {
-            if (mDay == eventsPagerItem.day && mMonth == eventsPagerItem.month && mYear == eventsPagerItem.year) {
-              res.add(item)
-            }
+          } else if (item.day == eventsPagerItem.day && item.monthValue == eventsPagerItem.month &&
+            item.year == eventsPagerItem.year
+          ) {
+            res.add(item)
           }
         }
         Timber.d("Search events: found -> %d", res.size)

@@ -6,6 +6,6 @@ import org.koin.android.ext.android.get
 
 class CalendarMonthService : RemoteViewsService() {
   override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-    return CalendarMonthFactory(intent, applicationContext, get(), get())
+    return CalendarMonthFactory(intent, applicationContext, get(), get(), get())
   }
 }

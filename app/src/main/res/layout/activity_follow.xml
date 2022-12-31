@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -24,7 +23,7 @@
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/acc_contact_photo"
                 android:scaleType="centerCrop"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:civ_border_width="0dp" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -43,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:hint="@string/message"
                 app:boxBackgroundColor="?colorSecondary12"
                 app:boxCornerRadiusTopEnd="5dp"
                 app:boxCornerRadiusTopStart="5dp">
@@ -51,7 +51,6 @@
                     android:id="@+id/textField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/message"
                     android:inputType="textMultiLine"
                     android:maxLines="3"
                     android:textAppearance="?textAppearanceSubtitle2" />
@@ -66,15 +65,10 @@
                 android:textAppearance="?textAppearanceCaption"
                 android:textColor="?colorSecondary" />
 
-            <com.elementary.tasks.core.views.DividerView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp" />
-
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatRadioButton
@@ -97,98 +91,223 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/date_and_time"
                 android:textAppearance="?textAppearanceCaption"
                 android:textColor="?colorSecondary" />
 
-            <com.elementary.tasks.core.views.DividerView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/tomorrowCard"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp" />
-
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/timeTomorrow"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/tomorrow"
-                android:textAppearance="?textAppearanceBody1" />
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardForegroundColor="@color/glass_card_bg">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tomorrowTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                android:textAppearance="?textAppearanceHeadline6"
-                tools:text="21 Feb, 15:45" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/timeNextWorking"
-                android:layout_width="wrap_content"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/tomorrow"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tomorrowTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:textAppearance="?textAppearanceHeadline6"
+                        tools:text="21 Feb, 15:45" />
+
+                </LinearLayout>
+
+                <com.elementary.tasks.core.views.UiCheckableImageView
+                    android:id="@+id/tomorrowCheck"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    android:scaleType="centerInside"
+                    app:civ_checkedIcon="@drawable/ic_check_circle_48px"
+                    app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
+                    app:tint="?colorOnBackground" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/nextBusinessCard"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/next_business_day"
-                android:textAppearance="?textAppearanceBody1" />
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardForegroundColor="@color/glass_card_bg">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/nextWorkingTime"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                android:textAppearance="?textAppearanceHeadline6"
-                tools:text="21 Feb, 15:45" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/timeAfter"
-                android:layout_width="wrap_content"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/next_business_day"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/nextWorkingTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:textAppearance="?textAppearanceHeadline6"
+                        tools:text="21 Feb, 15:45" />
+                </LinearLayout>
+
+                <com.elementary.tasks.core.views.UiCheckableImageView
+                    android:id="@+id/nextBusinessCheck"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    android:scaleType="centerInside"
+                    app:civ_checkedIcon="@drawable/ic_check_circle_48px"
+                    app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
+                    app:tint="?colorOnBackground" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/customCard"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/after"
-                android:textAppearance="?textAppearanceBody1" />
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardForegroundColor="@color/glass_card_bg">
 
-            <Spinner
-                android:id="@+id/afterTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:padding="5dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/timeCustom"
-                android:layout_width="wrap_content"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/time"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/customDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textAppearance="?textAppearanceHeadline6"
+                            tools:text="21 Feb 2015" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/customTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceHeadline6"
+                            tools:text="15:45" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <com.elementary.tasks.core.views.UiCheckableImageView
+                    android:id="@+id/customCheck"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    android:scaleType="centerInside"
+                    app:civ_checkedIcon="@drawable/ic_check_circle_48px"
+                    app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
+                    app:tint="?colorOnBackground" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/afterCard"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/time"
-                android:textAppearance="?textAppearanceBody1" />
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardForegroundColor="@color/glass_card_bg">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/customDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="21 Feb 2015" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/after"
+                        android:textAppearance="?textAppearanceBody1" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/customTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:padding="5dp"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="15:45" />
+                    <com.elementary.tasks.core.views.viewgroup.UiSelectorView
+                        android:id="@+id/afterTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp" />
 
-            </LinearLayout>
+                </LinearLayout>
+
+                <com.elementary.tasks.core.views.UiCheckableImageView
+                    android:id="@+id/afterCheck"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    android:scaleType="centerInside"
+                    app:civ_checked="true"
+                    app:civ_checkedIcon="@drawable/ic_check_circle_48px"
+                    app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
+                    app:tint="?colorOnBackground" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/exportCheck"
@@ -235,7 +354,6 @@
         app:icon="@drawable/ic_twotone_done_24px"
         app:iconPadding="12dp"
         app:iconSize="24dp"
-        app:iconTint="?colorOnSecondary"
-        tools:targetApi="lollipop" />
+        app:iconTint="?colorOnSecondary" />
 
 </RelativeLayout>

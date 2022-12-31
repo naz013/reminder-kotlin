@@ -32,7 +32,7 @@ import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
@@ -58,6 +58,7 @@ import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.threeten.bp.LocalDate
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -65,6 +66,7 @@ import java.util.*
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
   private val reminderAnalyticsTracker by inject<ReminderAnalyticsTracker>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
   private val conversationViewModel by viewModel<ConversationViewModel>()
@@ -172,7 +174,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun loadReminder() {
     val id = getId()
-    val date = intentLong(Constants.INTENT_DATE)
+    val date = intentSerializable(Constants.INTENT_DATE, LocalDate::class.java)
     initViewModel()
     when {
       intent?.action == Intent.ACTION_SEND -> {
@@ -185,9 +187,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         isEditing = true
       }
 
-      date != 0L -> {
+      date != null -> {
         stateViewModel.reminder.type = Reminder.BY_DATE
-        stateViewModel.reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
+        stateViewModel.reminder.eventTime = dateTimeManager.getGmtFromDateTime(date)
         editReminder(stateViewModel.reminder, false)
       }
 

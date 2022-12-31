@@ -12,20 +12,20 @@ import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.params.Prefs
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
-import java.util.*
+import java.util.Calendar
 
 class CheckEventsWorker(
   private val appDb: AppDb,
   private val prefs: Prefs,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
+  private val dateTimeManager: DateTimeManager,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
@@ -55,13 +55,13 @@ class CheckEventsWorker(
                 val interval = rule.interval
                 val freq = rule.freq
                 repeat = when {
-                  freq === Freq.SECONDLY -> interval * TimeCount.SECOND
-                  freq === Freq.MINUTELY -> interval * TimeCount.MINUTE
-                  freq === Freq.HOURLY -> interval * TimeCount.HOUR
-                  freq === Freq.WEEKLY -> interval.toLong() * 7 * TimeCount.DAY
-                  freq === Freq.MONTHLY -> interval.toLong() * 30 * TimeCount.DAY
-                  freq === Freq.YEARLY -> interval.toLong() * 365 * TimeCount.DAY
-                  else -> interval * TimeCount.DAY
+                  freq === Freq.SECONDLY -> interval * DateTimeManager.SECOND
+                  freq === Freq.MINUTELY -> interval * DateTimeManager.MINUTE
+                  freq === Freq.HOURLY -> interval * DateTimeManager.HOUR
+                  freq === Freq.WEEKLY -> interval.toLong() * 7 * DateTimeManager.DAY
+                  freq === Freq.MONTHLY -> interval.toLong() * 30 * DateTimeManager.DAY
+                  freq === Freq.YEARLY -> interval.toLong() * 365 * DateTimeManager.DAY
+                  else -> interval * DateTimeManager.DAY
                 }
               } catch (e: InvalidRecurrenceRuleException) {
                 e.printStackTrace()
@@ -102,8 +102,8 @@ class CheckEventsWorker(
     reminder.groupUuId = categoryId
     reminder.summary = summary
     reminder.calendarId = calendarId
-    reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
-    reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
+    reminder.eventTime = dateTimeManager.getGmtDateTimeFromMillis(dtStart)
+    reminder.startTime = dateTimeManager.getGmtDateTimeFromMillis(dtStart)
     appDb.reminderDao().insert(reminder)
     eventControlFactory.getController(reminder).start()
     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))

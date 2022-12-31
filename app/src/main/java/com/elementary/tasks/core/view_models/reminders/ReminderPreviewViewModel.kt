@@ -31,8 +31,10 @@ import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import timber.log.Timber
-import java.util.Calendar
 
 class ReminderPreviewViewModel(
   id: String,
@@ -144,7 +146,7 @@ class ReminderPreviewViewModel(
     }
   }
 
-  fun copyReminder(time: Long, name: String) {
+  fun copyReminder(time: LocalTime, name: String) {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderDao.getById(reminderId)?.also { reminder ->
@@ -160,19 +162,16 @@ class ReminderPreviewViewModel(
           }
           val newItem = reminder.copy()
           newItem.summary = name
-          val calendar = Calendar.getInstance()
-          calendar.timeInMillis = System.currentTimeMillis()
-          calendar.timeInMillis = time
-          val hour = calendar.get(Calendar.HOUR_OF_DAY)
-          val minute = calendar.get(Calendar.MINUTE)
-          calendar.timeInMillis = dateTimeManager.getDateTimeFromGmt(newItem.eventTime)
-          calendar.set(Calendar.HOUR_OF_DAY, hour)
-          calendar.set(Calendar.MINUTE, minute)
-          while (calendar.timeInMillis < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
+
+          val date = dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
+            ?: LocalDate.now()
+          var dateTime = LocalDateTime.of(date, time)
+
+          while (dateTime < LocalDateTime.now()) {
+            dateTime = dateTime.plusDays(1)
           }
-          newItem.eventTime = dateTimeManager.getGmtFromDateTime(calendar.timeInMillis)
-          newItem.startTime = dateTimeManager.getGmtFromDateTime(calendar.timeInMillis)
+          newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+          newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
           reminderDao.insert(newItem)
           eventControlFactory.getController(newItem).start()
         }

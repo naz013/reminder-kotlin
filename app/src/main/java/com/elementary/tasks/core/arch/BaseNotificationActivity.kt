@@ -17,8 +17,8 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException
@@ -30,6 +30,7 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
   private var tts: TextToSpeech? = null
   private var mWakeLock: PowerManager.WakeLock? = null
   private val soundStackHolder by inject<SoundStackHolder>()
+  private val dateTimeManager by inject<DateTimeManager>()
   private val ttsLauncher = TtsLauncher(this) {
     if (it) {
       tts = TextToSpeech(this, mTextToSpeechListener)
@@ -92,7 +93,7 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val current = instanceCount.incrementAndGet()
-    Timber.d("onCreate: $current, ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true)}")
+    Timber.d("onCreate: $current, ${dateTimeManager.logDateTime()}")
   }
 
   protected fun init() {

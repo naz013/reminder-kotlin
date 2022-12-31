@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MonthPagerItem(
-  var month: Int,
+  var monthValue: Int,
   var year: Int
 ) : Parcelable

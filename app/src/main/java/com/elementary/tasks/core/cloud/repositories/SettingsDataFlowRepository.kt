@@ -3,7 +3,7 @@ package com.elementary.tasks.core.cloud.repositories
 import com.elementary.tasks.core.data.models.SettingsModel
 import com.elementary.tasks.core.utils.params.Prefs
 
-class SettingsRepository(
+class SettingsDataFlowRepository(
   private val prefs: Prefs
 ) : Repository<SettingsModel> {
 

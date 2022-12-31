@@ -37,43 +37,43 @@ class BulkDataFlow<T>(
     suspend fun fullBackup(syncManagers: SyncManagers) {
       val storage = CompositeStorage(syncManagers.storageManager)
       BulkDataFlow(
-        syncManagers.repositoryManager.groupRepository,
+        syncManagers.repositoryManager.groupDataFlowRepository,
         syncManagers.converterManager.groupConverter,
         storage,
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.reminderRepository,
+        syncManagers.repositoryManager.reminderDataFlowRepository,
         syncManagers.converterManager.reminderConverter,
         storage,
         syncManagers.completableManager.reminderCompletable
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.noteRepository,
+        syncManagers.repositoryManager.noteDataFlowRepository,
         syncManagers.converterManager.noteConverter,
         storage,
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.birthdayRepository,
+        syncManagers.repositoryManager.birthdayDataFlowRepository,
         syncManagers.converterManager.birthdayConverter,
         storage,
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.placeRepository,
+        syncManagers.repositoryManager.placeDataFlowRepository,
         syncManagers.converterManager.placeConverter,
         storage,
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.templateRepository,
+        syncManagers.repositoryManager.templateDataFlowRepository,
         syncManagers.converterManager.templateConverter,
         storage,
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,
         storage,
         completable = null

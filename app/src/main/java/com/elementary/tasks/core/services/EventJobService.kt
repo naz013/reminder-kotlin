@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.services
 
-import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
@@ -13,8 +12,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import com.elementary.tasks.core.utils.datetime.TimeUtil.BIRTH_FORMAT
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
@@ -24,8 +23,8 @@ import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.threeten.bp.LocalDate
 import timber.log.Timber
-import java.util.Calendar
 
 class EventJobService(
   private val context: Context,
@@ -36,11 +35,13 @@ class EventJobService(
   private val appDb by inject<AppDb>()
   private val notifier by inject<Notifier>()
   private val jobScheduler by inject<JobScheduler>()
+  private val doNotDisturbManager by inject<DoNotDisturbManager>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   override fun doWork(): Result {
     Timber.d(
       "onRunJob: %s, tag -> %s",
-      TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
+      dateTimeManager.logDateTime(),
       params.tags.toList()
     )
     val bundle = params.inputData
@@ -99,7 +100,7 @@ class EventJobService(
   }
 
   private fun missedCallAction(tag: String) {
-    if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
+    if (!doNotDisturbManager.applyDoNotDisturb(prefs.missedCallPriority)) {
       jobScheduler.scheduleMissedCall(tag)
       if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
         ContextCompat.startForegroundService(
@@ -125,15 +126,16 @@ class EventJobService(
     jobScheduler.scheduleDailyBirthday()
     launchDefault {
       val daysBefore = prefs.daysToBirthday
-      val applyDnd = prefs.applyDoNotDisturb(prefs.birthdayPriority)
-      val cal = Calendar.getInstance()
-      cal.timeInMillis = System.currentTimeMillis()
-      val mYear = cal.get(Calendar.YEAR)
-      val mDate = BIRTH_FORMAT.format(cal.time)
+      val applyDnd = doNotDisturbManager.applyDoNotDisturb(prefs.birthdayPriority)
+
+      val date = LocalDate.now()
+      val mYear = date.year
+      val currentDate = dateTimeManager.getBirthdayDateSearch(date)
+
       for (item in appDb.birthdaysDao().all()) {
         val year = item.showedYear
         val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
-        if (!applyDnd && birthValue == mDate && year != mYear) {
+        if (!applyDnd && birthValue == currentDate && year != mYear) {
           withUIContext {
             if (Module.is10) {
               ContextCompat.startForegroundService(
@@ -155,12 +157,11 @@ class EventJobService(
   }
 
   private fun getBirthdayValue(month: Int, day: Int, daysBefore: Int): String {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = System.currentTimeMillis()
-    calendar.set(Calendar.MONTH, month)
-    calendar.set(Calendar.DAY_OF_MONTH, day)
-    calendar.timeInMillis = calendar.timeInMillis - AlarmManager.INTERVAL_DAY * daysBefore
-    return BIRTH_FORMAT.format(calendar.time)
+    val date = LocalDate.now()
+      .withMonth(month + 1)
+      .withDayOfMonth(day)
+      .minusDays(daysBefore.toLong())
+    return dateTimeManager.getBirthdayDateSearch(date)
   }
 
   private fun showBirthday(context: Context, item: Birthday) {

@@ -7,7 +7,9 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.FeatureManager
-import java.util.Calendar
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class ReminderStateViewModel(
   private val gTasks: GTasks,
@@ -35,7 +37,9 @@ class ReminderStateViewModel(
   var link: String = ""
   var email: String = ""
   var subject: String = ""
-  var skypeContact: String = ""
+
+  var date: LocalDate = LocalDate.now()
+  var time: LocalTime = LocalTime.now()
 
   var day: Int = 0
   var month: Int = 0
@@ -58,13 +62,12 @@ class ReminderStateViewModel(
     return featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) && gTasks.isLogged
   }
 
-  private fun setDateTime(millis: Long = System.currentTimeMillis()) {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = millis
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-    month = calendar.get(Calendar.MONTH)
-    year = calendar.get(Calendar.YEAR)
-    hour = calendar.get(Calendar.HOUR)
-    minute = calendar.get(Calendar.MINUTE)
+  private fun setDateTime() {
+    val dateTime = LocalDateTime.now()
+    day = dateTime.dayOfMonth
+    month = dateTime.monthValue - 1
+    year = dateTime.year
+    hour = dateTime.hour
+    minute = dateTime.minute
   }
 }

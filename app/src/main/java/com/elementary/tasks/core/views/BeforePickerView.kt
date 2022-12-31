@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.BeforePickerViewBinding
-import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import timber.log.Timber
 
 class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedListener {
@@ -33,12 +33,12 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
   private val multiplier: Long
     get() {
       return when (mState) {
-        seconds -> TimeCount.SECOND
-        minutes -> TimeCount.MINUTE
-        hours -> TimeCount.HOUR
-        days -> TimeCount.DAY
-        weeks -> TimeCount.DAY * 7
-        else -> TimeCount.DAY
+        seconds -> DateTimeManager.SECOND
+        minutes -> DateTimeManager.MINUTE
+        hours -> DateTimeManager.HOUR
+        days -> DateTimeManager.DAY
+        weeks -> DateTimeManager.DAY * 7
+        else -> DateTimeManager.DAY
       }
     }
 
@@ -120,28 +120,28 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
       return
     }
     when {
-      mills % (TimeCount.DAY * 7) == 0L -> {
-        val progress = mills / (TimeCount.DAY * 7)
+      mills % (DateTimeManager.DAY * 7) == 0L -> {
+        val progress = mills / (DateTimeManager.DAY * 7)
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(weeks)
       }
-      mills % TimeCount.DAY == 0L -> {
-        val progress = mills / TimeCount.DAY
+      mills % DateTimeManager.DAY == 0L -> {
+        val progress = mills / DateTimeManager.DAY
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(days)
       }
-      mills % TimeCount.HOUR == 0L -> {
-        val progress = mills / TimeCount.HOUR
+      mills % DateTimeManager.HOUR == 0L -> {
+        val progress = mills / DateTimeManager.HOUR
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(hours)
       }
-      mills % TimeCount.MINUTE == 0L -> {
-        val progress = mills / TimeCount.MINUTE
+      mills % DateTimeManager.MINUTE == 0L -> {
+        val progress = mills / DateTimeManager.MINUTE
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(minutes)
       }
-      mills % TimeCount.SECOND == 0L -> {
-        val progress = mills / TimeCount.SECOND
+      mills % DateTimeManager.SECOND == 0L -> {
+        val progress = mills / DateTimeManager.SECOND
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(seconds)
       }

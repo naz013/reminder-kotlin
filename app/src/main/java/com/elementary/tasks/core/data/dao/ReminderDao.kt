@@ -20,6 +20,10 @@ interface ReminderDao {
     fun loadByNoteKey(key: String): LiveData<Reminder>
 
     @Transaction
+    @Query("SELECT * FROM Reminder, ReminderGroup WHERE noteId=:key AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    fun getByNoteKey(key: String): Reminder?
+
+    @Transaction
     @Query("SELECT * FROM Reminder, ReminderGroup WHERE uuId=:id AND ReminderGroup.groupUuId=Reminder.groupUuId")
     fun getById(id: String): Reminder?
 

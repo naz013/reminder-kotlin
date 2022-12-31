@@ -3,25 +3,27 @@ package com.elementary.tasks.core.controller
 import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
+import org.threeten.bp.LocalDateTime
 
 class LocationEvent(
   reminder: Reminder,
-  appDb: AppDb,
+  private val reminderDao: ReminderDao,
   prefs: Prefs,
   private val context: Context,
   notifier: Notifier,
-  jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper
-) : EventManager(reminder, appDb, prefs, notifier, jobScheduler, updatesHelper) {
+  private val jobScheduler: JobScheduler,
+  updatesHelper: UpdatesHelper,
+  private val dateTimeManager: DateTimeManager
+) : EventManager(reminder, reminderDao, prefs, notifier, updatesHelper) {
 
   override val isActive: Boolean
     get() = reminder.isActive
@@ -31,7 +33,7 @@ class LocationEvent(
       reminder.isActive = true
       reminder.isRemoved = false
       super.save()
-      if (jobScheduler.scheduleGpsDelay(db, reminder.uuId)) {
+      if (jobScheduler.scheduleGpsDelay(reminder)) {
         true
       } else {
         SuperUtil.startGpsTracking(context)
@@ -57,7 +59,7 @@ class LocationEvent(
   }
 
   private fun stopTracking(isPaused: Boolean) {
-    val list = db.reminderDao().getAllTypes(
+    val list = reminderDao.getAllTypes(
       active = true,
       removed = false,
       types = Reminder.gpsTypes()
@@ -71,7 +73,7 @@ class LocationEvent(
         if (item.uniqueId == reminder.uniqueId) {
           continue
         }
-        if (TextUtils.isEmpty(item.eventTime) || !TimeCount.isCurrent(item.eventTime)) {
+        if (TextUtils.isEmpty(item.eventTime) || !dateTimeManager.isCurrent(item.eventTime)) {
           if (!item.isNotificationShown) {
             hasActive = true
             break
@@ -107,7 +109,7 @@ class LocationEvent(
 
   override fun resume(): Boolean {
     if (reminder.isActive) {
-      val b = jobScheduler.scheduleGpsDelay(db, reminder.uuId)
+      val b = jobScheduler.scheduleGpsDelay(reminder)
       if (!b) SuperUtil.startGpsTracking(context)
     }
     return true
@@ -136,7 +138,7 @@ class LocationEvent(
 
   }
 
-  override fun calculateTime(isNew: Boolean): Long {
-    return TimeCount.generateDateTime(reminder.eventTime, reminder.repeatInterval)
+  override fun calculateTime(isNew: Boolean): LocalDateTime {
+    return dateTimeManager.generateDateTime(reminder.eventTime, reminder.repeatInterval)
   }
 }

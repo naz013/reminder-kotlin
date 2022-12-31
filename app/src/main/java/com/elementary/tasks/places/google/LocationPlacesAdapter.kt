@@ -7,12 +7,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.databinding.ListItemLocationBinding
-import java.util.*
 
 class LocationPlacesAdapter(
   private val themeUtil: ThemeProvider
@@ -56,7 +55,7 @@ class LocationPlacesAdapter(
   fun loadMarker(view: ImageView, color: Int) {
     DrawableHelper.withContext(view.context)
       .withDrawable(R.drawable.ic_twotone_place_24px)
-      .withColor(themeUtil.getNoteLightColor(color))
+      .withColor(themeUtil.getMarkerLightColor(color))
       .tint()
       .applyTo(view)
   }

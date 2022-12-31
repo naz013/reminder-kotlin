@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.datetime
 
 import com.elementary.tasks.core.utils.ReminderUtils
-import java.util.*
 
 object IntervalUtil {
 
@@ -36,20 +35,20 @@ object IntervalUtil {
   }
 
   fun getBeforeTime(millis: Long, function: (PatternType) -> String): String {
-    if (millis / TimeCount.DAY > 0L) {
-      return if (millis / TimeCount.WEEK > 0L) {
-        String.format(function.invoke(PatternType.WEEKS), (millis / TimeCount.WEEK).toString())
+    if (millis / DateTimeManager.DAY > 0L) {
+      return if (millis / DateTimeManager.WEEK > 0L) {
+        String.format(function.invoke(PatternType.WEEKS), (millis / DateTimeManager.WEEK).toString())
       } else {
-        String.format(function.invoke(PatternType.DAYS), (millis / TimeCount.DAY).toString())
+        String.format(function.invoke(PatternType.DAYS), (millis / DateTimeManager.DAY).toString())
       }
     } else {
-      return if (millis / TimeCount.HOUR > 0L) {
-        String.format(function.invoke(PatternType.HOURS), (millis / TimeCount.HOUR).toString())
+      return if (millis / DateTimeManager.HOUR > 0L) {
+        String.format(function.invoke(PatternType.HOURS), (millis / DateTimeManager.HOUR).toString())
       } else {
-        if (millis / TimeCount.MINUTE > 0L) {
-          String.format(function.invoke(PatternType.MINUTES), (millis / TimeCount.MINUTE).toString())
+        if (millis / DateTimeManager.MINUTE > 0L) {
+          String.format(function.invoke(PatternType.MINUTES), (millis / DateTimeManager.MINUTE).toString())
         } else {
-          String.format(function.invoke(PatternType.SECONDS), (millis / TimeCount.SECOND).toString())
+          String.format(function.invoke(PatternType.SECONDS), (millis / DateTimeManager.SECOND).toString())
         }
       }
     }
@@ -57,11 +56,11 @@ object IntervalUtil {
 
   fun getInterval(millis: Long, function: (PatternType) -> String): String {
     var code = millis
-    val tmp = millis / TimeCount.MINUTE
+    val tmp = millis / DateTimeManager.MINUTE
     val interval: String
     when {
       tmp > 1000 -> {
-        code /= TimeCount.DAY
+        code /= DateTimeManager.DAY
         interval = when (code) {
           REPEAT_CODE_ONCE.toLong() -> "0"
           INTERVAL_WEEK.toLong() -> String.format(function.invoke(PatternType.WEEKS), 1.toString())
@@ -71,8 +70,8 @@ object IntervalUtil {
           else -> String.format(function.invoke(PatternType.DAYS), code.toString())
         }
       }
-      tmp > 100 -> return if (code % TimeCount.HOUR == 0L) {
-        code /= TimeCount.HOUR
+      tmp > 100 -> return if (code % DateTimeManager.HOUR == 0L) {
+        code /= DateTimeManager.HOUR
         String.format(function.invoke(PatternType.HOURS), code.toString())
       } else {
         String.format(function.invoke(PatternType.MINUTES), tmp.toString())

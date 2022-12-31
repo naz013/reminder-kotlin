@@ -8,13 +8,13 @@ import android.os.IBinder
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.TimeCount
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
@@ -29,8 +29,9 @@ class GeolocationService : Service() {
   private var stockRadius: Int = 0
 
   private val prefs by inject<Prefs>()
-  private val appDb by inject<AppDb>()
+  private val reminderDao by inject<ReminderDao>()
   private val notifier by inject<Notifier>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
   private var locationListener: LocationTracker.Listener = object : LocationTracker.Listener {
@@ -69,7 +70,7 @@ class GeolocationService : Service() {
 
   private fun checkReminders(locationA: Location) {
     launchDefault {
-      for (reminder in appDb.reminderDao().getAll(active = true, removed = false)) {
+      for (reminder in reminderDao.getAll(active = true, removed = false)) {
         if (Reminder.isGpsType(reminder.type)) {
           checkDistance(locationA, reminder)
         }
@@ -79,7 +80,7 @@ class GeolocationService : Service() {
 
   private suspend fun checkDistance(locationA: Location, reminder: Reminder) {
     if (!TextUtils.isEmpty(reminder.eventTime)) {
-      if (TimeCount.isCurrent(reminder.eventTime)) {
+      if (dateTimeManager.isCurrent(reminder.eventTime)) {
         selectBranch(locationA, reminder)
       }
     } else {
@@ -148,7 +149,7 @@ class GeolocationService : Service() {
     } else {
       if (roundedDistance < getRadius(place.radius)) {
         reminder.isLocked = true
-        appDb.reminderDao().insert(reminder)
+        reminderDao.insert(reminder)
       }
     }
   }
@@ -163,7 +164,7 @@ class GeolocationService : Service() {
   private suspend fun showReminder(reminder: Reminder) {
     if (reminder.isNotificationShown) return
     reminder.isNotificationShown = true
-    appDb.reminderDao().insert(reminder)
+    reminderDao.insert(reminder)
     withUIContext { reminderAction(applicationContext, reminder.uuId) }
   }
 

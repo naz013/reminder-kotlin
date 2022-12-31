@@ -1,23 +1,21 @@
 package com.elementary.tasks.core.app_widgets
 
-import android.app.AlarmManager
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.repository.BirthdayRepository
+import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.datetime.TimeCount
-import com.elementary.tasks.core.utils.datetime.TimeUtil
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.plusMillis
+import org.threeten.bp.LocalTime
 
 class WidgetDataProvider(
-  private val appDb: AppDb
+  private val dateTimeManager: DateTimeManager,
+  private val reminderRepository: ReminderRepository,
+  private val birthdayRepository: BirthdayRepository
 ) {
 
   private val data: MutableList<Item> = ArrayList()
-  private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-  private var hour: Int = 0
-  private var minute: Int = 0
+  private var birthdayTime: LocalTime = LocalTime.now()
   private var isFeature: Boolean = false
 
   enum class WidgetType {
@@ -25,9 +23,8 @@ class WidgetDataProvider(
     REMINDER
   }
 
-  fun setTime(hour: Int, minute: Int) {
-    this.hour = hour
-    this.minute = minute
+  fun setTime(birthdayTime: LocalTime) {
+    this.birthdayTime = birthdayTime
   }
 
   fun setFeature(isFeature: Boolean) {
@@ -48,11 +45,8 @@ class WidgetDataProvider(
       if (res) {
         break
       }
-      val mDay = item.day
-      val mMonth = item.month
-      val mYear = item.year
-      val type = item.type
-      res = mDay == day && mMonth == month && mYear == year && type == WidgetType.REMINDER
+      res = item.day == day && item.month == month && item.year == year &&
+        item.type == WidgetType.REMINDER
     }
     return res
   }
@@ -60,10 +54,7 @@ class WidgetDataProvider(
   fun hasBirthday(day: Int, month: Int): Boolean {
     var res = false
     for (item in data) {
-      val mDay = item.day
-      val mMonth = item.month
-      val type = item.type
-      if (mDay == day && mMonth == month && type == WidgetType.BIRTHDAY) {
+      if (item.day == day && item.month == month && item.type == WidgetType.BIRTHDAY) {
         res = true
         break
       }
@@ -71,110 +62,103 @@ class WidgetDataProvider(
     return res
   }
 
-  fun fillArray() {
+  fun prepare() {
     data.clear()
     loadBirthdays()
     loadReminders()
   }
 
   private fun loadReminders() {
-    val reminderItems = appDb.reminderDao().getAll(active = true, removed = false)
-    for (item in reminderItems) {
+    val reminders = reminderRepository.getActiveWithoutGpsTypes()
+    for (item in reminders) {
       val mType = item.type
-      var eventTime = item.dateTime
-      if (!Reminder.isGpsType(item.type) && eventTime > 0) {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = eventTime
-        var mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        var mMonth = calendar.get(Calendar.MONTH)
-        var mYear = calendar.get(Calendar.YEAR)
-        data.add(Item(mDay, mMonth, mYear, WidgetType.REMINDER))
-        val repeatTime = item.repeatInterval
-        val limit = item.repeatLimit.toLong()
-        val count = item.eventCount
-        val isLimited = limit > 0
-        if (isFeature) {
-          val calendar1 = Calendar.getInstance()
-          calendar1.timeInMillis = eventTime
-          if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
-            var days: Long = 0
-            var max = Configs.MAX_DAYS_COUNT
-            if (isLimited) {
-              max = limit - count
-            }
-            val list = item.weekdays
-            do {
-              calendar1.timeInMillis = calendar1.timeInMillis + AlarmManager.INTERVAL_DAY
-              val weekDay = calendar1.get(Calendar.DAY_OF_WEEK)
-              if (list[weekDay - 1] == 1) {
-                val sDay = calendar1.get(Calendar.DAY_OF_MONTH)
-                val sMonth = calendar1.get(Calendar.MONTH)
-                val sYear = calendar1.get(Calendar.YEAR)
-                days++
-                data.add(Item(sDay, sMonth, sYear, WidgetType.REMINDER))
-              }
-            } while (days < max)
-          } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
-            var days: Long = 0
-            var max = Configs.MAX_DAYS_COUNT
-            if (isLimited) {
-              max = limit - count
-            }
-            do {
-              item.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-              eventTime = TimeCount.getNextMonthDayTime(item)
-              calendar1.timeInMillis = eventTime
-              days++
-              val sDay = calendar1.get(Calendar.DAY_OF_MONTH)
-              val sMonth = calendar1.get(Calendar.MONTH)
-              val sYear = calendar1.get(Calendar.YEAR)
-              data.add(Item(sDay, sMonth, sYear, WidgetType.REMINDER))
-            } while (days < max)
-          } else {
-            if (repeatTime == 0L) {
-              continue
-            }
-            var days: Long = 0
-            var max = Configs.MAX_DAYS_COUNT
-            if (isLimited) {
-              max = limit - count
-            }
-            do {
-              calendar1.timeInMillis = calendar1.timeInMillis + repeatTime
-              mDay = calendar1.get(Calendar.DAY_OF_MONTH)
-              mMonth = calendar1.get(Calendar.MONTH)
-              mYear = calendar1.get(Calendar.YEAR)
-              days++
-              data.add(Item(mDay, mMonth, mYear, WidgetType.REMINDER))
-            } while (days < max)
+      var eventTime = dateTimeManager.fromGmtToLocal(item.eventTime) ?: continue
+      data.add(
+        Item(
+          eventTime.dayOfMonth,
+          eventTime.monthValue,
+          eventTime.year,
+          WidgetType.REMINDER
+        )
+      )
+      val repeatTime = item.repeatInterval
+      val limit = item.repeatLimit.toLong()
+      val count = item.eventCount
+      val isLimited = limit > 0
+      if (isFeature) {
+        if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
+          var days: Long = 0
+          var max = Configs.MAX_DAYS_COUNT
+          if (isLimited) {
+            max = limit - count
           }
+          val list = item.weekdays
+          do {
+            eventTime = eventTime.plusDays(1)
+
+            val weekDay = dateTimeManager.localDayOfWeekToOld(eventTime.dayOfWeek)
+            if (list[weekDay - 1] == 1) {
+              days++
+              data.add(
+                Item(
+                  eventTime.dayOfMonth,
+                  eventTime.monthValue,
+                  eventTime.year,
+                  WidgetType.REMINDER
+                )
+              )
+            }
+          } while (days < max)
+        } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
+          var days: Long = 0
+          var max = Configs.MAX_DAYS_COUNT
+          if (isLimited) {
+            max = limit - count
+          }
+          do {
+            item.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
+            eventTime = dateTimeManager.getNewNextMonthDayTime(item)
+            days++
+            data.add(
+              Item(
+                eventTime.dayOfMonth,
+                eventTime.monthValue,
+                eventTime.year,
+                WidgetType.REMINDER
+              )
+            )
+          } while (days < max)
+        } else {
+          if (repeatTime == 0L) {
+            continue
+          }
+          var days: Long = 0
+          var max = Configs.MAX_DAYS_COUNT
+          if (isLimited) {
+            max = limit - count
+          }
+          do {
+            eventTime = eventTime.plusMillis(repeatTime)
+            days++
+            data.add(
+              Item(
+                eventTime.dayOfMonth,
+                eventTime.monthValue,
+                eventTime.year,
+                WidgetType.REMINDER
+              )
+            )
+          } while (days < max)
         }
       }
     }
   }
 
   private fun loadBirthdays() {
-    val list = appDb.birthdaysDao().all()
-    for (item in list) {
-      var date: Date? = null
-      try {
-        date = format.parse(item.date)
-      } catch (e: ParseException) {
-        e.printStackTrace()
-      }
-
-      if (date != null) {
-        val calendar1 = Calendar.getInstance()
-        calendar1.time = date
-        val bDay = calendar1.get(Calendar.DAY_OF_MONTH)
-        val bMonth = calendar1.get(Calendar.MONTH)
-        calendar1.timeInMillis = System.currentTimeMillis()
-        calendar1.set(Calendar.MONTH, bMonth)
-        calendar1.set(Calendar.DAY_OF_MONTH, bDay)
-        calendar1.set(Calendar.HOUR_OF_DAY, hour)
-        calendar1.set(Calendar.MINUTE, minute)
-        data.add(Item(bDay, bMonth, 0, WidgetType.BIRTHDAY))
-      }
+    val birthdays = birthdayRepository.getAll()
+    for (item in birthdays) {
+      val date = dateTimeManager.parseBirthdayDate(item.date) ?: continue
+      data.add(Item(date.dayOfMonth, date.monthValue, 0, WidgetType.BIRTHDAY))
     }
   }
 

@@ -5,7 +5,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.additional.FollowReminderActivity
@@ -19,7 +18,10 @@ import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
-import java.util.*
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.UUID
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
@@ -77,7 +79,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       this.uniqueId = 12123
       this.uuId = UUID.randomUUID().toString()
       this.number = "16546848"
-      this.date = AddBirthdayActivity.createBirthDate(day, month, 1955)
+      this.date = createBirthDate(day, month, 1955)
 
       val secKey = if (TextUtils.isEmpty(number)) "0" else number.substring(1)
       this.key = "$name|$secKey"
@@ -90,6 +92,15 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
         ShowBirthdayActivity.mockTest(requireContext(), it)
       }
     }
+  }
+
+  private fun createBirthDate(day: Int, month: Int, year: Int): String {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = System.currentTimeMillis()
+    calendar.set(Calendar.YEAR, year)
+    calendar.set(Calendar.MONTH, month)
+    calendar.set(Calendar.DAY_OF_MONTH, day)
+    return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.time)
   }
 
   override fun getTitle(): String = "Tests"

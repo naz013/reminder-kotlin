@@ -38,7 +38,7 @@ class SyncDataWorker(
     val syncFlags = prefs.autoSyncFlags
     launchDefault {
       if (syncFlags.contains(FLAG_REMINDER)) {
-        val groupRepository = syncManagers.repositoryManager.groupRepository
+        val groupRepository = syncManagers.repositoryManager.groupDataFlowRepository
         val groupConverter = syncManagers.converterManager.groupConverter
         BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
           .restore(IndexTypes.TYPE_GROUP, deleteFile = true)
@@ -53,7 +53,7 @@ class SyncDataWorker(
         }
         BulkDataFlow(groupRepository, groupConverter, storage, completable = null).backup()
 
-        val reminderRepository = syncManagers.repositoryManager.reminderRepository
+        val reminderRepository = syncManagers.repositoryManager.reminderDataFlowRepository
         val reminderConverter = syncManagers.converterManager.reminderConverter
         BulkDataFlow(
           reminderRepository,
@@ -65,7 +65,7 @@ class SyncDataWorker(
       }
 
       if (syncFlags.contains(FLAG_NOTE)) {
-        val noteRepository = syncManagers.repositoryManager.noteRepository
+        val noteRepository = syncManagers.repositoryManager.noteDataFlowRepository
         val noteConverter = syncManagers.converterManager.noteConverter
         BulkDataFlow(noteRepository, noteConverter, storage, completable = null)
           .restore(IndexTypes.TYPE_NOTE, deleteFile = true)
@@ -73,7 +73,7 @@ class SyncDataWorker(
       }
 
       if (syncFlags.contains(FLAG_BIRTHDAY)) {
-        val birthdayRepository = syncManagers.repositoryManager.birthdayRepository
+        val birthdayRepository = syncManagers.repositoryManager.birthdayDataFlowRepository
         val birthdayConverter = syncManagers.converterManager.birthdayConverter
         BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null)
           .restore(IndexTypes.TYPE_BIRTHDAY, deleteFile = true)
@@ -81,7 +81,7 @@ class SyncDataWorker(
       }
 
       if (syncFlags.contains(FLAG_PLACE)) {
-        val placeRepository = syncManagers.repositoryManager.placeRepository
+        val placeRepository = syncManagers.repositoryManager.placeDataFlowRepository
         val placeConverter = syncManagers.converterManager.placeConverter
         BulkDataFlow(placeRepository, placeConverter, storage, completable = null)
           .restore(IndexTypes.TYPE_PLACE, deleteFile = true)
@@ -89,7 +89,7 @@ class SyncDataWorker(
       }
 
       if (syncFlags.contains(FLAG_TEMPLATE)) {
-        val templateRepository = syncManagers.repositoryManager.templateRepository
+        val templateRepository = syncManagers.repositoryManager.templateDataFlowRepository
         val templateConverter = syncManagers.converterManager.templateConverter
         BulkDataFlow(templateRepository, templateConverter, storage, completable = null)
           .restore(IndexTypes.TYPE_TEMPLATE, deleteFile = true)
@@ -97,7 +97,7 @@ class SyncDataWorker(
       }
 
       if (syncFlags.contains(FLAG_SETTINGS)) {
-        val settingsRepository = syncManagers.repositoryManager.settingsRepository
+        val settingsRepository = syncManagers.repositoryManager.settingsDataFlowRepository
         val settingsConverter = syncManagers.converterManager.settingsConverter
         BulkDataFlow(settingsRepository, settingsConverter, storage, completable = null)
           .restore(IndexTypes.TYPE_SETTINGS, deleteFile = true)

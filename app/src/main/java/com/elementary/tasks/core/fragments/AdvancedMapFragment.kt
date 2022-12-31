@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DrawableHelper
@@ -42,10 +43,11 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
   private val viewModel by viewModel<PlacesViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private var mMap: GoogleMap? = null
 
-  private var placeRecyclerAdapter = RecentPlacesAdapter(currentStateHolder)
+  private var placeRecyclerAdapter = RecentPlacesAdapter(currentStateHolder, dateTimeManager)
 
   private var isTouch = true
   private var isZoom = true
@@ -242,7 +244,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
   private fun createStyleDrawable() {
     mMarkerStyle = DrawableHelper.withContext(requireContext())
       .withDrawable(R.drawable.ic_twotone_place_24px)
-      .withColor(themeUtil.getNoteLightColor(markerStyle))
+      .withColor(themeUtil.getMarkerLightColor(markerStyle))
       .tint()
       .get()
   }

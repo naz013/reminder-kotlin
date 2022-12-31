@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.services
 
 import android.content.Context
-import android.os.Build
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -10,11 +9,11 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
@@ -25,7 +24,8 @@ import java.util.concurrent.TimeUnit
 
 class JobScheduler(
   private val context: Context,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   fun scheduleEventCheck() {
@@ -140,8 +140,7 @@ class JobScheduler(
   }
 
   fun scheduleDailyBirthday() {
-    val time = prefs.birthdayTime
-    val millis = TimeUtil.getBirthdayTime(time) - System.currentTimeMillis()
+    val millis = dateTimeManager.getMillisToBirthdayTime()
     if (millis <= 0) return
 
     val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
@@ -218,15 +217,13 @@ class JobScheduler(
     schedule(work)
   }
 
-  @Deprecated("Remove db call")
-  fun scheduleGpsDelay(appDb: AppDb, uuId: String): Boolean {
-    val item = appDb.reminderDao().getById(uuId) ?: return false
-    val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
+  fun scheduleGpsDelay(reminder: Reminder): Boolean {
+    val due = dateTimeManager.toMillis(reminder.eventTime)
     val millis = due - System.currentTimeMillis()
     if (due == 0L || millis <= 0) {
       return false
     }
-    Timber.d("scheduleGpsDelay: $millis, $uuId")
+    Timber.d("scheduleGpsDelay: $millis, ${reminder.uuId}")
 
     val bundle = Data.Builder()
       .putBoolean(ARG_LOCATION, true)
@@ -234,7 +231,7 @@ class JobScheduler(
 
     val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
       .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(item.uuId)
+      .addTag(reminder.uuId)
       .setInputData(bundle)
       .setConstraints(getDefaultConstraints())
       .build()
@@ -245,23 +242,22 @@ class JobScheduler(
 
   fun scheduleReminder(reminder: Reminder?) {
     if (reminder == null) return
-    var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-    Timber.d("scheduleReminder: ${TimeUtil.logTime(due)}")
-    Timber.d("scheduleReminder: noe -> ${TimeUtil.logTime()}")
-    if (due == 0L) {
+    var due = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+    Timber.d("scheduleReminder: noe -> ${dateTimeManager.logDateTime()}")
+    if (due == null) {
       return
     }
+    Timber.d("scheduleReminder: ${dateTimeManager.logDateTime(due)}")
     if (reminder.remindBefore != 0L) {
-      due -= reminder.remindBefore
+      due = due.minusMillis(reminder.remindBefore)
     }
     if (!Reminder.isBase(reminder.type, Reminder.BY_TIME)) {
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = due
-      calendar.set(Calendar.SECOND, 0)
-      calendar.set(Calendar.MILLISECOND, 0)
-      due = calendar.timeInMillis
+      due = due.withSecond(0)
     }
-    var millis = due - System.currentTimeMillis()
+    if (due == null) {
+      return
+    }
+    var millis = dateTimeManager.toMillis(due) - System.currentTimeMillis()
     if (millis < 0) {
       millis = 100L
     }
@@ -280,11 +276,7 @@ class JobScheduler(
       .setRequiresCharging(false)
       .setRequiresBatteryNotLow(false)
       .setRequiresStorageNotLow(false)
-      .apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          setRequiresDeviceIdle(false)
-        }
-      }
+      .setRequiresDeviceIdle(false)
       .build()
   }
 

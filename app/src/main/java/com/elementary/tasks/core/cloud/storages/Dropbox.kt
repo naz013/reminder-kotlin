@@ -11,10 +11,10 @@ import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
@@ -24,7 +24,8 @@ import java.io.InputStream
 
 class Dropbox(
   private val prefs: Prefs,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val dateTimeManager: DateTimeManager
 ) : Storage() {
 
   private val rootFolder = "/"
@@ -190,7 +191,7 @@ class Dropbox(
           "",
           IndexDataFile.FILE_NAME,
           FileConfig.FILE_NAME_JSON,
-          TimeUtil.gmtDateTime,
+          dateTimeManager.getNowGmtDateTime(),
           "Index file"
         )
       )

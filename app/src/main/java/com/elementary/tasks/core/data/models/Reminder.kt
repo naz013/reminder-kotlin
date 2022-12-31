@@ -8,7 +8,7 @@ import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
 import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -136,12 +136,6 @@ data class Reminder(
   var groupColor: Int = 0
 ) : RecyclerInterface, Parcelable {
 
-  val dateTime: Long
-    get() = TimeUtil.getDateTimeFromGmt(eventTime)
-
-  val startDateTime: Long
-    get() = TimeUtil.getDateTimeFromGmt(startTime)
-
   override val viewType: Int
     get() = if (isSame(type, BY_DATE_SHOP)) {
       SHOPPING
@@ -204,7 +198,7 @@ data class Reminder(
     } else {
       this.uuId = UUID.randomUUID().toString()
       this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-      this.updatedAt = TimeUtil.gmtDateTime
+      this.updatedAt = DateTimeManager.gmtDateTime
     }
   }
 

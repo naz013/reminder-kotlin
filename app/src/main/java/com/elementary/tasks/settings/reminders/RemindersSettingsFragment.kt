@@ -5,13 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.datetime.TimeUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
-import java.util.*
+import org.koin.android.ext.android.inject
+import org.threeten.bp.LocalTime
 
 class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsRemindersBinding>() {
+
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private var mItemSelect: Int = 0
 
@@ -109,16 +114,18 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
 
   private fun initTimesPrefs() {
     binding.doNotDisturbFromPrefs.setOnClickListener {
-      showTimeDialog(prefs.doNotDisturbFrom) { i, j ->
-        prefs.doNotDisturbFrom = TimeUtil.getBirthdayTime(i, j)
+      val time = dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now()
+      dateTimePickerProvider.showTimePicker(requireContext(), time) {
+        prefs.doNotDisturbFrom = dateTimeManager.to24HourString(it)
         showFromTime()
       }
     }
     binding.doNotDisturbFromPrefs.setDependentView(binding.doNotDisturbPrefs)
 
     binding.doNotDisturbToPrefs.setOnClickListener {
-      showTimeDialog(prefs.doNotDisturbTo) { i, j ->
-        prefs.doNotDisturbTo = TimeUtil.getBirthdayTime(i, j)
+      val time = dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now()
+      dateTimePickerProvider.showTimePicker(requireContext(), time) {
+        prefs.doNotDisturbTo = dateTimeManager.to24HourString(it)
         showToTime()
       }
     }
@@ -128,24 +135,18 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     showToTime()
   }
 
-  private fun showTimeDialog(time: String, callback: (Int, Int) -> Unit) {
-    val calendar = TimeUtil.getBirthdayCalendar(time)
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val min = calendar.get(Calendar.MINUTE)
-    withContext {
-      TimeUtil.showTimePicker(it, prefs.is24HourFormat, hour, min
-      ) { _, hourOfDay, minute ->
-        callback.invoke(hourOfDay, minute)
-      }
-    }
-  }
-
   private fun showToTime() {
-    binding.doNotDisturbToPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbTo, prefs.is24HourFormat, prefs.appLanguage))
+    binding.doNotDisturbToPrefs.setValueText(
+      dateTimeManager.getTime(dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now())
+    )
   }
 
   private fun showFromTime() {
-    binding.doNotDisturbFromPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbFrom, prefs.is24HourFormat, prefs.appLanguage))
+    binding.doNotDisturbFromPrefs.setValueText(
+      dateTimeManager.getTime(
+        dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now()
+      )
+    )
   }
 
   private fun initDoNotDisturbPrefs() {

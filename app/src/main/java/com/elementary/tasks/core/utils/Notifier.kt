@@ -20,6 +20,7 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -31,6 +32,7 @@ import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.splash.SplashScreenActivity
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 import java.util.*
 
@@ -38,7 +40,8 @@ class Notifier(
   private val context: Context,
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
-  private val systemServiceProvider: SystemServiceProvider
+  private val systemServiceProvider: SystemServiceProvider,
+  private val reminderRepository: ReminderRepository
 ) {
 
   fun createChannels() {
@@ -222,28 +225,27 @@ class Notifier(
     }
     remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)
     remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt)
-    val reminders =
-      AppDb.getAppDatabase(context).reminderDao().getAll(active = true, removed = false)
-        .toMutableList()
+    val reminders = reminderRepository.getActive().toMutableList()
     val count = reminders.size
+
     for (i in reminders.indices.reversed()) {
-      val item = reminders[i]
-      val eventTime = item.dateTime
-      if (eventTime <= 0) {
+      val reminder = reminders[i]
+      val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+      if (eventTime == null) {
         reminders.removeAt(i)
       }
     }
     var event: String? = ""
-    var prevTime: Long = 0
-    for (i in reminders.indices) {
-      val item = reminders[i]
-      if (item.dateTime > System.currentTimeMillis()) {
-        if (prevTime == 0L) {
-          prevTime = item.dateTime
-          event = item.summary
-        } else if (item.dateTime < prevTime) {
-          prevTime = item.dateTime
-          event = item.summary
+    var prevTime: LocalDateTime? = null
+    reminders.forEach { reminder ->
+      val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+      if (dateTime != null && dateTimeManager.isCurrent(dateTime)) {
+        if (prevTime == null) {
+          prevTime = dateTime
+          event = reminder.summary
+        } else if (dateTime < prevTime) {
+          prevTime = dateTime
+          event = reminder.summary
         }
       }
     }
@@ -419,7 +421,7 @@ class Notifier(
   // Checked for Notification permission
   fun showSimpleReminder(id: String) {
     Timber.d("showSimpleReminder: ")
-    val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
+    val reminder = reminderRepository.getById(id) ?: return
     val dismissIntent = Intent(context, ReminderActionReceiver::class.java)
     dismissIntent.action = ReminderActionReceiver.ACTION_HIDE
     dismissIntent.putExtra(Constants.INTENT_ID, id)

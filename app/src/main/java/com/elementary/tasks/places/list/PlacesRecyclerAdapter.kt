@@ -7,9 +7,9 @@ import com.elementary.tasks.core.arch.BaseViewHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.databinding.ListItemPlaceBinding
 
 class PlacesRecyclerAdapter(
@@ -27,7 +27,7 @@ class PlacesRecyclerAdapter(
       binding.textView.text = item.name
       DrawableHelper.withContext(itemView.context)
         .withDrawable(R.drawable.ic_twotone_place_24px)
-        .withColor(theme.getNoteLightColor(item.marker))
+        .withColor(theme.getMarkerLightColor(item.marker))
         .tint()
         .applyTo(binding.markerImage)
     }
