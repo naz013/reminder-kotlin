@@ -11,6 +11,7 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
+import com.elementary.tasks.sms.QuickSmsViewModel
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -53,6 +54,7 @@ import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.data.adapter.UiShowBirthdayAdapter
+import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
@@ -97,8 +99,8 @@ import com.elementary.tasks.core.view_models.reminders.FullScreenMapViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.core.view_models.reminders.VoiceResultDialogViewModel
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.sms.create.CreateSmsTemplateViewModel
+import com.elementary.tasks.sms.list.SmsTemplatesViewModel
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.BackupSettingsWorker
@@ -173,6 +175,10 @@ val viewModelModule = module {
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
   viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
 
+  viewModel { QuickSmsViewModel(get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> CreateSmsTemplateViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { SmsTemplatesViewModel(get(), get(), get(), get()) }
+
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
@@ -220,7 +226,7 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { (id: String) -> SmsTemplateViewModel(id, get(), get(), get()) }
+
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get()) }
   viewModel { (id: String) ->
     NoteViewModel(
@@ -279,7 +285,7 @@ val viewModelModule = module {
   viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
     MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get())
   }
-  viewModel { SmsTemplatesViewModel(get(), get(), get()) }
+
   viewModel {
     ConversationViewModel(
       get(),
@@ -481,6 +487,8 @@ val adapterModule = module {
 
   single { UiBirthdayListAdapter(get()) }
   single { UiShowBirthdayAdapter(get(), get()) }
+
+  single { UiSmsListAdapter() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

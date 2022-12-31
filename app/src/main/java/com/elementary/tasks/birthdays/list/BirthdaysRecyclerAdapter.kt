@@ -10,7 +10,7 @@ import com.elementary.tasks.core.utils.Module
 
 class BirthdaysRecyclerAdapter(
   private val refreshListener: () -> Unit
-) : ListAdapter<UiBirthdayList, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
+) : ListAdapter<UiBirthdayList, RecyclerView.ViewHolder>(UiBirthdayListDiffCallback()) {
 
   var actionsListener: ActionsListener<UiBirthdayList>? = null
   private val adsProvider = AdsProvider()

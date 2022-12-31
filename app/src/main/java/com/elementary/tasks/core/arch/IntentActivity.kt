@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.settings.additional.TemplateActivity
+import com.elementary.tasks.sms.create.TemplateActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity

@@ -3,7 +3,7 @@ package com.elementary.tasks.birthdays.list
 import androidx.recyclerview.widget.DiffUtil
 import com.elementary.tasks.core.data.ui.UiBirthdayList
 
-class BirthdayDiffCallback : DiffUtil.ItemCallback<UiBirthdayList>() {
+class UiBirthdayListDiffCallback : DiffUtil.ItemCallback<UiBirthdayList>() {
   override fun areContentsTheSame(oldItem: UiBirthdayList, newItem: UiBirthdayList) =
     oldItem == newItem
 

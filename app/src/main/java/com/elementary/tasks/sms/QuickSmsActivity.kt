@@ -1,71 +1,62 @@
-package com.elementary.tasks.core.additional
+package com.elementary.tasks.sms
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.data.ui.sms.UiSmsList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.contacts.Contacts
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>() {
 
-  private val viewModel by viewModel<SmsTemplatesViewModel>()
-  private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
-  private var number: String = ""
+  private val viewModel by viewModel<QuickSmsViewModel>()
+  private var selectableTemplatesAdapter = SelectableTemplatesAdapter()
 
   override fun inflateBinding() = ActivityQuickSmsBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    number = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
 
     binding.messagesList.layoutManager = LinearLayoutManager(this)
-    binding.messagesList.adapter = mAdapter
+    binding.messagesList.adapter = selectableTemplatesAdapter
 
     binding.buttonSend.setOnClickListener { startSending() }
-    val name = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-      Contacts.getNameFromNumber(number, this) ?: ""
-    } else {
-      ""
-    }
-    binding.contactInfo.text = "$name\n$number"
 
-    analyticsEventSender.send(FeatureUsedEvent(Feature.QUICK_SMS))
-
+    viewModel.loadContactInfo(intentString(Constants.SELECTED_CONTACT_NUMBER, ""))
     initViewModel()
   }
 
   private fun initViewModel() {
+    viewModel.contactInfo.nonNullObserve(this) {
+      binding.contactInfo.text = it
+    }
     viewModel.smsTemplates.nonNullObserve(this) { smsTemplates ->
       updateList(smsTemplates)
     }
+    lifecycle.addObserver(viewModel)
   }
 
-  private fun updateList(smsTemplates: List<SmsTemplate>) {
-    mAdapter.setData(smsTemplates)
-    if (mAdapter.itemCount > 0) {
-      mAdapter.selectItem(0)
+  private fun updateList(smsTemplates: List<UiSmsList>) {
+    selectableTemplatesAdapter.submitList(smsTemplates)
+    if (selectableTemplatesAdapter.itemCount > 0) {
+      selectableTemplatesAdapter.selectItem(0)
     }
   }
 
   private fun startSending() {
-    val position = mAdapter.selectedPosition
-    val item = mAdapter.getItem(position)
+    val item = selectableTemplatesAdapter.getSelectedItem()
+    Timber.d("startSending: $item")
     if (item != null) {
-      sendSMS(number, item.title)
+      sendSMS(viewModel.number, item.text)
     } else {
       sendError()
     }
@@ -88,7 +79,7 @@ class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>() {
   }
 
   private fun sendError() {
-    Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
+    toast(R.string.error_sending)
   }
 
   override fun handleBackPress(): Boolean {

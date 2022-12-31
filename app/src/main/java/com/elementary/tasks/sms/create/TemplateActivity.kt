@@ -1,77 +1,56 @@
-package com.elementary.tasks.settings.additional
+package com.elementary.tasks.sms.create
 
-import android.content.ContentResolver
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.UUID
 
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
 
-  private val viewModel by viewModel<SmsTemplateViewModel> { parametersOf(getId()) }
+  private val viewModel by viewModel<CreateSmsTemplateViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
-  private var mItem: SmsTemplate? = null
 
   override fun inflateBinding() = ActivityTemplateBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     initActionBar()
+    initViewModel()
     loadTemplate()
   }
 
   private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun loadTemplate() {
-    val intent = intent
-    initViewModel()
     if (intent.data != null) {
       permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
         readUri()
       }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
       runCatching {
-        val item = intent.getParcelableExtra(Constants.INTENT_ITEM) as SmsTemplate?
-        item?.also { showTemplate(it, true) }
+        viewModel.loadFromIntent(intentParcelable(Constants.INTENT_ITEM, SmsTemplate::class.java))
       }
     }
   }
 
   private fun readUri() {
-    intent.data?.let {
-      runCatching {
-        mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-          val any = MemoryUtil.readFromUri(this, it)
-          if (any != null && any is SmsTemplate) {
-            any
-          } else null
-        } else null
-        mItem?.let { item -> showTemplate(item, true) }
-      }
-    }
+    intent.data?.also { viewModel.loadFromFile(it) }
   }
 
   private fun initViewModel() {
-    viewModel.smsTemplate.nonNullObserve(this) { smsTemplate ->
-      showTemplate(smsTemplate)
-    }
+    viewModel.smsTemplate.nonNullObserve(this) { showTemplate(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
         Commands.SAVED, Commands.DELETED -> finish()
@@ -79,19 +58,12 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
         }
       }
     }
+    lifecycle.addObserver(viewModel)
   }
 
-  private fun showTemplate(smsTemplate: SmsTemplate, fromFile: Boolean = false) {
-    this.mItem = smsTemplate
+  private fun showTemplate(smsTemplate: SmsTemplate) {
     binding.toolbar.title = getString(R.string.edit_template)
-    if (!viewModel.isEdited) {
-      binding.messageInput.setText(smsTemplate.title)
-      viewModel.isEdited = true
-      viewModel.isFromFile = fromFile
-      if (fromFile) {
-        viewModel.findSame(smsTemplate.key)
-      }
-    }
+    binding.messageInput.setText(smsTemplate.title)
   }
 
   private fun initActionBar() {
@@ -113,7 +85,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
         return true
       }
       MENU_ITEM_DELETE -> {
-        deleteItem()
+        viewModel.deleteSmsTemplate()
         return true
       }
     }
@@ -142,32 +114,19 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
     }
   }
 
-  private fun deleteItem() {
-    mItem?.let { viewModel.deleteSmsTemplate(it) }
-  }
-
   private fun saveTemplate(newId: Boolean = false) {
-    val text = binding.messageInput.text.toString().trim()
+    val text = binding.messageInput.trimmedText()
     if (text.isEmpty()) {
       binding.messageLayout.error = getString(R.string.must_be_not_empty)
       binding.messageLayout.isErrorEnabled = true
       return
     }
-    val date = DateTimeManager.gmtDateTime
-    val item = (mItem ?: SmsTemplate()).apply {
-      this.date = date
-      this.title = text
-    }
-    if (newId) {
-      item.key = UUID.randomUUID().toString()
-    }
-    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_SMS_TEMPLATE))
-    viewModel.saveTemplate(item)
+    viewModel.saveTemplate(text, newId)
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.menu_create_template, menu)
-    if (mItem != null && !viewModel.isFromFile) {
+    if (viewModel.canDelete()) {
       menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
     }
     return true

@@ -1,28 +1,21 @@
-package com.elementary.tasks.settings.additional
+package com.elementary.tasks.sms.list
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.data.ui.sms.UiSmsList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMessageBinding
-import java.util.*
+import com.elementary.tasks.sms.UiSmsListDiffCallback
 
-internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHolder>() {
+internal class TemplatesAdapter : ListAdapter<UiSmsList, TemplatesAdapter.ViewHolder>(
+  UiSmsListDiffCallback()
+) {
 
-  var data: List<SmsTemplate> = ArrayList()
-    set(list) {
-      field = list
-      notifyDataSetChanged()
-    }
-  var actionsListener: ActionsListener<SmsTemplate>? = null
-
-  override fun getItemCount() = data.size
-
-  fun getItem(position: Int) = data[position]
+  var actionsListener: ActionsListener<UiSmsList>? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
@@ -35,17 +28,27 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
   ) : HolderBinding<ListItemMessageBinding>(
     ListItemMessageBinding.inflate(parent.inflater(), parent, false)
   ) {
-    fun bind(item: SmsTemplate) {
-      binding.messageView.text = item.title
+    fun bind(item: UiSmsList) {
+      binding.messageView.text = item.text
     }
 
     init {
       binding.buttonMore.visibility = View.VISIBLE
       binding.clickView.setOnClickListener {
-        actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+        actionsListener?.onAction(
+          it,
+          bindingAdapterPosition,
+          getItem(bindingAdapterPosition),
+          ListActions.OPEN
+        )
       }
       binding.buttonMore.setOnClickListener {
-        actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
+        actionsListener?.onAction(
+          it,
+          bindingAdapterPosition,
+          getItem(bindingAdapterPosition),
+          ListActions.MORE
+        )
       }
     }
   }

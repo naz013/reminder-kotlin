@@ -228,7 +228,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.elementary.tasks.settings.additional.TemplateActivity"
+            android:name="com.elementary.tasks.sms.create.TemplateActivity"
             android:configChanges="keyboardHidden"
             android:exported="true"
             android:label="@string/create_template"
@@ -252,7 +252,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.additional.QuickSmsActivity"
+            android:name=".sms.QuickSmsActivity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".core.additional.FollowReminderActivity"

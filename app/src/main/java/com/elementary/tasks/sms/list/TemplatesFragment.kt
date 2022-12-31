@@ -1,4 +1,4 @@
-package com.elementary.tasks.settings.additional
+package com.elementary.tasks.sms.list
 
 import android.app.SearchManager
 import android.content.Context
@@ -13,33 +13,35 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.data.ui.sms.UiSmsList
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.FragmentSettingsTemplatesListBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.sms.create.TemplateActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBinding>() {
 
-  private val adapter = TemplatesAdapter()
+  private val templatesAdapter = TemplatesAdapter()
   private val viewModel by viewModel<SmsTemplatesViewModel>()
 
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
 
-  private val searchModifier = object : SearchModifier<SmsTemplate>(null, {
-    adapter.data = it
+  private val searchModifier = object : SearchModifier<UiSmsList>(null, {
+    templatesAdapter.submitList(it)
     binding.templatesList.smoothScrollToPosition(0)
     refreshView()
   }) {
-    override fun filter(v: SmsTemplate): Boolean {
-      return searchValue.isEmpty() || v.title.toLowerCase().contains(searchValue.toLowerCase())
+    override fun filter(v: UiSmsList): Boolean {
+      return searchValue.isEmpty() || v.text.lowercase().contains(searchValue.lowercase())
     }
   }
 
@@ -98,11 +100,8 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
   }
 
   private fun initViewModel() {
-    viewModel.smsTemplates.observe(viewLifecycleOwner, { smsTemplates ->
-      if (smsTemplates != null) {
-        showTemplates(smsTemplates)
-      }
-    })
+    viewModel.smsTemplates.nonNullObserve(viewLifecycleOwner) { showTemplates(it) }
+    lifecycle.addObserver(viewModel)
   }
 
   private fun openCreateScreen() {
@@ -111,21 +110,21 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
 
   private fun initTemplateList() {
     binding.templatesList.layoutManager = LinearLayoutManager(context)
-    adapter.actionsListener = object : ActionsListener<SmsTemplate> {
-      override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
+    templatesAdapter.actionsListener = object : ActionsListener<UiSmsList> {
+      override fun onAction(view: View, position: Int, t: UiSmsList?, actions: ListActions) {
         when (actions) {
           ListActions.MORE -> if (t != null) {
             showMenu(view, t)
           }
           ListActions.OPEN -> if (t != null) {
-            openTemplate(t)
+            openTemplate(t.id)
           }
           else -> {
           }
         }
       }
     }
-    binding.templatesList.adapter = adapter
+    binding.templatesList.adapter = templatesAdapter
     ViewUtils.listenScrollableView(binding.templatesList, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
       if (it) binding.fab.show()
       else binding.fab.hide()
@@ -133,33 +132,30 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
     refreshView()
   }
 
-  private fun showMenu(view: View, smsTemplate: SmsTemplate) {
+  private fun showMenu(view: View, uiSmsList: UiSmsList) {
     val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
     Dialogues.showPopup(view, {
       when (it) {
-        0 -> openTemplate(smsTemplate)
-        1 -> deleteTemplate(smsTemplate)
+        0 -> openTemplate(uiSmsList.id)
+        1 -> viewModel.deleteSmsTemplate(uiSmsList.id)
       }
     }, *items)
   }
 
-  private fun openTemplate(smsTemplate: SmsTemplate) {
+  private fun openTemplate(id: String) {
     startActivity(Intent(context, TemplateActivity::class.java)
-      .putExtra(Constants.INTENT_ID, smsTemplate.key))
-  }
-
-  private fun deleteTemplate(smsTemplate: SmsTemplate) {
-    viewModel.deleteSmsTemplate(smsTemplate)
+      .putExtra(Constants.INTENT_ID, id))
   }
 
   override fun getTitle(): String = getString(R.string.messages)
 
-  private fun showTemplates(smsTemplates: List<SmsTemplate>) {
+  private fun showTemplates(smsTemplates: List<UiSmsList>) {
+    Timber.d("showTemplates: $smsTemplates")
     searchModifier.original = smsTemplates
   }
 
   private fun refreshView() {
-    if (adapter.itemCount == 0) {
+    if (templatesAdapter.itemCount == 0) {
       binding.emptyItem.visibility = View.VISIBLE
       binding.templatesList.visibility = View.GONE
     } else {
