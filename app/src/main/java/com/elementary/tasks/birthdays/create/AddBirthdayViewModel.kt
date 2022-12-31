@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.birthdays
+package com.elementary.tasks.birthdays.create
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
-class CreateBirthdayViewModel(
+class AddBirthdayViewModel(
   id: String,
   private val birthdaysDao: BirthdaysDao,
   dispatcherProvider: DispatcherProvider,
@@ -41,13 +41,13 @@ class CreateBirthdayViewModel(
   var isEdited = false
   var hasSameInDb = false
   var isFromFile = false
-  var selectedDate = LocalDate.now()
+  var selectedDate: LocalDate = LocalDate.now()
 
   private var preparedBirthday: Birthday? = null
 
   fun editBirthday(birthday: Birthday) {
     editableBirthday = birthday
-    selectedDate = dateTimeManager.parseBirthdayDate(birthday.date)
+    selectedDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now()
     _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
   }
 

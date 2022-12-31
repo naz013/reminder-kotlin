@@ -31,7 +31,6 @@ import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.birthdays.CreateBirthdayViewModel
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -41,7 +40,7 @@ import timber.log.Timber
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
-  private val viewModel by viewModel<CreateBirthdayViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<AddBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private val permissionFlow = PermissionFlow(this, dialogues)

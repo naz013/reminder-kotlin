@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.BuildConfig
-import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.birthdays.create.AddBirthdayViewModel
+import com.elementary.tasks.birthdays.list.BirthdaysViewModel
+import com.elementary.tasks.birthdays.preview.ShowBirthdayViewModel
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
@@ -45,10 +47,12 @@ import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
+import com.elementary.tasks.core.data.adapter.UiShowBirthdayAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
@@ -70,9 +74,6 @@ import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
-import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
-import com.elementary.tasks.core.view_models.birthdays.CreateBirthdayViewModel
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
@@ -130,6 +131,7 @@ import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
 import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
+import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
@@ -141,9 +143,7 @@ import org.koin.dsl.module
 import org.threeten.bp.ZoneId
 
 val workerModule = module {
-  worker { BirthdayDeleteBackupWorker(get(), get(), get()) }
   worker { BackupDataWorker(get(), get(), get()) }
-  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get()) }
   worker { LoadFileWorker(get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get()) }
@@ -161,13 +161,17 @@ val workerModule = module {
   worker { TemplateSingleBackupWorker(get(), get(), get()) }
   worker { TemplateDeleteBackupWorker(get(), get(), get()) }
   worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get()) }
+
+  worker { BirthdayDeleteBackupWorker(get(), get(), get(), get()) }
+  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get()) }
   worker { SingleBackupWorker(get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> BirthdayViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> CreateBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> ShowBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> AddBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
+  viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
 
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
@@ -436,7 +440,6 @@ val utilModule = module {
   factory { EnableThread(get(), get()) }
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
-  single { BirthdayModelAdapter(get()) }
   single { DayViewProvider(get(), get(), get()) }
 
   single { DispatcherProvider() }
@@ -475,6 +478,9 @@ val adapterModule = module {
   single { UiReminderCommonAdapter(get(), get(), get(), get(), get()) }
   single { UiReminderPreviewAdapter(get(), get(), get()) }
   single { UiReminderListAdapter(get(), get()) }
+
+  single { UiBirthdayListAdapter(get()) }
+  single { UiShowBirthdayAdapter(get(), get()) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

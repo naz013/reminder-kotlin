@@ -22,7 +22,6 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
@@ -38,7 +37,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
-  private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
+  private val mAdapter = BirthdaysRecyclerAdapter {
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
   private val filterController = SearchModifier(SortModifier(), this)

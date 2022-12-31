@@ -4,13 +4,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
-import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
 
 class BirthdaysRecyclerAdapter(
-  private val currentStateHolder: CurrentStateHolder,
   private val refreshListener: () -> Unit
 ) : ListAdapter<UiBirthdayList, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
 
@@ -25,9 +23,9 @@ class BirthdaysRecyclerAdapter(
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
       AdsProvider.ADS_VIEW_TYPE ->
-        BirthdayAdsViewHolder(parent, currentStateHolder, adsProvider, refreshListener)
+        BirthdayAdsViewHolder(parent, adsProvider, refreshListener)
       else ->
-        BirthdayHolder(parent, currentStateHolder) { view, i, listActions ->
+        BirthdayHolder(parent) { view, i, listActions ->
           actionsListener?.onAction(view, i, getItem(i), listActions)
         }
     }

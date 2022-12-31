@@ -1,38 +1,38 @@
-package com.elementary.tasks.core.view_models.birthdays
+package com.elementary.tasks.birthdays.list
 
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.work.SingleBackupWorker
+import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import kotlinx.coroutines.launch
 
-class BirthdayViewModel(
-  id: String,
+class BirthdaysViewModel(
   private val birthdaysDao: BirthdaysDao,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier,
-  private val dateTimeManager: DateTimeManager
+  private val notifier: Notifier
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val birthday = birthdaysDao.loadById(id)
+  val birthdays = birthdaysDao.loadAll().map { list ->
+    list.map { uiBirthdayListAdapter.convert(it) }
+  }
 
-  fun saveBirthday(birthday: Birthday) {
+  fun deleteBirthday(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
-      birthdaysDao.insert(birthday)
+      birthdaysDao.delete(id)
       notifier.showBirthdayPermanent()
-      workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       postInProgress(false)
-      postCommand(Commands.SAVED)
+      postCommand(Commands.DELETED)
     }
   }
 }

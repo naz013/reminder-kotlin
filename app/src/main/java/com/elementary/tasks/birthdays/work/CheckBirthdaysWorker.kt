@@ -4,8 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract
-import androidx.annotation.RequiresPermission
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
@@ -13,17 +12,19 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.readString
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.view_models.DispatcherProvider
+import kotlinx.coroutines.withContext
 
 class CheckBirthdaysWorker(
   private val birthdaysDao: BirthdaysDao,
   context: Context,
   workerParams: WorkerParameters,
   private val dateTimeManager: DateTimeManager,
-  private val contactsReader: ContactsReader
-) : Worker(context, workerParams) {
+  private val contactsReader: ContactsReader,
+  private val dispatcherProvider: DispatcherProvider
+) : CoroutineWorker(context, workerParams) {
 
-  override fun doWork(): Result {
+  override suspend fun doWork(): Result {
     if (!Permissions.checkPermission(applicationContext, Permissions.READ_CONTACTS)) {
       return Result.success()
     }
@@ -31,8 +32,7 @@ class CheckBirthdaysWorker(
     return Result.success()
   }
 
-  @RequiresPermission(value = Permissions.READ_CONTACTS)
-  private fun checkDb(cr: ContentResolver) = launchDefault {
+  private suspend fun checkDb(cr: ContentResolver) = withContext(dispatcherProvider.default()) {
     var i = 0
     val projection = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
     val cur = try {
@@ -42,7 +42,7 @@ class CheckBirthdaysWorker(
       )
     } catch (e: Exception) {
       null
-    } ?: return@launchDefault
+    } ?: return@withContext
     while (cur.moveToNext()) {
       val contactId = cur.readString(ContactsContract.Data._ID) ?: continue
       val columns = arrayOf(
@@ -73,8 +73,7 @@ class CheckBirthdaysWorker(
     cur.close()
   }
 
-  @RequiresPermission(value = Permissions.READ_CONTACTS)
-  private suspend fun loadBirthday(
+  private fun loadBirthday(
     birthdayCur: Cursor,
     contacts: List<Birthday>,
     dao: BirthdaysDao

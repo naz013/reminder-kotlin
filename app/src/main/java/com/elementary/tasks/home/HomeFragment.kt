@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdayAdsViewHolder
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListData
@@ -46,7 +46,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true) {
       showReminders(viewModel.reminders.value ?: listOf())
     }
-  private val birthdaysAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
+  private val birthdaysAdapter = BirthdaysRecyclerAdapter {
     showBirthdays(viewModel.birthdays.value ?: listOf())
   }
   private var mPosition: Int = 0

@@ -3,8 +3,8 @@ package com.elementary.tasks.day_view.day
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -47,7 +47,7 @@ class CalendarEventsAdapter(
         mEventListener?.onAction(view, i, data[i], listActions)
       }
 
-      else -> BirthdayHolder(parent, currentStateHolder, showMore) { view, i, listActions ->
+      else -> BirthdayHolder(parent, showMore) { view, i, listActions ->
         mEventListener?.onAction(view, i, data[i], listActions)
       }
     }

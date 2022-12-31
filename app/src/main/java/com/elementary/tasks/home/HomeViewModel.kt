@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -27,7 +27,7 @@ import timber.log.Timber
 class HomeViewModel(
   private val currentStateHolder: CurrentStateHolder,
   private val eventControlFactory: EventControlFactory,
-  private val birthdayModelAdapter: BirthdayModelAdapter,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val uiReminderListAdapter: UiReminderListAdapter,
@@ -45,7 +45,7 @@ class HomeViewModel(
     dateTimeManager.getBirthdayDayMonthList(
       duration = prefs.birthdayDurationInDays + 1
     )
-  ).map { list -> list.map { birthdayModelAdapter.convert(it) } }
+  ).map { list -> list.map { uiBirthdayListAdapter.convert(it) } }
   var topScrollX = 0
 
   init {

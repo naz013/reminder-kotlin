@@ -5,16 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.ui.birthday.UiShowBirthday
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
@@ -25,35 +23,30 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.contacts.Contacts
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import com.squareup.picasso.Picasso
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
-import java.util.Calendar
 import java.util.Locale
 
 class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>() {
 
-  private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
-  private val dateTimeManager by inject<DateTimeManager>()
+  private val viewModel by viewModel<ShowBirthdayViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
 
-  private var mBirthday: Birthday? = null
-  private var isEventShowed = false
   override var isScreenResumed: Boolean = false
     private set
   override var summary: String = ""
     private set
-  override val groupName: String
-    get() = "birthdays"
+  override val groupName: String = "birthdays"
 
   private val isBirthdaySilentEnabled: Boolean
     get() {
@@ -117,16 +110,10 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
 
   override val uuId: String
-    get() = if (mBirthday != null) {
-      mBirthday?.uuId ?: ""
-    } else
-      ""
+    get() = viewModel.getId()
 
   override val id: Int
-    get() = if (mBirthday != null) {
-      mBirthday?.uniqueId ?: 112
-    } else
-      0
+    get() = viewModel.getUniqueId()
 
   override val ledColor: Int
     get() {
@@ -155,19 +142,13 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
   override val priority: Int
     get() = prefs.birthdayPriority
 
-  private val mBirthdayObserver: Observer<in Birthday> = Observer { birthday ->
-    if (birthday != null) {
-      showBirthday(birthday)
-    }
-  }
-
-  private var mWasStopped = false
-  private val mLocalReceiver = object : BroadcastReceiver() {
+  private var wasStopped = false
+  private val localReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       val action = intent?.action ?: ""
       val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
       Timber.d("onReceive: $action, $mId")
-      if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
+      if (wasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
         finish()
       }
     }
@@ -192,10 +173,10 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
 
     initViewModel()
     LocalBroadcastManager.getInstance(this)
-      .registerReceiver(mLocalReceiver, IntentFilter(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY))
+      .registerReceiver(localReceiver, IntentFilter(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY))
   }
 
-  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intentString(Constants.INTENT_ID, "")
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putBoolean(ARG_IS_ROTATED, true)
@@ -203,7 +184,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
   }
 
   private fun initViewModel() {
-    viewModel.birthday.observeForever(mBirthdayObserver)
+    viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
         Commands.SAVED -> close()
@@ -220,72 +201,59 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
   private fun loadTest() {
     val isMocked = intentBoolean(ARG_TEST, false)
     if (isMocked) {
-      val birthday = intentParcelable(ARG_TEST_ITEM, Birthday::class.java)
-      if (birthday != null) showBirthday(birthday)
+      viewModel.onTestLoad(intentParcelable(ARG_TEST_ITEM, Birthday::class.java))
     }
   }
 
-  private fun showBirthday(birthday: Birthday) {
-    if (isEventShowed) return
+  private fun showBirthday(birthday: UiShowBirthday) {
+    if (viewModel.isEventShowed) return
 
-    this.mBirthday = birthday
+    birthday.photo?.also {
+      Picasso.get().load(it).into(binding.contactPhoto)
+      binding.contactPhoto.visible()
+    } ?: run { binding.contactPhoto.gone() }
 
-    if (!TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
-      birthday.number = Contacts.getNumber(birthday.name, this)
-    }
-    if (birthday.contactId == 0L && !TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
-      birthday.contactId = Contacts.getIdFromNumber(birthday.number, this)
-    }
-    val photo = Contacts.getPhoto(birthday.contactId)
-    if (photo != null) {
-      Picasso.get().load(photo).into(binding.contactPhoto)
-      binding.contactPhoto.visibility = View.VISIBLE
-    } else {
-      binding.contactPhoto.visibility = View.GONE
-    }
-    val years = dateTimeManager.getAgeFormatted(birthday.date)
     binding.userName.text = birthday.name
     binding.userName.contentDescription = birthday.name
-    binding.userYears.text = years
-    binding.userYears.contentDescription = years
-    summary = birthday.name + "\n" + years
-    if (TextUtils.isEmpty(birthday.number)) {
-      binding.buttonCall.visibility = View.INVISIBLE
-      binding.buttonSms.visibility = View.INVISIBLE
-      binding.userNumber.visibility = View.GONE
+
+    binding.userYears.text = birthday.ageFormatted
+    binding.userYears.contentDescription = birthday.ageFormatted
+
+    summary = birthday.name + "\n" + birthday.ageFormatted
+
+    if (birthday.number.isEmpty()) {
+      binding.buttonCall.transparent()
+      binding.buttonSms.transparent()
+      binding.userNumber.gone()
     } else {
       binding.userNumber.text = birthday.number
       binding.userNumber.contentDescription = birthday.number
-      binding.userNumber.visibility = View.VISIBLE
+      binding.userNumber.visible()
       if (prefs.isTelephonyAllowed) {
-        binding.buttonCall.visibility = View.VISIBLE
-        binding.buttonSms.visibility = View.VISIBLE
+        binding.buttonCall.visible()
+        binding.buttonSms.visible()
       } else {
-        binding.buttonCall.visibility = View.INVISIBLE
-        binding.buttonSms.visibility = View.INVISIBLE
+        binding.buttonCall.transparent()
+        binding.buttonSms.transparent()
       }
     }
     init()
 
     if (isTtsEnabled) {
-      showTTSNotification(dateTimeManager.getAge(birthday.date), birthday.name)
+      showTTSNotification(birthday)
       startTts()
     } else {
-      showNotification(dateTimeManager.getAge(birthday.date), birthday.name)
+      showNotification(birthday)
     }
   }
 
-  private fun checkContactPermission(): Boolean {
-    return Permissions.checkPermission(this, Permissions.READ_CONTACTS)
-  }
-
-  private fun showNotification(years: Int, name: String) {
+  private fun showNotification(birthday: UiShowBirthday) {
     if (isScreenResumed) {
       return
     }
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-    builder.setContentTitle(name)
-    builder.setContentText(dateTimeManager.getAgeFormatted(years))
+    builder.setContentTitle(birthday.name)
+    builder.setContentText(birthday.ageFormatted)
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
@@ -311,18 +279,18 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
     notifier.notify(id, builder.build())
     if (isWear) {
-      showWearNotification(name)
+      showWearNotification(birthday.name)
     }
   }
 
-  private fun showTTSNotification(years: Int, name: String) {
+  private fun showTTSNotification(birthday: UiShowBirthday) {
     if (isScreenResumed) {
       return
     }
     Timber.d("showTTSNotification: ")
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-    builder.setContentTitle(name)
-    builder.setContentText(dateTimeManager.getAgeFormatted(years))
+    builder.setContentTitle(birthday.name)
+    builder.setContentText(birthday.ageFormatted)
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (isScreenResumed) {
@@ -352,14 +320,13 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
     notifier.notify(id, builder.build())
     if (isWear) {
-      showWearNotification(name)
+      showWearNotification(birthday.name)
     }
   }
 
   override fun onDestroy() {
     super.onDestroy()
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
-    viewModel.birthday.removeObserver(mBirthdayObserver)
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(localReceiver)
     lifecycle.removeObserver(viewModel)
     removeFlags()
   }
@@ -370,39 +337,35 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
       removeFlags()
       finish()
     } else {
-      Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
+      toast(R.string.select_one_of_item)
     }
     return true
   }
 
   private fun makeCall() {
     permissionFlow.askPermission(Permissions.CALL_PHONE) {
-      TelephonyUtil.makeCall(mBirthday?.number ?: "", this)
-      updateBirthday(mBirthday)
+      viewModel.getNumber()?.also {
+        TelephonyUtil.makeCall(it, this)
+        updateBirthday()
+      } ?: run { ok() }
     }
   }
 
   private fun sendSMS() {
-    if (mBirthday != null) {
-      TelephonyUtil.sendSms(mBirthday?.number ?: "", this)
-      updateBirthday(mBirthday)
-    }
+    viewModel.getNumber()?.also {
+      TelephonyUtil.sendSms(it, this)
+      updateBirthday()
+    } ?: run { ok() }
   }
 
   private fun ok() {
-    updateBirthday(mBirthday)
+    updateBirthday()
   }
 
-  private fun updateBirthday(birthday: Birthday?) {
-    isEventShowed = true
-    viewModel.birthday.removeObserver(mBirthdayObserver)
-    if (birthday != null) {
-      val calendar = Calendar.getInstance()
-      calendar.timeInMillis = System.currentTimeMillis()
-      val year = calendar.get(Calendar.YEAR)
-      birthday.showedYear = year
-      viewModel.saveBirthday(birthday)
-    }
+  private fun updateBirthday() {
+    discardNotification(viewModel.getUniqueId())
+    viewModel.isEventShowed = true
+    viewModel.saveBirthday()
   }
 
   private fun close() {
@@ -413,7 +376,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
 
   override fun onStop() {
     super.onStop()
-    mWasStopped = true
+    wasStopped = true
   }
 
   companion object {

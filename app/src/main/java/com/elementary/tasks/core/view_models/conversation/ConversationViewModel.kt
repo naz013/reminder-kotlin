@@ -14,7 +14,7 @@ import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -66,7 +66,7 @@ class ConversationViewModel(
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   private val recognizer: Recognizer,
-  private val birthdayModelAdapter: BirthdayModelAdapter,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val updatesHelper: UpdatesHelper,
@@ -277,7 +277,7 @@ class ConversationViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val list = birthdaysDao.all()
-        .map { birthdayModelAdapter.convert(it) }
+        .map { uiBirthdayListAdapter.convert(it) }
         .filter {
           it.nextBirthdayDate >= System.currentTimeMillis() &&
             it.nextBirthdayDate < dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime)

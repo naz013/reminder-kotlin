@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.utils.inflater
@@ -75,7 +75,7 @@ class ConversationAdapter(
       Reply.NOTE -> NoteViewHolder(parent, currentStateHolder, imagesSingleton, null)
       Reply.GROUP -> GroupHolder(parent, null)
       Reply.SHOW_MORE -> ShowMoreHolder(parent)
-      Reply.BIRTHDAY -> BirthdayHolder(parent, currentStateHolder, false)
+      Reply.BIRTHDAY -> BirthdayHolder(parent, showMore = false)
       Reply.SHOPPING -> ShoppingViewHolder(
         parent,
         editable = false,

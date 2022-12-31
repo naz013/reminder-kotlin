@@ -1,6 +1,6 @@
 package com.elementary.tasks.day_view
 
-import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.plusMillis
 import com.elementary.tasks.day_view.day.EventModel
 
 class DayViewProvider(
-  private val birthdayModelAdapter: BirthdayModelAdapter,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager
 ) {
@@ -133,7 +133,7 @@ class DayViewProvider(
   }
 
   fun toEventModel(birthday: Birthday): EventModel {
-    val birthdayListItem = birthdayModelAdapter.convert(birthday)
+    val birthdayListItem = uiBirthdayListAdapter.convert(birthday)
     val dateTime = dateTimeManager.fromMillis(birthdayListItem.nextBirthdayDate)
     return EventModel(
       EventModel.BIRTHDAY,
