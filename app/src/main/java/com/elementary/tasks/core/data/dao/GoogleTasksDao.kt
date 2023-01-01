@@ -24,6 +24,9 @@ interface GoogleTasksDao {
     @Query("SELECT * FROM GoogleTask WHERE listId=:listId AND status=:status ORDER BY title ASC")
     fun getAllByList(listId: String, status: String): List<GoogleTask>
 
+    @Query("SELECT * FROM GoogleTask WHERE listId=:listId ORDER BY status DESC, title ASC")
+    fun getAllByList(listId: String): List<GoogleTask>
+
     @Insert(onConflict = REPLACE)
     fun insert(googleTask: GoogleTask)
 

@@ -13,7 +13,7 @@ import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.contacts.Contacts

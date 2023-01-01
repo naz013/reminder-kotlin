@@ -15,7 +15,7 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.view_models.Commands

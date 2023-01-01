@@ -382,11 +382,11 @@
         <activity android:name=".notes.preview.ImagePreviewActivity" />
         <activity android:name=".notes.preview.NotePreviewActivity" />
         <activity
-            android:name=".google_tasks.create.TaskListActivity"
+            android:name=".google_tasks.tasklist.GoogleTaskListActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".google_tasks.create.TaskActivity"
+            android:name=".google_tasks.task.GoogleTaskActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity

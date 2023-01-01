@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.day_view
+package com.elementary.tasks.day_view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,8 +19,6 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.day_view.DayViewProvider
-import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.Job

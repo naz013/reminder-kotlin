@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks.create
+package com.elementary.tasks.google_tasks.task
 
 import android.os.Bundle
 import android.view.Menu
@@ -16,13 +16,13 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
+import com.elementary.tasks.google_tasks.TasksConstants
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
+class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private val viewModel by viewModel<GoogleTaskViewModel> { parametersOf(getId()) }
@@ -40,15 +40,12 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     initFields()
 
     binding.progressMessageView.text = getString(R.string.please_wait)
-    updateProgress(false)
 
     if (savedInstanceState == null) {
       viewModel.action = intentString(TasksConstants.INTENT_ACTION).also {
         if (it.isEmpty()) viewModel.action = TasksConstants.CREATE
       }
       viewModel.initDefaults()
-    } else {
-      updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
     }
 
     if (viewModel.action == TasksConstants.CREATE) {
@@ -65,19 +62,13 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putString(ARG_LIST, viewModel.listId)
-    outState.putBoolean(ARG_LOADING, viewModel.isLoading)
     super.onSaveInstanceState(outState)
-  }
-
-  private fun updateProgress(b: Boolean) {
-    viewModel.isLoading = b
-    binding.progressView.visibleGone(b)
   }
 
   private fun initViewModel(listId: String) {
     viewModel.listId = listId
-    viewModel.isInProgress.observe(this) { updateProgress(it) }
-    viewModel.result.observe(this) { commands ->
+    viewModel.isInProgress.nonNullObserve(this) { binding.progressView.visibleGone(it) }
+    viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
         Commands.SAVED, Commands.DELETED -> handleBackPress()
         else -> {
@@ -337,7 +328,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun doIfPossible(f: () -> Unit) {
-    if (viewModel.isLoading) {
+    if (viewModel.isInProgress.value == true) {
       toast(R.string.please_wait)
     } else {
       f.invoke()
@@ -350,6 +341,5 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     private const val MENU_ITEM_DELETE = 12
     private const val MENU_ITEM_MOVE = 14
     private const val ARG_LIST = "arg_list"
-    private const val ARG_LOADING = "arg_loading"
   }
 }

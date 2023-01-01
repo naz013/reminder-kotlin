@@ -31,11 +31,10 @@ import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity

@@ -10,7 +10,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.PlacesMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
 import com.elementary.tasks.core.utils.ui.fadeOutAnimation

@@ -11,7 +11,6 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.sms.QuickSmsViewModel
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -54,6 +53,7 @@ import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.data.adapter.UiShowBirthdayAdapter
+import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
@@ -77,11 +77,7 @@ import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
-import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
+import com.elementary.tasks.google_tasks.GoogleTasksViewModel
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
@@ -100,8 +96,6 @@ import com.elementary.tasks.core.view_models.reminders.FullScreenMapViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.core.view_models.reminders.VoiceResultDialogViewModel
-import com.elementary.tasks.sms.create.CreateSmsTemplateViewModel
-import com.elementary.tasks.sms.list.SmsTemplatesViewModel
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.BackupSettingsWorker
@@ -112,7 +106,10 @@ import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.day_view.DayViewProvider
-import com.elementary.tasks.google_tasks.create.GoogleTasksStateViewModel
+import com.elementary.tasks.day_view.DayViewViewModel
+import com.elementary.tasks.google_tasks.list.TaskListViewModel
+import com.elementary.tasks.google_tasks.task.GoogleTaskViewModel
+import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListViewModel
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
@@ -137,7 +134,11 @@ import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
+import com.elementary.tasks.sms.QuickSmsViewModel
+import com.elementary.tasks.sms.create.CreateSmsTemplateViewModel
+import com.elementary.tasks.sms.list.SmsTemplatesViewModel
 import com.elementary.tasks.splash.SplashViewModel
+import com.elementary.tasks.voice.ConversationViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
@@ -151,8 +152,8 @@ val workerModule = module {
   worker { DeleteFileWorker(get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get()) }
   worker { SyncDataWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
-  worker { SaveNewTaskWorker(get(), get(), get()) }
-  worker { UpdateTaskWorker(get(), get(), get()) }
+  worker { SaveNewTaskWorker(get(), get(), get(), get()) }
+  worker { UpdateTaskWorker(get(), get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get()) }
   worker { GroupSingleBackupWorker(get(), get(), get()) }
   worker { DeleteNoteBackupWorker(get(), get(), get()) }
@@ -236,6 +237,7 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -267,9 +269,11 @@ val viewModelModule = module {
   }
   viewModel { (id: String) -> GroupViewModel(id, get(), get(), get()) }
   viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get()) }
+
   viewModel { (listId: String) ->
     GoogleTaskListViewModel(
       listId,
+      get(),
       get(),
       get(),
       get(),
@@ -292,6 +296,19 @@ val viewModelModule = module {
       get()
     )
   }
+  viewModel { (listId: String) ->
+    TaskListViewModel(
+      listId,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+  viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get()) }
+
   viewModel { (calculateFuture: Boolean) ->
     DayViewViewModel(calculateFuture, get(), get(), get(), get(), get(), get(), get())
   }
@@ -325,12 +342,11 @@ val viewModelModule = module {
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { NotesViewModel(get(), get(), get(), get()) }
-  viewModel { GoogleTaskListsViewModel(get(), get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { GroupsViewModel(get(), get(), get()) }
   viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
-  viewModel { GoogleTasksStateViewModel() }
+
   viewModel {
     CreateNoteViewModel(
       get(),
@@ -415,7 +431,7 @@ fun dbModule(context: Context): Module {
 
 val utilModule = module {
   single { Prefs(get()) }
-  single { GTasks(get(), get(), get()) }
+  single { GTasks(get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
   single { BackupTool(get(), get(), get(), get()) }
@@ -504,6 +520,8 @@ val adapterModule = module {
   single { UiShowBirthdayAdapter(get(), get()) }
 
   single { UiSmsListAdapter() }
+
+  single { UiGoogleTaskListAdapter(get()) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

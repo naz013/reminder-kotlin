@@ -2,7 +2,7 @@ package com.elementary.tasks.core.calendar
 
 import org.threeten.bp.LocalDate
 
-class Events {
+class EventsCursor {
   private var events = mutableListOf<Event>()
   private var mPosition = 0
 

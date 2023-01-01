@@ -17,7 +17,7 @@ import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.bindProperty

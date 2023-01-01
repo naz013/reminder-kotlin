@@ -21,6 +21,8 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.ReminderRepository
+import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver

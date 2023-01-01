@@ -10,7 +10,7 @@ import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.utils.PendingIntentWrapper
+import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 

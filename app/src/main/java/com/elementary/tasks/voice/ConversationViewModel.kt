@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.conversation
+package com.elementary.tasks.voice
 
 import android.content.Context
 import android.content.Intent
@@ -38,7 +38,7 @@ import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.withUIContext
@@ -53,8 +53,6 @@ import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.splash.SplashScreenActivity
-import com.elementary.tasks.voice.Container
-import com.elementary.tasks.voice.Reply
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber

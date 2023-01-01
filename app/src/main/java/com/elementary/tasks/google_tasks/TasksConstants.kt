@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks.create
+package com.elementary.tasks.google_tasks
 
 object TasksConstants {
 

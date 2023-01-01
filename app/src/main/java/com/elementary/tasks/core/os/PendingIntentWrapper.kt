@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils
+package com.elementary.tasks.core.os
 
 import android.app.PendingIntent
 import android.content.Context

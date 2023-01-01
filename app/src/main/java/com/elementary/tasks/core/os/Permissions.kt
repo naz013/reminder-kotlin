@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils
+package com.elementary.tasks.core.os
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import com.elementary.tasks.core.utils.Module
 
 @SuppressLint("InlinedApi")
 object Permissions {

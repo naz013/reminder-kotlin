@@ -15,7 +15,7 @@ import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.voice.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding

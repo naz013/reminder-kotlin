@@ -13,11 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.UiReminderPreview
+import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
 import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
@@ -30,11 +29,11 @@ import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
@@ -47,9 +46,9 @@ import com.elementary.tasks.core.utils.visibleInvisible
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
-import com.elementary.tasks.google_tasks.create.TaskActivity
-import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
+import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
@@ -212,20 +211,18 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
   }
 
-  private fun showTask(pair: Pair<GoogleTaskList?, GoogleTask?>) {
-    val googleTask = pair.second ?: return
-    val googleTaskList = pair.first ?: return
+  private fun showTask(googleTask: UiGoogleTaskList) {
     val binding = GoogleTaskHolder(binding.dataContainer) { _, _, listActions ->
       if (listActions == ListActions.EDIT) {
         PinLoginActivity.openLogged(
           this@ReminderPreviewActivity,
-          Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
-            .putExtra(Constants.INTENT_ID, googleTask.taskId)
+          Intent(this@ReminderPreviewActivity, GoogleTaskActivity::class.java)
+            .putExtra(Constants.INTENT_ID, googleTask.id)
             .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
         )
       }
     }
-    binding.bind(googleTask, mapOf(Pair(googleTask.listId, googleTaskList)))
+    binding.bind(googleTask)
     this.binding.dataContainer.addView(binding.itemView)
   }
 

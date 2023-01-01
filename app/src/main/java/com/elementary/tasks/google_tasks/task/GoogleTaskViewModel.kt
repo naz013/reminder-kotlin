@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.google_tasks
+package com.elementary.tasks.google_tasks.task
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -59,7 +59,7 @@ class GoogleTaskViewModel(
   private val _taskList = mutableLiveDataOf<GoogleTaskList>()
   val taskList = _taskList.toLiveData()
 
-  var isEdited = false
+  private var isEdited = false
   private var isReminderEdited = false
   var listId: String = ""
   var action: String = ""
@@ -68,7 +68,6 @@ class GoogleTaskViewModel(
   var time: LocalTime = LocalTime.now()
     private set
 
-  var isLoading = false
   var editedTask: GoogleTask? = null
   private var editedReminder: Reminder? = null
 
@@ -180,7 +179,11 @@ class GoogleTaskViewModel(
   private fun loadReminder(uuId: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderDao.getById(uuId) ?: return@launch
+      val reminder = reminderDao.getById(uuId)
+      if (reminder == null) {
+        postInProgress(false)
+        return@launch
+      }
       if (!isReminderEdited) {
         editedReminder = reminder
         time = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime() ?: LocalTime.now()

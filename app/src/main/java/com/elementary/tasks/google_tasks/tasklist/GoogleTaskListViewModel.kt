@@ -1,45 +1,68 @@
-package com.elementary.tasks.core.view_models.google_tasks
+package com.elementary.tasks.google_tasks.tasklist
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
-import timber.log.Timber
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.Random
 
 class GoogleTaskListViewModel(
   listId: String,
-  gTasks: GTasks,
+  private val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  updatesHelper: UpdatesHelper,
-  googleTasksDao: GoogleTasksDao,
-  googleTaskListsDao: GoogleTaskListsDao
-) : BaseTaskListsViewModel(
-  gTasks,
-  dispatcherProvider,
-  updatesHelper,
-  googleTasksDao,
-  googleTaskListsDao
-) {
+  private val updatesHelper: UpdatesHelper,
+  private val googleTasksDao: GoogleTasksDao,
+  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val analyticsEventSender: AnalyticsEventSender
+) : BaseProgressViewModel(dispatcherProvider) {
 
-  var googleTaskList: LiveData<GoogleTaskList>
-  val defaultTaskList = googleTaskListsDao.loadDefault()
-  var googleTasks: LiveData<List<GoogleTask>>
+  var googleTaskList = googleTaskListsDao.loadById(listId)
+  var googleTask = googleTasksDao.loadAllByList(listId)
+
+  var isEdited = false
+  var listId: String = ""
+  var action: String = ""
+
+  var isLoading = false
+  var editedTaskList: GoogleTaskList? = null
+
   private var isSyncing = false
 
-  init {
-    Timber.d("GoogleTaskListViewModel: $listId")
-    googleTaskList = googleTaskListsDao.loadById(listId)
-    googleTasks = googleTasksDao.loadAllByList(listId)
+  fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
+    if (!gTasks.isLogged) {
+      postCommand(Commands.FAILED)
+      return
+    }
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val def = googleTaskList.def
+      gTasks.deleteTaskList(googleTaskList.listId)
+      googleTaskListsDao.delete(googleTaskList)
+      googleTasksDao.deleteAll(googleTaskList.listId)
+      if (def == 1) {
+        val lists = googleTaskListsDao.all()
+        if (lists.isNotEmpty()) {
+          val taskList = lists[0]
+          taskList.def = 1
+          googleTaskListsDao.insert(taskList)
+        }
+      }
+      postInProgress(false)
+      postCommand(Commands.DELETED)
+    }
   }
 
   fun sync() {
@@ -50,7 +73,7 @@ class GoogleTaskListViewModel(
     if (isSyncing) return
     isSyncing = true
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
       var lists: TaskLists? = null
       try {
         lists = gTasks.taskLists()
@@ -108,8 +131,16 @@ class GoogleTaskListViewModel(
       return
     }
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      if (googleTaskList.isDefault()) {
+        val default = googleTaskListsDao.getDefault()
+        default.forEach {
+          it.def = 0
+          googleTaskListsDao.insert(it)
+        }
+      }
       gTasks.insertTasksList(googleTaskList.title, googleTaskList.color)
+      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -121,7 +152,14 @@ class GoogleTaskListViewModel(
       return
     }
     postInProgress(true)
-    launchDefault {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      if (googleTaskList.isDefault()) {
+        val default = googleTaskListsDao.getDefault()
+        default.forEach {
+          it.def = 0
+          googleTaskListsDao.insert(it)
+        }
+      }
       googleTaskListsDao.insert(googleTaskList)
       try {
         gTasks.updateTasksList(googleTaskList.title, googleTaskList.listId)
@@ -131,33 +169,6 @@ class GoogleTaskListViewModel(
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
-    }
-  }
-
-  fun clearList(googleTaskList: GoogleTaskList) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
-    postInProgress(true)
-    launchDefault {
-      val googleTasks = googleTasksDao.getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
-      googleTasksDao.deleteAll(googleTasks)
-      gTasks.clearTaskList(googleTaskList.listId)
-      postInProgress(false)
-      postCommand(Commands.UPDATED)
-      withUIContext {
-        updatesHelper.updateTasksWidget()
-      }
-    }
-  }
-
-  fun saveLocalGoogleTaskList(googleTaskList: GoogleTaskList) {
-    postInProgress(true)
-    launchDefault {
-      googleTaskListsDao.insert(googleTaskList)
-      postInProgress(false)
-      postCommand(Commands.SAVED)
     }
   }
 }

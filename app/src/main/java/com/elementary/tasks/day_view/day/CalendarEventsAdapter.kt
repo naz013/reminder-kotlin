@@ -3,7 +3,6 @@ package com.elementary.tasks.day_view.day
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
@@ -12,7 +11,7 @@ import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingViewHolder
 
 class CalendarEventsAdapter(
-  private val currentStateHolder: CurrentStateHolder
+  private val isDark: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var data: List<EventModel> = ArrayList()
@@ -42,7 +41,7 @@ class CalendarEventsAdapter(
         parent,
         false,
         showMore,
-        isDark = currentStateHolder.theme.isDark
+        isDark = isDark
       ) { view, i, listActions ->
         mEventListener?.onAction(view, i, data[i], listActions)
       }

@@ -10,7 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.finishWith
-import com.elementary.tasks.google_tasks.create.TaskActivity
+import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.pin.PinLoginActivity
@@ -63,7 +63,7 @@ class SplashScreenActivity : ThemedActivity() {
             .setLongLabel(getString(R.string.add_google_task))
             .setIcon(Icon.createWithResource(this, R.drawable.add_google_shortcut))
             .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-              Intent(Intent.ACTION_VIEW).setClass(this, TaskActivity::class.java)))
+              Intent(Intent.ACTION_VIEW).setClass(this, GoogleTaskActivity::class.java)))
             .build()
           shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2, shortcut3)
         } else {

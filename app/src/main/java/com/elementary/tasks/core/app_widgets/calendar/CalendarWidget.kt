@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.core.utils.PendingIntentWrapper
+import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import java.util.Calendar

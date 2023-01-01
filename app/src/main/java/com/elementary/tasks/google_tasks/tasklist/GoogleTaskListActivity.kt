@@ -1,31 +1,27 @@
-package com.elementary.tasks.google_tasks.create
+package com.elementary.tasks.google_tasks.tasklist
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
+class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getId()) }
-  private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
 
   override fun inflateBinding() = ActivityCreateTaskListBinding.inflate(layoutInflater)
 
@@ -50,12 +46,12 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
-    outState.putBoolean(ARG_LOADING, stateViewModel.isLoading)
+    outState.putBoolean(ARG_LOADING, viewModel.isLoading)
     super.onSaveInstanceState(outState)
   }
 
   private fun updateProgress(b: Boolean) {
-    stateViewModel.isLoading = b
+    viewModel.isLoading = b
     if (b) {
       binding.progressView.visibility = View.VISIBLE
     } else {
@@ -82,15 +78,15 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   private fun editTaskList(googleTaskList: GoogleTaskList) {
     binding.toolbar.title = getString(R.string.edit_task_list)
-    stateViewModel.editedTaskList = googleTaskList
-    if (!stateViewModel.isEdited) {
+    viewModel.editedTaskList = googleTaskList
+    if (!viewModel.isEdited) {
       binding.editField.setText(googleTaskList.title)
       if (googleTaskList.def == 1) {
         binding.defaultCheck.isChecked = true
         binding.defaultCheck.isEnabled = false
       }
       binding.colorSlider.setSelection(googleTaskList.color)
-      stateViewModel.isEdited = true
+      viewModel.isEdited = true
     }
   }
 
@@ -101,21 +97,16 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
       return
     }
     var isNew = false
-    val item = (stateViewModel.editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
+    val item = (viewModel.editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
       title = listName
       color = binding.colorSlider.selectedItem
       updated = System.currentTimeMillis()
     }
     if (binding.defaultCheck.isChecked) {
       item.def = 1
-      viewModel.defaultTaskList.value?.also {
-        it.def = 0
-        viewModel.saveLocalGoogleTaskList(it)
-      }
     }
 
     if (isNew) {
-      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
       viewModel.newGoogleTaskList(item)
     } else {
       viewModel.updateGoogleTaskList(item)
@@ -152,13 +143,13 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   private fun deleteList() {
-    stateViewModel.editedTaskList?.let { viewModel.deleteGoogleTaskList(it) }
+    viewModel.editedTaskList?.let { viewModel.deleteGoogleTaskList(it) }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-    stateViewModel.editedTaskList
-      ?.takeIf { !it.isAppDefault() }
+    viewModel.editedTaskList
+      ?.takeIf { !it.isDefault() }
       ?.also { menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list) }
     return true
   }
@@ -174,7 +165,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
   }
 
   private fun doIfPossible(f: () -> Unit) {
-    if (stateViewModel.isLoading) {
+    if (viewModel.isLoading) {
       toast(R.string.please_wait)
     } else {
       f.invoke()

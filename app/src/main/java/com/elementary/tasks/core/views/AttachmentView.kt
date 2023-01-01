@@ -10,7 +10,7 @@ import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.AttachmentViewBinding
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.visible

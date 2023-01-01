@@ -5,18 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
+import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.dao.CalendarEventsDao
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.UiShareData
+import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -51,13 +51,14 @@ class ReminderPreviewViewModel(
   private val googleTaskListsDao: GoogleTaskListsDao,
   private val calendarEventsDao: CalendarEventsDao,
   private val reminderGroupDao: ReminderGroupDao,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _note = mutableLiveDataOf<NoteWithImages>()
   val note = _note.toLiveData()
 
-  private val _googleTask = mutableLiveDataOf<Pair<GoogleTaskList?, GoogleTask?>>()
+  private val _googleTask = mutableLiveDataOf<UiGoogleTaskList>()
   val googleTask = _googleTask.toLiveData()
 
   private val _calendarEvent = mutableLiveDataOf<List<GoogleCalendarUtils.EventItem>>()
@@ -101,7 +102,7 @@ class ReminderPreviewViewModel(
       val googleTask = googleTasksDao.getByReminderId(reminder.id)
       if (googleTask != null) {
         _googleTask.postValue(
-          Pair(googleTaskListsDao.getById(googleTask.listId), googleTask)
+          uiGoogleTaskListAdapter.convert(googleTask, googleTaskListsDao.getById(googleTask.listId))
         )
       }
       val events = googleCalendarUtils.loadEvents(reminder.id)

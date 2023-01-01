@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
 import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.os.Permissions
 import timber.log.Timber
 
 class SoundStackHolder(

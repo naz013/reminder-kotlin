@@ -13,20 +13,19 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
-import com.elementary.tasks.google_tasks.create.TaskActivity
-import com.elementary.tasks.google_tasks.create.TaskListActivity
-import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.google_tasks.TasksConstants
+import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
+import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,12 +33,8 @@ import org.koin.core.parameter.parametersOf
 
 class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
-  private val adapter = TasksRecyclerAdapter(currentStateHolder) {
-    showTasks(viewModel.googleTasks.value ?: listOf())
-  }
-  private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getListId()) }
-  private var mId: String = ""
-  private var googleTaskList: GoogleTaskList? = null
+  private val adapter = TasksRecyclerAdapter()
+  private val viewModel by viewModel<TaskListViewModel> { parametersOf(getListId()) }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -50,18 +45,12 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
-    arguments?.let {
-      TaskListFragmentArgs.fromBundle(it)
-    }?.also {
-      mId = it.argId
-      googleTaskList = it.argList
-    }
   }
 
   private fun getListId() = arguments?.let { TaskListFragmentArgs.fromBundle(it) }?.argId
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    googleTaskList?.also {
+    viewModel.currentTaskList?.also {
       menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
       if (it.def != 1) {
         menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
@@ -82,7 +71,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
         return true
       }
       MENU_ITEM_CLEAR -> {
-        clearList()
+        viewModel.clearList()
         return true
       }
     }
@@ -100,8 +89,8 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun editListClick() {
-    googleTaskList?.also {
-      startActivity(Intent(context, TaskListActivity::class.java)
+    viewModel.currentTaskList?.also {
+      startActivity(Intent(context, GoogleTaskListActivity::class.java)
         .putExtra(Constants.INTENT_ID, it.listId))
     }
   }
@@ -112,35 +101,26 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     builder.setMessage(R.string.delete_this_list)
     builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
     builder.setPositiveButton(R.string.yes) { dialog, _ ->
-      deleteList()
+      viewModel.deleteGoogleTaskList()
       dialog.dismiss()
     }
     builder.create().show()
   }
 
-  private fun deleteList() {
-    googleTaskList?.also {
-      viewModel.deleteGoogleTaskList(it)
-    }
-  }
-
-  private fun clearList() {
-    googleTaskList?.also {
-      viewModel.clearList(it)
-    }
-  }
-
   private fun addNewTask() {
-    PinLoginActivity.openLogged(requireContext(), Intent(context, TaskActivity::class.java)
-      .putExtra(Constants.INTENT_ID, mId)
-      .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+    viewModel.currentTaskList?.also {
+      PinLoginActivity.openLogged(requireContext(), Intent(context, GoogleTaskActivity::class.java)
+        .putExtra(Constants.INTENT_ID, it.listId)
+        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+    }
   }
 
   private fun initViewModel() {
     viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
     viewModel.result.nonNullObserve(viewLifecycleOwner) { showResult(it) }
-    viewModel.googleTasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
-    viewModel.googleTaskList.nonNullObserve(viewLifecycleOwner) { showGoogleTaskList(it) }
+    viewModel.tasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
+    viewModel.taskList.nonNullObserve(viewLifecycleOwner) { showGoogleTaskList(it) }
+    lifecycle.addObserver(viewModel)
   }
 
   private fun showResult(commands: Commands) {
@@ -161,10 +141,9 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     }
   }
 
-  private fun showTasks(googleTasks: List<GoogleTask>) {
-    val newList = GoogleTaskAdsViewHolder.updateList(googleTasks)
-    adapter.submitList(newList)
-    reloadView(newList.size)
+  private fun showTasks(googleTasks: List<UiGoogleTaskList>) {
+    adapter.submitList(googleTasks)
+    reloadView(googleTasks.size)
   }
 
   private fun initList() {
@@ -179,16 +158,11 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    val map = mutableMapOf<String, GoogleTaskList>()
-    googleTaskList?.let {
-      map[it.listId] = it
-    }
-    adapter.googleTaskListMap = map
-    adapter.actionsListener = object : ActionsListener<GoogleTask> {
-      override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
+    adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
+      override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
         when (actions) {
-          ListActions.EDIT -> if (t != null) editTask(t)
-          ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t)
+          ListActions.EDIT -> if (t != null) editTask(t.id)
+          ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
           else -> {
           }
         }
@@ -201,9 +175,9 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     }
   }
 
-  private fun editTask(googleTask: GoogleTask) {
-    PinLoginActivity.openLogged(requireContext(), Intent(activity, TaskActivity::class.java)
-      .putExtra(Constants.INTENT_ID, googleTask.taskId)
+  private fun editTask(taskId: String) {
+    PinLoginActivity.openLogged(requireContext(), Intent(activity, GoogleTaskActivity::class.java)
+      .putExtra(Constants.INTENT_ID, taskId)
       .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
   }
 
@@ -223,19 +197,19 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   override fun onResume() {
     super.onResume()
-    googleTaskList?.let { showGoogleTaskList(it) }
+    viewModel.currentTaskList?.let { showGoogleTaskList(it) }
   }
 
   private fun showGoogleTaskList(googleTaskList: GoogleTaskList) {
     callback?.onTitleChange(googleTaskList.title)
-    binding.fab.backgroundTintList = ColorStateList.valueOf(ThemeProvider.themedColor(requireContext(), googleTaskList.color))
-    val map = mutableMapOf<String, GoogleTaskList>()
-    map[googleTaskList.listId] = googleTaskList
-    adapter.googleTaskListMap = map
+    binding.fab.backgroundTintList = ColorStateList.valueOf(
+      ThemeProvider.themedColor(requireContext(), googleTaskList.color)
+    )
+    activity?.invalidateOptionsMenu()
   }
 
   override fun getTitle(): String {
-    return googleTaskList?.title ?: ""
+    return viewModel.currentTaskList?.title ?: ""
   }
 
   companion object {

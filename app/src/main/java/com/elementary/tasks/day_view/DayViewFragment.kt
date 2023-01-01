@@ -1,7 +1,6 @@
 package com.elementary.tasks.day_view
 
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,7 +12,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.elementary.tasks.day_view.day.DayCallback
 import com.elementary.tasks.day_view.day.EventModel

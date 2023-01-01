@@ -27,8 +27,8 @@ import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.PendingIntentWrapper
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder

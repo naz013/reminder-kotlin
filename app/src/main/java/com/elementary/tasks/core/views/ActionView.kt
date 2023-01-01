@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.ActionViewBinding
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.visible
 

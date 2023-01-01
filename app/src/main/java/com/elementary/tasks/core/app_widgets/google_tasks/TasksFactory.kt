@@ -15,7 +15,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.google_tasks.TasksConstants
 import java.text.SimpleDateFormat
 import java.util.*
 
