@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
@@ -101,7 +99,6 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>() {
       if (commands != null) {
         when (commands) {
           Commands.SAVED -> {
-            analyticsEventSender.send(FeatureUsedEvent(Feature.AFTER_CALL))
             closeWindow()
           }
 

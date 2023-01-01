@@ -3,6 +3,9 @@ package com.elementary.tasks.birthdays.create
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
@@ -26,7 +29,8 @@ class AddBirthdayViewModel(
   private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
   private val contactsReader: ContactsReader,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val analyticsEventSender: AnalyticsEventSender
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   val birthday = birthdaysDao.loadById(id)
@@ -69,6 +73,7 @@ class AddBirthdayViewModel(
 
   fun save() {
     preparedBirthday?.also {
+      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
       saveBirthday(it)
     }
   }

@@ -8,8 +8,6 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
@@ -241,7 +239,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   }
 
   private fun finalSave() {
-    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
     viewModel.save()
   }
 

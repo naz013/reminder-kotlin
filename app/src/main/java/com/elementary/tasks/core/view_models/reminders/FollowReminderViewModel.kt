@@ -2,6 +2,9 @@ package com.elementary.tasks.core.view_models.reminders
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.dao.ReminderDao
@@ -36,7 +39,8 @@ class FollowReminderViewModel(
   private val dateTimeManager: DateTimeManager,
   private val featureManager: FeatureManager,
   private val gTasks: GTasks,
-  private val contactsReader: ContactsReader
+  private val contactsReader: ContactsReader,
+  private val analyticsEventSender: AnalyticsEventSender
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _contactInfo = mutableLiveDataOf<String>()
@@ -168,6 +172,7 @@ class FollowReminderViewModel(
       }
       workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
       postInProgress(false)
+      analyticsEventSender.send(FeatureUsedEvent(Feature.AFTER_CALL))
       postCommand(Commands.SAVED)
     }
   }

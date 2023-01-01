@@ -9,7 +9,17 @@ import android.os.Build
 class PackageManagerWrapper(
   private val context: Context
 ) {
-  private val packageManager = context.packageManager
+  val packageManager: PackageManager = context.packageManager
+
+  fun getInstalledApplications(): List<ApplicationInfo> {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      packageManager.getInstalledApplications(
+        PackageManager.ApplicationInfoFlags.of(0)
+      )
+    } else {
+      packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+    }
+  }
 
   fun getApplicationName(appId: String): String = try {
     getAppInfo(appId).let {

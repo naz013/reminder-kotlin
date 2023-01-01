@@ -32,7 +32,9 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val notifier by inject<Notifier>()
   protected val updatesHelper by inject<UpdatesHelper>()
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
+
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
+
   private val loginLauncher = LoginLauncher(this) {
     loginStateViewModel.isLogged = it
     if (!it) {

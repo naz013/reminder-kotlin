@@ -1,33 +1,38 @@
 package com.elementary.tasks.core.apps
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.InputMethodManagerWrapper
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ActivityApplicationListBinding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>() {
 
   private val viewModel by viewModel<SelectApplicationViewModel>()
-  private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
-  private val searchModifier = object : SearchModifier<ApplicationItem>(
+  private val inputMethodManagerWrapper by inject<InputMethodManagerWrapper>()
+
+  private var appsRecyclerAdapter = AppsRecyclerAdapter()
+  private val searchModifier = object : SearchModifier<UiApplicationList>(
     null, {
-      adapter.submitList(it)
+      appsRecyclerAdapter.submitList(it)
       binding.contactsList.smoothScrollToPosition(0)
       refreshView(it.size)
   }) {
-    override fun filter(v: ApplicationItem): Boolean {
+    override fun filter(v: UiApplicationList): Boolean {
       return searchValue.isEmpty() || (v.name
         ?: "").lowercase().contains(searchValue.lowercase())
     }
@@ -37,10 +42,7 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel.packageManager = packageManager
-    viewModel.loadApps()
-
-    binding.loaderView.visibility = View.GONE
+    binding.loaderView.gone()
     initActionBar()
     initSearchView()
     initRecyclerView()
@@ -48,31 +50,27 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
 
   override fun onStart() {
     super.onStart()
-    viewModel.applications.observe(this) { applications ->
-      applications?.let { searchModifier.original = it }
-    }
-    viewModel.isLoading.observe(this) { isLoading ->
-      isLoading?.let {
-        if (it) {
-          showProgress()
-        } else {
-          hideProgress()
-        }
+    viewModel.applications.nonNullObserve(this) { searchModifier.original = it }
+    viewModel.isInProgress.nonNullObserve(this) {
+      if (it) {
+        showProgress()
+      } else {
+        hideProgress()
       }
     }
   }
 
   private fun hideProgress() {
-    binding.loaderView.visibility = View.GONE
+    binding.loaderView.gone()
   }
 
   private fun showProgress() {
-    binding.loaderView.visibility = View.VISIBLE
+    binding.loaderView.visible()
   }
 
   private fun initRecyclerView() {
-    adapter.actionsListener = object : ActionsListener<ApplicationItem> {
-      override fun onAction(view: View, position: Int, t: ApplicationItem?, actions: ListActions) {
+    appsRecyclerAdapter.actionsListener = object : ActionsListener<UiApplicationList> {
+      override fun onAction(view: View, position: Int, t: UiApplicationList?, actions: ListActions) {
         if (t != null) {
           val intent = Intent()
           intent.putExtra(Constants.SELECTED_APPLICATION, t.packageName)
@@ -82,7 +80,7 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
       }
     }
     binding.contactsList.layoutManager = LinearLayoutManager(this)
-    binding.contactsList.adapter = adapter
+    binding.contactsList.adapter = appsRecyclerAdapter
     binding.contactsList.isNestedScrollingEnabled = false
     ViewUtils.listenScrollableView(binding.scroller) {
       binding.toolbarView.isSelected = it > 0
@@ -109,17 +107,16 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
 
   override fun onPause() {
     super.onPause()
-    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-    imm?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
+    inputMethodManagerWrapper.hideKeyboard(binding.searchField)
   }
 
   private fun refreshView(count: Int) {
     if (count > 0) {
-      binding.emptyItem.visibility = View.GONE
-      binding.scroller.visibility = View.VISIBLE
+      binding.emptyItem.gone()
+      binding.scroller.visible()
     } else {
-      binding.scroller.visibility = View.GONE
-      binding.emptyItem.visibility = View.VISIBLE
+      binding.scroller.gone()
+      binding.emptyItem.visible()
     }
   }
 

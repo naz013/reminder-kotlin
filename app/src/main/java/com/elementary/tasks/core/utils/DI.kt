@@ -60,6 +60,7 @@ import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.os.ContextProvider
+import com.elementary.tasks.core.os.InputMethodManagerWrapper
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.JobScheduler
@@ -171,7 +172,18 @@ val workerModule = module {
 
 val viewModelModule = module {
   viewModel { (id: String) -> ShowBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> AddBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    AddBirthdayViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
   viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
 
@@ -184,6 +196,7 @@ val viewModelModule = module {
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
   viewModel {
     FollowReminderViewModel(
+      get(),
       get(),
       get(),
       get(),
@@ -305,7 +318,7 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { SelectApplicationViewModel() }
+  viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get()) }
   viewModel { ActiveGpsRemindersViewModel(get(), get()) }
@@ -434,7 +447,6 @@ val utilModule = module {
   single { Notifier(get(), get(), get(), get(), get()) }
   single { JobScheduler(get(), get(), get()) }
   single { UpdatesHelper(get()) }
-  single { SystemServiceProvider(get()) }
 
   factory { WidgetDataProvider(get(), get(), get()) }
 
@@ -456,15 +468,18 @@ val utilModule = module {
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
   single { ReminderAnalyticsTracker(get()) }
 
-  single { DateTimeManager(get(), get(), get()) }
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
-  single { PackageManagerWrapper(get()) }
   single { GroupsUtil(get(), get(), get()) }
   single { ImageDecoder(get(), get()) }
+
   single { ContactsReader(get()) }
   single { ContextProvider(get()) }
+  single { SystemServiceProvider(get()) }
+  single { InputMethodManagerWrapper(get()) }
+  single { PackageManagerWrapper(get()) }
 
+  single { DateTimeManager(get(), get(), get()) }
   single { DateTimePickerProvider(get()) }
   single { DoNotDisturbManager(get(), get()) }
 

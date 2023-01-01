@@ -1,32 +1,38 @@
 package com.elementary.tasks.core.apps
 
-import android.content.pm.PackageManager
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.elementary.tasks.core.utils.launchDefault
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
-import kotlinx.coroutines.Job
+import com.elementary.tasks.core.view_models.BaseProgressViewModel
+import com.elementary.tasks.core.view_models.DispatcherProvider
+import kotlinx.coroutines.launch
 
-class SelectApplicationViewModel : ViewModel(), LifecycleObserver {
+class SelectApplicationViewModel(
+  dispatcherProvider: DispatcherProvider,
+  private val packageManagerWrapper: PackageManagerWrapper
+) : BaseProgressViewModel(dispatcherProvider) {
 
-  var applications: MutableLiveData<List<ApplicationItem>> = MutableLiveData()
-  var isLoading: MutableLiveData<Boolean> = MutableLiveData()
-  var packageManager: PackageManager? = null
-  private var job: Job? = null
+  private val _applications = mutableLiveDataOf<List<UiApplicationList>>()
+  val applications = _applications.toLiveData()
 
-  fun loadApps() {
-    val pm = packageManager ?: return
-    if (job != null || !applications.value.isNullOrEmpty()) return
-    isLoading.postValue(true)
-    job = launchDefault {
-      val list: MutableList<ApplicationItem> = mutableListOf()
-      val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+  override fun onCreate(owner: LifecycleOwner) {
+    super.onCreate(owner)
+    loadApps()
+  }
+
+  private fun loadApps() {
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val list = mutableListOf<UiApplicationList>()
+      val packages = packageManagerWrapper.getInstalledApplications()
       for (packageInfo in packages) {
-        val name = packageInfo.loadLabel(pm).toString()
+        val name = packageInfo.loadLabel(packageManagerWrapper.packageManager).toString()
         val packageName = packageInfo.packageName
-        val drawable = packageInfo.loadIcon(pm)
-        val data = ApplicationItem(name, packageName, drawable)
+        val drawable = packageInfo.loadIcon(packageManagerWrapper.packageManager)
+        val data = UiApplicationList(name, packageName, drawable)
         val pos = getPosition(name, list)
         if (pos == -1) {
           list.add(data)
@@ -35,14 +41,13 @@ class SelectApplicationViewModel : ViewModel(), LifecycleObserver {
         }
       }
       withUIContext {
-        isLoading.postValue(false)
-        applications.postValue(list)
+        postInProgress(false)
+        _applications.postValue(list)
       }
-      job = null
     }
   }
 
-  private fun getPosition(name: String, mList: MutableList<ApplicationItem>): Int {
+  private fun getPosition(name: String, mList: MutableList<UiApplicationList>): Int {
     if (mList.size == 0) {
       return 0
     }
