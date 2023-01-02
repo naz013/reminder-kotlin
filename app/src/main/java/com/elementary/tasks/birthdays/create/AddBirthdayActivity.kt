@@ -1,7 +1,6 @@
 package com.elementary.tasks.birthdays.create
 
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,22 +8,20 @@ import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.showError
-import com.elementary.tasks.core.utils.ui.text
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -84,28 +81,15 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     setSupportActionBar(binding.toolbar)
     supportActionBar?.setDisplayShowTitleEnabled(false)
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+    binding.toolbar.setTitle(R.string.add_birthday)
   }
 
-  private fun showBirthday(birthday: Birthday?, fromFile: Boolean = false) {
-    binding.toolbar.setTitle(R.string.add_birthday)
-
-    birthday?.also {
-      viewModel.editBirthday(it)
-
-      binding.toolbar.setTitle(R.string.edit_birthday)
-
-      if (viewModel.isEdited) return
-      binding.birthName.setText(it.name)
-
-      if (!TextUtils.isEmpty(it.number)) {
-        binding.numberView.setText(it.number)
-        binding.contactCheck.isChecked = true
-      }
-      viewModel.isEdited = true
-      viewModel.isFromFile = fromFile
-      if (fromFile) {
-        viewModel.findSame(it.uuId)
-      }
+  private fun showBirthday(birthday: UiBirthdayEdit) {
+    binding.toolbar.setTitle(R.string.edit_birthday)
+    binding.birthName.setText(birthday.name)
+    if (!TextUtils.isEmpty(birthday.number)) {
+      binding.numberView.setText(birthday.number)
+      binding.contactCheck.isChecked = true
     }
   }
 
@@ -117,9 +101,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
           readUri()
         }
       }
-      intent.hasExtra(Constants.INTENT_ITEM) -> showBirthday(birthdayFromIntent(), true)
+      intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent(birthdayFromIntent())
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
-      else -> viewModel.onDateChanged(LocalDate.now())
+      !intent.hasExtra(Constants.INTENT_ID) -> viewModel.onDateChanged(LocalDate.now())
     }
   }
 
@@ -131,23 +115,11 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   private fun birthdayFromIntent(): Birthday? = intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
 
   private fun readUri() {
-    intent.data?.let {
-      runCatching {
-        showBirthday(
-          if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-            val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_BIRTHDAY)
-            if (any != null && any is Birthday) {
-              any
-            } else null
-          } else null,
-          true
-        )
-      }
-    }
+    intent.data?.let { viewModel.onFile(it) }
   }
 
   private fun initViewModel() {
-    viewModel.birthday.observe(this) { showBirthday(it) }
+    viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
     viewModel.result.nonNullObserve(this) {
       when (it) {
         Commands.SAVED, Commands.DELETED -> closeScreen()
@@ -226,20 +198,17 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       return
     }
     val number = binding.numberView.trimmedText().takeIf { binding.contactCheck.isChecked }
-    viewModel.prepare(contact, number, binding.birthDate.text(), newId)
     if (binding.contactCheck.isChecked) {
       if (number.isNullOrEmpty()) {
         binding.numberLayout.showError(R.string.you_dont_insert_number)
         return
       }
-      permissionFlow.askPermission(Permissions.READ_CONTACTS) { finalSave() }
+      permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+        viewModel.save(contact, number, newId)
+      }
       return
     }
-    finalSave()
-  }
-
-  private fun finalSave() {
-    viewModel.save()
+    viewModel.save(contact, number, newId)
   }
 
   private fun closeScreen() {
@@ -253,7 +222,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun deleteItem() {
     if (viewModel.isEdited && !viewModel.isFromFile) {
-      viewModel.deleteBirthday(viewModel.editableBirthday.uuId)
+      viewModel.deleteBirthday()
     }
   }
 

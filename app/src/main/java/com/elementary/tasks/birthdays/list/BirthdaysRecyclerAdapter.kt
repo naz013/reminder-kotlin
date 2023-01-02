@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
 

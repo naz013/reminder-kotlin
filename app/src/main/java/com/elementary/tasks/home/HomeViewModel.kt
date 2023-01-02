@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory

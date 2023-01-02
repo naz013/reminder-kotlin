@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.data.ui
+package com.elementary.tasks.core.data.ui.birthday
 
 data class UiBirthdayList(
   val uuId: String,

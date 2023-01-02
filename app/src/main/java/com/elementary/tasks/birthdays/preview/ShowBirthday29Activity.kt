@@ -9,7 +9,7 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.ui.birthday.UiShowBirthday
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
@@ -72,7 +72,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>() {
     }
   }
 
-  private fun showBirthday(birthday: UiShowBirthday) {
+  private fun showBirthday(birthday: UiBirthdayShow) {
     if (viewModel.isEventShowed) return
 
     birthday.photo?.also {

@@ -13,7 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdayAdsViewHolder
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListData

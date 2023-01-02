@@ -11,7 +11,7 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants

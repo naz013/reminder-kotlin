@@ -1,7 +1,7 @@
-package com.elementary.tasks.core.data.adapter
+package com.elementary.tasks.core.data.adapter.birthday
 
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import org.threeten.bp.LocalTime
 

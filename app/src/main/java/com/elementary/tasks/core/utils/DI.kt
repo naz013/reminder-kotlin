@@ -47,12 +47,13 @@ import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
-import com.elementary.tasks.core.data.adapter.UiShowBirthdayAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
@@ -79,7 +80,6 @@ import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
@@ -118,6 +118,7 @@ import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
+import com.elementary.tasks.missed_calls.MissedCallViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.ImageDecoder
@@ -178,6 +179,8 @@ val viewModelModule = module {
   viewModel { (id: String) ->
     AddBirthdayViewModel(
       id,
+      get(),
+      get(),
       get(),
       get(),
       get(),
@@ -538,7 +541,8 @@ val adapterModule = module {
   single { UiReminderListAdapter(get(), get(), get()) }
 
   single { UiBirthdayListAdapter(get()) }
-  single { UiShowBirthdayAdapter(get(), get()) }
+  single { UiBirthdayShowAdapter(get(), get()) }
+  single { UiBirthdayEditAdapter() }
 
   single { UiSmsListAdapter() }
 

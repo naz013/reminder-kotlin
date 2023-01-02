@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemBirthdayAdsBinding
 

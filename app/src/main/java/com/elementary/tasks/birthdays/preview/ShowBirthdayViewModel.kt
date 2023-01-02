@@ -3,10 +3,10 @@ package com.elementary.tasks.birthdays.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.core.data.adapter.UiShowBirthdayAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.ui.birthday.UiShowBirthday
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -26,13 +26,13 @@ class ShowBirthdayViewModel(
   private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
   private val dateTimeManager: DateTimeManager,
-  private val uiShowBirthdayAdapter: UiShowBirthdayAdapter
+  private val uiBirthdayShowAdapter: UiBirthdayShowAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val _birthday = mutableLiveDataOf<UiShowBirthday>()
+  private val _birthday = mutableLiveDataOf<UiBirthdayShow>()
   val birthday = _birthday.toLiveData()
 
-  var uiShowBirthday: UiShowBirthday? = null
+  var uiBirthdayShow: UiBirthdayShow? = null
     private set
   var isEventShowed = false
 
@@ -40,20 +40,20 @@ class ShowBirthdayViewModel(
     super.onCreate(owner)
     viewModelScope.launch(dispatcherProvider.default()) {
       val birthday = birthdaysDao.getById(id) ?: return@launch
-      uiShowBirthday = uiShowBirthdayAdapter.convert(birthday)
-      _birthday.postValue(uiShowBirthday)
+      uiBirthdayShow = uiBirthdayShowAdapter.convert(birthday)
+      _birthday.postValue(uiBirthdayShow)
     }
   }
 
   fun onTestLoad(birthday: Birthday?) {
     if (birthday != null) {
-      uiShowBirthday = uiShowBirthdayAdapter.convert(birthday)
-      _birthday.postValue(uiShowBirthday)
+      uiBirthdayShow = uiBirthdayShowAdapter.convert(birthday)
+      _birthday.postValue(uiBirthdayShow)
     }
   }
 
   fun getNumber(): String? {
-    return uiShowBirthday?.number
+    return uiBirthdayShow?.number
   }
 
   fun getId(): String {
@@ -61,7 +61,7 @@ class ShowBirthdayViewModel(
   }
 
   fun getUniqueId(): Int {
-    return uiShowBirthday?.uniqueId ?: 2123
+    return uiBirthdayShow?.uniqueId ?: 2123
   }
 
   fun saveBirthday() {

@@ -15,7 +15,7 @@ import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions

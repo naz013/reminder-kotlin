@@ -2,7 +2,7 @@ package com.elementary.tasks.core.data.ui.birthday
 
 import android.net.Uri
 
-data class UiShowBirthday(
+data class UiBirthdayShow(
   val uuId: String,
   val name: String,
   val ageFormatted: String,

@@ -3,7 +3,7 @@ package com.elementary.tasks.birthdays.list
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier

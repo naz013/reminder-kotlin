@@ -3,7 +3,7 @@ package com.elementary.tasks.birthdays.list
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.append
 import com.elementary.tasks.core.utils.inflater

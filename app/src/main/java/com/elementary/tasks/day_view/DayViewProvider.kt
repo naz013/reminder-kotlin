@@ -1,6 +1,6 @@
 package com.elementary.tasks.day_view
 
-import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder

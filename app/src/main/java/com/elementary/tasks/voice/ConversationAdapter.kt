@@ -10,7 +10,7 @@ import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.group.UiGroupList

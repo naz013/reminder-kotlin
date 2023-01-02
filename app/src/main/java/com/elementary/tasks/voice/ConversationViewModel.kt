@@ -17,7 +17,7 @@ import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
@@ -29,7 +29,7 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListData
