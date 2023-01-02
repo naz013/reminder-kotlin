@@ -6,7 +6,7 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import java.io.File

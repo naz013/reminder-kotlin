@@ -14,7 +14,7 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models
+package com.elementary.tasks.core.utils
 
 import kotlinx.coroutines.Dispatchers
 

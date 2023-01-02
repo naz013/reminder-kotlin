@@ -12,7 +12,7 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

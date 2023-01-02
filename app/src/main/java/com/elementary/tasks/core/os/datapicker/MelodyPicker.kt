@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

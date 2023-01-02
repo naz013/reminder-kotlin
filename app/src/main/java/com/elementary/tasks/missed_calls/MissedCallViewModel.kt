@@ -8,9 +8,9 @@ import com.elementary.tasks.core.data.ui.missedcall.UiMissedCallShow
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
 class MissedCallViewModel(

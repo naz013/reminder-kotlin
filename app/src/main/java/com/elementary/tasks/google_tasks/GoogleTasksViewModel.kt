@@ -13,9 +13,9 @@ import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

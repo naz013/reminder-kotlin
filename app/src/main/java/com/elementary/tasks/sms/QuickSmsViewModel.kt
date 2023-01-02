@@ -11,8 +11,8 @@ import com.elementary.tasks.core.data.dao.SmsTemplatesDao
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
 class QuickSmsViewModel(

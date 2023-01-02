@@ -28,7 +28,7 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity

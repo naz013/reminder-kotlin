@@ -11,9 +11,9 @@ import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.launch
 import java.io.IOException

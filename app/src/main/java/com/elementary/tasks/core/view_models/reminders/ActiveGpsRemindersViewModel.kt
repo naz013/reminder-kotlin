@@ -2,8 +2,8 @@ package com.elementary.tasks.core.view_models.reminders
 
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.utils.DispatcherProvider
 
 class ActiveGpsRemindersViewModel(
   reminderDao: ReminderDao,

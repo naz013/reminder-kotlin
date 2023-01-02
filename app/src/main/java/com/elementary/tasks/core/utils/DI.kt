@@ -51,6 +51,7 @@ import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
+import com.elementary.tasks.core.data.adapter.UiUsedTimeListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
@@ -80,8 +81,6 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.view_models.notes.NotesViewModel
@@ -96,7 +95,7 @@ import com.elementary.tasks.core.view_models.reminders.FullScreenMapViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.core.view_models.reminders.VoiceResultDialogViewModel
-import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
+import com.elementary.tasks.reminder.create.fragments.UsedTimeViewModel
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.core.work.BackupWorker
@@ -120,6 +119,7 @@ import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
 import com.elementary.tasks.missed_calls.MissedCallViewModel
+import com.elementary.tasks.month_view.MonthViewViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.ImageDecoder
@@ -330,12 +330,8 @@ val viewModelModule = module {
   }
   viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get()) }
 
-  viewModel { (calculateFuture: Boolean) ->
-    DayViewViewModel(calculateFuture, get(), get(), get(), get(), get(), get(), get())
-  }
-  viewModel { (addReminders: Boolean, calculateFuture: Boolean) ->
-    MonthViewViewModel(addReminders, calculateFuture, get(), get(), get(), get())
-  }
+  viewModel { DayViewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { MonthViewViewModel(get(), get(), get(), get(), get()) }
 
   viewModel {
     ConversationViewModel(
@@ -360,7 +356,7 @@ val viewModelModule = module {
   }
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get()) }
-  viewModel { UsedTimeViewModel(get(), get()) }
+  viewModel { UsedTimeViewModel(get(), get(), get()) }
   viewModel { ActiveGpsRemindersViewModel(get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
@@ -553,6 +549,8 @@ val adapterModule = module {
   single { UiGroupEditAdapter() }
 
   single { UiMissedCallShowAdapter(get(), get()) }
+
+  single { UiUsedTimeListAdapter() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

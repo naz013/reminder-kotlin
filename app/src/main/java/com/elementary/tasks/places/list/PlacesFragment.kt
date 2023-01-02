@@ -20,7 +20,7 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.settings.BaseSettingsFragment

@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import timber.log.Timber

@@ -19,9 +19,9 @@ import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.normalizeSummary
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch

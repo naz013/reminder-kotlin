@@ -16,14 +16,12 @@ import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
 import timber.log.Timber
 
@@ -33,9 +31,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   private var behaviour: BottomSheetBehavior<LinearLayout>? = null
   private val datePageChangeListener = DatePageChangeListener()
 
-  private val mViewModel by viewModel<MonthViewViewModel> {
-    parametersOf(prefs.isRemindersInCalendarEnabled, prefs.isFutureEventEnabled)
-  }
+  private val mViewModel by viewModel<MonthViewViewModel>()
   private var monthPagerItem: MonthPagerItem? = null
   private var listener: ((MonthPagerItem, List<EventModel>) -> Unit)? = null
   private val eventsList: MutableList<EventModel> = mutableListOf()

@@ -36,7 +36,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.voice.ConversationViewModel
 import com.elementary.tasks.core.view_models.reminders.EditReminderViewModel
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding

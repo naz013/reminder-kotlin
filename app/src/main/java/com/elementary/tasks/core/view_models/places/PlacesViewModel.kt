@@ -7,7 +7,7 @@ import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
 class PlacesViewModel(

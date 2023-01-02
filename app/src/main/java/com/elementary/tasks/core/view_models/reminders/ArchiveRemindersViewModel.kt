@@ -9,9 +9,9 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import kotlinx.coroutines.launch
 

@@ -34,9 +34,9 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker

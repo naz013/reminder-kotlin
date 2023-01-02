@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models
+package com.elementary.tasks.core.data
 
 enum class Commands {
   SAVED,

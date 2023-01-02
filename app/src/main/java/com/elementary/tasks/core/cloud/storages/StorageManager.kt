@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.cloud.storages
 
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 
 class StorageManager(
   val dropbox: Dropbox,

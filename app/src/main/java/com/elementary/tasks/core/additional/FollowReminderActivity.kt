@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.FollowReminderViewModel
 import com.elementary.tasks.core.views.viewgroup.UiSelectorView
 import com.elementary.tasks.databinding.ActivityFollowBinding

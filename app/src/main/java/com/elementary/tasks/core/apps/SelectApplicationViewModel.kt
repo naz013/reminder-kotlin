@@ -6,8 +6,8 @@ import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
 class SelectApplicationViewModel(

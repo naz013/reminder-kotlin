@@ -16,9 +16,9 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
 import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 import kotlinx.coroutines.launch

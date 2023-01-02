@@ -49,7 +49,7 @@ import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
 import com.elementary.tasks.notes.list.ImagesGridAdapter

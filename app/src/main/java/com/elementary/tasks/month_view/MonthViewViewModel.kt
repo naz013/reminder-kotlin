@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.month_view
+package com.elementary.tasks.month_view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,23 +8,22 @@ import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.day.EventModel
-import com.elementary.tasks.month_view.MonthPagerItem
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MonthViewViewModel(
-  private val addReminders: Boolean,
-  private val calculateFuture: Boolean,
   dayViewProvider: DayViewProvider,
   dispatcherProvider: DispatcherProvider,
   private val birthdaysDao: BirthdaysDao,
-  private val reminderDao: ReminderDao
+  private val reminderDao: ReminderDao,
+  private val prefs: Prefs
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val liveData: MonthViewLiveData = MonthViewLiveData(dayViewProvider)
@@ -63,7 +62,7 @@ class MonthViewViewModel(
       viewModelScope.launch(dispatcherProvider.default()) {
         if (it != null) {
           reminderData.clear()
-          reminderData.addAll(dayViewProvider.loadReminders(calculateFuture, it))
+          reminderData.addAll(dayViewProvider.loadReminders(prefs.isFutureEventEnabled, it))
           repeatSearch()
         }
       }
@@ -71,7 +70,7 @@ class MonthViewViewModel(
 
     init {
       birthdays.observeForever(birthdayObserver)
-      if (addReminders) {
+      if (prefs.isRemindersInCalendarEnabled) {
         reminders.observeForever(reminderObserver)
       }
     }
@@ -82,7 +81,7 @@ class MonthViewViewModel(
       this.sort = sort
       val toSearch = mutableListOf<EventModel>()
       toSearch.addAll(birthdayData)
-      if (addReminders) {
+      if (prefs.isRemindersInCalendarEnabled) {
         toSearch.addAll(reminderData)
       }
       findMatches(toSearch, monthPagerItem, sort)
@@ -91,7 +90,7 @@ class MonthViewViewModel(
     override fun onInactive() {
       super.onInactive()
       birthdays.observeForever(birthdayObserver)
-      if (addReminders) {
+      if (prefs.isRemindersInCalendarEnabled) {
         reminders.observeForever(reminderObserver)
       }
     }
@@ -99,7 +98,7 @@ class MonthViewViewModel(
     override fun onActive() {
       super.onActive()
       birthdays.removeObserver(birthdayObserver)
-      if (addReminders) {
+      if (prefs.isRemindersInCalendarEnabled) {
         reminders.removeObserver(reminderObserver)
       }
     }

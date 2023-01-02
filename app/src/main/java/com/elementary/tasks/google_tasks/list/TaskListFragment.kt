@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.google_tasks.task.GoogleTaskActivity

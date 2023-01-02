@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.elementary.tasks.pin.PinLoginActivity

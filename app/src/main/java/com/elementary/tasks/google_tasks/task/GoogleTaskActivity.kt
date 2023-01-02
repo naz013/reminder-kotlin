@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.google_tasks.TasksConstants
 import org.koin.android.ext.android.inject

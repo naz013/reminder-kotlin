@@ -7,7 +7,7 @@ import android.os.Parcelable
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize

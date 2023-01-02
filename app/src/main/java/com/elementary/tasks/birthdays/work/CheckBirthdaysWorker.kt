@@ -12,7 +12,7 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.readString
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.withContext
 
 class CheckBirthdaysWorker(

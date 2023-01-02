@@ -14,11 +14,12 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.Job
@@ -26,14 +27,14 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DayViewViewModel(
-  private val calculateFuture: Boolean,
   private val eventControlFactory: EventControlFactory,
   dayViewProvider: DayViewProvider,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val reminderDao: ReminderDao,
   private val birthdaysDao: BirthdaysDao,
-  reminderGroupDao: ReminderGroupDao
+  reminderGroupDao: ReminderGroupDao,
+  private val prefs: Prefs
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
@@ -155,7 +156,7 @@ class DayViewViewModel(
       viewModelScope.launch(dispatcherProvider.default()) {
         if (it != null) {
           reminderData.clear()
-          reminderData.addAll(dayViewProvider.loadReminders(calculateFuture, it))
+          reminderData.addAll(dayViewProvider.loadReminders(prefs.isFutureEventEnabled, it))
           repeatSearch()
         }
       }

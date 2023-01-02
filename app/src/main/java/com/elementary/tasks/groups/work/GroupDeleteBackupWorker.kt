@@ -8,7 +8,7 @@ import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.withContext
 
 class GroupDeleteBackupWorker(

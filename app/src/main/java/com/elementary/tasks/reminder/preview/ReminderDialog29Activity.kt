@@ -43,7 +43,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.pin.PinLoginActivity

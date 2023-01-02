@@ -10,7 +10,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.launch
 import timber.log.Timber

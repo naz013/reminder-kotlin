@@ -23,7 +23,7 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment

@@ -19,7 +19,7 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel

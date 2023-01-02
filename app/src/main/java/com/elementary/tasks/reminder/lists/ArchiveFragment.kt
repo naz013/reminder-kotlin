@@ -17,7 +17,7 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment

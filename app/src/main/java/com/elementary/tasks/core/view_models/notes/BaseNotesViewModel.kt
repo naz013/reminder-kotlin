@@ -7,9 +7,9 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import kotlinx.coroutines.launch

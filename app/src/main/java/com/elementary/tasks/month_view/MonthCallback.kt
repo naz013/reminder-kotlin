@@ -1,10 +1,8 @@
 package com.elementary.tasks.month_view
 
 import androidx.annotation.ColorInt
-import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.day_view.day.EventModel
 import org.threeten.bp.LocalDate
-import java.util.*
 
 interface MonthCallback {
   fun find(monthPagerItem: MonthPagerItem, listener: ((MonthPagerItem, List<EventModel>) -> Unit)?)

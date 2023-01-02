@@ -35,7 +35,7 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding

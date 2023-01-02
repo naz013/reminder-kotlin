@@ -12,8 +12,8 @@ import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import kotlinx.coroutines.launch
