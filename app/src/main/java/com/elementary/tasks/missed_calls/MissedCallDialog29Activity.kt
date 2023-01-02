@@ -5,28 +5,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.data.ui.missedcall.UiMissedCallShow
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.contacts.Contacts
-import com.elementary.tasks.core.utils.contacts.ContactsReader
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import com.squareup.picasso.Picasso
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -35,18 +30,9 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
-  private val dateTimeManager by inject<DateTimeManager>()
-  private val contactsReader by inject<ContactsReader>()
 
-  private var mMissedCall: MissedCall? = null
-  private var isEventShowed = false
   private val id: Int
-    get() = mMissedCall?.uniqueId ?: 2122
-  private val mMissedCallObserver: Observer<in MissedCall> = Observer { missedCall ->
-    if (missedCall != null) {
-      showInfo(missedCall)
-    }
-  }
+    get() = viewModel.missedCall.value?.uniqueId ?: 2122
 
   override fun inflateBinding() = ActivityMissedDialogBinding.inflate(layoutInflater)
 
@@ -72,17 +58,15 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
   }
 
   private fun loadTest() {
-    val isMocked = intentBoolean(ARG_TEST)
-    if (isMocked) {
-      val missedCall = intentParcelable(ARG_TEST_ITEM, MissedCall::class.java)
-      if (missedCall != null) showInfo(missedCall)
+    if (intentBoolean(ARG_TEST)) {
+      viewModel.loadTest(intentParcelable(ARG_TEST_ITEM, MissedCall::class.java))
     }
   }
 
   private fun getNumber() = intentString(Constants.INTENT_ID)
 
   private fun initViewModel() {
-    viewModel.missedCall.observeForever(mMissedCallObserver)
+    viewModel.missedCall.nonNullObserve(this) { showInfo(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
         Commands.DELETED -> finish()
@@ -96,31 +80,24 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
     }
   }
 
-  private fun showInfo(missedCall: MissedCall) {
-    if (isEventShowed) return
-    this.mMissedCall = missedCall
-    val formattedTime = dateTimeManager.getTime(
-      dateTimeManager.fromMillis(missedCall.dateTime).toLocalTime()
-    )
+  private fun showInfo(missedCall: UiMissedCallShow) {
+    if (viewModel.isEventShowed) return
+
     val name: String
-    if (missedCall.number.isNotEmpty() && Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-      name = Contacts.getNameFromNumber(missedCall.number, this) ?: missedCall.number
-      val conID = Contacts.getIdFromNumber(missedCall.number, this)
-      val photo = Contacts.getPhoto(conID)
-      if (photo != null) {
-        Picasso.get().load(photo).into(binding.contactPhoto)
-      } else {
-        BitmapUtils.imageFromName(name) {
-          binding.contactPhoto.setImageDrawable(it)
-        }
+    if (missedCall.number.isNotEmpty()) {
+      name = missedCall.name ?: missedCall.number
+      missedCall.photo?.also {
+        Picasso.get().load(it).into(binding.contactPhoto)
+      } ?: run {
+        binding.contactPhoto.setImageDrawable(missedCall.avatar)
       }
     } else {
       name = missedCall.number
-      binding.contactPhoto.visibility = View.INVISIBLE
+      binding.contactPhoto.transparent()
     }
 
     binding.remText.setText(R.string.last_called)
-    binding.reminderTime.text = formattedTime
+    binding.reminderTime.text = missedCall.formattedTime
 
     binding.contactName.text = name
     binding.contactNumber.text = missedCall.number
@@ -128,7 +105,7 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
 
   private fun discardMedia() {
     ContextCompat.startForegroundService(this,
-      EventOperationalService.getIntent(this, mMissedCall?.number ?: "",
+      EventOperationalService.getIntent(this, viewModel.getNumber() ?: "",
         EventOperationalService.TYPE_MISSED,
         EventOperationalService.ACTION_STOP,
         id))
@@ -142,7 +119,6 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
 
   override fun onDestroy() {
     super.onDestroy()
-    viewModel.missedCall.removeObserver(mMissedCallObserver)
     lifecycle.removeObserver(viewModel)
   }
 
@@ -158,7 +134,7 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
 
   private fun makeCall() {
     permissionFlow.askPermission(Permissions.CALL_PHONE) {
-      TelephonyUtil.makeCall(mMissedCall?.number ?: "", this)
+      TelephonyUtil.makeCall(viewModel.getNumber() ?: "", this)
       removeMissed()
     }
   }
@@ -166,18 +142,15 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
   private fun sendSMS() {
     val sendIntent = Intent(Intent.ACTION_VIEW)
     sendIntent.type = "vnd.android-dir/mms-sms"
-    sendIntent.putExtra("address", mMissedCall?.number)
+    sendIntent.putExtra("address", viewModel.getNumber())
     startActivity(Intent.createChooser(sendIntent, "SMS:"))
     removeMissed()
   }
 
   private fun removeMissed() {
     discardNotification(id)
-    isEventShowed = true
-    viewModel.missedCall.removeObserver(mMissedCallObserver)
-    mMissedCall?.let {
-      viewModel.deleteMissedCall(it)
-    }
+    viewModel.isEventShowed = true
+    viewModel.deleteMissedCall()
   }
 
   companion object {

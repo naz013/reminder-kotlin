@@ -57,6 +57,7 @@ import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.elementary.tasks.core.data.adapter.missedcall.UiMissedCallShowAdapter
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
@@ -288,7 +289,7 @@ val viewModelModule = module {
   }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
 
-  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get()) }
+  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get(), get()) }
 
   viewModel { (listId: String) ->
     GoogleTaskListViewModel(
@@ -550,6 +551,8 @@ val adapterModule = module {
 
   single { UiGroupListAdapter(get()) }
   single { UiGroupEditAdapter() }
+
+  single { UiMissedCallShowAdapter(get(), get()) }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =
