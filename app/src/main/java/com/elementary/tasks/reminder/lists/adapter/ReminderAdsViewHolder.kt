@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.lists.adapter
 import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListAds
 import com.elementary.tasks.core.utils.inflater
@@ -38,20 +37,6 @@ class ReminderAdsViewHolder(
           mutable.add(3, UiReminderListAds())
         } else {
           mutable.add(list.size / 2 + 1, UiReminderListAds())
-        }
-        mutable
-      } else {
-        list
-      }
-    }
-
-    fun updateList(list: List<Reminder>): List<Reminder> {
-      return if (AdsProvider.hasAds() && list.isNotEmpty()) {
-        val mutable = list.toMutableList()
-        if (list.size > 6) {
-          mutable.add(3, Reminder().apply { this.uuId = AdsProvider.REMINDER_BANNER_ID })
-        } else {
-          mutable.add(list.size / 2 + 1, Reminder().apply { this.uuId = AdsProvider.REMINDER_BANNER_ID })
         }
         mutable
       } else {

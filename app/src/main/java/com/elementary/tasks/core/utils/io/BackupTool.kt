@@ -60,10 +60,12 @@ class BackupTool(
           val defGroup = if (allData.groups.isNotEmpty()) {
             Timber.d("importAll: has groups ${allData.groups.size}")
             hasAnyData = true
-            allData.groups.map { it.isDefaultGroup = false }
+            allData.groups.map {
+              it.copy(isDefaultGroup = false)
+            }
             if (replace) {
               appDb.reminderGroupDao().deleteAll()
-              allData.groups[0].isDefaultGroup = true
+              allData.groups[0] = allData.groups[0].copy(isDefaultGroup = true)
             }
             allData.groups.forEach { appDb.reminderGroupDao().insert(it) }
             appDb.reminderGroupDao().defaultGroup()
@@ -154,7 +156,7 @@ class BackupTool(
   fun exportAll(): File? {
     val allData = AllData(
       reminders = appDb.reminderDao().all(),
-      groups = appDb.reminderGroupDao().all(),
+      groups = appDb.reminderGroupDao().all().toMutableList(),
       notes = appDb.notesDao().all().map { OldNote(it) },
       places = appDb.placesDao().all(),
       templates = appDb.smsTemplatesDao().all(),
@@ -257,7 +259,7 @@ class BackupTool(
     @SerializedName("reminders")
     var reminders: List<Reminder> = listOf(),
     @SerializedName("groups")
-    var groups: List<ReminderGroup> = listOf(),
+    var groups: MutableList<ReminderGroup> = mutableListOf(),
     @SerializedName("notes")
     var notes: List<OldNote> = listOf(),
     @SerializedName("places")

@@ -13,14 +13,14 @@ import java.util.*
 @Parcelize
 data class ReminderGroup(
   @SerializedName("title")
-  var groupTitle: String = "",
+  val groupTitle: String,
   @SerializedName("uuId")
   @PrimaryKey
-  var groupUuId: String = UUID.randomUUID().toString(),
+  val groupUuId: String,
   @SerializedName("color")
-  var groupColor: Int = 0,
+  val groupColor: Int,
   @SerializedName("dateTime")
-  var groupDateTime: String,
+  val groupDateTime: String,
   @SerializedName("isDefaultGroup")
-  var isDefaultGroup: Boolean = false
+  val isDefaultGroup: Boolean
 ) : Parcelable

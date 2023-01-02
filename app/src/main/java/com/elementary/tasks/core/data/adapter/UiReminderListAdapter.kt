@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data.adapter
 
+import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.ui.UiGroup
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
@@ -15,7 +15,8 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 class UiReminderListAdapter(
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
-  private val uiReminderCommonAdapter: UiReminderCommonAdapter
+  private val uiReminderCommonAdapter: UiReminderCommonAdapter,
+  private val uiGroupListAdapter: UiGroupListAdapter
 ) : UiAdapter<Reminder, UiReminderList> {
 
   override fun create(data: Reminder): UiReminderListData {
@@ -34,7 +35,7 @@ class UiReminderListAdapter(
               icon = uiReminderCommonAdapter.getReminderIllustration(type)
             ),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
-            group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+            group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
             shopList = data.shoppings
@@ -50,7 +51,7 @@ class UiReminderListAdapter(
               icon = uiReminderCommonAdapter.getReminderIllustration(type)
             ),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
-            group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+            group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
             actionTarget = uiReminderCommonAdapter.getTarget(data, type),
             places = data.places.map { uiReminderPlaceAdapter.create(it) }
@@ -66,7 +67,7 @@ class UiReminderListAdapter(
               icon = uiReminderCommonAdapter.getReminderIllustration(type)
             ),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
-            group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+            group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
             actionTarget = uiReminderCommonAdapter.getTarget(data, type),
@@ -86,7 +87,7 @@ class UiReminderListAdapter(
               icon = uiReminderCommonAdapter.getReminderIllustration(type)
             ),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
-            group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+            group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
             isRunning = data.isActive && !data.isRemoved,
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
@@ -103,7 +104,7 @@ class UiReminderListAdapter(
               icon = uiReminderCommonAdapter.getReminderIllustration(type)
             ),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
-            group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+            group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             isRunning = data.isActive && !data.isRemoved,
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
             actionTarget = uiReminderCommonAdapter.getTarget(data, type),
@@ -120,7 +121,7 @@ class UiReminderListAdapter(
               icon = uiReminderCommonAdapter.getReminderIllustration(type)
             ),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
-            group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+            group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
             isRunning = data.isActive && !data.isRemoved,
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),

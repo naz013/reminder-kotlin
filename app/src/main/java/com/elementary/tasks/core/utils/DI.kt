@@ -54,6 +54,8 @@ import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.data.adapter.UiShowBirthdayAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
+import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
+import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
@@ -77,9 +79,6 @@ import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.core.view_models.DispatcherProvider
-import com.elementary.tasks.google_tasks.GoogleTasksViewModel
-import com.elementary.tasks.core.view_models.groups.GroupViewModel
-import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
@@ -107,12 +106,15 @@ import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.DayViewViewModel
+import com.elementary.tasks.google_tasks.GoogleTasksViewModel
 import com.elementary.tasks.google_tasks.list.TaskListViewModel
 import com.elementary.tasks.google_tasks.task.GoogleTaskViewModel
 import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListViewModel
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
+import com.elementary.tasks.groups.create.CreateGroupViewModel
+import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
@@ -154,8 +156,8 @@ val workerModule = module {
   worker { SyncDataWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
   worker { SaveNewTaskWorker(get(), get(), get(), get()) }
   worker { UpdateTaskWorker(get(), get(), get(), get()) }
-  worker { GroupDeleteBackupWorker(get(), get(), get()) }
-  worker { GroupSingleBackupWorker(get(), get(), get()) }
+  worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
+  worker { GroupSingleBackupWorker(get(), get(), get(), get()) }
   worker { DeleteNoteBackupWorker(get(), get(), get()) }
   worker { NoteSingleBackupWorker(get(), get(), get()) }
   worker { PlaceDeleteBackupWorker(get(), get(), get()) }
@@ -267,7 +269,22 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { (id: String) -> GroupViewModel(id, get(), get(), get()) }
+
+  viewModel { (id: String) ->
+    CreateGroupViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+  viewModel { GroupsViewModel(get(), get(), get(), get()) }
+
   viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get()) }
 
   viewModel { (listId: String) ->
@@ -332,6 +349,8 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
       get()
     )
   }
@@ -343,7 +362,7 @@ val viewModelModule = module {
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { NotesViewModel(get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { GroupsViewModel(get(), get(), get()) }
+
   viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
 
@@ -486,8 +505,10 @@ val utilModule = module {
 
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
-  single { GroupsUtil(get(), get(), get()) }
+  single { GroupsUtil(get(), get(), get(), get()) }
   single { ImageDecoder(get(), get()) }
+
+  single { IdProvider() }
 
   single { ContactsReader(get()) }
   single { ContextProvider(get()) }
@@ -513,8 +534,8 @@ val utilModule = module {
 val adapterModule = module {
   single { UiReminderPlaceAdapter() }
   single { UiReminderCommonAdapter(get(), get(), get(), get(), get()) }
-  single { UiReminderPreviewAdapter(get(), get(), get()) }
-  single { UiReminderListAdapter(get(), get()) }
+  single { UiReminderPreviewAdapter(get(), get(), get(), get()) }
+  single { UiReminderListAdapter(get(), get(), get()) }
 
   single { UiBirthdayListAdapter(get()) }
   single { UiShowBirthdayAdapter(get(), get()) }
@@ -522,6 +543,9 @@ val adapterModule = module {
   single { UiSmsListAdapter() }
 
   single { UiGoogleTaskListAdapter(get()) }
+
+  single { UiGroupListAdapter(get()) }
+  single { UiGroupEditAdapter() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

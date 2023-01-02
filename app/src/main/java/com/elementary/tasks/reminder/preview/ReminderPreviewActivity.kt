@@ -267,7 +267,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun showInfo(reminder: UiReminderPreview) {
     Timber.d("showInfo: $reminder")
 
-    binding.group.text = reminder.group?.name
+    binding.group.text = reminder.group?.title
     showStatus(reminder.status)
     binding.windowTypeView.text = reminder.windowType
     binding.taskText.text = reminder.summary

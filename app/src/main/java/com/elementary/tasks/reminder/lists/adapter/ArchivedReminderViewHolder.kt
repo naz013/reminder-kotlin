@@ -63,7 +63,7 @@ class ArchivedReminderViewHolder(
   private fun loadGroup(reminder: UiReminderListRemoved) {
     val priority = reminder.priority
     val typeLabel = reminder.illustration.title
-    val groupName = reminder.group?.name ?: ""
+    val groupName = reminder.group?.title ?: ""
     binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }
 

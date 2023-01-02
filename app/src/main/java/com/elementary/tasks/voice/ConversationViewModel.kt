@@ -14,11 +14,12 @@ import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.adapter.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.PlacesDao
@@ -33,12 +34,14 @@ import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.IdProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.withUIContext
@@ -61,20 +64,22 @@ import java.util.Random
 
 class ConversationViewModel(
   currentStateHolder: CurrentStateHolder,
+  dispatcherProvider: DispatcherProvider,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   private val recognizer: Recognizer,
-  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
-  dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val updatesHelper: UpdatesHelper,
+  private val dateTimeManager: DateTimeManager,
+  private val idProvider: IdProvider,
   private val notesDao: NotesDao,
   private val birthdaysDao: BirthdaysDao,
-  private val uiReminderListAdapter: UiReminderListAdapter,
-  private val dateTimeManager: DateTimeManager,
   private val reminderDao: ReminderDao,
   private val reminderGroupDao: ReminderGroupDao,
-  private val placesDao: PlacesDao
+  private val placesDao: PlacesDao,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
+  private val uiReminderListAdapter: UiReminderListAdapter,
+  private val uiGroupListAdapter: UiGroupListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val prefs = currentStateHolder.preferences
@@ -101,20 +106,20 @@ class ConversationViewModel(
   private val language = currentStateHolder.language
   private var hasPartial = false
 
-  val groups = mutableListOf<ReminderGroup>()
-  var defaultGroup: ReminderGroup? = null
+  val groups = mutableListOf<UiGroupList>()
+  var defaultGroup: UiGroupList? = null
 
   init {
     clearConversation()
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderGroupDao.defaultGroup(true)?.also {
-        defaultGroup = it
+        defaultGroup = uiGroupListAdapter.convert(it)
       }
     }
-    reminderGroupDao.loadAll().observeForever {
-      if (it != null) {
+    reminderGroupDao.loadAll().observeForever { list ->
+      if (list != null) {
         groups.clear()
-        groups.addAll(it)
+        groups.addAll(list.map { uiGroupListAdapter.convert(it) })
       }
     }
   }
@@ -124,7 +129,7 @@ class ConversationViewModel(
     val container = reply.content as Container<*>
     Timber.d("addMoreItemsToList: $container")
     when (container.type) {
-      is ReminderGroup -> {
+      is UiGroupList -> {
         repliesList.removeAt(position)
         for (item in container.list) {
           repliesList.add(0, Reply(Reply.GROUP, item))
@@ -140,7 +145,7 @@ class ConversationViewModel(
         _replies.postValue(repliesList)
       }
 
-      is Reminder -> {
+      is UiReminderList -> {
         repliesList.removeAt(position)
         addRemindersToList(container)
         _replies.postValue(repliesList)
@@ -251,7 +256,11 @@ class ConversationViewModel(
         active = true,
         removed = false,
         fromTime = dateTimeManager.getGmtDateTimeFromMillis(System.currentTimeMillis()),
-        toTime = dateTimeManager.getGmtDateTimeFromMillis(dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime))
+        toTime = dateTimeManager.getGmtDateTimeFromMillis(
+          dateTimeManager.getMillisFromGmtVoiceEngine(
+            gmtDateTime
+          )
+        )
       ).map { uiReminderListAdapter.create(it) }
       postInProgress(false)
       _enabledReminders.postValue(list)
@@ -264,7 +273,11 @@ class ConversationViewModel(
       val list = reminderDao.getActiveInRange(
         false,
         dateTimeManager.getGmtDateTimeFromMillis(System.currentTimeMillis()),
-        dateTimeManager.getGmtDateTimeFromMillis(dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime))
+        dateTimeManager.getGmtDateTimeFromMillis(
+          dateTimeManager.getMillisFromGmtVoiceEngine(
+            gmtDateTime
+          )
+        )
       ).map { uiReminderListAdapter.create(it) }
       postInProgress(false)
       _activeReminders.postValue(list)
@@ -416,7 +429,11 @@ class ConversationViewModel(
         eventControlFactory.getController(reminder).stop()
         reminderDao.delete(reminder)
         googleCalendarUtils.deleteEvents(reminder.uuId)
-        workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        workerLauncher.startWork(
+          ReminderDeleteBackupWorker::class.java,
+          Constants.INTENT_ID,
+          reminder.uuId
+        )
         googleCalendarUtils.deleteEvents(reminder.uuId)
       }
       postInProgress(false)
@@ -461,9 +478,9 @@ class ConversationViewModel(
     val reminder = Reminder()
     val group = defaultGroup
     if (group != null) {
-      reminder.groupColor = group.groupColor
-      reminder.groupTitle = group.groupTitle
-      reminder.groupUuId = group.groupUuId
+      reminder.groupColor = group.colorPosition
+      reminder.groupTitle = group.title
+      reminder.groupUuId = group.id
     }
     reminder.type = typeT
     reminder.summary = model.summary
@@ -484,11 +501,11 @@ class ConversationViewModel(
       runBlocking {
         Timber.d("saveAndStartReminder: save START")
         if (reminder.groupUuId == "") {
-          val group = reminderGroupDao.defaultGroup()
+          val group = defaultGroup
           if (group != null) {
-            reminder.groupColor = group.groupColor
-            reminder.groupTitle = group.groupTitle
-            reminder.groupUuId = group.groupUuId
+            reminder.groupColor = group.colorPosition
+            reminder.groupTitle = group.title
+            reminder.groupUuId = group.id
           }
         }
         reminderDao.insert(reminder)
@@ -503,7 +520,11 @@ class ConversationViewModel(
         eventControlFactory.getController(reminder).start()
         Timber.d("saveAndStartReminder: save DONE")
       }
-      workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      workerLauncher.startWork(
+        ReminderSingleBackupWorker::class.java,
+        Constants.INTENT_ID,
+        reminder.uuId
+      )
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -544,9 +565,9 @@ class ConversationViewModel(
     mReminder.summary = summary
     val group = defaultGroup
     if (group != null) {
-      mReminder.groupColor = group.groupColor
-      mReminder.groupTitle = group.groupTitle
-      mReminder.groupUuId = group.groupUuId
+      mReminder.groupColor = group.colorPosition
+      mReminder.groupTitle = group.title
+      mReminder.groupUuId = group.id
     }
     mReminder.startTime = dateTimeManager.getGmtDateTimeFromMillis(due)
     mReminder.eventTime = dateTimeManager.getGmtDateTimeFromMillis(due)
@@ -558,7 +579,9 @@ class ConversationViewModel(
     return ReminderGroup(
       groupTitle = model.summary,
       groupColor = Random().nextInt(16),
-      groupDateTime = dateTimeManager.getNowGmtDateTime()
+      groupDateTime = dateTimeManager.getNowGmtDateTime(),
+      groupUuId = idProvider.generateUuid(),
+      isDefaultGroup = false
     )
   }
 
@@ -594,22 +617,22 @@ class ConversationViewModel(
       var part: String = input
       var number: String? = null
 
-        while (part.length > 1) {
-          val selection =
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
-          val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
-          val c = context.contentResolver.query(
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            projection, selection, null, null
-          )
-          if (c != null && c.moveToFirst()) {
-            number = c.getString(0)
-            c.close()
-          }
-          if (number != null)
-            break
-          part = part.substring(0, part.length - 2)
+      while (part.length > 1) {
+        val selection =
+          ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
+        val c = context.contentResolver.query(
+          ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+          projection, selection, null, null
+        )
+        if (c != null && c.moveToFirst()) {
+          number = c.getString(0)
+          c.close()
         }
+        if (number != null)
+          break
+        part = part.substring(0, part.length - 2)
+      }
 
       return number
     }
@@ -621,23 +644,23 @@ class ConversationViewModel(
       var part: String = input
       var number: String? = null
 
-        while (part.length > 1) {
-          val selection =
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
-          val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
-          val c = context.contentResolver.query(
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            projection, selection, null, null
-          )
-          if (c != null && c.moveToFirst()) {
-            number = c.getString(0)
-            c.close()
-          }
-          if (number != null) {
-            break
-          }
-          part = part.substring(0, part.length - 1)
+      while (part.length > 1) {
+        val selection =
+          ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
+        val c = context.contentResolver.query(
+          ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+          projection, selection, null, null
+        )
+        if (c != null && c.moveToFirst()) {
+          number = c.getString(0)
+          c.close()
         }
+        if (number != null) {
+          break
+        }
+        part = part.substring(0, part.length - 1)
+      }
 
       return number
     }

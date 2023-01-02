@@ -10,10 +10,10 @@ import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
@@ -94,7 +94,7 @@ class ConversationAdapter(
       holder is VoiceResponseHolder -> holder.bind(content as String)
       holder is ReminderViewHolder -> holder.setData(content as UiReminderListActive)
       holder is NoteViewHolder && content is NoteWithImages -> holder.setData(content)
-      holder is GroupHolder -> holder.setData(content as ReminderGroup)
+      holder is GroupHolder -> holder.setData(content as UiGroupList)
       holder is BirthdayHolder -> holder.setData(content as UiBirthdayList)
       holder is ShoppingViewHolder -> holder.setData(content as UiReminderListActiveShop)
       holder is AskHolder -> holder.setAskAction(content as AskAction)

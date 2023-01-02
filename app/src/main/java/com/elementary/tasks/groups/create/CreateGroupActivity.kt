@@ -1,38 +1,28 @@
 package com.elementary.tasks.groups.create
 
-import android.content.ContentResolver
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.UUID
 
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
-  private val viewModel by viewModel<GroupViewModel> { parametersOf(getId()) }
-  private val dateTimeManager by inject<DateTimeManager>()
+  private val viewModel by viewModel<CreateGroupViewModel> { parametersOf(getId()) }
 
   private val permissionFlow = PermissionFlow(this, dialogues)
-  private var mItem: ReminderGroup? = null
 
   override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
 
@@ -42,22 +32,18 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
     binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(this))
     binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
-
-    if (savedInstanceState != null) {
-      binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
+    binding.colorSlider.setSelection(viewModel.sliderPosition)
+    binding.colorSlider.setListener { position, _ ->
+      viewModel.onPositionChanged(position)
     }
 
+    initViewModel()
     loadGroup()
   }
 
   override fun requireLogin() = true
 
   private fun getId(): String = intentString(Constants.INTENT_ID)
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
-    super.onSaveInstanceState(outState)
-  }
 
   private fun initActionBar() {
     setSupportActionBar(binding.toolbar)
@@ -68,49 +54,27 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     binding.toolbar.setTitle(R.string.create_group)
   }
 
-  private fun showGroup(reminderGroup: ReminderGroup, fromFile: Boolean = false) {
-    this.mItem = reminderGroup
-    if (!viewModel.isEdited) {
-      binding.nameInput.setText(reminderGroup.groupTitle)
-      binding.colorSlider.setSelection(reminderGroup.groupColor)
-      binding.defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
-      binding.defaultCheck.isChecked = reminderGroup.isDefaultGroup
-      viewModel.isEdited = true
-      viewModel.isFromFile = fromFile
-      if (fromFile) {
-        viewModel.findSame(reminderGroup.groupUuId)
-      }
-    }
+  private fun showGroup(group: UiGroupEdit) {
+    binding.nameInput.setText(group.title)
+    binding.colorSlider.setSelection(group.colorPosition)
+    binding.defaultCheck.isEnabled = !group.isDefault
+    binding.defaultCheck.isChecked = group.isDefault
     binding.toolbar.setTitle(R.string.change_group)
     invalidateOptionsMenu()
   }
 
   private fun loadGroup() {
-    initViewModel()
     if (intent.data != null) {
       permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
       runCatching {
-        intentParcelable(Constants.INTENT_ITEM, ReminderGroup::class.java)?.let {
-          showGroup(it, true)
-        }
+        viewModel.loadFromIntent(intentParcelable(Constants.INTENT_ITEM, ReminderGroup::class.java))
       }
     }
   }
 
   private fun readUri() {
-    intent.data?.let {
-      runCatching {
-        (if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-          val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_GROUP)
-          if (any != null && any is ReminderGroup) {
-            any
-          } else {
-            null
-          }
-        } else null)?.let { item -> showGroup(item, true) }
-      }
-    }
+    intent.data?.let { viewModel.loadFromFile(it) }
   }
 
   private fun initViewModel() {
@@ -122,7 +86,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
         }
       }
     }
-    viewModel.allGroups.nonNullObserve(this) { invalidateOptionsMenu() }
+    lifecycle.addObserver(viewModel)
   }
 
   private fun saveGroup(newId: Boolean = false) {
@@ -132,30 +96,18 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
       binding.nameLayout.isErrorEnabled = true
       return
     }
-    val wasDefault = mItem?.isDefaultGroup ?: false
-    val item = (mItem ?: ReminderGroup(groupDateTime = dateTimeManager.getNowGmtDateTime())).apply {
-      this.groupColor = binding.colorSlider.selectedItem
-      this.groupDateTime = dateTimeManager.getNowGmtDateTime()
-      this.groupTitle = text
-      this.isDefaultGroup = binding.defaultCheck.isChecked
-    }
-    if (newId) {
-      item.groupUuId = UUID.randomUUID().toString()
-    }
-    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
-    viewModel.saveGroup(item, wasDefault)
+    viewModel.saveGroup(
+      text,
+      binding.colorSlider.selectedItem,
+      binding.defaultCheck.isChecked,
+      newId
+    )
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-    mItem?.let {
-      if (!it.isDefaultGroup && !viewModel.isFromFile) {
-        viewModel.allGroups.value?.let { groups ->
-          if (groups.size > 1) {
-            menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-          }
-        }
-      }
+    if (!viewModel.isFromFile && viewModel.canBeDeleted) {
+      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
     }
     return true
   }
@@ -174,7 +126,9 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
       MENU_ITEM_DELETE -> {
         dialogues.askConfirmation(this, getString(R.string.delete)) {
-          if (it) deleteItem()
+          if (it) {
+            viewModel.deleteGroup()
+          }
         }
         true
       }
@@ -205,14 +159,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     }
   }
 
-  private fun deleteItem() {
-    mItem?.let {
-      viewModel.deleteGroup(it)
-    }
-  }
-
   companion object {
     private const val MENU_ITEM_DELETE = 12
-    private const val ARG_COLOR = "arg_color"
   }
 }

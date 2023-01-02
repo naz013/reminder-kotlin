@@ -2,6 +2,7 @@ package com.elementary.tasks.core.data.ui
 
 import com.elementary.tasks.AdsProvider.Companion.REMINDER_BANNER_ID
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderIllustration
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
@@ -18,7 +19,7 @@ data class UiReminderListAds(
 ) : UiReminderList()
 
 sealed class UiReminderListData : UiReminderList() {
-  abstract val group: UiGroup?
+  abstract val group: UiGroupList?
   abstract val isRepeating: Boolean
   abstract val status: UiReminderStatus
   abstract val due: UiReminderDueData?
@@ -31,7 +32,7 @@ data class UiReminderListActive(
   override val summary: String,
   val illustration: UiReminderIllustration,
   val priority: String,
-  override val group: UiGroup?,
+  override val group: UiGroupList?,
   override val due: UiReminderDueData,
   val isRunning: Boolean,
   override val status: UiReminderStatus,
@@ -45,7 +46,7 @@ data class UiReminderListActiveGps(
   override val summary: String,
   val illustration: UiReminderIllustration,
   val priority: String,
-  override val group: UiGroup?,
+  override val group: UiGroupList?,
   val isRunning: Boolean,
   override val status: UiReminderStatus,
   val actionTarget: UiReminderTarget?,
@@ -61,7 +62,7 @@ data class UiReminderListActiveShop(
   override val summary: String,
   val illustration: UiReminderIllustration,
   val priority: String,
-  override val group: UiGroup?,
+  override val group: UiGroupList?,
   override val due: UiReminderDueData,
   val isRunning: Boolean,
   override val status: UiReminderStatus,
@@ -76,7 +77,7 @@ data class UiReminderListRemoved(
   override val summary: String,
   val illustration: UiReminderIllustration,
   val priority: String,
-  override val group: UiGroup?,
+  override val group: UiGroupList?,
   val actionTarget: UiReminderTarget?,
   override val status: UiReminderStatus,
   override val due: UiReminderDueData,
@@ -89,7 +90,7 @@ data class UiReminderListRemovedGps(
   override val summary: String,
   val illustration: UiReminderIllustration,
   val priority: String,
-  override val group: UiGroup?,
+  override val group: UiGroupList?,
   override val status: UiReminderStatus,
   val actionTarget: UiReminderTarget?,
   val places: List<UiReminderPlace>
@@ -104,7 +105,7 @@ data class UiReminderListRemovedShop(
   override val summary: String,
   val illustration: UiReminderIllustration,
   val priority: String,
-  override val group: UiGroup?,
+  override val group: UiGroupList?,
   override val due: UiReminderDueData,
   override val status: UiReminderStatus,
   val shopList: List<ShopItem>
