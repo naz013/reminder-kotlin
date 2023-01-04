@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes.list
+package com.elementary.tasks.notes.create.images
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,31 +6,20 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ListItemNoteImageBinding
-import com.elementary.tasks.notes.create.ImageDecoder
 
-class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHolder>(ImageDIffCallback()) {
+class ImagesGridAdapter : ListAdapter<UiNoteImage, ImagesGridAdapter.PhotoViewHolder>(
+  UiNoteImageDiffCallback()
+) {
 
   var isEditable: Boolean = false
-  var actionsListener: ActionsListener<ImageFile>? = null
-  var data: List<ImageFile> = listOf()
-    private set
-
-  fun get(position: Int): ImageFile {
-    return data[position]
-  }
-
-  override fun submitList(list: List<ImageFile>?) {
-    super.submitList(list)
-    if (list != null) {
-      data = list
-      notifyDataSetChanged()
-    }
-  }
+  var actionsListener: ActionsListener<UiNoteImage>? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
     return PhotoViewHolder(parent)
@@ -45,23 +34,25 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
   ) : HolderBinding<ListItemNoteImageBinding>(
     ListItemNoteImageBinding.inflate(parent.inflater(), parent, false)
   ) {
-    fun bind(noteImage: ImageFile) {
-      if (noteImage.state is ImageDecoder.State.Loading) {
-        binding.stateReady.visibility = View.GONE
-        binding.stateLoading.visibility = View.VISIBLE
-      } else {
-        binding.stateLoading.visibility = View.GONE
-        binding.stateReady.visibility = View.VISIBLE
+    fun bind(noteImage: UiNoteImage) {
+      binding.stateLoading.visibleGone(noteImage.state == UiNoteImageState.LOADING)
+      binding.stateReady.visibleGone(noteImage.state != UiNoteImageState.LOADING)
+      if (noteImage.state != UiNoteImageState.LOADING) {
         loadImage(binding.photoView, noteImage)
       }
     }
 
     init {
-      binding.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
+      binding.photoView.setOnClickListener { view -> performClick(view, bindingAdapterPosition) }
       if (isEditable) {
         binding.removeButton.visibility = View.VISIBLE
         binding.removeButton.setOnClickListener {
-          actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.REMOVE)
+          actionsListener?.onAction(
+            it,
+            bindingAdapterPosition,
+            getItem(bindingAdapterPosition),
+            ListActions.REMOVE
+          )
         }
       } else {
         binding.removeButton.visibility = View.GONE
@@ -72,8 +63,8 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
       actionsListener?.onAction(view, position, null, ListActions.OPEN)
     }
 
-    private fun loadImage(imageView: ImageView, image: ImageFile) {
-      Glide.with(imageView).load(image.image).into(imageView)
+    private fun loadImage(imageView: ImageView, image: UiNoteImage) {
+      Glide.with(imageView).load(image.data).into(imageView)
     }
   }
 }

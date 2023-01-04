@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes.list
+package com.elementary.tasks.notes.create.images
 
 import android.content.Context
 

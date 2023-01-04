@@ -15,40 +15,43 @@ import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.PlacesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.IdProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -79,7 +82,8 @@ class ConversationViewModel(
   private val placesDao: PlacesDao,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
-  private val uiGroupListAdapter: UiGroupListAdapter
+  private val uiGroupListAdapter: UiGroupListAdapter,
+  private val uiNoteListAdapter: UiNoteListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val prefs = currentStateHolder.preferences
@@ -93,8 +97,8 @@ class ConversationViewModel(
   private var _activeReminders = MutableLiveData<List<UiReminderList>>()
   var activeReminders: LiveData<List<UiReminderList>> = _activeReminders
 
-  private var _notes = MutableLiveData<List<NoteWithImages>>()
-  var notes: LiveData<List<NoteWithImages>> = _notes
+  private var _notes = mutableLiveDataOf<List<UiNoteList>>()
+  var notes = _notes.toLiveData()
 
   private var _birthdays = MutableLiveData<List<UiBirthdayList>>()
   var birthdays: LiveData<List<UiBirthdayList>> = _birthdays
@@ -137,7 +141,7 @@ class ConversationViewModel(
         _replies.postValue(repliesList)
       }
 
-      is NoteWithImages -> {
+      is UiNoteList -> {
         repliesList.removeAt(position)
         for (item in container.list) {
           repliesList.add(0, Reply(Reply.NOTE, item))
@@ -229,7 +233,7 @@ class ConversationViewModel(
   fun getNotes() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = LinkedList(notesDao.all())
+      val list = LinkedList(notesDao.all()).map { uiNoteListAdapter.convert(it) }
       postInProgress(false)
       _notes.postValue(list)
     }

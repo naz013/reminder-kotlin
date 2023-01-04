@@ -9,11 +9,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
@@ -21,14 +21,12 @@ import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleResponseBinding
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteViewHolder
-import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingViewHolder
 import timber.log.Timber
 
 class ConversationAdapter(
-  private val currentStateHolder: CurrentStateHolder,
-  private val imagesSingleton: ImagesSingleton
+  private val currentStateHolder: CurrentStateHolder
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private val data = mutableListOf<Reply>()
@@ -72,7 +70,7 @@ class ConversationAdapter(
       Reply.REPLY -> VoiceHolder(parent)
       Reply.RESPONSE -> VoiceResponseHolder(parent)
       Reply.REMINDER -> ReminderViewHolder(parent, editable = false, showMore = false)
-      Reply.NOTE -> NoteViewHolder(parent, currentStateHolder, imagesSingleton, null)
+      Reply.NOTE -> NoteViewHolder(parent, null, null)
       Reply.GROUP -> GroupHolder(parent, null)
       Reply.SHOW_MORE -> ShowMoreHolder(parent)
       Reply.BIRTHDAY -> BirthdayHolder(parent, showMore = false)
@@ -93,7 +91,7 @@ class ConversationAdapter(
       holder is VoiceHolder -> holder.bind(content as String)
       holder is VoiceResponseHolder -> holder.bind(content as String)
       holder is ReminderViewHolder -> holder.setData(content as UiReminderListActive)
-      holder is NoteViewHolder && content is NoteWithImages -> holder.setData(content)
+      holder is NoteViewHolder && content is UiNoteList -> holder.setData(content)
       holder is GroupHolder -> holder.setData(content as UiGroupList)
       holder is BirthdayHolder -> holder.setData(content as UiBirthdayList)
       holder is ShoppingViewHolder -> holder.setData(content as UiReminderListActiveShop)

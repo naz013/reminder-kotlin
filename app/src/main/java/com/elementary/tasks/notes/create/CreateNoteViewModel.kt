@@ -10,8 +10,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
@@ -20,8 +23,12 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.note.UiNoteEdit
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TextProvider
@@ -34,9 +41,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
@@ -66,7 +71,8 @@ class CreateNoteViewModel(
   private val textProvider: TextProvider,
   private val backupTool: BackupTool,
   private val contextProvider: ContextProvider,
-  private val analyticsEventSender: AnalyticsEventSender
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val uiNoteEditAdapter: UiNoteEditAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -75,7 +81,7 @@ class CreateNoteViewModel(
   private val _timeFormatted = mutableLiveDataOf<String>()
   val timeFormatted = _timeFormatted.toLiveData()
 
-  private val _note = mutableLiveDataOf<NoteWithImages>()
+  private val _note = mutableLiveDataOf<UiNoteEdit>()
   val note = _note.toLiveData()
 
   private val _noteToShare = mutableLiveDataOf<Pair<String, File>>()
@@ -88,7 +94,7 @@ class CreateNoteViewModel(
   var fontStyle: MutableLiveData<Int> = MutableLiveData()
   var palette: MutableLiveData<Int> = MutableLiveData()
   var isReminderAttached: MutableLiveData<Boolean> = MutableLiveData()
-  var images: MutableLiveData<List<ImageFile>> = MutableLiveData()
+  var images: MutableLiveData<List<UiNoteImage>> = MutableLiveData()
 
   private var localNote: NoteWithImages? = null
   private var localReminder: Reminder? = null
@@ -104,11 +110,13 @@ class CreateNoteViewModel(
   var isLogged = false
   var isNoteEdited = false
     private set
-  var isReminderEdited = false
-    private set
-  var editPosition = -1
+  private var isReminderEdited = false
   var isFromFile: Boolean = false
     private set
+
+  init {
+    load()
+  }
 
   fun loadFromFile(uri: Uri) {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -168,21 +176,21 @@ class CreateNoteViewModel(
   }
 
   private fun onNoteLoaded(noteWithImages: NoteWithImages) {
-    _note.postValue(noteWithImages)
-    if (!isNoteEdited) {
-      val note = noteWithImages.note
-      if (note != null) {
-        palette.postValue(note.palette)
-        fontStyle.postValue(note.style)
-        images.postValue(noteWithImages.images)
-        colorOpacity.postValue(Pair(note.color, note.opacity))
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val uiNoteEdit = uiNoteEditAdapter.convert(noteWithImages)
+      _note.postValue(uiNoteEdit)
+      if (!isNoteEdited) {
+        palette.postValue(uiNoteEdit.colorPalette)
+        fontStyle.postValue(uiNoteEdit.typeface)
+        images.postValue(uiNoteEdit.images)
+        colorOpacity.postValue(Pair(uiNoteEdit.colorPosition, uiNoteEdit.opacity))
       }
-    }
-    localReminder = reminderDao.getByNoteKey(if (id == "") "1" else id)?.also { reminder ->
-      if (!isReminderEdited) {
-        setDateTime(reminder.eventTime)
-        isReminderAttached.postValue(true)
-        isReminderEdited = true
+      localReminder = reminderDao.getByNoteKey(if (id == "") "1" else id)?.also { reminder ->
+        if (!isReminderEdited) {
+          setDateTime(reminder.eventTime)
+          isReminderAttached.postValue(true)
+          isReminderEdited = true
+        }
       }
     }
   }
@@ -210,7 +218,11 @@ class CreateNoteViewModel(
 
   fun addBitmap(bitmap: Bitmap) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val imageFile = ImageFile(state = ImageDecoder.State.Loading)
+      var imageFile = UiNoteImage(
+        state = UiNoteImageState.LOADING,
+        data = null,
+        id = 0
+      )
       var list = images.value ?: listOf()
       var mutable = list.toMutableList()
       val position = mutable.size
@@ -221,10 +233,10 @@ class CreateNoteViewModel(
 
       val outputStream = ByteArrayOutputStream()
       bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-      imageFile.apply {
-        image = outputStream.toByteArray()
-        state = ImageDecoder.State.Ready
-      }
+      imageFile = imageFile.copy(
+        data = outputStream.toByteArray(),
+        state = UiNoteImageState.READY
+      )
 
       list = images.value ?: listOf()
       mutable = list.toMutableList()
@@ -247,10 +259,10 @@ class CreateNoteViewModel(
     })
   }
 
-  fun setImage(imageFile: ImageFile, position: Int) {
+  private fun setImage(imageFile: UiNoteImage, position: Int) {
     val list = (images.value ?: listOf()).toMutableList()
     if (position < list.size) {
-      if (imageFile.state == ImageDecoder.State.Error) {
+      if (imageFile.state == UiNoteImageState.ERROR) {
         list.removeAt(position)
       } else {
         list[position] = imageFile
@@ -406,7 +418,9 @@ class CreateNoteViewModel(
       noteWithImages = NoteWithImages()
     }
 
-    noteWithImages.images = images
+    noteWithImages.images = images.map {
+      ImageFile(image = it.data, id = it.id)
+    }
     noteWithImages.note = note
     return noteWithImages
   }

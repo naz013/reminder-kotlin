@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.os.PendingIntentWrapper
@@ -134,41 +133,38 @@ class Notifier(
   }
 
   // Checked for Notification permission
-  fun showNoteNotification(noteWithImages: NoteWithImages) {
-    val note = noteWithImages.note ?: return
+  fun showNoteNotification(text: String, uniqueId: Int, image: ByteArray?) {
     val builder = NotificationCompat.Builder(context, CHANNEL_NOTES)
     builder.setContentText(context.getString(R.string.note))
     builder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
-    val content = note.summary
     builder.setSmallIcon(R.drawable.ic_twotone_note_white)
-    builder.setContentTitle(content)
+    builder.setContentTitle(text)
     val isWear = prefs.getBoolean(WEAR_NOTIFICATION)
     if (isWear) {
       builder.setOnlyAlertOnce(true)
       builder.setGroup("GROUP")
       builder.setGroupSummary(true)
     }
-    if (noteWithImages.images.isNotEmpty()) {
-      val image = noteWithImages.images[0]
-      val bitmap = BitmapFactory.decodeByteArray(image.image, 0, image.image?.size ?: 0)
+    if (image != null) {
+      val bitmap = BitmapFactory.decodeByteArray(image, 0, image.size)
       builder.setLargeIcon(bitmap)
       val s = NotificationCompat.BigPictureStyle()
       s.bigLargeIcon(bitmap)
       s.bigPicture(bitmap)
       builder.setStyle(s)
     }
-    notify(note.uniqueId, builder.build())
+    notify(uniqueId, builder.build())
     if (isWear) {
       val wearableNotificationBuilder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
       wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_note_white)
-      wearableNotificationBuilder.setContentTitle(content)
+      wearableNotificationBuilder.setContentTitle(text)
       wearableNotificationBuilder.setContentText(context.getString(R.string.note))
       wearableNotificationBuilder.setOngoing(false)
       wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
       wearableNotificationBuilder.setOnlyAlertOnce(true)
       wearableNotificationBuilder.setGroup("GROUP")
       wearableNotificationBuilder.setGroupSummary(false)
-      notify(note.uniqueId, wearableNotificationBuilder.build())
+      notify(uniqueId, wearableNotificationBuilder.build())
     }
   }
 

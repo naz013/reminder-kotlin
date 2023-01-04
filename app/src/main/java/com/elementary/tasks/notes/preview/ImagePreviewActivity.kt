@@ -5,12 +5,12 @@ import android.view.MenuItem
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import org.koin.android.ext.android.inject
-import java.util.*
+import java.util.Locale
 
 class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
 
@@ -38,7 +38,7 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
       binding.photoPager.currentItem = position
   }
 
-  private fun initViewPager(images: List<ImageFile>) {
+  private fun initViewPager(images: List<UiNoteImage>) {
     binding.photoPager.adapter = PhotoPagerAdapter(images)
     binding.photoPager.pageMargin = 5
     binding.photoPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {

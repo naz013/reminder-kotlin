@@ -75,14 +75,7 @@ class PhotoSelectionUtil(
   }
 
   private fun tryToPickFromGallery() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      multiPicturePicker.pickPictures()
-    }
-  }
-
-  private fun showPhoto(imageUri: Uri) {
-    Timber.d("showPhoto: %s", imageUri)
-    mCallback?.onImageSelected(listOf(imageUri))
+    multiPicturePicker.pickPictures()
   }
 
   private fun tryToTakePhoto() {

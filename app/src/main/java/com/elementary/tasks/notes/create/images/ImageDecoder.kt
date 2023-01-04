@@ -1,16 +1,15 @@
-package com.elementary.tasks.notes.create
+package com.elementary.tasks.notes.create.images
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Parcelable
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.elementary.tasks.core.data.ui.note.UiNoteImageState
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 
@@ -22,8 +21,8 @@ class ImageDecoder(
   fun startDecoding(scope: CoroutineScope,
                     list: List<Uri>,
                     startCount: Int = 0,
-                    onLoading: (List<ImageFile>) -> Unit,
-                    onReady: (Int, ImageFile) -> Unit) {
+                    onLoading: (List<UiNoteImage>) -> Unit,
+                    onReady: (Int, UiNoteImage) -> Unit) {
     scope.launch(dispatcherProvider.default()) {
       val emptyList = createEmpty(list.size)
       withUIContext {
@@ -38,49 +37,42 @@ class ImageDecoder(
     }
   }
 
-  private fun createEmpty(count: Int): MutableList<ImageFile> {
-    val mutableList = mutableListOf<ImageFile>()
+  private fun createEmpty(count: Int): MutableList<UiNoteImage> {
+    val mutableList = mutableListOf<UiNoteImage>()
     for (i in 0 until count) {
-      mutableList.add(ImageFile().apply { this.state = State.Loading })
+      mutableList.add(
+        UiNoteImage(
+          id = 0,
+          data = null,
+          state = UiNoteImageState.LOADING
+        )
+      )
     }
     return mutableList
   }
 
-  private fun addImageFromUri(uri: Uri?, image: ImageFile): ImageFile {
+  private fun addImageFromUri(uri: Uri?, image: UiNoteImage): UiNoteImage {
     if (uri == null) {
-      image.state = State.Error
-      return image
+      return image.copy(state = UiNoteImageState.ERROR)
     }
     val type = context.contentResolver.getType(uri) ?: ""
     Timber.d("addImageFromUri: $type")
     if (!type.contains("image")) {
-      image.state = State.Error
-      return image
+      return image.copy(state = UiNoteImageState.ERROR)
     }
     val bitmapImage: Bitmap? = runCatching {
       BitmapUtils.decodeUriToBitmap(context, uri)
     }.getOrNull()
 
-    if (bitmapImage != null) {
+    return if (bitmapImage != null) {
       val outputStream = ByteArrayOutputStream()
       bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-      image.image = outputStream.toByteArray()
-      image.state = State.Ready
+      image.copy(
+        data = outputStream.toByteArray(),
+        state = UiNoteImageState.READY
+      )
     } else {
-      image.state = State.Error
+      image.copy(state = UiNoteImageState.ERROR)
     }
-    return image
-  }
-
-  sealed class State(var id: Int = 0) : Parcelable {
-
-    @Parcelize
-    object Loading : State(0)
-
-    @Parcelize
-    object Ready : State(1)
-
-    @Parcelize
-    object Error : State(2)
   }
 }

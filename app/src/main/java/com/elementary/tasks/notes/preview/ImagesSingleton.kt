@@ -1,32 +1,18 @@
 package com.elementary.tasks.notes.preview
 
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
 
 class ImagesSingleton {
 
-  private var images: MutableList<ImageFile> = mutableListOf()
-  private var imageFile: ImageFile? = null
-  private var wasEdited: Boolean = false
+  private var images: MutableList<UiNoteImage> = mutableListOf()
 
-  fun setEditable(imageFile: ImageFile) {
-    this.imageFile = imageFile
-    wasEdited = true
-  }
-
-  fun getEditable(): ImageFile? {
-    return if (wasEdited) {
-      wasEdited = false
-      imageFile
-    } else null
-  }
-
-  fun getCurrent(): List<ImageFile> = images
+  fun getCurrent(): List<UiNoteImage> = images
 
   fun clear() {
     images.clear()
   }
 
-  fun setCurrent(images: List<ImageFile>) {
+  fun setCurrent(images: List<UiNoteImage>) {
     clear()
     this.images.addAll(images)
   }

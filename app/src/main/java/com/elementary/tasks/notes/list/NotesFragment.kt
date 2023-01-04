@@ -19,48 +19,51 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.notes.NotesViewModel
 import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.filters.SearchModifier
 import com.elementary.tasks.notes.list.filters.SortModifier
+import com.elementary.tasks.notes.preview.ImagePreviewActivity
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
-class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
-    (List<NoteWithImages>) -> Unit {
+class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
   private val viewModel by viewModel<NotesViewModel>()
-  private val themeProvider = currentStateHolder.theme
   private val buttonObservable by inject<GlobalButtonObservable>()
+  private val imagesSingleton by inject<ImagesSingleton>()
 
-  private val mAdapter = NotesRecyclerAdapter(currentStateHolder, get()) {
-    filterController.original = viewModel.notes.value ?: listOf()
-  }
+  private val notesRecyclerAdapter = NotesRecyclerAdapter()
   private var enableGrid = false
 
   private val filterController = SearchModifier(null, null)
-  private val sortController = SortModifier(filterController, this)
+  private val sortController = SortModifier(filterController) {
+    Timber.d("sort: ${it.size}")
+    notesRecyclerAdapter.submitList(it)
+    binding.emptyItem.visibleGone(it.isEmpty())
+    binding.recyclerView.visibleGone(it.isNotEmpty())
+  }
 
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
@@ -153,7 +156,6 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
         enableGrid = !enableGrid
         prefs.isNotesGridEnabled = enableGrid
         binding.recyclerView.layoutManager = layoutManager()
-        mAdapter.notifyDataSetChanged()
         activity?.invalidateOptionsMenu()
         true
       }
@@ -224,17 +226,24 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
   private fun initList() {
     enableGrid = prefs.isNotesGridEnabled
     binding.recyclerView.layoutManager = layoutManager()
-    mAdapter.actionsListener = object : ActionsListener<NoteWithImages> {
-      override fun onAction(view: View, position: Int, t: NoteWithImages?, actions: ListActions) {
+    notesRecyclerAdapter.actionsListener = object : ActionsListener<UiNoteList> {
+      override fun onAction(view: View, position: Int, t: UiNoteList?, actions: ListActions) {
         when (actions) {
-          ListActions.OPEN -> if (t != null) previewNote(t.getKey())
+          ListActions.OPEN -> if (t != null) previewNote(t.id)
           ListActions.MORE -> if (t != null) showMore(view, t)
           else -> {
           }
         }
       }
     }
-    binding.recyclerView.adapter = mAdapter
+    notesRecyclerAdapter.imageClickListener = { note, imagePosition ->
+      imagesSingleton.setCurrent(note.images)
+      requireContext().startActivity(Intent(requireContext(), ImagePreviewActivity::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .putExtra(Constants.INTENT_ID, note.id)
+        .putExtra(Constants.INTENT_POSITION, imagePosition))
+    }
+    binding.recyclerView.adapter = notesRecyclerAdapter
     binding.recyclerView.itemAnimator = DefaultItemAnimator()
     ViewUtils.listenScrollableView(
       binding.recyclerView,
@@ -244,7 +253,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
     }
   }
 
-  private fun showMore(view: View, note: NoteWithImages) {
+  private fun showMore(view: View, note: UiNoteList) {
     var showIn = getString(R.string.show_in_status_bar)
     showIn = showIn.substring(0, showIn.length - 1)
     val items = arrayOf(
@@ -257,24 +266,24 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
     )
     Dialogues.showPopup(view, { item ->
       when (item) {
-        0 -> previewNote(note.getKey())
-        1 -> viewModel.shareNote(note)
+        0 -> previewNote(note.id)
+        1 -> viewModel.shareNote(note.id)
         2 -> showInStatusBar(note)
         3 -> selectColor(note)
         4 -> PinLoginActivity.openLogged(
           requireContext(), Intent(context, CreateNoteActivity::class.java)
-            .putExtra(Constants.INTENT_ID, note.getKey())
+            .putExtra(Constants.INTENT_ID, note.id)
         )
 
-        5 -> askConfirmation(note)
+        5 -> askConfirmation(note.id)
       }
     }, *items)
   }
 
-  private fun askConfirmation(note: NoteWithImages) {
+  private fun askConfirmation(id: String) {
     withContext {
       dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
-        if (b) viewModel.deleteNote(note)
+        if (b) viewModel.deleteNote(id)
       }
     }
   }
@@ -313,32 +322,22 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(),
     }
   }
 
-  private fun showInStatusBar(note: NoteWithImages?) {
-    if (note != null) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-          notifier.showNoteNotification(note)
-        }
-      } else {
-        notifier.showNoteNotification(note)
+  private fun showInStatusBar(note: UiNoteList) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+        notifier.showNoteNotification(note.text, note.uniqueId, note.images.firstOrNull()?.data)
       }
+    } else {
+      notifier.showNoteNotification(note.text, note.uniqueId, note.images.firstOrNull()?.data)
     }
   }
 
-  private fun selectColor(note: NoteWithImages) {
+  private fun selectColor(note: UiNoteList) {
     dialogues.showColorDialog(
-      requireActivity(), note.getColor(), getString(R.string.color),
-      themeProvider.noteColorsForSlider(note.getPalette())
+      requireActivity(), note.colorPosition, getString(R.string.color),
+      currentStateHolder.theme.noteColorsForSlider(note.colorPalette)
     ) {
-      viewModel.saveNoteColor(note, it)
+      viewModel.saveNoteColor(note.id, it)
     }
-  }
-
-  override fun invoke(result: List<NoteWithImages>) {
-    val newList = NoteAdsViewHolder.updateList(result)
-    Timber.d("invoke: ${newList.size}")
-    mAdapter.submitList(newList)
-    binding.emptyItem.visibleGone(newList.isEmpty())
-    binding.recyclerView.visibleGone(newList.isNotEmpty())
   }
 }

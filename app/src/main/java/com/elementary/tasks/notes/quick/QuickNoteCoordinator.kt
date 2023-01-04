@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes
+package com.elementary.tasks.notes.quick
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -17,8 +17,10 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
+import com.elementary.tasks.core.utils.ui.trimmedText
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ViewNoteCardBinding
 import com.elementary.tasks.databinding.ViewNoteReminderCardBinding
 import com.elementary.tasks.databinding.ViewNoteStatusCardBinding
@@ -30,7 +32,7 @@ class QuickNoteCoordinator(
   private val context: Context,
   private val parent: ViewGroup,
   private val noteList: ViewGroup,
-  private var noteViewModel: NoteViewModel,
+  private var quickNoteViewModel: QuickNoteViewModel,
   private val prefs: Prefs,
   private val notifier: Notifier,
   private val dateTimeManager: DateTimeManager
@@ -61,26 +63,26 @@ class QuickNoteCoordinator(
   }
 
   fun hideNoteView() {
-    parent.visibility = View.GONE
+    parent.gone()
     noteList.removeAllViewsInLayout()
   }
 
   private fun showNoteView() {
-    parent.visibility = View.VISIBLE
+    parent.visible()
     Handler(Looper.getMainLooper()).postDelayed({ this.addFirstCard() }, 250)
   }
 
   private fun addFirstCard() {
     val binding = ViewNoteCardBinding.inflate(LayoutInflater.from(context), noteList, false)
     binding.buttonSave.setOnClickListener { saveNote(binding) }
-    binding.noteCard.visibility = View.GONE
+    binding.noteCard.gone()
 
     noteList.addView(binding.root)
-    binding.noteCard.visibility = View.VISIBLE
+    binding.noteCard.visible()
   }
 
   private fun saveNote(binding: ViewNoteCardBinding) {
-    val text = binding.quickNote.text.toString().trim()
+    val text = binding.quickNote.trimmedText()
     if (TextUtils.isEmpty(text)) {
       binding.nameLayout.error = context.getString(R.string.must_be_not_empty)
       binding.nameLayout.isErrorEnabled = true
@@ -103,7 +105,7 @@ class QuickNoteCoordinator(
     if (prefs.isNoteReminderEnabled) {
       addReminderCard(noteWithImages)
     } else {
-      noteViewModel.saveNote(noteWithImages)
+      quickNoteViewModel.saveNote(noteWithImages, null)
       addNotificationCard(noteWithImages)
     }
   }
@@ -119,13 +121,13 @@ class QuickNoteCoordinator(
     cardBinding.buttonNo.setOnClickListener {
       cardBinding.buttonNo.isEnabled = false
       cardBinding.buttonYes.isEnabled = false
-      noteViewModel.saveNote(item)
+      quickNoteViewModel.saveNote(item, null)
       addNotificationCard(item)
     }
-    cardBinding.noteReminderCard.visibility = View.GONE
+    cardBinding.noteReminderCard.gone()
 
     noteList.addView(cardBinding.root)
-    cardBinding.noteReminderCard.visibility = View.VISIBLE
+    cardBinding.noteReminderCard.visible()
   }
 
   private fun addReminderToNote(item: NoteWithImages) {
@@ -148,7 +150,7 @@ class QuickNoteCoordinator(
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
 
-    noteViewModel.saveNote(item, reminder)
+    quickNoteViewModel.saveNote(item, reminder)
     addNotificationCard(item)
   }
 
@@ -161,14 +163,16 @@ class QuickNoteCoordinator(
       showInStatusBar(item)
     }
     cardBinding.buttonNoStatus.setOnClickListener { hideNoteView() }
-    cardBinding.noteStatusCard.visibility = View.GONE
+    cardBinding.noteStatusCard.gone()
 
     noteList.addView(cardBinding.root)
-    cardBinding.noteStatusCard.visibility = View.VISIBLE
+    cardBinding.noteStatusCard.visible()
   }
 
   private fun showInStatusBar(item: NoteWithImages) {
-    notifier.showNoteNotification(item)
+    val uniqueId = item.note?.uniqueId ?: 0
+    val image = item.images.firstOrNull()?.image
+    notifier.showNoteNotification(item.getSummary(), uniqueId, image)
     hideNoteView()
   }
 }

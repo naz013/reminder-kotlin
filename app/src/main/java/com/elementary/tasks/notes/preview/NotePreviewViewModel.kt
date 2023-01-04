@@ -1,19 +1,24 @@
-package com.elementary.tasks.core.view_models.notes
+package com.elementary.tasks.notes.preview
 
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.R
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import kotlinx.coroutines.launch
@@ -21,34 +26,55 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class NotePreviewViewModel(
-  key: String,
+  val key: String,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  workerLauncher: WorkerLauncher,
+  private val workerLauncher: WorkerLauncher,
   private val backupTool: BackupTool,
-  notesDao: NotesDao,
-  private val reminderDao: ReminderDao
-) : BaseNotesViewModel(dispatcherProvider, workerLauncher, notesDao) {
+  private val notesDao: NotesDao,
+  private val reminderDao: ReminderDao,
+  private val uiNotePreviewAdapter: UiNotePreviewAdapter,
+  private val textProvider: TextProvider
+) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
-  val note = notesDao.loadById(key)
+  private val _note = mutableLiveDataOf<UiNotePreview>()
+  val note = _note.toLiveData()
+
   val reminder = reminderDao.loadByNoteKey(if (key == "") "1" else key)
 
   var hasSameInDb: Boolean = false
 
+  init {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val noteWithImages = notesDao.getById(key)
+      if (noteWithImages != null) {
+        _note.postValue(uiNotePreviewAdapter.convert(noteWithImages))
+      }
+    }
+  }
+
   fun deleteNote() {
-    val noteWithImages = note.value ?: return
-    val note = noteWithImages.note ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      runBlocking(dispatcherProvider.io()) {
-        notesDao.delete(note)
-        for (image in noteWithImages.images) {
-          notesDao.delete(image)
-        }
+      val noteWithImages = notesDao.getById(key)
+      if (noteWithImages == null) {
+        postInProgress(false)
+        postCommand(Commands.FAILED)
+        return@launch
+      }
+      val note = noteWithImages.note
+      if (note == null) {
+        postInProgress(false)
+        postCommand(Commands.FAILED)
+        return@launch
+      }
+      notesDao.delete(note)
+      for (image in noteWithImages.images) {
+        notesDao.delete(image)
       }
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
@@ -57,17 +83,22 @@ class NotePreviewViewModel(
   }
 
   fun shareNote() {
-    val note = note.value ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
+      val noteWithImages = notesDao.getById(key)
+      if (noteWithImages == null) {
+        postInProgress(false)
+        postCommand(Commands.FAILED)
+        return@launch
+      }
       val file = runBlocking {
-        backupTool.noteToFile(note)
+        backupTool.noteToFile(noteWithImages)
       }
       postInProgress(false)
       if (file != null) {
-        _sharedFile.postValue(Pair(note, file))
+        _sharedFile.postValue(Pair(noteWithImages, file))
       } else {
-        postError("Failed to send Note")
+        postError(textProvider.getText(R.string.failed_to_send_note))
       }
     }
   }

@@ -3,30 +3,31 @@ package com.elementary.tasks.core.view_models.reminders
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.dao.CalendarEventsDao
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.UiShareData
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
@@ -52,10 +53,11 @@ class ReminderPreviewViewModel(
   private val calendarEventsDao: CalendarEventsDao,
   private val reminderGroupDao: ReminderGroupDao,
   private val dateTimeManager: DateTimeManager,
-  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter
+  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
+  private val uiNoteListAdapter: UiNoteListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val _note = mutableLiveDataOf<NoteWithImages>()
+  private val _note = mutableLiveDataOf<UiNoteList>()
   val note = _note.toLiveData()
 
   private val _googleTask = mutableLiveDataOf<UiGoogleTaskList>()
@@ -98,7 +100,9 @@ class ReminderPreviewViewModel(
     val reminder = reminder.value ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       clearExtraData.postValue(true)
-      _note.postValue(notesDao.getById(reminder.noteId))
+      notesDao.getById(reminder.noteId)?.also {
+        _note.postValue(uiNoteListAdapter.convert(it))
+      }
       val googleTask = googleTasksDao.getByReminderId(reminder.id)
       if (googleTask != null) {
         _googleTask.postValue(

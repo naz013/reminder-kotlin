@@ -22,15 +22,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.ui.note.UiNoteEdit
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -49,11 +51,10 @@ import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
-import com.elementary.tasks.notes.list.ImagesGridAdapter
-import com.elementary.tasks.notes.list.KeepLayoutManager
+import com.elementary.tasks.notes.create.images.ImagesGridAdapter
+import com.elementary.tasks.notes.create.images.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.pin.PinLoginActivity
@@ -384,11 +385,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
   }
 
-  private fun saveEditedImage() {
-    val image = imagesSingleton.getEditable() ?: return
-    viewModel.setImage(image, viewModel.editPosition)
-  }
-
   private fun initViewModel() {
     viewModel.colorOpacity.nonNullObserve(this) {
       Timber.d("observeStates: $it")
@@ -479,20 +475,17 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     intent.data?.let { viewModel.loadFromFile(it) }
   }
 
-  private fun showNote(noteWithImages: NoteWithImages) {
-    Timber.d("showNote: $noteWithImages")
-    if (!viewModel.isNoteEdited) {
-      val note = noteWithImages.note ?: return
-      binding.colorSlider.setSelection(note.color)
-      binding.opacityBar.progress = note.opacity
-      setText(note.summary)
-    }
+  private fun showNote(uiNoteEdit: UiNoteEdit) {
+    Timber.d("editNote: $uiNoteEdit")
+    binding.colorSlider.setSelection(uiNoteEdit.colorPosition)
+    binding.opacityBar.progress = uiNoteEdit.opacity
+    setText(uiNoteEdit.text)
   }
 
   private fun initImagesList() {
     imagesGridAdapter.isEditable = true
-    imagesGridAdapter.actionsListener = object : ActionsListener<ImageFile> {
-      override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
+    imagesGridAdapter.actionsListener = object : ActionsListener<UiNoteImage> {
+      override fun onAction(view: View, position: Int, t: UiNoteImage?, actions: ListActions) {
         when (actions) {
           ListActions.OPEN -> openImagePreview(position)
           ListActions.REMOVE -> viewModel.removeImage(position)
@@ -506,7 +499,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun openImagePreview(position: Int) {
-    imagesSingleton.setCurrent(imagesGridAdapter.data)
+    imagesSingleton.setCurrent(imagesGridAdapter.currentList)
     startActivity(
       Intent(this, ImagePreviewActivity::class.java)
         .putExtra(Constants.INTENT_POSITION, position)

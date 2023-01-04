@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.UiReminderPreview
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
 import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
@@ -43,13 +44,14 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.visibleInvisible
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
 import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.list.NoteViewHolder
+import com.elementary.tasks.notes.preview.ImagePreviewActivity
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -58,7 +60,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -73,6 +74,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
   private val dateTimeManager by inject<DateTimeManager>()
+  private val imagesSingleton by inject<ImagesSingleton>()
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
   private val adsProvider = AdsProvider()
@@ -226,16 +228,25 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     this.binding.dataContainer.addView(binding.itemView)
   }
 
-  private fun showNote(note: NoteWithImages) {
-    val binding =
-      NoteViewHolder(binding.dataContainer, currentStateHolder, get()) { _, _, listActions ->
+  private fun showNote(note: UiNoteList) {
+    val binding = NoteViewHolder(
+      binding.dataContainer,
+      { _, _, listActions ->
         if (listActions == ListActions.OPEN) {
           startActivity(
             Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
-              .putExtra(Constants.INTENT_ID, note.getKey())
+              .putExtra(Constants.INTENT_ID, note.id)
           )
         }
       }
+    ) { _, _, imageId ->
+      val imagePosition = note.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
+      imagesSingleton.setCurrent(note.images)
+      startActivity(Intent(this, ImagePreviewActivity::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .putExtra(Constants.INTENT_ID, note.id)
+        .putExtra(Constants.INTENT_POSITION, imagePosition))
+    }
     binding.hasMore = false
     binding.setData(note)
     this.binding.dataContainer.addView(binding.itemView)
@@ -389,14 +400,17 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         binding.number.text = target.target
         binding.numberView.visible()
       }
+
       is UiSmsTarget -> {
         binding.number.text = target.target
         binding.numberView.visible()
       }
+
       is UiEmailTarget -> {
         binding.number.text = target.target
         binding.numberView.visible()
       }
+
       else -> binding.numberView.gone()
     }
   }
@@ -488,7 +502,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         }
       } else {
         dialogues.askConfirmation(this, getString(R.string.delete)) {
-          if (it) viewModel.deleteReminder( true)
+          if (it) viewModel.deleteReminder(true)
         }
       }
     }

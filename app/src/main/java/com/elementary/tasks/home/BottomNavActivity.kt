@@ -15,16 +15,15 @@ import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.voice.ConversationViewModel
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
-import com.elementary.tasks.notes.QuickNoteCoordinator
+import com.elementary.tasks.notes.quick.QuickNoteCoordinator
+import com.elementary.tasks.notes.quick.QuickNoteViewModel
+import com.elementary.tasks.voice.ConversationViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
@@ -33,7 +32,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val viewModel by viewModel<ConversationViewModel>()
-  private val noteViewModel by viewModel<NoteViewModel> { parametersOf("") }
+  private val quickNoteViewModel by viewModel<QuickNoteViewModel>()
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
   private val mNoteView: QuickNoteCoordinator by lazy {
     binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }
@@ -41,7 +40,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
       this,
       binding.quickNoteContainer,
       binding.quickNoteView,
-      noteViewModel,
+      quickNoteViewModel,
       prefs,
       notifier,
       dateTimeManager
