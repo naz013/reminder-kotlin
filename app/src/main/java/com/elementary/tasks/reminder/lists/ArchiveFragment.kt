@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -17,12 +18,10 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.android.ext.android.inject
@@ -41,10 +40,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
     skipAction = { }
   )
 
-  private var remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = false) {
-    showData(viewModel.events.value ?: listOf())
-  }
-
+  private var remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = false)
   private val searchModifier = SearchModifier(modifier = null, callback = this)
   private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
     searchModifier.setSearchValue(it)
@@ -59,7 +55,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
     inflater.inflate(R.menu.fragment_trash, menu)
     searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
 
-    val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
+    val isNotEmpty = (viewModel.events.value?.size ?: 0) > 0
     menu.getItem(0)?.isVisible = isNotEmpty
     menu.getItem(1)?.isVisible = isNotEmpty
 
@@ -153,14 +149,8 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
   }
 
   override fun invoke(result: List<UiReminderList>) {
-    val newList = ReminderAdsViewHolder.addAdsIfNeeded(result)
-    remindersAdapter.submitList(newList)
+    remindersAdapter.submitList(result)
     binding.recyclerView.smoothScrollToPosition(0)
-    reloadView(newList.size)
-  }
-
-  override fun onDestroy() {
-    remindersAdapter.onDestroy()
-    super.onDestroy()
+    reloadView(result.size)
   }
 }

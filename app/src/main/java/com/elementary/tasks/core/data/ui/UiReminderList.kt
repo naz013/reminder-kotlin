@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.data.ui
 
-import com.elementary.tasks.AdsProvider.Companion.REMINDER_BANNER_ID
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
@@ -13,10 +12,6 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 sealed class UiReminderList {
   abstract val id: String
 }
-
-data class UiReminderListAds(
-  override val id: String = REMINDER_BANNER_ID
-) : UiReminderList()
 
 sealed class UiReminderListData : UiReminderList() {
   abstract val group: UiGroupList?

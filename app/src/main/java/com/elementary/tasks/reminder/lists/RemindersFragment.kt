@@ -11,26 +11,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.android.ext.android.inject
@@ -65,9 +64,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
     skipAction = { reminder -> viewModel.skip(reminder) }
   )
 
-  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true) {
-    showData(viewModel.events.value ?: listOf())
-  }
+  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
   private val searchModifier = SearchModifier(null, this)
   private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
     searchModifier.setSearchValue(it)
@@ -177,14 +174,8 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
   }
 
   override fun invoke(result: List<UiReminderList>) {
-    val newList = ReminderAdsViewHolder.addAdsIfNeeded(result)
-    remindersAdapter.submitList(newList)
+    remindersAdapter.submitList(result)
     binding.recyclerView.smoothScrollToPosition(0)
-    reloadView(newList.size)
-  }
-
-  override fun onDestroy() {
-    remindersAdapter.onDestroy()
-    super.onDestroy()
+    reloadView(result.size)
   }
 }

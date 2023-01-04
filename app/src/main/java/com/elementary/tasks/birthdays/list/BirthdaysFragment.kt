@@ -37,9 +37,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
-  private val mAdapter = BirthdaysRecyclerAdapter {
-    filterController.original = viewModel.birthdays.value ?: listOf()
-  }
+  private val mAdapter = BirthdaysRecyclerAdapter()
   private val filterController = SearchModifier(SortModifier(), this)
   private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
     filterController.setSearchValue(it)
@@ -104,9 +102,8 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
   }
 
   override fun invoke(result: List<UiBirthdayList>) {
-    val newList = BirthdayAdsViewHolder.updateList(result)
-    mAdapter.submitList(newList)
+    mAdapter.submitList(result)
     binding.recyclerView.smoothScrollToPosition(0)
-    binding.emptyItem.visibleGone(newList.isEmpty())
+    binding.emptyItem.visibleGone(result.isEmpty())
   }
 }

@@ -166,8 +166,8 @@ val workerModule = module {
   worker { GroupSingleBackupWorker(get(), get(), get(), get()) }
   worker { DeleteNoteBackupWorker(get(), get(), get(), get()) }
   worker { NoteSingleBackupWorker(get(), get(), get(), get()) }
-  worker { PlaceDeleteBackupWorker(get(), get(), get()) }
-  worker { PlaceSingleBackupWorker(get(), get(), get()) }
+  worker { PlaceDeleteBackupWorker(get(), get(), get(), get()) }
+  worker { PlaceSingleBackupWorker(get(), get(), get(), get()) }
   worker { ReminderDeleteBackupWorker(get(), get(), get()) }
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
   worker { TemplateSingleBackupWorker(get(), get(), get()) }

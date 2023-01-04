@@ -4,12 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
-import com.elementary.tasks.core.data.ui.UiReminderListAds
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.UiReminderListRemoved
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedGps
@@ -20,8 +18,7 @@ import com.elementary.tasks.core.utils.ListActions
 
 class UiReminderListRecyclerAdapter(
   private val isDark: Boolean,
-  private val isEditable: Boolean = true,
-  private val refreshListener: () -> Unit
+  private val isEditable: Boolean = true
 ) : ListAdapter<UiReminderList, BaseUiReminderListViewHolder<*, *>>(
   UiReminderListDiffCallback()
 ) {
@@ -29,7 +26,6 @@ class UiReminderListRecyclerAdapter(
   var actionsListener: ActionsListener<UiReminderListData>? = null
   var data = listOf<UiReminderList>()
     private set
-  private val adsProvider = AdsProvider()
 
   init {
     registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -102,9 +98,6 @@ class UiReminderListRecyclerAdapter(
       UiReminderViewType.REMOVED.value -> {
         ArchivedReminderViewHolder(parent, showMore = true, listener)
       }
-      UiReminderViewType.ADS.value -> {
-        ReminderAdsViewHolder(parent, adsProvider, refreshListener)
-      }
       else -> {
         ReminderViewHolder(parent, isEditable, showMore = true, listener)
       }
@@ -159,11 +152,6 @@ class UiReminderListRecyclerAdapter(
       is UiReminderListActiveShop -> UiReminderViewType.SHOPPING_ACTIVE
       is UiReminderListActiveGps -> UiReminderViewType.GPS_ACTIVE
       is UiReminderListRemovedGps -> UiReminderViewType.GPS_REMOVED
-      is UiReminderListAds -> UiReminderViewType.ADS
     }.value
-  }
-
-  fun onDestroy() {
-    adsProvider.destroy()
   }
 }
