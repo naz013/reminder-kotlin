@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.reminders
+package com.elementary.tasks.reminder.create
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

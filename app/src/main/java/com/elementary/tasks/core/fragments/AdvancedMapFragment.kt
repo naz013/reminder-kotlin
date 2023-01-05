@@ -12,23 +12,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DrawableHelper
-import com.elementary.tasks.core.view_models.places.PlacesViewModel
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentMapBinding
+import com.elementary.tasks.places.list.PlacesViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -43,11 +43,10 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
   private val viewModel by viewModel<PlacesViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
-  private val dateTimeManager by inject<DateTimeManager>()
 
   private var mMap: GoogleMap? = null
 
-  private var placeRecyclerAdapter = RecentPlacesAdapter(currentStateHolder, dateTimeManager)
+  private var placeRecyclerAdapter = RecentPlacesAdapter()
 
   private var isTouch = true
   private var isZoom = true
@@ -112,7 +111,13 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     this.mCallback = callback
   }
 
-  fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int = markerRadius) {
+  fun addMarker(
+    pos: LatLng?,
+    title: String?,
+    clear: Boolean,
+    animate: Boolean,
+    radius: Int = markerRadius
+  ) {
     var t = title
     if (mMap != null && pos != null) {
       markerRadius = radius
@@ -126,23 +131,34 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
       }
       lastPos = pos
       mListener?.placeChanged(pos, t)
-      mMap?.addMarker(MarkerOptions()
-        .position(pos)
-        .title(t)
-        .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
-        .draggable(clear))
+      mMap?.addMarker(
+        MarkerOptions()
+          .position(pos)
+          .title(t)
+          .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
+          .draggable(clear)
+      )
       val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
-      mMap?.addCircle(CircleOptions()
-        .center(pos)
-        .radius(markerRadius.toDouble())
-        .strokeWidth(strokeWidth)
-        .fillColor(colorOf(marker.fillColor))
-        .strokeColor(colorOf(marker.strokeColor)))
+      mMap?.addCircle(
+        CircleOptions()
+          .center(pos)
+          .radius(markerRadius.toDouble())
+          .strokeWidth(strokeWidth)
+          .fillColor(colorOf(marker.fillColor))
+          .strokeColor(colorOf(marker.strokeColor))
+      )
       if (animate) animate(pos)
     }
   }
 
-  fun addMarker(pos: LatLng, title: String?, clear: Boolean, markerStyle: Int, animate: Boolean, radius: Int): Boolean {
+  fun addMarker(
+    pos: LatLng,
+    title: String?,
+    clear: Boolean,
+    markerStyle: Int,
+    animate: Boolean,
+    radius: Int
+  ): Boolean {
     var t = title
     if (mMap != null) {
       markerRadius = radius
@@ -159,18 +175,22 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
       if (t == null || t.matches("".toRegex())) t = pos.toString()
       lastPos = pos
       mListener?.placeChanged(pos, t)
-      mMap?.addMarker(MarkerOptions()
-        .position(pos)
-        .title(t)
-        .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
-        .draggable(clear))
+      mMap?.addMarker(
+        MarkerOptions()
+          .position(pos)
+          .title(t)
+          .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
+          .draggable(clear)
+      )
       val marker = themeUtil.getMarkerRadiusStyle(this.markerStyle)
-      mMap?.addCircle(CircleOptions()
-        .center(pos)
-        .radius(markerRadius.toDouble())
-        .strokeWidth(strokeWidth)
-        .fillColor(colorOf(marker.fillColor))
-        .strokeColor(colorOf(marker.strokeColor)))
+      mMap?.addCircle(
+        CircleOptions()
+          .center(pos)
+          .radius(markerRadius.toDouble())
+          .strokeWidth(strokeWidth)
+          .fillColor(colorOf(marker.fillColor))
+          .strokeColor(colorOf(marker.strokeColor))
+      )
       if (animate) animate(pos)
       return true
     } else {
@@ -192,18 +212,22 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         markerStyle = DEF_MARKER_STYLE
         createStyleDrawable()
       }
-      mMap?.addMarker(MarkerOptions()
-        .position(lastPos!!)
-        .title(markerTitle)
-        .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
-        .draggable(true))
+      mMap?.addMarker(
+        MarkerOptions()
+          .position(lastPos!!)
+          .title(markerTitle)
+          .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
+          .draggable(true)
+      )
       val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
-      mMap?.addCircle(CircleOptions()
-        .center(lastPos!!)
-        .radius(markerRadius.toDouble())
-        .strokeWidth(strokeWidth)
-        .fillColor(colorOf(marker.fillColor))
-        .strokeColor(colorOf(marker.strokeColor)))
+      mMap?.addCircle(
+        CircleOptions()
+          .center(lastPos!!)
+          .radius(markerRadius.toDouble())
+          .strokeWidth(strokeWidth)
+          .fillColor(colorOf(marker.fillColor))
+          .strokeColor(colorOf(marker.strokeColor))
+      )
       animate(lastPos!!)
     }
   }
@@ -220,22 +244,26 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         markerStyle = DEF_MARKER_STYLE
         createStyleDrawable()
       }
-      mMap?.addMarker(MarkerOptions()
-        .position(lastPos!!)
-        .title(markerTitle)
-        .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
-        .draggable(true))
+      mMap?.addMarker(
+        MarkerOptions()
+          .position(lastPos!!)
+          .title(markerTitle)
+          .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
+          .draggable(true)
+      )
       if (markerStyle >= 0) {
         val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
         if (markerRadius == -1) {
           markerRadius = prefs.radius
         }
-        mMap?.addCircle(CircleOptions()
-          .center(lastPos!!)
-          .radius(markerRadius.toDouble())
-          .strokeWidth(strokeWidth)
-          .fillColor(colorOf(marker.fillColor))
-          .strokeColor(colorOf(marker.strokeColor)))
+        mMap?.addCircle(
+          CircleOptions()
+            .center(lastPos!!)
+            .radius(markerRadius.toDouble())
+            .strokeWidth(strokeWidth)
+            .fillColor(colorOf(marker.fillColor))
+            .strokeColor(colorOf(marker.strokeColor))
+        )
       }
       animate(lastPos!!)
     }
@@ -287,8 +315,10 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
       val criteria = Criteria()
       var location: Location? = null
       try {
-        location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false)
-          ?: "")
+        location = locationManager?.getLastKnownLocation(
+          locationManager.getBestProvider(criteria, false)
+            ?: ""
+        )
       } catch (e: Throwable) {
         Timber.d("moveToMyLocation: ${e.message}")
       }
@@ -311,10 +341,12 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         hideLayers()
         false
       }
+
       isStylesVisible -> {
         hideStyles()
         false
       }
+
       else -> true
     }
   }
@@ -393,7 +425,11 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
   }
 
   private fun showStyleDialog() {
-    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeProvider.colorsForSlider(requireContext())) {
+    dialogues.showColorBottomDialog(
+      requireActivity(),
+      prefs.markerStyle,
+      ThemeProvider.colorsForSlider(requireContext())
+    ) {
       prefs.markerStyle = it
       recreateStyle(it)
     }
@@ -418,7 +454,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
   }
 
   private fun initViews() {
-    binding.placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    binding.placesList.layoutManager =
+      LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     binding.placesList.adapter = placeRecyclerAdapter
     LinearSnapHelper().attachToRecyclerView(binding.placesList)
 
@@ -508,33 +545,41 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     }
   }
 
-  private fun showPlaces(places: List<Place>) {
-    placeRecyclerAdapter.actionsListener = object : ActionsListener<Place> {
-      override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
+  private fun showPlaces(places: List<UiPlaceList>) {
+    placeRecyclerAdapter.actionsListener = object : ActionsListener<UiPlaceList> {
+      override fun onAction(view: View, position: Int, t: UiPlaceList?, actions: ListActions) {
         when (actions) {
           ListActions.OPEN, ListActions.MORE -> {
             hideLayers()
             if (t != null) {
               if (!Module.isPro) {
-                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true,
-                  animate = true, radius = markerRadius)
+                addMarker(
+                  pos = t.latLng,
+                  title = markerTitle,
+                  clear = true,
+                  animate = true,
+                  radius = markerRadius
+                )
               } else {
-                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true,
-                  t.marker, true, markerRadius)
+                addMarker(
+                  pos = t.latLng,
+                  title = markerTitle,
+                  clear = true,
+                  markerStyle = t.markerStyle,
+                  animate = true,
+                  radius = markerRadius
+                )
               }
             }
           }
+
           else -> {
           }
         }
       }
     }
-    placeRecyclerAdapter.data = places
-    if (places.isEmpty()) {
-      binding.placesListCard.visibility = View.GONE
-    } else {
-      binding.placesListCard.visibility = View.VISIBLE
-    }
+    placeRecyclerAdapter.submitList(places)
+    binding.placesListCard.visibleGone(places.isNotEmpty())
   }
 
   private fun toggleMarkers() {
@@ -636,9 +681,11 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     const val MARKER_STYLE = "marker_style"
     const val THEME_MODE = "theme_mode"
 
-    fun newInstance(isTouch: Boolean, isPlaces: Boolean,
-                    isSearch: Boolean, isStyles: Boolean,
-                    isBack: Boolean, isZoom: Boolean, isDark: Boolean): AdvancedMapFragment {
+    fun newInstance(
+      isTouch: Boolean, isPlaces: Boolean,
+      isSearch: Boolean, isStyles: Boolean,
+      isBack: Boolean, isZoom: Boolean, isDark: Boolean
+    ): AdvancedMapFragment {
       val fragment = AdvancedMapFragment()
       val args = Bundle()
       args.putBoolean(ENABLE_TOUCH, isTouch)
@@ -653,8 +700,10 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
       return fragment
     }
 
-    fun newInstance(isPlaces: Boolean, isStyles: Boolean, isBack: Boolean,
-                    isZoom: Boolean, markerStyle: Int, isDark: Boolean, isRadius: Boolean = true): AdvancedMapFragment {
+    fun newInstance(
+      isPlaces: Boolean, isStyles: Boolean, isBack: Boolean,
+      isZoom: Boolean, markerStyle: Int, isDark: Boolean, isRadius: Boolean = true
+    ): AdvancedMapFragment {
       val fragment = AdvancedMapFragment()
       val args = Bundle()
       args.putBoolean(ENABLE_PLACES, isPlaces)

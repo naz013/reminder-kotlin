@@ -255,7 +255,7 @@
             android:name=".sms.QuickSmsActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".core.additional.FollowReminderActivity"
+            android:name=".aftercall.FollowReminderActivity"
             android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity

@@ -38,7 +38,6 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.voice.ConversationViewModel
-import com.elementary.tasks.core.view_models.reminders.EditReminderViewModel
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment

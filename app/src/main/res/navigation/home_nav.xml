@@ -85,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/remindersFragment"
-        android:name="com.elementary.tasks.reminder.lists.RemindersFragment"
+        android:name="com.elementary.tasks.reminder.lists.active.RemindersFragment"
         android:label="@string/reminders_"
         tools:layout="@layout/fragment_reminders">
         <action
@@ -130,7 +130,7 @@
     </fragment>
     <fragment
         android:id="@+id/archiveFragment"
-        android:name="com.elementary.tasks.reminder.lists.ArchiveFragment"
+        android:name="com.elementary.tasks.reminder.lists.removed.ArchiveFragment"
         android:label="@string/trash"
         tools:layout="@layout/fragment_trash">
         <action

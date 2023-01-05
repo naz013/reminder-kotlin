@@ -63,6 +63,8 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
+import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
+import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
@@ -85,17 +87,15 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.places.PlaceViewModel
-import com.elementary.tasks.core.view_models.places.PlacesViewModel
-import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
-import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
-import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
-import com.elementary.tasks.core.view_models.reminders.EditReminderViewModel
-import com.elementary.tasks.core.view_models.reminders.FollowReminderViewModel
-import com.elementary.tasks.core.view_models.reminders.FullScreenMapViewModel
-import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
-import com.elementary.tasks.core.view_models.reminders.VoiceResultDialogViewModel
+import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
+import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
+import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
+import com.elementary.tasks.reminder.create.EditReminderViewModel
+import com.elementary.tasks.aftercall.FollowReminderViewModel
+import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
+import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
+import com.elementary.tasks.reminder.preview.ReminderViewModel
+import com.elementary.tasks.voice.VoiceResultDialogViewModel
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.core.work.BackupWorker
@@ -129,7 +129,8 @@ import com.elementary.tasks.notes.preview.NotePreviewViewModel
 import com.elementary.tasks.notes.quick.QuickNoteViewModel
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
-import com.elementary.tasks.places.create.CreatePlaceViewModel
+import com.elementary.tasks.places.create.PlaceViewModel
+import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
@@ -253,7 +254,7 @@ val viewModelModule = module {
     )
   }
 
-  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get()) }
+  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get()) }
   viewModel { QuickNoteViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
     NotePreviewViewModel(
@@ -352,7 +353,7 @@ val viewModelModule = module {
     )
   }
   viewModel { SelectApplicationViewModel(get(), get()) }
-  viewModel { PlacesViewModel(get(), get(), get(), get()) }
+  viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get(), get()) }
   viewModel { ActiveGpsRemindersViewModel(get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
@@ -383,7 +384,6 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { CreatePlaceViewModel(get()) }
   viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
@@ -554,6 +554,9 @@ val adapterModule = module {
   single { UiNoteEditAdapter(get()) }
   single { UiNoteListAdapter(get(), get(), get(), get(), get()) }
   single { UiNotePreviewAdapter(get(), get(), get()) }
+
+  single { UiPlaceListAdapter(get(), get(), get()) }
+  single { UiPlaceEditAdapter() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language) =

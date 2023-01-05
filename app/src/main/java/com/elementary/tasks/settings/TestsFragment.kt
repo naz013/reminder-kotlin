@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
-import com.elementary.tasks.core.additional.FollowReminderActivity
+import com.elementary.tasks.aftercall.FollowReminderActivity
 import com.elementary.tasks.sms.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall

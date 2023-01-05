@@ -28,17 +28,11 @@ class DateTimeManager(
   private val language: Language
 ) {
 
-  fun getPlaceDateTimeFromGmt(dateTime: String?): DMY {
+  fun getPlaceDateTimeFromGmt(dateTime: String?): LocalDate? {
     return try {
-      fromGmtToLocal(dateTime)?.toLocalDate()?.let {
-        DMY(
-          it.format(dayFormatter()),
-          it.format(monthFormatter()),
-          it.format(yearFormatter())
-        )
-      } ?: DMY()
+      fromGmtToLocal(dateTime)?.toLocalDate()
     } catch (e: Throwable) {
-      DMY()
+      null
     }
   }
 

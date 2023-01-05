@@ -32,7 +32,7 @@ data class Place(
   @SerializedName("address")
   var address: String = "",
   @SerializedName("dateTime")
-  var dateTime: String,
+  var dateTime: String = "",
   @SerializedName("tags")
   var tags: List<String> = listOf()
 ) : Parcelable {

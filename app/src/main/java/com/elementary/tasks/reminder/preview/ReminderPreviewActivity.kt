@@ -44,7 +44,6 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.visibleInvisible
-import com.elementary.tasks.core.view_models.reminders.ReminderPreviewViewModel
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder

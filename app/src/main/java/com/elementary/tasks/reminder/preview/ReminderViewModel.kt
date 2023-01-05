@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.reminders
+package com.elementary.tasks.reminder.preview
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper

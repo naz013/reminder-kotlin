@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.reminders
+package com.elementary.tasks.aftercall
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope

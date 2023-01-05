@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.view_models.reminders
+package com.elementary.tasks.reminder.lists.active
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
