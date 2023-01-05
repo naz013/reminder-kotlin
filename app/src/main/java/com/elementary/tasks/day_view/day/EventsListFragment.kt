@@ -8,23 +8,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.arch.BindingFragment
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.coroutines.delay
-import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
-  private val mAdapter = CalendarEventsAdapter(get())
+  private val themeProvider by inject<ThemeProvider>()
+
+  private val mAdapter = CalendarEventsAdapter(isDark = themeProvider.isDark)
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
     deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday.uuId) }

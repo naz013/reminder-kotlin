@@ -16,7 +16,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding

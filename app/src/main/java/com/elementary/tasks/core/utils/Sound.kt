@@ -10,6 +10,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber
 import java.io.File

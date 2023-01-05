@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.calendar.Events
+import com.elementary.tasks.core.calendar.EventsCursor
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -99,8 +99,8 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     }
   }
 
-  private fun mapData(list: List<EventModel>, birthdayColor: Int, reminderColor: Int): Map<DateTime, Events> {
-    val map = mutableMapOf<DateTime, Events>()
+  private fun mapData(list: List<EventModel>, birthdayColor: Int, reminderColor: Int): Map<DateTime, EventsCursor> {
+    val map = mutableMapOf<DateTime, EventsCursor>()
     for (model in list) {
       val obj = model.model
       if (obj is Birthday) {
@@ -110,13 +110,13 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
           var i = -1
           while (i < 2) {
             date = date?.withYear(year + 1)
-            date?.also { setEvent(it, obj.name, birthdayColor, Events.Type.BIRTHDAY, map) }
+            date?.also { setEvent(it, obj.name, birthdayColor, EventsCursor.Type.BIRTHDAY, map) }
             i++
           }
         }
       } else if (obj is UiReminderListData) {
         val eventTime = obj.due?.localDateTime ?: continue
-        setEvent(eventTime.toLocalDate(), obj.summary, reminderColor, Events.Type.REMINDER, map)
+        setEvent(eventTime.toLocalDate(), obj.summary, reminderColor, EventsCursor.Type.REMINDER, map)
       }
     }
     Timber.d("mapData: $map")
@@ -127,17 +127,17 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     date: LocalDate,
     summary: String,
     color: Int,
-    type: Events.Type,
-    map: MutableMap<DateTime, Events>
+    type: EventsCursor.Type,
+    map: MutableMap<DateTime, EventsCursor>
   ) {
     val key = DateTime(date.year, date.monthValue, date.dayOfMonth, 12, 0, 0, 0)
     if (map.containsKey(key)) {
-      val events = map[key] ?: Events()
-      events.addEvent(summary, color, type, date)
-      map[key] = events
+      val eventsCursor = map[key] ?: EventsCursor()
+      eventsCursor.addEvent(summary, color, type, date)
+      map[key] = eventsCursor
     } else {
-      val events = Events(summary, color, type, date)
-      map[key] = events
+      val eventsCursor = EventsCursor(summary, color, type, date)
+      map[key] = eventsCursor
     }
   }
 

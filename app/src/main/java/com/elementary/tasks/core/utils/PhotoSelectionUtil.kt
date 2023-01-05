@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.CameraPhotoPicker
 import com.elementary.tasks.core.os.datapicker.MultiPicturePicker
 import com.elementary.tasks.core.utils.ui.Dialogues
@@ -74,14 +75,7 @@ class PhotoSelectionUtil(
   }
 
   private fun tryToPickFromGallery() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      multiPicturePicker.pickPictures()
-    }
-  }
-
-  private fun showPhoto(imageUri: Uri) {
-    Timber.d("showPhoto: %s", imageUri)
-    mCallback?.onImageSelected(listOf(imageUri))
+    multiPicturePicker.pickPictures()
   }
 
   private fun tryToTakePhoto() {

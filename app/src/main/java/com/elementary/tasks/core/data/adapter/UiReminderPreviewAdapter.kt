@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.data.adapter
 
 import android.media.RingtoneManager
+import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.ui.UiGroup
 import com.elementary.tasks.core.data.ui.UiReminderPreview
 import com.elementary.tasks.core.data.ui.reminder.UiReminderIllustration
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
@@ -13,14 +13,15 @@ import java.io.File
 class UiReminderPreviewAdapter(
   private val prefs: Prefs,
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
-  private val uiReminderCommonAdapter: UiReminderCommonAdapter
+  private val uiReminderCommonAdapter: UiReminderCommonAdapter,
+  private val uiGroupListAdapter: UiGroupListAdapter
 ) : UiAdapter<Reminder, UiReminderPreview> {
 
   override fun create(data: Reminder): UiReminderPreview {
     val type = UiReminderType(data.type)
     return UiReminderPreview(
       id = data.uuId,
-      group = UiGroup(data.groupUuId, data.groupColor, data.groupTitle),
+      group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
       noteId = data.noteId,
       type = type,
       actionTarget = uiReminderCommonAdapter.getTarget(data, type),

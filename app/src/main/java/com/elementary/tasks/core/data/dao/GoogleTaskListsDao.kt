@@ -1,18 +1,17 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.Query
-
 import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.elementary.tasks.core.data.models.GoogleTaskList
 
 @Dao
 interface GoogleTaskListsDao {
 
-    @Query("SELECT * FROM GoogleTaskList")
+    @Query("SELECT * FROM GoogleTaskList ORDER BY title")
     fun all(): List<GoogleTaskList>
 
     @Query("SELECT * FROM GoogleTaskList WHERE def=1")
@@ -23,6 +22,9 @@ interface GoogleTaskListsDao {
 
     @Query("SELECT * FROM GoogleTaskList WHERE def=1")
     fun loadDefault(): LiveData<GoogleTaskList>
+
+    @Query("SELECT * FROM GoogleTaskList WHERE def=1")
+    fun getDefault(): List<GoogleTaskList>
 
     @Insert(onConflict = REPLACE)
     fun insert(googleTaskList: GoogleTaskList)

@@ -1,42 +1,30 @@
 package com.elementary.tasks.notes.list
 
-import android.content.Intent
-import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseViewHolder
-import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.data.models.ImageFile
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.binding.HolderBinding
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.dp2px
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
-import com.elementary.tasks.core.utils.isAlmostTransparent
-import com.elementary.tasks.core.utils.isColorDark
+import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.ui.dp2px
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ListItemNoteBinding
-import com.elementary.tasks.notes.preview.ImagePreviewActivity
-import com.elementary.tasks.notes.preview.ImagesSingleton
-import java.lang.ref.WeakReference
 
 class NoteViewHolder(
   parent: ViewGroup,
-  currentStateHolder: CurrentStateHolder,
-  private val imagesSingleton: ImagesSingleton,
-  val listener: ((View, Int, ListActions) -> Unit)?
-) : BaseViewHolder<ListItemNoteBinding>(
-  ListItemNoteBinding.inflate(parent.inflater(), parent, false),
-  currentStateHolder
+  private val listener: ((View, Int, ListActions) -> Unit)?,
+  private val imageClickListener: ((View, position: Int, imageId: Int) -> Unit)?
+) : HolderBinding<ListItemNoteBinding>(
+  ListItemNoteBinding.inflate(parent.inflater(), parent, false)
 ) {
 
   var hasMore = true
@@ -47,17 +35,19 @@ class NoteViewHolder(
 
   init {
     hoverClick(binding.bgView) {
-      listener?.invoke(it, adapterPosition, ListActions.OPEN)
+      listener?.invoke(it, bindingAdapterPosition, ListActions.OPEN)
     }
-    binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+    binding.buttonMore.setOnClickListener {
+      listener?.invoke(it, bindingAdapterPosition, ListActions.MORE)
+    }
     updateMore()
   }
 
   private fun updateMore() {
     if (listener == null || !hasMore) {
-      binding.buttonMore.visibility = View.INVISIBLE
+      binding.buttonMore.transparent()
     } else {
-      binding.buttonMore.visibility = View.VISIBLE
+      binding.buttonMore.visible()
     }
   }
 
@@ -81,42 +71,29 @@ class NoteViewHolder(
     }
   }
 
-  fun setData(item: NoteWithImages) {
-    loadImage(binding.imagesView, item)
-    loadNote(binding.noteTv, item)
+  fun setData(uiNoteList: UiNoteList) {
+    loadImage(binding.imagesView, uiNoteList)
+    loadNote(binding.noteTv, uiNoteList)
 
-    val color = theme.getNoteLightColor(item.getColor(), item.getOpacity(), item.getPalette())
-    binding.bgView.setBackgroundColor(color)
-
-    val isDarkIcon = if (item.getOpacity().isAlmostTransparent()) {
-      theme.isDark
-    } else {
-      color.isColorDark()
-    }
-    binding.buttonMore.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
-
-    if ((item.getOpacity().isAlmostTransparent() && theme.isDark) || color.isColorDark()) {
-      binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
-    } else {
-      binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
-    }
+    binding.bgView.setBackgroundColor(uiNoteList.backgroundColor)
+    binding.buttonMore.setImageDrawable(uiNoteList.moreIcon)
+    binding.noteTv.setTextColor(uiNoteList.textColor)
   }
 
-  private fun loadNote(textView: TextView, note: NoteWithImages) {
-    var title = note.getSummary()
-    if (TextUtils.isEmpty(title)) {
-      textView.visibility = View.GONE
+  private fun loadNote(textView: TextView, note: UiNoteList) {
+    var text = note.text
+    if (text.isEmpty()) {
+      textView.gone()
       return
     }
-    textView.visibility = View.VISIBLE
-    val context = textView.context
-    if (title.length > 500) {
-      val substring = title.substring(0, 500)
-      title = "$substring..."
+    textView.visible()
+    if (text.length > 500) {
+      val substring = text.substring(0, 500)
+      text = "$substring..."
     }
-    textView.text = title
-    textView.typeface = AssetsUtil.getTypeface(context, note.getStyle())
-    textView.textSize = (prefs.noteTextSize + 12).toFloat()
+    textView.text = text
+    textView.typeface = note.typeface
+    textView.textSize = note.fontSize
   }
 
   private fun setImage(imageView: ImageView, image: ByteArray?) {
@@ -127,19 +104,17 @@ class NoteViewHolder(
       .into(imageView)
   }
 
-  private fun setClick(imageView: ImageView, position: Int, key: String?, images: List<ImageFile>) {
-    val context = imageView.context.applicationContext
+  private fun setClick(
+    imageView: ImageView,
+    position: Int,
+    imageId: Int
+  ) {
     hoverClick(imageView) {
-      imagesSingleton.setCurrent(images)
-      context.startActivity(Intent(context, ImagePreviewActivity::class.java)
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        .putExtra(Constants.INTENT_ID, key)
-        .putExtra(Constants.INTENT_DELETE, false)
-        .putExtra(Constants.INTENT_POSITION, position))
+      imageClickListener?.invoke(it, position, imageId)
     }
   }
 
-  private fun loadImage(container: LinearLayout, item: NoteWithImages) {
+  private fun loadImage(container: LinearLayout, item: UiNoteList) {
     val images = item.images
 
     val imageView = container.findViewById<ImageView>(R.id.noteImage)
@@ -149,20 +124,17 @@ class NoteViewHolder(
     if (images.isNotEmpty()) {
       imageView.visibility = View.VISIBLE
       horView.visibility = View.VISIBLE
-      val image = WeakReference(images[0])
-      setImage(imageView, image.get()?.image)
+      setImage(imageView, images[0].data)
       var index = 1
 
       while (index < images.size) {
         val imV = ImageView(container.context)
-        val params = LinearLayout.LayoutParams(container.dp2px(128),
-          container.dp2px(128))
+        val params = LinearLayout.LayoutParams(container.dp2px(128), container.dp2px(128))
         imV.layoutParams = params
-        setClick(imV, index, item.getKey(), images)
+        setClick(imV, bindingAdapterPosition, images[index].id)
         imV.scaleType = ImageView.ScaleType.CENTER_CROP
         horView.addView(imV)
-        val im = WeakReference(images[index])
-        setImage(imV, im.get()?.image)
+        setImage(imV, images[index].data)
         index++
       }
     } else {

@@ -14,34 +14,32 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.notes.NotePreviewViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.notes.list.ImagesGridAdapter
-import com.elementary.tasks.notes.list.KeepLayoutManager
+import com.elementary.tasks.notes.create.images.ImagesGridAdapter
+import com.elementary.tasks.notes.create.images.KeepLayoutManager
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.android.ext.android.inject
@@ -60,7 +58,6 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private val mUiHandler = Handler(Looper.getMainLooper())
 
-  private val themeUtil by inject<ThemeProvider>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
 
@@ -130,8 +127,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun initImagesList() {
-    mAdapter.actionsListener = object : ActionsListener<ImageFile> {
-      override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
+    mAdapter.actionsListener = object : ActionsListener<UiNoteImage> {
+      override fun onAction(view: View, position: Int, t: UiNoteImage?, actions: ListActions) {
         when (actions) {
           ListActions.OPEN -> openImagePreview(position)
           else -> {
@@ -145,7 +142,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun openImagePreview(position: Int) {
-    imagesSingleton.setCurrent(mAdapter.data)
+    imagesSingleton.setCurrent(mAdapter.currentList)
     startActivity(
       Intent(this, ImagePreviewActivity::class.java)
         .putExtra(Constants.INTENT_POSITION, position)
@@ -167,21 +164,22 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editNote() {
-    val noteWithImages = viewModel.note.value ?: return
     PinLoginActivity.openLogged(
       this, Intent(this, CreateNoteActivity::class.java)
-        .putExtra(Constants.INTENT_ID, noteWithImages.note?.key)
+        .putExtra(Constants.INTENT_ID, viewModel.key)
     )
   }
 
   private fun moveToStatus() {
-    val noteWithImages = viewModel.note.value ?: return
+    val uiNotePreview = viewModel.note.value ?: return
+    val uniqueId = uiNotePreview.uniqueId
+    val image = uiNotePreview.images.firstOrNull()?.data
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-        notifier.showNoteNotification(noteWithImages)
+        notifier.showNoteNotification(uiNotePreview.text, uniqueId, image)
       }
     } else {
-      notifier.showNoteNotification(noteWithImages)
+      notifier.showNoteNotification(uiNotePreview.text, uniqueId, image)
     }
   }
 
@@ -190,22 +188,17 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     return true
   }
 
-  private fun showNote(noteWithImages: NoteWithImages) {
-    val noteColor = themeUtil.getNoteLightColor(
-      noteWithImages.getColor(),
-      noteWithImages.getOpacity(),
-      noteWithImages.getPalette()
-    )
-    showImages(noteWithImages.images)
-    binding.noteText.text = noteWithImages.getSummary()
-    binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
-    window.statusBarColor = noteColor
-    window.navigationBarColor = noteColor
-    binding.windowBackground.setBackgroundColor(noteColor)
-    isBgDark = if (noteWithImages.getOpacity().isAlmostTransparent()) {
+  private fun showNote(uiNotePreview: UiNotePreview) {
+    showImages(uiNotePreview.images)
+    binding.noteText.text = uiNotePreview.text
+    binding.noteText.typeface = uiNotePreview.typeface
+    window.statusBarColor = uiNotePreview.backgroundColor
+    window.navigationBarColor = uiNotePreview.backgroundColor
+    binding.windowBackground.setBackgroundColor(uiNotePreview.backgroundColor)
+    isBgDark = if (uiNotePreview.opacity.isAlmostTransparent()) {
       isDarkMode
     } else {
-      noteColor.isColorDark()
+      uiNotePreview.backgroundColor.isColorDark()
     }
     updateTextColors()
     updateIcons()
@@ -229,7 +222,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
   }
 
-  private fun showImages(images: List<ImageFile>) {
+  private fun showImages(images: List<UiNoteImage>) {
     mAdapter.submitList(images)
   }
 

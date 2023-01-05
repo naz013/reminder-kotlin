@@ -8,7 +8,7 @@ import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.view_models.reminders.VoiceResultDialogViewModel
+import com.elementary.tasks.voice.VoiceResultDialogViewModel
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder

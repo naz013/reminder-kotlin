@@ -1,6 +1,6 @@
 package com.elementary.tasks.birthdays.list.filters
 
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.filter.Modifier
 
 class SortModifier(

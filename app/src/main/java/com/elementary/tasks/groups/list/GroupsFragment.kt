@@ -10,15 +10,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.view_models.groups.GroupsViewModel
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -50,33 +49,31 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.allGroups.nonNullObserve(viewLifecycleOwner) { groups ->
-      showGroups(groups.toList())
-    }
+    viewModel.allGroups.nonNullObserve(viewLifecycleOwner) { showGroups(it) }
   }
 
-  private fun showGroups(reminderGroups: List<ReminderGroup>) {
+  private fun showGroups(reminderGroups: List<UiGroupList>) {
     mAdapter.submitList(reminderGroups)
     refreshView()
   }
 
-  private fun changeColor(reminderGroup: ReminderGroup) {
-    dialogues.showColorDialog(requireActivity(), reminderGroup.groupColor, getString(R.string.color),
+  private fun changeColor(uiGroupList: UiGroupList) {
+    dialogues.showColorDialog(requireActivity(), uiGroupList.colorPosition, getString(R.string.color),
       ThemeProvider.colorsForSliderThemed(requireContext())) {
-      viewModel.changeGroupColor(reminderGroup, it)
+      viewModel.changeGroupColor(uiGroupList.id, it)
     }
   }
 
   private fun initGroupsList() {
-    mAdapter.actionsListener = object : ActionsListener<ReminderGroup> {
-      override fun onAction(view: View, position: Int, t: ReminderGroup?, actions: ListActions) {
+    mAdapter.actionsListener = object : ActionsListener<UiGroupList> {
+      override fun onAction(view: View, position: Int, t: UiGroupList?, actions: ListActions) {
         if (t == null) return
         when (actions) {
           ListActions.MORE -> {
             showMore(view, t)
           }
           ListActions.EDIT -> {
-            editGroup(t)
+            editGroup(t.id)
           }
           else -> {
           }
@@ -98,7 +95,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     refreshView()
   }
 
-  private fun showMore(view: View, t: ReminderGroup) {
+  private fun showMore(view: View, t: UiGroupList) {
     var items = arrayOf(getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
     if (mAdapter.itemCount == 1) {
       items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
@@ -106,23 +103,23 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     Dialogues.showPopup(view, { item ->
       when (item) {
         0 -> changeColor(t)
-        1 -> editGroup(t)
+        1 -> editGroup(t.id)
         2 -> askConfirmation(t)
       }
     }, *items)
   }
 
-  private fun askConfirmation(t: ReminderGroup) {
+  private fun askConfirmation(t: UiGroupList) {
     withContext {
       dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
-        if (b) viewModel.deleteGroup(t)
+        if (b) viewModel.deleteGroup(t.id)
       }
     }
   }
 
-  private fun editGroup(t: ReminderGroup) {
+  private fun editGroup(id: String) {
     PinLoginActivity.openLogged(requireContext(), Intent(context, CreateGroupActivity::class.java)
-      .putExtra(Constants.INTENT_ID, t.groupUuId))
+      .putExtra(Constants.INTENT_ID, id))
   }
 
   override fun getTitle(): String = getString(R.string.groups)

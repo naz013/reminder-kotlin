@@ -9,7 +9,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.onChanged
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -30,9 +33,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       Reminder.BY_DATE_LINK
     }
   private val appName: String
-    get() {
-      return packageManagerWrapper.getApplicationName(iFace.state.app)
-    }
+    get() = packageManagerWrapper.getApplicationName(iFace.state.app)
 
   override fun prepare(): Reminder? {
     val type = type
@@ -114,21 +115,25 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     binding.tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
 
     binding.pickApplication.setOnClickListener { applicationPicker.pickApplication() }
-    binding.urlLayout.visibility = View.GONE
+    binding.urlLayout.gone()
     binding.urlField.setText(iFace.state.link)
     binding.urlField.onChanged {
       iFace.state.link = it
       iFace.state.isAppSaved = true
     }
-    binding.application.setOnCheckedChangeListener { _, b ->
-      iFace.state.isLink = !b
-      if (!b) {
-        binding.applicationLayout.visibility = View.GONE
-        binding.urlLayout.visibility = View.VISIBLE
+    binding.browser.setOnCheckedChangeListener { _, b ->
+      iFace.state.isLink = b
+      if (b) {
+        binding.applicationLayout.gone()
+        binding.urlLayout.visible()
       } else {
-        binding.urlLayout.visibility = View.GONE
-        binding.applicationLayout.visibility = View.VISIBLE
+        binding.urlLayout.gone()
+        binding.applicationLayout.visible()
       }
+    }
+    if (Module.is11) {
+      binding.browser.isChecked = true
+      binding.switchGroup.gone()
     }
     editReminder()
   }

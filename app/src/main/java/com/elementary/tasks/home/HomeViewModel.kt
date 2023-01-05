@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.list.BirthdayModelAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -17,9 +17,9 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.view_models.BaseProgressViewModel
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,7 +27,7 @@ import timber.log.Timber
 class HomeViewModel(
   private val currentStateHolder: CurrentStateHolder,
   private val eventControlFactory: EventControlFactory,
-  private val birthdayModelAdapter: BirthdayModelAdapter,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val uiReminderListAdapter: UiReminderListAdapter,
@@ -45,7 +45,7 @@ class HomeViewModel(
     dateTimeManager.getBirthdayDayMonthList(
       duration = prefs.birthdayDurationInDays + 1
     )
-  ).map { list -> list.map { birthdayModelAdapter.convert(it) } }
+  ).map { list -> list.map { uiBirthdayListAdapter.convert(it) } }
   var topScrollX = 0
 
   init {

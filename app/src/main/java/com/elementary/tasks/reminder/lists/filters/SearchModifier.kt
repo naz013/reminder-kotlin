@@ -4,7 +4,6 @@ import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
-import com.elementary.tasks.core.data.ui.UiReminderListAds
 import com.elementary.tasks.core.data.ui.UiReminderListRemoved
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedGps
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
@@ -25,7 +24,6 @@ class SearchModifier(
 
   private fun filter(v: UiReminderList): Boolean {
     val searchableText = when (v) {
-      is UiReminderListAds -> ""
       is UiReminderListActiveShop -> v.summary
       is UiReminderListRemovedShop -> v.summary
       is UiReminderListActive -> v.summary

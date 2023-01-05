@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ListActions

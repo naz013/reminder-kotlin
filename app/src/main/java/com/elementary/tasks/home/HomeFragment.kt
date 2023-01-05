@@ -11,29 +11,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.list.BirthdayAdsViewHolder
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.lists.adapter.ReminderAdsViewHolder
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,12 +41,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val featureManager by inject<FeatureManager>()
   private val viewModel by viewModel<HomeViewModel>()
-  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true) {
-      showReminders(viewModel.reminders.value ?: listOf())
-    }
-  private val birthdaysAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
-    showBirthdays(viewModel.birthdays.value ?: listOf())
-  }
+  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
+  private val birthdaysAdapter = BirthdaysRecyclerAdapter()
   private var mPosition: Int = 0
 
   private val reminderResolver = ReminderResolver(
@@ -257,15 +251,13 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun showBirthdays(list: List<UiBirthdayList>) {
-    val newList = BirthdayAdsViewHolder.updateList(list)
-    birthdaysAdapter.submitList(newList)
-    updateBirthdaysEmpty(newList.size)
+    birthdaysAdapter.submitList(list)
+    updateBirthdaysEmpty(list.size)
   }
 
   private fun showReminders(list: List<UiReminderList>) {
-    val newList = ReminderAdsViewHolder.addAdsIfNeeded(list)
-    remindersAdapter.submitList(newList)
-    updateRemindersEmpty(newList.size)
+    remindersAdapter.submitList(list)
+    updateRemindersEmpty(list.size)
   }
 
   private fun updateBirthdaysEmpty(size: Int) {
@@ -322,10 +314,5 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         updateLoginBanner()
       }
     }
-  }
-
-  override fun onDestroy() {
-    remindersAdapter.onDestroy()
-    super.onDestroy()
   }
 }

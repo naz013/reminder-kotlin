@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.settings.export.backups.UserItem
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent

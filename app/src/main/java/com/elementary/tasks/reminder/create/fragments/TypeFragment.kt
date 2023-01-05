@@ -13,11 +13,11 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.bindProperty
@@ -331,12 +331,12 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       groupView?.reminderGroup = iFace.defGroup
     } else {
       groupView?.reminderGroup = ReminderGroup(
-        groupDateTime = dateTimeManager.getNowGmtDateTime()
-      ).apply {
-        this.groupUuId = reminder.groupUuId
-        this.groupColor = reminder.groupColor
-        this.groupTitle = reminder.groupTitle ?: ""
-      }
+        groupDateTime = dateTimeManager.getNowGmtDateTime(),
+        groupUuId = reminder.groupUuId,
+        groupColor = reminder.groupColor,
+        groupTitle = reminder.groupTitle ?: "",
+        isDefaultGroup = true
+      )
     }
   }
 

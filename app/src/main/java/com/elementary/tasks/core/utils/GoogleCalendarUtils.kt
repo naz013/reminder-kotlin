@@ -13,6 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.dao.CalendarEventsDao
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber

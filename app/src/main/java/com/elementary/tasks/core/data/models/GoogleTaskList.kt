@@ -43,5 +43,5 @@ data class GoogleTaskList(
   }
 
   @Ignore
-  fun isAppDefault() = systemDefault == 1
+  fun isDefault() = def == 1
 }

@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.PendingIntentWrapper
+import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.utils.ui.ViewUtils
 
 object WidgetUtils {

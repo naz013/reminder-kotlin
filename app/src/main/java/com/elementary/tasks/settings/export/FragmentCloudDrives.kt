@@ -13,7 +13,7 @@ import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.visibleGone

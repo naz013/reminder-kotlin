@@ -16,7 +16,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast

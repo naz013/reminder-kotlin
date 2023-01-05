@@ -18,30 +18,28 @@ import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.ui.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import org.apache.commons.lang3.StringUtils
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -52,7 +50,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private val dateTimeManager by inject<DateTimeManager>()
   private val permissionFlow = PermissionFlow(this, dialogues)
   private var speech: SpeechRecognizer? = null
-  private val mAdapter = ConversationAdapter(currentStateHolder, get())
+  private val mAdapter = ConversationAdapter(currentStateHolder)
   private val viewModel by viewModel<ConversationViewModel>()
   private var tts: TextToSpeech? = null
   private var isTtsReady = false
@@ -405,7 +403,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
   }
 
-  private fun showNotes(notes: List<NoteWithImages>?) {
+  private fun showNotes(notes: List<UiNoteList>) {
     val items = Container(notes)
     if (items.isEmpty) {
       addResponse(getLocalized(R.string.voice_no_notes_found))

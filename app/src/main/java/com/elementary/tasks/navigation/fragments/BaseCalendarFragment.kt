@@ -11,7 +11,7 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
@@ -124,7 +124,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   }
 
   private fun showList(listView: RecyclerView, emptyView: View, res: List<EventModel>) {
-    val adapter = CalendarEventsAdapter(currentStateHolder)
+    val adapter = CalendarEventsAdapter(isDark)
     adapter.setEventListener(object : ActionsListener<EventModel> {
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t != null) {

@@ -85,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/remindersFragment"
-        android:name="com.elementary.tasks.reminder.lists.RemindersFragment"
+        android:name="com.elementary.tasks.reminder.lists.active.RemindersFragment"
         android:label="@string/reminders_"
         tools:layout="@layout/fragment_reminders">
         <action
@@ -130,7 +130,7 @@
     </fragment>
     <fragment
         android:id="@+id/archiveFragment"
-        android:name="com.elementary.tasks.reminder.lists.ArchiveFragment"
+        android:name="com.elementary.tasks.reminder.lists.removed.ArchiveFragment"
         android:label="@string/trash"
         tools:layout="@layout/fragment_trash">
         <action
@@ -182,11 +182,6 @@
         <argument
             android:name="arg_id"
             app:argType="string" />
-        <argument
-            android:name="arg_list"
-            android:defaultValue="@null"
-            app:argType="com.elementary.tasks.core.data.models.GoogleTaskList"
-            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -340,7 +335,7 @@
     </fragment>
     <fragment
         android:id="@+id/templatesFragment"
-        android:name="com.elementary.tasks.settings.additional.TemplatesFragment"
+        android:name="com.elementary.tasks.sms.list.TemplatesFragment"
         android:label="@string/messages"
         tools:layout="@layout/fragment_settings_templates_list">
         <action
@@ -467,7 +462,7 @@
         tools:layout="@layout/fragment_settings_web_view" />
     <activity
         android:id="@+id/templateActivity"
-        android:name="com.elementary.tasks.settings.additional.TemplateActivity"
+        android:name="com.elementary.tasks.sms.create.TemplateActivity"
         android:label="@string/create_template"
         tools:layout="@layout/activity_template">
         <argument

@@ -3,9 +3,8 @@ package com.elementary.tasks.groups.list
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGroupBinding
 
@@ -18,15 +17,15 @@ class GroupHolder(
 
   init {
     binding.clickView.setOnClickListener { view ->
-      listener?.invoke(view, adapterPosition, ListActions.EDIT)
+      listener?.invoke(view, bindingAdapterPosition, ListActions.EDIT)
     }
     binding.buttonMore.setOnClickListener { view ->
-      listener?.invoke(view, adapterPosition, ListActions.MORE)
+      listener?.invoke(view, bindingAdapterPosition, ListActions.MORE)
     }
   }
 
-  fun setData(item: ReminderGroup) {
-    binding.textView.text = item.groupTitle
-    binding.clickView.setCardBackgroundColor(ThemeProvider.themedColor(binding.clickView.context, item.groupColor))
+  fun setData(item: UiGroupList) {
+    binding.textView.text = item.title
+    binding.clickView.setCardBackgroundColor(item.color)
   }
 }

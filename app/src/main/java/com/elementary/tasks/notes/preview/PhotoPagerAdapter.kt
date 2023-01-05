@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
-import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.databinding.FragmentImageBinding
 import com.github.chrisbanes.photoview.PhotoView
 
-class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter() {
+class PhotoPagerAdapter(private val images: List<UiNoteImage>) : PagerAdapter() {
 
   override fun getCount(): Int {
-    return mPhotosUrl.size
+    return images.size
   }
 
   override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -32,9 +32,9 @@ class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter(
   }
 
   private fun loadPhoto(imageView: ImageView, position: Int) {
-    val image = mPhotosUrl[position]
+    val image = images[position]
     Glide.with(imageView.context)
-      .load(image.image)
+      .load(image.data)
       .into(imageView)
   }
 }

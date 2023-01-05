@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface

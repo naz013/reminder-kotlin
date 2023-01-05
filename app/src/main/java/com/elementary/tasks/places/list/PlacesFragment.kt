@@ -6,22 +6,23 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.ShareFile
+import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.places.PlacesViewModel
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import org.koin.android.ext.android.inject
@@ -32,8 +33,8 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   private val viewModel by viewModel<PlacesViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
 
-  private val adapter = PlacesRecyclerAdapter(currentStateHolder, object : ActionsListener<Place> {
-    override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
+  private val adapter = PlacesRecyclerAdapter(object : ActionsListener<UiPlaceList> {
+    override fun onAction(view: View, position: Int, t: UiPlaceList?, actions: ListActions) {
       if (t == null) return
       when (actions) {
         ListActions.OPEN -> openPlace(t)
@@ -44,12 +45,12 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
   })
 
-  private val searchModifier = object : SearchModifier<Place>(null, {
+  private val searchModifier = object : SearchModifier<UiPlaceList>(null, {
     adapter.submitList(it)
     binding.recyclerView.smoothScrollToPosition(0)
     refreshView(it.size)
   }) {
-    override fun filter(v: Place): Boolean {
+    override fun filter(v: UiPlaceList): Boolean {
       return searchValue.isEmpty() || v.name.lowercase().contains(searchValue.lowercase())
     }
   }
@@ -90,20 +91,19 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.places.observe(viewLifecycleOwner) { places ->
-      if (places != null) {
-        searchModifier.original = places
-      }
+    viewModel.places.nonNullObserve(viewLifecycleOwner) { places ->
+      searchModifier.original = places
     }
-    viewModel.result.observe(viewLifecycleOwner) {
+    viewModel.result.nonNullObserve(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> {
+          toast(R.string.deleted)
         }
         else -> {
         }
       }
     }
-    viewModel.shareFile.observe(viewLifecycleOwner) {
+    viewModel.shareFile.nonNullObserve(viewLifecycleOwner) {
       sendPlace(it)
     }
   }
@@ -124,21 +124,21 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     refreshView(0)
   }
 
-  private fun showMore(view: View, place: Place) {
+  private fun showMore(view: View, place: UiPlaceList) {
     Dialogues.showPopup(view, { i ->
       when (i) {
         0 -> openPlace(place)
-        1 -> viewModel.sharePlace(place)
+        1 -> viewModel.sharePlace(place.id)
         2 -> withContext {
           dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
-            if (b) viewModel.deletePlace(place)
+            if (b) viewModel.deletePlace(place.id)
           }
         }
       }
     }, getString(R.string.edit), getString(R.string.share), getString(R.string.delete))
   }
 
-  private fun sendPlace(shareFile: ShareFile<Place>) {
+  private fun sendPlace(shareFile: ShareFile<UiPlaceList>) {
     if (shareFile.file == null || !shareFile.file.exists() || !shareFile.file.canRead()) {
       showErrorSending()
       return
@@ -147,19 +147,15 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun showErrorSending() {
-    Toast.makeText(context, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
+    toast(R.string.error_sending)
   }
 
-  private fun openPlace(place: Place) {
+  private fun openPlace(place: UiPlaceList) {
     safeNavigation(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true))
   }
 
   private fun refreshView(count: Int) {
-    if (count == 0) {
-      binding.emptyItem.visibility = View.VISIBLE
-    } else {
-      binding.emptyItem.visibility = View.GONE
-    }
+    binding.emptyItem.visibleGone(count == 0)
   }
 
   companion object {

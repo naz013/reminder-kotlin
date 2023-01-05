@@ -3,6 +3,7 @@ package com.elementary.tasks.groups
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.utils.IdProvider
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import java.util.Random
@@ -10,7 +11,8 @@ import java.util.Random
 class GroupsUtil(
   private val textProvider: TextProvider,
   private val reminderGroupDao: ReminderGroupDao,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val idProvider: IdProvider
 ) {
 
   private val random = Random()
@@ -25,23 +27,28 @@ class GroupsUtil(
     val def = ReminderGroup(
       groupTitle = textProvider.getText(R.string.general),
       groupColor = random.nextInt(16),
-      groupDateTime = dateTimeManager.getNowGmtDateTime()
+      groupDateTime = dateTimeManager.getNowGmtDateTime(),
+      isDefaultGroup = true,
+      groupUuId = idProvider.generateUuid()
     )
-    def.isDefaultGroup = true
     runCatching {
       reminderGroupDao.insert(def)
       reminderGroupDao.insert(
         ReminderGroup(
           groupTitle = textProvider.getText(R.string.work),
           groupColor = random.nextInt(16),
-          groupDateTime = dateTimeManager.getNowGmtDateTime()
+          groupDateTime = dateTimeManager.getNowGmtDateTime(),
+          isDefaultGroup = false,
+          groupUuId = idProvider.generateUuid()
         )
       )
       reminderGroupDao.insert(
         ReminderGroup(
           groupTitle = textProvider.getText(R.string.personal),
           groupColor = random.nextInt(16),
-          groupDateTime = dateTimeManager.getNowGmtDateTime()
+          groupDateTime = dateTimeManager.getNowGmtDateTime(),
+          isDefaultGroup = false,
+          groupUuId = idProvider.generateUuid()
         )
       )
     }

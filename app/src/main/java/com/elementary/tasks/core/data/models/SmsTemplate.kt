@@ -18,7 +18,5 @@ data class SmsTemplate(
   @PrimaryKey
   var key: String = UUID.randomUUID().toString(),
   @SerializedName("date")
-  var date: String = "",
-  @Transient
-  var isSelected: Boolean = false
+  var date: String = ""
 ) : Parcelable

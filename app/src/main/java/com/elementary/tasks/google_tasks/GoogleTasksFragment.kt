@@ -1,6 +1,7 @@
 package com.elementary.tasks.google_tasks
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,25 +13,24 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
-import com.elementary.tasks.google_tasks.create.TaskActivity
-import com.elementary.tasks.google_tasks.create.TaskListActivity
-import com.elementary.tasks.google_tasks.create.TasksConstants
-import com.elementary.tasks.google_tasks.list.GoogleTaskAdsViewHolder
 import com.elementary.tasks.google_tasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
+import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
+import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
@@ -40,13 +40,11 @@ import timber.log.Timber
 
 class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>() {
 
-  private val viewModel by viewModel<GoogleTaskListsViewModel>()
+  private val viewModel by viewModel<GoogleTasksViewModel>()
   private val googleLogin: GoogleLogin by inject {
     parametersOf(this@GoogleTasksFragment, loginCallback)
   }
-  private val adapter = TasksRecyclerAdapter(currentStateHolder) {
-    showTasks(viewModel.allGoogleTasks.value ?: listOf())
-  }
+  private val adapter = TasksRecyclerAdapter()
   private val listsRecyclerAdapter = ListsRecyclerAdapter()
   private val loginCallback = object : GoogleLogin.LoginCallback {
     override fun onProgress(isLoading: Boolean, mode: GoogleLogin.Mode) {
@@ -81,7 +79,14 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     binding.progressMessageView.text = getString(R.string.please_wait)
     binding.fab.setOnClickListener { addNewTask() }
     binding.connectButton.setOnClickListener { googleTasksButtonClick() }
-    binding.googleButton.setOnClickListener { startActivity(Intent(context, TaskListActivity::class.java)) }
+    binding.googleButton.setOnClickListener {
+      startActivity(
+        Intent(
+          context,
+          GoogleTaskListActivity::class.java
+        )
+      )
+    }
 
     updateProgress(false)
     initEmpty()
@@ -129,19 +134,17 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun updateProgress(b: Boolean) {
-    if (b) {
-      binding.progressView.visibility = View.VISIBLE
-    } else {
-      binding.progressView.visibility = View.GONE
-    }
+    binding.progressView.visibleGone(b)
   }
 
   private fun addNewTask() {
     val defId = viewModel.defTaskList.value?.listId ?: return
     withContext {
-      PinLoginActivity.openLogged(it, Intent(context, TaskActivity::class.java)
-        .putExtra(Constants.INTENT_ID, defId)
-        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+      PinLoginActivity.openLogged(
+        it, Intent(context, GoogleTaskActivity::class.java)
+          .putExtra(Constants.INTENT_ID, defId)
+          .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
+      )
     }
   }
 
@@ -149,20 +152,23 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     viewModel.googleTaskLists.nonNullObserve(viewLifecycleOwner) { showLists(it) }
     viewModel.allGoogleTasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
     viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
+    viewModel.defTaskList.nonNullObserve(viewLifecycleOwner) { updateMainButton(it) }
+    lifecycle.addObserver(viewModel)
   }
 
-  private fun showTasks(list: List<GoogleTask>) {
-    val newList = GoogleTaskAdsViewHolder.updateList(list)
-    adapter.submitList(newList)
-    reloadView(newList.size)
+  private fun updateMainButton(taskList: GoogleTaskList) {
+    binding.fab.backgroundTintList = ColorStateList.valueOf(
+      ThemeProvider.themedColor(requireContext(), taskList.color)
+    )
+    activity?.invalidateOptionsMenu()
+  }
+
+  private fun showTasks(list: List<UiGoogleTaskList>) {
+    adapter.submitList(list)
+    reloadView(list.size)
   }
 
   private fun showLists(list: List<GoogleTaskList>) {
-    val map = mutableMapOf<String, GoogleTaskList>()
-    list.forEach {
-      map[it.listId] = it
-    }
-    adapter.googleTaskListMap = map
     listsRecyclerAdapter.submitList(list)
   }
 
@@ -173,16 +179,18 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL)
+      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
+        resources.getInteger(R.integer.num_of_cols),
+        StaggeredGridLayoutManager.VERTICAL
+      )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    adapter.actionsListener = object : ActionsListener<GoogleTask> {
-      override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
+    adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
+      override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
         when (actions) {
-          ListActions.EDIT -> if (t != null) editTask(t)
-          ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t)
+          ListActions.EDIT -> if (t != null) editTask(t.id)
+          ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
           else -> {
           }
         }
@@ -190,11 +198,18 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
     binding.recyclerView.adapter = adapter
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.extend()
-      else binding.fab.shrink()
+      if (it) {
+        binding.fab.extend()
+      } else {
+        binding.fab.shrink()
+      }
     }
 
-    binding.listsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    binding.listsView.layoutManager = LinearLayoutManager(
+      context,
+      LinearLayoutManager.HORIZONTAL,
+      false
+    )
     listsRecyclerAdapter.actionsListener = object : ActionsListener<GoogleTaskList> {
       override fun onAction(view: View, position: Int, t: GoogleTaskList?, actions: ListActions) {
         when (actions) {
@@ -209,30 +224,29 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
 
   private fun openGoogleTaskList(googleTaskList: GoogleTaskList) {
     safeNavigation(
-      GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(
-        googleTaskList.listId,
-        googleTaskList
-      )
+      GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(googleTaskList.listId)
     )
   }
 
-  private fun editTask(googleTask: GoogleTask) {
-    PinLoginActivity.openLogged(requireContext(), Intent(activity, TaskActivity::class.java)
-      .putExtra(Constants.INTENT_ID, googleTask.taskId)
-      .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
+  private fun editTask(taskId: String) {
+    PinLoginActivity.openLogged(
+      requireContext(), Intent(activity, GoogleTaskActivity::class.java)
+        .putExtra(Constants.INTENT_ID, taskId)
+        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    )
   }
 
   private fun initEmpty() {
-    binding.emptyItem.visibility = View.VISIBLE
+    binding.emptyItem.visible()
     binding.emptyText.setText(R.string.no_google_tasks)
     reloadView(0)
   }
 
   private fun reloadView(count: Int) {
     if (count > 0) {
-      binding.emptyItem.visibility = View.GONE
+      binding.emptyItem.gone()
     } else {
-      binding.emptyItem.visibility = View.VISIBLE
+      binding.emptyItem.visible()
     }
   }
 

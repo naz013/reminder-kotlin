@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.provider.ContactsContract
 import androidx.annotation.RequiresPermission
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.io.readLong
 import com.elementary.tasks.core.utils.io.readString
 

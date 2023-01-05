@@ -34,7 +34,7 @@ interface BirthdaysDao {
     fun findAll(dayMonths: List<String>): LiveData<List<Birthday>>
 
     @Insert(onConflict = REPLACE)
-    suspend fun insert(birthday: Birthday)
+    fun insert(birthday: Birthday)
 
     @Insert(onConflict = REPLACE)
     suspend fun insertAll(vararg birthdays: Birthday)

@@ -17,7 +17,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.calendar.Events
+import com.elementary.tasks.core.calendar.EventsCursor
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.dp2px
@@ -35,7 +35,7 @@ class MonthView : View, View.OnTouchListener {
   private var currentDay: Int = 0
   private var startDayOfWeek: Int = 1
   private var mDateTimeList: MutableList<DateTime>? = null
-  private var eventsMap: Map<DateTime, Events> = HashMap()
+  private var eventsCursorMap: Map<DateTime, EventsCursor> = HashMap()
 
   private lateinit var paint: Paint
   private lateinit var circlePaint: Paint
@@ -141,8 +141,8 @@ class MonthView : View, View.OnTouchListener {
     this.mDateLongClick = dateLongClick
   }
 
-  fun setEventsMap(eventsMap: Map<DateTime, Events>) {
-    this.eventsMap = eventsMap
+  fun setEventsMap(eventsCursorMap: Map<DateTime, EventsCursor>) {
+    this.eventsCursorMap = eventsCursorMap
     invalidate()
   }
 
@@ -206,8 +206,8 @@ class MonthView : View, View.OnTouchListener {
       val color = if (mYear != dateTime.year || mMonth != dateTime.month) {
         Color.GRAY
       } else {
-        if (eventsMap.containsKey(dateTime)) {
-          val events = eventsMap[dateTime]
+        if (eventsCursorMap.containsKey(dateTime)) {
+          val events = eventsCursorMap[dateTime]
           if (events != null) {
             drawEvents(canvas, events, rect)
           }
@@ -224,21 +224,21 @@ class MonthView : View, View.OnTouchListener {
     Timber.d("onDraw: ${(System.currentTimeMillis() - start)}")
   }
 
-  private fun drawEvents(canvas: Canvas, events: Events, rect: Rect) {
+  private fun drawEvents(canvas: Canvas, eventsCursor: EventsCursor, rect: Rect) {
     val rects = circlesMap[rect] ?: return
     var index = 0
-    events.moveToStart()
+    eventsCursor.moveToStart()
     circlePaint.alpha = 50
     circlePaint.style = Paint.Style.FILL
     val maxEvents = GRID_R_C * GRID_R_C
-    while (events.hasNext() && index < maxEvents) {
-      val event = WeakReference(events.next)
+    while (eventsCursor.hasNext() && index < maxEvents) {
+      val event = WeakReference(eventsCursor.next)
       circlePaint.color = event.get()!!.color
       val r = rects[index]
       val cX = r.centerX()
       val cY = r.centerY()
       if (index > 0 && index < maxEvents - 1) {
-        val prev = WeakReference<Events.Event>(events.previousWithoutMoving)
+        val prev = WeakReference<EventsCursor.Event>(eventsCursor.previousWithoutMoving)
         if (prev.get() != null) {
           val end = rects[index - 1]
           canvas.drawLine(cX.toFloat(), cY.toFloat(), end.centerX().toFloat(), end.centerY().toFloat(), circlePaint)

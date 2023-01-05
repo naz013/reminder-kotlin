@@ -31,14 +31,13 @@ import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
-import com.elementary.tasks.core.view_models.reminders.EditReminderViewModel
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.voice.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
@@ -263,9 +262,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = APP
       Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = MONTH
       Reminder.BY_DATE_SHOP -> toSelect = SHOP
-      Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> toSelect =
-        YEAR
-
+      Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS ->
+        toSelect = YEAR
       else -> {
         if (hasLocation) {
           when (reminder.type) {
@@ -292,25 +290,28 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun initNavigation() {
-    val list = mutableListOf<SpinnerItem>()
-    list.add(SpinnerItem(getString(R.string.by_date)))
-    list.add(SpinnerItem(getString(R.string.timer)))
-    list.add(SpinnerItem(getString(R.string.alarm)))
-    list.add(SpinnerItem(getString(R.string.e_mail)))
-    list.add(SpinnerItem(getString(R.string.launch_application)))
-    list.add(SpinnerItem(getString(R.string.day_of_month)))
-    list.add(SpinnerItem(getString(R.string.yearly)))
-    list.add(SpinnerItem(getString(R.string.shopping_list)))
+    val list = mutableListOf<UiSelectorReminder>()
+    list.add(UiSelectorReminder(getString(R.string.by_date)))
+    list.add(UiSelectorReminder(getString(R.string.timer)))
+    list.add(UiSelectorReminder(getString(R.string.alarm)))
+    list.add(UiSelectorReminder(getString(R.string.e_mail)))
+    if (Module.is11) {
+      list.add(UiSelectorReminder(getString(R.string.open_link)))
+    } else {
+      list.add(UiSelectorReminder(getString(R.string.launch_application)))
+    }
+    list.add(UiSelectorReminder(getString(R.string.day_of_month)))
+    list.add(UiSelectorReminder(getString(R.string.yearly)))
+    list.add(UiSelectorReminder(getString(R.string.shopping_list)))
     if (hasLocation) {
-      list.add(SpinnerItem(getString(R.string.location)))
+      list.add(UiSelectorReminder(getString(R.string.location)))
       if (Module.isPro) {
-        list.add(SpinnerItem(getString(R.string.places)))
+        list.add(UiSelectorReminder(getString(R.string.places)))
       }
     }
     val adapter = TitleNavigationAdapter(list)
     binding.navSpinner.adapter = adapter
     binding.navSpinner.onItemSelectedListener = typeSelectListener
-    Timber.d("initNavigation: ")
   }
 
   private fun initActionBar() {
@@ -570,9 +571,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     return true
   }
 
-  private class SpinnerItem(val title: String)
+  private class UiSelectorReminder(val title: String)
 
-  private inner class TitleNavigationAdapter(private val items: List<SpinnerItem>) : BaseAdapter() {
+  private inner class TitleNavigationAdapter(private val items: List<UiSelectorReminder>) : BaseAdapter() {
 
     override fun getCount(): Int {
       return items.size

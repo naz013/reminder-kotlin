@@ -33,7 +33,7 @@ import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -43,8 +43,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity

@@ -6,46 +6,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
+import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalTime
 
 class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>() {
 
-  private val viewModel by viewModel<BirthdaysViewModel>()
-  private val scanContactsWorker by inject<ScanContactsWorker>()
+  private val viewModel by viewModel<BirthdaySettingsViewModel>()
   private val jobScheduler by inject<JobScheduler>()
   private val updatesHelper by inject<UpdatesHelper>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private var mItemSelect: Int = 0
-
-  private val onProgress: (Boolean) -> Unit = {
-    if (it) {
-      binding.progressMessageView.text = getString(R.string.please_wait)
-      binding.scanButton.isEnabled = false
-      binding.progressView.visibility = View.VISIBLE
-    } else {
-      binding.progressView.visibility = View.INVISIBLE
-      binding.scanButton.isEnabled = true
-    }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -73,9 +63,27 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     initPriority()
   }
 
-  override fun onDestroy() {
-    scanContactsWorker.unsubscribe()
-    super.onDestroy()
+  private fun initViewModel() {
+    viewModel.result.nonNullObserve(viewLifecycleOwner) { commands ->
+      when (commands) {
+        Commands.DELETED -> {
+        }
+
+        else -> {
+        }
+      }
+    }
+    viewModel.isInProgress.nonNullObserve(this) {
+      if (it) {
+        binding.progressMessageView.text = getString(R.string.please_wait)
+        binding.scanButton.isEnabled = false
+        binding.progressView.visible()
+      } else {
+        binding.progressView.transparent()
+        binding.scanButton.isEnabled = true
+      }
+    }
+    viewModel.error.nonNullObserve(this) { toast(it) }
   }
 
   private fun initPriority() {
@@ -106,20 +114,6 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     binding.priorityPrefs.setDetailText(priorityList()[prefs.birthdayPriority])
   }
 
-  private fun initViewModel() {
-    viewModel.result.observe(viewLifecycleOwner) { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.DELETED -> {
-          }
-
-          else -> {
-          }
-        }
-      }
-    }
-  }
-
   private fun initNotificationPrefs() {
     binding.birthdayNotificationPrefs.setOnClickListener {
       safeNavigation(BirthdaySettingsFragmentDirections.actionBirthdaySettingsFragmentToBirthdayNotificationFragment())
@@ -132,16 +126,6 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
       binding.scanButton.isEnabled = true
       binding.scanButton.visibility = View.VISIBLE
       binding.scanButton.setOnClickListener { scanForBirthdays() }
-      scanContactsWorker.onEnd = {
-        val message = if (it == 0) {
-          getString(R.string.no_new_birthdays)
-        } else {
-          getString(R.string.voice_found) + " $it " + getString(R.string.birthdays)
-        }
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-        onProgress.invoke(false)
-      }
-      scanContactsWorker.listener = onProgress
     } else {
       binding.scanButton.visibility = View.GONE
     }
@@ -149,8 +133,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
   private fun scanForBirthdays() {
     permissionFlow.askPermission(Permissions.READ_CONTACTS) {
-      onProgress.invoke(true)
-      scanContactsWorker.scan()
+      viewModel.startScan()
     }
   }
 

@@ -1,6 +1,6 @@
 package com.elementary.tasks.day_view.day
 
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 
 data class EventModel(

@@ -11,9 +11,9 @@ import androidx.core.content.ContextCompat
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.utils.PendingIntentWrapper
-import com.elementary.tasks.google_tasks.create.TaskActivity
-import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
+import com.elementary.tasks.google_tasks.TasksConstants
 
 class TasksWidget : AppWidgetProvider() {
 
@@ -65,7 +65,7 @@ class TasksWidget : AppWidgetProvider() {
         }
         WidgetUtils.initButton(
           context, rv, R.drawable.ic_twotone_add_24px, R.color.pureWhite,
-          R.id.btn_add_task, TaskActivity::class.java
+          R.id.btn_add_task, GoogleTaskActivity::class.java
         ) {
           it.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
           return@initButton it
@@ -81,7 +81,7 @@ class TasksWidget : AppWidgetProvider() {
         }
         WidgetUtils.initButton(
           context, rv, R.drawable.ic_twotone_add_24px, R.color.pureBlack,
-          R.id.btn_add_task, TaskActivity::class.java
+          R.id.btn_add_task, GoogleTaskActivity::class.java
         ) {
           it.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
           return@initButton it
@@ -89,7 +89,7 @@ class TasksWidget : AppWidgetProvider() {
         rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
       }
 
-      val startActivityIntent = Intent(context, TaskActivity::class.java)
+      val startActivityIntent = Intent(context, GoogleTaskActivity::class.java)
       val startActivityPendingIntent = PendingIntentWrapper.getActivity(
         context,
         0,

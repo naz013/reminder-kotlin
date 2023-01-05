@@ -6,21 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.UsedTime
+import com.elementary.tasks.core.data.ui.UiUsedTimeList
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.minusMillis
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.TimerPickerView
 import com.elementary.tasks.databinding.FragmentReminderTimerBinding
 import com.elementary.tasks.databinding.ListItemUsedTimeBinding
+import com.elementary.tasks.reminder.create.fragments.timer.UiUsedTimeListDiffCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -139,16 +140,12 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.usedTimeList.observe(viewLifecycleOwner) {
-      if (it != null) {
-        timesAdapter.updateData(it)
-        if (it.isEmpty()) {
-          binding.mostUserTimes.gone()
-        } else {
-          binding.mostUserTimes.visible()
-        }
-      } else {
+    viewModel.usedTimeList.nonNullObserve(viewLifecycleOwner) {
+      timesAdapter.submitList(it)
+      if (it.isEmpty()) {
         binding.mostUserTimes.gone()
+      } else {
+        binding.mostUserTimes.visible()
       }
     }
   }
@@ -178,24 +175,17 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     binding.timerPickerView.timerValue = iFace.state.reminder.after
   }
 
-  inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {
+  inner class TimesAdapter : ListAdapter<UiUsedTimeList, TimesAdapter.TimeHolder>(
+    UiUsedTimeListDiffCallback()
+  ) {
 
-    private val data: MutableList<UsedTime> = mutableListOf()
-    var listener: ((UsedTime) -> Unit)? = null
-
-    fun updateData(list: List<UsedTime>) {
-      this.data.clear()
-      this.data.addAll(list)
-      notifyDataSetChanged()
-    }
+    var listener: ((UiUsedTimeList) -> Unit)? = null
 
     override fun onBindViewHolder(holder: TimeHolder, position: Int) {
-      holder.bind(data[position])
+      holder.bind(getItem(position))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TimeHolder(parent)
-
-    override fun getItemCount() = data.size
 
     inner class TimeHolder(
       viewGroup: ViewGroup
@@ -205,11 +195,11 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
       init {
         binding.chipItem.setOnClickListener {
-          listener?.invoke(data[bindingAdapterPosition])
+          listener?.invoke(getItem(bindingAdapterPosition))
         }
       }
 
-      fun bind(usedTime: UsedTime) {
+      fun bind(usedTime: UiUsedTimeList) {
         binding.chipItem.text = usedTime.timeString
       }
     }

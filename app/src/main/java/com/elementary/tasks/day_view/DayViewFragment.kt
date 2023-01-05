@@ -1,7 +1,6 @@
 package com.elementary.tasks.day_view
 
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,7 +12,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.elementary.tasks.day_view.day.DayCallback
 import com.elementary.tasks.day_view.day.EventModel
@@ -21,7 +19,6 @@ import com.elementary.tasks.day_view.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
 
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
@@ -29,9 +26,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   private val buttonObservable by inject<GlobalButtonObservable>()
   lateinit var dayPagerAdapter: DayPagerAdapter
   private val datePageChangeListener = DatePageChangeListener()
-  private val dayViewViewModel by viewModel<DayViewViewModel> {
-    parametersOf(prefs.isFutureEventEnabled)
-  }
+  private val dayViewViewModel by viewModel<DayViewViewModel>()
   private var eventsPagerItem: EventsPagerItem? = null
   private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
 

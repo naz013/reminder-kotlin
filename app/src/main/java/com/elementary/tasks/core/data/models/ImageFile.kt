@@ -3,9 +3,7 @@ package com.elementary.tasks.core.data.models
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.elementary.tasks.notes.create.ImageDecoder
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -18,12 +16,6 @@ data class ImageFile(
   var image: ByteArray? = null,
   @SerializedName("noteId")
   var noteId: String = "",
-  @Transient
-  @Ignore
-  var state: ImageDecoder.State = ImageDecoder.State.Ready,
-  @Transient
-  @Ignore
-  var uuid: String = UUID.randomUUID().toString(),
   @PrimaryKey(autoGenerate = true)
   var id: Int = 0
 ) : Parcelable {
@@ -41,12 +33,12 @@ data class ImageFile(
   }
 
   override fun hashCode(): Int {
-    var result = image?.let { Arrays.hashCode(it) } ?: 0
+    var result = image?.let { it.contentHashCode() } ?: 0
     result = 31 * result + id.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "ImageFile(noteId='$noteId', id=$id)"
+    return "ImageFile(noteId='$noteId', id=$id"
   }
 }

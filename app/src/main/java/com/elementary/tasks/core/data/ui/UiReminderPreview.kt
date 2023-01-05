@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.data.ui
 
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderIllustration
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
@@ -12,7 +13,7 @@ data class UiReminderPreview(
   val id: String,
   val type: UiReminderType,
   val noteId: String,
-  val group: UiGroup?,
+  val group: UiGroupList?,
   val actionTarget: UiReminderTarget?,
   val summary: String,
   val isRunning: Boolean,

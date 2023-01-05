@@ -228,7 +228,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.elementary.tasks.settings.additional.TemplateActivity"
+            android:name="com.elementary.tasks.sms.create.TemplateActivity"
             android:configChanges="keyboardHidden"
             android:exported="true"
             android:label="@string/create_template"
@@ -252,10 +252,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.additional.QuickSmsActivity"
+            android:name=".sms.QuickSmsActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".core.additional.FollowReminderActivity"
+            android:name=".aftercall.FollowReminderActivity"
             android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
@@ -382,11 +382,11 @@
         <activity android:name=".notes.preview.ImagePreviewActivity" />
         <activity android:name=".notes.preview.NotePreviewActivity" />
         <activity
-            android:name=".google_tasks.create.TaskListActivity"
+            android:name=".google_tasks.tasklist.GoogleTaskListActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".google_tasks.create.TaskActivity"
+            android:name=".google_tasks.task.GoogleTaskActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
@@ -671,6 +671,29 @@
     <queries>
         <intent>
             <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="*/*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="text/plain" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="sms" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CALL" />
+            <data android:scheme="tel" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
         </intent>
     </queries>
 </manifest>

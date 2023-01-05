@@ -23,7 +23,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.ui.SelectionList
 import com.elementary.tasks.core.utils.Sound

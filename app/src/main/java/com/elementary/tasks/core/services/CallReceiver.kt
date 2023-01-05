@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
-import com.elementary.tasks.core.additional.FollowReminderActivity
-import com.elementary.tasks.core.additional.QuickSmsActivity
+import com.elementary.tasks.aftercall.FollowReminderActivity
+import com.elementary.tasks.sms.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.os.SystemServiceProvider

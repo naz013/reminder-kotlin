@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.view_models.DispatcherProvider
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.launch

@@ -15,14 +15,13 @@ import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.data.ui.UiBirthdayList
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
@@ -38,9 +37,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
-  private val mAdapter = BirthdaysRecyclerAdapter(currentStateHolder) {
-    filterController.original = viewModel.birthdays.value ?: listOf()
-  }
+  private val mAdapter = BirthdaysRecyclerAdapter()
   private val filterController = SearchModifier(SortModifier(), this)
   private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
     filterController.setSearchValue(it)
@@ -105,9 +102,8 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
   }
 
   override fun invoke(result: List<UiBirthdayList>) {
-    val newList = BirthdayAdsViewHolder.updateList(result)
-    mAdapter.submitList(newList)
+    mAdapter.submitList(result)
     binding.recyclerView.smoothScrollToPosition(0)
-    binding.emptyItem.visibleGone(newList.isEmpty())
+    binding.emptyItem.visibleGone(result.isEmpty())
   }
 }
