@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.views
+package com.elementary.tasks.core.views.gradient
 
 import android.content.Context
 import android.graphics.Color
@@ -17,7 +17,7 @@ import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatTextView
 
-class GradientTextView : AppCompatTextView {
+class UiGradientTextView : AppCompatTextView {
 
   private val sections = mutableListOf<Section>()
 
