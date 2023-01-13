@@ -272,11 +272,16 @@
             android:layout_marginEnd="16dp"
             android:stateListAnimator="@animator/card_animator">
 
-            <com.elementary.tasks.core.views.viewgroup.UiAnimatedGradientLinearLayout
+            <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_reminders_banner"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:gradientLinearLayout_animate="true"
+                app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
+                app:gradientLinearLayout_centerColor="@color/reminder_banner_gradient_center"
+                app:gradientLinearLayout_endColor="@color/reminder_banner_gradient_end"
+                app:gradientLinearLayout_orientation="TL_BR"
+                app:gradientLinearLayout_startColor="@color/reminder_banner_gradient_start">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="72dp"
@@ -299,7 +304,7 @@
                     android:textAppearance="?textAppearanceHeadline6"
                     android:textColor="?android:textColorPrimary" />
 
-            </com.elementary.tasks.core.views.viewgroup.UiAnimatedGradientLinearLayout>
+            </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -362,11 +367,16 @@
                 android:layout_marginEnd="16dp"
                 android:stateListAnimator="@animator/card_animator">
 
-                <com.elementary.tasks.core.views.viewgroup.UiAnimatedGradientLinearLayout
+                <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_birthdays_banner"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:gradientLinearLayout_animate="true"
+                    app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
+                    app:gradientLinearLayout_centerColor="@color/birthday_banner_gradient_center"
+                    app:gradientLinearLayout_endColor="@color/birthday_banner_gradient_end"
+                    app:gradientLinearLayout_orientation="TL_BR"
+                    app:gradientLinearLayout_startColor="@color/birthday_banner_gradient_start">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="72dp"
@@ -389,7 +399,7 @@
                         android:textAppearance="?textAppearanceHeadline6"
                         android:textColor="?android:textColorPrimary" />
 
-                </com.elementary.tasks.core.views.viewgroup.UiAnimatedGradientLinearLayout>
+                </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView

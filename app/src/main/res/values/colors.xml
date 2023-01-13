@@ -219,5 +219,6 @@
     <color name="birthday_banner_gradient_center">#C779D0</color>
     <color name="birthday_banner_gradient_end">#4BC0C8</color>
 
-    <color name="glass_card_bg">#0C2196F3</color>
+    <color name="glass_card_bg_start">#0C2196F3</color>
+    <color name="glass_card_bg_end">#1A2196F3</color>
 </resources>

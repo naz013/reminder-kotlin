@@ -50,6 +50,7 @@
     <color name="birthday_banner_gradient_center">#493240</color>
     <color name="birthday_banner_gradient_end">#333399</color>
 
-    <color name="glass_card_bg">#0CFFE082</color>
+    <color name="glass_card_bg_start">#33FFE082</color>
+    <color name="glass_card_bg_end">#4DFFE082</color>
 
 </resources>

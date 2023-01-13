@@ -63,8 +63,12 @@ android {
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
 
-            def api = props.get('freeApiKey', "\"API_KEY\"")
+            def api = props.get('freeApiKey', "API_KEY")
             def placesApiKey = props.get('freePlacesApiKey', "\"API_KEY\"")
+
+            println "> API KEY = ${api}"
+            println "> PLACES API KEY = ${placesApiKey}"
+
             buildConfigField "String", "PLACES_API_KEY", "$placesApiKey"
             manifestPlaceholders = [apiKey: api]
         }
@@ -74,7 +78,7 @@ android {
             buildConfigField "boolean", "IS_PRO", "true"
             versionCode 257
 
-            def api = props.get('proApiKey', "\"API_KEY\"")
+            def api = props.get('proApiKey', "API_KEY")
             def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
             manifestPlaceholders = [apiKey: api]
             buildConfigField "String", "PLACES_API_KEY", "$placesApiKey"
@@ -143,7 +147,7 @@ dependencies {
     }
     implementation('com.google.apis:google-api-services-tasks:v1-rev71-1.25.0')
     implementation 'com.google.http-client:google-http-client-gson:1.42.3'
-    implementation('com.google.api-client:google-api-client-android:2.0.1') {
+    implementation('com.google.api-client:google-api-client-android:2.1.2') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation('com.google.apis:google-api-services-drive:v3-rev197-1.25.0') {
@@ -151,9 +155,9 @@ dependencies {
     }
     implementation project(':voice-engine-ktx')
 
-    implementation 'io.insert-koin:koin-android:3.2.0'
+    implementation 'io.insert-koin:koin-android:3.3.2'
     implementation 'io.insert-koin:koin-android-ext:3.0.2'
-    implementation 'io.insert-koin:koin-androidx-workmanager:3.1.4'
+    implementation 'io.insert-koin:koin-androidx-workmanager:3.3.2'
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.7.0'
@@ -194,7 +198,7 @@ dependencies {
 
     implementation "com.google.android.play:core-ktx:1.8.1"
 
-    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
 
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -216,32 +220,32 @@ dependencies {
     implementation 'com.tuyenmonkey:mkloader:1.4.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
     implementation 'com.dropbox.core:dropbox-core-sdk:5.0.0'
     implementation 'com.jakewharton.timber:timber:5.0.1'
-    implementation 'org.dmfs:lib-recur:0.12.2'
+    implementation 'org.dmfs:lib-recur:0.13.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'com.github.florent37:expansionpanel:1.2.4'
     implementation 'com.github.naz013:ColorSlider:2.0.6'
     implementation 'com.github.naz013:android-calendar-ext:1.0.4'
-    implementation 'com.airbnb.android:lottie:4.2.2'
+    implementation 'com.airbnb.android:lottie:5.2.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.threeten:threetenbp:1.6.5'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test:core:1.5.0'
-    testImplementation 'org.mockito:mockito-core:4.1.0'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation 'io.mockk:mockk:1.13.3'
 
     androidTestImplementation 'io.mockk:mockk-android:1.13.3'
-    androidTestImplementation 'androidx.test:runner:1.5.1'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 

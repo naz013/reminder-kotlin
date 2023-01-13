@@ -27,7 +27,7 @@ class RemotePrefs(
 
   init {
     val configSettings = FirebaseRemoteConfigSettings.Builder()
-      .setMinimumFetchIntervalInSeconds(3600)
+      .setMinimumFetchIntervalInSeconds(60)
       .build()
     this.config?.setConfigSettingsAsync(configSettings)
     this.config?.setDefaultsAsync(R.xml.remote_config_defaults)
@@ -65,10 +65,16 @@ class RemotePrefs(
 
   private fun readFeatureFlags() {
     FeatureManager.Feature.values().map {
-      it to (config?.getBoolean(it.value) ?: true)
+      it to (readBool(it.value) ?: true)
     }.forEach {
       Timber.d("Feature ${it.first} isEnabled=${it.second}")
       prefs.putBoolean(it.first.value, it.second)
+    }
+  }
+
+  private fun readBool(key: String): Boolean? {
+    return config?.getBoolean(key).also {
+      Timber.d("Read bool key=$key, val=$it")
     }
   }
 
