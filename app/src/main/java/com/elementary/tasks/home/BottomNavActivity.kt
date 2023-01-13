@@ -26,8 +26,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
-  FragmentCallback, GlobalAction {
+class BottomNavActivity :
+  BindingActivity<ActivityBottomNavBinding>(), FragmentCallback, GlobalAction {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val dateTimeManager by inject<DateTimeManager>()
