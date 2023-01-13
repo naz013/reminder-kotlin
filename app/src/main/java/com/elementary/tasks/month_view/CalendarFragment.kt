@@ -23,6 +23,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import timber.log.Timber
 
 class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
@@ -152,7 +154,11 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   }
 
   override fun onDateClick(date: LocalDate) {
-    safeNavigation(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date))
+    safeNavigation(
+      CalendarFragmentDirections.actionActionCalendarToDayViewFragment(
+        dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now()))
+      )
+    )
   }
 
   override fun onDateLongClick(date: LocalDate) {

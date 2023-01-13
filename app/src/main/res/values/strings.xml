@@ -431,7 +431,6 @@
     <string name="default_note_notifications">Default note notifications</string>
     <string name="info_channel">Info channel</string>
     <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
-    <string name="tell_about_event">Tell about event</string>
     <string name="add_note">Add note</string>
     <string name="yearly">Annually</string>
     <string name="attach_file">Attach file</string>

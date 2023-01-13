@@ -349,6 +349,9 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
+      get(),
       get()
     )
   }
@@ -453,7 +456,7 @@ val utilModule = module {
   single { ThemeProvider(get(), get()) }
   single { BackupTool(get(), get(), get(), get()) }
   single { Dialogues(get()) }
-  single { Language(get()) }
+  single { Language(get(), get()) }
   single { GoogleCalendarUtils(get(), get(), get(), get()) }
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get()) }

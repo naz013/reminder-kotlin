@@ -52,7 +52,6 @@ object PrefsConstants {
   const val NOTE_TEXT_SIZE = "text_size"
   const val QUICK_NOTE_REMINDER = "quick_note_reminder"
   const val QUICK_NOTE_REMINDER_TIME = "quick_note_reminder_time"
-  const val VOICE_LOCALE = "voice_locale"
   const val TIME_MORNING = "time_morning"
   const val TIME_DAY = "time_day"
   const val TIME_EVENING = "time_evening"
@@ -82,7 +81,6 @@ object PrefsConstants {
   const val SOUND_STREAM = "sound_stream"
   const val INCREASING_VOLUME = "increasing_volume"
   const val AUTO_CALL = "auto_calls"
-  const val GCM_ENABLED = "gcm_enabled"
   const val BETA_KEY = "beta_key"
   const val RATE_COUNT = "rate_count"
   const val USER_LOGGED = "user_logged"
@@ -153,4 +151,7 @@ object PrefsConstants {
 
   const val PRIVACY_POLICY_URL = "privacy_url"
   const val VOICE_HELP_URLS = "voice_help_urls"
+
+  const val CONVERSATION_AUTO_MIC = "conversation_auto_mic"
+  const val CONVERSATION_LOCALE = "voice_locale"
 }

@@ -169,7 +169,7 @@
         tools:layout="@layout/fragment_day_view">
         <argument
             android:name="date"
-            app:argType="org.threeten.bp.LocalDate" />
+            app:argType="long" />
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="reminderapp.com/calendar/{date}" />

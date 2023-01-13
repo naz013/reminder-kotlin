@@ -39,7 +39,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     super.onCreate(savedInstanceState)
     val bundle = arguments
     if (bundle != null) {
-      date = DayViewFragmentArgs.fromBundle(bundle).date
+      date = dateTimeManager.fromMillis(DayViewFragmentArgs.fromBundle(bundle).date).toLocalDate()
     }
   }
 
