@@ -221,8 +221,8 @@ class Prefs(
     set(value) = putString(PrefsConstants.TIME_MORNING, value)
 
   var voiceLocale: Int
-    get() = getInt(PrefsConstants.VOICE_LOCALE)
-    set(value) = putInt(PrefsConstants.VOICE_LOCALE, value)
+    get() = getInt(PrefsConstants.CONVERSATION_LOCALE)
+    set(value) = putInt(PrefsConstants.CONVERSATION_LOCALE, value)
 
   var ttsLocale: String
     get() = getString(PrefsConstants.TTS_LOCALE)
@@ -599,6 +599,10 @@ class Prefs(
     get() = getString(PrefsConstants.VOICE_HELP_URLS, "{}")
     set(value) = putString(PrefsConstants.VOICE_HELP_URLS, value)
 
+  var isAutoMicClick: Boolean
+    get() = getBoolean(PrefsConstants.CONVERSATION_AUTO_MIC, true)
+    set(value) = putBoolean(PrefsConstants.CONVERSATION_AUTO_MIC, value)
+
   fun initPrefs() {
     val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
     if (!settingsUI.exists()) {
@@ -624,7 +628,7 @@ class Prefs(
         localeCheck.startsWith("ru") -> 1
         else -> 0
       }
-      editor.putInt(PrefsConstants.VOICE_LOCALE, locale)
+      editor.putInt(PrefsConstants.CONVERSATION_LOCALE, locale)
       editor.putString(PrefsConstants.TIME_MORNING, "7:0")
       editor.putString(PrefsConstants.TIME_DAY, "12:0")
       editor.putString(PrefsConstants.TIME_EVENING, "19:0")
@@ -680,7 +684,6 @@ class Prefs(
       editor.putBoolean(PrefsConstants.REMINDER_IMAGE_BLUR, false)
       editor.putBoolean(PrefsConstants.SYSTEM_VOLUME, false)
       editor.putBoolean(PrefsConstants.INCREASING_VOLUME, false)
-      editor.putBoolean(PrefsConstants.GCM_ENABLED, true)
       editor.putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
       editor.putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, true)
       if (Module.isPro) {
@@ -729,8 +732,8 @@ class Prefs(
       putString(PrefsConstants.REMINDER_IMAGE, Constants.DEFAULT)
     }
 
-    if (!hasKey(PrefsConstants.VOICE_LOCALE)) {
-      putInt(PrefsConstants.VOICE_LOCALE, 0)
+    if (!hasKey(PrefsConstants.CONVERSATION_LOCALE)) {
+      putInt(PrefsConstants.CONVERSATION_LOCALE, 0)
     }
     if (!hasKey(PrefsConstants.TIME_MORNING)) {
       putString(PrefsConstants.TIME_MORNING, "7:0")
@@ -893,9 +896,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.WAKE_STATUS)) {
       putBoolean(PrefsConstants.WAKE_STATUS, false)
-    }
-    if (!hasKey(PrefsConstants.GCM_ENABLED)) {
-      putBoolean(PrefsConstants.GCM_ENABLED, true)
     }
     if (!hasKey(PrefsConstants.LIVE_CONVERSATION)) {
       putBoolean(PrefsConstants.LIVE_CONVERSATION, true)

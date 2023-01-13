@@ -2,7 +2,6 @@ package com.elementary.tasks.voice
 
 import android.content.Context
 import android.content.Intent
-import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +15,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
@@ -41,13 +39,16 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.IdProvider
+import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
@@ -66,7 +67,6 @@ import java.util.LinkedList
 import java.util.Random
 
 class ConversationViewModel(
-  currentStateHolder: CurrentStateHolder,
   dispatcherProvider: DispatcherProvider,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
@@ -83,10 +83,12 @@ class ConversationViewModel(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val uiGroupListAdapter: UiGroupListAdapter,
-  private val uiNoteListAdapter: UiNoteListAdapter
+  private val uiNoteListAdapter: UiNoteListAdapter,
+  private val prefs: Prefs,
+  private val language: Language,
+  private val contextProvider: ContextProvider,
+  private val contactsReader: ContactsReader
 ) : BaseProgressViewModel(dispatcherProvider) {
-
-  private val prefs = currentStateHolder.preferences
 
   private var _shoppingLists = MutableLiveData<List<UiReminderList>>()
   var shoppingLists: LiveData<List<UiReminderList>> = _shoppingLists
@@ -106,16 +108,21 @@ class ConversationViewModel(
   private var _replies = MutableLiveData<List<Reply>>()
   var replies: LiveData<List<Reply>> = _replies
   private val repliesList = mutableListOf<Reply>()
-  private val context = currentStateHolder.context
-  private val language = currentStateHolder.language
   private var hasPartial = false
 
+
+  var autoMicClick: Boolean = true
+    private set
+  var tellAboutEvent: Boolean = false
+    private set
   val groups = mutableListOf<UiGroupList>()
   var defaultGroup: UiGroupList? = null
 
   init {
     clearConversation()
     viewModelScope.launch(dispatcherProvider.default()) {
+      autoMicClick = prefs.isAutoMicClick
+      tellAboutEvent = prefs.isTellAboutEvent
       reminderGroupDao.defaultGroup(true)?.also {
         defaultGroup = uiGroupListAdapter.convert(it)
       }
@@ -126,6 +133,20 @@ class ConversationViewModel(
         groups.addAll(list.map { uiGroupListAdapter.convert(it) })
       }
     }
+  }
+
+  fun getDateTimeText(gmtDateTime: String?): String {
+    return dateTimeManager.getVoiceDateTime(gmtDateTime) ?: ""
+  }
+
+  fun toggleTellAboutEvent() {
+    tellAboutEvent = !tellAboutEvent
+    prefs.isTellAboutEvent = tellAboutEvent
+  }
+
+  fun toggleAutoMic() {
+    autoMicClick = !autoMicClick
+    prefs.isAutoMicClick = autoMicClick
   }
 
   fun addMoreItemsToList(position: Int) {
@@ -392,13 +413,13 @@ class ConversationViewModel(
     val reminder = createReminder(model) ?: return
     saveAndStartReminder(reminder)
     if (widget) {
-      context.startActivity(
-        Intent(context, VoiceResultDialog::class.java)
+      contextProvider.context.startActivity(
+        Intent(contextProvider.context, VoiceResultDialog::class.java)
           .putExtra(Constants.INTENT_ID, reminder.uuId)
           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
       )
     } else {
-      Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+      Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()
     }
   }
 
@@ -413,7 +434,7 @@ class ConversationViewModel(
       withUIContext {
         if (showToast) {
           Toast.makeText(
-            context,
+            contextProvider.context,
             R.string.all_reminders_were_disabled,
             Toast.LENGTH_SHORT
           ).show()
@@ -444,7 +465,7 @@ class ConversationViewModel(
       postCommand(Commands.TRASH_CLEARED)
       withUIContext {
         if (showToast) {
-          Toast.makeText(context, R.string.trash_cleared, Toast.LENGTH_SHORT).show()
+          Toast.makeText(contextProvider.context, R.string.trash_cleared, Toast.LENGTH_SHORT).show()
         }
       }
     }
@@ -553,7 +574,7 @@ class ConversationViewModel(
     }
     updatesHelper.updateNotesWidget()
     if (showToast) {
-      Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+      Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()
     }
   }
 
@@ -594,7 +615,7 @@ class ConversationViewModel(
       reminderGroupDao.insert(model)
     }
     if (showToast) {
-      Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+      Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()
     }
   }
 
@@ -615,58 +636,11 @@ class ConversationViewModel(
   inner class ContactHelper : ContactsInterface {
 
     override fun findEmail(input: String?): String? {
-      if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || input == null) {
-        return null
-      }
-      var part: String = input
-      var number: String? = null
-
-      while (part.length > 1) {
-        val selection =
-          ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
-        val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
-        val c = context.contentResolver.query(
-          ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-          projection, selection, null, null
-        )
-        if (c != null && c.moveToFirst()) {
-          number = c.getString(0)
-          c.close()
-        }
-        if (number != null)
-          break
-        part = part.substring(0, part.length - 2)
-      }
-
-      return number
+      return contactsReader.findEmail(input)
     }
 
     override fun findNumber(input: String?): String? {
-      if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || input == null) {
-        return null
-      }
-      var part: String = input
-      var number: String? = null
-
-      while (part.length > 1) {
-        val selection =
-          ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
-        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
-        val c = context.contentResolver.query(
-          ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-          projection, selection, null, null
-        )
-        if (c != null && c.moveToFirst()) {
-          number = c.getString(0)
-          c.close()
-        }
-        if (number != null) {
-          break
-        }
-        part = part.substring(0, part.length - 1)
-      }
-
-      return number
+      return contactsReader.findNumber(input)
     }
   }
 }

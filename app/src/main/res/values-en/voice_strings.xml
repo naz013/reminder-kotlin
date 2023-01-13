@@ -27,4 +27,18 @@
     <string name="voice_would_you_like_to_add_reminder">Would you like to add reminder?</string>
     <string name="voice_note_saved_without_reminder">Note saved without reminder</string>
     <string name="voice_trash_was_cleared">Trash was cleared</string>
+    <string name="voice_language">Language</string>
+    <string name="voice_feedback">Feedback</string>
+    <string name="voice_tell_about_event">Tell about event</string>
+    <string name="voice_auto_mic">Auto microphone</string>
+    <string name="voice_help">Help</string>
+    <string name="voice_ok">OK</string>
+    <string name="voice_cancel">Cancel</string>
+    <string name="voice_install">Install</string>
+    <string name="voice_all_reminders_were_disabled">All reminders are disabled</string>
+    <string name="voice_birthdays">Birthdays</string>
+    <string name="voice_groups">Groups</string>
+    <string name="voice_notes">Notes</string>
+    <string name="voice_reminder_created_on">Reminder created on</string>
+    <string name="voice_reminder_created">Reminder created</string>
 </resources>

@@ -29,4 +29,18 @@
     <string name="voice_would_you_like_to_save_it">Chcesz to zapisać?</string>
     <string name="voice_would_you_like_to_add_reminder">Chcesz dodać przypomnienie?</string>
     <string name="voice_did_you_say_something">Coś powiedziałeś?</string>
+    <string name="voice_language">Język</string>
+    <string name="voice_feedback">Informacje zwrotne</string>
+    <string name="voice_tell_about_event">Powiedz o wydarzeniach</string>
+    <string name="voice_auto_mic">Mikrofon automatyczny</string>
+    <string name="voice_help">Pomoc</string>
+    <string name="voice_ok">OK</string>
+    <string name="voice_cancel">Anuluj</string>
+    <string name="voice_install">Zainstalować</string>
+    <string name="voice_all_reminders_were_disabled">Wszystkie przypomnienia są wyłączone</string>
+    <string name="voice_birthdays">Urodziny</string>
+    <string name="voice_groups">Grupy</string>
+    <string name="voice_notes">Notatki</string>
+    <string name="voice_reminder_created_on">Przypomnienie zostało utworzone</string>
+    <string name="voice_reminder_created">Przypomnienie stworzono</string>
 </resources>

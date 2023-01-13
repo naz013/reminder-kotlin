@@ -118,9 +118,9 @@ class ConversationAdapter(
       binding.replyNo.setOnClickListener {
         askAction?.onNo()
       }
-      binding.replyNo.text = currentStateHolder.language.getLocalized(itemView.context, R.string.no)
+      binding.replyNo.text = currentStateHolder.language.getConversationLocalizedText(itemView.context, R.string.no)
       binding.replyYes.text =
-        currentStateHolder.language.getLocalized(itemView.context, R.string.yes)
+        currentStateHolder.language.getConversationLocalizedText(itemView.context, R.string.yes)
     }
 
     fun setAskAction(askAction: AskAction) {

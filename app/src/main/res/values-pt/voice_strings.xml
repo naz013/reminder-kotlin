@@ -29,4 +29,18 @@
     <string name="voice_note_saved_without_reminder">Nota salva sem lembrete</string>
     <string name="voice_trash_was_cleared">Lixeira foi apagada</string>
     <string name="voice_this_command_not_supported_on_that_screen">Este comando não é suportado nessa tela</string>
+    <string name="voice_language">Língua</string>
+    <string name="voice_feedback">Comentários</string>
+    <string name="voice_tell_about_event">Conte sobre eventos</string>
+    <string name="voice_auto_mic">Microfone automático</string>
+    <string name="voice_help">Socorro</string>
+    <string name="voice_ok">Está bem</string>
+    <string name="voice_cancel">Cancelar</string>
+    <string name="voice_install">Instalar</string>
+    <string name="voice_all_reminders_were_disabled">Todos os lembretes estão desativados</string>
+    <string name="voice_birthdays">Aniversários</string>
+    <string name="voice_groups">Grupos</string>
+    <string name="voice_notes">Notas</string>
+    <string name="voice_reminder_created_on">Lembrete criado em </string>
+    <string name="voice_reminder_created">Lembrete criado</string>
 </resources>

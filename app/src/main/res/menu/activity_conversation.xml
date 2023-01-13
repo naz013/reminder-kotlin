@@ -3,19 +3,24 @@
 
     <item
         android:id="@+id/action_locale"
-        android:title="@string/language" />
+        android:title="@string/voice_language" />
 
     <item
         android:id="@+id/action_tell"
         android:checkable="true"
-        android:title="@string/tell_about_event" />
+        android:title="@string/voice_tell_about_event" />
+
+    <item
+        android:id="@+id/action_auto_mic"
+        android:checkable="true"
+        android:title="@string/voice_auto_mic" />
 
     <item
         android:id="@+id/action_report"
-        android:title="@string/feedback" />
+        android:title="@string/voice_feedback" />
 
     <item
         android:id="@+id/action_help"
-        android:title="@string/help" />
+        android:title="@string/voice_help" />
 
 </menu>

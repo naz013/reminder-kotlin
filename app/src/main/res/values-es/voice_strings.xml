@@ -29,4 +29,18 @@
     <string name="voice_note_saved_without_reminder">Nota guardada sin recordatorio</string>
     <string name="voice_trash_was_cleared">La basura fue limpiada</string>
     <string name="voice_this_command_not_supported_on_that_screen">Este comando no es compatible en esa pantalla.</string>
+    <string name="voice_language">Lenguaje</string>
+    <string name="voice_feedback">Realimentación</string>
+    <string name="voice_tell_about_event">Hablar de eventos</string>
+    <string name="voice_auto_mic">Micrófono automático</string>
+    <string name="voice_help">Ayuda</string>
+    <string name="voice_ok">DE ACUERDO</string>
+    <string name="voice_cancel">Cancelar</string>
+    <string name="voice_install">Instalar</string>
+    <string name="voice_all_reminders_were_disabled">Todos los recordatorios están inhabilitados</string>
+    <string name="voice_birthdays">Cumpleaños</string>
+    <string name="voice_groups">Grupos</string>
+    <string name="voice_notes">Notas</string>
+    <string name="voice_reminder_created_on">Recordatorio creado en</string>
+    <string name="voice_reminder_created">Recordatorio creado</string>
 </resources>

@@ -11,6 +11,59 @@ import com.elementary.tasks.core.utils.io.readString
 
 class ContactsReader(private val context: Context) {
 
+  fun findNumber(query: String?): String? {
+    if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || query == null) {
+      return null
+    }
+    var part: String = query
+    var number: String? = null
+
+    while (part.length > 1) {
+      val selection =
+        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
+      val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
+      val c = context.contentResolver.query(
+        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        projection, selection, null, null
+      )
+      if (c != null && c.moveToFirst()) {
+        number = c.getString(0)
+        c.close()
+      }
+      if (number != null) {
+        break
+      }
+      part = part.substring(0, part.length - 1)
+    }
+    return number
+  }
+
+  fun findEmail(query: String?): String? {
+    if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || query == null) {
+      return null
+    }
+    var part: String = query
+    var email: String? = null
+
+    while (part.length > 1) {
+      val selection =
+        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
+      val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
+      val c = context.contentResolver.query(
+        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        projection, selection, null, null
+      )
+      if (c != null && c.moveToFirst()) {
+        email = c.getString(0)
+        c.close()
+      }
+      if (email != null)
+        break
+      part = part.substring(0, part.length - 2)
+    }
+    return email
+  }
+
   fun getPhoto(contactId: Long): Uri? {
     if (contactId == 0L || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
       return null

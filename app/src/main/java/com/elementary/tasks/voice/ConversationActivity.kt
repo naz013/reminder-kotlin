@@ -33,24 +33,23 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import org.apache.commons.lang3.StringUtils
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.Locale
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
-  private val dateTimeManager by inject<DateTimeManager>()
   private val permissionFlow = PermissionFlow(this, dialogues)
   private var speech: SpeechRecognizer? = null
-  private val mAdapter = ConversationAdapter(currentStateHolder)
+  private val conversationAdapter = ConversationAdapter(currentStateHolder)
   private val viewModel by viewModel<ConversationViewModel>()
   private var tts: TextToSpeech? = null
   private var isTtsReady = false
@@ -74,11 +73,9 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         Timber.d("This Language is not supported")
       } else {
         isTtsReady = true
-        if (!isRotated || mAdapter.itemCount == 0) {
+        if (!isRotated || conversationAdapter.itemCount == 0) {
           addResponse(getLocalized(R.string.voice_hi_how_can_i_help_you))
-          if (Module.hasMicrophone(this)) {
-            postMicClick(::tryToActivateMic, 2000)
-          }
+          delayMicClickIfNeeded()
         }
       }
     } else {
@@ -169,7 +166,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
         Commands.DELETED -> {
           stopView()
-          addResponse(getLocalized(R.string.all_reminders_were_disabled))
+          addResponse(getLocalized(R.string.voice_all_reminders_were_disabled))
         }
 
         else -> {
@@ -182,13 +179,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     viewModel.enabledReminders.nonNullObserve(this) { showEnabledReminders(it) }
     viewModel.birthdays.observe(this) { showBirthdays(it) }
     viewModel.replies.nonNullObserve(this) {
-      mAdapter.submitList(it)
+      conversationAdapter.submitList(it)
       binding.conversationList.scrollToPosition(0)
       Timber.d("initViewModel: $it")
     }
   }
 
-  private fun postMicClick(action: () -> Unit, time: Long = 1500) {
+  private fun delayAction(action: () -> Unit, time: Long = 1500) {
     handler.postDelayed({ action.invoke() }, time)
   }
 
@@ -198,7 +195,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun getLocalized(id: Int): String {
-    return language.getLocalized(this, id)
+    return language.getConversationLocalizedText(this, id)
   }
 
   private fun parseResults(list: List<String>?) {
@@ -327,7 +324,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun addMoreAction() {
-    mAdapter.showMore = {
+    conversationAdapter.showMore = {
       viewModel.addMoreItemsToList(it)
     }
   }
@@ -344,7 +341,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           StringUtils.capitalize(
             StringUtils.lowerCase(
               getLocalized(R.string.voice_found) +
-                " " + items.list.size + " " + getLocalized(R.string.birthdays)
+                " " + items.list.size + " " + getLocalized(R.string.voice_birthdays)
             )
           )
         )
@@ -390,7 +387,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           StringUtils.capitalize(
             StringUtils.lowerCase(
               getLocalized(R.string.voice_found) +
-                " " + items.list.size + " " + getLocalized(R.string.groups)
+                " " + items.list.size + " " + getLocalized(R.string.voice_groups)
             )
           )
         )
@@ -415,7 +412,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           StringUtils.capitalize(
             StringUtils.lowerCase(
               getLocalized(R.string.voice_found) +
-                " " + items.list.size + " " + getLocalized(R.string.notes)
+                " " + items.list.size + " " + getLocalized(R.string.voice_notes)
             )
           )
         )
@@ -466,7 +463,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     addResponse(getLocalized(R.string.voice_group_created))
     val item = viewModel.createGroup(model)
     addObjectResponse(Reply(Reply.GROUP, item))
-    postMicClick({ askGroupAction(item) }, 1000)
+    delayAction({ askGroupAction(item) }, 1000)
   }
 
   private fun noteAction(model: Model) {
@@ -474,23 +471,23 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     addResponse(getLocalized(R.string.voice_note_created))
     val item = viewModel.createNote(model.summary)
     addObjectResponse(Reply(Reply.NOTE, item))
-    postMicClick({ askNoteAction(item) }, 1000)
+    delayAction({ askNoteAction(item) }, 1000)
   }
 
   private fun reminderAction(model: Model) {
     stopView()
     val reminder = viewModel.createReminder(model) ?: return
     addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
-    if (prefs.isTellAboutEvent) {
+    if (viewModel.tellAboutEvent) {
       addResponse(
-        getLocalized(R.string.reminder_created_on) + " " +
-          dateTimeManager.getVoiceDateTime(reminder.eventTime) +
+        getLocalized(R.string.voice_reminder_created_on) + " " +
+          viewModel.getDateTimeText(reminder.eventTime) +
           ". " + getLocalized(R.string.voice_would_you_like_to_save_it)
       )
-      postMicClick({ askReminderAction(reminder, false) }, 7000)
+      delayAction({ askReminderAction(reminder, false) }, 7000)
     } else {
-      addResponse(getLocalized(R.string.reminder_created))
-      postMicClick({ askReminderAction(reminder, true) }, 1000)
+      addResponse(getLocalized(R.string.voice_reminder_created))
+      delayAction({ askReminderAction(reminder, true) }, 1000)
     }
   }
 
@@ -509,7 +506,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick(::tryToActivateMic, 1000)
+    delayMicClickIfNeeded(1000)
   }
 
   private fun askReminderAction(reminder: Reminder, ask: Boolean) {
@@ -527,7 +524,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick(::tryToActivateMic, 1000)
+    delayMicClickIfNeeded(1000)
   }
 
   private fun askNoteAction(note: Note) {
@@ -537,7 +534,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         viewModel.saveNote(note, showToast = false, addQuickNote = false)
         addResponse(getLocalized(R.string.voice_note_saved))
         if (prefs.isNoteReminderEnabled) {
-          postMicClick({ askQuickReminder(note) }, 1000)
+          delayAction({ askQuickReminder(note) }, 1000)
         } else {
           mAskAction = null
         }
@@ -549,7 +546,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick(::tryToActivateMic, 1000)
+    delayMicClickIfNeeded(1000)
   }
 
   private fun askQuickReminder(note: Note) {
@@ -575,14 +572,11 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       }
     }
     addAskReply()
-    postMicClick(::tryToActivateMic, 1000)
+    delayMicClickIfNeeded(1000)
   }
 
   private fun addAskReply() {
-    val askAction = mAskAction
-    if (askAction != null) {
-      viewModel.addReply(Reply(Reply.ASK, createAsk(askAction)))
-    }
+    mAskAction?.also { viewModel.addReply(Reply(Reply.ASK, createAsk(it))) }
   }
 
   private fun addResponse(message: String) {
@@ -601,11 +595,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showSettingsPopup() {
     val popupMenu = PopupMenu(this, binding.settingsButton)
     popupMenu.inflate(R.menu.activity_conversation)
-    popupMenu.menu.getItem(0).title = getLocalized(R.string.language)
-    popupMenu.menu.getItem(1).title = getLocalized(R.string.tell_about_event)
-    popupMenu.menu.getItem(2).title = getLocalized(R.string.feedback)
-    popupMenu.menu.getItem(3).title = getLocalized(R.string.help)
-    popupMenu.menu.getItem(1).isChecked = prefs.isTellAboutEvent
+    popupMenu.menu.getItem(0).title = getLocalized(R.string.voice_language)
+    popupMenu.menu.getItem(1).title = getLocalized(R.string.voice_tell_about_event)
+    popupMenu.menu.getItem(2).title = getLocalized(R.string.voice_auto_mic)
+    popupMenu.menu.getItem(3).title = getLocalized(R.string.voice_feedback)
+    popupMenu.menu.getItem(4).title = getLocalized(R.string.voice_help)
+    popupMenu.menu.getItem(1).isChecked = viewModel.tellAboutEvent
+    popupMenu.menu.getItem(2).isChecked = viewModel.autoMicClick
     popupMenu.setOnMenuItemClickListener { item ->
       when (item.itemId) {
         R.id.action_locale -> {
@@ -614,7 +610,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         }
 
         R.id.action_tell -> {
-          prefs.isTellAboutEvent = !prefs.isTellAboutEvent
+          viewModel.toggleTellAboutEvent()
           return@setOnMenuItemClickListener true
         }
 
@@ -627,6 +623,11 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           startActivity(Intent(this@ConversationActivity, VoiceHelpActivity::class.java))
           return@setOnMenuItemClickListener true
         }
+
+        R.id.action_auto_mic -> {
+          viewModel.toggleAutoMic()
+          return@setOnMenuItemClickListener true
+        }
       }
       false
     }
@@ -635,20 +636,20 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private fun showLanguageDialog() {
     val builder = dialogues.getMaterialDialog(this)
-    builder.setTitle(getString(R.string.language))
-    val locales = language.getLanguages(this)
+    builder.setTitle(getLocalized(R.string.voice_language))
+    val locales = language.getLanguages(language.getConversationLocalizedContext())
     val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, locales)
     mItemSelected = prefs.voiceLocale
     builder.setSingleChoiceItems(adapter, mItemSelected) { _, which ->
       mItemSelected = which
     }
-    builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+    builder.setPositiveButton(getLocalized(R.string.voice_ok)) { dialog, _ ->
       prefs.voiceLocale = mItemSelected
       dialog.dismiss()
       viewModel.clearConversation()
       recreate()
     }
-    builder.setNegativeButton(getLocalized(R.string.cancel)) { dialog, _ ->
+    builder.setNegativeButton(getLocalized(R.string.voice_cancel)) { dialog, _ ->
       dialog.dismiss()
     }
     builder.create().show()
@@ -663,7 +664,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     val layoutManager = LinearLayoutManager(this)
     layoutManager.reverseLayout = true
     binding.conversationList.layoutManager = layoutManager
-    binding.conversationList.adapter = mAdapter
+    binding.conversationList.adapter = conversationAdapter
   }
 
   private fun initRecognizer() {
@@ -695,9 +696,15 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     return tts?.isSpeaking ?: false
   }
 
+  private fun delayMicClickIfNeeded(delay: Long = 2000) {
+    if (viewModel.autoMicClick && Module.hasMicrophone(this)) {
+      delayAction(::tryToActivateMic, delay)
+    }
+  }
+
   private fun tryToActivateMic() {
     if (isSpeaking()) {
-      postMicClick(::tryToActivateMic, 1000)
+      delayAction(::tryToActivateMic, 1000)
     } else {
       permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
         micClick()
@@ -714,8 +721,8 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       stopView()
       return
     }
-    binding.recordingView.visibility = View.VISIBLE
-    binding.micButton.visibility = View.INVISIBLE
+    binding.recordingView.visible()
+    binding.micButton.transparent()
     initRecognizer()
   }
 
@@ -746,11 +753,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   private fun showInstallTtsDialog() {
     val builder = dialogues.getMaterialDialog(this)
     builder.setMessage(R.string.would_you_like_to_install_tts)
-    builder.setPositiveButton(R.string.install) { dialogInterface, _ ->
+    builder.setPositiveButton(getLocalized(R.string.voice_install)) { dialogInterface, _ ->
       dialogInterface.dismiss()
       installTts()
     }
-    builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
+    builder.setNegativeButton(getLocalized(R.string.voice_cancel)) {
+        dialogInterface, _ -> dialogInterface.dismiss()
+    }
     builder.create().show()
   }
 

@@ -8,7 +8,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import java.util.*
 
-class Language(private val prefs: Prefs) {
+class Language(
+  private val prefs: Prefs,
+  private val context: Context
+) {
 
   /**
    * Holder locale for tts.
@@ -63,18 +66,23 @@ class Language(private val prefs: Prefs) {
     val resources = context.resources
     val configuration = resources.configuration
     configuration.locale = locale
-    try {
+    runCatching {
       configuration.setLayoutDirection(locale)
       resources.updateConfiguration(configuration, resources.displayMetrics)
-    } catch (e: NoSuchMethodError) {
     }
     return context
   }
 
-  fun getLocalized(context: Context, id: Int): String {
+  fun getConversationLocalizedText(context: Context, id: Int): String {
     val configuration = Configuration(context.resources.configuration)
     configuration.setLocale(Locale(getTextLanguage(prefs.voiceLocale)))
     return context.createConfigurationContext(configuration).resources.getString(id)
+  }
+
+  fun getConversationLocalizedContext(): Context {
+    val configuration = Configuration(context.resources.configuration)
+    configuration.setLocale(Locale(getTextLanguage(prefs.voiceLocale)))
+    return context.createConfigurationContext(configuration)
   }
 
   fun getLanguages(context: Context) = listOf(

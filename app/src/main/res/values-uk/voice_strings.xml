@@ -29,4 +29,18 @@
     <string name="voice_trash_was_cleared">Кошик було очищено</string>
     <string name="voice_would_you_like_to_add_reminder">Ви хочете додати нагадування?</string>
     <string name="voice_would_you_like_to_save_it">Ви хочете зберегти це?</string>
+    <string name="voice_language">Мова</string>
+    <string name="voice_feedback">Відгук</string>
+    <string name="voice_tell_about_event">Розповісти про подію</string>
+    <string name="voice_auto_mic">Авто мікрофон</string>
+    <string name="voice_help">Допомога</string>
+    <string name="voice_ok">OK</string>
+    <string name="voice_cancel">Скасувати</string>
+    <string name="voice_install">Встановити</string>
+    <string name="voice_all_reminders_were_disabled">Всі нагадування вимкнені</string>
+    <string name="voice_birthdays">дні народження</string>
+    <string name="voice_groups">Групи</string>
+    <string name="voice_notes">Нотатки</string>
+    <string name="voice_reminder_created_on">Нагадування створено </string>
+    <string name="voice_reminder_created">Нагадування створено</string>
 </resources>
