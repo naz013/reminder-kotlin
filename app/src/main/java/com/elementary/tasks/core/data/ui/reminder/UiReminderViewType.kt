@@ -6,5 +6,6 @@ enum class UiReminderViewType(val value: Int) {
   ACTIVE(2),
   REMOVED(3),
   GPS_ACTIVE(4),
-  GPS_REMOVED(5)
+  GPS_REMOVED(5),
+  HEADER(6)
 }

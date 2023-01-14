@@ -8,5 +8,5 @@ abstract class BaseUiReminderListViewHolder<B : ViewBinding, T : UiReminderList>
   binding: B,
 ) : HolderBinding<B>(binding) {
 
-  abstract fun setData(reminder: T)
+  abstract fun setData(data: T)
 }

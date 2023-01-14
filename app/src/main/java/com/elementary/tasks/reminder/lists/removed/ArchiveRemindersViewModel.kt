@@ -24,7 +24,7 @@ class ArchiveRemindersViewModel(
   private val uiReminderListAdapter: UiReminderListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val reminders = reminderDao.loadNotRemoved(removed = true)
+  private val reminders = reminderDao.loadByRemovedStatus(removed = true)
   val events = Transformations.map(reminders) { list ->
     list.map { uiReminderListAdapter.create(it) }
   }

@@ -57,11 +57,11 @@ class ArchivedShoppingViewHolder(
     }
   }
 
-  override fun setData(reminder: UiReminderListRemovedShop) {
-    binding.taskText.text = reminder.summary
-    loadGroup(reminder)
-    loadShoppingDate(reminder)
-    loadItems(reminder.shopList)
+  override fun setData(data: UiReminderListRemovedShop) {
+    binding.taskText.text = data.summary
+    loadGroup(data)
+    loadShoppingDate(data)
+    loadItems(data.shopList)
   }
 
   @SuppressLint("SetTextI18n")

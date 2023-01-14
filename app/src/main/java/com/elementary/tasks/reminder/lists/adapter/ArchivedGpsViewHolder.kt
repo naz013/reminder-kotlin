@@ -54,12 +54,12 @@ class ArchivedGpsViewHolder(
     }
   }
 
-  override fun setData(reminder: UiReminderListRemovedGps) {
-    binding.taskText.text = reminder.summary
-    loadPlaces(reminder)
-    loadContact(reminder)
+  override fun setData(data: UiReminderListRemovedGps) {
+    binding.taskText.text = data.summary
+    loadPlaces(data)
+    loadContact(data)
     binding.badgesView.gone()
-    loadGroup(reminder)
+    loadGroup(data)
   }
 
   @SuppressLint("SetTextI18n")

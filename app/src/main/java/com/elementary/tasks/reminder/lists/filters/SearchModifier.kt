@@ -30,6 +30,7 @@ class SearchModifier(
       is UiReminderListRemoved -> v.summary
       is UiReminderListActiveGps -> v.summary
       is UiReminderListRemovedGps -> v.summary
+      else -> ""
     }
     return searchableText.lowercase().contains(searchValue.lowercase())
   }

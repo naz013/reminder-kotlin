@@ -66,10 +66,6 @@ class DateTimeManager(
       ?.let { getDateTime(it) }
   }
 
-  private fun gmtToLocal(gmt: String?, pattern: String): LocalDateTime? {
-    return gmtToLocal(gmt, DateTimeFormatter.ofPattern(pattern))
-  }
-
   private fun gmtToLocal(gmt: String?, formatter: DateTimeFormatter): LocalDateTime? {
     return if (gmt == null) {
       null
@@ -826,6 +822,10 @@ class DateTimeManager(
     return date
   }
 
+  fun getHeaderDateFormatted(date: LocalDate): String {
+    return date.format(headerDateFormatter())
+  }
+
   private fun dateTime24Formatter(): DateTimeFormatter =
     localizedDateFormatter("dd MMM yyyy, HH:mm")
 
@@ -846,13 +846,9 @@ class DateTimeManager(
 
   fun simpleDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM")
 
+  private fun headerDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM yyyy")
+
   private fun dateFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy")
-
-  private fun dayFormatter(): DateTimeFormatter = localizedDateFormatter("dd")
-
-  private fun monthFormatter(): DateTimeFormatter = localizedDateFormatter("MMM")
-
-  private fun yearFormatter(): DateTimeFormatter = localizedDateFormatter("yyyy")
 
   private fun birthdaySearchDayMonth(): DateTimeFormatter = localizedDateFormatter("dd|MM")
 
@@ -931,5 +927,4 @@ class DateTimeManager(
   data class Date(val year: Int, val month: Int, val day: Int)
   data class Time(val hour: Int, val minute: Int, val second: Int)
   data class BirthDate(val dateTime: LocalDateTime, val year: Int)
-  data class DMY(val day: String = "", val month: String = "", val year: String = "")
 }
