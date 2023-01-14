@@ -31,7 +31,7 @@ class PinCodeView : LinearLayout {
 
   var shuffleMode = false
   var callback: ((String) -> Unit)? = null
-  var fButtonCallback: (() -> Unit)? = null
+  var fingerprintButtonCallback: (() -> Unit)? = null
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -53,7 +53,7 @@ class PinCodeView : LinearLayout {
     binding.deleteButton.setOnClickListener {
       clearPin()
     }
-    binding.fingerButton.setOnClickListener { fButtonCallback?.invoke() }
+    binding.fingerButton.setOnClickListener { fingerprintButtonCallback?.invoke() }
     updateFButton()
     initButtons()
     updatePinView()
@@ -87,8 +87,8 @@ class PinCodeView : LinearLayout {
 
   private fun updatePinView() {
     binding.deleteButton.isEnabled = pinString.isNotEmpty()
-    clearBirds()
-    showBirds()
+    clearIcons()
+    showIcons()
     updateButtons()
   }
 
@@ -114,15 +114,15 @@ class PinCodeView : LinearLayout {
     binding.t9.text = digits[9].toString()
   }
 
-  private fun showBirds() {
+  private fun showIcons() {
     for (i in pinString.indices) {
-      binding.birdsView.getChildAt(i)?.visibility = View.VISIBLE
+      binding.birdsView.getChildAt(i)?.visible()
     }
   }
 
-  private fun clearBirds() {
+  private fun clearIcons() {
     for (child in binding.birdsView.children) {
-      child.visibility = View.INVISIBLE
+      child.transparent()
     }
   }
 }

@@ -22,45 +22,51 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_hummingbird"
-                app:tint="?colorSecondary" />
+                android:layout_width="@dimen/pin_digit_icon_size"
+                android:layout_height="@dimen/pin_digit_icon_size"
+                app:srcCompat="@drawable/ic_pin_asterisk"
+                android:scaleType="centerInside"
+                app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pin_digit_icon_size"
+                android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
-                app:srcCompat="@drawable/ic_hummingbird"
-                app:tint="?colorSecondary" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pin_digit_icon_size"
+                android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
-                app:srcCompat="@drawable/ic_hummingbird"
-                app:tint="?colorSecondary" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pin_digit_icon_size"
+                android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="16dp"
-                app:srcCompat="@drawable/ic_hummingbird"
-                app:tint="?colorSecondary" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pin_digit_icon_size"
+                android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
-                app:srcCompat="@drawable/ic_hummingbird"
-                app:tint="?colorSecondary" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pin_digit_icon_size"
+                android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
-                app:srcCompat="@drawable/ic_hummingbird"
-                app:tint="?colorSecondary" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:tint="?colorOnBackground" />
 
         </LinearLayout>
 

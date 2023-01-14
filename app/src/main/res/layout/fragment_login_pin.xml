@@ -15,11 +15,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorView"
+        app:layout_constraintTop_toBottomOf="@+id/messageView"
         app:layout_constraintVertical_bias="0.79" />
 
     <TextView
-        android:id="@+id/errorView"
+        android:id="@+id/messageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_pin"

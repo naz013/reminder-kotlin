@@ -31,7 +31,9 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
 
     binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
     binding.changePinPrefs.setOnClickListener {
-      safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment())
+      safeNavigation(
+        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment()
+      )
     }
 
     biometricPrompt = createBiometricPrompt()
@@ -107,8 +109,7 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
 
   private fun changeFingerPrefs() {
     withContext {
-      if (BiometricManager.from(it)
-          .canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
+      if (BiometricManager.from(it).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
         val promptInfo = createPromptInfo()
         biometricPrompt.authenticate(promptInfo)
       }
