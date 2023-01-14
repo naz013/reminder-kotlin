@@ -21,6 +21,11 @@ sealed class UiReminderListData : UiReminderList() {
   abstract val summary: String
 }
 
+data class UiReminderListHeader(
+  override val id: String,
+  val date: String
+) : UiReminderList()
+
 data class UiReminderListActive(
   override val id: String,
   val type: UiReminderType,

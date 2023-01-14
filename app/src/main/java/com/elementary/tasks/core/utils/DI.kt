@@ -92,6 +92,7 @@ import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
 import com.elementary.tasks.reminder.create.EditReminderViewModel
 import com.elementary.tasks.aftercall.FollowReminderViewModel
+import com.elementary.tasks.core.data.adapter.UiReminderListsAdapter
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
 import com.elementary.tasks.reminder.preview.ReminderViewModel
@@ -540,6 +541,7 @@ val adapterModule = module {
   single { UiReminderCommonAdapter(get(), get(), get(), get(), get()) }
   single { UiReminderPreviewAdapter(get(), get(), get(), get()) }
   single { UiReminderListAdapter(get(), get(), get()) }
+  single { UiReminderListsAdapter(get(), get(), get()) }
 
   single { UiBirthdayListAdapter(get()) }
   single { UiBirthdayShowAdapter(get(), get()) }

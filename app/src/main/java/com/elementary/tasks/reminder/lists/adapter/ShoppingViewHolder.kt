@@ -63,13 +63,13 @@ class ShoppingViewHolder(
     }
   }
 
-  override fun setData(reminder: UiReminderListActiveShop) {
-    binding.taskText.text = reminder.summary
-    loadCheck(reminder)
-    loadGroup(reminder)
-    loadShoppingDate(reminder)
-    loadLeft(reminder)
-    loadItems(reminder.shopList)
+  override fun setData(data: UiReminderListActiveShop) {
+    binding.taskText.text = data.summary
+    loadCheck(data)
+    loadGroup(data)
+    loadShoppingDate(data)
+    loadLeft(data)
+    loadItems(data.shopList)
   }
 
   private fun loadCheck(reminder: UiReminderListActiveShop) {
@@ -85,9 +85,9 @@ class ShoppingViewHolder(
   }
 
   private fun loadLeft(reminder: UiReminderListActiveShop) {
-    binding.badgesView.visible()
+    val due = reminder.due.dateTime
+    binding.badgesView.visibleGone(due != null)
     binding.timeToBadge.visibleGone(reminder.isRunning)
-
     binding.timeToBadge.text = reminder.due.remaining
   }
 

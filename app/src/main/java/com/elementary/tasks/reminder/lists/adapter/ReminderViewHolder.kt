@@ -52,13 +52,13 @@ class ReminderViewHolder(
     }
   }
 
-  override fun setData(reminder: UiReminderListActive) {
-    binding.taskText.text = reminder.summary
-    loadDate(reminder)
-    loadCheck(reminder)
-    loadContact(reminder)
-    loadRepeatLeft(reminder)
-    loadGroup(reminder)
+  override fun setData(data: UiReminderListActive) {
+    binding.taskText.text = data.summary
+    loadDate(data)
+    loadCheck(data)
+    loadContact(data)
+    loadRepeatLeft(data)
+    loadGroup(data)
   }
 
   @SuppressLint("SetTextI18n")

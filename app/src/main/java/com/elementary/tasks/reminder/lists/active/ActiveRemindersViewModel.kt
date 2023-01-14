@@ -2,27 +2,27 @@ package com.elementary.tasks.reminder.lists.active
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.data.adapter.UiReminderListsAdapter
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
 
 class ActiveRemindersViewModel(
+  dispatcherProvider: DispatcherProvider,
   private val reminderDao: ReminderDao,
   private val eventControlFactory: EventControlFactory,
-  dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val uiReminderListAdapter: UiReminderListAdapter
+  private val uiReminderListsAdapter: UiReminderListsAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
-  val events = Transformations.map(reminderDao.loadNotRemoved(removed = false)) { list ->
-    list.map { uiReminderListAdapter.create(it) }
+  val events = Transformations.map(reminderDao.loadByRemovedStatus(removed = false)) {
+    uiReminderListsAdapter.convert(it)
   }
 
   fun skip(reminder: UiReminderList) {

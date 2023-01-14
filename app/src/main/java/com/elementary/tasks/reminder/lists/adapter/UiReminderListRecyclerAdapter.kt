@@ -9,6 +9,7 @@ import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.data.ui.UiReminderListHeader
 import com.elementary.tasks.core.data.ui.UiReminderListRemoved
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedGps
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
@@ -98,6 +99,9 @@ class UiReminderListRecyclerAdapter(
       UiReminderViewType.REMOVED.value -> {
         ArchivedReminderViewHolder(parent, showMore = true, listener)
       }
+      UiReminderViewType.HEADER.value -> {
+        DateHeaderViewHolder(parent)
+      }
       else -> {
         ReminderViewHolder(parent, isEditable, showMore = true, listener)
       }
@@ -139,6 +143,9 @@ class UiReminderListRecyclerAdapter(
       is ArchivedReminderViewHolder -> {
         holder.setData(item as UiReminderListRemoved)
       }
+      is DateHeaderViewHolder -> {
+        holder.setData(item as UiReminderListHeader)
+      }
       else -> {
       }
     }
@@ -152,6 +159,7 @@ class UiReminderListRecyclerAdapter(
       is UiReminderListActiveShop -> UiReminderViewType.SHOPPING_ACTIVE
       is UiReminderListActiveGps -> UiReminderViewType.GPS_ACTIVE
       is UiReminderListRemovedGps -> UiReminderViewType.GPS_REMOVED
+      is UiReminderListHeader -> UiReminderViewType.HEADER
     }.value
   }
 }

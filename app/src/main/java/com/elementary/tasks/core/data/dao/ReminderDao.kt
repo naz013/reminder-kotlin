@@ -31,13 +31,13 @@ interface ReminderDao {
     @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
         AND ReminderGroup.groupUuId=Reminder.groupUuId 
         ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
-    fun loadNotRemoved(removed: Boolean = false): LiveData<List<Reminder>>
+    fun loadByRemovedStatus(removed: Boolean = false): LiveData<List<Reminder>>
 
     @Transaction
     @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
         AND ReminderGroup.groupUuId=Reminder.groupUuId 
         ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
-    fun getNotRemoved(removed: Boolean = false): List<Reminder>
+    fun getByRemovedStatus(removed: Boolean = false): List<Reminder>
 
     @Transaction
     @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 

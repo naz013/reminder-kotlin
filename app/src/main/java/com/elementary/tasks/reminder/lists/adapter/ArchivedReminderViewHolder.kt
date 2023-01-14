@@ -51,12 +51,12 @@ class ArchivedReminderViewHolder(
     }
   }
 
-  override fun setData(reminder: UiReminderListRemoved) {
-    binding.taskText.text = reminder.summary
-    loadDate(reminder)
-    loadContact(reminder)
-    loadRepeatLeft(reminder)
-    loadGroup(reminder)
+  override fun setData(data: UiReminderListRemoved) {
+    binding.taskText.text = data.summary
+    loadDate(data)
+    loadContact(data)
+    loadRepeatLeft(data)
+    loadGroup(data)
   }
 
   @SuppressLint("SetTextI18n")
