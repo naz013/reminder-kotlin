@@ -2,19 +2,20 @@ package com.elementary.tasks.reminder.work
 
 import android.app.AlarmManager
 import android.content.Context
+import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
+import kotlinx.coroutines.withContext
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -27,10 +28,11 @@ class CheckEventsWorker(
   private val eventControlFactory: EventControlFactory,
   private val dateTimeManager: DateTimeManager,
   context: Context,
-  workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+  workerParams: WorkerParameters,
+  private val dispatcherProvider: DispatcherProvider
+) : CoroutineWorker(context, workerParams) {
 
-  override fun doWork(): Result {
+  override suspend fun doWork(): Result {
     if (Permissions.checkPermission(applicationContext, Permissions.READ_CALENDAR,
         Permissions.WRITE_CALENDAR)) {
       launchCheckEvents()
@@ -38,8 +40,8 @@ class CheckEventsWorker(
     return Result.success()
   }
 
-  private fun launchCheckEvents() {
-    launchDefault {
+  private suspend fun launchCheckEvents() {
+    withContext(dispatcherProvider.default()) {
       val currTime = System.currentTimeMillis()
       val eventItems = googleCalendarUtils.getEvents(prefs.trackCalendarIds)
       if (eventItems.isNotEmpty()) {

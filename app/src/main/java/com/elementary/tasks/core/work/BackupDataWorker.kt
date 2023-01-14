@@ -2,23 +2,25 @@ package com.elementary.tasks.core.work
 
 import android.content.Context
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.SyncManagers
-import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.DispatcherProvider
+import kotlinx.coroutines.withContext
 
 class BackupDataWorker(
   private val syncManagers: SyncManagers,
   context: Context,
-  workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+  workerParams: WorkerParameters,
+  private val dispatcherProvider: DispatcherProvider
+) : CoroutineWorker(context, workerParams) {
 
-  override fun doWork(): Result {
-    launchIo {
+  override suspend fun doWork(): Result {
+    withContext(dispatcherProvider.io()) {
       BulkDataFlow.fullBackup(syncManagers)
     }
     return Result.success()

@@ -2,11 +2,8 @@ package com.elementary.tasks.reminder.lists.active
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
@@ -69,18 +66,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
     searchModifier.setSearchValue(it)
   }
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.fragment_active_menu, menu)
-    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
-    menu.getItem(0)?.isVisible = searchModifier.hasOriginal()
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -89,6 +74,11 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.fragment_active_menu, { true }) {
+      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
+      it.getItem(0)?.isVisible = searchModifier.hasOriginal()
+    }
+
     binding.fab.setOnClickListener {
       PinLoginActivity.openLogged(
         requireContext(),
@@ -117,8 +107,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
     viewModel.error.nonNullObserve(viewLifecycleOwner) {
       Timber.d("initViewModel: onError -> $it")
-      remindersAdapter.notifyDataSetChanged()
-      Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+      toast(it)
     }
     viewModel.result.nonNullObserve(viewLifecycleOwner) {
       if (it == Commands.OUTDATED) {

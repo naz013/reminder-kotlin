@@ -3,9 +3,6 @@ package com.elementary.tasks.home
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,13 +70,25 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     savedInstanceState: Bundle?
   ) = HomeFragmentBinding.inflate(inflater, container, false)
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.fragment_home, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_voice -> {
+          buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
+          true
+        }
+
+        R.id.action_settings -> {
+          safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
+          true
+        }
+        else -> false
+      }
+    }) {
+      it.getItem(0)?.isVisible = Module.hasMicrophone(requireContext())
+    }
+
     binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
       viewModel.topScrollX = scrollX
     }
@@ -281,27 +290,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   override fun getTitle(): String = getString(R.string.events)
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.fragment_home, menu)
-    menu.getItem(0)?.isVisible = Module.hasMicrophone(requireContext())
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_voice -> {
-        buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
-        return true
-      }
-
-      R.id.action_settings -> {
-        safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
-        return true
-      }
-    }
-    return super.onOptionsItemSelected(item)
-  }
 
   override fun invoke(p1: String) {
     when (p1) {

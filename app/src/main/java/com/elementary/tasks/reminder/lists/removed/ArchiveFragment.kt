@@ -2,9 +2,6 @@ package com.elementary.tasks.reminder.lists.removed
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -45,32 +42,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
     searchModifier.setSearchValue(it)
   }
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.fragment_trash, menu)
-    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
-
-    val isNotEmpty = (viewModel.events.value?.size ?: 0) > 0
-    menu.getItem(0)?.isVisible = isNotEmpty
-    menu.getItem(1)?.isVisible = isNotEmpty
-
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_delete_all -> {
-        viewModel.deleteAll()
-        return true
-      }
-    }
-    return super.onOptionsItemSelected(item)
-  }
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -79,6 +50,20 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.fragment_trash, { menuItem ->
+      return@addMenu when (menuItem.itemId) {
+        R.id.action_delete_all -> {
+          viewModel.deleteAll()
+          true
+        }
+        else -> false
+      }
+    }) {
+      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
+      val isNotEmpty = viewModel.hasEvents()
+      it.getItem(0)?.isVisible = isNotEmpty
+      it.getItem(1)?.isVisible = isNotEmpty
+    }
     initList()
     initViewModel()
   }

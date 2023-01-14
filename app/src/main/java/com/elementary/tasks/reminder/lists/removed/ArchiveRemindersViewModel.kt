@@ -29,6 +29,10 @@ class ArchiveRemindersViewModel(
     list.map { uiReminderListAdapter.create(it) }
   }
 
+  fun hasEvents(): Boolean {
+    return events.value?.isNotEmpty() ?: false
+  }
+
   fun deleteReminder(reminder: UiReminderListData) {
     withResult {
       reminderDao.getById(reminder.id)?.let {

@@ -2,8 +2,6 @@ package com.elementary.tasks.places.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,21 +56,6 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     searchModifier.setSearchValue(it)
   }
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.fragment_trash, menu)
-
-    menu.findItem(R.id.action_delete_all)?.isVisible = false
-    ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
-
-    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -81,6 +64,11 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.fragment_trash, { false }) {
+      it.findItem(R.id.action_delete_all)?.isVisible = false
+      ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_twotone_search_24px, isDark)
+      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
+    }
     binding.fab.setOnClickListener { addPlace() }
     initList()
     initViewModel()

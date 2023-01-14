@@ -2,10 +2,10 @@ package com.elementary.tasks.core.work
 
 import android.content.Context
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.BulkDataFlow
@@ -14,10 +14,11 @@ import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
+import kotlinx.coroutines.withContext
 
 class SyncDataWorker(
   private val syncManagers: SyncManagers,
@@ -27,16 +28,17 @@ class SyncDataWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val updatesHelper: UpdatesHelper,
-  private val groupsUtil: GroupsUtil
-) : Worker(context, workerParams) {
+  private val groupsUtil: GroupsUtil,
+  private val dispatcherProvider: DispatcherProvider
+) : CoroutineWorker(context, workerParams) {
 
-  override fun doWork(): Result {
+  override suspend fun doWork(): Result {
     if (prefs.autoSyncState == 0) {
       return Result.success()
     }
     val storage = CompositeStorage(syncManagers.storageManager)
     val syncFlags = prefs.autoSyncFlags
-    launchDefault {
+    withContext(dispatcherProvider.default()) {
       if (syncFlags.contains(FLAG_REMINDER)) {
         val groupRepository = syncManagers.repositoryManager.groupDataFlowRepository
         val groupConverter = syncManagers.converterManager.groupConverter

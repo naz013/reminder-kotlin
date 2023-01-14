@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -41,49 +38,37 @@ class FeedbackFragment : BaseWebViewFragment() {
 
   override fun getTitle(): String = getString(R.string.feedback)
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    activity?.invalidateOptionsMenu()
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.menu_feedback, menu)
-
-    ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_refresh_24px, isDark)
-    ViewUtils.tintMenuIcon(requireContext(), menu, 1, R.drawable.ic_twotone_local_post_office_24px, isDark)
-
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_refresh -> {
-        webView.reload()
-        return true
-      }
-      R.id.action_forward -> {
-        if (webView.canGoForward()) {
-          webView.goForward()
+    addMenu(R.menu.menu_feedback, { menuItem ->
+      return@addMenu when (menuItem.itemId) {
+        R.id.action_refresh -> {
+          webView.reload()
+          true
         }
-        return true
-      }
-      R.id.action_back -> {
-        if (webView.canGoBack()) {
-          webView.goBack()
+        R.id.action_forward -> {
+          if (webView.canGoForward()) {
+            webView.goForward()
+          }
+          true
         }
-        return true
+        R.id.action_back -> {
+          if (webView.canGoBack()) {
+            webView.goBack()
+          }
+          true
+        }
+        R.id.action_email -> {
+          sendEmail()
+          true
+        }
+        else -> false
       }
-      R.id.action_email -> {
-        sendEmail()
-        return true
-      }
+    }) {
+      ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_twotone_refresh_24px, isDark)
+      ViewUtils.tintMenuIcon(requireContext(), it, 1, R.drawable.ic_twotone_local_post_office_24px, isDark)
     }
-    return super.onOptionsItemSelected(item)
+    activity?.invalidateOptionsMenu()
   }
 
   private fun sendEmail() {

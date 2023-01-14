@@ -2,9 +2,6 @@ package com.elementary.tasks.day_view
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
@@ -30,32 +27,12 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   private var eventsPagerItem: EventsPagerItem? = null
   private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val bundle = arguments
     if (bundle != null) {
       date = dateTimeManager.fromMillis(DayViewFragmentArgs.fromBundle(bundle).date).toLocalDate()
     }
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.day_view_menu, menu)
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_voice -> {
-        buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
-        return true
-      }
-    }
-    return super.onOptionsItemSelected(item)
   }
 
   override fun inflate(
@@ -66,6 +43,15 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.day_view_menu, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_voice -> {
+          buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
+          true
+        }
+        else -> false
+      }
+    })
     binding.fab.setOnClickListener { showActionDialog(false) }
     initPager()
     initViewModel()

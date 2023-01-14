@@ -2,8 +2,6 @@ package com.elementary.tasks.birthdays.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +27,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
-  (List<UiBirthdayList>) -> Unit {
+    (List<UiBirthdayList>) -> Unit {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -43,17 +41,6 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     filterController.setSearchValue(it)
   }
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.fragment_active_menu, menu)
-    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -62,6 +49,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.fragment_active_menu, { false }) {
+      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
+    }
     binding.fab.setOnClickListener { addPlace() }
     initList()
     initViewModel()
@@ -81,8 +71,10 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
 
   private fun initList() {
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL)
+      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
+        resources.getInteger(R.integer.num_of_cols),
+        StaggeredGridLayoutManager.VERTICAL
+      )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
@@ -95,7 +87,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
       }
     }
     binding.recyclerView.adapter = mAdapter
-    ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(
+      binding.recyclerView,
+      { setToolbarAlpha(toAlpha(it.toFloat())) }) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }

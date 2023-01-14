@@ -3,24 +3,25 @@ package com.elementary.tasks.core.services
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.work.CheckEventsWorker
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDate
@@ -29,7 +30,7 @@ import timber.log.Timber
 class EventJobService(
   private val context: Context,
   private val params: WorkerParameters
-) : Worker(context, params), KoinComponent {
+) : CoroutineWorker(context, params), KoinComponent {
 
   private val prefs by inject<Prefs>()
   private val appDb by inject<AppDb>()
@@ -37,16 +38,16 @@ class EventJobService(
   private val jobScheduler by inject<JobScheduler>()
   private val doNotDisturbManager by inject<DoNotDisturbManager>()
   private val dateTimeManager by inject<DateTimeManager>()
+  private val dispatcherProvider by inject<DispatcherProvider>()
 
-  override fun doWork(): Result {
+  override suspend fun doWork(): Result {
     Timber.d(
       "onRunJob: %s, tag -> %s",
       dateTimeManager.logDateTime(),
       params.tags.toList()
     )
     val bundle = params.inputData
-    val tag = params.tags.first()
-    when (tag) {
+    when (val tag = params.tags.first()) {
       JobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
       JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
       JobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
@@ -121,10 +122,10 @@ class EventJobService(
     }
   }
 
-  private fun birthdayAction(context: Context) {
+  private suspend fun birthdayAction(context: Context) {
     jobScheduler.cancelDailyBirthday()
     jobScheduler.scheduleDailyBirthday()
-    launchDefault {
+    withContext(dispatcherProvider.default()) {
       val daysBefore = prefs.daysToBirthday
       val applyDnd = doNotDisturbManager.applyDoNotDisturb(prefs.birthdayPriority)
 
