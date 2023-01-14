@@ -270,23 +270,13 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun updateBirthdaysEmpty(size: Int) {
-    if (size == 0) {
-      binding.emptyBirthdaysState.visibility = View.VISIBLE
-      binding.birthdaysList.visibility = View.GONE
-    } else {
-      binding.birthdaysList.visibility = View.VISIBLE
-      binding.emptyBirthdaysState.visibility = View.GONE
-    }
+    binding.emptyBirthdaysState.visibleGone(size == 0)
+    binding.birthdaysList.visibleGone(size != 0)
   }
 
   private fun updateRemindersEmpty(size: Int) {
-    if (size == 0) {
-      binding.emptyRemindersState.visibility = View.VISIBLE
-      binding.remindersList.visibility = View.GONE
-    } else {
-      binding.remindersList.visibility = View.VISIBLE
-      binding.emptyRemindersState.visibility = View.GONE
-    }
+    binding.emptyRemindersState.visibleGone(size == 0)
+    binding.remindersList.visibleGone(size != 0)
   }
 
   override fun getTitle(): String = getString(R.string.events)

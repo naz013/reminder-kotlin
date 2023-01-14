@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.onTextChanged
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.FragmentSettingsAddPinBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 
 class AddPinFragment : BaseSettingsFragment<FragmentSettingsAddPinBinding>() {
+
+  private var state: State = State.INPUT
+  private var pin: String = ""
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -19,15 +22,38 @@ class AddPinFragment : BaseSettingsFragment<FragmentSettingsAddPinBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.saveButton.setOnClickListener { savePin() }
 
-    binding.pinField.onTextChanged { hideErrors() }
-    binding.pinConfirmField.onTextChanged { hideErrors() }
+    binding.pinView.supportFinger = false
+    binding.pinView.callback = { onPinChanged(it) }
+
+    onStateChanged(State.INPUT)
   }
 
-  private fun hideErrors() {
-    binding.pinLayout.isErrorEnabled = false
-    binding.pinConfirmLayout.isErrorEnabled = false
+  private fun onPinChanged(pin: String) {
+    if (pin.length < 6) return
+    if (state == State.INPUT) {
+      this.pin = pin
+      onStateChanged(State.REPEAT)
+    } else {
+      if (this.pin == pin) {
+        prefs.pinCode = pin
+        moveBack()
+      } else {
+        toast(R.string.pin_not_match)
+        onStateChanged(State.INPUT)
+      }
+      this.pin = ""
+    }
+  }
+
+  private fun onStateChanged(state: State) {
+    binding.pinView.clearPin()
+    this.state = state
+    if (state == State.INPUT) {
+      binding.messageView.text = getString(R.string.enter_pin)
+    } else {
+      binding.messageView.text = getString(R.string.repeat_pin)
+    }
   }
 
   override fun onDestroy() {
@@ -35,36 +61,9 @@ class AddPinFragment : BaseSettingsFragment<FragmentSettingsAddPinBinding>() {
     callback?.hideKeyboard()
   }
 
-  private fun savePin() {
-    val old = binding.pinField.text.toString().trim()
-    val new = binding.pinConfirmField.text.toString().trim()
-
-    var hasError = false
-    if (old.length < 6) {
-      binding.pinLayout.error = getString(R.string.wrong_pin)
-      binding.pinLayout.isErrorEnabled = true
-      hasError = true
-    }
-    if (new.length < 6) {
-      binding.pinConfirmLayout.error = getString(R.string.wrong_pin)
-      binding.pinConfirmLayout.isErrorEnabled = true
-      hasError = true
-    }
-    if (!hasError) {
-      if (old != new) {
-        hasError = true
-        binding.pinLayout.error = getString(R.string.pin_not_match)
-        binding.pinLayout.isErrorEnabled = true
-        binding.pinConfirmLayout.error = getString(R.string.pin_not_match)
-        binding.pinConfirmLayout.isErrorEnabled = true
-      }
-    }
-
-    if (hasError) return
-
-    prefs.pinCode = old
-    moveBack()
-  }
-
   override fun getTitle(): String = getString(R.string.add_pin)
+
+  private enum class State {
+    INPUT, REPEAT
+  }
 }

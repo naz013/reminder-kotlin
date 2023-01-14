@@ -41,7 +41,7 @@ class PinFragment : AuthFragment() {
         tryLogin(it)
       }
     }
-    binding.pinView.fButtonCallback = { authCallback?.changeScreen(AUTH_FINGER) }
+    binding.pinView.fingerprintButtonCallback = { authCallback?.changeScreen(AUTH_FINGER) }
   }
 
   private fun tryLogin(pin: String) {
