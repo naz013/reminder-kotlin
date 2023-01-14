@@ -157,11 +157,11 @@ import org.koin.dsl.module
 import org.threeten.bp.ZoneId
 
 val workerModule = module {
-  worker { BackupDataWorker(get(), get(), get()) }
-  worker { LoadFileWorker(get(), get(), get()) }
-  worker { DeleteFileWorker(get(), get(), get()) }
-  worker { BackupSettingsWorker(get(), get(), get()) }
-  worker { SyncDataWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
+  worker { BackupDataWorker(get(), get(), get(), get()) }
+  worker { LoadFileWorker(get(), get(), get(), get()) }
+  worker { DeleteFileWorker(get(), get(), get(), get()) }
+  worker { BackupSettingsWorker(get(), get(), get(), get()) }
+  worker { SyncDataWorker(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   worker { SaveNewTaskWorker(get(), get(), get(), get()) }
   worker { UpdateTaskWorker(get(), get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
@@ -170,11 +170,11 @@ val workerModule = module {
   worker { NoteSingleBackupWorker(get(), get(), get(), get()) }
   worker { PlaceDeleteBackupWorker(get(), get(), get(), get()) }
   worker { PlaceSingleBackupWorker(get(), get(), get(), get()) }
-  worker { ReminderDeleteBackupWorker(get(), get(), get()) }
+  worker { ReminderDeleteBackupWorker(get(), get(), get(), get()) }
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
-  worker { TemplateSingleBackupWorker(get(), get(), get()) }
-  worker { TemplateDeleteBackupWorker(get(), get(), get()) }
-  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get()) }
+  worker { TemplateSingleBackupWorker(get(), get(), get(), get()) }
+  worker { TemplateDeleteBackupWorker(get(), get(), get(), get()) }
+  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   worker { BirthdayDeleteBackupWorker(get(), get(), get(), get()) }
   worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get()) }

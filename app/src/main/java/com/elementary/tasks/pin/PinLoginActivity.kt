@@ -93,7 +93,7 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
   }
 
   private fun openApplication() {
-    startActivity(Intent(this@PinLoginActivity, BottomNavActivity::class.java))
+    startActivity(Intent(this, BottomNavActivity::class.java))
     finish()
   }
 

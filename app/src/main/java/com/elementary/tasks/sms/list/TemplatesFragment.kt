@@ -1,29 +1,26 @@
 package com.elementary.tasks.sms.list
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.sms.UiSmsList
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsTemplatesListBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import com.elementary.tasks.sms.create.TemplateActivity
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -31,9 +28,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
 
   private val templatesAdapter = TemplatesAdapter()
   private val viewModel by viewModel<SmsTemplatesViewModel>()
-
-  private var mSearchView: SearchView? = null
-  private var mSearchMenu: MenuItem? = null
+  private val systemServiceProvider by inject<SystemServiceProvider>()
 
   private val searchModifier = object : SearchModifier<UiSmsList>(null, {
     templatesAdapter.submitList(it)
@@ -44,46 +39,8 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
       return searchValue.isEmpty() || v.text.lowercase().contains(searchValue.lowercase())
     }
   }
-
-  private val queryTextListener = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String): Boolean {
-      searchModifier.setSearchValue(query)
-      mSearchMenu?.collapseActionView()
-      return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-      searchModifier.setSearchValue(newText)
-      return false
-    }
-  }
-
-  private val mCloseListener = {
-    searchModifier.setSearchValue("")
-    true
-  }
-
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    inflater.inflate(R.menu.templates_menu, menu)
-    mSearchMenu = menu.findItem(R.id.action_search)
-    val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-    if (mSearchMenu != null) {
-      mSearchView = mSearchMenu?.actionView as SearchView?
-    }
-    if (mSearchView != null) {
-      val act = activity
-      if (searchManager != null && act != null) {
-        mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(act.componentName))
-      }
-      mSearchView?.setOnQueryTextListener(queryTextListener)
-      mSearchView?.setOnCloseListener(mCloseListener)
-    }
-    super.onCreateOptionsMenu(menu, inflater)
+  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+    searchModifier.setSearchValue(it)
   }
 
   override fun inflate(
@@ -94,6 +51,9 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(R.menu.templates_menu, onMenuItemListener = { false }) { menu ->
+      searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
+    }
     binding.fab.setOnClickListener { openCreateScreen() }
     initTemplateList()
     initViewModel()

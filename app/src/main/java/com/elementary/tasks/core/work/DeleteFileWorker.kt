@@ -2,34 +2,36 @@ package com.elementary.tasks.core.work
 
 import android.content.Context
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
-import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.DispatcherProvider
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 
 class DeleteFileWorker(
   private val syncManagers: SyncManagers,
   context: Context,
-  val workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+  private val workerParams: WorkerParameters,
+  private val dispatcherProvider: DispatcherProvider
+) : CoroutineWorker(context, workerParams) {
 
-  override fun doWork(): Result {
+  override suspend fun doWork(): Result {
     val fileName = workerParams.inputData.getString(ARG_FILE_NAME) ?: ""
     if (fileName.isNotEmpty()) {
       val uuId = uuIdFromFileName(fileName) ?: return Result.success()
       Timber.d("doWork: $uuId")
       val storage = CompositeStorage(syncManagers.storageManager)
-      launchIo {
+      withContext(dispatcherProvider.io()) {
         when {
           fileName.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
             DataFlow(

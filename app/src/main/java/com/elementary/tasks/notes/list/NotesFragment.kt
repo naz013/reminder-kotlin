@@ -1,7 +1,5 @@
 package com.elementary.tasks.notes.list
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +19,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -31,6 +29,7 @@ import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -53,6 +52,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
   private val viewModel by viewModel<NotesViewModel>()
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val imagesSingleton by inject<ImagesSingleton>()
+  private val systemServiceProvider by inject<SystemServiceProvider>()
 
   private val notesRecyclerAdapter = NotesRecyclerAdapter()
   private var enableGrid = false
@@ -65,27 +65,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
     binding.recyclerView.visibleGone(it.isNotEmpty())
   }
 
-  private var mSearchView: SearchView? = null
-  private var mSearchMenu: MenuItem? = null
-
-  private val queryTextListener = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String): Boolean {
-      filterController.setSearchValue(query)
-      if (mSearchMenu != null) {
-        mSearchMenu?.collapseActionView()
-      }
-      return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-      filterController.setSearchValue(newText)
-      return false
-    }
-  }
-
-  private val mCloseListener = {
-    filterController.setSearchValue("")
-    true
+  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+    filterController.setSearchValue(it)
   }
 
   override fun inflate(
@@ -130,19 +111,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
       isDark
     )
     ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_twotone_sort_24px, isDark)
-
-    mSearchMenu = menu.findItem(R.id.action_search)
-    val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-    if (mSearchMenu != null) {
-      mSearchView = mSearchMenu?.actionView as SearchView?
-    }
-    if (mSearchView != null) {
-      if (searchManager != null) {
-        mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-      }
-      mSearchView?.setOnQueryTextListener(queryTextListener)
-      mSearchView?.setOnCloseListener(mCloseListener)
-    }
+    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
   }
 
   private fun onMenuItemClicked(menuItem: MenuItem): Boolean {

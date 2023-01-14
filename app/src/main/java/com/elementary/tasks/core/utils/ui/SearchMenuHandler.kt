@@ -14,7 +14,10 @@ class SearchMenuHandler(
 
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
-  private val searchCloseListener = { false }
+  private val searchCloseListener = {
+    filterController.invoke("")
+    false
+  }
   private val queryTextListener = object : SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean {
       filterController.invoke(query)

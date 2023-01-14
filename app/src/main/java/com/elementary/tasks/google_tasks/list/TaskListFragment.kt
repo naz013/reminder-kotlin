@@ -5,14 +5,13 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -21,7 +20,6 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.TasksConstants
 import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
@@ -42,44 +40,36 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     savedInstanceState: Bundle?
   ) = FragmentGoogleListBinding.inflate(inflater, container, false)
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setHasOptionsMenu(true)
-  }
-
   private fun getListId() = arguments?.let { TaskListFragmentArgs.fromBundle(it) }?.argId
-
-  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    viewModel.currentTaskList?.also {
-      menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
-      if (it.def != 1) {
-        menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
-      }
-      menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
-    }
-    super.onCreateOptionsMenu(menu, inflater)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      MENU_ITEM_EDIT -> {
-        editListClick()
-        return true
-      }
-      MENU_ITEM_DELETE -> {
-        deleteDialog()
-        return true
-      }
-      MENU_ITEM_CLEAR -> {
-        viewModel.clearList()
-        return true
-      }
-    }
-    return super.onOptionsItemSelected(item)
-  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    addMenu(null, { menuItem ->
+      when (menuItem.itemId) {
+        MENU_ITEM_EDIT -> {
+          editListClick()
+          true
+        }
+        MENU_ITEM_DELETE -> {
+          deleteDialog()
+          true
+        }
+        MENU_ITEM_CLEAR -> {
+          viewModel.clearList()
+          true
+        }
+        else -> false
+      }
+    }) { menu ->
+      viewModel.currentTaskList?.also {
+        menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
+        if (it.def != 1) {
+          menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
+        }
+        menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
+      }
+    }
+
     binding.progressMessageView.text = getString(R.string.please_wait)
     binding.fab.setOnClickListener { addNewTask() }
     updateProgress(false)

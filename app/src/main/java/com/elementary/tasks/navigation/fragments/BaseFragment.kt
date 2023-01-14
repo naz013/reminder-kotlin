@@ -86,14 +86,14 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   protected fun addMenu(
-    menuRes: Int,
+    menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
     menuModifier: ((Menu) -> Unit)? = null
   ) {
     val menuHost: MenuHost = requireActivity()
     menuHost.addMenuProvider(object : MenuProvider {
       override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(menuRes, menu)
+        menuRes?.also { menuInflater.inflate(it, menu) }
         menuModifier?.invoke(menu)
       }
 
