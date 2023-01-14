@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.params
 
 import android.content.Context
-import android.text.TextUtils
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.utils.Constants
@@ -106,8 +105,8 @@ class Prefs(
     get() = SuperUtil.decrypt(getString(PrefsConstants.PIN_CODE))
     set(value) = putString(PrefsConstants.PIN_CODE, SuperUtil.encrypt(value))
 
-  var hasPinCode: Boolean = false
-    get() = !TextUtils.isEmpty(pinCode)
+  val hasPinCode: Boolean
+    get() = pinCode.isNotEmpty()
 
   var useFingerprint: Boolean
     get() = getBoolean(PrefsConstants.USE_FINGERPRINT)
@@ -161,7 +160,7 @@ class Prefs(
     get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
     set(value) = putInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY, value)
 
-  var isTelephonyAllowed: Boolean = false
+  val isTelephonyAllowed: Boolean
     get() = Module.hasTelephony(context) && isTelephonyEnabled
 
   var isTelephonyEnabled: Boolean
@@ -240,13 +239,12 @@ class Prefs(
     get() = getInt(PrefsConstants.SOUND_STREAM)
     set(value) = putInt(PrefsConstants.SOUND_STREAM, value)
 
-  var is24HourFormat: Boolean
+  val is24HourFormat: Boolean
     get() {
       val hourFormat = hourFormat
       return if (hourFormat == 0) DateFormat.is24HourFormat(context)
       else hourFormat == 1
     }
-    private set(value) = putInt(PrefsConstants.TIME_FORMAT, 0)
 
   var hourFormat: Int
     get() = getInt(PrefsConstants.TIME_FORMAT)

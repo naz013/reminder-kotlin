@@ -30,4 +30,6 @@
     <integer name="gradient_button_anim_duration">250</integer>
     <integer name="banner_anim_duration">5000</integer>
 
+    <dimen name="pin_digit_icon_size">32dp</dimen>
+
 </resources>

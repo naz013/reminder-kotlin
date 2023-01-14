@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.onTextChanged
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.FragmentSettingsChangePinBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 
 class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>() {
+
+  private var state: State = State.OLD
+  private var pin: String = ""
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -19,17 +22,55 @@ class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.saveButton.setOnClickListener { savePin() }
 
-    binding.pinField.onTextChanged { hideErrors() }
-    binding.pinConfirmField.onTextChanged { hideErrors() }
-    binding.pinOldField.onTextChanged { hideErrors() }
+    binding.pinView.supportFinger = false
+    binding.pinView.callback = { onPinChanged(it) }
+
+    onStateChanged(State.OLD)
   }
 
-  private fun hideErrors() {
-    binding.pinLayout.isErrorEnabled = false
-    binding.pinConfirmLayout.isErrorEnabled = false
-    binding.pinOldLayout.isErrorEnabled = false
+  private fun onPinChanged(pin: String) {
+    if (pin.length < 6) return
+    when (state) {
+      State.OLD -> {
+        if (prefs.pinCode == pin) {
+          onStateChanged(State.INPUT)
+        } else {
+          toast(R.string.pin_not_match)
+          binding.pinView.clearPin()
+        }
+      }
+      State.INPUT -> {
+        this.pin = pin
+        onStateChanged(State.REPEAT)
+      }
+      State.REPEAT -> {
+        if (this.pin == pin) {
+          prefs.pinCode = pin
+          moveBack()
+        } else {
+          toast(R.string.pin_not_match)
+          onStateChanged(State.INPUT)
+        }
+        this.pin = ""
+      }
+    }
+  }
+
+  private fun onStateChanged(state: State) {
+    binding.pinView.clearPin()
+    this.state = state
+    when (state) {
+      State.OLD -> {
+        binding.messageView.text = getString(R.string.old_pin)
+      }
+      State.INPUT -> {
+        binding.messageView.text = getString(R.string.enter_pin)
+      }
+      State.REPEAT -> {
+        binding.messageView.text = getString(R.string.repeat_pin)
+      }
+    }
   }
 
   override fun onDestroy() {
@@ -37,47 +78,9 @@ class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>
     callback?.hideKeyboard()
   }
 
-  private fun savePin() {
-    val old = binding.pinOldField.text.toString().trim()
-    val new = binding.pinField.text.toString().trim()
-    val confirm = binding.pinConfirmField.text.toString().trim()
-
-    var hasError = false
-    if (old.length < 6) {
-      binding.pinOldLayout.error = getString(R.string.wrong_pin)
-      binding.pinOldLayout.isErrorEnabled = true
-      hasError = true
-    }
-    if (new.length < 6) {
-      binding.pinLayout.error = getString(R.string.wrong_pin)
-      binding.pinLayout.isErrorEnabled = true
-      hasError = true
-    }
-    if (confirm.length < 6) {
-      binding.pinConfirmLayout.error = getString(R.string.wrong_pin)
-      binding.pinConfirmLayout.isErrorEnabled = true
-      hasError = true
-    }
-
-    if (!hasError) {
-      if (old != prefs.pinCode) {
-        hasError = true
-        binding.pinOldLayout.error = getString(R.string.pin_not_match)
-        binding.pinOldLayout.isErrorEnabled = true
-      } else if (new != confirm) {
-        hasError = true
-        binding.pinLayout.error = getString(R.string.pin_not_match)
-        binding.pinLayout.isErrorEnabled = true
-        binding.pinConfirmLayout.error = getString(R.string.pin_not_match)
-        binding.pinConfirmLayout.isErrorEnabled = true
-      }
-    }
-
-    if (hasError) return
-
-    prefs.pinCode = new
-    moveBack()
-  }
-
   override fun getTitle(): String = getString(R.string.change_pin)
+
+  private enum class State {
+    OLD, INPUT, REPEAT
+  }
 }

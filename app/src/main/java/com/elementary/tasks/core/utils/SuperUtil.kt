@@ -221,14 +221,6 @@ object SuperUtil {
     return false
   }
 
-  fun appendString(vararg strings: String): String {
-    val stringBuilder = StringBuilder()
-    for (string in strings) {
-      stringBuilder.append(string)
-    }
-    return stringBuilder.toString()
-  }
-
   fun getAfterTime(timeString: String): Long {
     return if (timeString.length == 6 && !timeString.matches("000000".toRegex())) {
       val hours = timeString.substring(0, 2)
@@ -247,8 +239,7 @@ object SuperUtil {
 
   fun isAppInstalled(context: Context, packageName: String): Boolean {
     val pm = context.packageManager
-    val installed: Boolean
-    installed = try {
+    val installed: Boolean = try {
       pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
       true
     } catch (e: PackageManager.NameNotFoundException) {
@@ -269,13 +260,14 @@ object SuperUtil {
   }
 
   fun encrypt(string: String): String {
+    if (string.isEmpty()) return ""
     var input: ByteArray? = null
     try {
       input = string.toByteArray(charset("UTF-8"))
     } catch (e: UnsupportedEncodingException) {
       e.printStackTrace()
     }
-    return Base64.encodeToString(input, Base64.DEFAULT).trim { it <= ' ' }
+    return Base64.encodeToString(input, Base64.DEFAULT).trim()
   }
 
   fun launchMarket(context: Context) {
