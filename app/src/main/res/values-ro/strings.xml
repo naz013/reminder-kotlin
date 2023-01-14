@@ -3,7 +3,7 @@
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Setări"</string>
-    <string name="copyright">2022 © Nazar Sukhovych</string>
+    <string name="copyright">2023 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Eu nu pot avea acces la serviciile de localizare!"</string>
     <string name="normal">"Normal"</string>
