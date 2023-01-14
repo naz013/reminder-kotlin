@@ -15,7 +15,7 @@ interface ReminderInterface {
   fun selectGroup()
   fun showSnackbar(title: String)
   fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener)
-  fun setFullScreenMode(b: Boolean)
+  fun setFullScreenMode(fullScreenEnabled: Boolean)
   fun updateScroll(y: Int)
   fun setFragment(typeFragment: TypeFragment<*>?)
 }

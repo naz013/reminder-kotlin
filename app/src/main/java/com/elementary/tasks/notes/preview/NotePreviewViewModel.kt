@@ -2,6 +2,9 @@ package com.elementary.tasks.notes.preview
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -35,7 +38,8 @@ class NotePreviewViewModel(
   private val notesDao: NotesDao,
   private val reminderDao: ReminderDao,
   private val uiNotePreviewAdapter: UiNotePreviewAdapter,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
+  private val analyticsEventSender: AnalyticsEventSender
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -53,6 +57,7 @@ class NotePreviewViewModel(
       val noteWithImages = notesDao.getById(key)
       if (noteWithImages != null) {
         _note.postValue(uiNotePreviewAdapter.convert(noteWithImages))
+        analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
       }
     }
   }

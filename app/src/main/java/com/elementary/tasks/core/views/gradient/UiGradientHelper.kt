@@ -4,7 +4,6 @@ import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.Orientation
-import timber.log.Timber
 
 class UiGradientHelper(
   private val colors: IntArray,
@@ -71,9 +70,7 @@ class UiGradientHelper(
     for (i in 0 until index) {
       list[i] = colors[colors.size - index + i]
     }
-    return list.toIntArray().also {
-      Timber.d("sortColors: in = ${colors.toList()}, out = ${it.toList()}")
-    }
+    return list.toIntArray()
   }
 
   private fun createGradient(
@@ -81,7 +78,6 @@ class UiGradientHelper(
     orientation: Orientation,
     radius: Float
   ): GradientDrawable {
-    Timber.d("createGradient: colors = ${colors.toList()}")
     return GradientDrawable(orientation, colors).apply { cornerRadius = radius }
   }
 
