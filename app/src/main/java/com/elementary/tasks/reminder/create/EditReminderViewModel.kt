@@ -1,8 +1,13 @@
 package com.elementary.tasks.reminder.create
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -13,6 +18,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -33,7 +39,9 @@ class EditReminderViewModel(
   private val workerLauncher: WorkerLauncher,
   private val reminderGroupDao: ReminderGroupDao,
   private val reminderDao: ReminderDao,
-  private val placesDao: PlacesDao
+  private val placesDao: PlacesDao,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val reminderAnalyticsTracker: ReminderAnalyticsTracker
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _googleTask = mutableLiveDataOf<Pair<GoogleTaskList?, GoogleTask?>>()
@@ -55,6 +63,11 @@ class EditReminderViewModel(
         groups.addAll(it)
       }
     }
+  }
+
+  override fun onCreate(owner: LifecycleOwner) {
+    super.onCreate(owner)
+    reminderAnalyticsTracker.startTracking()
   }
 
   fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
@@ -81,6 +94,8 @@ class EditReminderViewModel(
         }
         eventControlFactory.getController(reminder).start()
         Timber.d("saveAndStartReminder: save DONE")
+        analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
+        reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type))
       }
       backupReminder(reminder.uuId)
       postInProgress(false)

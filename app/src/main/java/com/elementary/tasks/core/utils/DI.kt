@@ -229,6 +229,8 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
       get()
     )
   }
@@ -259,6 +261,7 @@ val viewModelModule = module {
   viewModel { (id: String) ->
     NotePreviewViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),

@@ -11,13 +11,12 @@ import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,7 +30,6 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val dialogues by inject<Dialogues>()
   protected val notifier by inject<Notifier>()
   protected val updatesHelper by inject<UpdatesHelper>()
-  protected val analyticsEventSender by inject<AnalyticsEventSender>()
 
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 

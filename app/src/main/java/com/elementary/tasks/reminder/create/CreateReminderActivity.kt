@@ -17,27 +17,23 @@ import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.voice.ConversationViewModel
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
@@ -52,6 +48,7 @@ import com.elementary.tasks.reminder.create.fragments.TimerFragment
 import com.elementary.tasks.reminder.create.fragments.TypeFragment
 import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
+import com.elementary.tasks.voice.ConversationViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
@@ -64,7 +61,6 @@ import java.util.*
 
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
-  private val reminderAnalyticsTracker by inject<ReminderAnalyticsTracker>()
   private val dateTimeManager by inject<DateTimeManager>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
@@ -114,7 +110,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    reminderAnalyticsTracker.startTracking()
 
     hasLocation = Module.hasLocation(this)
     isTablet = resources.getBoolean(R.bool.is_tablet)
@@ -455,8 +450,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         if (newId) {
           item.uuId = UUID.randomUUID().toString()
         }
-        analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-        reminderAnalyticsTracker.sendEvent(UiReminderType(item.reminderType))
         viewModel.saveAndStartReminder(item, isEditing)
       }
     }
@@ -533,13 +526,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     Snackbar.make(binding.coordinator, title, Snackbar.LENGTH_SHORT).show()
   }
 
-  override fun setFullScreenMode(b: Boolean) {
+  override fun setFullScreenMode(fullScreenEnabled: Boolean) {
     if (!isTablet) {
-      if (b) {
-        binding.appBar.visibility = View.GONE
-      } else {
-        binding.appBar.visibility = View.VISIBLE
-      }
+      binding.appBar.visibleGone(!fullScreenEnabled)
     }
   }
 

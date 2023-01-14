@@ -11,8 +11,6 @@ import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -72,7 +70,6 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     initReminderCard()
     initViewModel()
     loadAds()
-    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
   }
 
   private fun loadAds() {
