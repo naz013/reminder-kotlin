@@ -39,7 +39,10 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
       return searchValue.isEmpty() || v.text.lowercase().contains(searchValue.lowercase())
     }
   }
-  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+  private val searchMenuHandler = SearchMenuHandler(
+    systemServiceProvider.provideSearchManager(),
+    R.string.search
+  ) {
     searchModifier.setSearchValue(it)
   }
 

@@ -349,7 +349,7 @@
     <string name="you_dont_insert_any_message">You don\'t insert a message!</string>
     <string name="xM">%sM</string>
     <string name="overdue">Overdue</string>
-    <string name="search_place">Search place...</string>
+    <string name="search_place">Search place…</string>
     <string name="add_all">Add all</string>
     <string name="no_places_found">Place not found!</string>
     <string name="additional_reminder">Additional type of reminder - Places</string>

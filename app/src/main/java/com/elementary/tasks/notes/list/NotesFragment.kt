@@ -65,7 +65,10 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
     binding.recyclerView.visibleGone(it.isNotEmpty())
   }
 
-  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+  private val searchMenuHandler = SearchMenuHandler(
+    systemServiceProvider.provideSearchManager(),
+    R.string.search
+  ) {
     filterController.setSearchValue(it)
   }
 

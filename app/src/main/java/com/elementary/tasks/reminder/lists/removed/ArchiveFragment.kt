@@ -38,7 +38,10 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
 
   private var remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = false)
   private val searchModifier = SearchModifier(modifier = null, callback = this)
-  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+  private val searchMenuHandler = SearchMenuHandler(
+    systemServiceProvider.provideSearchManager(),
+    R.string.search
+  ) {
     searchModifier.setSearchValue(it)
   }
 
