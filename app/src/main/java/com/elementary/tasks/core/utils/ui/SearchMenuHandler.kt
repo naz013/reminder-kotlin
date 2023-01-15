@@ -5,10 +5,12 @@ import android.app.SearchManager
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 
 class SearchMenuHandler(
   private val searchManager: SearchManager?,
+  @StringRes private val hintRes: Int?,
   filterController: (String) -> Unit
 ) {
 
@@ -38,6 +40,7 @@ class SearchMenuHandler(
     mSearchMenu?.let { searchMenu ->
       mSearchView = searchMenu.actionView as SearchView?
       mSearchView?.let { searchView ->
+        hintRes?.also { searchView.queryHint = searchView.context.getString(it) }
         if (searchManager != null) {
           searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
         }

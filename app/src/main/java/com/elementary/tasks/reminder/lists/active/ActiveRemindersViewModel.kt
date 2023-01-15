@@ -32,10 +32,6 @@ class ActiveRemindersViewModel(
     uiReminderListsAdapter.convert(it)
   }
 
-  fun hasData(): Boolean {
-    return events.value?.isNotEmpty() ?: false
-  }
-
   fun onSearchUpdate(query: String) {
     reminderData.onNewQuery(query)
   }
@@ -46,6 +42,7 @@ class ActiveRemindersViewModel(
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
         workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, fromDb.uuId)
+        reminderData.refresh()
         Commands.SAVED
       }
       Commands.FAILED
@@ -64,6 +61,7 @@ class ActiveRemindersViewModel(
         postInProgress(false)
         postCommand(Commands.SAVED)
       }
+      reminderData.refresh()
     }
   }
 
@@ -74,6 +72,7 @@ class ActiveRemindersViewModel(
         eventControlFactory.getController(it).stop()
         reminderDao.insert(it)
         workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+        reminderData.refresh()
         Commands.DELETED
       } ?: run {
         Commands.FAILED
@@ -90,6 +89,10 @@ class ActiveRemindersViewModel(
     private val scope = parentScope + dispatcherProvider.default()
     private var job: Job? = null
     private var query: String = ""
+
+    fun refresh() {
+      load()
+    }
 
     fun onNewQuery(s: String) {
       if (query != s) {

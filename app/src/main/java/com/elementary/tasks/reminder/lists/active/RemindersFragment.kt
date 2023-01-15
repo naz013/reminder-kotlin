@@ -60,7 +60,10 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
   )
 
   private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
-  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+  private val searchMenuHandler = SearchMenuHandler(
+    systemServiceProvider.provideSearchManager(),
+    R.string.search
+  ) {
     viewModel.onSearchUpdate(it)
   }
 

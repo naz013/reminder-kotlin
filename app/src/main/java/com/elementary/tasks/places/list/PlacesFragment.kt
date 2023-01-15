@@ -52,7 +52,10 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
       return searchValue.isEmpty() || v.name.lowercase().contains(searchValue.lowercase())
     }
   }
-  private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
+  private val searchMenuHandler = SearchMenuHandler(
+    systemServiceProvider.provideSearchManager(),
+    R.string.search_place
+  ) {
     searchModifier.setSearchValue(it)
   }
 
