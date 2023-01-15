@@ -50,7 +50,7 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
     if (activity is ThemedActivity) {
       activity.invokeBackPress()
     } else {
-      activity?.onBackPressed()
+      activity?.onBackPressedDispatcher?.onBackPressed()
     }
   }
 

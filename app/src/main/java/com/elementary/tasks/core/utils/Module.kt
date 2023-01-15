@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.biometric.BiometricManager
 import com.elementary.tasks.BuildConfig
 
 object Module {
@@ -16,8 +15,6 @@ object Module {
   val isPie = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
   val isOreoMr1 = Build.VERSION.SDK_INT >= 27
   val isOreo = Build.VERSION.SDK_INT >= 26
-  @Deprecated("API is already 23")
-  val isMarshmallow = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
   val isNougat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
   val isNougat1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 
@@ -36,9 +33,6 @@ object Module {
 
   fun hasMicrophone(context: Context) =
     context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
-
-  fun hasBiometric(context: Context) =
-    BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 
   fun hasBluetooth(context: Context) =
     context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)

@@ -81,7 +81,6 @@ object PrefsConstants {
   const val SOUND_STREAM = "sound_stream"
   const val INCREASING_VOLUME = "increasing_volume"
   const val AUTO_CALL = "auto_calls"
-  const val BETA_KEY = "beta_key"
   const val RATE_COUNT = "rate_count"
   const val USER_LOGGED = "user_logged"
   const val LIVE_CONVERSATION = "live_conversation"
@@ -94,8 +93,11 @@ object PrefsConstants {
   const val TELL_ABOUT_EVENT = "tell_about_event"
   const val APP_LANGUAGE = "app_language"
   const val IGNORE_WINDOW_TYPE = "ignore_window_type"
+
   const val PIN_CODE = "pin_code"
   const val USE_FINGERPRINT = "use_finger"
+  const val SHUFFLE_PIN_VIEW = "shuffle_pin_view"
+
   const val ALLOW_SMS_AND_CALL = "allow_sms_and_call"
   const val MOVE_TO_TRASH = "move_to_trash"
   const val DEFAULT_PRIORITY = "default_priority"

@@ -158,7 +158,7 @@ object SuperUtil {
 
   fun checkNotificationPermission(activity: Context): Boolean {
     val notificationManager = activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    return !(Module.isMarshmallow && !notificationManager.isNotificationPolicyAccessGranted)
+    return notificationManager.isNotificationPolicyAccessGranted
   }
 
   fun askNotificationPermission(activity: Activity, dialogues: Dialogues) {

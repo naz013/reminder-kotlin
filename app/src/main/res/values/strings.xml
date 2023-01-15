@@ -659,5 +659,8 @@
     <string name="background_location_explanation">To track You when You have active location reminders, application requires Background Location permission</string>
     <string name="failed_to_start_voice_recognition">Failed to start voice recognition</string>
     <string name="failed_to_send_note">Failed to send Note</string>
+    <string name="shuffle_digits">Shuffle digits</string>
+    <string name="do_not_shuffle_digits_during_pin_login">Do not shuffle digits during PIN login</string>
+    <string name="shuffle_digits_during_pin_login">Shuffle digits during PIN login</string>
 
 </resources>
