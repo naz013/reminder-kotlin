@@ -47,7 +47,7 @@ class BirthdaySettingsViewModel(
   fun deleteAllBirthdays() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = birthdaysDao.all()
+      val list = birthdaysDao.getAll()
       for (birthday in list) {
         birthdaysDao.delete(birthday)
         workerLauncher.startWork(

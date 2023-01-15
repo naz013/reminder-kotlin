@@ -2,18 +2,22 @@ package com.elementary.tasks.reminder.lists.removed
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.livedata.SearchableLiveData
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class ArchiveRemindersViewModel(
   private val reminderDao: ReminderDao,
@@ -24,9 +28,13 @@ class ArchiveRemindersViewModel(
   private val uiReminderListAdapter: UiReminderListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val reminders = reminderDao.loadByRemovedStatus(removed = true)
-  val events = Transformations.map(reminders) { list ->
+  private val reminderData = SearchableReminderData(dispatcherProvider, viewModelScope, reminderDao)
+  val events = Transformations.map(reminderData) { list ->
     list.map { uiReminderListAdapter.create(it) }
+  }
+
+  fun onSearchUpdate(query: String) {
+    reminderData.onNewQuery(query)
   }
 
   fun hasEvents(): Boolean {
@@ -44,6 +52,7 @@ class ArchiveRemindersViewModel(
           Constants.INTENT_ID,
           it.uuId
         )
+        reminderData.refresh()
         Commands.DELETED
       } ?: run {
         Commands.FAILED
@@ -52,7 +61,7 @@ class ArchiveRemindersViewModel(
   }
 
   fun deleteAll() {
-    val reminders = reminders.value ?: return
+    val reminders = reminderData.value ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       reminders.forEach {
@@ -66,8 +75,24 @@ class ArchiveRemindersViewModel(
           it.uuId
         )
       }
+      reminderData.refresh()
       postInProgress(false)
       postCommand(Commands.DELETED)
+    }
+  }
+
+  internal class SearchableReminderData(
+    dispatcherProvider: DispatcherProvider,
+    parentScope: CoroutineScope,
+    private val reminderDao: ReminderDao
+  ) : SearchableLiveData<List<Reminder>>(parentScope + dispatcherProvider.default()) {
+
+    override fun runQuery(query: String): List<Reminder> {
+      return if (query.isEmpty()) {
+        reminderDao.getByRemovedStatus(removed = true)
+      } else {
+        reminderDao.searchBySummaryAndRemovedStatus(query.lowercase(), removed = true)
+      }
     }
   }
 }

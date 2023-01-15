@@ -36,8 +36,6 @@ import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.notes.list.filters.SearchModifier
-import com.elementary.tasks.notes.list.filters.SortModifier
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
@@ -57,20 +55,10 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
   private val notesRecyclerAdapter = NotesRecyclerAdapter()
   private var enableGrid = false
 
-  private val filterController = SearchModifier(null, null)
-  private val sortController = SortModifier(filterController) {
-    Timber.d("sort: ${it.size}")
-    notesRecyclerAdapter.submitList(it)
-    binding.emptyItem.visibleGone(it.isEmpty())
-    binding.recyclerView.visibleGone(it.isNotEmpty())
-  }
-
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
     R.string.search
-  ) {
-    filterController.setSearchValue(it)
-  }
+  ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -153,7 +141,9 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
     lifecycle.addObserver(viewModel)
     viewModel.notes.nonNullObserve(viewLifecycleOwner) { list ->
       Timber.d("initViewModel: $list")
-      sortController.original = list
+      notesRecyclerAdapter.submitList(list)
+      binding.emptyItem.visibleGone(list.isEmpty())
+      binding.recyclerView.visibleGone(list.isNotEmpty())
     }
     viewModel.sharedFile.nonNullObserve(viewLifecycleOwner) {
       sendNote(it.first, it.second)
@@ -273,13 +263,13 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
       builder.setItems(items) { dialog, which ->
         var value = ""
         when (which) {
-          0 -> value = SortModifier.DATE_AZ
-          1 -> value = SortModifier.DATE_ZA
-          2 -> value = SortModifier.TEXT_AZ
-          3 -> value = SortModifier.TEXT_ZA
+          0 -> value = NoteSortProcessor.DATE_AZ
+          1 -> value = NoteSortProcessor.DATE_ZA
+          2 -> value = NoteSortProcessor.TEXT_AZ
+          3 -> value = NoteSortProcessor.TEXT_ZA
         }
         prefs.noteOrder = value
-        sortController.setOrder(value)
+        viewModel.onOrderChanged()
         dialog.dismiss()
       }
       builder.create().show()

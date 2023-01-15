@@ -83,7 +83,7 @@ class CallReceiver : BaseBroadcast() {
               Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
               if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                 val number = mIncomingNumber
-                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all()
+                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().getAll()
                     .isNotEmpty()
                 ) {
                   QuickSmsActivity.openScreen(context, number)

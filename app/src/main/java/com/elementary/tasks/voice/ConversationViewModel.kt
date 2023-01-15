@@ -257,7 +257,7 @@ class ConversationViewModel(
   fun getNotes() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = LinkedList(notesDao.all()).map { uiNoteListAdapter.convert(it) }
+      val list = LinkedList(notesDao.getAll()).map { uiNoteListAdapter.convert(it) }
       postInProgress(false)
       _notes.postValue(list)
     }
@@ -315,7 +315,7 @@ class ConversationViewModel(
   fun getBirthdays(gmtDateTime: String?) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = birthdaysDao.all()
+      val list = birthdaysDao.getAll()
         .map { uiBirthdayListAdapter.convert(it) }
         .filter {
           it.nextBirthdayDate >= System.currentTimeMillis() &&

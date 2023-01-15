@@ -13,7 +13,7 @@ class TemplateDataFlowRepository(appDb: AppDb) : DatabaseRepository<SmsTemplate>
   }
 
   override suspend fun all(): List<SmsTemplate> {
-    return appDb.smsTemplatesDao().all()
+    return appDb.smsTemplatesDao().getAll()
   }
 
   override suspend fun delete(t: SmsTemplate) {

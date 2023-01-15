@@ -44,7 +44,7 @@ class ScanContactsWorker(
           " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
           "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
       val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-      val contacts = birthdaysDao.all()
+      val contacts = birthdaysDao.getAll()
       val birthdayCur =
         cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
       if (birthdayCur != null && birthdayCur.count > 0) {

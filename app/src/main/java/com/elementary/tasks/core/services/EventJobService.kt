@@ -133,7 +133,7 @@ class EventJobService(
       val mYear = date.year
       val currentDate = dateTimeManager.getBirthdayDateSearch(date)
 
-      for (item in appDb.birthdaysDao().all()) {
+      for (item in appDb.birthdaysDao().getAll()) {
         val year = item.showedYear
         val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
         if (!applyDnd && birthValue == currentDate && year != mYear) {

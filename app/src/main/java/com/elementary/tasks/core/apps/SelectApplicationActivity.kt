@@ -7,7 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.filter.SearchModifier
+import com.elementary.tasks.core.apps.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.InputMethodManagerWrapper
 import com.elementary.tasks.core.utils.Constants
