@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.BuildConfig
+import com.elementary.tasks.aftercall.FollowReminderViewModel
 import com.elementary.tasks.birthdays.create.AddBirthdayViewModel
 import com.elementary.tasks.birthdays.list.BirthdaysViewModel
 import com.elementary.tasks.birthdays.preview.ShowBirthdayViewModel
@@ -13,6 +14,7 @@ import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
+import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
@@ -49,6 +51,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.adapter.UiReminderListsAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
 import com.elementary.tasks.core.data.adapter.UiUsedTimeListAdapter
@@ -87,16 +90,6 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
-import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
-import com.elementary.tasks.reminder.create.EditReminderViewModel
-import com.elementary.tasks.aftercall.FollowReminderViewModel
-import com.elementary.tasks.core.data.adapter.UiReminderListsAdapter
-import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
-import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
-import com.elementary.tasks.reminder.preview.ReminderViewModel
-import com.elementary.tasks.voice.VoiceResultDialogViewModel
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.core.work.BackupWorker
@@ -134,8 +127,15 @@ import com.elementary.tasks.places.create.PlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
+import com.elementary.tasks.reminder.create.EditReminderViewModel
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
 import com.elementary.tasks.reminder.create.fragments.UsedTimeViewModel
+import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
+import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
+import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
+import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
+import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
+import com.elementary.tasks.reminder.preview.ReminderViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -149,6 +149,7 @@ import com.elementary.tasks.sms.create.CreateSmsTemplateViewModel
 import com.elementary.tasks.sms.list.SmsTemplatesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.elementary.tasks.voice.ConversationViewModel
+import com.elementary.tasks.voice.VoiceResultDialogViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
@@ -356,6 +357,7 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -507,6 +509,7 @@ val utilModule = module {
 
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
   single { ReminderAnalyticsTracker(get()) }
+  single { VoiceAnalyticsTracker(get()) }
 
   single { TextProvider(get()) }
   single { FeatureManager(get()) }

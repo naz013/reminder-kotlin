@@ -8,6 +8,21 @@ sealed class AnalyticEvent(val event: Event) {
   fun getName() = event.value
 }
 
+data class VoiceFeatureUsedEvent(
+  val language: String,
+  val status: String,
+  val action: String
+) : AnalyticEvent(Event.VOICE_CONTROL_USED) {
+
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.VOICE_ACTION, action)
+      putString(Parameter.VOICE_LANGUAGE, language)
+      putString(Parameter.VOICE_STATUS, status)
+    }
+  }
+}
+
 data class ReminderFeatureUsedEvent(
   val type: UiReminderType,
   val timeSeconds: Long
@@ -93,18 +108,26 @@ enum class Screen(val value: String) {
   GOOGLE_TASKS_LIST("google_tasks_list"),
   CALENDAR("calendar"),
   BIRTHDAYS("birthdays_list"),
-  GROUPS("groups_list")
+  GROUPS("groups_list"),
+  VOICE_CONTROL("voice_control")
 }
 
 enum class Event(val value: String) {
   FEATURE_USED("feature_used"),
   REMINDER_USED("reminder_used"),
-  SCREEN_OPENED("screen_opened")
+  SCREEN_OPENED("screen_opened"),
+  VOICE_CONTROL_USED("voice_control_used")
 }
 
 object Parameter {
   const val SCREEN = "screen"
+
   const val TYPE = "type"
+
   const val REMINDER_TYPE = "reminder_type"
   const val DURATION = "duration"
+
+  const val VOICE_LANGUAGE = "language"
+  const val VOICE_ACTION = "action"
+  const val VOICE_STATUS = "status"
 }
