@@ -168,6 +168,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   override fun getTitle(): String = getString(R.string.general)
 
   private fun restartApp() {
+
     startActivity(Intent(context, SplashScreenActivity::class.java))
     activity?.finishAffinity()
   }

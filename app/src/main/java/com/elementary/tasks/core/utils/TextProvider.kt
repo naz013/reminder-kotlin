@@ -3,9 +3,16 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import androidx.annotation.StringRes
 
-class TextProvider(
-  private val context: Context
-) {
+class TextProvider(initContext: Context) {
+
+  private var context: Context = initContext
+
+  fun updateContext(newContext: Context) {
+    if (newContext.resources.configuration.locale.language !=
+      context.resources.configuration.locale.language) {
+      this.context = newContext
+    }
+  }
 
   fun getText(@StringRes id: Int): String {
     return context.getString(id)

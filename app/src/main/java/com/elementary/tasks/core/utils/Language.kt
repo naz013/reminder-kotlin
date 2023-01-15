@@ -10,7 +10,8 @@ import java.util.*
 
 class Language(
   private val prefs: Prefs,
-  private val context: Context
+  private val context: Context,
+  private val textProvider: TextProvider
 ) {
 
   /**
@@ -42,7 +43,9 @@ class Language(
   }
 
   fun onAttach(context: Context): Context {
-    return setLocale(context, getScreenLanguage(prefs.appLanguage))
+    return setLocale(context, getScreenLanguage(prefs.appLanguage)).also {
+      textProvider.updateContext(it)
+    }
   }
 
   private fun setLocale(context: Context, locale: Locale): Context {
