@@ -112,6 +112,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.USE_FINGERPRINT)
     set(value) = putBoolean(PrefsConstants.USE_FINGERPRINT, value)
 
+  var shufflePinView: Boolean
+    get() = getBoolean(PrefsConstants.SHUFFLE_PIN_VIEW, true)
+    set(value) = putBoolean(PrefsConstants.SHUFFLE_PIN_VIEW, value)
+
   var isDoNotDisturbEnabled: Boolean
     get() = getBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, false)
     set(value) {
@@ -530,10 +534,6 @@ class Prefs(
   var lastGoogleList: Int
     get() = getInt(PrefsConstants.LAST_LIST)
     set(value) = putInt(PrefsConstants.LAST_LIST, value)
-
-  var isBetaWarmingShowed: Boolean
-    get() = getBoolean(PrefsConstants.BETA_KEY)
-    set(value) = putBoolean(PrefsConstants.BETA_KEY, value)
 
   var rateCount: Int
     get() = getInt(PrefsConstants.RATE_COUNT)

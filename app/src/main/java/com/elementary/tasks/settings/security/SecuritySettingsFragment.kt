@@ -4,18 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.BiometricProvider
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 
 class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
 
-  private lateinit var biometricPrompt: BiometricPrompt
+  private val biometricProvider = BiometricProvider(this) {
+    setFinger(!binding.fingerprintSwitchPrefs.isChecked)
+  }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -36,22 +37,21 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
       )
     }
 
-    biometricPrompt = createBiometricPrompt()
-
     initFingerPrefs()
+    initShufflePrefs()
     initPhonePrefs()
   }
 
-  private fun createBiometricPrompt(): BiometricPrompt {
-    val executor = ContextCompat.getMainExecutor(requireContext())
-    val callback = object : BiometricPrompt.AuthenticationCallback() {
-      override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-        super.onAuthenticationSucceeded(result)
-        setFinger(!binding.fingerprintSwitchPrefs.isChecked)
-      }
-    }
+  private fun initShufflePrefs() {
+    binding.shufflePrefs.setOnClickListener { changeShufflePrefs() }
+    binding.shufflePrefs.setDependentView(binding.pinSwitchPrefs)
+    binding.shufflePrefs.isChecked = prefs.shufflePinView
+  }
 
-    return BiometricPrompt(this, executor, callback)
+  private fun changeShufflePrefs() {
+    val isChecked = binding.shufflePrefs.isChecked
+    binding.shufflePrefs.isChecked = !isChecked
+    prefs.shufflePinView = !isChecked
   }
 
   private fun initPhonePrefs() {
@@ -89,43 +89,15 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
   }
 
   private fun initFingerPrefs() {
-    binding.fingerprintSwitchPrefs.setOnClickListener { changeFingerPrefs() }
+    binding.fingerprintSwitchPrefs.setOnClickListener { biometricProvider.tryToOpenFingerLogin() }
     binding.fingerprintSwitchPrefs.setDependentView(binding.pinSwitchPrefs)
     binding.fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
-
-    withContext {
-      if (BiometricManager.from(it).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
-        binding.fingerprintSwitchPrefs.visibility = View.VISIBLE
-      } else {
-        binding.fingerprintSwitchPrefs.visibility = View.GONE
-      }
-    }
+    binding.fingerprintSwitchPrefs.visibleGone(biometricProvider.hasBiometric())
   }
 
   private fun setFinger(enabled: Boolean) {
     binding.fingerprintSwitchPrefs.isChecked = enabled
     prefs.useFingerprint = enabled
-  }
-
-  private fun changeFingerPrefs() {
-    withContext {
-      if (BiometricManager.from(it).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
-        val promptInfo = createPromptInfo()
-        biometricPrompt.authenticate(promptInfo)
-      }
-    }
-  }
-
-  private fun createPromptInfo(): BiometricPrompt.PromptInfo {
-    return BiometricPrompt.PromptInfo.Builder()
-      .setTitle(getString(R.string.app_title))
-      .setSubtitle(getString(R.string.prompt_info_subtitle))
-      .setDescription(getString(R.string.prompt_info_description))
-      // Authenticate without requiring the user to press a "confirm"
-      // button after satisfying the biometric check
-      .setConfirmationRequired(false)
-      .setNegativeButtonText(getString(R.string.cancel))
-      .build()
   }
 
   override fun onBackStackResume() {

@@ -47,6 +47,17 @@
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/shufflePrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_shuffle_24"
+            app:prefs_primary_text="@string/shuffle_digits"
+            app:prefs_secondary_text_off="@string/do_not_shuffle_digits_during_pin_login"
+            app:prefs_secondary_text_on="@string/shuffle_digits_during_pin_login"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/telephonyPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
