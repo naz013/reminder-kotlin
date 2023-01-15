@@ -32,4 +32,6 @@
 
     <dimen name="pin_digit_icon_size">32dp</dimen>
 
+    <dimen name="home_screen_widget_corner_radius">10dp</dimen>
+
 </resources>
