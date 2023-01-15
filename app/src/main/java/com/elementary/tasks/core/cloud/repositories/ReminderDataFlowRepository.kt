@@ -13,7 +13,7 @@ class ReminderDataFlowRepository(appDb: AppDb) : DatabaseRepository<Reminder>(ap
   }
 
   override suspend fun all(): List<Reminder> {
-    return appDb.reminderDao().all()
+    return appDb.reminderDao().getAll()
   }
 
   override suspend fun delete(t: Reminder) {
