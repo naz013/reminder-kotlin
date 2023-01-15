@@ -5,92 +5,132 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import com.elementary.tasks.core.data.models.Reminder
 
+private const val byIdQuery ="""
+    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+    FROM Reminder AS reminder
+    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+    WHERE reminder.uuId=:id"""
+
+private const val byNoteIdQuery ="""
+    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+    FROM Reminder AS reminder
+    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+    WHERE reminder.noteId=:key"""
+
 @Dao
 interface ReminderDao {
 
     @Query("SELECT * FROM Reminder")
-    fun all(): List<Reminder>
+    fun getAll(): List<Reminder>
 
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE uuId=:id AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query(byIdQuery)
     fun loadById(id: String): LiveData<Reminder>
 
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE noteId=:key AND ReminderGroup.groupUuId=Reminder.groupUuId")
-    fun loadByNoteKey(key: String): LiveData<Reminder>
-
-    @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE noteId=:key AND ReminderGroup.groupUuId=Reminder.groupUuId")
-    fun getByNoteKey(key: String): Reminder?
-
-    @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE uuId=:id AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query(byIdQuery)
     fun getById(id: String): Reminder?
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
-        AND ReminderGroup.groupUuId=Reminder.groupUuId 
-        ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
-    fun loadByRemovedStatus(removed: Boolean = false): LiveData<List<Reminder>>
+    @Query(byNoteIdQuery)
+    fun loadByNoteKey(key: String): LiveData<Reminder>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
-        AND ReminderGroup.groupUuId=Reminder.groupUuId 
+    @Query(byNoteIdQuery)
+    fun getByNoteKey(key: String): Reminder?
+
+    @Transaction
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
         AND LOWER(Reminder.summary) LIKE '%' || :query || '%'
-        ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
+        ORDER BY reminder.isActive DESC, reminder.eventTime ASC""")
     fun searchBySummaryAndRemovedStatus(query: String, removed: Boolean = false): List<Reminder>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
-        AND ReminderGroup.groupUuId=Reminder.groupUuId 
-        ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        ORDER BY reminder.isActive DESC, reminder.eventTime ASC""")
     fun getByRemovedStatus(removed: Boolean = false): List<Reminder>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
-        AND isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId""")
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active""")
     fun loadType(active: Boolean, removed: Boolean): LiveData<List<Reminder>>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isRemoved=:removed 
-        AND eventTime!=0 AND eventTime>=:fromTime AND eventTime<:toTime 
-        AND ReminderGroup.groupUuId=Reminder.groupUuId""")
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.eventTime!='' 
+        AND reminder.eventTime>=:fromTime 
+        AND reminder.eventTime<:toTime""")
     fun getActiveInRange(removed: Boolean, fromTime: String, toTime: String): List<Reminder>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
-        AND isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId""")
-    fun getAll(active: Boolean, removed: Boolean): List<Reminder>
-
-    @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
-        AND isRemoved=:removed AND type IN (:types) AND ReminderGroup.groupUuId=Reminder.groupUuId""")
-    fun getAllTypes(active: Boolean, removed: Boolean, types: IntArray): List<Reminder>
-
-    @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
-        AND isRemoved=:removed AND type IN (:types) AND ReminderGroup.groupUuId=Reminder.groupUuId""")
-    fun loadAllTypes(active: Boolean, removed: Boolean, types: IntArray): LiveData<List<Reminder>>
-
-    @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
-        AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime 
-        AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId""")
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active
+        AND reminder.eventTime!='' 
+        AND reminder.eventTime>=:fromTime 
+        AND reminder.eventTime<:toTime""")
     fun getAllTypesInRange(active: Boolean, removed: Boolean, fromTime: String, toTime: String): List<Reminder>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active
-        AND isRemoved=:removed AND eventTime!='' AND eventTime>=:fromTime
-        AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId 
-        ORDER BY Reminder.eventTime ASC""")
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active""")
+    fun getAll(active: Boolean, removed: Boolean): List<Reminder>
+
+    @Transaction
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active
+        AND reminder.type IN (:types)""")
+    fun getAllTypes(active: Boolean, removed: Boolean, types: IntArray): List<Reminder>
+
+    @Transaction
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active
+        AND reminder.type IN (:types)""")
+    fun loadAllTypes(active: Boolean, removed: Boolean, types: IntArray): LiveData<List<Reminder>>
+
+    @Transaction
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active
+        AND reminder.eventTime!='' 
+        AND reminder.eventTime>=:fromTime 
+        AND reminder.eventTime<:toTime
+        ORDER BY reminder.eventTime ASC""")
     fun loadAllTypesInRange(active: Boolean = true, removed: Boolean = false,
                             fromTime: String, toTime: String): LiveData<List<Reminder>>
 
     @Transaction
-    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE (isActive=:active
-        AND isRemoved=:removed) AND (eventTime=='' OR (eventTime>=:fromTime
-        AND eventTime<:toTime)) AND ReminderGroup.groupUuId=Reminder.groupUuId 
-        ORDER BY Reminder.eventTime ASC""")
+    @Query("""SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE (reminder.isActive=:active AND reminder.isRemoved=:removed) 
+        AND (reminder.eventTime=='' OR (reminder.eventTime>=:fromTime AND reminder.eventTime<:toTime)) 
+        ORDER BY reminder.eventTime ASC""")
     fun loadAllTypesInRangeWithPermanent(active: Boolean = true, removed: Boolean = false,
                             fromTime: String, toTime: String): LiveData<List<Reminder>>
 
@@ -111,12 +151,4 @@ interface ReminderDao {
 
     @Query("DELETE FROM Reminder")
     fun deleteAll()
-
-    @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE eventState=:status")
-    fun getAllByStatus(status: Int = 10): List<Reminder>
-
-    @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE eventState=:status")
-    fun loadAllByStatus(status: Int = 10): LiveData<List<Reminder>>
 }

@@ -47,7 +47,7 @@ class SyncDataWorker(
         val list = reminderGroupDao.all()
         if (list.isEmpty()) {
           val defUiID = groupsUtil.initDefault()
-          val items = reminderDao.all()
+          val items = reminderDao.getAll()
           for (item in items) {
             item.groupUuId = defUiID
           }

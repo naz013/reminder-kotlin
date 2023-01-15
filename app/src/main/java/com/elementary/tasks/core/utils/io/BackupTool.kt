@@ -155,7 +155,7 @@ class BackupTool(
 
   fun exportAll(): File? {
     val allData = AllData(
-      reminders = appDb.reminderDao().all(),
+      reminders = appDb.reminderDao().getAll(),
       groups = appDb.reminderGroupDao().all().toMutableList(),
       notes = appDb.notesDao().getAll().map { OldNote(it) },
       places = appDb.placesDao().getAll(),
