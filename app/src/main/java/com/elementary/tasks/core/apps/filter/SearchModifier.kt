@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.filter
+package com.elementary.tasks.core.apps.filter
 
 abstract class SearchModifier<V>(
   modifier: Modifier<V>? = null,

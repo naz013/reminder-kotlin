@@ -7,6 +7,7 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
+import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -14,11 +15,14 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
@@ -28,14 +32,25 @@ class NotesViewModel(
   private val backupTool: BackupTool,
   private val notesDao: NotesDao,
   private val textProvider: TextProvider,
-  private val uiNoteListAdapter: UiNoteListAdapter
+  private val uiNoteListAdapter: UiNoteListAdapter,
+  private val prefs: Prefs
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
-  val notes = Transformations.map(notesDao.loadAll()) { list ->
-    list.map { uiNoteListAdapter.convert(it) }
+  private val noteSortProcessor = NoteSortProcessor()
+  private val notesData = SearchableNotesData(dispatcherProvider, viewModelScope, notesDao)
+  val notes = Transformations.map(notesData) { list ->
+    noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
+  }
+
+  fun onSearchUpdate(query: String) {
+    notesData.onNewQuery(query)
+  }
+
+  fun onOrderChanged() {
+    notesData.refresh()
   }
 
   fun shareNote(id: String) {
@@ -105,6 +120,21 @@ class NotesViewModel(
       workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
+    }
+  }
+
+  internal class SearchableNotesData(
+    dispatcherProvider: DispatcherProvider,
+    parentScope: CoroutineScope,
+    private val notesDao: NotesDao
+  ) : SearchableLiveData<List<NoteWithImages>>(parentScope + dispatcherProvider.default()) {
+
+    override fun runQuery(query: String): List<NoteWithImages> {
+      return if (query.isEmpty()) {
+        notesDao.getAll()
+      } else {
+        notesDao.searchByText(query.lowercase())
+      }
     }
   }
 }

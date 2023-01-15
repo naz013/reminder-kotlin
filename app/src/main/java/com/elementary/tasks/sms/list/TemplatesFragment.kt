@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.sms.UiSmsList
-import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.Constants
@@ -17,6 +16,7 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsTemplatesListBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import com.elementary.tasks.sms.create.TemplateActivity
@@ -30,21 +30,10 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
   private val viewModel by viewModel<SmsTemplatesViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
 
-  private val searchModifier = object : SearchModifier<UiSmsList>(null, {
-    templatesAdapter.submitList(it)
-    binding.templatesList.smoothScrollToPosition(0)
-    refreshView()
-  }) {
-    override fun filter(v: UiSmsList): Boolean {
-      return searchValue.isEmpty() || v.text.lowercase().contains(searchValue.lowercase())
-    }
-  }
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
     R.string.search
-  ) {
-    searchModifier.setSearchValue(it)
-  }
+  ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -92,7 +81,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
-    refreshView()
+    refreshView(0)
   }
 
   private fun showMenu(view: View, uiSmsList: UiSmsList) {
@@ -114,16 +103,13 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
 
   private fun showTemplates(smsTemplates: List<UiSmsList>) {
     Timber.d("showTemplates: $smsTemplates")
-    searchModifier.original = smsTemplates
+    templatesAdapter.submitList(smsTemplates)
+    binding.templatesList.smoothScrollToPosition(0)
+    refreshView(smsTemplates.size)
   }
 
-  private fun refreshView() {
-    if (templatesAdapter.itemCount == 0) {
-      binding.emptyItem.visibility = View.VISIBLE
-      binding.templatesList.visibility = View.GONE
-    } else {
-      binding.emptyItem.visibility = View.GONE
-      binding.templatesList.visibility = View.VISIBLE
-    }
+  private fun refreshView(count: Int) {
+    binding.emptyItem.visibleGone(count == 0)
+    binding.templatesList.visibleGone(count != 0)
   }
 }

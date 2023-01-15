@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.data.dao
 
 import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.SmsTemplate
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
@@ -14,7 +13,10 @@ import androidx.room.OnConflictStrategy.REPLACE
 interface PlacesDao {
 
     @Query("SELECT * FROM Place")
-    fun all(): List<Place>
+    fun getAll(): List<Place>
+
+    @Query("SELECT * FROM Place WHERE LOWER(name) LIKE '%' || :query || '%'")
+    fun searchByName(query: String): List<Place>
 
     @Query("SELECT * FROM Place")
     fun loadAll(): LiveData<List<Place>>

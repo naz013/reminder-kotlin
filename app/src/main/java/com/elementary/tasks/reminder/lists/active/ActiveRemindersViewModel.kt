@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.lists.active
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -8,6 +7,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderListsAdapter
 import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.utils.Constants
@@ -15,7 +15,6 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -84,42 +83,13 @@ class ActiveRemindersViewModel(
     dispatcherProvider: DispatcherProvider,
     parentScope: CoroutineScope,
     private val reminderDao: ReminderDao
-  ) : LiveData<List<Reminder>>() {
+  ) : SearchableLiveData<List<Reminder>>(parentScope + dispatcherProvider.default()) {
 
-    private val scope = parentScope + dispatcherProvider.default()
-    private var job: Job? = null
-    private var query: String = ""
-
-    fun refresh() {
-      load()
-    }
-
-    fun onNewQuery(s: String) {
-      if (query != s) {
-        query = s
-        load()
-      }
-    }
-
-    override fun onActive() {
-      super.onActive()
-      load()
-    }
-
-    override fun onInactive() {
-      super.onInactive()
-      job?.cancel()
-    }
-
-    private fun load() {
-      job?.cancel()
-      job = scope.launch {
-        val result = if (query.isEmpty()) {
-          reminderDao.getByRemovedStatus(removed = false)
-        } else {
-          reminderDao.searchBySummaryAndRemovedStatus(query, removed = false)
-        }
-        postValue(result)
+    override fun runQuery(query: String): List<Reminder> {
+      return if (query.isEmpty()) {
+        reminderDao.getByRemovedStatus(removed = false)
+      } else {
+        reminderDao.searchBySummaryAndRemovedStatus(query.lowercase(), removed = false)
       }
     }
   }

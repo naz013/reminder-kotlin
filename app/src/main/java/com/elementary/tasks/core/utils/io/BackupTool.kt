@@ -157,10 +157,10 @@ class BackupTool(
     val allData = AllData(
       reminders = appDb.reminderDao().all(),
       groups = appDb.reminderGroupDao().all().toMutableList(),
-      notes = appDb.notesDao().all().map { OldNote(it) },
-      places = appDb.placesDao().all(),
-      templates = appDb.smsTemplatesDao().all(),
-      birthdays = appDb.birthdaysDao().all()
+      notes = appDb.notesDao().getAll().map { OldNote(it) },
+      places = appDb.placesDao().getAll(),
+      templates = appDb.smsTemplatesDao().getAll(),
+      birthdays = appDb.birthdaysDao().getAll()
     )
     return createAllDataFile(allData)
   }

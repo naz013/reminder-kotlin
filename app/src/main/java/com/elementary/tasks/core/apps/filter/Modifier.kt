@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.filter
+package com.elementary.tasks.core.apps.filter
 
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext

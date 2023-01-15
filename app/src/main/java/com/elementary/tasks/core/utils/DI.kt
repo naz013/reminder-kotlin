@@ -367,7 +367,7 @@ val viewModelModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { CloudViewModel(get(), get(), get(), get()) }
