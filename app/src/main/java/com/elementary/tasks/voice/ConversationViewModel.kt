@@ -13,6 +13,8 @@ import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.core.analytics.Status
+import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -87,7 +89,8 @@ class ConversationViewModel(
   private val prefs: Prefs,
   private val language: Language,
   private val contextProvider: ContextProvider,
-  private val contactsReader: ContactsReader
+  private val contactsReader: ContactsReader,
+  private val voiceAnalyticsTracker: VoiceAnalyticsTracker
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _shoppingLists = MutableLiveData<List<UiReminderList>>()
@@ -110,7 +113,6 @@ class ConversationViewModel(
   private val repliesList = mutableListOf<Reply>()
   private var hasPartial = false
 
-
   var autoMicClick: Boolean = true
     private set
   var tellAboutEvent: Boolean = false
@@ -119,6 +121,7 @@ class ConversationViewModel(
   var defaultGroup: UiGroupList? = null
 
   init {
+    voiceAnalyticsTracker.screenOpened()
     clearConversation()
     viewModelScope.launch(dispatcherProvider.default()) {
       autoMicClick = prefs.isAutoMicClick
@@ -325,7 +328,13 @@ class ConversationViewModel(
 
   fun findSuggestion(suggestion: String): Model? {
     recognizer.setContactHelper(ContactHelper())
-    return recognizer.recognize(suggestion)
+    return recognizer.recognize(suggestion).also { model ->
+      if (model == null) {
+        voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.FAIL)
+      } else {
+        voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.SUCCESS, model)
+      }
+    }
   }
 
   fun findResults(matches: List<*>): Reminder? {
@@ -336,6 +345,7 @@ class ConversationViewModel(
       val model = recognizer.recognize(keyStr)
       if (model != null) {
         Timber.d("findResults: $model")
+        voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.SUCCESS, model)
         return createReminder(model)
       }
     }
