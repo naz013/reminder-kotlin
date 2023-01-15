@@ -460,7 +460,7 @@ val utilModule = module {
   single { ThemeProvider(get(), get()) }
   single { BackupTool(get(), get(), get(), get()) }
   single { Dialogues(get()) }
-  single { Language(get(), get()) }
+  single { Language(get(), get(), get()) }
   single { GoogleCalendarUtils(get(), get(), get(), get()) }
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get()) }
