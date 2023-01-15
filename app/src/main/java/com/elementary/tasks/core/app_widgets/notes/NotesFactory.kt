@@ -29,7 +29,7 @@ class NotesFactory(
 
   override fun onDataSetChanged() {
     notes.clear()
-    notes.addAll(appDb.notesDao().all())
+    notes.addAll(appDb.notesDao().getAll())
   }
 
   override fun onDestroy() {

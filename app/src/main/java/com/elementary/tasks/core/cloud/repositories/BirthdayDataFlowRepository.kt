@@ -13,7 +13,7 @@ class BirthdayDataFlowRepository(appDb: AppDb) : DatabaseRepository<Birthday>(ap
   }
 
   override suspend fun all(): List<Birthday> {
-    return appDb.birthdaysDao().all()
+    return appDb.birthdaysDao().getAll()
   }
 
   override suspend fun delete(t: Birthday) {

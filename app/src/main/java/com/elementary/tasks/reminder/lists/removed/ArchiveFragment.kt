@@ -13,18 +13,18 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
-import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
-    (List<UiReminderList>) -> Unit {
+class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -37,13 +37,10 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
   )
 
   private var remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = false)
-  private val searchModifier = SearchModifier(modifier = null, callback = this)
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
     R.string.search
-  ) {
-    searchModifier.setSearchValue(it)
-  }
+  ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -63,31 +60,23 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
       }
     }) {
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
-      val isNotEmpty = viewModel.hasEvents()
-      it.getItem(0)?.isVisible = isNotEmpty
-      it.getItem(1)?.isVisible = isNotEmpty
+      it.getItem(1)?.isVisible = viewModel.hasEvents()
     }
     initList()
     initViewModel()
   }
 
   private fun initViewModel() {
-    viewModel.events.observe(viewLifecycleOwner) { reminders ->
-      if (reminders != null) {
-        showData(reminders)
-      }
-    }
-    viewModel.result.observe(viewLifecycleOwner) {
-      if (it != null) {
-        when (it) {
-          Commands.DELETED -> Toast.makeText(
-            requireContext(),
-            R.string.trash_cleared,
-            Toast.LENGTH_SHORT
-          ).show()
+    viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
+    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+      when (it) {
+        Commands.DELETED -> Toast.makeText(
+          requireContext(),
+          R.string.trash_cleared,
+          Toast.LENGTH_SHORT
+        ).show()
 
-          else -> {
-          }
+        else -> {
         }
       }
     }
@@ -96,8 +85,12 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
   override fun getTitle(): String = getString(R.string.trash)
 
   private fun showData(result: List<UiReminderList>) {
-    searchModifier.original = result.toMutableList()
-    activity?.invalidateOptionsMenu()
+    remindersAdapter.submitList(result)
+    binding.recyclerView.smoothScrollToPosition(0)
+    reloadView(result.size)
+    if (result.isEmpty()) {
+      activity?.invalidateOptionsMenu()
+    }
   }
 
   private fun initList() {
@@ -128,16 +121,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(),
   }
 
   private fun reloadView(count: Int) {
-    if (count > 0) {
-      binding.emptyItem.visibility = View.GONE
-    } else {
-      binding.emptyItem.visibility = View.VISIBLE
-    }
-  }
-
-  override fun invoke(result: List<UiReminderList>) {
-    remindersAdapter.submitList(result)
-    binding.recyclerView.smoothScrollToPosition(0)
-    reloadView(result.size)
+    binding.emptyItem.visibleGone(count == 0)
   }
 }

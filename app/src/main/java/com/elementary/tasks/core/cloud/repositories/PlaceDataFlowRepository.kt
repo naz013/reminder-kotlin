@@ -13,7 +13,7 @@ class PlaceDataFlowRepository(appDb: AppDb) : DatabaseRepository<Place>(appDb) {
   }
 
   override suspend fun all(): List<Place> {
-    return appDb.placesDao().all()
+    return appDb.placesDao().getAll()
   }
 
   override suspend fun delete(t: Place) {

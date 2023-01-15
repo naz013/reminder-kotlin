@@ -9,14 +9,13 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.birthdays.list.filters.SearchModifier
-import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
@@ -26,8 +25,7 @@ import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
-    (List<UiBirthdayList>) -> Unit {
+class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -36,13 +34,10 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
   private val mAdapter = BirthdaysRecyclerAdapter()
-  private val filterController = SearchModifier(SortModifier(), this)
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
     R.string.search
-  ) {
-    filterController.setSearchValue(it)
-  }
+  ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -67,7 +62,11 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
   }
 
   private fun initViewModel() {
-    viewModel.birthdays.observe(viewLifecycleOwner) { filterController.original = it }
+    viewModel.birthdays.nonNullObserve(viewLifecycleOwner) {
+      mAdapter.submitList(it)
+      binding.recyclerView.smoothScrollToPosition(0)
+      binding.emptyItem.visibleGone(it.isEmpty())
+    }
   }
 
   override fun getTitle(): String = getString(R.string.birthdays)
@@ -96,11 +95,5 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(),
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
-  }
-
-  override fun invoke(result: List<UiBirthdayList>) {
-    mAdapter.submitList(result)
-    binding.recyclerView.smoothScrollToPosition(0)
-    binding.emptyItem.visibleGone(result.isEmpty())
   }
 }

@@ -10,7 +10,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
-import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
@@ -43,21 +42,10 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
   })
 
-  private val searchModifier = object : SearchModifier<UiPlaceList>(null, {
-    adapter.submitList(it)
-    binding.recyclerView.smoothScrollToPosition(0)
-    refreshView(it.size)
-  }) {
-    override fun filter(v: UiPlaceList): Boolean {
-      return searchValue.isEmpty() || v.name.lowercase().contains(searchValue.lowercase())
-    }
-  }
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
     R.string.search_place
-  ) {
-    searchModifier.setSearchValue(it)
-  }
+  ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -83,7 +71,9 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   private fun initViewModel() {
     viewModel.places.nonNullObserve(viewLifecycleOwner) { places ->
-      searchModifier.original = places
+      adapter.submitList(places)
+      binding.recyclerView.smoothScrollToPosition(0)
+      refreshView(places.size)
     }
     viewModel.result.nonNullObserve(viewLifecycleOwner) {
       when (it) {

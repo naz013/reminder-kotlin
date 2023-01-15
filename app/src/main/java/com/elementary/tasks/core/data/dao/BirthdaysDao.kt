@@ -13,7 +13,10 @@ import androidx.room.OnConflictStrategy.REPLACE
 interface BirthdaysDao {
 
     @Query("SELECT * FROM Birthday")
-    fun all(): List<Birthday>
+    fun getAll(): List<Birthday>
+
+    @Query("SELECT * FROM Birthday WHERE LOWER(name) LIKE '%' || :query || '%'")
+    fun searchByName(query: String): List<Birthday>
 
     @Query("SELECT * FROM Birthday WHERE uuId=:id")
     fun loadById(id: String): LiveData<Birthday>

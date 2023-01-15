@@ -27,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
   private val viewModel by viewModel<GroupsViewModel>()
-  private var mAdapter = GroupsRecyclerAdapter()
+  private var groupsRecyclerAdapter = GroupsRecyclerAdapter()
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -53,28 +53,32 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun showGroups(reminderGroups: List<UiGroupList>) {
-    mAdapter.submitList(reminderGroups)
+    groupsRecyclerAdapter.submitList(reminderGroups)
     refreshView()
   }
 
   private fun changeColor(uiGroupList: UiGroupList) {
-    dialogues.showColorDialog(requireActivity(), uiGroupList.colorPosition, getString(R.string.color),
-      ThemeProvider.colorsForSliderThemed(requireContext())) {
+    dialogues.showColorDialog(
+      requireActivity(), uiGroupList.colorPosition, getString(R.string.color),
+      ThemeProvider.colorsForSliderThemed(requireContext())
+    ) {
       viewModel.changeGroupColor(uiGroupList.id, it)
     }
   }
 
   private fun initGroupsList() {
-    mAdapter.actionsListener = object : ActionsListener<UiGroupList> {
+    groupsRecyclerAdapter.actionsListener = object : ActionsListener<UiGroupList> {
       override fun onAction(view: View, position: Int, t: UiGroupList?, actions: ListActions) {
         if (t == null) return
         when (actions) {
           ListActions.MORE -> {
             showMore(view, t)
           }
+
           ListActions.EDIT -> {
             editGroup(t.id)
           }
+
           else -> {
           }
         }
@@ -82,12 +86,17 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
+        resources.getInteger(R.integer.num_of_cols),
+        StaggeredGridLayoutManager.VERTICAL
+      )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    binding.recyclerView.adapter = mAdapter
-    ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    binding.recyclerView.adapter = groupsRecyclerAdapter
+    ViewUtils.listenScrollableView(
+      binding.recyclerView,
+      { setToolbarAlpha(toAlpha(it.toFloat())) }) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
@@ -96,8 +105,12 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun showMore(view: View, t: UiGroupList) {
-    var items = arrayOf(getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
-    if (mAdapter.itemCount == 1) {
+    var items = arrayOf(
+      getString(R.string.change_color),
+      getString(R.string.edit),
+      getString(R.string.delete)
+    )
+    if (groupsRecyclerAdapter.itemCount == 1) {
       items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
     }
     Dialogues.showPopup(view, { item ->
@@ -118,14 +131,16 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun editGroup(id: String) {
-    PinLoginActivity.openLogged(requireContext(), Intent(context, CreateGroupActivity::class.java)
-      .putExtra(Constants.INTENT_ID, id))
+    PinLoginActivity.openLogged(
+      requireContext(), Intent(context, CreateGroupActivity::class.java)
+        .putExtra(Constants.INTENT_ID, id)
+    )
   }
 
   override fun getTitle(): String = getString(R.string.groups)
 
   private fun refreshView() {
-    if (mAdapter.itemCount == 0) {
+    if (groupsRecyclerAdapter.itemCount == 0) {
       binding.emptyItem.visibility = View.VISIBLE
       binding.recyclerView.visibility = View.GONE
     } else {

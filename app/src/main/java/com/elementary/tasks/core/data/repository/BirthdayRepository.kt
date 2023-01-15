@@ -10,6 +10,6 @@ class BirthdayRepository(private val birthdaysDao: BirthdaysDao) {
   }
 
   fun getAll(): List<Birthday> {
-    return birthdaysDao.all()
+    return birthdaysDao.getAll()
   }
 }

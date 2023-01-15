@@ -12,7 +12,11 @@ interface NotesDao {
 
     @Transaction
     @Query("SELECT * FROM Note")
-    fun all(): List<NoteWithImages>
+    fun getAll(): List<NoteWithImages>
+
+    @Transaction
+    @Query("SELECT * FROM Note WHERE LOWER(summary) LIKE '%' || :query || '%'")
+    fun searchByText(query: String): List<NoteWithImages>
 
     @Transaction
     @Query("SELECT * FROM Note")

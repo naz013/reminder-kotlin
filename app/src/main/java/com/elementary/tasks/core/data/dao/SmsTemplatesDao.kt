@@ -13,7 +13,10 @@ import androidx.room.OnConflictStrategy.REPLACE
 interface SmsTemplatesDao {
 
     @Query("SELECT * FROM SmsTemplate")
-    fun all(): List<SmsTemplate>
+    fun getAll(): List<SmsTemplate>
+
+    @Query("SELECT * FROM SmsTemplate WHERE LOWER(title) LIKE '%' || :query || '%'")
+    fun searchByTitle(query: String): List<SmsTemplate>
 
     @Query("SELECT * FROM SmsTemplate")
     fun loadAll(): LiveData<List<SmsTemplate>>

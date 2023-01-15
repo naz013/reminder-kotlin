@@ -17,7 +17,7 @@ class NoteDataFlowRepository(appDb: AppDb) : DatabaseRepository<NoteWithImages>(
   }
 
   override suspend fun all(): List<NoteWithImages> {
-    return appDb.notesDao().all()
+    return appDb.notesDao().getAll()
   }
 
   override suspend fun delete(t: NoteWithImages) {

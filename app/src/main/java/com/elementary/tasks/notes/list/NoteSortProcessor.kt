@@ -1,21 +1,15 @@
-package com.elementary.tasks.notes.list.filters
+package com.elementary.tasks.notes.list
 
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.filter.Modifier
 
-class SortModifier(
-  modifier: Modifier<UiNoteList>? = null,
-  callback: ((List<UiNoteList>) -> Unit)? = null
-) : Modifier<UiNoteList>(modifier, callback) {
+class NoteSortProcessor {
 
-  private var order: String = DATE_ZA
-
-  override fun apply(data: List<UiNoteList>): List<UiNoteList> {
+  fun apply(data: List<UiNoteList>, order: String): List<UiNoteList> {
     return when (order) {
-      DATE_AZ -> sortDateAz(super.apply(data))
-      TEXT_AZ -> sortNameAz(super.apply(data))
-      TEXT_ZA -> sortNameZa(super.apply(data))
-      else -> sortDateZa(super.apply(data))
+      DATE_AZ -> sortDateAz(data)
+      TEXT_AZ -> sortNameAz(data)
+      TEXT_ZA -> sortNameZa(data)
+      else -> sortDateZa(data)
     }
   }
 
@@ -33,11 +27,6 @@ class SortModifier(
 
   private fun sortDateZa(data: List<UiNoteList>): List<UiNoteList> {
     return data.sortedByDescending { it.formattedDateTime }
-  }
-
-  fun setOrder(value: String?) {
-    order = value ?: DATE_ZA
-    onChanged()
   }
 
   companion object {
