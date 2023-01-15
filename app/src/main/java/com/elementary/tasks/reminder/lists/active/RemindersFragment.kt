@@ -21,19 +21,18 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
-import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
-    (List<UiReminderList>) -> Unit {
+class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -61,9 +60,8 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
   )
 
   private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
-  private val searchModifier = SearchModifier(null, this)
   private val searchMenuHandler = SearchMenuHandler(systemServiceProvider.provideSearchManager()) {
-    searchModifier.setSearchValue(it)
+    viewModel.onSearchUpdate(it)
   }
 
   override fun inflate(
@@ -76,7 +74,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
     super.onViewCreated(view, savedInstanceState)
     addMenu(R.menu.fragment_active_menu, { true }) {
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
-      it.getItem(0)?.isVisible = searchModifier.hasOriginal()
     }
 
     binding.fab.setOnClickListener {
@@ -118,8 +115,9 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
   }
 
   private fun showData(result: List<UiReminderList>) {
-    searchModifier.original = result.toMutableList()
-    activity?.invalidateOptionsMenu()
+    remindersAdapter.submitList(result)
+    binding.recyclerView.smoothScrollToPosition(0)
+    reloadEmptyView(result.size)
   }
 
   private fun initList() {
@@ -148,22 +146,12 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(),
       if (it) binding.fab.show()
       else binding.fab.hide()
     }
-    reloadView(0)
+    reloadEmptyView(0)
   }
 
   override fun getTitle(): String = getString(R.string.tasks)
 
-  private fun reloadView(count: Int) {
-    if (count > 0) {
-      binding.emptyItem.visibility = View.GONE
-    } else {
-      binding.emptyItem.visibility = View.VISIBLE
-    }
-  }
-
-  override fun invoke(result: List<UiReminderList>) {
-    remindersAdapter.submitList(result)
-    binding.recyclerView.smoothScrollToPosition(0)
-    reloadView(result.size)
+  private fun reloadEmptyView(count: Int) {
+    binding.emptyItem.visibleGone(count == 0)
   }
 }

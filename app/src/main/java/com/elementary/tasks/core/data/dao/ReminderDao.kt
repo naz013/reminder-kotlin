@@ -36,6 +36,13 @@ interface ReminderDao {
     @Transaction
     @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
         AND ReminderGroup.groupUuId=Reminder.groupUuId 
+        AND Reminder.summary LIKE '%' || :query || '%'
+        ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
+    fun searchBySummaryAndRemovedStatus(query: String, removed: Boolean = false): List<Reminder>
+
+    @Transaction
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
+        AND ReminderGroup.groupUuId=Reminder.groupUuId 
         ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
     fun getByRemovedStatus(removed: Boolean = false): List<Reminder>
 
