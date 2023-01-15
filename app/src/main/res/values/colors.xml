@@ -221,4 +221,8 @@
 
     <color name="glass_card_bg_start">#0C2196F3</color>
     <color name="glass_card_bg_end">#1A2196F3</color>
+
+    <!-- Magic -->
+    <color name="widget_preview_bg_start">#59C173</color>
+    <color name="widget_preview_bg_end">#5D26C1</color>
 </resources>

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.app_widgets.buttons
 
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
@@ -14,6 +13,7 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+  private lateinit var prefsProvider: CombinedWidgetPrefsProvider
 
   override fun inflateBinding() = ActivityWidgetCombinedConfigBinding.inflate(layoutInflater)
 
@@ -22,6 +22,7 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
     readIntent()
 
     binding.fabSave.setOnClickListener { savePrefs() }
+    binding.closeButton.setOnClickListener { finish() }
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->
       binding.widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
@@ -32,10 +33,10 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
   }
 
   private fun showCurrentTheme() {
-    val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
-    val headerBg = sp.getInt(WIDGET_BG_COLOR + widgetID, 0)
-    binding.bgColorSlider.setSelection(headerBg)
-    updateIcons(headerBg)
+    val position = prefsProvider.getWidgetBackground()
+    binding.bgColorSlider.setSelection(position)
+    binding.widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+    updateIcons(position)
   }
 
   private fun updateIcons(code: Int) {
@@ -43,7 +44,7 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
     binding.btnAddReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_alarm_24px, isDark))
     binding.btnAddNote.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_note_24px, isDark))
     binding.btnAddBirthday.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cake_24px, isDark))
-    binding.btnVoice.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isDark))
+    binding.btnVoice.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_black_24px, isDark))
   }
 
   private fun readIntent() {
@@ -56,24 +57,17 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
     if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
       finish()
     }
+    prefsProvider = CombinedWidgetPrefsProvider(this, widgetID)
     resultValue = Intent()
     resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
     setResult(RESULT_CANCELED, resultValue)
   }
 
   private fun savePrefs() {
-    val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
-    sp.edit()
-      .putInt(WIDGET_BG_COLOR + widgetID, binding.bgColorSlider.selectedItem)
-      .apply()
+    prefsProvider.setWidgetBackground(binding.bgColorSlider.selectedItem)
     val appWidgetManager = AppWidgetManager.getInstance(this)
-    CombinedButtonsWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+    CombinedButtonsWidget.updateWidget(this, appWidgetManager, prefsProvider)
     setResult(RESULT_OK, resultValue)
     finish()
-  }
-
-  companion object {
-    const val WIDGET_PREF = "combined_buttons_prefs"
-    const val WIDGET_BG_COLOR = "widget_bg_color"
   }
 }

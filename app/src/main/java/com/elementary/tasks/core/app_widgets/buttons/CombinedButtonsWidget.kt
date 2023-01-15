@@ -3,7 +3,6 @@ package com.elementary.tasks.core.app_widgets.buttons
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.SharedPreferences
 import android.widget.RemoteViews
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -15,21 +14,20 @@ class CombinedButtonsWidget : AppWidgetProvider() {
 
   override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
     super.onUpdate(context, appWidgetManager, appWidgetIds)
-    val sp = context.getSharedPreferences(
-      CombinedWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
-    for (i in appWidgetIds) {
-      updateWidget(context, appWidgetManager, sp, i)
+    for (widgetId in appWidgetIds) {
+      updateWidget(context, appWidgetManager, CombinedWidgetPrefsProvider(context, widgetId))
     }
   }
 
   companion object {
 
-    fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
-                     sp: SharedPreferences, widgetID: Int) {
-      val color = sp.getInt(CombinedWidgetConfigActivity.WIDGET_BG_COLOR + widgetID, 0)
+    fun updateWidget(context: Context,
+                     appWidgetManager: AppWidgetManager,
+                     prefsProvider: CombinedWidgetPrefsProvider) {
+      val color = prefsProvider.getWidgetBackground()
 
       val rv = RemoteViews(context.packageName, R.layout.widget_combined_buttons)
-      rv.setInt(R.id.widgetBg, "setBackgroundResource", WidgetUtils.newWidgetBg(color))
+      rv.setInt(android.R.id.background, "setBackgroundResource", WidgetUtils.newWidgetBg(color))
 
       if (WidgetUtils.isDarkBg(color)) {
         WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.color.pureWhite,
@@ -38,7 +36,7 @@ class CombinedButtonsWidget : AppWidgetProvider() {
           R.id.btn_add_note, CreateNoteActivity::class.java)
         WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.color.pureWhite,
           R.id.btn_add_birthday, AddBirthdayActivity::class.java)
-        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.color.pureWhite,
+        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_black_24px, R.color.pureWhite,
           R.id.btn_voice, VoiceWidgetDialog::class.java)
       } else {
         WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.color.pureBlack,
@@ -47,11 +45,11 @@ class CombinedButtonsWidget : AppWidgetProvider() {
           R.id.btn_add_note, CreateNoteActivity::class.java)
         WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.color.pureBlack,
           R.id.btn_add_birthday, AddBirthdayActivity::class.java)
-        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.color.pureBlack,
+        WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_black_24px, R.color.pureBlack,
           R.id.btn_voice, VoiceWidgetDialog::class.java)
       }
 
-      appWidgetManager.updateAppWidget(widgetID, rv)
+      appWidgetManager.updateAppWidget(prefsProvider.widgetId, rv)
     }
   }
 }

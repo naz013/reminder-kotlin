@@ -663,4 +663,6 @@
     <string name="do_not_shuffle_digits_during_pin_login">Do not shuffle digits during PIN login</string>
     <string name="shuffle_digits_during_pin_login">Shuffle digits during PIN login</string>
 
+    <string name="widget_combined_description">Create events quickly from home screen</string>
+
 </resources>
