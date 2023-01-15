@@ -144,6 +144,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       viewModel.removePartial()
     }
     binding.settingsButton.setOnClickListener { showSettingsPopup() }
+    binding.closeButton.setOnClickListener { finish() }
     initList()
     ttsLauncher.checkTts()
     initViewModel()
