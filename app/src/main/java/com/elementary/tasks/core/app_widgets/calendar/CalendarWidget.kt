@@ -159,7 +159,8 @@ class CalendarWidget : AppWidgetProvider() {
         context,
         0,
         startActivityIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_MUTABLE,
+        ignoreIn13 = true
       )
       rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
 

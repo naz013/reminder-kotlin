@@ -94,7 +94,8 @@ class TasksWidget : AppWidgetProvider() {
         context,
         0,
         startActivityIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_MUTABLE,
+        ignoreIn13 = true
       )
       rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent)
 

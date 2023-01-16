@@ -11,14 +11,19 @@ object PendingIntentWrapper {
     context: Context,
     requestCode: Int,
     intent: Intent,
-    flags: Int
+    flags: Int,
+    ignoreIn13: Boolean = false
   ): PendingIntent {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       PendingIntent.getActivity(
         context,
         requestCode,
         intent,
-        PendingIntent.FLAG_IMMUTABLE
+        if (ignoreIn13) {
+          flags
+        } else {
+          PendingIntent.FLAG_IMMUTABLE
+        }
       )
     } else {
       PendingIntent.getActivity(context, requestCode, intent, flags)

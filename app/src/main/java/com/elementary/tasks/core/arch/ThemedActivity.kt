@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -20,6 +21,7 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 import java.io.Serializable
 
 abstract class ThemedActivity : AppCompatActivity() {
@@ -62,6 +64,13 @@ abstract class ThemedActivity : AppCompatActivity() {
           invokeBackPress()
         }
       })
+    }
+    logId()
+  }
+
+  private fun logId() {
+    if (intent.hasExtra(Constants.INTENT_ID)) {
+      Timber.d("Has ID as ${intent.getStringExtra(Constants.INTENT_ID)}")
     }
   }
 
