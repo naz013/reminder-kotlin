@@ -1,39 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/events"
-        android:textAppearance="?textAppearanceHeadline4"
-        app:fontFamily="@font/lobster_regular" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal">
 
-    <RelativeLayout
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:gravity="center_vertical"
+            android:text="@string/events"
+            android:textAppearance="?textAppearanceHeadline5" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/closeButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_clear_black_24dp"
+            app:tint="?colorOnBackground" />
+
+    </FrameLayout>
+
+    <com.elementary.tasks.core.views.gradient.UiGradientFrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="16dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/widget_preview_bg" />
+        android:layout_marginTop="16dp"
+        app:gradientFrameLayout_cornerRadius="0dp"
+        app:gradientFrameLayout_endColor="@color/widget_preview_bg_end"
+        app:gradientFrameLayout_startColor="@color/widget_preview_bg_start">
 
         <LinearLayout
             android:id="@+id/widgetView"
             android:layout_width="match_parent"
             android:layout_height="156dp"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/material_margin"
             android:layout_marginEnd="@dimen/material_margin"
             android:orientation="vertical">
@@ -179,7 +190,8 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
+
+    </com.elementary.tasks.core.views.gradient.UiGradientFrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -193,36 +205,53 @@
             android:layout_marginEnd="@dimen/material_margin"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
+            <TextView
+                style="@style/UiComponentSectionHeader"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/background"
-                android:textAppearance="?textAppearanceCaption"
-                android:textColor="?colorSecondary" />
+                android:text="@string/background" />
 
-            <com.github.naz013.colorslider.ColorSlider
-                android:id="@+id/bgColorSlider"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="16dp"
-                app:cs_colors="@array/widget_colors" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/list_item_background"
-                android:textAppearance="?textAppearanceCaption"
-                android:textColor="?colorSecondary" />
+                app:cardBackgroundColor="@color/glass_card_bg_start"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp">
 
-            <com.github.naz013.colorslider.ColorSlider
-                android:id="@+id/listItemBgColorSlider"
+                <com.github.naz013.colorslider.ColorSlider
+                    android:id="@+id/bgColorSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    app:cs_colors="@array/widget_colors" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                style="@style/UiComponentSectionHeader"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cs_colors="@array/widget_colors" />
+                android:text="@string/list_item_background" />
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/glass_card_bg_start"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp">
+
+                <com.github.naz013.colorslider.ColorSlider
+                    android:id="@+id/listItemBgColorSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    app:cs_colors="@array/widget_colors" />
+
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 

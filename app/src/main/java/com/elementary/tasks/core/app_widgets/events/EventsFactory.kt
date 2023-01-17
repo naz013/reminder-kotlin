@@ -39,6 +39,7 @@ class EventsFactory(
     AppWidgetManager.EXTRA_APPWIDGET_ID,
     AppWidgetManager.INVALID_APPWIDGET_ID
   )
+  private val prefsProvider = EventsWidgetPrefsProvider(context, widgetID)
 
   override fun onCreate() {
     data.clear()
@@ -144,9 +145,8 @@ class EventsFactory(
   }
 
   override fun getViewAt(i: Int): RemoteViews? {
-    val sp = context.getSharedPreferences(EventsWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
-    val itemTextSize = sp.getFloat(EventsWidgetConfigActivity.WIDGET_TEXT_SIZE + widgetID, 0f)
-    val itemBgColor = sp.getInt(EventsWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
+    val itemTextSize = prefsProvider.getTextSize()
+    val itemBgColor = prefsProvider.getItemBackground()
 
     val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
       ContextCompat.getColor(context, R.color.pureWhite)

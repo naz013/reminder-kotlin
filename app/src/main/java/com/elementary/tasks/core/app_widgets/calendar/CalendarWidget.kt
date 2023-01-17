@@ -175,21 +175,26 @@ class CalendarWidget : AppWidgetProvider() {
       nextIntent.action = CalendarNextReceiver.ACTION_NEXT
       nextIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
       nextIntent.putExtra(CalendarNextReceiver.ARG_VALUE, 2)
-      val nextPendingIntent =
-        PendingIntentWrapper.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+      val nextPendingIntent = PendingIntentWrapper.getBroadcast(
+        context,
+        0,
+        nextIntent,
+        PendingIntent.FLAG_MUTABLE,
+        ignoreIn13 = true
+      )
       rv.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent)
 
       val previousIntent = Intent(context, CalendarPreviousReceiver::class.java)
       previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS
       previousIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
       previousIntent.putExtra(CalendarPreviousReceiver.ARG_VALUE, 1)
-      val previousPendingIntent =
-        PendingIntentWrapper.getBroadcast(
-          context,
-          0,
-          previousIntent,
-          PendingIntent.FLAG_UPDATE_CURRENT
-        )
+      val previousPendingIntent = PendingIntentWrapper.getBroadcast(
+        context,
+        0,
+        previousIntent,
+        PendingIntent.FLAG_MUTABLE,
+        ignoreIn13 = true
+      )
       rv.setOnClickPendingIntent(R.id.btn_prev, previousPendingIntent)
 
       appWidgetManager.updateAppWidget(sp.widgetId, rv)

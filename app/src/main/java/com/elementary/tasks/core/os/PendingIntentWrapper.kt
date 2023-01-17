@@ -34,14 +34,19 @@ object PendingIntentWrapper {
     context: Context,
     requestCode: Int,
     intent: Intent,
-    flags: Int
+    flags: Int,
+    ignoreIn13: Boolean = false
   ): PendingIntent {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       PendingIntent.getBroadcast(
         context,
         requestCode,
         intent,
-        PendingIntent.FLAG_IMMUTABLE
+        if (ignoreIn13) {
+          flags
+        } else {
+          PendingIntent.FLAG_IMMUTABLE
+        }
       )
     } else {
       PendingIntent.getBroadcast(context, requestCode, intent, flags)
@@ -52,14 +57,19 @@ object PendingIntentWrapper {
     context: Context,
     requestCode: Int,
     intent: Intent,
-    flags: Int
+    flags: Int,
+    ignoreIn13: Boolean = false
   ): PendingIntent {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       PendingIntent.getService(
         context,
         requestCode,
         intent,
-        PendingIntent.FLAG_IMMUTABLE
+        if (ignoreIn13) {
+          flags
+        } else {
+          PendingIntent.FLAG_IMMUTABLE
+        }
       )
     } else {
       PendingIntent.getService(context, requestCode, intent, flags)
