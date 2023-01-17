@@ -126,7 +126,6 @@
         android:text="@string/background" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/afterCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_margin"

@@ -1,21 +1,22 @@
 package com.elementary.tasks.core.app_widgets.calendar
 
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+  private lateinit var prefsProvider: CalendarWidgetPrefsProvider
 
   override fun inflateBinding() = ActivityWidgetCalendarConfigBinding.inflate(layoutInflater)
 
@@ -23,6 +24,7 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
     super.onCreate(savedInstanceState)
     readIntent()
     binding.fabSave.setOnClickListener { savePrefs() }
+    binding.closeButton.setOnClickListener { finish() }
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->
       updateContent(position)
@@ -41,13 +43,12 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
   }
 
   private fun showCurrentTheme() {
-    val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
-
-    val headerBg = sp.getInt(WIDGET_HEADER_BG + widgetID, 0)
+    val headerBg = prefsProvider.getHeaderBackground()
     binding.headerBgColorSlider.setSelection(headerBg)
+    binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(headerBg))
     updateHeader(headerBg)
 
-    val itemBg = sp.getInt(WIDGET_BG + widgetID, 0)
+    val itemBg = prefsProvider.getBackground()
     binding.bgColorSlider.setSelection(itemBg)
     updateContent(itemBg)
   }
@@ -63,11 +64,41 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
       colorOf(R.color.pureBlack)
     }
 
-    binding.btnSettings.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_settings_24px, color))
-    binding.btnAddTask.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_add_24px, color))
-    binding.btnVoice.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_mic_24px, color))
-    binding.btnNext.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_keyboard_arrow_right_24px, color))
-    binding.btnPrev.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_keyboard_arrow_left_24px, color))
+    binding.btnSettings.setImageBitmap(
+      ViewUtils.createIcon(
+        this,
+        R.drawable.ic_twotone_settings_24px,
+        color
+      )
+    )
+    binding.btnAddTask.setImageBitmap(
+      ViewUtils.createIcon(
+        this,
+        R.drawable.ic_twotone_add_24px,
+        color
+      )
+    )
+    binding.btnVoice.setImageBitmap(
+      ViewUtils.createIcon(
+        this,
+        R.drawable.ic_twotone_mic_24px,
+        color
+      )
+    )
+    binding.btnNext.setImageBitmap(
+      ViewUtils.createIcon(
+        this,
+        R.drawable.ic_twotone_keyboard_arrow_right_24px,
+        color
+      )
+    )
+    binding.btnPrev.setImageBitmap(
+      ViewUtils.createIcon(
+        this,
+        R.drawable.ic_twotone_keyboard_arrow_left_24px,
+        color
+      )
+    )
     binding.widgetTitle.setTextColor(color)
   }
 
@@ -75,43 +106,34 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
     val intent = intent
     val extras = intent.extras
     if (extras != null) {
-      widgetID = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-        AppWidgetManager.INVALID_APPWIDGET_ID)
+      widgetID = extras.getInt(
+        AppWidgetManager.EXTRA_APPWIDGET_ID,
+        AppWidgetManager.INVALID_APPWIDGET_ID
+      )
     }
-    if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
-      finish()
-    }
+    prefsProvider = CalendarWidgetPrefsProvider(this, widgetID)
     resultValue = Intent()
     resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
     setResult(RESULT_CANCELED, resultValue)
+    if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
+      finish()
+    }
   }
 
   private fun savePrefs() {
-    val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
-
     val cal = GregorianCalendar()
     cal.timeInMillis = System.currentTimeMillis()
     val month = cal.get(Calendar.MONTH)
     val year = cal.get(Calendar.YEAR)
 
-    sp.edit()
-      .putInt(WIDGET_HEADER_BG + widgetID, binding.headerBgColorSlider.selectedItem)
-      .putInt(WIDGET_BG + widgetID, binding.bgColorSlider.selectedItem)
-      .putInt(CALENDAR_WIDGET_MONTH + widgetID, month)
-      .putInt(CALENDAR_WIDGET_YEAR + widgetID, year)
-      .apply()
+    prefsProvider.setBackground(binding.bgColorSlider.selectedItem)
+    prefsProvider.setHeaderBackground(binding.headerBgColorSlider.selectedItem)
+    prefsProvider.setMonth(month)
+    prefsProvider.setYear(year)
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
-    CalendarWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+    CalendarWidget.updateWidget(this, appWidgetManager, prefsProvider)
     setResult(RESULT_OK, resultValue)
     finish()
-  }
-
-  companion object {
-    const val WIDGET_PREF = "new_calendar_pref"
-    const val WIDGET_HEADER_BG = "new_calendar_header_bg"
-    const val WIDGET_BG = "new_calendar_bg"
-    const val CALENDAR_WIDGET_MONTH = "new_calendar_month_"
-    const val CALENDAR_WIDGET_YEAR = "new_calendar_year_"
   }
 }

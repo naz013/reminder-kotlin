@@ -10,6 +10,14 @@ abstract class WidgetPrefsProvider(
 
   private val sp = context.getSharedPreferences(fileName, Context.MODE_PRIVATE)
 
+  fun putFloat(key: String, value: Float) {
+    sp.edit().putFloat(key + widgetId, value).apply()
+  }
+
+  fun getFloat(key: String, def: Float = 0f): Float {
+    return sp.getFloat(key + widgetId, def)
+  }
+
   fun putInt(key: String, value: Int) {
     sp.edit().putInt(key + widgetId, value).apply()
   }

@@ -665,5 +665,6 @@
 
     <string name="widget_combined_description">Create events quickly from home screen</string>
     <string name="widget_notes_description">Access your notes</string>
+    <string name="widget_calendar_description">See your events in Monthly Calendar</string>
 
 </resources>

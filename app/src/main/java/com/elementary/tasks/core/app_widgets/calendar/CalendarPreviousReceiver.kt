@@ -15,27 +15,24 @@ class CalendarPreviousReceiver : BroadcastReceiver(), KoinComponent {
 
   override fun onReceive(context: Context?, intent: Intent?) {
     Timber.d("onReceive: $intent")
-    if (intent != null && ACTION_PREVIOUS == intent.action) {
+    if (intent != null && ACTION_PREVIOUS == intent.action && context != null) {
       val action = intent.getIntExtra(ARG_VALUE, 0)
       val widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
         AppWidgetManager.INVALID_APPWIDGET_ID)
-      val sp = context?.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
-        ?: return
-      var month = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetId, 0)
-      var year = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetId, 0)
+      val prefsProvider = CalendarWidgetPrefsProvider(context, widgetId)
+      var month = prefsProvider.getMonth()
+      var year = prefsProvider.getYear()
       if (action != 0) {
-        val editor = sp.edit()
         if (month == 0) {
           month = 11
         } else {
           month -= 1
         }
-        editor.putInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetId, month)
+        prefsProvider.setMonth(month)
         if (month == 11) {
           year -= 1
         }
-        editor.putInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetId, year)
-        editor.apply()
+        prefsProvider.setYear(year)
         updatesHelper.updateCalendarWidget()
       }
     }

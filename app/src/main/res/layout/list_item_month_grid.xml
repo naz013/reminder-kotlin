@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dayLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:minHeight="35dp"
     android:orientation="vertical">
 
@@ -13,22 +15,19 @@
         <TextView
             android:id="@+id/currentMark"
             android:layout_width="match_parent"
-            android:layout_height="12dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@color/secondaryBlue" />
 
         <TextView
             android:id="@+id/reminderMark"
             android:layout_width="match_parent"
-            android:layout_height="12dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@color/secondaryRed" />
 
         <TextView
             android:id="@+id/birthdayMark"
             android:layout_width="match_parent"
-            android:layout_height="11dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@color/secondaryGreen" />
 
     </LinearLayout>
@@ -40,7 +39,7 @@
         android:layout_gravity="center"
         android:gravity="center|center_vertical"
         android:minHeight="35dp"
-        android:text="25"
-        android:textColor="@color/pureBlack" />
+        android:textColor="@color/pureBlack"
+        tools:text="25" />
 
 </FrameLayout>
