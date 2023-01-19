@@ -17,7 +17,8 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.google_tasks.TasksConstants
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class TasksFactory(
   private val context: Context,
@@ -27,6 +28,7 @@ class TasksFactory(
 
   private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
     AppWidgetManager.INVALID_APPWIDGET_ID)
+  private val prefsProvider = GoogleTasksWidgetPrefsProvider(context, widgetID)
 
   private val mData = mutableListOf<GoogleTask>()
   private val map = mutableMapOf<String, Int>()
@@ -56,7 +58,6 @@ class TasksFactory(
   }
 
   override fun getViewAt(i: Int): RemoteViews {
-    val sp = context.getSharedPreferences(TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
     val rv = RemoteViews(context.packageName, R.layout.list_item_widget_google_task)
 
     rv.setTextViewText(R.id.note, "")
@@ -66,7 +67,7 @@ class TasksFactory(
       rv.setTextViewText(R.id.task, context.getString(R.string.failed_to_load))
       return rv
     }
-    val itemBgColor = sp.getInt(TasksWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
+    val itemBgColor = prefsProvider.getItemBackground()
 
     rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
 
@@ -119,9 +120,7 @@ class TasksFactory(
     val fillInIntent = Intent()
     fillInIntent.putExtra(Constants.INTENT_ID, task.taskId)
     fillInIntent.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
-    rv.setOnClickFillInIntent(R.id.task, fillInIntent)
-    rv.setOnClickFillInIntent(R.id.note, fillInIntent)
-    rv.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
+    rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
     return rv
   }
 

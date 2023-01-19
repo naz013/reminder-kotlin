@@ -5,15 +5,13 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.google_tasks.TasksConstants
+import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 
 class TasksWidget : AppWidgetProvider() {
 
@@ -22,36 +20,22 @@ class TasksWidget : AppWidgetProvider() {
     appWidgetManager: AppWidgetManager,
     appWidgetIds: IntArray
   ) {
-    val sp = context.getSharedPreferences(
-      TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE
-    )
-    for (i in appWidgetIds) {
-      updateWidget(context, appWidgetManager, sp, i)
+    for (id in appWidgetIds) {
+      updateWidget(context, appWidgetManager, GoogleTasksWidgetPrefsProvider(context, id))
     }
     super.onUpdate(context, appWidgetManager, appWidgetIds)
-  }
-
-  override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-    super.onDeleted(context, appWidgetIds)
-    val editor = context.getSharedPreferences(
-      TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE
-    ).edit()
-    for (widgetID in appWidgetIds) {
-      editor.remove(TasksWidgetConfigActivity.WIDGET_HEADER_BG + widgetID)
-      editor.remove(TasksWidgetConfigActivity.WIDGET_ITEM_BG + widgetID)
-    }
-    editor.apply()
   }
 
   companion object {
 
     fun updateWidget(
-      context: Context, appWidgetManager: AppWidgetManager,
-      sp: SharedPreferences, widgetID: Int
+      context: Context,
+      appWidgetManager: AppWidgetManager,
+      prefsProvider: GoogleTasksWidgetPrefsProvider
     ) {
       val rv = RemoteViews(context.packageName, R.layout.widget_google_tasks)
 
-      val headerBgColor = sp.getInt(TasksWidgetConfigActivity.WIDGET_HEADER_BG + widgetID, 0)
+      val headerBgColor = prefsProvider.getHeaderBackground()
 
       rv.setInt(R.id.headerBg, "setBackgroundResource", WidgetUtils.newWidgetBg(headerBgColor))
 
@@ -60,7 +44,7 @@ class TasksWidget : AppWidgetProvider() {
           context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureWhite,
           R.id.btn_settings, TasksWidgetConfigActivity::class.java
         ) {
-          it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+          it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, prefsProvider.widgetId)
           return@initButton it
         }
         WidgetUtils.initButton(
@@ -76,7 +60,7 @@ class TasksWidget : AppWidgetProvider() {
           context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureBlack,
           R.id.btn_settings, TasksWidgetConfigActivity::class.java
         ) {
-          it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+          it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, prefsProvider.widgetId)
           return@initButton it
         }
         WidgetUtils.initButton(
@@ -100,10 +84,10 @@ class TasksWidget : AppWidgetProvider() {
       rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent)
 
       val adapter = Intent(context, TasksService::class.java)
-      adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+      adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, prefsProvider.widgetId)
       rv.setRemoteAdapter(android.R.id.list, adapter)
-      appWidgetManager.updateAppWidget(widgetID, rv)
-      appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, android.R.id.list)
+      appWidgetManager.updateAppWidget(prefsProvider.widgetId, rv)
+      appWidgetManager.notifyAppWidgetViewDataChanged(prefsProvider.widgetId, android.R.id.list)
     }
   }
 }
