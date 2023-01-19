@@ -663,4 +663,10 @@
     <string name="do_not_shuffle_digits_during_pin_login">Do not shuffle digits during PIN login</string>
     <string name="shuffle_digits_during_pin_login">Shuffle digits during PIN login</string>
 
+    <string name="widget_combined_description">Create events quickly from home screen</string>
+    <string name="widget_notes_description">Access your notes</string>
+    <string name="widget_calendar_description">See your events in Monthly Calendar</string>
+    <string name="widget_events_description">Show active Reminders and Birthdays</string>
+    <string name="widget_google_tasks_description">Show active Google Tasks</string>
+
 </resources>

@@ -6,14 +6,15 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
 class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+  private lateinit var prefsProvider: NotesWidgetPrefsProvider
 
   override fun inflateBinding() = ActivityWidgetNoteConfigBinding.inflate(layoutInflater)
 
@@ -21,7 +22,7 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
     super.onCreate(savedInstanceState)
     readIntent()
 
-    binding.backButton.setOnClickListener { finish() }
+    binding.closeButton.setOnClickListener { finish() }
     binding.fabSave.setOnClickListener { savePrefs() }
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->
@@ -34,16 +35,28 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
   }
 
   private fun showCurrentTheme() {
-    val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
-    val headerBg = sp.getInt(WIDGET_HEADER_BG_COLOR + widgetID, 0)
-    binding.bgColorSlider.setSelection(headerBg)
-    updateIcons(headerBg)
+    val position = prefsProvider.getHeaderBackground()
+    binding.bgColorSlider.setSelection(position)
+    binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+    updateIcons(position)
   }
 
   private fun updateIcons(code: Int) {
     val isDark = WidgetUtils.isDarkBg(code)
-    binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
-    binding.btnAddNote.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
+    binding.btnSettings.setImageDrawable(
+      ViewUtils.tintIcon(
+        this,
+        R.drawable.ic_twotone_settings_24px,
+        isDark
+      )
+    )
+    binding.btnAddNote.setImageDrawable(
+      ViewUtils.tintIcon(
+        this,
+        R.drawable.ic_twotone_add_24px,
+        isDark
+      )
+    )
     if (isDark) {
       binding.widgetTitle.setTextColor(colorOf(R.color.pureWhite))
     } else {
@@ -55,32 +68,27 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
     val intent = intent
     val extras = intent.extras
     if (extras != null) {
-      widgetID = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-        AppWidgetManager.INVALID_APPWIDGET_ID)
+      widgetID = extras.getInt(
+        AppWidgetManager.EXTRA_APPWIDGET_ID,
+        AppWidgetManager.INVALID_APPWIDGET_ID
+      )
     }
-    if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
-      finish()
-    }
+    prefsProvider = NotesWidgetPrefsProvider(this, widgetID)
     resultValue = Intent()
     resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
     setResult(RESULT_CANCELED, resultValue)
+    if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
+      finish()
+    }
   }
 
   private fun savePrefs() {
-    val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
-    sp.edit()
-      .putInt(WIDGET_HEADER_BG_COLOR + widgetID, binding.bgColorSlider.selectedItem)
-      .apply()
+    prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
     val appWidgetManager = AppWidgetManager.getInstance(this)
     if (!isFinishing) {
-      NotesWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+      NotesWidget.updateWidget(this, appWidgetManager, prefsProvider)
     }
     setResult(RESULT_OK, resultValue)
     finish()
-  }
-
-  companion object {
-    const val WIDGET_PREF = "new_notes_prefs"
-    const val WIDGET_HEADER_BG_COLOR = "widget_header_bg_color"
   }
 }

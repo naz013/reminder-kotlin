@@ -18,15 +18,17 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
-  private var textSize: Int = 0
+  private var textSize: Int = 14
+  private lateinit var prefsProvider: EventsWidgetPrefsProvider
 
   override fun inflateBinding() = ActivityWidgetCurrentTasksConfigBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     readIntent()
-
     binding.fabSave.setOnClickListener { showTextSizeDialog() }
+    binding.closeButton.setOnClickListener { finish() }
+
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->
       binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
@@ -46,13 +48,13 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
   }
 
   private fun showCurrentTheme() {
-    val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
-
-    val headerBg = sp.getInt(WIDGET_HEADER_BG + widgetID, 0)
+    textSize = prefsProvider.getTextSize().takeIf { it != 0f }?.toInt() ?: 14
+    val headerBg = prefsProvider.getHeaderBackground()
     binding.bgColorSlider.setSelection(headerBg)
+    binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(headerBg))
     updateIcons(headerBg)
 
-    val itemBg = sp.getInt(WIDGET_ITEM_BG + widgetID, 0)
+    val itemBg = prefsProvider.getItemBackground()
     binding.listItemBgColorSlider.setSelection(itemBg)
     updateText(itemBg)
   }
@@ -61,8 +63,11 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     val isDark = WidgetUtils.isDarkBg(code)
     if (isDark) {
       binding.statusIcon.setImageBitmap(
-        ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
-        colorOf(R.color.pureWhite)))
+        ViewUtils.createIcon(
+          this, R.drawable.ic_twotone_alarm_24px,
+          colorOf(R.color.pureWhite)
+        )
+      )
       binding.taskText.setTextColor(colorOf(R.color.pureWhite))
       binding.taskDate.setTextColor(colorOf(R.color.pureWhite))
       binding.taskNumber.setTextColor(colorOf(R.color.pureWhite))
@@ -70,8 +75,11 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
       binding.leftTime.setTextColor(colorOf(R.color.pureWhite))
     } else {
       binding.statusIcon.setImageBitmap(
-        ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
-        colorOf(R.color.pureBlack)))
+        ViewUtils.createIcon(
+          this, R.drawable.ic_twotone_alarm_24px,
+          colorOf(R.color.pureBlack)
+        )
+      )
       binding.taskText.setTextColor(colorOf(R.color.pureBlack))
       binding.taskDate.setTextColor(colorOf(R.color.pureBlack))
       binding.taskNumber.setTextColor(colorOf(R.color.pureBlack))
@@ -82,9 +90,27 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
 
   private fun updateIcons(code: Int) {
     val isDark = WidgetUtils.isDarkBg(code)
-    binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
-    binding.btnAddTask.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
-    binding.btnVoice.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isDark))
+    binding.btnSettings.setImageDrawable(
+      ViewUtils.tintIcon(
+        this,
+        R.drawable.ic_twotone_settings_24px,
+        isDark
+      )
+    )
+    binding.btnAddTask.setImageDrawable(
+      ViewUtils.tintIcon(
+        this,
+        R.drawable.ic_twotone_add_24px,
+        isDark
+      )
+    )
+    binding.btnVoice.setImageDrawable(
+      ViewUtils.tintIcon(
+        this,
+        R.drawable.ic_twotone_mic_24px,
+        isDark
+      )
+    )
     if (isDark) {
       binding.widgetTitle.setTextColor(colorOf(R.color.pureWhite))
     } else {
@@ -96,15 +122,20 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     val intent = intent
     val extras = intent.extras
     if (extras != null) {
-      widgetID = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-        AppWidgetManager.INVALID_APPWIDGET_ID)
+      widgetID = extras.getInt(
+        AppWidgetManager.EXTRA_APPWIDGET_ID,
+        AppWidgetManager.INVALID_APPWIDGET_ID
+      )
     }
-    if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
-      finish()
-    }
+
+    prefsProvider = EventsWidgetPrefsProvider(this, widgetID)
+
     resultValue = Intent()
     resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
     setResult(RESULT_CANCELED, resultValue)
+    if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
+      finish()
+    }
   }
 
   private fun showTextSizeDialog() {
@@ -126,8 +157,7 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
 
       }
     })
-    b.seekBar.progress = 2
-    textSize = 2 + 12
+    b.seekBar.progress = textSize - 12
     b.titleView.text = textSize.toString()
     builder.setView(b.root)
     builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
@@ -141,24 +171,13 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
   }
 
   private fun savePrefs() {
-    val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
-
-    sp.edit()
-      .putInt(WIDGET_HEADER_BG + widgetID, binding.bgColorSlider.selectedItem)
-      .putInt(WIDGET_ITEM_BG + widgetID, binding.listItemBgColorSlider.selectedItem)
-      .putFloat(WIDGET_TEXT_SIZE + widgetID, textSize.toFloat())
-      .apply()
+    prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
+    prefsProvider.setItemBackground(binding.listItemBgColorSlider.selectedItem)
+    prefsProvider.setTextSize(textSize.toFloat())
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
-    EventsWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+    EventsWidget.updateWidget(this, appWidgetManager, prefsProvider)
     setResult(RESULT_OK, resultValue)
     finish()
-  }
-
-  companion object {
-    const val WIDGET_PREF = "new_events_pref"
-    const val WIDGET_HEADER_BG = "new_events_header_bg"
-    const val WIDGET_ITEM_BG = "new_events_item_bg"
-    const val WIDGET_TEXT_SIZE = "new_events_text_size"
   }
 }

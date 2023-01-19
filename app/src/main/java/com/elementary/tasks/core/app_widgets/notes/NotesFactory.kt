@@ -3,6 +3,7 @@ package com.elementary.tasks.core.app_widgets.notes
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -13,7 +14,6 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.isAlmostTransparent
-import java.util.*
 
 class NotesFactory(
   private val context: Context,
@@ -55,8 +55,10 @@ class NotesFactory(
       rv.setTextViewText(R.id.note, context.getString(R.string.failed_to_load))
       return rv
     }
-    rv.setInt(R.id.noteBackground, "setBackgroundColor",
-      themeProvider.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette()))
+    rv.setInt(
+      R.id.noteBackground, "setBackgroundColor",
+      themeProvider.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette())
+    )
     if (note.getOpacity().isAlmostTransparent()) {
       rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureWhite))
     } else {
@@ -81,8 +83,13 @@ class NotesFactory(
       rv.setViewVisibility(R.id.noteImage, View.GONE)
     }
     rv.setTextViewText(R.id.note, note.getSummary())
-    val fillInIntent = Intent()
-    fillInIntent.putExtra(Constants.INTENT_ID, note.getKey())
+    val fillInIntent = Intent().apply {
+      putExtras(
+        Bundle().apply {
+          putExtra(Constants.INTENT_ID, note.getKey())
+        }
+      )
+    }
     rv.setOnClickFillInIntent(R.id.note, fillInIntent)
     rv.setOnClickFillInIntent(R.id.noteImage, fillInIntent)
     rv.setOnClickFillInIntent(R.id.noteBackground, fillInIntent)

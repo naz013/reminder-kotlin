@@ -1,32 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/quick_buttons"
-        android:textAppearance="?textAppearanceHeadline4"
-        app:fontFamily="@font/lobster_regular" />
-
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="16dp">
+        android:layout_height="56dp"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/widget_preview_bg" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:gravity="center_vertical"
+            android:text="@string/quick_buttons"
+            android:textAppearance="?textAppearanceHeadline5" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/closeButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_clear_black_24dp"
+            app:tint="?colorOnBackground" />
+
+    </FrameLayout>
+
+    <com.elementary.tasks.core.views.gradient.UiGradientFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        android:layout_marginTop="16dp"
+        app:gradientFrameLayout_cornerRadius="0dp"
+        app:gradientFrameLayout_endColor="@color/widget_preview_bg_end"
+        app:gradientFrameLayout_startColor="@color/widget_preview_bg_start">
 
         <LinearLayout
             android:id="@+id/widgetBg"
@@ -74,29 +85,39 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_mic_24px" />
+                app:srcCompat="@drawable/ic_twotone_mic_black_24px" />
 
         </LinearLayout>
-    </RelativeLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
+    </com.elementary.tasks.core.views.gradient.UiGradientFrameLayout>
+
+    <TextView
+        style="@style/UiComponentSectionHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/background" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/material_margin"
-        android:text="@string/background"
-        android:textAppearance="?textAppearanceCaption"
-        android:textColor="?colorSecondary" />
+        app:cardCornerRadius="5dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/glass_card_bg_start">
 
-    <com.github.naz013.colorslider.ColorSlider
-        android:id="@+id/bgColorSlider"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="@dimen/material_margin"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/material_margin"
-        app:cs_colors="@array/widget_colors" />
+        <com.github.naz013.colorslider.ColorSlider
+            android:id="@+id/bgColorSlider"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            app:cs_colors="@array/widget_colors" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <View
         android:layout_width="match_parent"

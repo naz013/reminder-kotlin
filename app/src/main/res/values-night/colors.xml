@@ -53,4 +53,8 @@
     <color name="glass_card_bg_start">#33FFE082</color>
     <color name="glass_card_bg_end">#4DFFE082</color>
 
+    <!-- Influenza -->
+    <color name="widget_preview_bg_start">#C04848</color>
+    <color name="widget_preview_bg_end">#480048</color>
+
 </resources>

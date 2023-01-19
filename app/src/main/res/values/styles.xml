@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="UiComponentSectionHeader" parent="@style/MyTheme.DayNight">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!--Components-->
 
     <style name="FilledBoxStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">

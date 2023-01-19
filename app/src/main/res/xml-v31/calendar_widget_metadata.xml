@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.elementary.tasks.core.app_widgets.calendar.CalendarWidgetConfigActivity"
-    android:initialLayout="@layout/widget_calendar"
-    android:minHeight="180dp"
-    android:minWidth="250dp"
-    android:previewImage="@drawable/widget_calendar"
     android:description="@string/widget_calendar_description"
+    android:initialLayout="@layout/widget_calendar"
+    android:minWidth="250dp"
+    android:minHeight="180dp"
+    android:previewImage="@drawable/widget_calendar"
     android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
     android:updatePeriodMillis="1800000"
-    android:widgetCategory="home_screen|keyguard" />
+    android:widgetCategory="home_screen|keyguard"
+    android:widgetFeatures="reconfigurable" />

@@ -73,21 +73,23 @@
         <GridView
             android:id="@+id/weekdayGrid"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:numColumns="7"
             android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:scrollbars="none"
+            tools:listitem="@layout/list_item_weekday_grid" />
 
         <GridView
             android:id="@+id/monthGrid"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:horizontalSpacing="1dp"
             android:numColumns="7"
             android:overScrollMode="never"
             android:scrollbars="none"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="1dp" />
+            android:verticalSpacing="1dp"
+            tools:listitem="@layout/list_item_month_grid" />
 
     </LinearLayout>
 </LinearLayout>
