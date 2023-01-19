@@ -5,11 +5,13 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Locale
+import com.backdoor.engine.misc.TimeUtil
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
 class PlWorkerTest {
@@ -29,6 +31,50 @@ class PlWorkerTest {
     every { contactsInterface.findEmail(any()) }.answers { null }
     every { contactsInterface.findEmail("domu") }.answers { "test@mail.com" }
     recognizer.setContactHelper(contactsInterface)
+  }
+
+  @Test
+  fun testAfterTomorrow() {
+    val input = "pojutrze o 19:00 wydaj nową wersję"
+    val model = recognizer.recognize(input)
+
+    val expectedDateTime = LocalDateTime.now()
+      .plusDays(2)
+      .withHour(19)
+      .withMinute(0)
+      .withSecond(0)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.DATE, model?.action)
+    assertEquals(TimeUtil.getGmtFromDateTime(expectedDateTime), model?.dateTime)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("wydaj nową wersję", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testTomorrow() {
+    val input = "jutro o 21 wydaj nową wersję"
+    val model = recognizer.recognize(input)
+
+    val expectedDateTime = LocalDateTime.now()
+      .plusDays(1)
+      .withHour(21)
+      .withMinute(0)
+      .withSecond(0)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.DATE, model?.action)
+    assertEquals(TimeUtil.getGmtFromDateTime(expectedDateTime), model?.dateTime)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("wydaj nową wersję", model?.summary?.lowercase())
   }
 
   @Test

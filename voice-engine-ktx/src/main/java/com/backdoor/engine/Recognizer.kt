@@ -49,6 +49,8 @@ class Recognizer private constructor(
   fun recognize(input: String): Model? {
     log("recognize: input = $input, worker = $worker")
     return input.lowercase(LOCALE).trim()
+      .let { worker.splitWords(it) ?: "" }
+      .also { log("recognize: after split words = $it") }
       .let { worker.replaceNumbers(it) ?: "" }
       .also { log("recognize: after numbers replaced = $it") }
       .let { s ->
@@ -352,7 +354,7 @@ class Recognizer private constructor(
   private fun getTime(time: LocalTime?, days: Int): LocalDateTime? {
     if (time == null) return null
     val now = nowDateTime()
-    val dateTime = nowDateTime().withHour(time.hour).withMinute(time.minute)
+    val dateTime = nowDateTime().withHour(time.hour).withMinute(time.minute).withSecond(time.second)
     return if (days == 0) {
       if (now.isAfter(dateTime)) {
         dateTime

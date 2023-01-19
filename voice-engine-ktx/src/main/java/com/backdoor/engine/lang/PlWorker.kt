@@ -597,6 +597,13 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
           }
           it[i] = ""
         }
+        ignoreAny {
+          val f = s.toFloat()
+          if (f >= 0f && f < 24f) {
+            it[i] = ""
+            clearAllBackward(it, i - 1, 1, "o")
+          }
+        }
       }
     }?.clip()?.splitByWhitespaces()?.toMutableList()?.let { list ->
       val sb = StringBuilder()

@@ -21,6 +21,20 @@ internal class UkWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
     "субот"
   )
 
+  override fun splitWords(input: String?): String {
+    val result = mutableListOf<String>()
+    input?.splitByWhitespaces()
+      ?.forEach {
+        if (it.matches("півгодин.*")) {
+          result.add("пів")
+          result.add(it.substring(3))
+        } else {
+          result.add(it)
+        }
+      }
+    return result.clip()
+  }
+
   override fun hasCalendar(input: String): Boolean = input.matches(".*календар.*")
 
   override fun clearCalendar(input: String): String {

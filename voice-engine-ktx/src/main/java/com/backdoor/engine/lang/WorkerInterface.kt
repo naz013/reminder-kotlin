@@ -7,6 +7,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 internal interface WorkerInterface {
+  fun splitWords(input: String?): String?
+  fun replaceNumbers(input: String?): String?
   fun hasCalendar(input: String): Boolean
   fun clearCalendar(input: String): String?
   fun getWeekDays(input: String): List<Int>
@@ -35,7 +37,6 @@ internal interface WorkerInterface {
   fun hasEvent(input: String): Boolean
   fun getEvent(input: String): Action?
   fun getMultiplier(input: String, res: LongInternal): String
-  fun replaceNumbers(input: String?): String?
   fun hasDisableReminders(input: String): Boolean
   fun hasEmptyTrash(input: String): Boolean
   fun hasGroup(input: String): Boolean

@@ -5,11 +5,13 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Locale
+import com.backdoor.engine.misc.TimeUtil
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 class EsWorkerTest {
 
@@ -27,6 +29,50 @@ class EsWorkerTest {
     every { contactsInterface.findEmail(any()) }.answers { null }
     every { contactsInterface.findEmail("casa") }.answers { "test@mail.com" }
     recognizer.setContactHelper(contactsInterface)
+  }
+
+  @Test
+  fun testAfterTomorrow() {
+    val input = "después de mañana a las 19 solicitud de liberación"
+    val model = recognizer.recognize(input)
+
+    val expectedDateTime = LocalDateTime.now()
+      .plusDays(2)
+      .withHour(19)
+      .withMinute(0)
+      .withSecond(0)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.DATE, model?.action)
+    assertEquals(TimeUtil.getGmtFromDateTime(expectedDateTime), model?.dateTime)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("solicitud de liberación", model?.summary?.lowercase())
+  }
+
+  @Test
+  fun testTomorrow() {
+    val input = "mañana a las 19 liberación solicitud"
+    val model = recognizer.recognize(input)
+
+    val expectedDateTime = LocalDateTime.now()
+      .plusDays(1)
+      .withHour(19)
+      .withMinute(0)
+      .withSecond(0)
+
+    assertEquals(true, model != null)
+    assertEquals(ActionType.REMINDER, model?.type)
+    assertEquals(Action.DATE, model?.action)
+    assertEquals(TimeUtil.getGmtFromDateTime(expectedDateTime), model?.dateTime)
+    assertEquals(false, model?.hasCalendar)
+    assertEquals(null, model?.target)
+    assertEquals(0L, model?.repeatInterval)
+    assertEquals(0L, model?.afterMillis)
+    assertEquals("liberación solicitud", model?.summary?.lowercase())
   }
 
   @Test
