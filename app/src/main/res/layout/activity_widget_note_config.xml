@@ -106,8 +106,7 @@
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:text="@string/app_title"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/material_grey" />
+                        android:textAppearance="?textAppearanceBody1"/>
 
                 </LinearLayout>
             </LinearLayout>

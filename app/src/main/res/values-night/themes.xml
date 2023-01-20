@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="MyTheme.DayNight" parent="Base.MyTheme">
+    <style name="MyTheme.DayNight" parent="Base.MaterialThemeBuilder">
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>

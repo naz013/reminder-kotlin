@@ -22,7 +22,7 @@
             android:id="@+id/reminderMark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/secondaryRed" />
+            android:background="@color/md_theme_error" />
 
         <TextView
             android:id="@+id/birthdayMark"

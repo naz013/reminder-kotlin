@@ -246,13 +246,13 @@ class ThemeProvider(
     const val NOTE_COLORS = 20
 
     @ColorInt
-    fun getSecondaryColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.color_secondary)
+    fun getPrimaryColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_primary)
     }
 
     @ColorInt
-    fun getOnSecondaryColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.color_on_secondary)
+    fun getOnPrimaryColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_onPrimary)
     }
 
     @ColorInt

@@ -95,7 +95,7 @@ class MonthView : View, View.OnTouchListener {
   private fun init(context: Context) {
     val colorSecondary = ThemeProvider.getThemeSecondaryColor(context)
 
-    this.mDefaultColor = colorOf(R.color.color_on_background)
+    this.mDefaultColor = colorOf(R.color.md_theme_onBackground)
     this.mTodayColor = ThemeProvider.themedColor(context, 0)
 
     this.mNormalTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular)

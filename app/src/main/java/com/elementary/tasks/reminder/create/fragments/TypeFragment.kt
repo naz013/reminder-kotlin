@@ -209,7 +209,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       ViewUtils.registerDragAndDrop(requireActivity(),
         it,
         true,
-        ThemeProvider.getSecondaryColor(it.context),
+        ThemeProvider.getPrimaryColor(it.context),
         { clipData ->
           if (clipData.itemCount > 0) {
             it.setUri(clipData.getItemAt(0).uri)

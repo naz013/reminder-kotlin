@@ -81,7 +81,7 @@ abstract class ThemedActivity : AppCompatActivity() {
   override fun onStart() {
     super.onStart()
     if (Module.isChromeOs(this)) {
-      window.statusBarColor = ThemeProvider.getSecondaryColor(this)
+      window.statusBarColor = ThemeProvider.getPrimaryColor(this)
     }
     if (requireLogin() && prefs.hasPinCode && !loginStateViewModel.isLogged) {
       loginLauncher.askLogin()

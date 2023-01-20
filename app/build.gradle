@@ -10,7 +10,7 @@ android {
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 23
+        minSdkVersion 26
         targetSdkVersion 33
         versionCode 287
         versionName '8.3.0'

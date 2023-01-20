@@ -177,7 +177,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       this,
       binding.clickView,
       true,
-      ThemeProvider.getSecondaryColor(this),
+      ThemeProvider.getPrimaryColor(this),
       {
         if (it.itemCount > 0) {
           viewModel.parseDrop(it, getText())
