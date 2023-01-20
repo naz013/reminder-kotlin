@@ -114,6 +114,10 @@ internal abstract class Worker(
     else -> -1f
   }
 
+  override fun splitWords(input: String?): String {
+    return input ?: ""
+  }
+
   override fun replaceNumbers(input: String?): String? {
     val parts = input?.splitByWhitespaces()?.toMutableList() ?: mutableListOf()
 
