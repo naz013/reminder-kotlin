@@ -11,14 +11,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -28,16 +29,15 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import com.elementary.tasks.databinding.ActivityDialogBirthdayBinding
+import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.util.Locale
 
-class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>() {
+class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBinding>() {
 
   private val viewModel by viewModel<ShowBirthdayViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
@@ -154,7 +154,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
   }
 
-  override fun inflateBinding() = ActivityShowBirthdayBinding.inflate(layoutInflater)
+  override fun inflateBinding() = ActivityDialogBirthdayBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,95 +7,78 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbarView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="?actionBarSize"
-        android:background="?colorPrimary"
         android:stateListAnimator="@animator/toolbar_animator"
-        tools:targetApi="lollipop">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?android:colorBackground"
-            app:contentInsetEnd="0dp"
-            app:contentInsetStart="0dp">
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/activity_select_application"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/choose_application" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/choose_application"
-                    android:textAppearance="?textAppearanceHeadline6" />
-
-                <RelativeLayout
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize">
-
-                    <com.tuyenmonkey.mkloader.MKLoader
-                        android:id="@+id/loaderView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        app:mk_color="?colorSecondary"
-                        app:mk_type="ClassicSpinner" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroller"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbarView">
+    <LinearLayout
+        android:id="@+id/progressView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarView">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:progressTint="?colorTertiary" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/contactsList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/list_margin"
-                android:layout_marginEnd="@dimen/list_margin"
-                android:visibility="visible"
-                tools:itemCount="5"
-                tools:listitem="@layout/list_item_application" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/progressMessageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?textAppearanceTitleLarge"
+            android:textColor="?colorOnSurface"
+            tools:text="@string/please_wait" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="76dp" />
+    </LinearLayout>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressView"
+        tools:itemCount="5"
+        tools:listitem="@layout/list_item_application" />
 
     <LinearLayout
         android:id="@+id/emptyItem"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_below="@+id/toolbarView"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarView">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/emptyImage"
@@ -113,41 +95,9 @@
             android:layout_marginRight="24dp"
             android:gravity="center|top"
             android:text="@string/applications_not_found"
-            android:textAppearance="?textAppearanceHeadline6" />
+            android:textAppearance="?textAppearanceTitleLarge"
+            android:textColor="?colorOnSurface" />
 
     </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/material_margin"
-        android:layout_marginEnd="@dimen/material_margin"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="25dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/searchLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-4dp"
-            android:layout_marginBottom="-8dp"
-            app:boxBackgroundColor="?colorSecondary12"
-            app:boxCornerRadiusTopEnd="25dp"
-            app:boxCornerRadiusTopStart="25dp">
-
-            <com.elementary.tasks.core.views.FixedTextInputEditText
-                android:id="@+id/searchField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/search"
-                android:maxLength="16"
-                android:maxLines="1"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:textAppearance="?textAppearanceSubtitle1" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-    </com.google.android.material.card.MaterialCardView>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

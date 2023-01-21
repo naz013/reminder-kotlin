@@ -21,25 +21,25 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/privacyBanner"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="gone"
+            app:cardCornerRadius="0dp"
+            app:contentPadding="8dp"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:text="@string/by_continue_using_reminder_application_you_accept_privacy_policy"
-                    android:textAppearance="?textAppearanceBody2" />
+                    android:textAppearance="?textAppearanceBodyMedium"
+                    android:textColor="?colorOnPrimaryContainer" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -47,52 +47,56 @@
                     android:layout_gravity="end"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/privacyButton"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="24"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/privacy_policy" />
+                        android:text="@string/privacy_policy"
+                        android:textAllCaps="true" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/acceptButton"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:maxLength="24"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/accept" />
+                        android:text="@string/accept"
+                        android:textAllCaps="true" />
 
                 </LinearLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/loginBanner"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:cardCornerRadius="0dp"
+            app:contentPadding="8dp"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:text="@string/if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it"
-                    android:textAppearance="?textAppearanceBody2" />
+                    android:textAppearance="?textAppearanceBodyMedium"
+                    android:textColor="?colorOnPrimaryContainer" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -100,29 +104,33 @@
                     android:layout_gravity="end"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/loginDismissButton"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="24"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/dismiss" />
+                        android:text="@string/dismiss"
+                        android:textAllCaps="true" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/loginButton"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:maxLength="24"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/log_in" />
+                        android:text="@string/log_in"
+                        android:textAllCaps="true" />
 
                 </LinearLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <HorizontalScrollView
@@ -227,28 +235,32 @@
                     app:tint="?android:textColorPrimary" />
 
             </LinearLayout>
+
         </HorizontalScrollView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/remindersHeader"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:stateListAnimator="@animator/card_animator">
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp"
+            app:contentPadding="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/reminders_"
-                    android:textAppearance="?textAppearanceHeadline6" />
+                    android:textAppearance="?textAppearanceTitleLarge"
+                    android:textColor="?colorOnPrimaryContainer" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/addReminderButton"
@@ -258,7 +270,7 @@
                     android:contentDescription="@string/acc_add_reminder"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_add_circle_24px"
-                    app:tint="?android:textColorPrimary" />
+                    app:tint="?colorOnPrimaryContainer" />
 
             </LinearLayout>
 
@@ -266,11 +278,13 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/emptyRemindersState"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:stateListAnimator="@animator/card_animator">
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp">
 
             <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
                 android:layout_width="match_parent"
@@ -290,7 +304,7 @@
                     app:srcCompat="@drawable/ic_empty_state_calendar"
                     app:tint="?colorOnTertiary" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -300,7 +314,7 @@
                     android:layout_marginBottom="32dp"
                     android:gravity="center"
                     android:text="@string/you_re_all_done"
-                    android:textAppearance="?textAppearanceHeadline6"
+                    android:textAppearance="?textAppearanceTitleLarge"
                     android:textColor="?colorOnTertiary" />
 
             </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
@@ -325,24 +339,27 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/birthdaysHeader"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:stateListAnimator="@animator/card_animator">
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp"
+                app:contentPadding="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.textview.MaterialTextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/birthdays"
-                        android:textAppearance="?textAppearanceHeadline6" />
+                        android:textAppearance="?textAppearanceTitleLarge"
+                        android:textColor="?colorOnPrimaryContainer" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/addBirthdayButton"
@@ -352,7 +369,7 @@
                         android:contentDescription="@string/add_birthday"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_add_circle_24px"
-                        app:tint="?android:textColorPrimary" />
+                        app:tint="?colorOnPrimaryContainer" />
 
                 </LinearLayout>
 
@@ -360,11 +377,14 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/emptyBirthdaysState"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:stateListAnimator="@animator/card_animator">
+                android:layout_marginBottom="16dp"
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp">
 
                 <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
                     android:layout_width="match_parent"
@@ -384,7 +404,7 @@
                         app:srcCompat="@drawable/ic_empty_state_cake"
                         app:tint="?colorOnSecondary" />
 
-                    <com.google.android.material.textview.MaterialTextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -394,10 +414,11 @@
                         android:layout_marginBottom="32dp"
                         android:gravity="center"
                         android:text="@string/no_upcoming_birthdays"
-                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textAppearance="?textAppearanceTitleLarge"
                         android:textColor="?colorOnSecondary" />
 
                 </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -418,4 +439,5 @@
             android:layout_height="1dp" />
 
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

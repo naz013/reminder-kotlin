@@ -16,8 +16,8 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
-import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -34,7 +34,8 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen() }
+    binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen("16546848") }
+    binding.birthdayNoNumber.setOnClickListener { openBirthdayScreen() }
     binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
     binding.missedCallWindow.setOnClickListener { openMissedScreen() }
 
@@ -70,7 +71,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     }
   }
 
-  private fun openBirthdayScreen() {
+  private fun openBirthdayScreen(number: String = "") {
     Birthday().apply {
       this.day = 25
       this.month = 5
@@ -78,7 +79,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       this.showedYear = 2017
       this.uniqueId = 12123
       this.uuId = UUID.randomUUID().toString()
-      this.number = "16546848"
+      this.number = number
       this.date = createBirthDate(day, month, 1955)
 
       val secKey = if (TextUtils.isEmpty(number)) "0" else number.substring(1)

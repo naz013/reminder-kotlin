@@ -21,13 +21,13 @@
         app:behavior_peekHeight="128dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="@string/events"
-            android:textAppearance="?textAppearanceHeadline6" />
+            android:textAppearance="?textAppearanceHeadlineSmall" />
 
         <com.elementary.tasks.core.views.DividerView
             android:layout_width="match_parent"
@@ -58,15 +58,17 @@
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/empty_status" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/emptyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center|top"
                 android:text="@string/no_events"
-                android:textAppearance="?textAppearanceHeadline6" />
+                android:textAppearance="?textAppearanceHeadlineSmall" />
 
         </LinearLayout>
+
     </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

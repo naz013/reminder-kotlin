@@ -25,6 +25,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/birthdayNoNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Birthday Screen w/o number"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/reminderDialogWindow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

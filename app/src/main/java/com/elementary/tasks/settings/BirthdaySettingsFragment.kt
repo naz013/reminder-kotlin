@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
@@ -19,7 +19,6 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
@@ -210,25 +209,20 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(R.string.birthdays_on_home_for_next)
       val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-      b.seekBar.max = 5
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = homeText(progress)
-        }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
       val days = prefs.birthdayDurationInDays
-      b.seekBar.progress = days
+
+      b.seekBar.addOnChangeListener { _, value, _ ->
+        b.titleView.text = homeText(value.toInt())
+      }
+      b.seekBar.stepSize = 1f
+      b.seekBar.valueFrom = 0f
+      b.seekBar.valueTo = 5f
+      b.seekBar.value = days.toFloat()
+
       b.titleView.text = homeText(days)
       builder.setView(b.root)
-      builder.setPositiveButton(R.string.ok) { _, _ -> saveHomeDays(b.seekBar.progress) }
+      builder.setPositiveButton(R.string.ok) { _, _ -> saveHomeDays(b.seekBar.value.toInt()) }
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
       val dialog = builder.create()
       dialog.show()
@@ -252,25 +246,20 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(R.string.days_to_birthday)
       val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-      b.seekBar.max = 5
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = progress.toString()
-        }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
       val daysToBirthday = prefs.daysToBirthday
-      b.seekBar.progress = daysToBirthday
+
+      b.seekBar.addOnChangeListener { _, value, _ ->
+        b.titleView.text = value.toInt().toString()
+      }
+      b.seekBar.stepSize = 1f
+      b.seekBar.valueFrom = 0f
+      b.seekBar.valueTo = 5f
+      b.seekBar.value = daysToBirthday.toFloat()
+
       b.titleView.text = daysToBirthday.toString()
       builder.setView(b.root)
-      builder.setPositiveButton(R.string.ok) { _, _ -> saveDays(b.seekBar.progress) }
+      builder.setPositiveButton(R.string.ok) { _, _ -> saveDays(b.seekBar.value.toInt()) }
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
       val dialog = builder.create()
       dialog.show()

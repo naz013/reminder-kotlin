@@ -79,7 +79,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     binding.progressMessageView.text = getString(R.string.please_wait)
     binding.fab.setOnClickListener { addNewTask() }
     binding.connectButton.setOnClickListener { googleTasksButtonClick() }
-    binding.googleButton.setOnClickListener {
+    binding.addTaskListButton.setOnClickListener {
       startActivity(
         Intent(
           context,

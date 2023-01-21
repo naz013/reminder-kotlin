@@ -4,17 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.SeekBar
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.LoudnessViewBinding
+import com.elementary.tasks.databinding.ViewLoudnessBinding
 
 class LoudnessPickerView : LinearLayout {
 
-  private lateinit var binding: LoudnessViewBinding
+  private lateinit var binding: ViewLoudnessBinding
   var onLevelUpdateListener: ((level: Int) -> Unit)? = null
-  var level: Int = 0
+  private var level: Int = 0
     get() {
       return field - 1
     }
@@ -35,36 +32,27 @@ class LoudnessPickerView : LinearLayout {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 
   fun setVolume(level: Int) {
-    binding.sliderView.progress = level + 1
-    this.level = binding.sliderView.progress
+    binding.sliderView.value = (level + 1).toFloat()
+    this.level = binding.sliderView.value.toInt()
   }
 
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_loudness, this)
     orientation = HORIZONTAL
-    binding = LoudnessViewBinding(this)
+    binding = ViewLoudnessBinding.bind(this)
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.loudness), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
+    binding.sliderView.addOnChangeListener { _, value, _ ->
+      level = value.toInt()
+      onLevelUpdateListener?.invoke(level)
     }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.loudness))
-    binding.sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        level = progress
-        onLevelUpdateListener?.invoke(level)
-      }
-
-      override fun onStartTrackingTouch(seekBar: SeekBar?) {
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar?) {
-      }
-    })
   }
 }

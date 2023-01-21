@@ -8,13 +8,16 @@ import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -22,9 +25,6 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.UUID
@@ -45,7 +45,7 @@ class AddBirthdayViewModel(
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
   val birthday = _birthday.toLiveData()
 
-  var editableBirthday: Birthday? = null
+  private var editableBirthday: Birthday? = null
 
   private val _formattedDate = mutableLiveDataOf<String>()
   val formattedDate = _formattedDate.toLiveData()
@@ -96,7 +96,7 @@ class AddBirthdayViewModel(
 
   fun onDateChanged(localDate: LocalDate) {
     selectedDate = localDate
-    _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
+    _formattedDate.postValue(dateTimeManager.formatBirthdayDateForUi(selectedDate))
   }
 
   fun save(name: String, number: String?, newId: Boolean = false) {
@@ -143,8 +143,7 @@ class AddBirthdayViewModel(
     if (!isEdited) {
       isEdited = true
       editableBirthday = birthday
-      selectedDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now()
-      _formattedDate.postValue(dateTimeManager.formatBirthdayDate(selectedDate))
+      onDateChanged(dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now())
       _birthday.postValue(uiBirthdayEditAdapter.convert(birthday))
     }
   }

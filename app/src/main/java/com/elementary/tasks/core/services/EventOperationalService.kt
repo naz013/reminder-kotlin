@@ -38,7 +38,7 @@ import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
-import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.elementary.tasks.core.views.gradient.UiGradientLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:gradientLinearLayout_cornerRadius="0dp"
+    app:gradientLinearLayout_endColor="?colorTertiaryContainer"
+    app:gradientLinearLayout_orientation="TL_BR"
+    app:gradientLinearLayout_startColor="?colorPrimaryContainer">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginEnd="96dp"
+        android:text="@string/missed_call"
+        android:textAppearance="?textAppearanceDisplayLarge"
+        android:textColor="?colorOnPrimaryContainer" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="96dp"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contactPhoto"
+            android:layout_width="156dp"
+            android:layout_height="156dp"
+            android:contentDescription="@string/acc_contact_photo"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:civ_border_width="0dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contactName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceDisplayMedium"
+                android:textColor="?colorOnPrimaryContainer"
+                tools:text="User Name" />
+
+            <TextView
+                android:id="@+id/contactNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?textAppearanceDisplaySmall"
+                android:textColor="?colorOnPrimaryContainer"
+                tools:text="1234567890" />
+
+            <TextView
+                android:id="@+id/remText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?textAppearanceDisplaySmall"
+                android:textColor="?colorOnPrimaryContainer"
+                tools:text="Task summary" />
+
+            <TextView
+                android:id="@+id/reminder_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?textAppearanceDisplaySmall"
+                android:textColor="?colorOnPrimaryContainer"
+                tools:text="Date and time" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="96dp"
+        android:layout_marginBottom="32dp"
+        app:selectionRequired="false"
+        app:singleSelection="true">
+
+        <Button
+            android:id="@+id/buttonCall"
+            style="?attr/materialButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/make_call"
+            android:textAllCaps="true" />
+
+        <Button
+            android:id="@+id/buttonOk"
+            style="?attr/materialButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/acc_button_ok"
+            android:textAllCaps="true" />
+
+        <Button
+            android:id="@+id/buttonSms"
+            style="?attr/materialButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/send_sms"
+            android:textAllCaps="true" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+</com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clickView"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:stateListAnimator="@animator/card_animator"
-    app:cardCornerRadius="5dp"
-    tools:targetApi="lollipop">
+    app:cardCornerRadius="5dp">
 
     <LinearLayout
         android:id="@+id/bgView"
@@ -20,13 +19,14 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:id="@+id/messageView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_weight="1"
-            android:textAppearance="?textAppearanceSubtitle1"
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:textColor="?colorOnPrimaryContainer"
             tools:text="Title" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -37,7 +37,8 @@
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-            app:tint="?android:textColorPrimary" />
+            app:tint="?colorOnPrimaryContainer" />
 
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

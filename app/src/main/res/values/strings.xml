@@ -668,5 +668,15 @@
     <string name="widget_calendar_description">See your events in Monthly Calendar</string>
     <string name="widget_events_description">Show active Reminders and Birthdays</string>
     <string name="widget_google_tasks_description">Show active Google Tasks</string>
+    <string name="add_to_google_tasks">Add to Google Tasks</string>
+    <string name="attach_contact">Attach contact</string>
+    <string name="start_again">Start again</string>
+    <string name="dynamic_colors">Dynamic colors</string>
+    <string name="use_built_in_theme_color">Use built-in theme color</string>
+    <string name="use_theme_colors_from_wallpaper">Use theme colors from Wallpaper</string>
+    <string name="no_action">No action</string>
+    <string name="select">Select</string>
+    <string name="change">Change</string>
+    <string name="group">Group</string>
 
 </resources>

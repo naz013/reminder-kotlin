@@ -4,16 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.PriorityViewBinding
+import com.elementary.tasks.databinding.ViewPriorityBinding
 import com.google.android.material.chip.Chip
 
 class PriorityPickerView : LinearLayout {
 
-  private lateinit var binding: PriorityViewBinding
+  private lateinit var binding: ViewPriorityBinding
   var onPriorityChaneListener: ((Int) -> Unit)? = null
   var priority: Int = 2
     set(value) {
@@ -63,16 +61,11 @@ class PriorityPickerView : LinearLayout {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_priority, this)
     orientation = VERTICAL
-    binding = PriorityViewBinding(this)
+    binding = ViewPriorityBinding.bind(this)
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.priority), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.priority))
-    binding.chipGroup.setOnCheckedChangeListener { _, id ->
+    binding.chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
       if (isAnyChecked()) {
-        updateState(priorityFromChip(id))
+        updateState(priorityFromChip(checkedIds.first()))
       } else {
         chipView(mLastIdRes).isChecked = true
         updateState(priorityFromChip(mLastIdRes))

@@ -36,8 +36,5 @@ class GlobalButtonObservable {
     }
   }
 
-  enum class Action {
-    QUICK_NOTE,
-    VOICE
-  }
+  enum class Action { VOICE }
 }

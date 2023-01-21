@@ -5,10 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -30,6 +27,7 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.visible
@@ -147,17 +145,47 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
     binding.toolbar.title = ""
-    binding.toolbar.inflateMenu(R.menu.activity_preview_note)
+    binding.toolbar.setNavigationOnClickListener { closeWindow() }
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_share -> {
+          shareNote()
+          true
+        }
+
+        R.id.action_delete -> {
+          showDeleteDialog()
+          true
+        }
+
+        R.id.action_status -> {
+          moveToStatus()
+          true
+        }
+
+        R.id.action_edit -> {
+          editNote()
+          true
+        }
+
+        else -> false
+      }
+    }
     updateIcons()
   }
 
   private fun updateIcons() {
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
-    invalidateOptionsMenu()
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also { menu ->
+      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isBgDark)
+    }
   }
 
   private fun editNote() {
@@ -237,45 +265,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun showErrorSending() {
-    Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.activity_preview_note, menu)
-    ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isBgDark)
-    ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isBgDark)
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      android.R.id.home -> {
-        closeWindow()
-        return true
-      }
-
-      R.id.action_share -> {
-        shareNote()
-        return true
-      }
-
-      R.id.action_delete -> {
-        showDeleteDialog()
-        return true
-      }
-
-      R.id.action_status -> {
-        moveToStatus()
-        return true
-      }
-
-      R.id.action_edit -> {
-        editNote()
-        return true
-      }
-
-      else -> return super.onOptionsItemSelected(item)
-    }
+    toast(R.string.error_sending)
   }
 
   private fun closeWindow() {
@@ -307,6 +297,6 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun deleteReminder() {
     val reminder = viewModel.reminder.value ?: return
     viewModel.deleteReminder(reminder)
-    binding.reminderContainer.visibility = View.GONE
+    binding.reminderContainer.gone()
   }
 }

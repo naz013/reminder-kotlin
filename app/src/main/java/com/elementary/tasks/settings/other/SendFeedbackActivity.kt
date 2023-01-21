@@ -4,23 +4,21 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivitySendFeedbackBinding
 
 class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
 
-  private val url = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
+  private val url =
+    "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
 
   override fun inflateBinding() = ActivitySendFeedbackBinding.inflate(layoutInflater)
-  
+
   @SuppressLint("SetJavaScriptEnabled")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -28,7 +26,13 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
 
     binding.webView.settings.javaScriptEnabled = true
     binding.webView.webViewClient = object : WebViewClient() {
-      override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
+      override fun onReceivedError(
+        view: WebView,
+        errorCode: Int,
+        description: String,
+        failingUrl: String
+      ) {
+      }
 
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
         return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
@@ -44,47 +48,37 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
-    binding.toolbar.title = getString(R.string.feedback)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_feedback, menu)
-    ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_refresh_24px, isDarkMode)
-    ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_local_post_office_24px, isDarkMode)
-    return super.onCreateOptionsMenu(menu)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_refresh -> {
-        binding.webView.reload()
-        return true
-      }
-      R.id.action_forward -> {
-        if (binding.webView.canGoForward()) {
-          binding.webView.goForward()
+    binding.toolbar.setNavigationOnClickListener { finish() }
+    binding.toolbar.setOnMenuItemClickListener { item ->
+      when (item.itemId) {
+        R.id.action_refresh -> {
+          binding.webView.reload()
+          true
         }
-        return true
-      }
-      R.id.action_back -> {
-        if (binding.webView.canGoBack()) {
-          binding.webView.goBack()
+
+        R.id.action_forward -> {
+          if (binding.webView.canGoForward()) {
+            binding.webView.goForward()
+          }
+          true
         }
-        return true
-      }
-      R.id.action_email -> {
-        sendEmail()
-        return true
-      }
-      android.R.id.home -> {
-        finish()
-        return true
+
+        R.id.action_back -> {
+          if (binding.webView.canGoBack()) {
+            binding.webView.goBack()
+          }
+          true
+        }
+
+        R.id.action_email -> {
+          sendEmail()
+          true
+        }
+
+        else -> false
       }
     }
-    return super.onOptionsItemSelected(item)
+    binding.toolbar.title = getString(R.string.feedback)
   }
 
   private fun sendEmail() {

@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.views.viewgroup
 
 import android.content.Context
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -87,6 +85,8 @@ class UiSelectorView : LinearLayout {
         val leftIconColor = a.getColor(R.styleable.UiSelectorView_selector_leftIconTintColor, 0)
         val rightIconColor = a.getColor(R.styleable.UiSelectorView_selector_rightIconTintColor, 0)
 
+        val textColor = a.getColor(R.styleable.UiSelectorView_selector_textColor, 0)
+
         a.getDrawable(R.styleable.UiSelectorView_selector_leftIcon)
           ?.let { DrawableCompat.wrap(it).mutate() }
           ?.also {
@@ -118,6 +118,9 @@ class UiSelectorView : LinearLayout {
         }
         if (labelBackgroundColor != 0) {
           labelView.setBackgroundColor(labelBackgroundColor)
+        }
+        if (textColor != 0) {
+          labelView.setTextColor(textColor)
         }
 
         labelView.isEnabled = showDialog

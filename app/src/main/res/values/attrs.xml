@@ -74,6 +74,7 @@
         <attr name="selector_textBackground" format="color" />
         <attr name="selector_leftIconTintColor" format="color" />
         <attr name="selector_rightIconTintColor" format="color" />
+        <attr name="selector_textColor" format="color" />
         <attr name="selector_emptyText" format="string" />
         <attr name="selector_leftIcon" format="reference" />
         <attr name="selector_rightIcon" format="reference" />

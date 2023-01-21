@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mapMask"
@@ -24,14 +23,14 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/zoomCard"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            app:cardCornerRadius="5dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/zoomIcon"
@@ -39,87 +38,87 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_fullscreen_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/backCard"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            app:cardCornerRadius="5dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_arrow_back_ios_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/layersCard"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            app:cardCornerRadius="5dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_layers_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/markersCard"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            app:cardCornerRadius="5dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_style_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/radiusCard"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            app:cardCornerRadius="5dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_track_changes_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
@@ -132,6 +131,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/searchCard"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
@@ -145,15 +145,10 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/addressLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    style="@style/FilledBoxStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="-4dp"
-                    android:layout_marginBottom="-8dp"
-                    android:layout_weight="1"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
+                    android:layout_weight="1">
 
                     <com.elementary.tasks.core.views.AddressAutoCompleteView
                         android:id="@+id/cardSearch"
@@ -162,8 +157,7 @@
                         android:hint="@string/address"
                         android:maxLines="1"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textAppearance="?textAppearanceSubtitle2" />
+                        android:paddingEnd="16dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,10 +171,12 @@
                     app:tint="?colorOnSecondary" />
 
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/layersContainer"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -193,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/typeNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -203,9 +199,10 @@
                     android:maxLines="1"
                     android:padding="8dp"
                     android:text="@string/normal"
-                    android:textAppearance="?textAppearanceBody1" />
+                    android:textAppearance="?textAppearanceTitleSmall"
+                    android:textColor="?colorOnPrimaryContainer" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/typeSatellite"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,9 +212,10 @@
                     android:maxLines="1"
                     android:padding="8dp"
                     android:text="@string/satellite"
-                    android:textAppearance="?textAppearanceBody1" />
+                    android:textAppearance="?textAppearanceTitleSmall"
+                    android:textColor="?colorOnPrimaryContainer" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/typeTerrain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -227,9 +225,10 @@
                     android:maxLines="1"
                     android:padding="8dp"
                     android:text="@string/terrain"
-                    android:textAppearance="?textAppearanceBody1" />
+                    android:textAppearance="?textAppearanceTitleSmall"
+                    android:textColor="?colorOnPrimaryContainer" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/typeHybrid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -239,13 +238,16 @@
                     android:maxLines="1"
                     android:padding="8dp"
                     android:text="@string/hybrid"
-                    android:textAppearance="?textAppearanceBody1" />
+                    android:textAppearance="?textAppearanceTitleSmall"
+                    android:textColor="?colorOnPrimaryContainer" />
 
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mapStyleContainer"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -330,20 +332,24 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:text="@string/recent_places"
-            android:textAppearance="?textAppearanceHeadline6" />
+            android:textAppearance="?textAppearanceHeadlineSmall" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/placesList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            tools:itemCount="1"
+            tools:listitem="@layout/list_item_map_place" />
+
     </LinearLayout>
+
 </RelativeLayout>

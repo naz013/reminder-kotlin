@@ -7,15 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import android.widget.ToggleButton
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogExclusionPickerBinding
-import com.elementary.tasks.core.binding.views.ExclusionPickerViewBinding
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.databinding.ViewExclusionPickerBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.threeten.bp.LocalTime
@@ -27,7 +25,7 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
   private val dateTimeManager by inject<DateTimeManager>()
   private val dialogues by inject<Dialogues>()
 
-  private lateinit var binding: ExclusionPickerViewBinding
+  private lateinit var binding: ViewExclusionPickerBinding
   var onExclusionUpdateListener: ((hours: List<Int>, from: String, to: String) -> Unit)? = null
   private val mHours = mutableListOf<Int>()
   private var mFrom: String = ""
@@ -81,7 +79,11 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 
@@ -100,16 +102,11 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_exclusion_picker, this)
     orientation = VERTICAL
-    binding = ExclusionPickerViewBinding(this)
+    binding = ViewExclusionPickerBinding.bind(this)
 
-    binding.text.setOnClickListener {
+    binding.selectButton.setOnClickListener {
       openExclusionDialog()
     }
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.exclusion), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.exclusion))
   }
 
   private fun openExclusionDialog() {
@@ -129,6 +126,7 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
     fromTime = LocalTime.now()
     toTime = fromTime.plusHours(3)
     showNoExclusion()
+    binding.selectButton.setText(R.string.select)
     onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
   }
 
@@ -138,14 +136,18 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
         mHours.clear()
         mHours.addAll(selectedList)
         showHours()
+        binding.selectButton.setText(R.string.change)
         onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
       }
+
       b.selectInterval.isChecked -> {
         mFrom = getHour(fromTime)
         mTo = getHour(toTime)
         showRange()
+        binding.selectButton.setText(R.string.change)
         onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
       }
+
       else -> {
         clearExclusion()
         showNoExclusion()
@@ -185,9 +187,11 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
   }
 
   private fun initButtons(b: DialogExclusionPickerBinding) {
-    setId(b.zero, b.one, b.two, b.three, b.four, b.five, b.six, b.seven, b.eight, b.nine, b.ten,
+    setId(
+      b.zero, b.one, b.two, b.three, b.four, b.five, b.six, b.seven, b.eight, b.nine, b.ten,
       b.eleven, b.twelve, b.thirteen, b.fourteen, b.fifteen, b.sixteen, b.seventeen,
-      b.eighteen, b.nineteen, b.twenty, b.twentyOne, b.twentyThree, b.twentyTwo)
+      b.eighteen, b.nineteen, b.twenty, b.twentyOne, b.twentyThree, b.twentyTwo
+    )
   }
 
   private fun setId(vararg buttons: ToggleButton) {

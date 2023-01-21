@@ -50,7 +50,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_trash, { menuItem ->
+    addMenu(R.menu.fragment_archived_reminders, { menuItem ->
       return@addMenu when (menuItem.itemId) {
         R.id.action_delete_all -> {
           viewModel.deleteAll()

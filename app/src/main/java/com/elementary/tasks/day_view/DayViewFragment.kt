@@ -43,7 +43,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.day_view_menu, { menuItem ->
+    addMenu(R.menu.fragment_day_view, { menuItem ->
       when (menuItem.itemId) {
         R.id.action_voice -> {
           buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)

@@ -4,16 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.MelodyViewBinding
-import timber.log.Timber
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.databinding.ViewMelodyBinding
 import java.io.File
 
 class MelodyView : LinearLayout {
 
-  private lateinit var binding: MelodyViewBinding
+  private lateinit var binding: ViewMelodyBinding
   var onFileUpdateListener: ((path: String) -> Unit)? = null
   var onFileSelectListener: (() -> Unit)? = null
   var file: String = ""
@@ -23,7 +22,8 @@ class MelodyView : LinearLayout {
         val file = File(value)
         if (file.exists()) {
           binding.text.text = file.name
-          binding.removeButton.visibility = View.VISIBLE
+          binding.removeButton.visible()
+          binding.selectButton.gone()
           onFileUpdateListener?.invoke(value)
         } else {
           noFile()
@@ -46,25 +46,20 @@ class MelodyView : LinearLayout {
   }
 
   private fun noFile() {
-    binding.removeButton.visibility = View.GONE
+    binding.removeButton.gone()
+    binding.selectButton.visible()
     binding.text.text = context.getString(R.string.not_selected)
   }
 
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_melody, this)
     orientation = VERTICAL
-    binding = MelodyViewBinding(this)
+    binding = ViewMelodyBinding.bind(this)
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.melody), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.melody))
     binding.removeButton.setOnClickListener {
       file = ""
     }
-    binding.text.setOnClickListener {
-      Timber.d("init: $file")
+    binding.selectButton.setOnClickListener {
       if (file == "") {
         onFileSelectListener?.invoke()
       }

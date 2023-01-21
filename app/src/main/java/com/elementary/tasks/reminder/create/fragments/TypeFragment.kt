@@ -124,11 +124,12 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           updateActions()
         }
         if (iFace.state.reminder.target != "") {
-          it.setAction(true)
           if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.CALL)) {
-            it.type = ActionView.TYPE_CALL
+            it.actionState = ActionView.ActionState.CALL
           } else if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.SMS)) {
-            it.type = ActionView.TYPE_MESSAGE
+            it.actionState = ActionView.ActionState.SMS
+          } else {
+            it.actionState = ActionView.ActionState.NO_ACTION
           }
         }
       } else {

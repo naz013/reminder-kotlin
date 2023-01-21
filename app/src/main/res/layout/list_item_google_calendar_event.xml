@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clickView"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
-    android:stateListAnimator="@animator/card_animator"
-    tools:targetApi="lollipop">
+    android:stateListAnimator="@animator/card_animator">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,49 +25,56 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:textAppearance="?textAppearanceSubtitle1"
+                android:textAppearance="?textAppearanceBodyLarge"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="Task" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/calendarName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:maxLines="1"
-                android:textAppearance="?textAppearanceBody2"
+                android:textAppearance="?textAppearanceBodyMedium"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="Calendar name" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:maxLines="1"
-                android:textAppearance="?textAppearanceBody2"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="Note" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/dtStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:textAppearance="?textAppearanceSubtitle2"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="14/04" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/dtEnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:textAppearance="?textAppearanceSubtitle2"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="14/04" />
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -87,6 +93,6 @@
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_delete_24px"
-            app:tint="?android:textColorPrimary" />
+            app:tint="?colorOnPrimaryContainer" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

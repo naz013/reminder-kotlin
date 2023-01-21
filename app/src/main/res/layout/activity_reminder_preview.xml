@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,19 +14,18 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="?android:colorBackground"
-            android:orientation="vertical"
-            android:stateListAnimator="@animator/toolbar_animator"
-            tools:targetApi="lollipop">
+            android:layout_height="wrap_content"
+            android:stateListAnimator="@animator/toolbar_animator">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?android:colorBackground"
+                app:menu="@menu/activity_reminder_preview"
                 app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
-                tools:title="Test" />
+                app:navigationIconTint="?colorOnSurface"
+                app:title="Test" />
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -78,7 +76,7 @@
                         android:textAppearance="?textAppearanceHeadline6"
                         tools:text="Enabled" />
 
-                    <androidx.appcompat.widget.SwitchCompat
+                    <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/statusSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -325,6 +323,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/adsCard"
+                    style="?attr/materialCardViewElevatedStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/material_margin"
@@ -341,6 +340,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
+
                 </com.google.android.material.card.MaterialCardView>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -362,18 +362,26 @@
                     android:minHeight="56dp"
                     android:overScrollMode="never"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    tools:itemCount="5"
                     tools:listitem="@layout/list_item_shop_task" />
 
-                <LinearLayout
-                    android:id="@+id/mapContainer"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mapCard"
+                    style="?attr/materialCardViewElevatedStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="320dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:orientation="vertical"
                     android:transitionName="map"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="true">
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/mapContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="320dp"
+                        android:orientation="vertical" />
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:id="@+id/dataContainer"
@@ -385,8 +393,11 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="60dp" />
+
             </LinearLayout>
+
         </androidx.core.widget.NestedScrollView>
+
     </LinearLayout>
 
     <LinearLayout
@@ -397,6 +408,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/attachmentsView"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -405,8 +417,7 @@
             android:orientation="vertical"
             android:stateListAnimator="@animator/card_animator"
             android:visibility="gone"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -422,31 +433,21 @@
                     android:transitionName="image" />
 
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"
-            android:elevation="4dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="20dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/make_call"
             android:textAllCaps="true"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?colorOnSecondary"
-            android:textSize="14sp"
             android:visibility="gone"
-            app:backgroundTint="?colorSecondary"
-            app:cornerRadius="32dp"
             app:icon="@drawable/ic_twotone_call_24px"
-            app:iconPadding="12dp"
-            app:iconSize="24dp"
-            app:iconTint="?colorOnSecondary"
-            tools:targetApi="lollipop" />
+            tools:visibility="visible" />
 
     </LinearLayout>
+
 </RelativeLayout>

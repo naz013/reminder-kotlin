@@ -6,36 +6,76 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        app:cardCornerRadius="5dp"
+        app:contentPadding="8dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/hintIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_music_note_24px"
-            app:tint="?android:textColorPrimary" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/text"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:textAppearance="?textAppearanceBody1"
-            tools:text="File Name" />
+            android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/removeButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="12dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_clear_white_24dp"
-            app:tint="?android:textColorPrimary" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/melody"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?colorOnSurfaceVariant"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="48dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_music_note_24px"
+                    app:tint="?colorOnSurfaceVariant" />
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:textAppearance="?textAppearanceTitleMedium"
+                    android:textColor="?colorOnSurfaceVariant"
+                    tools:text="File Name" />
+
+                <Button
+                    android:id="@+id/removeButton"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/acc_select_number_from_contacts"
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_clear_white_24dp"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/selectButton"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
 </LinearLayout>

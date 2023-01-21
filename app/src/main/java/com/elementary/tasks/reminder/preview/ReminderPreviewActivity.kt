@@ -6,8 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
@@ -124,10 +122,10 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         AdsProvider.REMINDER_PREVIEW_BANNER_ID,
         R.layout.list_item_ads_hor
       ) {
-        binding.adsCard.visible()
+        binding.adsCard.gone()
       }
     } else {
-      binding.adsCard.visible()
+      binding.adsCard.gone()
     }
   }
 
@@ -241,10 +239,12 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     ) { _, _, imageId ->
       val imagePosition = note.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
       imagesSingleton.setCurrent(note.images)
-      startActivity(Intent(this, ImagePreviewActivity::class.java)
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        .putExtra(Constants.INTENT_ID, note.id)
-        .putExtra(Constants.INTENT_POSITION, imagePosition))
+      startActivity(
+        Intent(this, ImagePreviewActivity::class.java)
+          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          .putExtra(Constants.INTENT_ID, note.id)
+          .putExtra(Constants.INTENT_POSITION, imagePosition)
+      )
     }
     binding.hasMore = false
     binding.setData(note)
@@ -252,7 +252,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun showMapData(reminder: UiReminderPreview) {
-    binding.mapContainer.visible()
+    binding.mapCard.visible()
     binding.location.visible()
 
     var places = ""
@@ -294,7 +294,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       initMap()
     } else {
       binding.locationView.gone()
-      binding.mapContainer.gone()
+      binding.mapCard.gone()
     }
 
     if (reminder.shopList.isNotEmpty()) {
@@ -349,7 +349,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     } else {
       binding.fab.gone()
     }
-    invalidateOptionsMenu()
+    updateMenu()
   }
 
   private fun loadData(shopList: List<ShopItem>) {
@@ -456,30 +456,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
   }
 
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.menu_reminder_preview, menu)
-
-    ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDarkMode)
-    ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isDarkMode)
-    ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDarkMode)
-    ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDarkMode)
-
-    menu.getItem(2)?.isVisible = getReminder()?.type?.isBase(UiReminderType.Base.DATE) == true
-
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_delete -> removeReminder()
-      android.R.id.home -> closeWindow()
-      R.id.action_make_copy -> makeCopy()
-      R.id.action_share -> shareReminder()
-      R.id.action_edit -> editReminder()
-    }
-    return super.onOptionsItemSelected(item)
-  }
-
   private fun shareReminder() {
     viewModel.shareReminder()
   }
@@ -552,7 +528,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun initViews() {
     binding.switchWrapper.setOnClickListener { switchClick() }
     binding.fab.setOnClickListener { fabClick() }
-    binding.mapContainer.gone()
+    binding.mapCard.gone()
     binding.attachmentsView.gone()
     binding.fab.gone()
   }
@@ -609,7 +585,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun openFullMap() {
     withReminder {
-      val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.mapContainer, "map")
+      val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.mapCard, "map")
       startActivity(
         Intent(this, FullscreenMapActivity::class.java)
           .putExtra(Constants.INTENT_ID, it.id), options.toBundle()
@@ -618,12 +594,43 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
+    binding.toolbar.setNavigationOnClickListener { closeWindow() }
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_delete -> {
+          removeReminder()
+          true
+        }
+
+        R.id.action_make_copy -> {
+          makeCopy()
+          true
+        }
+
+        R.id.action_share -> {
+          shareReminder()
+          true
+        }
+
+        R.id.action_edit -> {
+          editReminder()
+          true
+        }
+
+        else -> false
+      }
+    }
+    updateMenu()
+
     ViewUtils.listenScrollableView(binding.scrollView) {
       binding.appBar.isSelected = it > 0
     }
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also { menu ->
+      menu.getItem(2)?.isVisible = getReminder()?.type?.isBase(UiReminderType.Base.DATE) == true
+    }
   }
 
   private fun withReminder(action: (UiReminderPreview) -> Unit) {

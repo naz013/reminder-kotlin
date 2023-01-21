@@ -5,15 +5,13 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.AttachmentViewBinding
-import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.databinding.ViewAttachmentBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -22,7 +20,7 @@ class AttachmentView : LinearLayout, KoinComponent {
 
   private val cacheUtil by inject<CacheUtil>()
 
-  private lateinit var binding: AttachmentViewBinding
+  private lateinit var binding: ViewAttachmentBinding
   var onFileUpdateListener: ((path: String) -> Unit)? = null
   var onFileSelectListener: (() -> Unit)? = null
   var content: String = ""
@@ -31,6 +29,7 @@ class AttachmentView : LinearLayout, KoinComponent {
       if (value != "") {
         binding.text.text = value
         binding.removeButton.visible()
+        binding.selectButton.gone()
         onFileUpdateListener?.invoke(value)
       } else {
         noFile()
@@ -45,7 +44,11 @@ class AttachmentView : LinearLayout, KoinComponent {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 
@@ -66,25 +69,19 @@ class AttachmentView : LinearLayout, KoinComponent {
 
   private fun noFile() {
     binding.removeButton.gone()
+    binding.selectButton.visible()
     binding.text.text = context.getString(R.string.not_selected)
   }
 
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_attachment, this)
     orientation = VERTICAL
-    binding = AttachmentViewBinding(this)
+    binding = ViewAttachmentBinding.bind(this)
 
     binding.removeButton.setOnClickListener {
       content = ""
     }
-    binding.text.setOnClickListener {
-      addClick()
-    }
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.attachment), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.attachment))
+    binding.selectButton.setOnClickListener { addClick() }
     content = ""
   }
 

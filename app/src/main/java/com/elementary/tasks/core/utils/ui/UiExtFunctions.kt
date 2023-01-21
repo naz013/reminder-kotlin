@@ -22,7 +22,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.colorOf
 import com.google.android.material.textfield.TextInputLayout
@@ -97,6 +99,20 @@ fun ScrollView.listenScrollableView(listener: ((x: Int) -> Unit)?) {
       return false
     }
   })
+}
+
+@SuppressLint("ClickableViewAccessibility")
+fun NestedScrollView.listenScrollableView(listener: ((x: Int) -> Unit)?) {
+  setOnScrollChangeListener { _, _, scrollY, _, _ ->
+    listener?.invoke(scrollY)
+  }
+}
+
+@SuppressLint("ClickableViewAccessibility")
+fun RecyclerView.listenScrollableView(listener: ((x: Int) -> Unit)?) {
+  setOnScrollChangeListener { _, _, scrollY, _, _ ->
+    listener?.invoke(scrollY)
+  }
 }
 
 fun TextInputLayout.showError(@StringRes message: Int) {

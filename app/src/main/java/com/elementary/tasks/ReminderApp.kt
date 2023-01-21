@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.adapterModule
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
 import com.elementary.tasks.core.utils.dbModule
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.repositoryModule
 import com.elementary.tasks.core.utils.storageModule
@@ -37,7 +38,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
 
   override fun onCreate() {
     super.onCreate()
-    DynamicColors.applyToActivitiesIfAvailable(this)
     if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     val logger = object : Logger(level = Level.DEBUG) {
@@ -66,6 +66,9 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
     get<Notifier>().createChannels()
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
+    if (get<Prefs>().useDynamicColors) {
+      DynamicColors.applyToActivitiesIfAvailable(this)
+    }
   }
 
   override fun onTrimMemory(level: Int) {

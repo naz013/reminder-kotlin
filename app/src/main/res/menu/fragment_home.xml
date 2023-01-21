@@ -6,11 +6,13 @@
         android:id="@+id/action_voice"
         android:icon="@drawable/ic_twotone_mic_24px"
         android:title="@string/voice_control"
+        app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_twotone_settings_24px"
         android:title="@string/action_settings"
+        app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 </menu>

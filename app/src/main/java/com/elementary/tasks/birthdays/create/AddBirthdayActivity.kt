@@ -4,10 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Menu
-import android.view.MenuItem
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.PermissionFlow
@@ -19,13 +18,11 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.utils.visibleInvisible
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -45,7 +42,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    initActionBar()
+    initTopAppBar()
     initContact()
     binding.scrollView.listenScrollableView { binding.appBar.isSelected = it > 0 }
     binding.birthDate.setOnClickListener { dateDialog() }
@@ -77,11 +74,33 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     viewModel.onContactAttached(false)
   }
 
-  private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+  private fun initTopAppBar() {
     binding.toolbar.setTitle(R.string.add_birthday)
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      return@setOnMenuItemClickListener when (menuItem.itemId) {
+        R.id.action_add -> {
+          askCopySaving()
+          true
+        }
+
+        R.id.action_delete -> {
+          dialogues.askConfirmation(this, getString(R.string.delete)) {
+            if (it) deleteItem()
+          }
+          true
+        }
+
+        else -> false
+      }
+    }
+    binding.toolbar.setNavigationOnClickListener { finish() }
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also {
+      it.getItem(1).isVisible = viewModel.isEdited && !viewModel.isFromFile
+    }
   }
 
   private fun showBirthday(birthday: UiBirthdayEdit) {
@@ -91,6 +110,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       binding.numberView.setText(birthday.number)
       binding.contactCheck.isChecked = true
     }
+    updateMenu()
   }
 
   private fun loadBirthday() {
@@ -101,6 +121,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
           readUri()
         }
       }
+
       intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent(birthdayFromIntent())
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
       !intent.hasExtra(Constants.INTENT_ID) -> viewModel.onDateChanged(LocalDate.now())
@@ -112,7 +133,8 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   private fun dateFromIntent(): LocalDate =
     intentSerializable(Constants.INTENT_DATE, LocalDate::class.java) ?: LocalDate.now()
 
-  private fun birthdayFromIntent(): Birthday? = intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
+  private fun birthdayFromIntent(): Birthday? =
+    intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
 
   private fun readUri() {
     intent.data?.let { viewModel.onFile(it) }
@@ -131,42 +153,11 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       Timber.d("onDateChanged: $it")
       binding.birthDate.text = it
     }
-    viewModel.isContactAttached.nonNullObserve(this) { binding.container.visibleGone(it) }
+    viewModel.isContactAttached.nonNullObserve(this) { binding.container.visibleInvisible(it) }
   }
 
   private fun pickContact() {
     permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-    if (viewModel.isEdited && !viewModel.isFromFile) {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-    }
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      R.id.action_add -> {
-        askCopySaving()
-        true
-      }
-
-      android.R.id.home -> {
-        finish()
-        true
-      }
-
-      MENU_ITEM_DELETE -> {
-        dialogues.askConfirmation(this, getString(R.string.delete)) {
-          if (it) deleteItem()
-        }
-        true
-      }
-
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   private fun askCopySaving() {
@@ -233,8 +224,4 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   }
 
   override fun requireLogin() = true
-
-  companion object {
-    private const val MENU_ITEM_DELETE = 12
-  }
 }

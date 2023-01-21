@@ -9,16 +9,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.RepeatViewBinding
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.databinding.ViewRepeatBinding
 import timber.log.Timber
 
 class RepeatView : LinearLayout, TextWatcher {
 
-  private lateinit var binding: RepeatViewBinding
+  private lateinit var binding: ViewRepeatBinding
   var onRepeatChangeListener: OnRepeatChangeListener? = null
   private var mImm: InputMethodManager? = null
 
@@ -114,15 +112,10 @@ class RepeatView : LinearLayout, TextWatcher {
   private fun init(context: Context, attrs: AttributeSet?) {
     View.inflate(context, R.layout.view_repeat, this)
     orientation = HORIZONTAL
-    binding = RepeatViewBinding(this)
+    binding = ViewRepeatBinding.bind(this)
 
     mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.repeat), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.repeat))
     binding.repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
       override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
         if (!mIsLocked) setState(i)

@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
@@ -42,19 +40,7 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+    binding.toolbar.setNavigationOnClickListener { finish() }
     binding.toolbar.title = getString(R.string.privacy_policy)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      android.R.id.home -> {
-        finish()
-        return true
-      }
-    }
-    return super.onOptionsItemSelected(item)
   }
 }

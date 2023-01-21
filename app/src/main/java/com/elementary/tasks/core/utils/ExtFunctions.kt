@@ -318,7 +318,7 @@ fun PriorityPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
 fun ActionView.bindProperty(value: String, listener: ((String) -> Unit)) {
   this.number = value
   this.setListener(object : ActionView.OnActionListener {
-    override fun onStateChanged(hasAction: Boolean, type: Int, phone: String) {
+    override fun onStateChanged(state: ActionView.ActionState, phone: String) {
       listener.invoke(phone)
     }
   })

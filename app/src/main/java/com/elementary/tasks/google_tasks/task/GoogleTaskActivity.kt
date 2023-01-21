@@ -1,21 +1,18 @@
 package com.elementary.tasks.google_tasks.task
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visibleGone
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.google_tasks.TasksConstants
 import org.koin.android.ext.android.inject
@@ -120,6 +117,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
           binding.detailsField.setSelection(binding.detailsField.trimmedText().length)
         }
     }
+    updateMenu()
   }
 
   private fun initFields() {
@@ -129,12 +127,33 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun initToolbar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setHomeButtonEnabled(true)
-    supportActionBar?.setDisplayShowHomeEnabled(true)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     binding.toolbar.setTitle(R.string.new_task)
+    binding.toolbar.setNavigationOnClickListener { handleBackPress() }
+    binding.toolbar.setOnMenuItemClickListener {
+      when (it.itemId) {
+        R.id.action_delete -> {
+          deleteDialog()
+          true
+        }
+        R.id.action_move -> {
+          doIfPossible { selectList(true) }
+          true
+        }
+        R.id.action_add -> {
+          doIfPossible { saveTask() }
+          true
+        }
+        else -> false
+      }
+    }
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also {
+      it.getItem(1).isVisible = viewModel.editedTask != null
+      it.getItem(2).isVisible = viewModel.editedTask != null
+    }
   }
 
   private fun selectDateAction(type: Int) {
@@ -274,37 +293,6 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     doIfPossible { viewModel.editedTask?.let { viewModel.deleteGoogleTask(it) } }
   }
 
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.menu_create_task, menu)
-    viewModel.editedTask?.also {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_task)
-      menu.add(Menu.NONE, MENU_ITEM_MOVE, 100, R.string.move_to_another_list)
-    }
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      MENU_ITEM_DELETE -> {
-        deleteDialog()
-        return true
-      }
-      MENU_ITEM_MOVE -> {
-        doIfPossible { selectList(true) }
-        return true
-      }
-      R.id.action_add -> {
-        doIfPossible { saveTask() }
-        return true
-      }
-      android.R.id.home -> {
-        handleBackPress()
-        return true
-      }
-      else -> return super.onOptionsItemSelected(item)
-    }
-  }
-
   private fun dateDialog() {
     dateTimePickerProvider.showDatePicker(this, viewModel.date) { viewModel.onDateSet(it) }
   }
@@ -338,8 +326,6 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   override fun requireLogin() = true
 
   companion object {
-    private const val MENU_ITEM_DELETE = 12
-    private const val MENU_ITEM_MOVE = 14
     private const val ARG_LIST = "arg_list"
   }
 }

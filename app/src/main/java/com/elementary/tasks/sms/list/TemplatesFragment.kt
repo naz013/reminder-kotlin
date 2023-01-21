@@ -43,7 +43,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.templates_menu, onMenuItemListener = { false }) { menu ->
+    addMenu(R.menu.fragment_templates, onMenuItemListener = { false }) { menu ->
       searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
     }
     binding.fab.setOnClickListener { openCreateScreen() }

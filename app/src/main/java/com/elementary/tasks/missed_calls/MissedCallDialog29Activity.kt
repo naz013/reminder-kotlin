@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.ui.missedcall.UiMissedCallShow
 import com.elementary.tasks.core.os.PermissionFlow
@@ -19,14 +20,13 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.databinding.ActivityMissedDialogBinding
+import com.elementary.tasks.databinding.ActivityDialogMissedCallBinding
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>() {
+class MissedCallDialog29Activity : BindingActivity<ActivityDialogMissedCallBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
@@ -34,7 +34,7 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
   private val id: Int
     get() = viewModel.missedCall.value?.uniqueId ?: 2122
 
-  override fun inflateBinding() = ActivityMissedDialogBinding.inflate(layoutInflater)
+  override fun inflateBinding() = ActivityDialogMissedCallBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

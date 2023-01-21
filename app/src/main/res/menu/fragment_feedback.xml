@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_twotone_refresh_24px"
+        android:title="@string/refresh"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_email"
+        android:icon="@drawable/ic_twotone_local_post_office_24px"
+        android:title="@string/e_mail"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_back"
+        android:title="@string/move_backward"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_forward"
+        android:title="@string/move_forward"
+        app:showAsAction="never" />
+
+</menu>

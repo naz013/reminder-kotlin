@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="@string/enter_pin"
         android:textAllCaps="true"
-        android:textAppearance="?textAppearanceHeadline5"
+        android:textAppearance="?textAppearanceHeadlineMedium"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

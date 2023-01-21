@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,13 +29,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/progressMessageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:textAppearance="?textAppearanceSubtitle1"
+                android:textAppearance="?textAppearanceTitleLarge"
+                android:textColor="?colorOnSurface"
                 tools:text="@string/please_wait" />
 
         </LinearLayout>
@@ -49,20 +49,19 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/dropboxTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/dropbox"
-                android:textAppearance="?textAppearanceHeadline5" />
+                android:textAppearance="?textAppearanceHeadlineSmall" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/linkDropbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textAppearance="?textAppearanceButton" />
+                android:text="@string/connect" />
 
         </LinearLayout>
 
@@ -75,20 +74,19 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/gDriveTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/google_drive"
-                android:textAppearance="?textAppearanceHeadline5" />
+                android:textAppearance="?textAppearanceHeadlineSmall" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/linkGDrive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textAppearance="?textAppearanceButton" />
+                android:text="@string/connect" />
 
         </LinearLayout>
 
@@ -100,21 +98,22 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/gTasksTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/google_tasks"
-                android:textAppearance="?textAppearanceHeadline5" />
+                android:textAppearance="?textAppearanceHeadlineSmall" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/linkGTasks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textAppearance="?textAppearanceButton"/>
+                android:text="@string/connect" />
 
         </LinearLayout>
+
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical">
+    android:animateLayoutChanges="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:stateListAnimator="@animator/toolbar_animator">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?android:colorBackground" />
+            app:menu="@menu/activity_create_birthday"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/add_birthday" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
 
-                <com.elementary.tasks.core.views.FixedTextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/birthName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -49,107 +51,114 @@
                     android:imeOptions="actionDone"
                     android:inputType="textPersonName"
                     android:maxLength="70"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceSubtitle1" />
+                    android:maxLines="1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_today_24px"
-                    app:tint="?android:textColorPrimary" />
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/birthDate"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textAppearance="?textAppearanceHeadline5"
-                        tools:text="25/05/1985" />
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/select_date"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="16dp" />
+                    <TextView
+                        android:id="@+id/birthDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="?selectableItemBackground"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        android:textColor="?colorOnSurfaceVariant"
+                        tools:text="25/05/1985" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/contactCheck"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/contact"
-                android:textAppearance="?textAppearanceCaption" />
+                android:text="@string/attach_contact"
+                android:textColor="?colorOnBackground" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/container"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="invisible"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding"
+                tools:visibility="visible">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/numberLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <com.elementary.tasks.core.views.PhoneAutoCompleteView
-                        android:id="@+id/numberView"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:ems="10"
-                        android:gravity="bottom"
-                        android:hint="@string/phone"
-                        android:inputType="text|phone"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="8dp"
-                        android:singleLine="true"
-                        android:textAppearance="?textAppearanceSubtitle2" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/numberLayout"
+                        style="@style/FilledBoxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.elementary.tasks.core.views.PhoneAutoCompleteView
+                            android:id="@+id/numberView"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:ems="10"
+                            android:gravity="bottom"
+                            android:hint="@string/phone"
+                            android:inputType="text|phone"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="8dp"
+                            android:singleLine="true"
+                            android:textColor="?colorOnSurfaceVariant" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/pickContact"
-                    style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
-                    android:contentDescription="@string/acc_select_number_from_contacts"
-                    android:scaleType="centerInside"
-                    app:icon="@drawable/ic_twotone_contacts_24px" />
-            </LinearLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp" />
+                    <Button
+                        android:id="@+id/pickContact"
+                        style="?attr/materialIconButtonFilledStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="@string/acc_select_number_from_contacts"
+                        app:icon="@drawable/ic_twotone_contacts_24px" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

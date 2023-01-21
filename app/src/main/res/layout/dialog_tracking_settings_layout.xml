@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -18,24 +18,28 @@
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:text="@string/for_lower_battery_usage_set_bigger_values"
-            android:textAppearance="?textAppearanceSubtitle2" />
+            android:textAppearance="?textAppearanceTitleSmall" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:id="@+id/timeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|start"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
             android:text="100"
-            android:textAppearance="?textAppearanceHeadline6" />
+            android:textAppearance="?textAppearanceTitleLarge" />
 
-        <androidx.appcompat.widget.AppCompatSeekBar
+        <com.google.android.material.slider.Slider
             android:id="@+id/timeBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="30"
-            android:progress="1" />
+            android:layout_marginTop="16dp"
+            app:labelBehavior="gone"
+            android:stepSize="1"
+            app:tickVisible="false"
+            android:value="1"
+            android:valueFrom="1"
+            android:valueTo="30" />
 
     </LinearLayout>
+
 </ScrollView>

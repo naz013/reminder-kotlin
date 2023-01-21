@@ -5,15 +5,15 @@ import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.withUIContext
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -40,6 +40,10 @@ class GoogleTaskListViewModel(
   var editedTaskList: GoogleTaskList? = null
 
   private var isSyncing = false
+
+  fun canDelete(): Boolean {
+    return editedTaskList?.let { !it.isDefault() } ?: false
+  }
 
   fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
     if (!gTasks.isLogged) {

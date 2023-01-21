@@ -4,17 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.SeekBar
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.RepeatLimitViewBinding
+import com.elementary.tasks.databinding.ViewRepeatLimitBinding
 
 class RepeatLimitView : LinearLayout {
 
-  private lateinit var binding: RepeatLimitViewBinding
+  private lateinit var binding: ViewRepeatLimitBinding
   var onLevelUpdateListener: ((level: Int) -> Unit)? = null
-  var level: Int = 0
+  private var level: Int = 0
     get() {
       return field - 1
     }
@@ -45,31 +42,18 @@ class RepeatLimitView : LinearLayout {
   }
 
   fun setLimit(level: Int) {
-    binding.sliderView.progress = level + 1
-    this.level = binding.sliderView.progress
+    binding.sliderView.value = (level + 1).toFloat()
+    this.level = binding.sliderView.value.toInt()
   }
 
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_repeat_limit, this)
     orientation = HORIZONTAL
-    binding = RepeatLimitViewBinding(this)
+    binding = ViewRepeatLimitBinding.bind(this)
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.repeat_limit), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
+    binding.sliderView.addOnChangeListener { _, value, _ ->
+      level = value.toInt()
+      onLevelUpdateListener?.invoke(level)
     }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.repeat_limit))
-    binding.sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        level = progress
-        onLevelUpdateListener?.invoke(level)
-      }
-
-      override fun onStartTrackingTouch(seekBar: SeekBar?) {
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar?) {
-      }
-    })
   }
 }

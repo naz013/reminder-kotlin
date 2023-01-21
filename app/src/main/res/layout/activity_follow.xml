@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,43 +26,41 @@
                 android:visibility="gone"
                 app:civ_border_width="0dp" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/contactInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:textAppearance="?textAppearanceHeadline5"
+                android:textAppearance="?textAppearanceDisplaySmall"
                 tools:text="1234567890" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                style="@style/FilledBoxStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:hint="@string/message"
+                android:layout_marginTop="24dp"
                 app:boxCornerRadiusTopEnd="5dp"
                 app:boxCornerRadiusTopStart="5dp">
 
-                <com.elementary.tasks.core.views.FixedTextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="@string/message"
                     android:inputType="textMultiLine"
-                    android:maxLines="3"
-                    android:textAppearance="?textAppearanceSubtitle2" />
+                    android:maxLines="3" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
+                style="@style/UiComponentSectionLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/type"
-                android:textAppearance="?textAppearanceCaption"
-                android:textColor="?colorSecondary" />
+                android:layout_marginEnd="16dp"
+                android:text="@string/type" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/selectableGroup"
@@ -91,12 +89,13 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
+                style="@style/UiComponentSectionLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/date_and_time"
-                android:textAppearance="?textAppearanceCaption"
-                android:textColor="?colorSecondary" />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/date_and_time" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/tomorrowCard"
@@ -104,32 +103,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
                         android:text="@string/tomorrow"
-                        android:textAppearance="?textAppearanceBody1" />
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tomorrowTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        android:textColor="?colorOnSurfaceVariant"
                         tools:text="21 Feb, 15:45" />
 
                 </LinearLayout>
@@ -139,12 +136,11 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="8dp"
                     android:padding="8dp"
                     android:scaleType="centerInside"
                     app:civ_checkedIcon="@drawable/ic_check_circle_48px"
                     app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
-                    app:tint="?colorOnBackground" />
+                    app:tint="?colorOnSurfaceVariant" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -154,32 +150,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
                         android:text="@string/next_business_day"
-                        android:textAppearance="?textAppearanceBody1" />
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/nextWorkingTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        android:textColor="?colorOnSurfaceVariant"
                         tools:text="21 Feb, 15:45" />
                 </LinearLayout>
 
@@ -188,12 +182,11 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="8dp"
                     android:padding="8dp"
                     android:scaleType="centerInside"
                     app:civ_checkedIcon="@drawable/ic_check_circle_48px"
                     app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
-                    app:tint="?colorOnBackground" />
+                    app:tint="?colorOnSurfaceVariant" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -203,38 +196,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/time"
-                        android:textAppearance="?textAppearanceBody1" />
+                        android:text="@string/date_and_time"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/customDate"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:background="?selectableItemBackground"
                             android:gravity="center"
-                            android:textAppearance="?textAppearanceHeadline6"
+                            android:textAppearance="?textAppearanceHeadlineSmall"
+                            android:textColor="?colorOnSurfaceVariant"
                             tools:text="21 Feb 2015" />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -242,7 +234,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginStart="16dp"
-                            android:textAppearance="?textAppearanceHeadline6"
+                            android:background="?selectableItemBackground"
+                            android:textAppearance="?textAppearanceHeadlineSmall"
+                            android:textColor="?colorOnSurfaceVariant"
                             tools:text="15:45" />
 
                     </LinearLayout>
@@ -254,12 +248,11 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="8dp"
                     android:padding="8dp"
                     android:scaleType="centerInside"
                     app:civ_checkedIcon="@drawable/ic_check_circle_48px"
                     app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
-                    app:tint="?colorOnBackground" />
+                    app:tint="?colorOnSurfaceVariant" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -269,30 +262,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:text="@string/after"
-                        android:textAppearance="?textAppearanceBody1" />
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
 
                     <com.elementary.tasks.core.views.viewgroup.UiSelectorView
                         android:id="@+id/afterTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        app:selector_leftIconTintColor="?colorOnSurfaceVariant"
+                        app:selector_rightIconTintColor="?colorOnSurfaceVariant"
+                        app:selector_textColor="?colorOnSurfaceVariant" />
 
                 </LinearLayout>
 
@@ -301,61 +298,50 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="8dp"
                     android:padding="8dp"
                     android:scaleType="centerInside"
                     app:civ_checked="true"
                     app:civ_checkedIcon="@drawable/ic_check_circle_48px"
                     app:civ_uncheckedIcon="@drawable/ic_radio_button_unchecked_48px"
-                    app:tint="?colorOnBackground" />
+                    app:tint="?colorOnSurfaceVariant" />
 
             </com.google.android.material.card.MaterialCardView>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/exportCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/add_to_calendar"
-                android:textAppearance="?textAppearanceSubtitle1"
-                android:visibility="visible" />
+                android:layout_marginEnd="16dp"
+                android:text="@string/add_to_calendar" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/taskExport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/google_tasks"
-                android:textAppearance="?textAppearanceSubtitle1" />
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/add_to_google_tasks" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="92dp" />
-        </LinearLayout>
-    </ScrollView>
 
-    <com.google.android.material.button.MaterialButton
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="12dp"
-        android:elevation="4dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="20dp"
         android:text="@string/create_task"
         android:textAllCaps="true"
-        android:textAppearance="?textAppearanceButton"
-        android:textColor="?colorOnSecondary"
-        android:textSize="14sp"
         android:visibility="visible"
-        app:backgroundTint="?colorSecondary"
-        app:cornerRadius="32dp"
-        app:icon="@drawable/ic_twotone_done_24px"
-        app:iconPadding="12dp"
-        app:iconSize="24dp"
-        app:iconTint="?colorOnSecondary" />
+        app:icon="@drawable/ic_twotone_done_24px" />
 
 </RelativeLayout>

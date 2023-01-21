@@ -64,17 +64,17 @@
         <item name="textAppearanceLabelSmall">@style/TextAppearance.MyTheme.LabelSmall</item>
 
         <!--Material shape attributes-->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyTheme.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyTheme.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyTheme.LargeComponent</item>
+<!--        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyTheme.SmallComponent</item>-->
+<!--        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyTheme.MediumComponent</item>-->
+<!--        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyTheme.LargeComponent</item>-->
 
         <!--Component styles-->
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MyTheme.BottomSheetDialog</item>
-        <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
-        <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>
+<!--        <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>-->
+<!--        <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>-->
 
-        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
-        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
+<!--        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>-->
+<!--        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>-->
     </style>
 </resources>

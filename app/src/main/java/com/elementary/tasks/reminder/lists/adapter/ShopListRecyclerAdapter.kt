@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemShopTaskBinding
 
 class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {
+
   private var mDataList: MutableList<ShopItem> = mutableListOf()
   private var onBind: Boolean = false
   var listener: ActionListener? = null

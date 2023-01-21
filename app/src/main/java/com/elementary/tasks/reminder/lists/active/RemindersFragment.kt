@@ -18,7 +18,6 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
@@ -34,7 +33,6 @@ import timber.log.Timber
 
 class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
 
-  private val buttonObservable by inject<GlobalButtonObservable>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
   private val viewModel by viewModel<ActiveRemindersViewModel>()
 
@@ -85,11 +83,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
         CreateReminderActivity::class.java
       )
     }
-    binding.fab.setOnLongClickListener {
-      buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
-      true
-    }
-
     binding.archiveButton.setOnClickListener {
       safeNavigation(RemindersFragmentDirections.actionRemindersFragmentToArchiveFragment())
     }

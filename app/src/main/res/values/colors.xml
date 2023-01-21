@@ -83,8 +83,31 @@
     <color name="orangeAccentOld">#FFAB40</color>
     <color name="orangeDeepAccentOld">#FF6E40</color>
 
+    <color name="led_red">#f44336</color>
+    <color name="led_red_50">#80f44336</color>
+
+    <color name="led_pink">#e91e63</color>
+    <color name="led_pink_50">#80e91e63</color>
+
+    <color name="led_green">#388E3C</color>
+    <color name="led_green_50">#80388E3C</color>
+
+    <color name="led_blue">#2196F3</color>
+    <color name="led_blue_50">#802196F3</color>
+
+    <color name="led_yellow">#FFEB3B</color>
+    <color name="led_yellow_50">#80FFEB3B</color>
+
+    <color name="led_orange">#FF5722</color>
+    <color name="led_orange_50">#80FF5722</color>
+
+    <color name="led_teal">#009688</color>
+    <color name="led_teal_50">#80009688</color>
+
     <color name="redAccent">#f44336</color>
+    <color name="redAccent50">#80f44336</color>
     <color name="pinkAccent">#e91e63</color>
+    <color name="pinkAccent50">#80e91e63</color>
     <color name="purpleAccent">#9c27b0</color>
     <color name="purpleDeepAccent">#673ab7</color>
     <color name="indigoAccent">#3f51b5</color>

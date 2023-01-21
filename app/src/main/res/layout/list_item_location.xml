@@ -1,43 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemCard"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_marginTop="4dp"
+    android:stateListAnimator="@animator/card_animator"
+    app:cardCornerRadius="0dp"
+    app:contentPadding="16dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/itemCard"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:stateListAnimator="@animator/card_animator"
-        app:cardCornerRadius="0dp"
-        tools:targetApi="lollipop">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:textColor="?colorOnPrimaryContainer"
+            tools:text="Task" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="?textAppearanceSubtitle1"
-                tools:text="Task" />
+        <ImageView
+            android:id="@+id/markerImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="center" />
 
-            <ImageView
-                android:id="@+id/markerImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="center" />
+    </LinearLayout>
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

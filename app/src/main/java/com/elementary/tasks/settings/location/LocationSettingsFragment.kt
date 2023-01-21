@@ -118,12 +118,17 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(R.string.tracking_settings)
       val b = DialogTrackingSettingsLayoutBinding.inflate(layoutInflater)
-      val time = prefs.trackTime - 1
-      b.timeBar.progress = time
-      b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), (time + 1).toString())
+      val time = prefs.trackTime
+
+      b.timeBar.addOnChangeListener { _, value, _ ->
+        b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), value.toInt().toString())
+      }
+      b.timeBar.value = time.toFloat()
+
+      b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), time.toString())
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
-        prefs.trackTime = b.timeBar.progress + 1
+        prefs.trackTime = b.timeBar.value.toInt()
       }
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
       val dialog = builder.create()

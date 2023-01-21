@@ -1,37 +1,31 @@
 package com.elementary.tasks.settings
 
-import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.core.net.toUri
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.NotificationPolicyLauncher
-import com.elementary.tasks.core.os.datapicker.PicturePicker
 import com.elementary.tasks.core.os.datapicker.RingtonePicker
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.ui.SelectionList
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.CacheUtil
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.SelectionList
+import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
@@ -50,15 +44,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       prefs.melodyFile = file.toString()
       showMelody()
     }
-  }
-  private val picturePicker = PicturePicker(this) {
-    val file = File(it)
-    if (file.exists()) {
-      prefs.screenImage = it
-    } else {
-      prefs.screenImage = Constants.DEFAULT
-    }
-    showImage()
   }
   private val ringtonePicker = RingtonePicker(this) {
     prefs.melodyFile = it.toString()
@@ -105,7 +90,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     initSmartFold()
     initWearNotification()
     initUnlockPriorityPrefs()
-    initImagePrefs()
     initMelodyDurationPrefs()
   }
 
@@ -190,32 +174,27 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(R.string.interval)
       val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-      b.seekBar.max = 60
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = String.format(
-            Locale.getDefault(), getString(R.string.x_minutes),
-            progress.toString()
-          )
-        }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
+      b.seekBar.addOnChangeListener { _, value, _ ->
+        b.titleView.text = String.format(
+          Locale.getDefault(), getString(R.string.x_minutes),
+          value.toInt().toString()
+        )
+      }
+      b.seekBar.stepSize = 1f
+      b.seekBar.valueFrom = 0f
+      b.seekBar.valueTo = 60f
 
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
       val repeatTime = prefs.notificationRepeatTime
-      b.seekBar.progress = repeatTime
+      b.seekBar.value = repeatTime.toFloat()
+
       b.titleView.text = String.format(
         Locale.getDefault(), getString(R.string.x_minutes),
         repeatTime.toString()
       )
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
-        prefs.notificationRepeatTime = b.seekBar.progress
+        prefs.notificationRepeatTime = b.seekBar.value.toInt()
         showRepeatTime()
         initRepeatTimePrefs()
       }
@@ -316,26 +295,21 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     dialogues.getNullableDialog(context)?.let { builder ->
       builder.setTitle(R.string.snooze_time)
       val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-      b.seekBar.max = 60
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = snoozeFormat(progress)
-        }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
+      b.seekBar.addOnChangeListener { _, value, _ ->
+        b.titleView.text = snoozeFormat(value.toInt())
+      }
+      b.seekBar.stepSize = 1f
+      b.seekBar.valueFrom = 0f
+      b.seekBar.valueTo = 60f
 
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
       val snoozeTime = prefs.snoozeTime
-      b.seekBar.progress = snoozeTime
+      b.seekBar.value = snoozeTime.toFloat()
+
       b.titleView.text = snoozeFormat(snoozeTime)
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
-        prefs.snoozeTime = b.seekBar.progress
+        prefs.snoozeTime = b.seekBar.value.toInt()
         showSnooze()
         initSnoozeTimePrefs()
       }
@@ -475,26 +449,21 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     dialogues.getNullableDialog(context)?.let { builder ->
       builder.setTitle(R.string.loudness)
       val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-      b.seekBar.max = 25
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = progress.toString()
-        }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
+      b.seekBar.addOnChangeListener { _, value, _ ->
+        b.titleView.text = value.toInt().toString()
+      }
+      b.seekBar.stepSize = 1f
+      b.seekBar.valueFrom = 0f
+      b.seekBar.valueTo = 25f
 
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
       val loudness = prefs.loudness
-      b.seekBar.progress = loudness
+      b.seekBar.value = loudness.toFloat()
+
       b.titleView.text = loudness.toString()
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
-        prefs.loudness = b.seekBar.progress
+        prefs.loudness = b.seekBar.value.toInt()
         showLoudness()
       }
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
@@ -892,92 +861,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun initManualPrefs() {
     binding.notificationDismissPrefs.setOnClickListener { changeManualPrefs() }
     binding.notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
-  }
-
-  private fun initImagePrefs() {
-    binding.bgImagePrefs.setOnClickListener { showImageDialog() }
-    showImage()
-  }
-
-  private fun getImagePosition() = when (prefs.screenImage) {
-    Constants.NONE -> 0
-    Constants.DEFAULT -> 1
-    else -> 2
-  }
-
-  private fun showImageDialog() {
-    dialogues.showPropertyDialog(
-      requireContext(),
-      SelectionList(
-        position = getImagePosition(),
-        title = getString(R.string.background),
-        okButtonTitle = getString(R.string.ok),
-        cancelButtonTitle = getString(R.string.cancel),
-        items = listOf(
-          getString(R.string.none),
-          getString(R.string.default_string),
-          getString(R.string.choose_file)
-        )
-      ),
-      onOk = { saveImagePrefs(it) }
-    )
-  }
-
-  private fun saveImagePrefs(i: Int) {
-    when (i) {
-      0 -> prefs.screenImage = Constants.NONE
-      1 -> prefs.screenImage = Constants.DEFAULT
-      2 -> picturePicker.pickPicture()
-    }
-    showImage()
-  }
-
-  private fun showImage() {
-    val title = when (prefs.screenImage) {
-      Constants.NONE -> getString(R.string.none)
-      Constants.DEFAULT -> getString(R.string.default_string)
-      else -> {
-        val file = File(prefs.screenImage)
-        if (file.exists()) {
-          file.name
-        } else {
-          getString(R.string.default_string)
-        }
-      }
-    }
-    binding.bgImagePrefs.setDetailText(title)
-    binding.bgImagePrefs.setViewDrawable(null)
-    if (prefs.screenImage != Constants.NONE) {
-      if (prefs.screenImage == Constants.DEFAULT) {
-        binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
-      } else {
-        val imageFile = File(prefs.screenImage)
-        if (Permissions.checkPermission(
-            requireContext(),
-            Permissions.READ_EXTERNAL
-          ) && imageFile.exists()
-        ) {
-          Glide.with(requireContext())
-            .load(imageFile)
-            .override(200, 200)
-            .centerCrop()
-            .into(object : CustomTarget<Drawable>() {
-              override fun onLoadCleared(placeholder: Drawable?) {
-
-              }
-
-              override fun onResourceReady(
-                resource: Drawable,
-                transition: Transition<in Drawable>?
-              ) {
-                binding.bgImagePrefs.setViewDrawable(resource)
-              }
-            })
-        } else {
-          binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
-        }
-      }
-    }
   }
 
   override fun getTitle() = getString(R.string.notification)

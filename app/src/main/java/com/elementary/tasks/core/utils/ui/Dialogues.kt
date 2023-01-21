@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
@@ -63,10 +62,12 @@ class Dialogues(
     }
   }.create()
 
-  fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = ThemeProvider.colorsForSlider(
-    activity
-  ),
-                            onChange: (Int) -> Unit) {
+  fun showColorBottomDialog(
+    activity: Activity,
+    current: Int,
+    colors: IntArray = ThemeProvider.colorsForSlider(activity),
+    onChange: (Int) -> Unit
+  ) {
     val dialog = BottomSheetDialog(activity)
     val b = DialogBottomColorSliderBinding.inflate(LayoutInflater.from(activity))
     b.colorSlider.setColors(colors)
@@ -84,45 +85,42 @@ class Dialogues(
   fun showRadiusBottomDialog(activity: Activity, current: Int, listener: (Int) -> String) {
     val dialog = BottomSheetDialog(activity)
     val b = DialogBottomSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
-    b.seekBar.max = MAX_DEF_RADIUS
-    if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
-      b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
+
+    b.seekBar.addOnChangeListener { _, value, _ ->
+      b.titleView.text = listener.invoke(value.toInt())
+      val perc = value / b.seekBar.valueTo * 100f
+      if (perc > 95f && b.seekBar.valueTo.toInt() < MAX_RADIUS) {
+        b.seekBar.valueTo = b.seekBar.valueTo + (b.seekBar.valueTo * 0.2f)
+      } else if (perc < 10f && b.seekBar.valueTo.toInt() > 5000) {
+        b.seekBar.valueTo = b.seekBar.valueTo - (b.seekBar.valueTo * 0.2f)
+      }
+    }
+    b.seekBar.stepSize = 1f
+    b.seekBar.valueFrom = 0f
+    b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
+
+    if (b.seekBar.valueTo < current && b.seekBar.valueTo < MAX_RADIUS) {
+      b.seekBar.valueTo = current + (b.seekBar.valueTo * 0.2f)
     }
     if (current > MAX_RADIUS) {
-      b.seekBar.max = MAX_RADIUS
+      b.seekBar.valueTo = MAX_RADIUS.toFloat()
     }
-    b.seekBar.max = current * 2
+    b.seekBar.valueTo = current * 2f
     if (current == 0) {
-      b.seekBar.max = MAX_DEF_RADIUS
+      b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
     }
-    b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        b.titleView.text = listener.invoke(progress)
-        val perc = progress.toFloat() / b.seekBar.max.toFloat() * 100f
-        if (perc > 95f && b.seekBar.max < MAX_RADIUS) {
-          b.seekBar.max = (b.seekBar.max + (b.seekBar.max * 0.2)).toInt()
-        } else if (perc < 10f && b.seekBar.max > 5000) {
-          b.seekBar.max = (b.seekBar.max - (b.seekBar.max * 0.2)).toInt()
-        }
-      }
+    b.seekBar.value = current.toFloat()
 
-      override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-      }
-    })
-    b.seekBar.progress = current
     b.titleView.text = listener.invoke(current)
     dialog.setContentView(b.root)
     dialog.show()
   }
 
-  fun showColorDialog(activity: Activity, current: Int, title: String,
-                      colors: IntArray = ThemeProvider.colorsForSlider(activity),
-                      onDone: (Int) -> Unit) {
+  fun showColorDialog(
+    activity: Activity, current: Int, title: String,
+    colors: IntArray = ThemeProvider.colorsForSlider(activity),
+    onDone: (Int) -> Unit
+  ) {
     val builder = getMaterialDialog(activity)
     builder.setTitle(title)
     val bind = ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
@@ -149,39 +147,34 @@ class Dialogues(
     val builder = getMaterialDialog(activity)
     builder.setTitle(R.string.radius)
     val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
-    b.seekBar.max = MAX_DEF_RADIUS
-    if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
-      b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
+
+    b.seekBar.addOnChangeListener { _, value, _ ->
+      b.titleView.text = listener.getTitle(value.toInt())
+      val perc = value / b.seekBar.valueTo * 100f
+      if (perc > 95f && b.seekBar.valueTo.toInt() < MAX_RADIUS) {
+        b.seekBar.valueTo = b.seekBar.valueTo + (b.seekBar.valueTo * 0.2f)
+      } else if (perc < 10f && b.seekBar.valueTo.toInt() > 5000) {
+        b.seekBar.valueTo = b.seekBar.valueTo - (b.seekBar.valueTo * 0.2f)
+      }
+    }
+    b.seekBar.stepSize = 1f
+    b.seekBar.valueFrom = 0f
+
+    b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
+    if (b.seekBar.valueTo < current && b.seekBar.valueTo < MAX_RADIUS) {
+      b.seekBar.valueTo = current + (b.seekBar.valueTo * 0.2f)
     }
     if (current > MAX_RADIUS) {
-      b.seekBar.max = MAX_RADIUS
+      b.seekBar.valueTo = MAX_RADIUS.toFloat()
     }
     if (current == 0) {
-      b.seekBar.max = MAX_DEF_RADIUS
+      b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
     }
-    b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        b.titleView.text = listener.getTitle(progress)
-        val perc = progress.toFloat() / b.seekBar.max.toFloat() * 100f
-        if (perc > 95f && b.seekBar.max < MAX_RADIUS) {
-          b.seekBar.max = (b.seekBar.max + (b.seekBar.max * 0.2)).toInt()
-        } else if (perc < 10f && b.seekBar.max > 5000) {
-          b.seekBar.max = (b.seekBar.max - (b.seekBar.max * 0.2)).toInt()
-        }
-      }
+    b.seekBar.value = current.toFloat()
 
-      override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-      }
-    })
-    b.seekBar.progress = current
     b.titleView.text = listener.getTitle(current)
     builder.setView(b.root)
-    builder.setPositiveButton(R.string.ok) { _, _ -> listener.onSelected(b.seekBar.progress) }
+    builder.setPositiveButton(R.string.ok) { _, _ -> listener.onSelected(b.seekBar.value.toInt()) }
     builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
     val dialog = builder.create()
     dialog.show()
@@ -227,8 +220,10 @@ class Dialogues(
       return MaterialAlertDialogBuilder(context)
     }
 
-    fun showPopup(anchor: View,
-                  listener: ((Int) -> Unit)?, vararg actions: String) {
+    fun showPopup(
+      anchor: View,
+      listener: ((Int) -> Unit)?, vararg actions: String
+    ) {
       val popupMenu = PopupMenu(anchor.context, anchor)
       popupMenu.setOnMenuItemClickListener { item ->
         listener?.invoke(item.order)

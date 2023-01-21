@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="UiComponentSectionHeader" parent="@style/MyTheme.DayNight">
+    <style name="UiComponentSectionLabel" parent="@style/MyTheme.DayNight">
+        <item name="android:textAppearance">?textAppearanceLabelLarge</item>
+        <item name="android:textColor">?colorTertiary</item>
+    </style>
+
+    <style name="UiComponentSectionLarge" parent="@style/MyTheme.DayNight">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -9,7 +14,6 @@
     <!--Components-->
 
     <style name="FilledBoxStyle" parent="@style/Widget.Material3.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">?colorSecondary12</item>
         <item name="boxCornerRadiusTopEnd">5dp</item>
         <item name="boxCornerRadiusTopStart">5dp</item>
     </style>

@@ -34,4 +34,7 @@
 
     <dimen name="home_screen_widget_corner_radius">10dp</dimen>
 
+    <dimen name="default_corner_radius">5dp</dimen>
+    <dimen name="default_content_padding">8dp</dimen>
+
 </resources>

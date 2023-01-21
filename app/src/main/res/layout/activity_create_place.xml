@@ -1,73 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
         app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?android:colorBackground"
-            app:contentInsetEnd="0dp"
-            app:contentInsetStart="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/titleView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/new_place"
-                    android:textAppearance="?textAppearanceHeadline6" />
-
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
+            app:menu="@menu/activity_create_place"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/new_place" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/placeLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/FilledBoxStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:boxBackgroundColor="?colorSecondary12"
-            app:boxCornerRadiusTopEnd="5dp"
-            app:boxCornerRadiusTopStart="5dp">
+            android:layout_marginEnd="16dp">
 
-            <com.elementary.tasks.core.views.FixedTextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/placeName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
                 android:imeOptions="actionNext"
                 android:inputType="textShortMessage|textAutoCorrect"
-                android:maxLines="1"
-                android:textAppearance="?textAppearanceSubtitle1" />
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,6 +47,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appBar"

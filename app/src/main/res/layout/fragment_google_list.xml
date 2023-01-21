@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,7 +17,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:visibility="invisible">
+            android:visibility="gone"
+            tools:visibility="gone">
 
             <androidx.core.widget.ContentLoadingProgressBar
                 style="@style/Widget.AppCompat.ProgressBar"
@@ -43,7 +43,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="gone">
 
             <ImageView
                 android:id="@+id/emptyImage"
@@ -59,7 +60,7 @@
                 android:layout_marginRight="24dp"
                 android:gravity="center|top"
                 android:text="@string/no_google_tasks"
-                android:textAppearance="?textAppearanceHeadline6" />
+                android:textAppearance="?textAppearanceHeadlineSmall" />
 
         </LinearLayout>
 
@@ -79,15 +80,19 @@
                 tools:listitem="@layout/list_item_google_task" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
+        style="?attr/extendedFloatingActionButtonSecondaryStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:contentDescription="@string/new_task"
         android:text="@string/new_task"
+        android:tint="?colorOnSecondary"
         app:icon="@drawable/ic_twotone_add_24px" />
-</RelativeLayout>
+
+</FrameLayout>

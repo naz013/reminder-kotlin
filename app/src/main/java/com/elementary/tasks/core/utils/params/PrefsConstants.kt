@@ -110,7 +110,6 @@ object PrefsConstants {
   const val DO_NOT_DISTURB_IGNORE = "do_not_disturb_ignore"
   const val DO_NOT_DISTURB_ACTION = "do_not_disturb_action"
   const val NOTE_PALETTE = "note_palette"
-  const val SCREEN_BACKGROUND_IMAGE = "screen_bg_image"
   const val PLAYBACK_DURATION = "playback_duration"
   const val AUTO_SYNC_STATE = "auto_sync_state"
   const val AUTO_SYNC_FLAGS = "auto_sync_flags"
@@ -123,6 +122,7 @@ object PrefsConstants {
   const val PRIVACY_SHOWED = "privacy_showed"
   const val SHOW_PERMANENT_REMINDERS = "show_permanent_reminders"
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"
+  const val DYNAMIC_COLORS = "dynamic_colors_13"
 
   const val REMINDER_CHANGED = "reminder_changed"
   const val LAST_USED_REMINDER = "last_reminder"

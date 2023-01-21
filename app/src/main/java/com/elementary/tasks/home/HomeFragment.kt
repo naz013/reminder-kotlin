@@ -133,10 +133,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     binding.notesButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionNotes())
     }
-    binding.notesButton.setOnLongClickListener {
-      buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
-      true
-    }
     binding.calendarButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
     }

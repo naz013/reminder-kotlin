@@ -120,7 +120,6 @@ import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewViewModel
-import com.elementary.tasks.notes.quick.QuickNoteViewModel
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.places.create.PlaceViewModel
@@ -135,7 +134,7 @@ import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
-import com.elementary.tasks.reminder.preview.ReminderViewModel
+import com.elementary.tasks.reminder.dialog.ReminderViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -259,7 +258,6 @@ val viewModelModule = module {
   }
 
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get()) }
-  viewModel { QuickNoteViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
     NotePreviewViewModel(
       id,
