@@ -37,8 +37,8 @@
         android:layout_height="156dp"
         android:layout_marginTop="16dp"
         app:gradientFrameLayout_cornerRadius="0dp"
-        app:gradientFrameLayout_endColor="@color/widget_preview_bg_end"
-        app:gradientFrameLayout_startColor="@color/widget_preview_bg_start">
+        app:gradientFrameLayout_endColor="?colorTertiary"
+        app:gradientFrameLayout_startColor="?colorPrimary">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:text="@string/app_title"
-                        android:textAppearance="?textAppearanceBody1"/>
+                        android:textAppearance="?textAppearanceBody1" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -124,12 +124,12 @@
         android:text="@string/background" />
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewFilledStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/material_margin"
-        app:cardBackgroundColor="@color/glass_card_bg_start"
         app:cardCornerRadius="5dp"
         app:cardElevation="2dp">
 

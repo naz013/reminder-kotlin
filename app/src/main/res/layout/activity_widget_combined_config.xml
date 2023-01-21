@@ -36,8 +36,8 @@
         android:layout_height="152dp"
         android:layout_marginTop="16dp"
         app:gradientFrameLayout_cornerRadius="0dp"
-        app:gradientFrameLayout_endColor="@color/widget_preview_bg_end"
-        app:gradientFrameLayout_startColor="@color/widget_preview_bg_start">
+        app:gradientFrameLayout_endColor="?colorTertiary"
+        app:gradientFrameLayout_startColor="?colorPrimary">
 
         <LinearLayout
             android:id="@+id/widgetBg"
@@ -101,14 +101,14 @@
         android:text="@string/background" />
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewFilledStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/material_margin"
         app:cardCornerRadius="5dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/glass_card_bg_start">
+        app:cardElevation="2dp">
 
         <com.github.naz013.colorslider.ColorSlider
             android:id="@+id/bgColorSlider"

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -15,7 +16,6 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.views.viewgroup.UiSelectorView
 import com.elementary.tasks.databinding.ActivityFollowBinding
 import org.koin.android.ext.android.inject
@@ -37,6 +37,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>() {
   private var timeCallBack: (LocalTime) -> Unit = {
     binding.customTime.text = viewModel.updateCustomTime(it)
   }
+  private var checkedType: Int = 0
 
   override fun inflateBinding() = ActivityFollowBinding.inflate(layoutInflater)
 
@@ -117,7 +118,13 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>() {
 
   private fun initViews() {
     binding.fab.setOnClickListener { saveDateTask() }
-    binding.typeCall.isChecked = true
+
+    binding.selectableGroup.check(R.id.typeCall)
+    binding.selectableGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+      if (isChecked) {
+        checkedType = checkedId
+      }
+    }
 
     binding.tomorrowCard.setOnClickListener {
       viewModel.onNewState(FollowReminderViewModel.TimeState.TOMORROW)
@@ -221,7 +228,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>() {
       return
     }
 
-    val type: Int = if (binding.typeCall.isChecked) {
+    val type: Int = if (checkedType == R.id.typeCall) {
       Reminder.BY_DATE_CALL
     } else {
       Reminder.BY_DATE_SMS

@@ -57,22 +57,4 @@
     <color name="amberAccent">#ffe082</color>
     <color name="orangeAccent">#ffcc80</color>
     <color name="orangeDeepAccent">#ffab91</color>
-
-    <!-- Memariani -->
-    <color name="reminder_banner_gradient_start">#aa4b6b</color>
-    <color name="reminder_banner_gradient_center">#6b6b83</color>
-    <color name="reminder_banner_gradient_end">#3b8d99</color>
-
-    <!-- Atlas -->
-    <color name="birthday_banner_gradient_start">#b91d73</color>
-    <color name="birthday_banner_gradient_center">#493240</color>
-    <color name="birthday_banner_gradient_end">#333399</color>
-
-    <color name="glass_card_bg_start">#33FFE082</color>
-    <color name="glass_card_bg_end">#4DFFE082</color>
-
-    <!-- Influenza -->
-    <color name="widget_preview_bg_start">#C04848</color>
-    <color name="widget_preview_bg_end">#480048</color>
-
 </resources>

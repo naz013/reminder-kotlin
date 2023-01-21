@@ -227,21 +227,4 @@
         <item>#9D94BA</item>
         <item>#D1D5E8</item>
     </string-array>
-
-    <!-- Azure Lane -->
-    <color name="reminder_banner_gradient_start">#7F7FD5</color>
-    <color name="reminder_banner_gradient_center">#86A8E7</color>
-    <color name="reminder_banner_gradient_end">#91EAE4</color>
-
-    <!-- Atlas -->
-    <color name="birthday_banner_gradient_start">#FEAC5E</color>
-    <color name="birthday_banner_gradient_center">#C779D0</color>
-    <color name="birthday_banner_gradient_end">#4BC0C8</color>
-
-    <color name="glass_card_bg_start">#0C2196F3</color>
-    <color name="glass_card_bg_end">#1A2196F3</color>
-
-    <!-- Magic -->
-    <color name="widget_preview_bg_start">#59C173</color>
-    <color name="widget_preview_bg_end">#5D26C1</color>
 </resources>

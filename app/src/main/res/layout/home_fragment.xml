@@ -278,10 +278,9 @@
                 android:orientation="vertical"
                 app:gradientLinearLayout_animate="true"
                 app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
-                app:gradientLinearLayout_centerColor="@color/reminder_banner_gradient_center"
-                app:gradientLinearLayout_endColor="@color/reminder_banner_gradient_end"
+                app:gradientLinearLayout_endColor="?colorSecondary"
                 app:gradientLinearLayout_orientation="TL_BR"
-                app:gradientLinearLayout_startColor="@color/reminder_banner_gradient_start">
+                app:gradientLinearLayout_startColor="?colorPrimary">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="72dp"
@@ -289,7 +288,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="32dp"
                     app:srcCompat="@drawable/ic_empty_state_calendar"
-                    app:tint="?android:textColorPrimary" />
+                    app:tint="?colorOnTertiary" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
@@ -302,7 +301,7 @@
                     android:gravity="center"
                     android:text="@string/you_re_all_done"
                     android:textAppearance="?textAppearanceHeadline6"
-                    android:textColor="?android:textColorPrimary" />
+                    android:textColor="?colorOnTertiary" />
 
             </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
 
@@ -373,10 +372,9 @@
                     android:orientation="vertical"
                     app:gradientLinearLayout_animate="true"
                     app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
-                    app:gradientLinearLayout_centerColor="@color/birthday_banner_gradient_center"
-                    app:gradientLinearLayout_endColor="@color/birthday_banner_gradient_end"
+                    app:gradientLinearLayout_endColor="?colorTertiary"
                     app:gradientLinearLayout_orientation="TL_BR"
-                    app:gradientLinearLayout_startColor="@color/birthday_banner_gradient_start">
+                    app:gradientLinearLayout_startColor="?colorSecondary">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="72dp"
@@ -384,7 +382,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="32dp"
                         app:srcCompat="@drawable/ic_empty_state_cake"
-                        app:tint="?android:textColorPrimary" />
+                        app:tint="?colorOnSecondary" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
@@ -397,7 +395,7 @@
                         android:gravity="center"
                         android:text="@string/no_upcoming_birthdays"
                         android:textAppearance="?textAppearanceHeadline6"
-                        android:textColor="?android:textColorPrimary" />
+                        android:textColor="?colorOnSecondary" />
 
                 </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
             </com.google.android.material.card.MaterialCardView>

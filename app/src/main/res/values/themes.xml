@@ -41,7 +41,6 @@
 
         <item name="colorSecondary12">@color/color_secondary_12</item>
         <item name="colorSecondary50">@color/color_secondary_50</item>
-        <item name="colorOnSecondary50">@color/color_on_secondary_50</item>
 
         <!--Material type attributes-->
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.MyTheme.DisplayLarge</item>
