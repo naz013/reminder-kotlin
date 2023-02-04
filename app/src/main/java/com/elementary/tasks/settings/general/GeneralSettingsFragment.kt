@@ -32,6 +32,18 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     initAppTheme()
     init24TimePrefs()
     initLanguagePrefs()
+    initDynamicColorsPrefs()
+  }
+
+  private fun initDynamicColorsPrefs() {
+    binding.dynamicColorsPrefs.setOnClickListener { changeDynamicPrefs() }
+    binding.dynamicColorsPrefs.isChecked = prefs.useDynamicColors
+  }
+
+  private fun changeDynamicPrefs() {
+    prefs.useDynamicColors = !prefs.useDynamicColors
+    binding.dynamicColorsPrefs.isChecked = prefs.useDynamicColors
+    restartApp()
   }
 
   private fun initLanguagePrefs() {
@@ -74,7 +86,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     binding.time24hourPrefs.setDetailText(currentFormat())
   }
 
-  private fun currentFormat(): String? {
+  private fun currentFormat(): String {
     return when (prefs.hourFormat) {
       0 -> getString(R.string.default_string)
       1 -> getString(R.string.use_24_hour_format)
@@ -168,7 +180,6 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   override fun getTitle(): String = getString(R.string.general)
 
   private fun restartApp() {
-
     startActivity(Intent(context, SplashScreenActivity::class.java))
     activity?.finishAffinity()
   }
