@@ -3,7 +3,6 @@ package com.elementary.tasks.birthdays.preview
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
@@ -37,13 +36,14 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    drawBehindSystemBars(binding.rootView)
 
     binding.buttonOk.setOnClickListener { ok() }
     binding.buttonCall.setOnClickListener { makeCall() }
     binding.buttonSms.setOnClickListener { sendSMS() }
 
     binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
-    binding.contactPhoto.visibility = View.GONE
+    binding.contactPhoto.gone()
 
     initViewModel()
   }

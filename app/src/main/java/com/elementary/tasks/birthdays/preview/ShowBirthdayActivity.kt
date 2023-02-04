@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.view.View
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
@@ -158,6 +157,8 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    drawBehindSystemBars(binding.rootView)
+
     isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
 
     binding.buttonOk.setOnClickListener { ok() }
@@ -165,7 +166,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     binding.buttonSms.setOnClickListener { sendSMS() }
 
     binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
-    binding.contactPhoto.visibility = View.GONE
+    binding.contactPhoto.gone()
 
     if (savedInstanceState != null) {
       isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
