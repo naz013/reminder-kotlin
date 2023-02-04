@@ -261,8 +261,8 @@ internal class EsWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
 
           if (dayOfMonth != -1) {
             var parsedDate = LocalDate.now(zoneId)
-              .withDayOfMonth(dayOfMonth)
               .withMonth(month)
+              .withDayOfMonth(dayOfMonth)
 
             if (parsedDate.isBefore(LocalDate.now(zoneId))) {
               parsedDate = parsedDate.plusYears(1)

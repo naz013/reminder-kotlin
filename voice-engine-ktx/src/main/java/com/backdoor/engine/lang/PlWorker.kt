@@ -360,8 +360,8 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
           }) { 1 }
 
           var parsedDate = LocalDate.now(zoneId)
-            .withDayOfMonth(dayOfMonth)
             .withMonth(month)
+            .withDayOfMonth(dayOfMonth)
 
           if (parsedDate.isBefore(LocalDate.now(zoneId))) {
             parsedDate = parsedDate.plusYears(1)

@@ -303,8 +303,8 @@ internal class EnWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
           }
 
           var parsedDate = LocalDate.now(zoneId)
-            .withDayOfMonth(dayOfMonth.toInt())
             .withMonth(month)
+            .withDayOfMonth(dayOfMonth.toInt())
 
           if (parsedDate.isBefore(LocalDate.now(zoneId))) {
             parsedDate = parsedDate.plusYears(1)
