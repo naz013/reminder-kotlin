@@ -39,9 +39,11 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
@@ -210,13 +212,15 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    drawBehindSystemBars(binding.rootView)
+
     isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
 
-    binding.container.visibility = View.GONE
-    binding.progressOverlay.visibility = View.GONE
+    binding.container.gone()
+    binding.progressOverlay.gone()
     binding.progressOverlay.setOnTouchListener { v, _ -> v.performClick() }
-    binding.subjectContainer.visibility = View.GONE
-    binding.contactBlock.visibility = View.INVISIBLE
+    binding.subjectContainer.gone()
+    binding.contactBlock.transparent()
 
     initButtons()
 

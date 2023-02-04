@@ -21,6 +21,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
@@ -74,11 +75,12 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityDialogMissedCa
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    drawBehindSystemBars(binding.rootView)
 
     isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
 
     binding.contactPhoto.borderColor = ThemeProvider.getThemeSecondaryColor(this)
-    binding.contactPhoto.visibility = View.GONE
+    binding.contactPhoto.gone()
 
     initButtons()
 

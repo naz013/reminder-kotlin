@@ -45,6 +45,7 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
@@ -127,11 +128,13 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    binding.container.visibility = View.GONE
-    binding.progressOverlay.visibility = View.GONE
+    drawBehindSystemBars(binding.rootView)
+
+    binding.container.gone()
+    binding.progressOverlay.gone()
     binding.progressOverlay.setOnTouchListener { v, _ -> v.performClick() }
-    binding.subjectContainer.visibility = View.GONE
-    binding.contactBlock.visibility = View.INVISIBLE
+    binding.subjectContainer.gone()
+    binding.contactBlock.transparent()
 
     initButtons()
     initViewModel()
