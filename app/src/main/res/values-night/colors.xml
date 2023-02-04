@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--Material 3 -->
+
+    <color name="md_theme_primary">#94CCFF</color>
+    <color name="md_theme_onPrimary">#003352</color>
+    <color name="md_theme_primaryContainer">#004B74</color>
+    <color name="md_theme_onPrimaryContainer">#CDE5FF</color>
+    <color name="md_theme_secondary">#E8C349</color>
+    <color name="md_theme_onSecondary">#3C2F00</color>
+    <color name="md_theme_secondaryContainer">#564500</color>
+    <color name="md_theme_onSecondaryContainer">#FFE083</color>
+    <color name="md_theme_tertiary">#FFB1C8</color>
+    <color name="md_theme_onTertiary">#650033</color>
+    <color name="md_theme_tertiaryContainer">#8E004A</color>
+    <color name="md_theme_onTertiaryContainer">#FFD9E2</color>
+    <color name="md_theme_error">#FFB4AB</color>
+    <color name="md_theme_errorContainer">#93000A</color>
+    <color name="md_theme_onError">#690005</color>
+    <color name="md_theme_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_background">#1A1C1E</color>
+    <color name="md_theme_onBackground">#E2E2E5</color>
+    <color name="md_theme_surface">#1A1C1E</color>
+    <color name="md_theme_onSurface">#E2E2E5</color>
+    <color name="md_theme_surfaceVariant">#42474E</color>
+    <color name="md_theme_onSurfaceVariant">#C2C7CE</color>
+    <color name="md_theme_outline">#8C9198</color>
+    <color name="md_theme_inverseOnSurface">#1A1C1E</color>
+    <color name="md_theme_inverseSurface">#E2E2E5</color>
+    <color name="md_theme_inversePrimary">#006398</color>
+    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_surfaceTint">#94CCFF</color>
+    <color name="md_theme_outlineVariant">#42474E</color>
+    <color name="md_theme_scrim">#000000</color>
+
     <!--DARK COLOR THEME-->
 
-    <color name="color_primary">#64b5f6</color>
-    <color name="color_primary_variant">#0d47a1</color>
-    <color name="color_secondary">#ffe082</color>
-    <color name="color_secondary_12">#1Fffe082</color>
-    <color name="color_secondary_50">#80ffe082</color>
-    <color name="color_secondary_variant">#caae53</color>
+    <color name="color_secondary_12">#1F94CCFF</color>
+    <color name="color_secondary_50">#8094CCFF</color>
 
-    <color name="color_background">#000000</color>
-    <color name="color_surface">#121212</color>
-    <color name="color_error">#cf6679</color>
-
-    <color name="color_on_primary">#000000</color>
-    <color name="color_on_secondary">#000000</color>
     <color name="color_on_secondary_50">#ffffff</color>
-    <color name="color_on_background">#ffffff</color>
-    <color name="color_on_surface">#ffffff</color>
-    <color name="color_on_error">#000000</color>
-
-    <color name="color_success">#8bc34a</color>
 
     <color name="redAccent">#ef9a9a</color>
     <color name="pinkAccent">#f48fb1</color>
@@ -39,22 +57,4 @@
     <color name="amberAccent">#ffe082</color>
     <color name="orangeAccent">#ffcc80</color>
     <color name="orangeDeepAccent">#ffab91</color>
-
-    <!-- Memariani -->
-    <color name="reminder_banner_gradient_start">#aa4b6b</color>
-    <color name="reminder_banner_gradient_center">#6b6b83</color>
-    <color name="reminder_banner_gradient_end">#3b8d99</color>
-
-    <!-- Atlas -->
-    <color name="birthday_banner_gradient_start">#b91d73</color>
-    <color name="birthday_banner_gradient_center">#493240</color>
-    <color name="birthday_banner_gradient_end">#333399</color>
-
-    <color name="glass_card_bg_start">#33FFE082</color>
-    <color name="glass_card_bg_end">#4DFFE082</color>
-
-    <!-- Influenza -->
-    <color name="widget_preview_bg_start">#C04848</color>
-    <color name="widget_preview_bg_end">#480048</color>
-
 </resources>

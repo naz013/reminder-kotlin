@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:visibility="visible"
+        tools:listitem="@layout/list_item_reminder" />
 
-        <LinearLayout
-            android:id="@+id/emptyItem"
+    <LinearLayout
+        android:id="@+id/emptyItem"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/emptyText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/emptyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:gravity="center|top"
-                android:text="@string/no_events"
-                android:textAppearance="?textAppearanceHeadline6" />
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/list_margin"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:visibility="visible"
-            tools:listitem="@layout/list_item_reminder" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:gravity="center|top"
+            android:text="@string/no_events"
+            android:textAppearance="?textAppearanceHeadlineSmall" />
 
     </LinearLayout>
-</RelativeLayout>
+</FrameLayout>

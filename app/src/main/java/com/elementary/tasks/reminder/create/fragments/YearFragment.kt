@@ -34,7 +34,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
         iFace.showSnackbar(getString(R.string.you_dont_insert_number))
         return null
       }
-      type = if (binding.actionView.type == ActionView.TYPE_CALL) {
+      type = if (binding.actionView.actionState == ActionView.ActionState.CALL) {
         Reminder.BY_DAY_OF_YEAR_CALL
       } else {
         Reminder.BY_DAY_OF_YEAR_SMS
@@ -128,7 +128,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
 
   override fun updateActions() {
     if (binding.actionView.hasAction()) {
-      if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+      if (binding.actionView.actionState == ActionView.ActionState.SMS) {
         binding.tuneExtraView.hasAutoExtra = false
       } else {
         binding.tuneExtraView.hasAutoExtra = true

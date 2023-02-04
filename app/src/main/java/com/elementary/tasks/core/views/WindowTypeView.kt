@@ -4,16 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.WindowTypeViewBinding
+import com.elementary.tasks.databinding.ViewWindowTypeBinding
 import com.google.android.material.chip.Chip
 
 class WindowTypeView : LinearLayout {
 
-  private lateinit var binding: WindowTypeViewBinding
+  private lateinit var binding: ViewWindowTypeBinding
   var onTypeChaneListener: ((Int) -> Unit)? = null
   var windowType: Int = 2
     set(value) {
@@ -57,16 +55,11 @@ class WindowTypeView : LinearLayout {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_window_type, this)
     orientation = VERTICAL
-    binding = WindowTypeViewBinding(this)
+    binding = ViewWindowTypeBinding.bind(this)
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.notification_type), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.notification_type))
-    binding.chipGroup.setOnCheckedChangeListener { _, id ->
+    binding.chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
       if (isAnyChecked()) {
-        updateState(typeFromChip(id))
+        updateState(typeFromChip(checkedIds.first()))
       } else {
         chipView(mLastIdRes).isChecked = true
         updateState(typeFromChip(mLastIdRes))

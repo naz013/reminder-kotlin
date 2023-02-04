@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clickView"
     android:layout_width="wrap_content"
@@ -9,7 +8,7 @@
     android:background="@drawable/gradient_button_google_selector"
     android:minWidth="@dimen/home_action_button_size">
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,6 +17,8 @@
         android:maxLines="1"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:textAppearance="?textAppearanceSubtitle1"
+        android:textColor="@color/pureBlack"
+        android:textAppearance="?textAppearanceTitleSmall"
         tools:text="Name" />
+
 </FrameLayout>

@@ -5,39 +5,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/toolbar_animator">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:gravity="center_vertical"
-            android:text="@string/quick_buttons"
-            android:textAppearance="?textAppearanceHeadline5" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_clear_black_24dp"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/quick_buttons"
+            app:titleCentered="true" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/closeButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_clear_black_24dp"
-            app:tint="?colorOnBackground" />
-
-    </FrameLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.elementary.tasks.core.views.gradient.UiGradientFrameLayout
         android:layout_width="match_parent"
         android:layout_height="152dp"
-        android:layout_marginTop="16dp"
         app:gradientFrameLayout_cornerRadius="0dp"
-        app:gradientFrameLayout_endColor="@color/widget_preview_bg_end"
-        app:gradientFrameLayout_startColor="@color/widget_preview_bg_start">
+        app:gradientFrameLayout_endColor="?colorTertiary"
+        app:gradientFrameLayout_startColor="?colorPrimary">
 
         <LinearLayout
             android:id="@+id/widgetBg"
@@ -92,7 +82,7 @@
     </com.elementary.tasks.core.views.gradient.UiGradientFrameLayout>
 
     <TextView
-        style="@style/UiComponentSectionHeader"
+        style="@style/UiComponentSectionLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -101,14 +91,14 @@
         android:text="@string/background" />
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewFilledStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/material_margin"
         app:cardCornerRadius="5dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/glass_card_bg_start">
+        app:cardElevation="2dp">
 
         <com.github.naz013.colorslider.ColorSlider
             android:id="@+id/bgColorSlider"
@@ -131,7 +121,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:text="@string/save"
-        android:textAppearance="?textAppearanceButton"
+        android:textAllCaps="true"
         android:visibility="visible"
         app:icon="@drawable/ic_twotone_done_24px" />
 

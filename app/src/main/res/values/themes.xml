@@ -2,69 +2,79 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="MyTheme.DayNight" parent="Base.MyTheme"/>
+    <style name="MyTheme.DayNight" parent="Base.MaterialThemeBuilder">
 
-    <!--Base custom theme which will be shared between both light and dark theme variants-->
-    <style name="Base.MyTheme" parent="Base.MaterialThemeBuilder">
-        <!--Material color attributes -->
-        <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryVariant">@color/color_primary_variant</item>
-        <item name="colorSecondary">@color/color_secondary</item>
-        <item name="colorSecondaryVariant">@color/color_secondary_variant</item>
+    </style>
 
-        <item name="android:colorBackground">@color/color_background</item>
-        <item name="colorSurface">@color/color_surface</item>
-        <item name="colorError">@color/color_error</item>
+    <style name="Base.MaterialThemeBuilder" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_error</item>
+        <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_background</item>
+        <item name="colorOnBackground">@color/md_theme_onBackground</item>
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
 
-        <item name="colorOnPrimary">@color/color_on_primary</item>
-        <item name="colorOnSecondary">@color/color_on_secondary</item>
-        <item name="colorOnBackground">@color/color_on_background</item>
-        <item name="colorOnSurface">@color/color_on_surface</item>
-        <item name="colorOnError">@color/color_on_error</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
 
         <item name="colorSecondary12">@color/color_secondary_12</item>
         <item name="colorSecondary50">@color/color_secondary_50</item>
-        <item name="colorOnSecondary50">@color/color_on_secondary_50</item>
 
         <!--Material type attributes-->
-        <item name="textAppearanceHeadline1">@style/TextAppearance.MyTheme.Headline1</item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.MyTheme.Headline2</item>
-        <item name="textAppearanceHeadline3">@style/TextAppearance.MyTheme.Headline3</item>
-        <item name="textAppearanceHeadline4">@style/TextAppearance.MyTheme.Headline4</item>
-        <item name="textAppearanceHeadline5">@style/TextAppearance.MyTheme.Headline5</item>
-        <item name="textAppearanceHeadline6">@style/TextAppearance.MyTheme.Headline6</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.MyTheme.Subtitle1</item>
-        <item name="textAppearanceSubtitle2">@style/TextAppearance.MyTheme.Subtitle2</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.MyTheme.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.MyTheme.Body2</item>
-        <item name="textAppearanceButton">@style/TextAppearance.MyTheme.Button</item>
-        <item name="textAppearanceCaption">@style/TextAppearance.MyTheme.Caption</item>
-        <item name="textAppearanceOverline">@style/TextAppearance.MyTheme.Overline</item>
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.MyTheme.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.MyTheme.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.MyTheme.DisplaySmall</item>
+
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MyTheme.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MyTheme.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.MyTheme.HeadlineSmall</item>
+
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.MyTheme.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.MyTheme.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.MyTheme.TitleSmall</item>
+
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.MyTheme.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.MyTheme.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.MyTheme.BodySmall</item>
+
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.MyTheme.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.MyTheme.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.MyTheme.LabelSmall</item>
 
         <!--Material shape attributes-->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyTheme.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyTheme.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyTheme.LargeComponent</item>
+<!--        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyTheme.SmallComponent</item>-->
+<!--        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyTheme.MediumComponent</item>-->
+<!--        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyTheme.LargeComponent</item>-->
 
         <!--Component styles-->
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MyTheme.BottomSheetDialog</item>
-        <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
-        <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>
+<!--        <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>-->
+<!--        <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>-->
 
-        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
-        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
-    </style>
-
-    <style name="Base.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-<!--        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">?colorControlHighlight</item>-->
-
-        <!--Remap legacy AppCompat attributes to MaterialComponent attributes-->
-        <item name="colorPrimaryDark">?colorPrimaryVariant</item>
-        <item name="colorAccent">?colorSecondary</item>
+<!--        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>-->
+<!--        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>-->
     </style>
 </resources>

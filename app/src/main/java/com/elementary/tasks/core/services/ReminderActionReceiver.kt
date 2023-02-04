@@ -16,8 +16,8 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber

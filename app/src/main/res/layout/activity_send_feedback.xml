@@ -11,13 +11,15 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:stateListAnimator="@animator/toolbar_animator">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?android:colorBackground"
+            app:menu="@menu/activity_feedback"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
             app:title="@string/feedback" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -27,4 +29,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?android:colorBackground" />
+
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/windowBackground"
@@ -37,6 +36,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/adsCard"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/material_margin"
@@ -46,77 +46,80 @@
                 android:stateListAnimator="@animator/card_animator"
                 android:visibility="gone"
                 app:cardCornerRadius="5dp"
-                app:contentPadding="1dp">
+                app:contentPadding="1dp"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:id="@+id/ads_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
+
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/reminderContainer"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/material_margin"
-                app:cardCornerRadius="5dp">
+                app:cardCornerRadius="5dp"
+                app:contentPadding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/reminderCardTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="16dp"
                         android:text="@string/reminder"
-                        android:textAppearance="?textAppearanceCaption"
+                        android:textAppearance="?textAppearanceBodyLarge"
                         tools:ignore="RtlSymmetry" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/reminderTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:textAppearance="?textAppearanceHeadline6"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
                         tools:text="Summary" />
 
                     <LinearLayout
                         android:id="@+id/buttonContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:gravity="end"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.button.MaterialButton
+                        <Button
                             android:id="@+id/editReminder"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            style="?attr/materialButtonOutlinedStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/edit"
-                            android:textAppearance="?textAppearanceButton"
-                            android:textColor="?android:textColorPrimary" />
+                            android:text="@string/edit" />
 
-                        <com.google.android.material.button.MaterialButton
+                        <Button
                             android:id="@+id/deleteReminder"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            style="?attr/materialButtonOutlinedStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
-                            android:text="@string/delete"
-                            android:textAppearance="?textAppearanceButton"
-                            android:textColor="?android:textColorPrimary" />
+                            android:text="@string/delete" />
 
                     </LinearLayout>
+
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
@@ -131,7 +134,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
+            app:menu="@menu/activity_preview_note"
             app:navigationIcon="@drawable/ic_twotone_arrow_back_24px" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
 </RelativeLayout>

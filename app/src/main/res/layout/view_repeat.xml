@@ -4,62 +4,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    tools:viewBindingIgnore="true">
+    android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/hintIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="7dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/ic_twotone_repeat_24px"
-        app:tint="?android:textColorPrimary" />
-
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:orientation="vertical">
+        app:cardCornerRadius="5dp"
+        app:contentPadding="8dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start|center">
+            android:orientation="vertical">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/text1"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:gravity="center|start"
-                android:text="@string/repeat_every"
-                android:textAppearance="?textAppearanceCaption" />
+                android:text="@string/repeat"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?colorOnSurfaceVariant"
+                android:textStyle="bold" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/repeatTitle"
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/create_margin"
-                android:layout_marginEnd="10dp"
-                android:layout_toEndOf="@+id/text1"
-                android:gravity="center"
-                android:inputType="number"
-                android:maxLength="3"
-                android:textAppearance="?textAppearanceBody1"
-                tools:text="10" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/repeatType"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/repeatTitle"
-                android:entries="@array/repeat_times"
-                android:gravity="center|start" />
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </RelativeLayout>
-    </LinearLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_repeat_24px"
+                    app:tint="?colorOnSurfaceVariant" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center">
+
+                        <TextView
+                            android:id="@+id/text1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center|start"
+                            android:text="@string/repeat_every"
+                            android:textAppearance="?textAppearanceCaption"
+                            android:textColor="?colorOnSurfaceVariant" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/repeatTitle"
+                            android:layout_width="64dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/create_margin"
+                            android:layout_marginEnd="10dp"
+                            android:layout_toEndOf="@+id/text1"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:textAppearance="?textAppearanceBodyLarge"
+                            android:textColor="?colorOnSurfaceVariant"
+                            tools:text="10" />
+
+                        <Spinner
+                            android:id="@+id/repeatType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/repeatTitle"
+                            android:entries="@array/repeat_times"
+                            android:gravity="center|start" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
 </LinearLayout>

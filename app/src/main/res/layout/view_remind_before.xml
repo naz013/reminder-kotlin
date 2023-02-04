@@ -3,54 +3,85 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:viewBindingIgnore="true">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/hintIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="7dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_notifications_24px"
-            app:tint="?android:textColorPrimary" />
+        app:cardCornerRadius="5dp"
+        app:contentPadding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/before_time"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?colorOnSurfaceVariant"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/beforeValueView"
-                    android:textAppearance="?textAppearanceBody1"
-                    android:layout_width="64dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:maxLength="3"
-                    tools:text="10" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_notifications_24px"
+                    app:tint="?colorOnSurfaceVariant" />
 
-                <Spinner
-                    android:id="@+id/beforeTypeView"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:entries="@array/before_times"
-                    android:gravity="center|start" />
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/beforeValueView"
+                            android:layout_width="64dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:textAppearance="?textAppearanceBodyLarge"
+                            android:textColor="?colorOnSurfaceVariant"
+                            tools:text="10" />
+
+                        <Spinner
+                            android:id="@+id/beforeTypeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/before_times"
+                            android:gravity="center|start" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
 </merge>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,19 +9,19 @@
     android:paddingRight="16dp"
     android:paddingBottom="8dp">
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/nameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceBodyLarge"
         tools:text="Name" />
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/emailView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textAppearance="?textAppearanceBody2"
+        android:textAppearance="?textAppearanceBodyMedium"
         tools:text="email@com.c" />
 
 </LinearLayout>

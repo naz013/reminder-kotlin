@@ -183,8 +183,9 @@ class CreateNoteViewModel(
         palette.postValue(uiNoteEdit.colorPalette)
         fontStyle.postValue(uiNoteEdit.typeface)
         images.postValue(uiNoteEdit.images)
-        colorOpacity.postValue(Pair(uiNoteEdit.colorPosition, uiNoteEdit.opacity))
+//        colorOpacity.postValue(Pair(uiNoteEdit.colorPosition, uiNoteEdit.opacity))
       }
+      isNoteEdited = true
       localReminder = reminderDao.getByNoteKey(if (id == "") "1" else id)?.also { reminder ->
         if (!isReminderEdited) {
           setDateTime(reminder.eventTime)

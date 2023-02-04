@@ -47,14 +47,14 @@ class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
 
     init {
       binding.root.setOnClickListener {
-        data[adapterPosition].isSelected = !data[adapterPosition].isSelected
-        notifyItemChanged(adapterPosition)
+        data[bindingAdapterPosition].isSelected = !data[bindingAdapterPosition].isSelected
+        notifyItemChanged(bindingAdapterPosition)
       }
     }
 
     fun bind(item: GoogleCalendarUtils.CalendarItem) {
-      binding.itemCheck.isChecked = item.isSelected
-      binding.shopText.text = item.name
+      binding.checkView.isChecked = item.isSelected
+      binding.textView.text = item.name
     }
   }
 }

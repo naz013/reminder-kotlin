@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.os.Build
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,20 +8,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
-import java.util.*
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
-class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
+class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
 
   private var mData: List<PhoneItem> = ArrayList()
   private var adapter: PhoneAdapter? = null
@@ -56,7 +52,7 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
     reloadContacts()
   }
 
-  fun reloadContacts() {
+  private fun reloadContacts() {
     if (Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
       loadContacts {
         mData = it
@@ -67,33 +63,6 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
   private fun performTypeValue(s: String) {
     adapter?.filter?.filter(s)
-  }
-
-  override fun getHint(): CharSequence? {
-    return if (isMeizu()) getSuperHintHack()
-    else super.getHint()
-  }
-
-  private fun isMeizu(): Boolean {
-    val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
-    if (manufacturer.contains("meizu")) {
-      return true
-    }
-    return false
-  }
-
-  private fun getSuperHintHack(): CharSequence? {
-    val f = TextView::class.java.getDeclaredField("mHint")
-    f.isAccessible = true
-    return f.get(this) as? CharSequence
-  }
-
-  override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
-    return if (isMeizu()) {
-      null
-    } else {
-      super.onCreateInputConnection(outAttrs)
-    }
   }
 
   private inner class PhoneAdapter(items: List<PhoneItem>) : BaseAdapter(), Filterable {
@@ -153,10 +122,10 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
     inner class ValueFilter : Filter() {
       override fun performFiltering(constraint: CharSequence?): FilterResults {
-        val matcher = constraint?.toString()?.trim()?.toLowerCase() ?: ""
+        val matcher = constraint?.toString()?.trim()?.lowercase() ?: ""
         val results = FilterResults()
         if (matcher.isNotEmpty()) {
-          val filterList = mData.filter { it.name.toLowerCase().contains(matcher) || it.phone.contains(matcher) }
+          val filterList = mData.filter { it.name.lowercase().contains(matcher) || it.phone.contains(matcher) }
           results.count = filterList.size
           results.values = filterList
         } else {
@@ -188,9 +157,9 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
       val cursor = context.contentResolver.query(uri, projection, null, null, null)
       if (cursor != null && cursor.moveToFirst()) {
         do {
-          val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-          val number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-          val hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER))
+          val name = cursor.readString(ContactsContract.Contacts.DISPLAY_NAME)
+          val number = cursor.readString(ContactsContract.CommonDataKinds.Phone.NUMBER)
+          val hasPhone = cursor.readString(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER)
           if (number != null && name != null && hasPhone != null && hasPhone == "1") {
             list.add(PhoneItem(name, number))
           }

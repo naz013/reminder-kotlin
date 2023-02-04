@@ -5,20 +5,18 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
-import com.elementary.tasks.core.binding.views.TuneExtraViewBinding
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.fromReminder
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.databinding.ViewTuneExtraBinding
 
 class TuneExtraView : LinearLayout {
 
-  private lateinit var binding: TuneExtraViewBinding
+  private lateinit var binding: ViewTuneExtraBinding
   var onExtraUpdateListener: ((extra: Extra) -> Unit)? = null
   var extra: Extra = Extra()
     set(value) {
@@ -122,14 +120,9 @@ class TuneExtraView : LinearLayout {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_tune_extra, this)
     orientation = VERTICAL
-    binding = TuneExtraViewBinding(this)
+    binding = ViewTuneExtraBinding.bind(this)
 
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.update_additional_parameters), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.update_additional_parameters))
-    binding.text.setOnClickListener {
+    binding.selectButton.setOnClickListener {
       openCustomizationDialog()
     }
     extra = Extra().fromReminder(Reminder())

@@ -159,7 +159,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textAppearance="?textAppearanceSubtitle1"
-                            tools:text="@string/date_and_time" />
+                            tools:text="Header ..." />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/headerIndicator"
@@ -195,13 +195,6 @@
                             android:layout_marginTop="16dp"
                             android:layout_marginRight="16dp" />
 
-                        <com.elementary.tasks.core.views.DividerView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
-
                         <com.elementary.tasks.core.views.BeforePickerView
                             android:id="@+id/beforeView"
                             android:layout_width="match_parent"
@@ -228,13 +221,6 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
 
-                        <com.elementary.tasks.core.views.DividerView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
-
                         <com.elementary.tasks.core.views.PriorityPickerView
                             android:id="@+id/priorityView"
                             android:layout_width="match_parent"
@@ -250,13 +236,6 @@
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.DividerView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
 
                         <com.elementary.tasks.core.views.MelodyView
                             android:id="@+id/melodyView"
@@ -274,13 +253,6 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
 
-                        <com.elementary.tasks.core.views.DividerView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
-
                         <com.elementary.tasks.core.views.AttachmentView
                             android:id="@+id/attachmentView"
                             android:layout_width="match_parent"
@@ -288,13 +260,6 @@
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.DividerView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
 
                         <com.elementary.tasks.core.views.LedPickerView
                             android:id="@+id/ledView"
@@ -352,7 +317,9 @@
                             android:layout_height="16dp" />
 
                     </LinearLayout>
+
                 </com.github.florent37.expansionpanel.ExpansionLayout>
+
             </com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout>
 
             <com.elementary.tasks.core.views.DividerView
@@ -363,5 +330,7 @@
                 android:layout_marginBottom="16dp" />
 
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

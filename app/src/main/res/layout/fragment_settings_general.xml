@@ -34,6 +34,17 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/dynamicColorsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_palette_24px"
+            app:prefs_primary_text="@string/dynamic_colors"
+            app:prefs_secondary_text_off="@string/use_built_in_theme_color"
+            app:prefs_secondary_text_on="@string/use_theme_colors_from_wallpaper"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/time24hourPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

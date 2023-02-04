@@ -55,7 +55,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_trash, { false }) {
+    addMenu(R.menu.fragment_archived_reminders, { false }) {
       it.findItem(R.id.action_delete_all)?.isVisible = false
       ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_twotone_search_24px, isDark)
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)

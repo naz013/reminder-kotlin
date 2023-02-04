@@ -1,58 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:viewBindingIgnore="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        app:cardCornerRadius="5dp"
+        app:contentPadding="8dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/hintIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_mobile_screen_share_24px"
-            app:tint="?android:textColorPrimary" />
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroup"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            app:chipSpacing="8dp"
-            app:singleSelection="true">
+            android:orientation="vertical">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipFullscreen"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/full_screen"
-                android:textAppearance="?textAppearanceBody2"
-                android:textColor="@color/chip_text_colors"
-                app:chipBackgroundColor="@color/chip_bg_colors"
-                app:chipStrokeColor="?colorSecondary"
-                app:chipStrokeWidth="1dp" />
+                android:text="@string/notification_type"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?colorOnSurfaceVariant"
+                android:textStyle="bold" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipSimple"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/simple"
-                android:textAppearance="?textAppearanceBody2"
-                android:textColor="@color/chip_text_colors"
-                app:chipBackgroundColor="@color/chip_bg_colors"
-                app:chipStrokeColor="?colorSecondary"
-                app:chipStrokeWidth="1dp" />
-        </com.google.android.material.chip.ChipGroup>
-    </LinearLayout>
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_mobile_screen_share_24px"
+                    app:tint="?colorOnSurfaceVariant" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:chipSpacing="8dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFullscreen"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/full_screen" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSimple"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/simple" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
 </LinearLayout>

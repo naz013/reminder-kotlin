@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clickView"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
@@ -11,8 +12,7 @@
     android:layout_marginBottom="8dp"
     android:clipChildren="false"
     android:stateListAnimator="@animator/card_animator"
-    app:cardCornerRadius="5dp"
-    tools:targetApi="lollipop">
+    app:cardCornerRadius="5dp">
 
     <RelativeLayout
         android:id="@+id/bgView"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/noteTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +34,8 @@
                 android:layout_marginBottom="8dp"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:maxLines="10" />
+                android:maxLines="10"
+                tools:text="Some note text" />
 
             <LinearLayout
                 android:id="@+id/imagesView"
@@ -59,7 +60,9 @@
                         android:orientation="horizontal" />
 
                 </HorizontalScrollView>
+
             </LinearLayout>
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -71,6 +74,7 @@
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_more_vert_24px" />
+
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

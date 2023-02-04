@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_edit"
+        android:icon="@drawable/ic_twotone_edit_24px"
+        android:title="@string/edit"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_twotone_share_24px"
+        android:title="@string/share"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_make_copy"
+        android:icon="@drawable/ic_twotone_file_copy_24px"
+        android:title="@string/copy"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/ic_twotone_delete_24px"
+        android:title="@string/delete"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+</menu>

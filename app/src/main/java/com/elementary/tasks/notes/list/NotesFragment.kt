@@ -28,7 +28,6 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
@@ -48,7 +47,6 @@ import java.io.File
 class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
   private val viewModel by viewModel<NotesViewModel>()
-  private val buttonObservable by inject<GlobalButtonObservable>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
 
@@ -74,10 +72,6 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
         CreateNoteActivity::class.java
       )
     }
-    binding.fab.setOnLongClickListener {
-      buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
-      true
-    }
 
     initProgress()
 
@@ -86,7 +80,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
 
-    addMenu(R.menu.notes_menu, { onMenuItemClicked(it) }) { modifyMenu(it) }
+    addMenu(R.menu.fragment_notes, { onMenuItemClicked(it) }) { modifyMenu(it) }
   }
 
   private fun modifyMenu(menu: Menu) {

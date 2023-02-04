@@ -40,7 +40,7 @@ class FeedbackFragment : BaseWebViewFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.menu_feedback, { menuItem ->
+    addMenu(R.menu.fragment_feedback, { menuItem ->
       return@addMenu when (menuItem.itemId) {
         R.id.action_refresh -> {
           webView.reload()

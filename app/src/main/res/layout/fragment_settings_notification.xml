@@ -14,14 +14,14 @@
         android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/appearance"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary" />
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/typePrefs"
@@ -63,22 +63,14 @@
             app:prefs_secondary_text_on="@string/show_notifications_on_wear_devices"
             app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/bgImagePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/background"
-            app:prefs_type="view" />
-
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/status_bar"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary" />
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/notificationDismissPrefs"
@@ -110,14 +102,14 @@
             app:prefs_secondary_text_on="@string/show_icon"
             app:prefs_type="check_switch" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/sound_and_vibration"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary" />
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/vibrationOptionPrefs"
@@ -233,14 +225,14 @@
             app:prefs_primary_text="@string/language"
             app:prefs_type="none" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/notification"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary" />
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/unlockScreenPrefs"

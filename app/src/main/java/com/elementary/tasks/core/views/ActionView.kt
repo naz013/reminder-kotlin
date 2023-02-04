@@ -8,37 +8,28 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.ActionViewBinding
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.trimmedText
+import com.elementary.tasks.databinding.ViewActionBinding
+import timber.log.Timber
 
 class ActionView : LinearLayout, TextWatcher {
 
   private var mImm: InputMethodManager? = null
   private var listener: OnActionListener? = null
   private var permissionFlow: PermissionFlow? = null
-  private lateinit var binding: ActionViewBinding
+  private lateinit var binding: ViewActionBinding
+  private var internalState: ActionState = ActionState.NO_ACTION
 
-  var type: Int
-    get() = if (hasAction()) {
-      if (binding.callAction.isChecked) {
-        TYPE_CALL
-      } else {
-        TYPE_MESSAGE
-      }
-    } else {
-      0
-    }
-    set(type) = if (type == TYPE_CALL) {
-      binding.callAction.isChecked = true
-    } else {
-      binding.messageAction.isChecked = true
+  var actionState: ActionState
+    get() = internalState
+    set(value) {
+      selectButton(value)
     }
 
   var number: String
-    get() = binding.numberView.text.toString().trim()
+    get() = binding.numberView.trimmedText()
     set(number) = binding.numberView.setText(number)
 
   constructor(context: Context) : super(context) {
@@ -56,9 +47,7 @@ class ActionView : LinearLayout, TextWatcher {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_action, this)
     orientation = VERTICAL
-    binding = ActionViewBinding(this)
-
-    binding.actionBlock.gone()
+    binding = ViewActionBinding.bind(this)
 
     binding.numberView.isFocusableInTouchMode = true
     binding.numberView.setOnFocusChangeListener { _, hasFocus ->
@@ -76,39 +65,48 @@ class ActionView : LinearLayout, TextWatcher {
       }
     }
     binding.numberView.addTextChangedListener(this)
-    binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
-    binding.callAction.isChecked = true
-    binding.actionCheck.setOnCheckedChangeListener { _, b ->
-      if (b) {
-        permissionFlow?.askPermission(Permissions.READ_CONTACTS) {
-          openAction()
-        } ?: run {
-          binding.actionCheck.isChecked = false
+    binding.actionGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+      if (isChecked) {
+        if (checkedId == R.id.noAction) {
+          setState(ActionState.NO_ACTION)
+        } else {
+          val state = if (checkedId == R.id.callAction) {
+            ActionState.CALL
+          } else {
+            ActionState.SMS
+          }
+          permissionFlow?.askPermission(Permissions.READ_CONTACTS) {
+            setState(state)
+          } ?: run {
+            selectButton(ActionState.NO_ACTION)
+          }
         }
-      } else {
-        binding.actionBlock.gone()
       }
-      listener?.onStateChanged(hasAction(), type, number)
     }
-    if (binding.actionCheck.isChecked) {
-      openAction()
-    }
+    selectButton(ActionState.NO_ACTION)
+    setState(ActionState.NO_ACTION)
   }
 
-  private fun openAction() {
-    binding.actionBlock.visible()
-    refreshState()
-  }
-
-  private fun refreshState() {
-    buttonClick(binding.radioGroup.checkedRadioButtonId)
-  }
-
-  private fun buttonClick(i: Int) {
-    when (i) {
-      R.id.callAction -> listener?.onStateChanged(hasAction(), type, number)
-      R.id.messageAction -> listener?.onStateChanged(hasAction(), type, number)
+  private fun selectButton(state: ActionState) {
+    val buttonId = when (state) {
+      ActionState.NO_ACTION -> R.id.noAction
+      ActionState.CALL -> R.id.callAction
+      ActionState.SMS -> R.id.smsAction
     }
+    binding.actionGroup.check(buttonId)
+  }
+
+  private fun setState(state: ActionState) {
+    Timber.d("setState: $state")
+    this.internalState = state
+    enableViews(state != ActionState.NO_ACTION)
+    listener?.onStateChanged(state, number)
+  }
+
+  private fun enableViews(isEnabled: Boolean) {
+    binding.numberLayout.isEnabled = isEnabled
+    binding.selectNumber.isEnabled = isEnabled
+    binding.numberView.isEnabled = isEnabled
   }
 
   fun setPermissionHandle(permissionFlow: PermissionFlow) {
@@ -124,11 +122,7 @@ class ActionView : LinearLayout, TextWatcher {
   }
 
   fun hasAction(): Boolean {
-    return binding.actionCheck.isChecked
-  }
-
-  fun setAction(action: Boolean) {
-    binding.actionCheck.isChecked = action
+    return internalState != ActionState.NO_ACTION
   }
 
   override fun afterTextChanged(s: Editable?) {
@@ -138,15 +132,14 @@ class ActionView : LinearLayout, TextWatcher {
   }
 
   override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    listener?.onStateChanged(hasAction(), type, number)
+    listener?.onStateChanged(internalState, number)
   }
 
   interface OnActionListener {
-    fun onStateChanged(hasAction: Boolean, type: Int, phone: String)
+    fun onStateChanged(state: ActionState, phone: String)
   }
 
-  companion object {
-    const val TYPE_CALL = 1
-    const val TYPE_MESSAGE = 2
+  enum class ActionState(val value: Int) {
+    NO_ACTION(0), CALL(1), SMS(2)
   }
 }

@@ -2,7 +2,7 @@
 <resources>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface">
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.Material3.Toolbar.Surface">
 
     </style>
 

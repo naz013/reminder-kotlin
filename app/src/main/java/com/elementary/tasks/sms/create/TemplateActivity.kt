@@ -1,18 +1,15 @@
 package com.elementary.tasks.sms.create
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -64,32 +61,33 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
   private fun showTemplate(smsTemplate: SmsTemplate) {
     binding.toolbar.title = getString(R.string.edit_template)
     binding.messageInput.setText(smsTemplate.title)
+    updateMenu()
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setHomeButtonEnabled(true)
-    supportActionBar?.setDisplayShowHomeEnabled(true)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
-  }
+    binding.toolbar.setNavigationOnClickListener { finish() }
+    binding.toolbar.setOnMenuItemClickListener {
+      when (it.itemId) {
+        R.id.action_add -> {
+          askCopySaving()
+          true
+        }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      R.id.action_add -> {
-        askCopySaving()
-        return true
-      }
-      android.R.id.home -> {
-        finish()
-        return true
-      }
-      MENU_ITEM_DELETE -> {
-        viewModel.deleteSmsTemplate()
-        return true
+        R.id.action_delete -> {
+          viewModel.deleteSmsTemplate()
+          true
+        }
+
+        else -> false
       }
     }
-    return super.onOptionsItemSelected(item)
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also { menu ->
+      menu.getItem(1).isVisible = viewModel.canDelete()
+    }
   }
 
   private fun askCopySaving() {
@@ -122,17 +120,5 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
       return
     }
     viewModel.saveTemplate(text, newId)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.menu_create_template, menu)
-    if (viewModel.canDelete()) {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-    }
-    return true
-  }
-
-  companion object {
-    private const val MENU_ITEM_DELETE = 12
   }
 }

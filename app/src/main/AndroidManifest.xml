@@ -390,10 +390,10 @@
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".reminder.preview.ReminderDialogActivity"
+            android:name=".reminder.dialog.ReminderDialogActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".reminder.preview.ReminderDialog29Activity"
+            android:name=".reminder.dialog.ReminderDialog29Activity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".core.apps.SelectApplicationActivity"

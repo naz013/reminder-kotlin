@@ -162,16 +162,6 @@ class CalendarMonthFactory(
     val prefsMonth = prefsProvider.getMonth()
     val rv = RemoteViews(context.packageName, R.layout.list_item_month_grid)
 
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//      rv.setViewLayoutHeight(
-//        R.id.dayLayout,
-//        prefsProvider.getRowHeightDp(),
-//        TypedValue.COMPLEX_UNIT_DIP
-//      )
-//    } else {
-//      rv.setInt(R.id.dayLayout, "setHeight", context.dp2px(prefsProvider.getRowHeightDp().toInt()))
-//    }
-
     val selDay = dateTimeList[i].day ?: 0
     val selMonth = dateTimeList[i].month ?: 0
     val selYear = dateTimeList[i].year ?: 0

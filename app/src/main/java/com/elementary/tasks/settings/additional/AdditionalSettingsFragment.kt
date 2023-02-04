@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding
@@ -127,27 +126,24 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(R.string.interval)
       val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
-      b.seekBar.max = 60
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-            progress.toString())
-        }
 
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
+      b.seekBar.addOnChangeListener { _, value, _ ->
+        b.titleView.text = String.format(
+          Locale.getDefault(), getString(R.string.x_minutes),
+          value.toInt().toString()
+        )
+      }
+      b.seekBar.stepSize = 1f
+      b.seekBar.valueFrom = 0f
+      b.seekBar.valueTo = 60f
 
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
       val time = prefs.missedReminderTime
-      b.seekBar.progress = time
+      b.seekBar.value = time.toFloat()
+
       b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), time.toString())
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
-        prefs.missedReminderTime = b.seekBar.progress
+        prefs.missedReminderTime = b.seekBar.value.toInt()
         showTime()
       }
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,19 +11,22 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stateListAnimator="@animator/toolbar_animator"
-        tools:targetApi="lollipop">
+        android:background="@android:color/transparent"
+        android:stateListAnimator="@animator/toolbar_animator">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px" />
+            android:background="@android:color/transparent"
+            app:menu="@menu/activity_create_note"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
+            tools:title="Note" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
-        android:id="@+id/layoutContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true">
@@ -101,20 +104,9 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/recordingView"
-            android:layout_width="match_parent"
-            android:layout_height="128dp"
-            android:layout_above="@+id/bottomBar"
-            android:layout_marginStart="@dimen/material_margin"
-            android:layout_marginEnd="@dimen/material_margin"
-            android:visibility="visible"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/material_wave_loading" />
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/bottomBar"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -146,16 +138,31 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/micButton"
+                        <FrameLayout
                             android:layout_width="56dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_type_by_voice"
-                            android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_mic_24px"
-                            app:tint="@color/pureBlack" />
+                            android:layout_marginStart="8dp">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/micButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/acc_type_by_voice"
+                                android:scaleType="centerInside"
+                                app:srcCompat="@drawable/ic_twotone_mic_24px" />
+
+                            <com.google.android.material.progressindicator.CircularProgressIndicator
+                                android:id="@+id/voiceProgress"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminate="true"
+                                android:visibility="gone"
+                                app:indicatorColor="@color/pureBlack"
+                                app:indicatorSize="48dp"
+                                app:trackThickness="2dp" />
+
+                        </FrameLayout>
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/colorButton"
@@ -165,8 +172,7 @@
                             android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/acc_select_color"
                             android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_palette_24px"
-                            app:tint="@color/pureBlack" />
+                            app:srcCompat="@drawable/ic_twotone_palette_24px" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/imageButton"
@@ -176,8 +182,7 @@
                             android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/acc_add_image_to_reminder"
                             android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_image_24px"
-                            app:tint="@color/pureBlack" />
+                            app:srcCompat="@drawable/ic_twotone_image_24px" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/reminderButton"
@@ -187,8 +192,7 @@
                             android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/acc_add_reminder"
                             android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_alarm_24px"
-                            app:tint="@color/pureBlack" />
+                            app:srcCompat="@drawable/ic_twotone_alarm_24px" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/fontButton"
@@ -198,8 +202,7 @@
                             android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/acc_change_text_font_style"
                             android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_text_fields_24px"
-                            app:tint="@color/pureBlack" />
+                            app:srcCompat="@drawable/ic_twotone_text_fields_24px" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -209,7 +212,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -226,8 +230,7 @@
                             android:layout_height="24dp"
                             android:background="?selectableItemBackgroundBorderless"
                             android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_settings_24px"
-                            app:tint="@color/pureBlack" />
+                            app:srcCompat="@drawable/ic_twotone_settings_24px" />
 
                         <com.github.naz013.colorslider.ColorSlider
                             android:id="@+id/colorSlider"
@@ -238,6 +241,7 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/opacityLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -247,14 +251,18 @@
                         android:textAppearance="?textAppearanceCaption"
                         android:textColor="@color/pureBlack" />
 
-                    <androidx.appcompat.widget.AppCompatSeekBar
+                    <com.google.android.material.slider.Slider
                         android:id="@+id/opacityBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginEnd="16dp"
-                        android:max="100" />
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="100"
+                        app:labelBehavior="floating"
+                        app:tickVisible="false" />
 
                     <View
                         android:layout_width="match_parent"

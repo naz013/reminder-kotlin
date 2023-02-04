@@ -4,15 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.LedPickerViewBinding
 import com.elementary.tasks.core.utils.LED
+import com.elementary.tasks.databinding.ViewLedColorBinding
 
 class LedPickerView : LinearLayout {
 
-  private lateinit var binding: LedPickerViewBinding
+  private lateinit var binding: ViewLedColorBinding
   var onLedChangeListener: ((Int) -> Unit)? = null
   var led: Int = LED.BLUE
     set(value) {
@@ -64,17 +62,11 @@ class LedPickerView : LinearLayout {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_led_color, this)
     orientation = VERTICAL
-    binding = LedPickerViewBinding(this)
+    binding = ViewLedColorBinding.bind(this)
 
     binding.ledGroup.setOnCheckedChangeListener { _, checkedId ->
       updateState(ledFromChip(checkedId))
     }
-
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.led_color), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.led_color))
   }
 
   private fun updateState(led: Int) {

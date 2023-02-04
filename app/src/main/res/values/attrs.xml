@@ -3,7 +3,6 @@
 
     <attr name="colorSecondary12" format="color" />
     <attr name="colorSecondary50" format="color" />
-    <attr name="colorOnSecondary50" format="color" />
 
     <attr name="alphaEmphasisHigh" format="float"/>
     <attr name="alphaEmphasisMedium" format="float"/>
@@ -75,6 +74,7 @@
         <attr name="selector_textBackground" format="color" />
         <attr name="selector_leftIconTintColor" format="color" />
         <attr name="selector_rightIconTintColor" format="color" />
+        <attr name="selector_textColor" format="color" />
         <attr name="selector_emptyText" format="string" />
         <attr name="selector_leftIcon" format="reference" />
         <attr name="selector_rightIcon" format="reference" />

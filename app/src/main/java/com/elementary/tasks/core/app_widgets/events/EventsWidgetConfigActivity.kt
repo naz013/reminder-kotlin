@@ -1,16 +1,14 @@
 package com.elementary.tasks.core.app_widgets.events
 
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
@@ -27,7 +25,7 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     super.onCreate(savedInstanceState)
     readIntent()
     binding.fabSave.setOnClickListener { showTextSizeDialog() }
-    binding.closeButton.setOnClickListener { finish() }
+    binding.toolbar.setNavigationOnClickListener { finish() }
 
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->
@@ -142,22 +140,16 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     val builder = dialogues.getMaterialDialog(this)
     builder.setTitle(R.string.text_size)
     val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater, null, false)
-    b.seekBar.max = 13
-    b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        textSize = progress + 12
-        b.titleView.text = textSize.toString()
-      }
 
-      override fun onStartTrackingTouch(seekBar: SeekBar) {
+    b.seekBar.addOnChangeListener { _, value, _ ->
+      textSize = value.toInt()
+      b.titleView.text = textSize.toString()
+    }
+    b.seekBar.stepSize = 1f
+    b.seekBar.valueFrom = 12f
+    b.seekBar.valueTo = 25f
+    b.seekBar.value = textSize.toFloat()
 
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-      }
-    })
-    b.seekBar.progress = textSize - 12
     b.titleView.text = textSize.toString()
     builder.setView(b.root)
     builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->

@@ -36,7 +36,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
         iFace.showSnackbar(getString(R.string.you_dont_insert_number))
         return null
       }
-      type = if (binding.actionView.type == ActionView.TYPE_CALL) {
+      type = if (binding.actionView.actionState == ActionView.ActionState.CALL) {
         Reminder.BY_MONTH_CALL
       } else {
         Reminder.BY_MONTH_SMS
@@ -166,7 +166,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
   override fun updateActions() {
     if (binding.actionView.hasAction()) {
-      if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+      if (binding.actionView.actionState == ActionView.ActionState.SMS) {
         binding.tuneExtraView.hasAutoExtra = false
       } else {
         binding.tuneExtraView.hasAutoExtra = true

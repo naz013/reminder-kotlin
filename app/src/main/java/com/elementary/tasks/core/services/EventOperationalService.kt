@@ -38,7 +38,7 @@ import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
-import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException
@@ -87,7 +87,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
   private fun showForegroundNotification() {
     val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
-    builder.color = ThemeProvider.getSecondaryColor(applicationContext)
+    builder.color = ThemeProvider.getPrimaryColor(applicationContext)
     builder.setSmallIcon(R.drawable.ic_twotone_music_note_24px)
     builder.setContentTitle(getString(R.string.reminder_ongoing_service))
     builder.setContentText(getString(R.string.app_title))
@@ -283,7 +283,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     if (Module.isPro && isBirthdayLed()) {
       builder.setLights(birthdayLed(), 500, 1000)
     }
-    builder.color = ThemeProvider.getSecondaryColor(applicationContext)
+    builder.color = ThemeProvider.getPrimaryColor(applicationContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
     val fullScreenIntent = ShowBirthday29Activity.getLaunchIntent(applicationContext, birthday.uuId)
@@ -386,7 +386,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     }
     builder.setContentText(appName())
     builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-    builder.color = ThemeProvider.getSecondaryColor(applicationContext)
+    builder.color = ThemeProvider.getPrimaryColor(applicationContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
     val fullScreenIntent =
@@ -495,7 +495,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     }
     builder.setContentText(appName())
     builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    builder.color = ThemeProvider.getSecondaryColor(applicationContext)
+    builder.color = ThemeProvider.getPrimaryColor(applicationContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
     if (reminder.priority >= 2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

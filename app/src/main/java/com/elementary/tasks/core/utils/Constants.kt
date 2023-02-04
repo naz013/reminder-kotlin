@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 object Constants {
 
-  const val NONE = "none"
   const val SOUND_RINGTONE = "sound_ringtone"
   const val SOUND_NOTIFICATION = "sound_notification"
   const val SOUND_ALARM = "sound_alarm"

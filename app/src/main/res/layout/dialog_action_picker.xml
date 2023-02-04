@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +12,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:textAppearance="?textAppearanceHeadline6"
+        android:textAppearance="?textAppearanceHeadlineSmall"
+        android:textColor="?colorOnBackground"
         tools:text="Today" />
 
     <LinearLayout
@@ -38,7 +38,7 @@
             android:padding="16dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_alarm_24px"
-            app:tint="?android:textColorPrimary" />
+            app:tint="?colorOnBackground" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addBirth"
@@ -49,7 +49,7 @@
             android:padding="16dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_cake_24px"
-            app:tint="?android:textColorPrimary" />
+            app:tint="?colorOnBackground" />
 
     </LinearLayout>
 
@@ -64,7 +64,7 @@
         <com.tuyenmonkey.mkloader.MKLoader
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:mk_color="?colorSecondary"
+            app:mk_color="?colorOnBackground"
             app:mk_type="Sharingan" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -73,7 +73,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:text="@string/loading_events"
-            android:textAppearance="?textAppearanceHeadline6" />
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:textColor="?colorOnBackground" />
 
     </LinearLayout>
 

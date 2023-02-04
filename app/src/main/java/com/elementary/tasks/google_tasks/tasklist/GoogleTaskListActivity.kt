@@ -1,20 +1,17 @@
 package com.elementary.tasks.google_tasks.tasklist
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -60,12 +57,30 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setHomeButtonEnabled(true)
-    supportActionBar?.setDisplayShowHomeEnabled(true)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     binding.toolbar.setTitle(R.string.new_tasks_list)
+    binding.toolbar.setNavigationOnClickListener { handleBackPress() }
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_delete -> {
+          doIfPossible { deleteDialog() }
+          true
+        }
+
+        R.id.action_add -> {
+          doIfPossible { saveTaskList() }
+          true
+        }
+
+        else -> false
+      }
+    }
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also {
+      it.getItem(1).isVisible = viewModel.canDelete()
+    }
   }
 
   private fun initViewModel() {
@@ -88,6 +103,7 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
       binding.colorSlider.setSelection(googleTaskList.color)
       viewModel.isEdited = true
     }
+    updateMenu()
   }
 
   private fun saveTaskList() {
@@ -113,24 +129,6 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
     }
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      android.R.id.home -> {
-        handleBackPress()
-        true
-      }
-      MENU_ITEM_DELETE -> {
-        doIfPossible { deleteDialog() }
-        true
-      }
-      R.id.action_add -> {
-        doIfPossible { saveTaskList() }
-        true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
-  }
-
   private fun deleteDialog() {
     dialogues.getMaterialDialog(this)
       .setMessage(getString(R.string.delete_this_list))
@@ -144,14 +142,6 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
 
   private fun deleteList() {
     viewModel.editedTaskList?.let { viewModel.deleteGoogleTaskList(it) }
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-    viewModel.editedTaskList
-      ?.takeIf { !it.isDefault() }
-      ?.also { menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list) }
-    return true
   }
 
   override fun onDestroy() {
@@ -173,7 +163,6 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
   }
 
   companion object {
-    private const val MENU_ITEM_DELETE = 12
     private const val ARG_COLOR = "arg_color"
     private const val ARG_LOADING = "arg_loading"
   }

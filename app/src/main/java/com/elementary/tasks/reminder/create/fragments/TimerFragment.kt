@@ -51,7 +51,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
         iFace.showSnackbar(getString(R.string.you_dont_insert_number))
         return null
       }
-      type = if (binding.actionView.type == ActionView.TYPE_CALL) {
+      type = if (binding.actionView.actionState == ActionView.ActionState.CALL) {
         Reminder.BY_TIME_CALL
       } else {
         Reminder.BY_TIME_SMS
@@ -160,7 +160,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
   override fun updateActions() {
     if (binding.actionView.hasAction()) {
-      if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+      if (binding.actionView.actionState == ActionView.ActionState.SMS) {
         binding.tuneExtraView.hasAutoExtra = false
       } else {
         binding.tuneExtraView.hasAutoExtra = true

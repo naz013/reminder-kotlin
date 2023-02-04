@@ -4,24 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.BackupTool
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
@@ -509,26 +508,21 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(R.string.event_duration)
     val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-    b.seekBar.max = 120
-    b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), progress.toString())
-      }
 
-      override fun onStartTrackingTouch(seekBar: SeekBar) {
+    b.seekBar.addOnChangeListener { _, value, _ ->
+      b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), value.toInt().toString())
+    }
+    b.seekBar.stepSize = 1f
+    b.seekBar.valueFrom = 0f
+    b.seekBar.valueTo = 120f
 
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-      }
-    })
     val duration = prefs.calendarEventDuration
-    b.seekBar.progress = duration
+    b.seekBar.value = duration.toFloat()
+
     b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), duration.toString())
     builder.setView(b.root)
     builder.setPositiveButton(R.string.ok) { _, _ ->
-      prefs.calendarEventDuration = b.seekBar.progress
+      prefs.calendarEventDuration = b.seekBar.value.toInt()
       showEventDuration()
     }
     builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }

@@ -269,11 +269,11 @@ class Notifier(
     remoteViews.setInt(
       R.id.notificationBg,
       "setBackgroundColor",
-      ThemeProvider.getSecondaryColor(context)
+      ThemeProvider.getPrimaryColor(context)
     )
-    val colorOnSecondary = ThemeProvider.getOnSecondaryColor(context)
-    remoteViews.setTextColor(R.id.featured, colorOnSecondary)
-    remoteViews.setTextColor(R.id.text, colorOnSecondary)
+    val colorOnPrimary = ThemeProvider.getOnPrimaryColor(context)
+    remoteViews.setTextColor(R.id.featured, colorOnPrimary)
+    remoteViews.setTextColor(R.id.text, colorOnPrimary)
     notify(PermanentReminderReceiver.PERM_ID, builder.build())
   }
 

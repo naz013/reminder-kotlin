@@ -36,6 +36,10 @@ class DateTimeManager(
     }
   }
 
+  fun formatBirthdayDateForUi(date: LocalDate): String {
+    return date.format(headerDateFormatter())
+  }
+
   fun formatBirthdayDate(date: LocalDate): String {
     return date.format(BIRTH_DATE_FORMATTER)
   }

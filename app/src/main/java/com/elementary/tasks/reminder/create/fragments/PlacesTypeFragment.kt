@@ -80,7 +80,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
         iFace.showSnackbar(getString(R.string.you_dont_insert_number))
         return null
       }
-      type = if (binding.actionView.type == ActionView.TYPE_CALL) {
+      type = if (binding.actionView.actionState == ActionView.ActionState.CALL) {
         Reminder.BY_PLACES_CALL
       } else {
         Reminder.BY_PLACES_SMS
@@ -189,7 +189,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
   override fun updateActions() {
     if (binding.actionView.hasAction()) {
-      if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+      if (binding.actionView.actionState == ActionView.ActionState.SMS) {
         binding.tuneExtraView.hasAutoExtra = false
       } else {
         binding.tuneExtraView.hasAutoExtra = true

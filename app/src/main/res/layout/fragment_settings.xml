@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
@@ -22,14 +21,13 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/appNameBanner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/app_name"
-                android:textAppearance="?textAppearanceHeadline5"
-                app:fontFamily="@font/merriweathersans_light" />
+                android:textAppearance="?textAppearanceDisplaySmall" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/appNameBannerPro"
@@ -38,9 +36,8 @@
                 android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:text="PRO"
-                android:textAppearance="?textAppearanceHeadline5"
-                android:textColor="?colorSecondary"
-                app:fontFamily="@font/merriweathersans_italic" />
+                android:textAppearance="?textAppearanceDisplaySmall"
+                android:textColor="?colorTertiary" />
 
         </LinearLayout>
 
@@ -51,8 +48,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:padding="8dp"
-            android:textAppearance="?textAppearanceBody1"
-            android:textColor="?colorSecondary"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorOnBackground"
             android:visibility="visible"
             tools:text="Sale till" />
 
@@ -63,8 +60,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:padding="8dp"
-            android:textAppearance="?textAppearanceBody1"
-            android:textColor="?colorSecondary"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorOnBackground"
             android:visibility="visible"
             tools:text="New update" />
 
@@ -76,8 +73,8 @@
             android:layout_marginEnd="8dp"
             android:padding="8dp"
             android:text="@string/enable_data_backup_to_keep_your_reminders_in_safe"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorOnBackground"
             android:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -88,8 +85,8 @@
             android:layout_marginEnd="8dp"
             android:padding="8dp"
             android:text="@string/google_play_services_not_found_some_functionality_is_disabled"
-            android:textAppearance="?textAppearanceSubtitle1"
-            android:textColor="@color/secondaryRed"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorError"
             android:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -98,7 +95,7 @@
             android:layout_height="56dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_moon"
-            app:tint="?colorSecondary" />
+            app:tint="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/generalSettings"

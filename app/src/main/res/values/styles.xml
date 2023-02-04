@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="UiComponentSectionHeader" parent="@style/MyTheme.DayNight">
+    <style name="UiComponentSectionLabel" parent="@style/MyTheme.DayNight">
+        <item name="android:textAppearance">?textAppearanceLabelLarge</item>
+        <item name="android:textColor">?colorTertiary</item>
+    </style>
+
+    <style name="UiComponentSectionLarge" parent="@style/MyTheme.DayNight">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <!--Components-->
 
-    <style name="FilledBoxStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">?colorSecondary12</item>
+    <style name="FilledBoxStyle" parent="@style/Widget.Material3.TextInputLayout.FilledBox">
         <item name="boxCornerRadiusTopEnd">5dp</item>
         <item name="boxCornerRadiusTopStart">5dp</item>
     </style>
 
     <!--Bottom Sheets-->
-    <style name="ThemeOverlay.MyTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+    <style name="ThemeOverlay.MyTheme.BottomSheetDialog" parent="ThemeOverlay.Material3.Dialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/Animation.MyTheme.BottomSheet.Modal</item>
@@ -24,17 +28,18 @@
         <item name="android:navigationBarColor">?colorSurface</item>
         <item name="android:navigationBarDividerColor" tools:ignore="NewApi">@android:color/transparent</item>
     </style>
-    <style name="Widget.MyTheme.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
+
+    <style name="Widget.MyTheme.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
         <item name="shapeAppearanceOverlay">?shapeAppearanceLargeComponent</item>
     </style>
 
     <!--Navigation Drawer-->
-    <style name="Widget.MyTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
+    <style name="Widget.MyTheme.NavigationView" parent="Widget.Material3.NavigationView">
         <item name="itemTextAppearance">?textAppearanceBody2</item>
     </style>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="android:background">?android:colorBackground</item>
         <item name="titleTextColor">?android:textColorPrimary</item>
     </style>

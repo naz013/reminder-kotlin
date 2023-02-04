@@ -31,7 +31,7 @@
                 android:layout_marginEnd="16dp"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_twotone_track_changes_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnBackground" />
 
             <LinearLayout
                 android:id="@+id/itemsContainer"
@@ -42,22 +42,23 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/prefsPrimaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:textAppearance="?textAppearanceSubtitle1"
+                    android:textAppearance="?textAppearanceTitleMedium"
                     tools:text="Title" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/prefsSecondaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?textAppearanceCaption"
+                    android:textAppearance="?textAppearanceTitleSmall"
                     android:visibility="gone"
-                    tools:text="SubTitle" />
+                    tools:text="SubTitle"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 
@@ -78,16 +79,17 @@
                     android:saveEnabled="false"
                     android:visibility="gone" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/prefsSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:clickable="false"
                     android:gravity="center"
                     android:saveEnabled="false"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/prefsValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -103,7 +105,7 @@
                     android:layout_height="@dimen/settings_view_size"
                     android:layout_marginEnd="5dp"
                     android:scaleType="centerInside"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
             </LinearLayout>
         </LinearLayout>

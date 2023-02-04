@@ -131,7 +131,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
         binding.applicationLayout.visible()
       }
     }
-    if (Module.is11) {
+    if (Module.is12) {
       binding.browser.isChecked = true
       binding.switchGroup.gone()
     }

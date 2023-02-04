@@ -12,15 +12,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
-import com.elementary.tasks.notes.quick.QuickNoteCoordinator
-import com.elementary.tasks.notes.quick.QuickNoteViewModel
 import com.elementary.tasks.voice.ConversationViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,22 +27,8 @@ class BottomNavActivity :
   BindingActivity<ActivityBottomNavBinding>(), FragmentCallback, GlobalAction {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
-  private val dateTimeManager by inject<DateTimeManager>()
   private val viewModel by viewModel<ConversationViewModel>()
-  private val quickNoteViewModel by viewModel<QuickNoteViewModel>()
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
-  private val mNoteView: QuickNoteCoordinator by lazy {
-    binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }
-    QuickNoteCoordinator(
-      this,
-      binding.quickNoteContainer,
-      binding.quickNoteView,
-      quickNoteViewModel,
-      prefs,
-      notifier,
-      dateTimeManager
-    ).also { it.hideNoteView() }
-  }
   private var mFragment: BaseFragment<*>? = null
   private lateinit var navController: NavController
 
@@ -85,13 +68,11 @@ class BottomNavActivity :
 
   override fun onResume() {
     super.onResume()
-    buttonObservable.addObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
     buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
   }
 
   override fun onPause() {
     super.onPause()
-    buttonObservable.removeObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
     buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
   }
 
@@ -148,9 +129,7 @@ class BottomNavActivity :
   }
 
   override fun invoke(view: View, action: GlobalButtonObservable.Action) {
-    if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
-      mNoteView.switchQuickNote()
-    } else if (action == GlobalButtonObservable.Action.VOICE) {
+    if (action == GlobalButtonObservable.Action.VOICE) {
       voiceRecognitionLauncher.recognize(false)
     }
   }
@@ -158,11 +137,7 @@ class BottomNavActivity :
   override fun handleBackPress(): Boolean {
     Timber.d("handleBackPress: $mFragment, ${navController.backQueue.size}")
     if (mFragment is HomeFragment) {
-      if (mNoteView.isNoteVisible) {
-        mNoteView.hideNoteView()
-      } else {
-        finishAffinity()
-      }
+      finishAffinity()
     } else {
       navController.popBackStack()
     }

@@ -290,7 +290,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     list.add(UiSelectorReminder(getString(R.string.timer)))
     list.add(UiSelectorReminder(getString(R.string.alarm)))
     list.add(UiSelectorReminder(getString(R.string.e_mail)))
-    if (Module.is11) {
+    if (Module.is12) {
       list.add(UiSelectorReminder(getString(R.string.open_link)))
     } else {
       list.add(UiSelectorReminder(getString(R.string.launch_application)))
@@ -456,7 +456,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.menu_create_reminder, menu)
+    menuInflater.inflate(R.menu.activity_create_reminder, menu)
     if (Module.hasMicrophone(this)) {
       menu[0].isVisible = true
       ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDarkMode)

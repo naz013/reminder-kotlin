@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?android:colorBackground"
-        android:stateListAnimator="@animator/toolbar_animator"
-        tools:targetApi="lollipop">
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/toolbar_animator">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?android:colorBackground"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/activity_create_template"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
             app:title="@string/create_template" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/messageLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        style="@style/FilledBoxStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/material_margin"
-        app:boxBackgroundColor="?colorSecondary12"
-        app:boxCornerRadiusTopEnd="5dp"
-        app:boxCornerRadiusTopStart="5dp"
         app:counterEnabled="true"
         app:counterMaxLength="120">
 
-        <com.elementary.tasks.core.views.FixedTextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,8 +41,7 @@
             android:imeOptions="actionDone"
             android:inputType="textShortMessage|textAutoCorrect"
             android:maxLength="120"
-            android:maxLines="3"
-            android:textAppearance="?textAppearanceSubtitle1" />
+            android:maxLines="3" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

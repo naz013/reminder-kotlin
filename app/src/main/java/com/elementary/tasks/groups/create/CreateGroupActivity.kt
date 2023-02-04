@@ -1,10 +1,9 @@
 package com.elementary.tasks.groups.create
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.os.PermissionFlow
@@ -12,8 +11,6 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -46,12 +43,34 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setHomeButtonEnabled(true)
-    supportActionBar?.setDisplayShowHomeEnabled(true)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     binding.toolbar.setTitle(R.string.create_group)
+    binding.toolbar.setNavigationOnClickListener { finish() }
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_add -> {
+          askCopySaving()
+          true
+        }
+
+        R.id.action_delete -> {
+          dialogues.askConfirmation(this, getString(R.string.delete)) {
+            if (it) {
+              viewModel.deleteGroup()
+            }
+          }
+          true
+        }
+
+        else -> false
+      }
+    }
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also {
+      it.getItem(1).isVisible = !viewModel.isFromFile && viewModel.canBeDeleted
+    }
   }
 
   private fun showGroup(group: UiGroupEdit) {
@@ -60,7 +79,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     binding.defaultCheck.isEnabled = !group.isDefault
     binding.defaultCheck.isChecked = group.isDefault
     binding.toolbar.setTitle(R.string.change_group)
-    invalidateOptionsMenu()
+    updateMenu()
   }
 
   private fun loadGroup() {
@@ -102,39 +121,6 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
       binding.defaultCheck.isChecked,
       newId
     )
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-    if (!viewModel.isFromFile && viewModel.canBeDeleted) {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-    }
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      R.id.action_add -> {
-        askCopySaving()
-        true
-      }
-
-      android.R.id.home -> {
-        finish()
-        true
-      }
-
-      MENU_ITEM_DELETE -> {
-        dialogues.askConfirmation(this, getString(R.string.delete)) {
-          if (it) {
-            viewModel.deleteGroup()
-          }
-        }
-        true
-      }
-
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   private fun askCopySaving() {

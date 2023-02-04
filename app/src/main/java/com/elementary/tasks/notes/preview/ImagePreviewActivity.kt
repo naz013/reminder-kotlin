@@ -1,13 +1,11 @@
 package com.elementary.tasks.notes.preview
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import org.koin.android.ext.android.inject
 import java.util.Locale
@@ -21,7 +19,6 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     initActionBar()
-
     showImages()
   }
 
@@ -64,20 +61,8 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+    binding.toolbar.setNavigationOnClickListener { finish() }
     binding.toolbar.title = ""
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      android.R.id.home -> {
-        finish()
-        true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   override fun onDestroy() {

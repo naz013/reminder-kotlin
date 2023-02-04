@@ -2,6 +2,7 @@ package com.elementary.tasks.notes.create
 
 import android.content.ClipDescription
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.net.Uri
@@ -11,13 +12,10 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
@@ -37,6 +35,7 @@ import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
+import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.AssetsUtil
@@ -58,6 +57,7 @@ import com.elementary.tasks.notes.create.images.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.pin.PinLoginActivity
+import com.google.android.material.slider.Slider
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -145,6 +145,12 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     initActionBar()
     initMenu()
     hideRecording()
+
+    binding.taskMessage.textSize = (prefs.noteTextSize + 12).toFloat()
+    ViewUtils.listenScrollableView(binding.touchView) {
+      binding.appBar.isSelected = it > 0
+    }
+
     binding.remindDate.setOnClickListener { dateDialog() }
     binding.remindTime.setOnClickListener { timeDialog() }
     binding.micButton.setOnClickListener { tryMicClick() }
@@ -155,19 +161,21 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
     initImagesList()
 
-    val pair = if (savedInstanceState == null) {
-      initDefaults()
-    } else {
-      newPair()
+    if (getId().isEmpty()) {
+      val pair = if (savedInstanceState == null) {
+        initDefaults()
+      } else {
+        newPair()
+      }
+      initFromState(pair)
     }
-    initFromState(pair)
     initViewModel()
     loadNote()
   }
 
   private fun initFromState(pair: Pair<Int, Int>) {
     binding.colorSlider.setSelection(pair.first)
-    binding.opacityBar.progress = pair.second
+    binding.opacityBar.valueInt = pair.second
     viewModel.colorOpacity.postValue(pair)
   }
 
@@ -177,7 +185,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       this,
       binding.clickView,
       true,
-      ThemeProvider.getSecondaryColor(this),
+      ThemeProvider.getPrimaryColor(this),
       {
         if (it.itemCount > 0) {
           viewModel.parseDrop(it, getText())
@@ -223,11 +231,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun showRecording() {
-    binding.recordingView.visible()
+    binding.voiceProgress.visible()
   }
 
   private fun hideRecording() {
-    binding.recordingView.gone()
+    binding.voiceProgress.gone()
   }
 
   private fun initRecognizer() {
@@ -242,6 +250,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       speech = SpeechRecognizer.createSpeechRecognizer(this)
       speech?.setRecognitionListener(mRecognitionListener)
       speech?.startListening(recognizerIntent)
+      showRecording()
     } catch (e: Throwable) {
       speech = null
       toast(R.string.failed_to_start_voice_recognition)
@@ -274,10 +283,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     var newColor = color
     var newOpacity = opacity
     if (color == -1) {
-      newColor = viewModel.colorOpacity.value?.first ?: newColor()
+      newColor = binding.colorSlider.selectedItem
     }
     if (opacity == -1) {
-      newOpacity = viewModel.colorOpacity.value?.second ?: prefs.noteColorOpacity
+      newOpacity = binding.opacityBar.valueInt
     }
     Timber.d("newPair: $newColor, $newOpacity")
     return Pair(newColor, newOpacity)
@@ -299,18 +308,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         prefs.lastNoteColor = position
       }
     }
-    binding.opacityBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        prefs.noteColorOpacity = progress
-        viewModel.colorOpacity.postValue(newPair(opacity = progress))
-      }
-
-      override fun onStartTrackingTouch(seekBar: SeekBar?) {
-      }
-
-      override fun onStopTrackingTouch(seekBar: SeekBar?) {
-      }
-    })
+    binding.opacityBar.addOnChangeListener { slider, value, _ ->
+      prefs.noteColorOpacity = slider.valueInt
+      viewModel.colorOpacity.postValue(newPair(opacity = slider.valueInt))
+    }
+    binding.opacityBar.setLabelFormatter { "${it.toInt()}%" }
   }
 
   private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
@@ -337,6 +339,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     )
     binding.remindDate.setTextColor(textColor)
     binding.remindTime.setTextColor(textColor)
+    binding.opacityLabel.setTextColor(textColor)
+    binding.opacityBar.thumbTintList = ColorStateList.valueOf(textColor)
+    binding.opacityBar.trackActiveTintList = ColorStateList.valueOf(textColor)
+    binding.opacityBar.trackInactiveTintList = ColorStateList.valueOf(textColor.adjustAlpha(24))
   }
 
   private fun toggleColorView() {
@@ -356,7 +362,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun loadNote() {
-
     when {
       intent?.action == Intent.ACTION_SEND -> {
         if ("text/plain" == intent.type) {
@@ -387,11 +392,12 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   private fun initViewModel() {
     viewModel.colorOpacity.nonNullObserve(this) {
-      Timber.d("observeStates: $it")
+      Timber.d("observeStates: opacity $it")
       updateDarkness(it)
       updateBackground(it)
       updateTextColors()
       updateIcons()
+      updateMenu()
     }
     viewModel.timeFormatted.nonNullObserve(this) {
       binding.remindTime.text = it
@@ -408,13 +414,15 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       imagesGridAdapter.submitList(it)
     }
     viewModel.palette.nonNullObserve(this) {
+      Timber.d("observeStates: palette -> $it")
       prefs.notePalette = it
       binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
-      val pair = newPair()
-      updateDarkness(pair)
+      val pair = newPair(binding.colorSlider.selectedItem, binding.opacityBar.valueInt)
+      updateDarkness(pair, it)
       updateBackground(pair, it)
       updateTextColors()
       updateIcons()
+      updateMenu()
     }
     viewModel.note.nonNullObserve(this) { showNote(it) }
     viewModel.result.nonNullObserve(this) { commands ->
@@ -439,35 +447,70 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       }
     }
     viewModel.error.nonNullObserve(this) { toast(it) }
-    viewModel.parsedText.nonNullObserve(this) {  binding.taskMessage.setText(it) }
+    viewModel.parsedText.nonNullObserve(this) { binding.taskMessage.setText(it) }
     lifecycle.addObserver(viewModel)
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    binding.taskMessage.textSize = (prefs.noteTextSize + 12).toFloat()
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setHomeButtonEnabled(true)
-    supportActionBar?.setDisplayShowHomeEnabled(true)
+    binding.toolbar.setNavigationOnClickListener { finish() }
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_share -> {
+          permissionFlow.askPermissions(
+            listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+          ) { viewModel.shareNote(getText(), binding.opacityBar.valueInt) }
+          true
+        }
 
-    ViewUtils.listenScrollableView(binding.touchView) {
-      binding.appBar.isSelected = it > 0
+        R.id.action_delete -> {
+          deleteDialog()
+          true
+        }
+
+        R.id.action_add -> {
+          askCopySaving()
+          true
+        }
+
+        else -> false
+      }
     }
+    updateIcons()
+    updateMenu()
+  }
 
-    binding.toolbar.inflateMenu(R.menu.activity_create_note)
+  private fun updateMenu() {
+    binding.toolbar.menu.also { menu ->
+      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isBgDark)
+      menu.getItem(2).isVisible = viewModel.isNoteEdited && !viewModel.isFromFile
+      ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_delete_24px, isBgDark)
+    }
   }
 
   private fun updateIcons() {
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
-    invalidateOptionsMenu()
     binding.discardReminder.setImageDrawable(
-      ViewUtils.tintIcon(
-        this,
-        R.drawable.ic_twotone_cancel_24px,
-        isBgDark
-      )
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark)
+    )
+    binding.micButton.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isBgDark)
+    )
+    binding.colorButton.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_palette_24px, isBgDark)
+    )
+    binding.imageButton.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_image_24px, isBgDark)
+    )
+    binding.reminderButton.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_alarm_24px, isBgDark)
+    )
+    binding.fontButton.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_text_fields_24px, isBgDark)
+    )
+    binding.paletteButton.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isBgDark)
     )
   }
 
@@ -478,8 +521,14 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun showNote(uiNoteEdit: UiNoteEdit) {
     Timber.d("editNote: $uiNoteEdit")
     binding.colorSlider.setSelection(uiNoteEdit.colorPosition)
-    binding.opacityBar.progress = uiNoteEdit.opacity
+    binding.opacityBar.valueInt = uiNoteEdit.opacity
     setText(uiNoteEdit.text)
+    val pair = newPair(uiNoteEdit.colorPosition, uiNoteEdit.opacity)
+    updateDarkness(pair)
+    updateBackground(pair)
+    updateTextColors()
+    updateIcons()
+    updateMenu()
   }
 
   private fun initImagesList() {
@@ -507,11 +556,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun hideProgress() {
-    binding.recordingView.gone()
+    binding.voiceProgress.gone()
   }
 
   private fun showProgress() {
-    binding.recordingView.visible()
+    binding.voiceProgress.visible()
   }
 
   private fun sendNote(file: File, name: String) {
@@ -533,11 +582,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         .setMessage(R.string.same_note_message)
         .setPositiveButton(R.string.keep) { dialogInterface, _ ->
           dialogInterface.dismiss()
-          viewModel.saveNote(getText(), binding.opacityBar.progress, true)
+          viewModel.saveNote(getText(), binding.opacityBar.valueInt, true)
         }
         .setNegativeButton(R.string.replace) { dialogInterface, _ ->
           dialogInterface.dismiss()
-          viewModel.saveNote(getText(), binding.opacityBar.progress)
+          viewModel.saveNote(getText(), binding.opacityBar.valueInt)
         }
         .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
           dialogInterface.dismiss()
@@ -545,40 +594,12 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         .create()
         .show()
     } else {
-      viewModel.saveNote(getText(), binding.opacityBar.progress)
+      viewModel.saveNote(getText(), binding.opacityBar.valueInt)
     }
   }
 
   private fun getText(): String {
     return binding.taskMessage.trimmedText()
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      android.R.id.home -> {
-        finish()
-        return true
-      }
-
-      R.id.action_share -> {
-        permissionFlow.askPermissions(
-          listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-        ) { viewModel.shareNote(getText(), binding.opacityBar.progress) }
-        return true
-      }
-
-      MENU_ITEM_DELETE -> {
-        deleteDialog()
-        return true
-      }
-
-      R.id.action_add -> {
-        askCopySaving()
-        return true
-      }
-
-      else -> return super.onOptionsItemSelected(item)
-    }
   }
 
   private fun deleteDialog() {
@@ -592,15 +613,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     builder.create().show()
   }
 
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.activity_create_note, menu)
-    ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isBgDark)
-    if (viewModel.isNoteEdited && !viewModel.isFromFile) {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-    }
-    return true
-  }
-
   private fun updateFontStyle(fontStyle: Int) {
     binding.taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
   }
@@ -610,8 +622,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
     val lightColorSemi = themeUtil.getNoteLightColor(pair.first, pair.second, palette)
     binding.layoutContainer.setBackgroundColor(lightColorSemi)
-    binding.toolbar.setBackgroundColor(lightColorSemi)
-    binding.appBar.setBackgroundColor(lightColorSemi)
 
     val lightColor = themeUtil.getNoteLightColor(pair.first, 100, palette)
     window.statusBarColor = lightColor
@@ -779,3 +789,9 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     const val MENU_ITEM_DELETE = 12
   }
 }
+
+private var Slider.valueInt: Int
+  set(v) {
+    this.value = v.toFloat()
+  }
+  get() = value.toInt()

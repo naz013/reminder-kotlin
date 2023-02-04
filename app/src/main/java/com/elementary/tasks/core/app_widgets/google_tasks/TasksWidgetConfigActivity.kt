@@ -27,7 +27,7 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
     readIntent()
 
     binding.fabSave.setOnClickListener { savePrefs() }
-    binding.closeButton.setOnClickListener { finish() }
+    binding.toolbar.setNavigationOnClickListener { finish() }
 
     binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.bgColorSlider.setListener { position, _ ->

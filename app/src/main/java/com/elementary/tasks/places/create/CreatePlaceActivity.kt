@@ -1,8 +1,6 @@
 package com.elementary.tasks.places.create
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
@@ -73,9 +71,33 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
   }
 
   private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    binding.backButton.setOnClickListener { finish() }
+    binding.toolbar.setNavigationOnClickListener { finish() }
+    binding.toolbar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_add -> {
+          askCopySaving()
+          true
+        }
+
+        R.id.action_delete -> {
+          dialogues.askConfirmation(this, getString(R.string.delete)) {
+            if (it) {
+              viewModel.deletePlace()
+            }
+          }
+          true
+        }
+
+        else -> false
+      }
+    }
+    updateMenu()
+  }
+
+  private fun updateMenu() {
+    binding.toolbar.menu.also {
+      it.getItem(1).isVisible = viewModel.canDelete
+    }
   }
 
   private fun initViewModel() {
@@ -108,9 +130,10 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
   }
 
   private fun showPlace(place: UiPlaceEdit) {
-    binding.titleView.text = getString(R.string.edit_place)
+    binding.toolbar.title = getString(R.string.edit_place)
     binding.placeName.setText(place.name)
     showPlaceOnMap(place)
+    updateMenu()
   }
 
   private fun savePlace(newId: Boolean = false) {
@@ -129,26 +152,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
         marker = marker
       )
     )
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      R.id.action_add -> {
-        askCopySaving()
-        true
-      }
-
-      MENU_ITEM_DELETE -> {
-        dialogues.askConfirmation(this, getString(R.string.delete)) {
-          if (it) {
-            viewModel.deletePlace()
-          }
-        }
-        true
-      }
-
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   private fun askCopySaving() {
@@ -190,14 +193,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
     }
   }
 
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.menu_place_edit, menu)
-    if (viewModel.canDelete) {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-    }
-    return true
-  }
-
   override fun placeChanged(place: LatLng, address: String) {
     viewModel.lat = place.latitude
     viewModel.lng = place.longitude
@@ -219,9 +214,5 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
         showPlaceOnMap(it)
       }
     }
-  }
-
-  companion object {
-    private const val MENU_ITEM_DELETE = 12
   }
 }

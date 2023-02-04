@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card1"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
+    android:layout_marginStart="16dp"
     android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
+    android:layout_marginEnd="16dp"
     app:cardCornerRadius="5dp"
     app:cardUseCompatPadding="true"
     app:contentPadding="8dp">
@@ -31,16 +31,17 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-                app:tint="?android:textColorPrimary" />
+                app:tint="?colorOnPrimaryContainer" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/sourceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/moreButton"
                 android:gravity="center_vertical"
-                android:textAppearance="?textAppearanceCaption"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="Name" />
 
         </RelativeLayout>
@@ -60,7 +61,7 @@
                 android:contentDescription="@string/acc_contact_photo"
                 android:scaleType="centerCrop" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/cloudUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +69,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_toEndOf="@+id/userPhoto"
                 android:gravity="center_vertical"
-                android:textAppearance="?textAppearanceSubtitle1"
+                android:textAppearance="?textAppearanceTitleMedium"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="Name" />
 
         </RelativeLayout>
@@ -96,22 +98,25 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/usedSpace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?textAppearanceBody1"
+                    android:textAppearance="?textAppearanceBodyLarge"
+                    android:textColor="?colorOnPrimaryContainer"
                     tools:text="Name" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <TextView
                     android:id="@+id/freeSpace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textAppearance="?textAppearanceBody1"
+                    android:textAppearance="?textAppearanceBodyLarge"
+                    android:textColor="?colorOnPrimaryContainer"
                     tools:text="Name" />
 
             </LinearLayout>
+
         </RelativeLayout>
 
         <LinearLayout
@@ -121,25 +126,29 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/cloudText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"
                 android:gravity="center_vertical"
                 android:text="@string/files"
-                android:textAppearance="?textAppearanceBody2"
+                android:textAppearance="?textAppearanceBodyLarge"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="Name" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/cloudCount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:textAppearance="?textAppearanceHeadline5"
+                android:textAppearance="?textAppearanceTitleLarge"
+                android:textColor="?colorOnPrimaryContainer"
                 tools:text="5" />
 
         </LinearLayout>
+
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

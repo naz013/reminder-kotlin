@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -57,7 +56,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone"
+            tools:visibility="gone">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
@@ -68,7 +68,7 @@
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/empty_status" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/emptyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_marginRight="24dp"
                 android:gravity="center|top"
                 android:text="@string/no_events"
-                android:textAppearance="?textAppearanceHeadline6" />
+                android:textAppearance="?textAppearanceHeadlineSmall" />
 
         </LinearLayout>
 
@@ -94,11 +94,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
+        style="?attr/floatingActionButtonSecondaryStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:fabSize="normal"
+        android:contentDescription="@string/add_reminder"
         app:srcCompat="@drawable/ic_twotone_add_24px" />
-</RelativeLayout>
+
+</FrameLayout>

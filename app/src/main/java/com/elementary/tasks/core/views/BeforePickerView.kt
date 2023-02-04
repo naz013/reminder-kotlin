@@ -8,16 +8,14 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.BeforePickerViewBinding
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.databinding.ViewRemindBeforeBinding
 import timber.log.Timber
 
 class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedListener {
 
-  private lateinit var binding: BeforePickerViewBinding
+  private lateinit var binding: ViewRemindBeforeBinding
   private val seconds = 0
   private val minutes = 1
   private val hours = 2
@@ -63,16 +61,10 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
 
   private fun init(context: Context, attrs: AttributeSet?) {
     View.inflate(context, R.layout.view_remind_before, this)
-    orientation = HORIZONTAL
-    binding = BeforePickerViewBinding(this)
+    orientation = VERTICAL
+    binding = ViewRemindBeforeBinding.bind(this)
 
     mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.before_time), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.before_time))
 
     binding.beforeTypeView.onItemSelectedListener = this
     binding.beforeValueView.addTextChangedListener(this)

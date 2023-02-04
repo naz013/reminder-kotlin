@@ -8,22 +8,21 @@
     android:focusable="false"
     android:orientation="horizontal">
 
-    <com.google.android.material.checkbox.MaterialCheckBox
+    <CheckBox
         android:id="@+id/itemCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:textAppearance="?textAppearanceButton"
         android:visibility="visible" />
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/shopText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textAppearance="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceBodyLarge"
         tools:text="Text" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -35,4 +34,5 @@
         android:visibility="visible"
         app:srcCompat="@drawable/ic_clear_white_24dp"
         app:tint="?android:textColorPrimary" />
+
 </LinearLayout>

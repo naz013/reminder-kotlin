@@ -4,23 +4,19 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.GroupViewBinding
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.databinding.ViewGroupBinding
 
 class GroupView : LinearLayout {
 
-  private lateinit var binding: GroupViewBinding
-  var onGroupUpdateListener: ((group: ReminderGroup) -> Unit)? = null
+  private lateinit var binding: ViewGroupBinding
   var onGroupSelectListener: (() -> Unit)? = null
   var reminderGroup: ReminderGroup? = null
     set(value) {
       if (value != null && value.groupUuId != "") {
         field = value
         binding.text.text = value.groupTitle
-        onGroupUpdateListener?.invoke(value)
       } else {
         noGroup()
       }
@@ -45,16 +41,11 @@ class GroupView : LinearLayout {
   private fun init(context: Context) {
     View.inflate(context, R.layout.view_group, this)
     orientation = VERTICAL
-    binding = GroupViewBinding(this)
+    binding = ViewGroupBinding.bind(this)
 
-    binding.text.setOnClickListener {
+    binding.selectButton.setOnClickListener {
       onGroupSelectListener?.invoke()
     }
-    binding.hintIcon.setOnLongClickListener {
-      Toast.makeText(context, context.getString(R.string.change_group), Toast.LENGTH_SHORT).show()
-      return@setOnLongClickListener true
-    }
-    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.change_group))
     reminderGroup = null
   }
 }

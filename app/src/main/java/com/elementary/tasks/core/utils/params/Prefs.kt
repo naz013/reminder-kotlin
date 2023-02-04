@@ -581,10 +581,6 @@ class Prefs(
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
-  var screenImage: String
-    get() = getString(PrefsConstants.SCREEN_BACKGROUND_IMAGE)
-    set(token) = putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, token)
-
   var isIgnoreWindowType: Boolean
     get() = getBoolean(PrefsConstants.IGNORE_WINDOW_TYPE)
     set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)
@@ -600,6 +596,10 @@ class Prefs(
   var isAutoMicClick: Boolean
     get() = getBoolean(PrefsConstants.CONVERSATION_AUTO_MIC, true)
     set(value) = putBoolean(PrefsConstants.CONVERSATION_AUTO_MIC, value)
+
+  var useDynamicColors: Boolean
+    get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)
+    set(value) = putBoolean(PrefsConstants.DYNAMIC_COLORS, value)
 
   fun initPrefs() {
     val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
@@ -635,7 +635,6 @@ class Prefs(
       editor.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
       editor.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
       editor.putString(PrefsConstants.CUSTOM_SOUND, Constants.SOUND_NOTIFICATION)
-      editor.putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, Constants.NONE)
       editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
       editor.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
       editor.putInt(PrefsConstants.MISSED_CALL_PRIORITY, 2)
@@ -771,9 +770,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER_TIME)) {
       putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "12:00")
-    }
-    if (!hasKey(PrefsConstants.SCREEN_BACKGROUND_IMAGE)) {
-      putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, Constants.NONE)
     }
     if (!hasKey(PrefsConstants.DO_NOT_DISTURB_FROM)) {
       putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
