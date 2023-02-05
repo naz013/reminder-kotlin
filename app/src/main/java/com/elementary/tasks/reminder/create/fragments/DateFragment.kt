@@ -84,7 +84,6 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
       binding.repeatLimitView,
       binding.repeatView,
       binding.windowTypeView,
-      binding.calendarPicker,
       binding.actionView
     )
   }

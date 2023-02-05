@@ -72,8 +72,7 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
       binding.priorityView,
       binding.repeatLimitView,
       binding.repeatView,
-      binding.windowTypeView,
-      binding.calendarPicker
+      binding.windowTypeView
     )
   }
 

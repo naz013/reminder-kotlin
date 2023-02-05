@@ -96,7 +96,6 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
       binding.priorityView,
       binding.repeatLimitView,
       binding.windowTypeView,
-      binding.calendarPicker,
       binding.actionView
     )
   }

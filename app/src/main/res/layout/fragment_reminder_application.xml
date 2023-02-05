@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -214,25 +213,12 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <com.elementary.tasks.core.views.ExportToCalendarView
                 android:id="@+id/exportToCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/add_to_calendar"
-                android:textAppearance="?textAppearanceBody1"
-                android:visibility="visible" />
-
-            <com.elementary.tasks.core.views.HorizontalSelectorView
-                android:id="@+id/calendarPicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
                 android:layout_marginEnd="16dp" />
 
             <androidx.appcompat.widget.AppCompatCheckBox

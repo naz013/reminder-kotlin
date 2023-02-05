@@ -98,8 +98,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       binding.priorityView,
       binding.repeatLimitView,
       binding.repeatView,
-      binding.windowTypeView,
-      binding.calendarPicker
+      binding.windowTypeView
     )
   }
 

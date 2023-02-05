@@ -92,7 +92,6 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
       binding.repeatLimitView,
       binding.repeatView,
       binding.windowTypeView,
-      binding.calendarPicker,
       binding.actionView
     )
   }

@@ -32,8 +32,8 @@ import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
 import com.elementary.tasks.core.views.DateTimeView
+import com.elementary.tasks.core.views.ExportToCalendarView
 import com.elementary.tasks.core.views.GroupView
-import com.elementary.tasks.core.views.HorizontalSelectorView
 import com.elementary.tasks.core.views.LedPickerView
 import com.elementary.tasks.core.views.LoudnessPickerView
 import com.elementary.tasks.core.views.MelodyView
@@ -143,6 +143,16 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           }
         }
       }
+      is ExportToCalendarView -> {
+        view.visibleGone(iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled())
+        view.bindProperty(
+          iFace.state.reminder.exportToCalendar,
+          iFace.state.reminder.calendarId
+        ) { isChecked, calendarId ->
+          iFace.state.reminder.exportToCalendar = isChecked
+          iFace.state.reminder.calendarId = calendarId
+        }
+      }
       is GroupView -> {
         this.groupView = view
         view.onGroupSelectListener = { iFace.selectGroup() }
@@ -222,6 +232,9 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       is BeforePickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isBeforePickerEnabled())
       }
+      is ExportToCalendarView -> {
+        view.visibleGone(iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled())
+      }
       is LedPickerView -> {
         if (Module.isPro) {
           view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
@@ -255,7 +268,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   protected fun setViews(
     ledPickerView: LedPickerView? = null,
-    calendarCheck: AppCompatCheckBox? = null,
     tasksCheck: AppCompatCheckBox? = null,
     extraView: TuneExtraView? = null,
     melodyView: MelodyView? = null,
@@ -269,8 +281,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     windowTypeView: WindowTypeView? = null,
     repeatLimitView: RepeatLimitView? = null,
     loudnessPickerView: LoudnessPickerView? = null,
-    actionView: ActionView? = null,
-    calendarPicker: HorizontalSelectorView? = null
+    actionView: ActionView? = null
   ) {
     this.attachmentView = attachmentView
     this.melodyView = melodyView
@@ -395,22 +406,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         it.gone()
       }
     }
-    calendarCheck?.let {
-      if (iFace.canExportToCalendar) {
-        it.visible()
-        it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
-          iFace.state.reminder.exportToCalendar = isChecked
-          if (isChecked) {
-            calendarPicker?.visible()
-          } else {
-            calendarPicker?.gone()
-          }
-        }
-      } else {
-        it.gone()
-        calendarPicker?.gone()
-      }
-    }
     tasksCheck?.let {
       if (iFace.canExportToTasks) {
         it.visible()
@@ -426,33 +421,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       it.bindProperty(iFace.state.reminder) { reminder ->
         iFace.state.reminder.copyExtra(reminder)
       }
-    }
-    if (iFace.canExportToCalendar) {
-      calendarPicker?.let {
-        it.pickerProvider = {
-          calendars.map { calendarItem -> calendarItem.name }
-        }
-        it.titleProvider = { pointer -> calendars[pointer].name }
-        it.dataSize = calendars.size
-        it.selectListener = { pointer, _ ->
-          iFace.state.reminder.calendarId = calendars[pointer].id
-        }
-        var index = 0
-        for (c in calendars) {
-          if (c.id == iFace.state.reminder.calendarId) {
-            index = calendars.indexOf(c)
-            break
-          }
-        }
-        it.selectItem(index)
-      }
-      if (calendarCheck?.isChecked == true) {
-        calendarPicker?.visible()
-      } else {
-        calendarPicker?.gone()
-      }
-    } else {
-      calendarPicker?.gone()
     }
   }
 

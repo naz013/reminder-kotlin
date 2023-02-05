@@ -32,6 +32,7 @@ import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
 import com.elementary.tasks.core.views.ExclusionPickerView
+import com.elementary.tasks.core.views.ExportToCalendarView
 import com.elementary.tasks.core.views.LedPickerView
 import com.elementary.tasks.core.views.LoudnessPickerView
 import com.elementary.tasks.core.views.MelodyView
@@ -287,6 +288,20 @@ fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) 
 fun AppCompatCheckBox.bindProperty(value: Boolean, listener: ((Boolean) -> Unit)) {
   this.isChecked = value
   this.setOnCheckedChangeListener { _, isChecked -> listener.invoke(isChecked) }
+}
+
+fun ExportToCalendarView.bindProperty(enabled: Boolean, calendarId: Long, listener: ((Boolean, Long) -> Unit)) {
+  this.calendarState = if (enabled) {
+    ExportToCalendarView.State.YES
+  } else {
+    ExportToCalendarView.State.NO
+  }
+  this.calendarId = calendarId
+  this.listener = object : ExportToCalendarView.SelectionListener {
+    override fun onChanged(enabled: Boolean, calendarId: Long) {
+      listener.invoke(enabled, calendarId)
+    }
+  }
 }
 
 fun RepeatView.bindProperty(value: Long, listener: ((Long) -> Unit)) {
