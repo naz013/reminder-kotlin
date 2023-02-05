@@ -73,25 +73,19 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     savedInstanceState: Bundle?
   ) = FragmentReminderShopBinding.inflate(inflater, container, false)
 
-  override fun provideViews() {
-    setViews(
-      scrollView = binding.scrollView,
-      expansionLayout = binding.moreLayout,
-      ledPickerView = binding.ledView,
-      extraView = binding.tuneExtraView,
-      melodyView = binding.melodyView,
-      attachmentView = binding.attachmentView,
-      groupView = binding.groupView,
-      summaryView = binding.taskSummary,
-      dateTimeView = binding.dateView,
-      loudnessPickerView = binding.loudnessView,
-      priorityPickerView = binding.priorityView,
-      windowTypeView = binding.windowTypeView
+  override fun getDynamicViews(): List<View> {
+    return listOfNotNull(
+      binding.ledView,
+      binding.tuneExtraView,
+      binding.melodyView,
+      binding.attachmentView,
+      binding.groupView,
+      binding.taskSummary,
+      binding.dateView,
+      binding.loudnessView,
+      binding.priorityView,
+      binding.windowTypeView
     )
-  }
-
-  override fun onNewHeader(newHeader: String) {
-    binding.cardSummary.text = newHeader
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

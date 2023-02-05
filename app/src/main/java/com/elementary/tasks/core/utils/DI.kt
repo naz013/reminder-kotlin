@@ -128,7 +128,7 @@ import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
 import com.elementary.tasks.reminder.create.EditReminderViewModel
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
-import com.elementary.tasks.reminder.create.fragments.UsedTimeViewModel
+import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel

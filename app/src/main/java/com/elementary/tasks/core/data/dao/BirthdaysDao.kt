@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.Birthday
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
-import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.Birthday
 
 @Dao
 interface BirthdaysDao {
@@ -36,10 +35,10 @@ interface BirthdaysDao {
     @Query("SELECT * FROM Birthday WHERE dayMonth IN (:dayMonths)")
     fun findAll(dayMonths: List<String>): LiveData<List<Birthday>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(birthday: Birthday)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg birthdays: Birthday)
 
     @Delete

@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.GoogleTask
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
-import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.GoogleTask
 
 @Dao
 interface GoogleTasksDao {
@@ -27,10 +26,10 @@ interface GoogleTasksDao {
     @Query("SELECT * FROM GoogleTask WHERE listId=:listId ORDER BY status DESC, title ASC")
     fun getAllByList(listId: String): List<GoogleTask>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(googleTask: GoogleTask)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(googleTasks: List<GoogleTask>)
 
     @Delete

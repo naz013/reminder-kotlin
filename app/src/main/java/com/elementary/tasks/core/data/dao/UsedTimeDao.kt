@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.elementary.tasks.core.data.models.UsedTime
 
@@ -23,10 +23,10 @@ interface UsedTimeDao {
     @Query("SELECT * FROM UsedTime WHERE timeMills=:timeMills")
     fun getByTimeMills(timeMills: Long): UsedTime?
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(usedTime: UsedTime)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg usedTimes: UsedTime)
 
     @Delete

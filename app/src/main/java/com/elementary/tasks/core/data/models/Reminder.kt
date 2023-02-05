@@ -128,6 +128,8 @@ data class Reminder(
   var priority: Int = 2,
   @SerializedName("updatedAt")
   var updatedAt: String? = null,
+  @SerializedName("taskListId")
+  var taskListId: String? = null,
   @ColumnInfo(name = "groupTitle")
   @Transient
   var groupTitle: String? = "",
@@ -191,6 +193,7 @@ data class Reminder(
     this.groupTitle = item.groupTitle
     this.groupColor = item.groupColor
     this.calendarId = item.calendarId
+    this.taskListId = item.taskListId
     if (fullCopy) {
       this.uuId = item.uuId
       this.uniqueId = item.uniqueId

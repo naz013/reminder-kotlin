@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.create.fragments
+package com.elementary.tasks.reminder.create.fragments.timer
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel

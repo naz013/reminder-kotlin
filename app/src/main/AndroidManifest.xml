@@ -431,6 +431,9 @@
             android:name=".core.dialogs.VolumeDialog"
             android:excludeFromRecents="true" />
         <activity android:name=".voice.ConversationActivity" />
+        <activity
+            android:name=".reminder.create.ConfigureActivity"
+            android:excludeFromRecents="true" />
 
         <receiver
             android:name=".core.services.CallReceiver"

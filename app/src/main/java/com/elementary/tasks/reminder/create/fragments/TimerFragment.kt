@@ -22,6 +22,7 @@ import com.elementary.tasks.core.views.TimerPickerView
 import com.elementary.tasks.databinding.FragmentReminderTimerBinding
 import com.elementary.tasks.databinding.ListItemUsedTimeBinding
 import com.elementary.tasks.reminder.create.fragments.timer.UiUsedTimeListDiffCallback
+import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -90,31 +91,24 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     savedInstanceState: Bundle?
   ) = FragmentReminderTimerBinding.inflate(inflater, container, false)
 
-  override fun provideViews() {
-    setViews(
-      scrollView = binding.scrollView,
-      expansionLayout = binding.moreLayout,
-      ledPickerView = binding.ledView,
-      calendarCheck = binding.exportToCalendar,
-      tasksCheck = binding.exportToTasks,
-      extraView = binding.tuneExtraView,
-      melodyView = binding.melodyView,
-      attachmentView = binding.attachmentView,
-      groupView = binding.groupView,
-      summaryView = binding.taskSummary,
-      beforePickerView = binding.beforeView,
-      loudnessPickerView = binding.loudnessView,
-      priorityPickerView = binding.priorityView,
-      repeatLimitView = binding.repeatLimitView,
-      repeatView = binding.repeatView,
-      windowTypeView = binding.windowTypeView,
-      actionView = binding.actionView,
-      calendarPicker = binding.calendarPicker
+  override fun getDynamicViews(): List<View> {
+    return listOfNotNull(
+      binding.ledView,
+      binding.exportToCalendar,
+      binding.exportToTasks,
+      binding.tuneExtraView,
+      binding.melodyView,
+      binding.attachmentView,
+      binding.groupView,
+      binding.taskSummary,
+      binding.beforeView,
+      binding.loudnessView,
+      binding.priorityView,
+      binding.repeatLimitView,
+      binding.repeatView,
+      binding.windowTypeView,
+      binding.actionView
     )
-  }
-
-  override fun onNewHeader(newHeader: String) {
-    binding.cardSummary.text = newHeader
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

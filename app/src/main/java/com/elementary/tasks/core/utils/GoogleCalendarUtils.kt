@@ -166,27 +166,28 @@ class GoogleCalendarUtils(
     }
     val ids = mutableListOf<CalendarItem>()
     val uri = CalendarContract.Calendars.CONTENT_URI
-    val mProjection = arrayOf(CalendarContract.Calendars._ID, // 0
+    val projection = arrayOf(
+      CalendarContract.Calendars._ID, // 0
       CalendarContract.Calendars.ACCOUNT_NAME, // 1
       CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, // 2
-      CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
+      CalendarContract.Calendars.OWNER_ACCOUNT // 3
     )
     var c: Cursor? = null
     try {
-      c = context.contentResolver.query(uri, mProjection, null, null, null)
+      c = context.contentResolver.query(uri, projection, null, null, null)
     } catch (e: Exception) {
       e.printStackTrace()
     }
 
     if (c != null && c.moveToFirst()) {
       do {
-        val mID = c.getLong(c.getColumnIndex(mProjection[0]))
-        val title = c.getString(c.getColumnIndex(mProjection[2])) ?: ""
+        val mID = c.getLong(c.getColumnIndex(projection[0]))
+        val title = c.getString(c.getColumnIndex(projection[2])) ?: ""
         ids.add(CalendarItem(title, mID))
       } while (c.moveToNext())
     }
     c?.close()
-    return ids
+    return ids.sortedBy { it.id }
   }
 
   fun getEvents(ids: Array<Long>): List<EventItem> {

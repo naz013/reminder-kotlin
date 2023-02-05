@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.Place
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
-import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.Place
 
 @Dao
 interface PlacesDao {
@@ -21,10 +20,10 @@ interface PlacesDao {
     @Query("SELECT * FROM Place")
     fun loadAll(): LiveData<List<Place>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(place: Place)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg places: Place)
 
     @Delete

@@ -18,6 +18,8 @@ class HorizontalSelectorView : LinearLayout {
   var titleProvider: (pointer: Int) -> String = { "" }
   var pickerProvider: () -> List<String> = { listOf() }
   var dataSize: Int = 0
+  val selectedPosition: Int
+    get() = pointer
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -39,6 +41,13 @@ class HorizontalSelectorView : LinearLayout {
     binding.rightButton.setOnClickListener { moveRight() }
     binding.text1.setOnClickListener { showPicker() }
     updateTitle()
+  }
+
+  override fun setEnabled(enabled: Boolean) {
+    super.setEnabled(enabled)
+    binding.leftButton.isEnabled = enabled
+    binding.rightButton.isEnabled = enabled
+    binding.text1.isEnabled = enabled
   }
 
   override fun invalidate() {

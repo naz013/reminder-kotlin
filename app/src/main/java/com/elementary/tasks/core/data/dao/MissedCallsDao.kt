@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.MissedCall
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
-import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.MissedCall
 
 @Dao
 interface MissedCallsDao {
@@ -18,10 +17,10 @@ interface MissedCallsDao {
     @Query("SELECT * FROM MissedCall")
     fun loadAll(): LiveData<List<MissedCall>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(missedCall: MissedCall)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg missedCalls: MissedCall)
 
     @Delete
