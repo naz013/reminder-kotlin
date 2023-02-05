@@ -14,9 +14,6 @@ object Module {
   val is10 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
   val isPie = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
   val isOreoMr1 = Build.VERSION.SDK_INT >= 27
-  val isOreo = Build.VERSION.SDK_INT >= 26
-  val isNougat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-  val isNougat1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 
   fun isChromeOs(context: Context) =
     context.packageManager.hasSystemFeature("org.chromium.arc.device_management")

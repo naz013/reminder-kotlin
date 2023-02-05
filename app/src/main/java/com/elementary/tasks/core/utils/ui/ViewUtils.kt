@@ -21,7 +21,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.adjustAlpha
 import timber.log.Timber
@@ -58,9 +57,7 @@ object ViewUtils {
           true
         }
         DragEvent.ACTION_DROP -> {
-          if (Module.isNougat) {
-            activity.requestDragAndDropPermissions(event)
-          }
+          activity.requestDragAndDropPermissions(event)
           onDrop.invoke(event.clipData)
           true
         }

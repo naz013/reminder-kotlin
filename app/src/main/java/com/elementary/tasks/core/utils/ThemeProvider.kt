@@ -333,13 +333,8 @@ class ThemeProvider(
     }
 
     fun getThemeSecondaryColor(context: Context): Int {
-      val colorAttr: Int = if (Module.isNougat1) {
-        android.R.attr.colorSecondary
-      } else {
-        context.resources.getIdentifier("colorSecondary", "attr", context.packageName)
-      }
       val outValue = TypedValue()
-      context.theme.resolveAttribute(colorAttr, outValue, true)
+      context.theme.resolveAttribute(android.R.attr.colorSecondary, outValue, true)
       return outValue.data
     }
 

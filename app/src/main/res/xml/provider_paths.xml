@@ -15,4 +15,7 @@
     <files-path
         name="files"
         path="." />
+    <files-path
+        name="image_cache"
+        path="Reminder" />
 </paths>
