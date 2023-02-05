@@ -38,7 +38,6 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.visibleInvisible
@@ -621,10 +620,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       }
     }
     updateMenu()
-
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      binding.appBar.isSelected = it > 0
-    }
   }
 
   private fun updateMenu() {

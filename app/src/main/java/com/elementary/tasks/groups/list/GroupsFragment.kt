@@ -94,9 +94,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
     binding.recyclerView.adapter = groupsRecyclerAdapter
-    ViewUtils.listenScrollableView(
-      binding.recyclerView,
-      { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(binding.recyclerView) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }

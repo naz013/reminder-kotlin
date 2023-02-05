@@ -9,13 +9,12 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -59,9 +58,6 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     initProgress()
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
 
     mAdapter = InfoAdapter(binding.itemsContainer) {
       if (it != null) {

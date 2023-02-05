@@ -15,7 +15,6 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -112,11 +111,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>() {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
     binding.recyclerView.adapter = remindersAdapter
-    ViewUtils.listenScrollableView(
-      binding.recyclerView,
-      { setToolbarAlpha(toAlpha(it.toFloat())) },
-      null
-    )
     reloadView(0)
   }
 

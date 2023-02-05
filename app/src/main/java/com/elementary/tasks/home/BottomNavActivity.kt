@@ -81,29 +81,6 @@ class BottomNavActivity :
     mFragment = fragment
   }
 
-  override fun onAlphaUpdate(alpha: Float) {
-//        Timber.d("onAlphaUpdate: $alpha")
-//        if (alpha > 0f) {
-//            var alphaNew = 1f - alpha
-//            if (alphaNew <= 0f) {
-//                alphaNew = 0f
-//                if (binding.appBar.isVisible()) {
-//                    binding.appBar.transparent()
-//                }
-//            } else if (alphaNew > 0f) {
-//                if (!binding.appBar.isVisible()) {
-//                    binding.appBar.show()
-//                }
-//            }
-//            binding.appBar.alpha = alphaNew
-//        } else {
-//            binding.appBar.alpha = 1f
-//            if (!binding.appBar.isVisible()) {
-//                binding.appBar.show()
-//            }
-//        }
-  }
-
   override fun onTitleChange(title: String) {
     binding.toolbar.title = title
   }

@@ -136,9 +136,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
     binding.recyclerView.adapter = remindersAdapter
-    ViewUtils.listenScrollableView(
-      binding.recyclerView,
-      listener = { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(binding.recyclerView) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }

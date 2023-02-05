@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.utils.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -11,14 +10,11 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.DragEvent
 import android.view.Menu
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.UriUtil
@@ -114,45 +110,6 @@ object ViewUtils {
       menu?.getItem(index)?.icon = tintIcon(context, resource, isDark)
     } catch (e: Exception) {
     }
-  }
-
-  @SuppressLint("ClickableViewAccessibility")
-  fun listenScrollableView(scrollView: NestedScrollView, listener: ((y: Int) -> Unit)?) {
-    val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-      listener?.invoke(scrollView.scrollY)
-    }
-    scrollView.setOnTouchListener(object : View.OnTouchListener {
-      private var observer: ViewTreeObserver? = null
-      override fun onTouch(v: View, event: MotionEvent): Boolean {
-        if (observer == null) {
-          observer = scrollView.viewTreeObserver
-          observer?.addOnScrollChangedListener(onScrollChangedListener)
-        } else if (observer?.isAlive == false) {
-          observer?.removeOnScrollChangedListener(onScrollChangedListener)
-          observer = scrollView.viewTreeObserver
-          observer?.addOnScrollChangedListener(onScrollChangedListener)
-        }
-        return false
-      }
-    })
-  }
-
-  fun listenScrollableView(recyclerView: RecyclerView, listener: (y: Int) -> Unit, fabListener: ((show: Boolean) -> Unit)?) {
-    recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
-      listener.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
-    }
-    recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-      override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        super.onScrolled(recyclerView, dx, dy)
-        if (fabListener != null) {
-          if (dy > 0) {
-            fabListener.invoke(false)
-          } else if (dy <= 0) {
-            fabListener.invoke(true)
-          }
-        }
-      }
-    })
   }
 
   fun listenScrollableView(recyclerView: RecyclerView, fabListener: (show: Boolean) -> Unit) {

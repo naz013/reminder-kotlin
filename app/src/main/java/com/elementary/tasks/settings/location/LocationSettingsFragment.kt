@@ -9,7 +9,6 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.DrawableHelper
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -30,9 +29,6 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
     initMapTypePrefs()
     initMarkerStylePrefs()
     binding.trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }

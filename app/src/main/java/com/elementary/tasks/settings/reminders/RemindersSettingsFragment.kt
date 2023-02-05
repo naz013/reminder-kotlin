@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import org.koin.android.ext.android.inject
@@ -28,10 +27,6 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
-
     initDefaultPriority()
     initCompletedPrefs()
     initDoNotDisturbPrefs()
