@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.BiometricProvider
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -26,10 +25,6 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
-
     binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
     binding.changePinPrefs.setOnClickListener {
       safeNavigation(

@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
@@ -39,10 +38,6 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
-
     binding.aboutPrefs.setOnClickListener { showAboutDialog() }
     binding.ossPrefs.setOnClickListener { openOssScreen() }
     binding.permissionsPrefs.setOnClickListener { openPermissionsScreen() }

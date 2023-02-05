@@ -77,7 +77,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
       }
     }
     binding.templatesList.adapter = templatesAdapter
-    ViewUtils.listenScrollableView(binding.templatesList, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(binding.templatesList) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }

@@ -20,7 +20,6 @@ import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import org.koin.android.ext.android.inject
@@ -100,10 +99,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
-
     binding.saleBadge.gone()
     binding.updateBadge.gone()
     binding.doNoDisturbIcon.gone()

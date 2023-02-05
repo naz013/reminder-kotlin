@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 
@@ -22,10 +21,6 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
-
     initFuturePrefs()
     initRemindersPrefs()
     initFirstDayPrefs()

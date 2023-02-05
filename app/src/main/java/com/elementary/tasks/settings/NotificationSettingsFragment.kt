@@ -25,7 +25,6 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SelectionList
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
@@ -59,10 +58,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
-
     initManualPrefs()
     initSbPrefs()
     initSbIconPrefs()

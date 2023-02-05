@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 
@@ -21,9 +20,6 @@ class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    ViewUtils.listenScrollableView(binding.scrollView) {
-      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-    }
     initLanguagePrefs()
     binding.timePrefs.setOnClickListener {
       safeNavigation(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment())

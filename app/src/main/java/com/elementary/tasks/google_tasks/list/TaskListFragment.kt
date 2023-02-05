@@ -159,7 +159,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
       }
     }
     binding.recyclerView.adapter = adapter
-    ViewUtils.listenScrollableView(binding.recyclerView, {}) {
+    ViewUtils.listenScrollableView(binding.recyclerView) {
       if (it) binding.fab.extend()
       else binding.fab.shrink()
     }

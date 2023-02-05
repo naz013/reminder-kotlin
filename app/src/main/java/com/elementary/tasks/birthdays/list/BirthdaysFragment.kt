@@ -89,9 +89,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
       }
     }
     binding.recyclerView.adapter = mAdapter
-    ViewUtils.listenScrollableView(
-      binding.recyclerView,
-      { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+    ViewUtils.listenScrollableView(binding.recyclerView) {
       if (it) binding.fab.show()
       else binding.fab.hide()
     }

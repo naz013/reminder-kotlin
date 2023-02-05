@@ -28,21 +28,11 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   protected val isDark = currentStateHolder.theme.isDark
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
 
-  private var mLastAlpha: Float = 0f
-
   override fun onAttach(context: Context) {
     super.onAttach(context)
     if (callback == null) {
       runCatching { callback = context as FragmentCallback? }
     }
-  }
-
-  protected fun toAlpha(scroll: Float, max: Float = 255f): Float = scroll / max
-
-  protected fun setToolbarAlpha(alpha: Float) {
-    if (isRemoving) return
-    this.mLastAlpha = alpha
-    callback?.onAlphaUpdate(alpha)
   }
 
   protected fun moveBack() {
@@ -59,7 +49,6 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   open fun onBackStackResume() {
     callback?.setCurrentFragment(this)
     callback?.onTitleChange(getTitle())
-    setToolbarAlpha(mLastAlpha)
   }
 
   override fun onResume() {
@@ -101,9 +90,5 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
         return onMenuItemListener(menuItem)
       }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-  }
-
-  companion object {
-    const val NESTED_SCROLL_MAX = 255f
   }
 }

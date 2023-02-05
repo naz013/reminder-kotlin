@@ -222,11 +222,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         iFace.state.reminder.attachmentFile = path
       }
     }
-    scrollView?.let { view ->
-      ViewUtils.listenScrollableView(view) {
-        iFace.updateScroll(it)
-      }
-    }
     expansionLayout?.let {
       it.isNestedScrollingEnabled = false
       if (iFace.state.isExpanded) {

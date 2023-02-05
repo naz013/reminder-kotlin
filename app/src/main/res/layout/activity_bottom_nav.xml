@@ -20,15 +20,15 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="?android:colorBackground"
-        android:stateListAnimator="@animator/toolbar_animator">
+        app:liftOnScroll="false"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:navigationIconTint="?colorOnSurface"
             tools:title="Text" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

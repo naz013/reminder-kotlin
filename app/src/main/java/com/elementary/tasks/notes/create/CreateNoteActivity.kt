@@ -147,9 +147,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     hideRecording()
 
     binding.taskMessage.textSize = (prefs.noteTextSize + 12).toFloat()
-    ViewUtils.listenScrollableView(binding.touchView) {
-      binding.appBar.isSelected = it > 0
-    }
 
     binding.remindDate.setOnClickListener { dateDialog() }
     binding.remindTime.setOnClickListener { timeDialog() }
