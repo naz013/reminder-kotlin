@@ -125,6 +125,8 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     if (!isLogged) {
       binding.notLoggedView.visible()
       binding.notLoggedView.setOnClickListener { }
+      binding.emptyItem.gone()
+      binding.listsScrollView.gone()
       binding.fab.hide()
     } else {
       binding.listsScrollView.visible()
