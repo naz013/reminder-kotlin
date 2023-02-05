@@ -2,21 +2,9 @@ package com.elementary.tasks.reminder.create.fragments
 
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
 
 abstract class RadiusTypeFragment<B : ViewBinding> : TypeFragment<B>() {
-
-  override fun getSummary(): String {
-    val reminder = iFace.state.reminder
-    var summary = ""
-    val groupName = reminder.groupTitle
-    if (groupName != "") {
-      summary += "$groupName, "
-    }
-    summary += ReminderUtils.getPriorityTitle(requireContext(), reminder.priority) + ", "
-    return summary
-  }
 
   protected abstract fun recreateMarker()
 

@@ -93,6 +93,7 @@ object PrefsConstants {
   const val TELL_ABOUT_EVENT = "tell_about_event"
   const val APP_LANGUAGE = "app_language"
   const val IGNORE_WINDOW_TYPE = "ignore_window_type"
+  const val REMINDER_CREATOR_PARAMS = "reminder_creator_params"
 
   const val PIN_CODE = "pin_code"
   const val USE_FINGERPRINT = "use_finger"

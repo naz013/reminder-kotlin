@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -49,199 +48,133 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp" />
 
-            <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
+            <com.elementary.tasks.core.views.GroupView
+                android:id="@+id/groupView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp" />
 
-                <com.github.florent37.expansionpanel.ExpansionHeader
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:expansion_headerIndicator="@id/headerIndicator"
-                    app:expansion_layout="@id/moreLayout"
-                    app:expansion_toggleOnClick="true">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/cardSummary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="8dp"
-                            android:layout_toStartOf="@+id/headerIndicator"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:textAppearance="?textAppearanceSubtitle1"
-                            tools:text="@string/date_and_time" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/headerIndicator"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center_vertical|end"
-                            android:adjustViewBounds="true"
-                            app:srcCompat="@drawable/ic_twotone_chevron_right_24px"
-                            app:tint="?android:textColorPrimary" />
-
-                    </RelativeLayout>
-
-                </com.github.florent37.expansionpanel.ExpansionHeader>
-
-                <com.github.florent37.expansionpanel.ExpansionLayout
-                    android:id="@+id/moreLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:expansion_expanded="false">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <com.elementary.tasks.core.views.GroupView
-                            android:id="@+id/groupView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.BeforePickerView
-                            android:id="@+id/beforeView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp"
-                            app:before_type="minutes" />
-
-                        <com.elementary.tasks.core.views.RepeatLimitView
-                            android:id="@+id/repeatLimitView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.PriorityPickerView
-                            android:id="@+id/priorityView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.WindowTypeView
-                            android:id="@+id/windowTypeView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.MelodyView
-                            android:id="@+id/melodyView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.LoudnessPickerView
-                            android:id="@+id/loudnessView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.AttachmentView
-                            android:id="@+id/attachmentView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.LedPickerView
-                            android:id="@+id/ledView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/exportToCalendar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:paddingStart="@dimen/checkbox_padding"
-                            android:paddingEnd="@dimen/checkbox_padding"
-                            android:text="@string/add_to_calendar"
-                            android:textAppearance="?textAppearanceBody1"
-                            android:visibility="visible" />
-
-                        <com.elementary.tasks.core.views.HorizontalSelectorView
-                            android:id="@+id/calendarPicker"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginEnd="16dp" />
-
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/exportToTasks"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:paddingStart="@dimen/checkbox_padding"
-                            android:paddingEnd="@dimen/checkbox_padding"
-                            android:text="@string/google_tasks"
-                            android:textAppearance="?textAppearanceBody1"
-                            android:visibility="visible" />
-
-                        <com.elementary.tasks.core.views.ActionView
-                            android:id="@+id/actionView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="16dp" />
-
-                        <com.elementary.tasks.core.views.TuneExtraView
-                            android:id="@+id/tuneExtraView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="16dp" />
-
-                    </LinearLayout>
-                </com.github.florent37.expansionpanel.ExpansionLayout>
-            </com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout>
-
-            <com.elementary.tasks.core.views.DividerView
+            <com.elementary.tasks.core.views.BeforePickerView
+                android:id="@+id/beforeView"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                app:before_type="minutes" />
+
+            <com.elementary.tasks.core.views.RepeatLimitView
+                android:id="@+id/repeatLimitView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.PriorityPickerView
+                android:id="@+id/priorityView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.WindowTypeView
+                android:id="@+id/windowTypeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.MelodyView
+                android:id="@+id/melodyView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.LoudnessPickerView
+                android:id="@+id/loudnessView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.AttachmentView
+                android:id="@+id/attachmentView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.LedPickerView
+                android:id="@+id/ledView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/exportToCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp" />
+                android:paddingStart="@dimen/checkbox_padding"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:text="@string/add_to_calendar"
+                android:textAppearance="?textAppearanceBody1"
+                android:visibility="visible" />
+
+            <com.elementary.tasks.core.views.HorizontalSelectorView
+                android:id="@+id/calendarPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="16dp" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/exportToTasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="@dimen/checkbox_padding"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:text="@string/google_tasks"
+                android:textAppearance="?textAppearanceBody1"
+                android:visibility="visible" />
+
+            <com.elementary.tasks.core.views.ActionView
+                android:id="@+id/actionView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp" />
+
+            <com.elementary.tasks.core.views.TuneExtraView
+                android:id="@+id/tuneExtraView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

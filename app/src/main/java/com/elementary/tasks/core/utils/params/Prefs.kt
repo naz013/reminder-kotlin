@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
+import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
@@ -600,6 +601,15 @@ class Prefs(
   var useDynamicColors: Boolean
     get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)
     set(value) = putBoolean(PrefsConstants.DYNAMIC_COLORS, value)
+
+  var reminderCreatorParams: ReminderCreatorConfig
+    get() = ReminderCreatorConfig(
+      getString(
+        PrefsConstants.REMINDER_CREATOR_PARAMS,
+        ReminderCreatorConfig.DEFAULT_VALUE
+      )
+    )
+    set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
 
   fun initPrefs() {
     val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")

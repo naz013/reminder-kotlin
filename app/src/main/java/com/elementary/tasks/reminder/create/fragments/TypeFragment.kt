@@ -8,7 +8,6 @@ import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.core.widget.NestedScrollView
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
@@ -28,6 +27,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -79,15 +79,193 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    provideViews()
+    getDynamicViews().forEach { initViews(it) }
   }
 
-  abstract fun provideViews()
+  protected abstract fun getDynamicViews(): List<View>
 
-  abstract fun onNewHeader(newHeader: String)
+  private fun initViews(view: View) {
+    when (view) {
+      is ActionView -> {
+        this.actionView = view
+        if (prefs.isTelephonyAllowed) {
+          view.visible()
+          view.setPermissionHandle(permissionFlow)
+          view.setContactClickListener {
+            permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
+          }
+          view.bindProperty(iFace.state.reminder.target) { number ->
+            iFace.state.reminder.target = number
+            updateActions()
+          }
+          if (iFace.state.reminder.target != "") {
+            if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.CALL)) {
+              view.actionState = ActionView.ActionState.CALL
+            } else if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.SMS)) {
+              view.actionState = ActionView.ActionState.SMS
+            } else {
+              view.actionState = ActionView.ActionState.NO_ACTION
+            }
+          }
+        } else {
+          view.gone()
+        }
+      }
+      is AttachmentView -> {
+        this.attachmentView = view
+        view.onFileSelectListener = { iFace.attachFile() }
+        ViewUtils.registerDragAndDrop(requireActivity(),
+          view,
+          true,
+          ThemeProvider.getPrimaryColor(view.context),
+          { clipData ->
+            if (clipData.itemCount > 0) {
+              view.setUri(clipData.getItemAt(0).uri)
+            }
+          },
+          *ATTACHMENT_TYPES
+        )
+        view.bindProperty(iFace.state.reminder.attachmentFile) { path ->
+          iFace.state.reminder.attachmentFile = path
+        }
+        view.visibleGone(prefs.reminderCreatorParams.isAttachmentPickerEnabled())
+      }
+      is BeforePickerView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isBeforePickerEnabled())
+        view.bindProperty(iFace.state.reminder.remindBefore) { millis ->
+          iFace.state.reminder.remindBefore = millis
+        }
+      }
+      is DateTimeView -> {
+        view.setDateTime(iFace.state.reminder.eventTime)
+        view.onDateChangeListener = object : DateTimeView.OnDateChangeListener {
+          override fun onChanged(dateTime: LocalDateTime) {
+            iFace.state.reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+          }
+        }
+      }
+      is ExpansionLayout -> {
+        view.isNestedScrollingEnabled = false
+        if (iFace.state.isExpanded) {
+          view.expand(false)
+        } else {
+          view.collapse(false)
+        }
+        view.addListener { _, expanded ->
+          iFace.state.isExpanded = expanded
+        }
+      }
+      is GroupView -> {
+        this.groupView = view
+        view.onGroupSelectListener = { iFace.selectGroup() }
+        showGroup(view, iFace.state.reminder)
+      }
+      is LedPickerView -> {
+        if (Module.isPro) {
+          view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
+          view.bindProperty(iFace.state.reminder.color) { color ->
+            iFace.state.reminder.color = color
+          }
+        } else {
+          view.gone()
+        }
+      }
+      is LoudnessPickerView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
+        view.bindProperty(iFace.state.reminder.volume) { loudness ->
+          iFace.state.reminder.volume = loudness
+        }
+      }
+      is MelodyView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
+        this.melodyView = view
+        view.onFileSelectListener = { iFace.selectMelody() }
+        view.bindProperty(iFace.state.reminder.melodyPath) { melody ->
+          iFace.state.reminder.melodyPath = melody
+        }
+      }
+      is PriorityPickerView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())
+        view.bindProperty(iFace.state.reminder.priority) { priority ->
+          iFace.state.reminder.priority = priority
+        }
+      }
+      is RepeatLimitView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isRepeatLimitPickerEnabled())
+        view.bindProperty(iFace.state.reminder.repeatLimit) { limit ->
+          iFace.state.reminder.repeatLimit = limit
+        }
+      }
+      is RepeatView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isRepeatPickerEnabled())
+        view.bindProperty(iFace.state.reminder.repeatInterval) { millis ->
+          iFace.state.reminder.repeatInterval = millis
+        }
+      }
+      is TextInputEditText -> {
+        view.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
+        view.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
+          InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+        view.bindProperty(iFace.state.reminder.summary) { summary ->
+          iFace.state.reminder.summary = summary.trim()
+        }
+      }
+      is TuneExtraView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isTuneExtraPickerEnabled())
+        view.dialogues = dialogues
+        view.bindProperty(iFace.state.reminder) { reminder ->
+          iFace.state.reminder.copyExtra(reminder)
+        }
+      }
+      is WindowTypeView -> {
+        view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
+        view.bindProperty(iFace.state.reminder.windowType) { type ->
+          iFace.state.reminder.windowType = type
+        }
+      }
+    }
+  }
+
+  private fun updateVisibility(view: View) {
+    when (view) {
+      is AttachmentView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isAttachmentPickerEnabled())
+      }
+      is BeforePickerView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isBeforePickerEnabled())
+      }
+      is LedPickerView -> {
+        if (Module.isPro) {
+          view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
+        } else {
+          view.gone()
+        }
+      }
+      is LoudnessPickerView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
+      }
+      is MelodyView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
+      }
+      is PriorityPickerView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())
+      }
+      is RepeatLimitView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isRepeatLimitPickerEnabled())
+      }
+      is RepeatView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isRepeatPickerEnabled())
+      }
+      is TuneExtraView -> {
+        view.visibleGone(prefs.reminderCreatorParams.isTuneExtraPickerEnabled())
+      }
+      is WindowTypeView -> {
+        view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
+      }
+    }
+  }
 
   protected fun setViews(
-    scrollView: NestedScrollView? = null,
     expansionLayout: ExpansionLayout? = null,
     ledPickerView: LedPickerView? = null,
     calendarCheck: AppCompatCheckBox? = null,
@@ -159,7 +337,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     priorityPickerView?.let {
       it.bindProperty(iFace.state.reminder.priority) { priority ->
         iFace.state.reminder.priority = priority
-        updateHeader()
       }
     }
     dateTimeView?.let {
@@ -178,7 +355,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     beforePickerView?.let {
       it.bindProperty(iFace.state.reminder.remindBefore) { millis ->
         iFace.state.reminder.remindBefore = millis
-        updateHeader()
       }
     }
     summaryView?.let {
@@ -302,15 +478,10 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     } else {
       calendarPicker?.gone()
     }
-    updateHeader()
   }
 
   protected open fun updateActions() {
 
-  }
-
-  open fun getSummary(): String {
-    return ""
   }
 
   open fun onBackPressed(): Boolean {
@@ -338,6 +509,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
   override fun onResume() {
     super.onResume()
+    getDynamicViews().forEach { updateVisibility(it) }
     Timber.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
     if (iFace.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(iFace.state.reminder.groupTitle)) {
       iFace.defGroup?.let {
@@ -345,7 +517,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
     }
     iFace.setFragment(this)
-    updateHeader()
   }
 
   fun onGroupUpdate(reminderGroup: ReminderGroup) {
@@ -356,12 +527,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     }
     if (isResumed) {
       groupView?.reminderGroup = reminderGroup
-      updateHeader()
     }
-  }
-
-  private fun updateHeader() {
-    if (isResumed) onNewHeader(getSummary())
   }
 
   fun onMelodySelect(path: String) {

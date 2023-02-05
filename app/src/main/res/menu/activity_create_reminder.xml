@@ -8,12 +8,28 @@
         android:id="@+id/action_voice"
         android:icon="@drawable/ic_twotone_mic_24px"
         android:title="@string/voice_control"
+        app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_add"
+        android:icon="@drawable/ic_twotone_done_24px"
         android:title="@string/save"
         app:iconTint="?colorTertiary"
-        android:icon="@drawable/ic_twotone_done_24px"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/ic_twotone_delete_24px"
+        android:title="@string/delete"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_configure"
+        android:icon="@drawable/ic_twotone_settings_24px"
+        android:title="@string/configure"
+        app:iconTint="?colorOnSurface"
+        app:showAsAction="never" />
+
 </menu>

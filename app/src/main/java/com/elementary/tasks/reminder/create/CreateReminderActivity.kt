@@ -32,7 +32,6 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
@@ -365,8 +364,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         return true
       }
 
-      MENU_ITEM_DELETE -> {
+      R.id.action_delete -> {
         deleteReminder()
+        return true
+      }
+
+      R.id.action_configure -> {
+        startActivity(Intent(this, ConfigureActivity::class.java))
         return true
       }
 
@@ -457,15 +461,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.activity_create_reminder, menu)
-    if (Module.hasMicrophone(this)) {
-      menu[0].isVisible = true
-      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDarkMode)
-    } else {
-      menu[0].isVisible = false
-    }
-    if (isEditing && !stateViewModel.isFromFile) {
-      menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
-    }
+    menu[0].isVisible = Module.hasMicrophone(this)
+    menu[2].isVisible = isEditing && !stateViewModel.isFromFile
     return true
   }
 
@@ -602,7 +599,5 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     private const val SHOP = 7
     private const val GPS = 8
     private const val GPS_PLACE = 9
-
-    private const val MENU_ITEM_DELETE = 12
   }
 }

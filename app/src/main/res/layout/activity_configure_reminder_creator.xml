@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/configure" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/enable_or_disable_some_parameters_on_reminder_creation_screen"
+                android:textAppearance="?textAppearanceTitleMedium" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/beforeParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+                app:prefs_primary_text="@string/before_time"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/repeatParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_repeat_24px"
+                app:prefs_primary_text="@string/repeat"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/repeatLimitParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_block_24px"
+                app:prefs_primary_text="@string/repeat_limit"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/priorityParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_priority_high_24px"
+                app:prefs_primary_text="@string/priority"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/melodyParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_music_note_24px"
+                app:prefs_primary_text="@string/melody"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/loudnessParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_volume_up_24px"
+                app:prefs_primary_text="@string/loudness"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/attachmentParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_attachment_24px"
+                app:prefs_primary_text="@string/attachment"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/calendarParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_today_24px"
+                app:prefs_primary_text="@string/export_to_google_calendar"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/tasksParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_google"
+                app:prefs_primary_text="@string/add_to_google_tasks"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/extraParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_tune_24px"
+                app:prefs_primary_text="@string/update_additional_parameters"
+                app:prefs_type="check_switch" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
