@@ -75,11 +75,19 @@ class PhotoSelectionUtil(
   }
 
   private fun tryToPickFromGallery() {
-    multiPicturePicker.pickPictures()
+    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+      multiPicturePicker.pickPictures()
+    }
   }
 
   private fun tryToTakePhoto() {
-    permissionFlow.askPermission(Permissions.CAMERA) {
+    permissionFlow.askPermissions(
+      listOf(
+        Permissions.CAMERA,
+        Permissions.WRITE_EXTERNAL,
+        Permissions.READ_EXTERNAL
+      )
+    ) {
       cameraPhotoPicker.takePhoto()
     }
   }

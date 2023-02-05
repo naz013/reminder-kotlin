@@ -6,13 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
-import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -462,40 +460,15 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun showFile() {
     val reminder = mReminder ?: return
     val path = reminder.attachmentFile
-    val mime = MimeTypeMap.getSingleton()
     val intent = Intent(Intent.ACTION_VIEW)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {
-      if (Module.isNougat) {
-        val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
-        intent.data = uri
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-      } else {
-        intent.setDataAndType(Uri.parse("file://$path"),
-          mime.getMimeTypeFromExtension(fileExt(reminder.attachmentFile).substring(1)))
-      }
+      val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
+      intent.data = uri
+      intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
       startActivity(intent)
     } catch (e: Exception) {
       Toast.makeText(this, R.string.cant_find_app_for_that_file_type, Toast.LENGTH_LONG).show()
-    }
-  }
-
-  private fun fileExt(urlNullable: String?): String {
-    var url: String = urlNullable ?: return ""
-    if (url.contains("?")) {
-      url = url.substring(0, url.indexOf("?"))
-    }
-    return if (url.lastIndexOf(".") == -1) {
-      ""
-    } else {
-      var ext = url.substring(url.lastIndexOf(".") + 1)
-      if (ext.contains("%")) {
-        ext = ext.substring(0, ext.indexOf("%"))
-      }
-      if (ext.contains("/")) {
-        ext = ext.substring(0, ext.indexOf("/"))
-      }
-      ext.lowercase()
     }
   }
 

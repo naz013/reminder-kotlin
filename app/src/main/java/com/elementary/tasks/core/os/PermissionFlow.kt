@@ -60,6 +60,10 @@ class PermissionFlow private constructor(
       callback.invoke(permission)
       return
     }
+    if ((permission == Permissions.READ_EXTERNAL || permission == Permissions.WRITE_EXTERNAL) && Module.is13) {
+      callback.invoke(permission)
+      return
+    }
 
     this.map.clear()
     this.queue.clear()
@@ -113,13 +117,21 @@ class PermissionFlow private constructor(
         permissionGranted(permission)
         return
       }
+
       Permissions.BACKGROUND_LOCATION -> if (!Module.is10) {
         permissionGranted(permission)
         return
       }
+
       Permissions.FOREGROUND_SERVICE -> if (!Module.isPie) {
         permissionGranted(permission)
         return
+      }
+      Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL -> {
+        if (Module.is13) {
+          permissionGranted(permission)
+          return
+        }
       }
     }
     this.askedPermission = permission

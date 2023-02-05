@@ -36,29 +36,21 @@ object UriUtil {
 
   fun getUri(context: Context, filePath: String): Uri? {
     Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $filePath")
-    return if (Module.isNougat) {
-      try {
-        FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
-      } catch (e: java.lang.Exception) {
-        FirebaseCrashlytics.getInstance().recordException(e)
-        null
-      }
-    } else {
-      Uri.fromFile(File(filePath))
+    return try {
+      FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
+    } catch (e: java.lang.Exception) {
+      FirebaseCrashlytics.getInstance().recordException(e)
+      null
     }
   }
 
   fun getUri(context: Context, file: File): Uri? {
     Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $file")
-    return if (Module.isNougat) {
-      try {
-        FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
-      } catch (e: java.lang.Exception) {
-        FirebaseCrashlytics.getInstance().recordException(e)
-        null
-      }
-    } else {
-      Uri.fromFile(file)
+    return try {
+      FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
+    } catch (e: java.lang.Exception) {
+      FirebaseCrashlytics.getInstance().recordException(e)
+      null
     }
   }
 }

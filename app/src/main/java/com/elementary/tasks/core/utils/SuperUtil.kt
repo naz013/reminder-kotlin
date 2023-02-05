@@ -66,13 +66,8 @@ object SuperUtil {
   @Suppress("DEPRECATION")
   fun unlockOn(activity: Activity, window: Window) {
     Timber.d("unlockOn: ")
-    if (Module.isOreo) {
-      val keyguardManager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
-      keyguardManager?.requestDismissKeyguard(activity, null)
-    } else {
-      window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-        or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-    }
+    val keyguardManager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
+    keyguardManager?.requestDismissKeyguard(activity, null)
   }
 
   @Suppress("DEPRECATION")
@@ -111,12 +106,9 @@ object SuperUtil {
   }
 
   fun hasVolumePermission(context: Context?): Boolean {
-    if (Module.isNougat) {
-      if (context == null) return false
-      val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-      return notificationManager != null && notificationManager.isNotificationPolicyAccessGranted
-    }
-    return true
+    if (context == null) return false
+    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+    return notificationManager != null && notificationManager.isNotificationPolicyAccessGranted
   }
 
   fun stopService(context: Context, clazz: Class<*>) {
