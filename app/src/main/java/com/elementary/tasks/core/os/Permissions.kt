@@ -70,7 +70,11 @@ object Permissions {
   }
 
   fun checkPermission(a: Context, permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
+    return if (Module.is13 && (permission == READ_EXTERNAL || permission == WRITE_EXTERNAL)) {
+      true
+    } else {
+      ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
+    }
   }
 
   @Deprecated("Use PermissionFlow to request permission")
