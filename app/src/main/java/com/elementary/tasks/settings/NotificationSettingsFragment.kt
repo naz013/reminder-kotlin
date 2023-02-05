@@ -582,6 +582,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
     binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
     binding.chooseSoundPrefs.setCustomViewClickListener {
+      Timber.d("Play Click: ${soundStackHolder.sound?.isPlaying}")
       if (soundStackHolder.sound?.isPlaying == true) {
         soundStackHolder.sound?.stop(true)
       } else {
@@ -589,7 +590,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         if (melody.melodyType == ReminderUtils.MelodyType.RINGTONE) {
           soundStackHolder.sound?.playRingtone(melody.uri)
         } else {
-          soundStackHolder.sound?.playAlarm(melody.uri, false)
+          permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+            soundStackHolder.sound?.playAlarm(melody.uri, false)
+          }
         }
       }
     }

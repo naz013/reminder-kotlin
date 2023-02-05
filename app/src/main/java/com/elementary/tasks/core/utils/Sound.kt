@@ -181,9 +181,11 @@ class Sound(
   }
 
   fun playAlarm(path: Uri, looping: Boolean, duration: Int = 0) {
+    Timber.d("playAlarm: playing=$isPlaying, $path, looping=$looping")
     if (isPlaying || !Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) {
       return
     }
+    Timber.d("playAlarm: has permission")
     stop(false)
     trimPlayback = duration > 0 && !looping
     playbackDuration = duration
@@ -226,6 +228,7 @@ class Sound(
   }
 
   fun playAlarm(afd: AssetFileDescriptor) {
+    Timber.d("playAlarm: $afd")
     if (!Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) return
     stop(false)
     if (isDone) {
