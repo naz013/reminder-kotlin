@@ -241,19 +241,13 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <com.elementary.tasks.core.views.ExportToGoogleTasksView
                 android:id="@+id/exportToTasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/google_tasks"
-                android:textAppearance="?textAppearanceBody1"
-                android:visibility="visible" />
+                android:layout_marginEnd="16dp" />
 
             <com.elementary.tasks.core.views.ActionView
                 android:id="@+id/actionView"

@@ -43,7 +43,7 @@ import com.elementary.tasks.core.data.models.UsedTime
     Birthday::class,
     ImageFile::class,
     SmsTemplate::class
-], version = 5, exportSchema = false)
+], version = 6, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
   abstract fun reminderDao(): ReminderDao
@@ -91,6 +91,14 @@ abstract class AppDb : RoomDatabase() {
       }
     }
 
+    private val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+      override fun migrate(database: SupportSQLiteDatabase) {
+        runCatching {
+          database.execSQL("ALTER TABLE Reminder ADD COLUMN taskListId TEXT")
+        }
+      }
+    }
+
     fun getAppDatabase(context: Context): AppDb {
       var instance = INSTANCE
       if (instance == null) {
@@ -99,7 +107,8 @@ abstract class AppDb : RoomDatabase() {
             MIGRATION_1_2,
             MIGRATION_2_3,
             MIGRATION_3_4,
-            MIGRATION_4_5
+            MIGRATION_4_5,
+            MIGRATION_5_6
           )
           .allowMainThreadQueries()
           .build()

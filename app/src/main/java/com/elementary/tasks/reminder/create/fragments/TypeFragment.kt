@@ -7,7 +7,6 @@ import android.text.InputFilter
 import android.text.InputType
 import android.text.TextUtils
 import android.view.View
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
@@ -33,6 +32,7 @@ import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.ExportToCalendarView
+import com.elementary.tasks.core.views.ExportToGoogleTasksView
 import com.elementary.tasks.core.views.GroupView
 import com.elementary.tasks.core.views.LedPickerView
 import com.elementary.tasks.core.views.LoudnessPickerView
@@ -153,6 +153,16 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           iFace.state.reminder.calendarId = calendarId
         }
       }
+      is ExportToGoogleTasksView -> {
+        view.visibleGone(iFace.canExportToTasks && prefs.reminderCreatorParams.isGoogleTasksPickerEnabled())
+        view.bindProperty(
+          iFace.state.reminder.exportToTasks,
+          iFace.state.reminder.taskListId
+        ) { isChecked, listId ->
+          iFace.state.reminder.exportToTasks = isChecked
+          iFace.state.reminder.taskListId = listId
+        }
+      }
       is GroupView -> {
         this.groupView = view
         view.onGroupSelectListener = { iFace.selectGroup() }
@@ -235,6 +245,9 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       is ExportToCalendarView -> {
         view.visibleGone(iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled())
       }
+      is ExportToGoogleTasksView -> {
+        view.visibleGone(iFace.canExportToTasks && prefs.reminderCreatorParams.isGoogleTasksPickerEnabled())
+      }
       is LedPickerView -> {
         if (Module.isPro) {
           view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
@@ -262,164 +275,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
       is WindowTypeView -> {
         view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
-      }
-    }
-  }
-
-  protected fun setViews(
-    ledPickerView: LedPickerView? = null,
-    tasksCheck: AppCompatCheckBox? = null,
-    extraView: TuneExtraView? = null,
-    melodyView: MelodyView? = null,
-    attachmentView: AttachmentView? = null,
-    groupView: GroupView? = null,
-    beforePickerView: BeforePickerView? = null,
-    summaryView: TextInputEditText? = null,
-    repeatView: RepeatView? = null,
-    dateTimeView: DateTimeView? = null,
-    priorityPickerView: PriorityPickerView? = null,
-    windowTypeView: WindowTypeView? = null,
-    repeatLimitView: RepeatLimitView? = null,
-    loudnessPickerView: LoudnessPickerView? = null,
-    actionView: ActionView? = null
-  ) {
-    this.attachmentView = attachmentView
-    this.melodyView = melodyView
-    this.groupView = groupView
-    this.actionView = actionView
-
-    actionView?.let {
-      if (prefs.isTelephonyAllowed) {
-        it.visible()
-        it.setPermissionHandle(permissionFlow)
-        it.setContactClickListener {
-          permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
-        }
-        it.bindProperty(iFace.state.reminder.target) { number ->
-          iFace.state.reminder.target = number
-          updateActions()
-        }
-        if (iFace.state.reminder.target != "") {
-          if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.CALL)) {
-            it.actionState = ActionView.ActionState.CALL
-          } else if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.SMS)) {
-            it.actionState = ActionView.ActionState.SMS
-          } else {
-            it.actionState = ActionView.ActionState.NO_ACTION
-          }
-        }
-      } else {
-        it.gone()
-      }
-    }
-    loudnessPickerView?.let {
-      it.bindProperty(iFace.state.reminder.volume) { loudness ->
-        iFace.state.reminder.volume = loudness
-      }
-    }
-    repeatLimitView?.let {
-      it.bindProperty(iFace.state.reminder.repeatLimit) { limit ->
-        iFace.state.reminder.repeatLimit = limit
-      }
-    }
-    windowTypeView?.let {
-      if (Module.is10) {
-        it.gone()
-      } else {
-        it.visible()
-        it.bindProperty(iFace.state.reminder.windowType) { type ->
-          iFace.state.reminder.windowType = type
-        }
-      }
-    }
-    priorityPickerView?.let {
-      it.bindProperty(iFace.state.reminder.priority) { priority ->
-        iFace.state.reminder.priority = priority
-      }
-    }
-    dateTimeView?.let {
-      it.setDateTime(iFace.state.reminder.eventTime)
-      it.onDateChangeListener = object : DateTimeView.OnDateChangeListener {
-        override fun onChanged(dateTime: LocalDateTime) {
-          iFace.state.reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
-        }
-      }
-    }
-    repeatView?.let {
-      it.bindProperty(iFace.state.reminder.repeatInterval) { millis ->
-        iFace.state.reminder.repeatInterval = millis
-      }
-    }
-    beforePickerView?.let {
-      it.bindProperty(iFace.state.reminder.remindBefore) { millis ->
-        iFace.state.reminder.remindBefore = millis
-      }
-    }
-    summaryView?.let {
-      it.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
-      it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
-        InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-      it.bindProperty(iFace.state.reminder.summary) { summary ->
-        iFace.state.reminder.summary = summary.trim()
-      }
-    }
-    groupView?.let {
-      it.onGroupSelectListener = {
-        iFace.selectGroup()
-      }
-      showGroup(it, iFace.state.reminder)
-    }
-    melodyView?.let {
-      it.onFileSelectListener = {
-        iFace.selectMelody()
-      }
-      it.bindProperty(iFace.state.reminder.melodyPath) { melody ->
-        iFace.state.reminder.melodyPath = melody
-      }
-    }
-    attachmentView?.let {
-      it.onFileSelectListener = {
-        iFace.attachFile()
-      }
-      ViewUtils.registerDragAndDrop(requireActivity(),
-        it,
-        true,
-        ThemeProvider.getPrimaryColor(it.context),
-        { clipData ->
-          if (clipData.itemCount > 0) {
-            it.setUri(clipData.getItemAt(0).uri)
-          }
-        },
-        *ATTACHMENT_TYPES
-      )
-      it.bindProperty(iFace.state.reminder.attachmentFile) { path ->
-        iFace.state.reminder.attachmentFile = path
-      }
-    }
-    ledPickerView?.let {
-      if (Module.isPro) {
-        it.visible()
-        it.bindProperty(iFace.state.reminder.color) { color ->
-          iFace.state.reminder.color = color
-        }
-      } else {
-        it.gone()
-      }
-    }
-    tasksCheck?.let {
-      if (iFace.canExportToTasks) {
-        it.visible()
-        it.bindProperty(iFace.state.reminder.exportToTasks) { isChecked ->
-          iFace.state.reminder.exportToTasks = isChecked
-        }
-      } else {
-        it.gone()
-      }
-    }
-    extraView?.let {
-      it.dialogues = dialogues
-      it.bindProperty(iFace.state.reminder) { reminder ->
-        iFace.state.reminder.copyExtra(reminder)
       }
     }
   }

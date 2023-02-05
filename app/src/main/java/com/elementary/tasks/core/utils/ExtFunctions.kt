@@ -18,7 +18,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.IntRange
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
@@ -33,6 +32,7 @@ import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
 import com.elementary.tasks.core.views.ExclusionPickerView
 import com.elementary.tasks.core.views.ExportToCalendarView
+import com.elementary.tasks.core.views.ExportToGoogleTasksView
 import com.elementary.tasks.core.views.LedPickerView
 import com.elementary.tasks.core.views.LoudnessPickerView
 import com.elementary.tasks.core.views.MelodyView
@@ -285,11 +285,6 @@ fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) 
   })
 }
 
-fun AppCompatCheckBox.bindProperty(value: Boolean, listener: ((Boolean) -> Unit)) {
-  this.isChecked = value
-  this.setOnCheckedChangeListener { _, isChecked -> listener.invoke(isChecked) }
-}
-
 fun ExportToCalendarView.bindProperty(enabled: Boolean, calendarId: Long, listener: ((Boolean, Long) -> Unit)) {
   this.calendarState = if (enabled) {
     ExportToCalendarView.State.YES
@@ -300,6 +295,20 @@ fun ExportToCalendarView.bindProperty(enabled: Boolean, calendarId: Long, listen
   this.listener = object : ExportToCalendarView.SelectionListener {
     override fun onChanged(enabled: Boolean, calendarId: Long) {
       listener.invoke(enabled, calendarId)
+    }
+  }
+}
+
+fun ExportToGoogleTasksView.bindProperty(enabled: Boolean, listId: String?, listener: ((Boolean, String) -> Unit)) {
+  this.tasksState = if (enabled) {
+    ExportToGoogleTasksView.State.YES
+  } else {
+    ExportToGoogleTasksView.State.NO
+  }
+  this.taskListId = listId ?: ""
+  this.listener = object : ExportToGoogleTasksView.SelectionListener {
+    override fun onChanged(enabled: Boolean, taskListId: String) {
+      listener.invoke(enabled, taskListId)
     }
   }
 }

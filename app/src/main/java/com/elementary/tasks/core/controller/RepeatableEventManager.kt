@@ -36,7 +36,7 @@ abstract class RepeatableEventManager(
     if (reminder.exportToTasks) {
       val due = dateTimeManager.toMillis(reminder.eventTime)
       val googleTask = GoogleTask()
-      googleTask.listId = ""
+      googleTask.listId = reminder.taskListId ?: ""
       googleTask.status = GTasks.TASKS_NEED_ACTION
       googleTask.title = reminder.summary
       googleTask.dueDate = due
