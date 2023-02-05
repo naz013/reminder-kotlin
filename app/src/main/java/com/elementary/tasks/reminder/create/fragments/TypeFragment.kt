@@ -42,7 +42,6 @@ import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
 import com.elementary.tasks.core.views.WindowTypeView
-import com.github.florent37.expansionpanel.ExpansionLayout
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime
@@ -142,17 +141,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           override fun onChanged(dateTime: LocalDateTime) {
             iFace.state.reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
           }
-        }
-      }
-      is ExpansionLayout -> {
-        view.isNestedScrollingEnabled = false
-        if (iFace.state.isExpanded) {
-          view.expand(false)
-        } else {
-          view.collapse(false)
-        }
-        view.addListener { _, expanded ->
-          iFace.state.isExpanded = expanded
         }
       }
       is GroupView -> {
@@ -266,7 +254,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   protected fun setViews(
-    expansionLayout: ExpansionLayout? = null,
     ledPickerView: LedPickerView? = null,
     calendarCheck: AppCompatCheckBox? = null,
     tasksCheck: AppCompatCheckBox? = null,
@@ -396,17 +383,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       )
       it.bindProperty(iFace.state.reminder.attachmentFile) { path ->
         iFace.state.reminder.attachmentFile = path
-      }
-    }
-    expansionLayout?.let {
-      it.isNestedScrollingEnabled = false
-      if (iFace.state.isExpanded) {
-        it.expand(false)
-      } else {
-        it.collapse(false)
-      }
-      it.addListener { _, expanded ->
-        iFace.state.isExpanded = expanded
       }
     }
     ledPickerView?.let {

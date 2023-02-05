@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.SmsTemplate
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
-import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.SmsTemplate
 
 @Dao
 interface SmsTemplatesDao {
@@ -21,10 +20,10 @@ interface SmsTemplatesDao {
     @Query("SELECT * FROM SmsTemplate")
     fun loadAll(): LiveData<List<SmsTemplate>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(smsTemplate: SmsTemplate)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg smsTemplates: SmsTemplate)
 
     @Delete

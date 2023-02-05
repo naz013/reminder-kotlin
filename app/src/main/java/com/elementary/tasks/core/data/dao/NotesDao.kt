@@ -2,7 +2,6 @@ package com.elementary.tasks.core.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.room.OnConflictStrategy.REPLACE
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -22,7 +21,7 @@ interface NotesDao {
     @Query("SELECT * FROM Note")
     fun loadAll(): LiveData<List<NoteWithImages>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(note: Note)
 
     @Delete
@@ -40,10 +39,10 @@ interface NotesDao {
     @Query("SELECT * FROM ImageFile WHERE noteId=:id")
     fun getImages(id: String): List<ImageFile>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(imageFile: ImageFile)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(notes: List<ImageFile>)
 
     @Delete

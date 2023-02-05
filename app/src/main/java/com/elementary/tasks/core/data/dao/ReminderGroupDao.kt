@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.ReminderGroup
 import androidx.lifecycle.LiveData
 import androidx.room.*
-
-import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.ReminderGroup
 
 @Dao
 interface ReminderGroupDao {
@@ -24,10 +22,10 @@ interface ReminderGroupDao {
     fun loadDefault(): LiveData<ReminderGroup>
 
     @Transaction
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(reminderGroup: ReminderGroup)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(reminderGroups: List<ReminderGroup>)
 
     @Delete

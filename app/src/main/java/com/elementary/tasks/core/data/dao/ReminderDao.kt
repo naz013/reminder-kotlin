@@ -2,7 +2,6 @@ package com.elementary.tasks.core.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.room.OnConflictStrategy.REPLACE
 import com.elementary.tasks.core.data.models.Reminder
 
 private const val byIdQuery ="""
@@ -134,10 +133,10 @@ interface ReminderDao {
     fun loadAllTypesInRangeWithPermanent(active: Boolean = true, removed: Boolean = false,
                             fromTime: String, toTime: String): LiveData<List<Reminder>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(reminder: Reminder)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(reminders: Iterable<Reminder>)
 
     @Delete

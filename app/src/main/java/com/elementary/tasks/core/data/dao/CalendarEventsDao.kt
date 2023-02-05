@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.elementary.tasks.core.data.models.CalendarEvent
 
@@ -20,10 +20,10 @@ interface CalendarEventsDao {
     @Query("SELECT * FROM CalendarEvent")
     fun loadAll(): LiveData<List<CalendarEvent>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(calendarEvent: CalendarEvent)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg calendarEvents: CalendarEvent)
 
     @Delete

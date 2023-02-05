@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.elementary.tasks.core.data.models.GoogleTaskList
 
@@ -26,10 +26,10 @@ interface GoogleTaskListsDao {
     @Query("SELECT * FROM GoogleTaskList WHERE def=1")
     fun getDefault(): List<GoogleTaskList>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(googleTaskList: GoogleTaskList)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg googleTaskLists: GoogleTaskList)
 
     @Delete
