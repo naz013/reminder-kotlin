@@ -240,15 +240,12 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/remindersHeader"
-            style="?attr/materialCardViewElevatedStyle"
+            style="@style/UiComponentListCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            app:contentPadding="8dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -280,14 +277,13 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/emptyRemindersState"
-            style="?attr/materialCardViewElevatedStyle"
+            style="@style/UiComponentListCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp">
+            app:contentPadding="0dp">
 
             <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
                 android:layout_width="match_parent"
@@ -342,15 +338,12 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/birthdaysHeader"
-                style="?attr/materialCardViewElevatedStyle"
+                style="@style/UiComponentListCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp"
-                app:contentPadding="8dp">
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -382,15 +375,14 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/emptyBirthdaysState"
-                style="?attr/materialCardViewElevatedStyle"
+                style="@style/UiComponentListCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp">
+                app:contentPadding="0dp">
 
                 <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
                     android:layout_width="match_parent"

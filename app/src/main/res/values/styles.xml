@@ -11,6 +11,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="UiComponentListCard" parent="@style/Widget.Material3.CardView.Elevated">
+        <item name="cardElevation">1dp</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="contentPadding">8dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="android:stateListAnimator">@animator/card_animator_1dp_3dp</item>
+    </style>
+
     <!--Components-->
 
     <style name="FilledBoxStyle" parent="@style/Widget.Material3.TextInputLayout.FilledBox">
@@ -26,7 +34,9 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="bottomSheetStyle">@style/Widget.MyTheme.BottomSheet.Modal</item>
         <item name="android:navigationBarColor">?colorSurface</item>
-        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">@android:color/transparent</item>
+        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">
+            @android:color/transparent
+        </item>
     </style>
 
     <style name="Widget.MyTheme.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
