@@ -8,7 +8,9 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
-class TemplateConverter : Convertible<SmsTemplate> {
+class TemplateConverter(
+  private val memoryUtil: MemoryUtil
+) : Convertible<SmsTemplate> {
 
   override fun metadata(t: SmsTemplate): Metadata {
     return Metadata(
@@ -23,7 +25,7 @@ class TemplateConverter : Convertible<SmsTemplate> {
   override fun convert(t: SmsTemplate): FileIndex? {
     return try {
       val stream = CopyByteArrayStream()
-      MemoryUtil.toStream(t, stream)
+      memoryUtil.toStream(t, stream)
       FileIndex().apply {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_TEMPLATE

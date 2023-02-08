@@ -11,7 +11,7 @@ interface NotesDao {
 
     @Transaction
     @Query("SELECT * FROM Note")
-    fun getAll(): List<NoteWithImages>
+    fun getAllNotes(): List<Note>
 
     @Transaction
     @Query("SELECT * FROM Note WHERE LOWER(summary) LIKE '%' || :query || '%'")
@@ -37,7 +37,15 @@ interface NotesDao {
 
     @Transaction
     @Query("SELECT * FROM ImageFile WHERE noteId=:id")
-    fun getImages(id: String): List<ImageFile>
+    fun getImagesByNoteId(id: String): List<ImageFile>
+
+    @Transaction
+    @Query("SELECT id FROM ImageFile")
+    fun getImagesIds(): List<Int>
+
+    @Transaction
+    @Query("SELECT * FROM ImageFile WHERE id=:id")
+    fun getImageById(id: Int): ImageFile?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(imageFile: ImageFile)

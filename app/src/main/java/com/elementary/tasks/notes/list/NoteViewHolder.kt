@@ -96,7 +96,7 @@ class NoteViewHolder(
     textView.textSize = note.fontSize
   }
 
-  private fun setImage(imageView: ImageView, image: ByteArray?) {
+  private fun setImage(imageView: ImageView, image: String?) {
     if (image == null) return
     Glide.with(imageView)
       .load(image)
@@ -124,7 +124,7 @@ class NoteViewHolder(
     if (images.isNotEmpty()) {
       imageView.visibility = View.VISIBLE
       horView.visibility = View.VISIBLE
-      setImage(imageView, images[0].data)
+      setImage(imageView, images[0].filePath)
       var index = 1
 
       while (index < images.size) {
@@ -134,7 +134,7 @@ class NoteViewHolder(
         setClick(imV, bindingAdapterPosition, images[index].id)
         imV.scaleType = ImageView.ScaleType.CENTER_CROP
         horView.addView(imV)
-        setImage(imV, images[index].data)
+        setImage(imV, images[index].filePath)
         index++
       }
     } else {

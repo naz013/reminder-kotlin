@@ -1,9 +1,8 @@
 package com.elementary.tasks.core.cloud.storages
 
 import com.elementary.tasks.core.cloud.DataFlow
+import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.InputStream
@@ -31,22 +30,20 @@ class CompositeStorage(
     return null
   }
 
-  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
-    val channel = Channel<InputStream>()
+  override suspend fun <T> restoreAll(
+    ext: String,
+    deleteFile: Boolean,
+    convertible: Convertible<T>,
+    outputChannel: DataChannel<T>
+  ) {
     if (storageList.isEmpty()) {
-      channel.cancel()
-      return channel
+      return
     }
-    withContext(dispatcherProvider.io()) {
-      loadIndex()
-      storageList.forEach {
-        it.restoreAll(ext, deleteFile).consumeEach { json ->
-          channel.send(json)
-        }
-      }
-      channel.close()
+    Timber.d("restoreAll: start")
+    loadIndex()
+    storageList.forEach {
+      it.restoreAll(ext, deleteFile, convertible, outputChannel)
     }
-    return channel
   }
 
   override suspend fun delete(fileName: String) {

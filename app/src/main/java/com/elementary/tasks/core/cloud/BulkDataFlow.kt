@@ -5,8 +5,8 @@ import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
+import com.elementary.tasks.core.cloud.storages.DataChannel
 import com.elementary.tasks.core.cloud.storages.Storage
-import kotlinx.coroutines.channels.consumeEach
 import timber.log.Timber
 
 class BulkDataFlow<T>(
@@ -25,12 +25,15 @@ class BulkDataFlow<T>(
   }
 
   suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {
-    storage.restoreAll(dataFlow.getFileExt(indexTypes), deleteFile).consumeEach {
-      val item = convertible.convert(it) ?: return
-      Timber.d("restore: $item")
-      repository.insert(item)
-      completable?.action(item)
+    Timber.d("restore: type=$indexTypes")
+    val channel = object : DataChannel<T> {
+      override suspend fun onNewData(data: T) {
+        Timber.d("restore: onNewData $data")
+        repository.insert(data)
+        completable?.action(data)
+      }
     }
+    storage.restoreAll(dataFlow.getFileExt(indexTypes), deleteFile, convertible, channel)
   }
 
   companion object {

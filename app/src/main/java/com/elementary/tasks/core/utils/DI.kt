@@ -31,6 +31,7 @@ import com.elementary.tasks.core.cloud.converters.BirthdayConverter
 import com.elementary.tasks.core.cloud.converters.ConverterManager
 import com.elementary.tasks.core.cloud.converters.GroupConverter
 import com.elementary.tasks.core.cloud.converters.NoteConverter
+import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
@@ -65,11 +66,15 @@ import com.elementary.tasks.core.data.adapter.missedcall.UiMissedCallShowAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.repository.BirthdayRepository
+import com.elementary.tasks.core.data.repository.NoteImageMigration
+import com.elementary.tasks.core.data.repository.NoteImageRepository
+import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
@@ -83,6 +88,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
+import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
@@ -129,12 +135,12 @@ import com.elementary.tasks.places.work.PlaceSingleBackupWorker
 import com.elementary.tasks.reminder.create.EditReminderViewModel
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
 import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
+import com.elementary.tasks.reminder.dialog.ReminderViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
-import com.elementary.tasks.reminder.dialog.ReminderViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -270,6 +276,9 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
+      get(),
       get()
     )
   }
@@ -356,6 +365,7 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -365,7 +375,21 @@ val viewModelModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { NotesViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel {
+    NotesViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { CloudViewModel(get(), get(), get(), get()) }
@@ -388,23 +412,25 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
       get()
     )
   }
   viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
-  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
 }
 
 val converterModule = module {
-  single { BirthdayConverter(get()) }
-  single { GroupConverter() }
-  single { NoteConverter() }
-  single { PlaceConverter() }
-  single { ReminderConverter(get()) }
+  single { BirthdayConverter(get(), get()) }
+  single { GroupConverter(get()) }
+  single { NoteConverter(get(), get()) }
+  single { PlaceConverter(get()) }
+  single { ReminderConverter(get(), get()) }
   single { SettingsConverter(get()) }
-  single { TemplateConverter() }
+  single { TemplateConverter(get()) }
   single { ConverterManager(get(), get(), get(), get(), get(), get(), get()) }
 }
 
@@ -415,16 +441,16 @@ val completableModule = module {
 }
 
 val storageModule = module {
-  single { Dropbox(get(), get(), get()) }
+  single { Dropbox(get(), get()) }
   single { GDrive(get(), get(), get(), get()) }
-  single { LocalStorage(get(), get()) }
+  single { LocalStorage(get()) }
   single { StorageManager(get(), get(), get(), get(), get()) }
 }
 
 val repositoryModule = module {
   single { BirthdayDataFlowRepository(get()) }
   single { GroupDataFlowRepository(get()) }
-  single { NoteDataFlowRepository(get()) }
+  single { NoteDataFlowRepository(get(), get(), get()) }
   single { PlaceDataFlowRepository(get()) }
   single { ReminderDataFlowRepository(get()) }
   single { SettingsDataFlowRepository(get()) }
@@ -450,6 +476,9 @@ fun dbModule(context: Context): Module {
 
     single { ReminderRepository(get()) }
     single { BirthdayRepository(get()) }
+    single { NoteRepository(get()) }
+    single { NoteImageRepository(get()) }
+    single { NoteToOldNoteConverter(get()) }
   }
 }
 
@@ -458,7 +487,8 @@ val utilModule = module {
   single { GTasks(get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
-  single { BackupTool(get(), get(), get(), get()) }
+  single { MemoryUtil(get()) }
+  single { BackupTool(get(), get(), get(), get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get(), get(), get()) }
   single { GoogleCalendarUtils(get(), get(), get(), get()) }
@@ -496,6 +526,7 @@ val utilModule = module {
   single { ScanContactsWorker(get(), get(), get(), get()) }
 
   factory { EnableThread(get(), get()) }
+  single { NoteImageMigration(get(), get()) }
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
   single { DayViewProvider(get(), get(), get()) }
@@ -512,7 +543,7 @@ val utilModule = module {
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
   single { GroupsUtil(get(), get(), get(), get()) }
-  single { ImageDecoder(get(), get()) }
+  single { ImageDecoder(get(), get(), get()) }
 
   single { IdProvider() }
 
@@ -563,6 +594,7 @@ val adapterModule = module {
   single { UiNoteEditAdapter(get()) }
   single { UiNoteListAdapter(get(), get(), get(), get(), get()) }
   single { UiNotePreviewAdapter(get(), get(), get()) }
+  single { UiNoteNotificationAdapter(get(), get()) }
 
   single { UiPlaceListAdapter(get(), get(), get()) }
   single { UiPlaceEditAdapter() }

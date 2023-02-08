@@ -6,34 +6,21 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class OldNote(
   @SerializedName("summary")
-  var summary: String = "",
+  val summary: String = "",
   @SerializedName("key")
-  var key: String = "",
+  val key: String = "",
   @SerializedName("date")
-  var date: String = "",
+  val date: String = "",
   @SerializedName("color")
-  var color: Int = 0,
+  val color: Int = 0,
   @SerializedName("palette")
-  var palette: Int = 0,
+  val palette: Int = 0,
   @SerializedName("style")
-  var style: Int = 0,
+  val style: Int = 0,
   @SerializedName("images")
-  var images: List<ImageFile> = ArrayList(),
+  val images: List<OldImageFile> = ArrayList(),
   @SerializedName("updatedAt")
-  var updatedAt: String? = null,
+  val updatedAt: String? = null,
   @SerializedName("uniqueId")
-  var uniqueId: Int = 0) {
-
-  constructor(noteWithImages: NoteWithImages) : this() {
-    this.images = noteWithImages.images
-    val note = noteWithImages.note ?: return
-    this.uniqueId = note.uniqueId
-    this.style = note.style
-    this.color = note.color
-    this.palette = note.palette
-    this.date = note.date
-    this.key = note.key
-    this.summary = note.summary
-    this.updatedAt = note.updatedAt
-  }
-}
+  val uniqueId: Int = 0
+)

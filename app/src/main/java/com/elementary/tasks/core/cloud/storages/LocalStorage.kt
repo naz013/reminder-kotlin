@@ -2,25 +2,21 @@ package com.elementary.tasks.core.cloud.storages
 
 import android.content.Context
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.DispatcherProvider
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.io.MemoryUtil
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
-class LocalStorage(
-  context: Context,
-  private val dispatcherProvider: DispatcherProvider
-) : Storage() {
+class LocalStorage(context: Context) : Storage() {
 
-  private val hasSdPermission = Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)
+  private val hasSdPermission =
+    Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)
 
   override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
     if (!Module.is10 && hasSdPermission) {
@@ -35,8 +31,8 @@ class LocalStorage(
             fos.write(stream.toByteArray())
             fos.close()
             stream.close()
-          } catch (e: IOException) {
-            e.printStackTrace()
+          } catch (e: Throwable) {
+            Timber.d(e)
           }
         }
       }
@@ -51,7 +47,8 @@ class LocalStorage(
         return if (file.exists()) {
           try {
             FileInputStream(file)
-          } catch (e: Exception) {
+          } catch (e: Throwable) {
+            Timber.d(e)
             null
           }
         } else {
@@ -62,38 +59,41 @@ class LocalStorage(
     return null
   }
 
-  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
-    val channel = Channel<InputStream>()
+  override suspend fun <T> restoreAll(
+    ext: String,
+    deleteFile: Boolean,
+    convertible: Convertible<T>,
+    outputChannel: DataChannel<T>
+  ) {
     if (Module.is10 || !hasSdPermission) {
-      channel.cancel()
-      return channel
+      return
     }
     val dir = folderFromExt(ext)
     if (dir == null || !dir.exists()) {
-      channel.cancel()
-      return channel
+      return
     }
     val files = dir.listFiles()
     if (files.isNullOrEmpty()) {
-      channel.cancel()
-      return channel
+      return
     }
-    runBlocking(dispatcherProvider.io()) {
-      for (f in files) {
+    for (f in files) {
+      try {
         try {
-          try {
-            channel.send(FileInputStream(f))
-          } catch (e: Exception) {
+          val obj = convertible.convert(FileInputStream(f))
+          Timber.d("restoreAll: obj=$obj")
+          if (obj != null) {
+            outputChannel.onNewData(obj)
           }
-          if (deleteFile && f.exists()) {
-            f.delete()
-          }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
+          Timber.d(e)
         }
+        if (deleteFile && f.exists()) {
+          f.delete()
+        }
+      } catch (e: Throwable) {
+        Timber.d(e)
       }
-      channel.close()
     }
-    return channel
   }
 
   override suspend fun delete(fileName: String) {

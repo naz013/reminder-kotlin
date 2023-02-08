@@ -3,9 +3,9 @@ package com.elementary.tasks.core.utils.io
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.Keep
-import com.elementary.tasks.core.arch.isValid
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.completables.ReminderCompletable
+import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Note
@@ -15,8 +15,8 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.MemoryUtil.writeFileNoEncryption
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.google.gson.Gson
@@ -32,7 +32,10 @@ class BackupTool(
   private val appDb: AppDb,
   private val reminderCompletable: ReminderCompletable,
   private val context: Context,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val noteRepository: NoteRepository,
+  private val noteToOldNoteConverter: NoteToOldNoteConverter,
+  private val memoryUtil: MemoryUtil
 ) {
 
   fun importAll(
@@ -126,13 +129,16 @@ class BackupTool(
               appDb.notesDao().deleteAllImages()
               appDb.notesDao().deleteAllNotes()
             }
-            allData.notes.forEach {
-              it.images.forEach { image ->
-                image.noteId = it.key
-                appDb.notesDao().insert(image)
+            allData.notes.mapNotNull { noteToOldNoteConverter.toNote(it) }
+              .filter { it.note != null }
+              .forEach {
+                it.note?.also { note: Note ->
+                  it.images.forEach { image ->
+                    appDb.notesDao().insert(image)
+                  }
+                  appDb.notesDao().insert(note)
+                }
               }
-              appDb.notesDao().insert(Note(it))
-            }
           }
           withUIContext { callback.invoke(hasAnyData) }
         } else {
@@ -157,7 +163,7 @@ class BackupTool(
     val allData = AllData(
       reminders = appDb.reminderDao().getAll(),
       groups = appDb.reminderGroupDao().all().toMutableList(),
-      notes = appDb.notesDao().getAll().map { OldNote(it) },
+      notes = noteRepository.getAll().mapNotNull { noteToOldNoteConverter.toOldNote(it) },
       places = appDb.placesDao().getAll(),
       templates = appDb.smsTemplatesDao().getAll(),
       birthdays = appDb.birthdaysDao().getAll()
@@ -173,7 +179,7 @@ class BackupTool(
       val exportFileName = dateTimeManager.getNowGmtDateTime() + FileConfig.FILE_NAME_FULL_BACKUP
       file = File(dir, exportFileName)
       try {
-        writeFileNoEncryption(file, jsonData.get())
+        memoryUtil.writeFileNoEncryption(file, jsonData.get())
         jsonData.clear()
         file
       } catch (e: Exception) {
@@ -198,18 +204,6 @@ class BackupTool(
     return anyToFile(item, item.id + FileConfig.FILE_NAME_PLACE)
   }
 
-  fun templateToFile(item: SmsTemplate): File? {
-    return anyToFile(item, item.key + FileConfig.FILE_NAME_TEMPLATE)
-  }
-
-  fun birthdayToFile(item: Birthday): File? {
-    return anyToFile(item, item.uuId + FileConfig.FILE_NAME_BIRTHDAY)
-  }
-
-  fun groupToFile(item: ReminderGroup): File? {
-    return anyToFile(item, item.groupUuId + FileConfig.FILE_NAME_GROUP)
-  }
-
   private fun anyToFile(any: Any, fileName: String): File? {
     val cacheDir = context.externalCacheDir ?: context.cacheDir
     val file = File(cacheDir, fileName)
@@ -223,7 +217,7 @@ class BackupTool(
     }
     return try {
       val outputStream = FileOutputStream(file)
-      return if (MemoryUtil.toStream(any, outputStream)) {
+      return if (memoryUtil.toStream(any, outputStream)) {
         outputStream.flush()
         outputStream.close()
         file
@@ -235,22 +229,6 @@ class BackupTool(
     } catch (e: Exception) {
       e.printStackTrace()
       null
-    }
-  }
-
-  companion object {
-    fun oldNoteToNew(oldNote: OldNote): NoteWithImages? {
-      val noteWithImages = NoteWithImages()
-      oldNote.images.forEach {
-        it.noteId = oldNote.key
-      }
-      noteWithImages.note = Note(oldNote)
-      noteWithImages.images = oldNote.images
-      return if (noteWithImages.isValid()) {
-        noteWithImages
-      } else {
-        null
-      }
     }
   }
 

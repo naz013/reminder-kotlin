@@ -24,7 +24,6 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
 
   protected val currentStateHolder by inject<CurrentStateHolder>()
   protected val prefs = currentStateHolder.preferences
-  protected val notifier = currentStateHolder.notifier
   protected val isDark = currentStateHolder.theme.isDark
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
 

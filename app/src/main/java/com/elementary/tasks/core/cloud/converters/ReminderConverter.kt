@@ -11,7 +11,8 @@ import timber.log.Timber
 import java.io.InputStream
 
 class ReminderConverter(
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val memoryUtil: MemoryUtil
 ) : Convertible<Reminder> {
 
   override fun metadata(t: Reminder): Metadata {
@@ -27,7 +28,7 @@ class ReminderConverter(
   override fun convert(t: Reminder): FileIndex? {
     return try {
       val stream = CopyByteArrayStream()
-      MemoryUtil.toStream(t, stream)
+      memoryUtil.toStream(t, stream)
       FileIndex().apply {
         this.stream = stream
         this.attachment = t.attachmentFile

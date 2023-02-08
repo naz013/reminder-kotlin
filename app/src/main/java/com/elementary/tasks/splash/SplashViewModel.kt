@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.FeatureManager
@@ -24,7 +25,8 @@ class SplashViewModel(
   private val notifier: Notifier,
   featureManager: FeatureManager,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val groupsUtil: GroupsUtil
+  private val groupsUtil: GroupsUtil,
+  private val noteImageMigration: NoteImageMigration
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
@@ -49,6 +51,10 @@ class SplashViewModel(
   private fun checkDb() {
     runCatching {
       groupsUtil.initDefaultIfEmpty()
+      if (!prefs.noteMigrationDone) {
+        prefs.noteMigrationDone = true
+        noteImageMigration.migrate()
+      }
     }
   }
 

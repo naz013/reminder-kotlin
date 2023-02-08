@@ -12,9 +12,9 @@ import java.util.*
 @Parcelize
 data class NoteWithImages(
   @Embedded
-  var note: Note? = null,
+  val note: Note? = null,
   @Relation(parentColumn = "key", entityColumn = "noteId")
-  var images: List<ImageFile> = ArrayList()
+  val images: List<ImageFile> = ArrayList()
 ) : NoteInterface, Parcelable {
 
   override fun getGmtTime(): String {

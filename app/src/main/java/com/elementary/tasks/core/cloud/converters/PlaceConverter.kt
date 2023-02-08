@@ -8,7 +8,9 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
-class PlaceConverter : Convertible<Place> {
+class PlaceConverter(
+  private val memoryUtil: MemoryUtil
+) : Convertible<Place> {
 
   override fun metadata(t: Place): Metadata {
     return Metadata(
@@ -23,7 +25,7 @@ class PlaceConverter : Convertible<Place> {
   override fun convert(t: Place): FileIndex? {
     return try {
       val stream = CopyByteArrayStream()
-      MemoryUtil.toStream(t, stream)
+      memoryUtil.toStream(t, stream)
       FileIndex().apply {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_PLACE

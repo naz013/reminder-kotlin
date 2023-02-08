@@ -1,28 +1,30 @@
 package com.elementary.tasks.notes.create.images
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
+import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
+import java.util.UUID
 
 class ImageDecoder(
   private val context: Context,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val noteImageRepository: NoteImageRepository
 ) {
 
-  fun startDecoding(scope: CoroutineScope,
-                    list: List<Uri>,
-                    startCount: Int = 0,
-                    onLoading: (List<UiNoteImage>) -> Unit,
-                    onReady: (Int, UiNoteImage) -> Unit) {
+  fun startDecoding(
+    scope: CoroutineScope,
+    list: List<Uri>,
+    startCount: Int = 0,
+    onLoading: (List<UiNoteImage>) -> Unit,
+    onReady: (Int, UiNoteImage) -> Unit
+  ) {
     scope.launch(dispatcherProvider.default()) {
       val emptyList = createEmpty(list.size)
       withUIContext {
@@ -43,7 +45,7 @@ class ImageDecoder(
       mutableList.add(
         UiNoteImage(
           id = 0,
-          data = null,
+          fileName = UUID.randomUUID().toString(),
           state = UiNoteImageState.LOADING
         )
       )
@@ -60,15 +62,17 @@ class ImageDecoder(
     if (!type.contains("image")) {
       return image.copy(state = UiNoteImageState.ERROR)
     }
-    val bitmapImage: Bitmap? = runCatching {
-      BitmapUtils.decodeUriToBitmap(context, uri)
+
+    val filePath = runCatching {
+      context.contentResolver.openInputStream(uri)?.let {
+        noteImageRepository.saveTemporaryImage(image.fileName, it)
+      }
     }.getOrNull()
 
-    return if (bitmapImage != null) {
-      val outputStream = ByteArrayOutputStream()
-      bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    return if (filePath != null) {
+      Timber.d("addImageFromUri: filePath=$filePath")
       image.copy(
-        data = outputStream.toByteArray(),
+        filePath = filePath,
         state = UiNoteImageState.READY
       )
     } else {

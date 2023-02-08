@@ -10,7 +10,8 @@ import timber.log.Timber
 import java.io.InputStream
 
 class BirthdayConverter(
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val memoryUtil: MemoryUtil
 ) : Convertible<Birthday> {
 
   override fun metadata(t: Birthday): Metadata {
@@ -26,7 +27,7 @@ class BirthdayConverter(
   override fun convert(t: Birthday): FileIndex? {
     return try {
       val stream = CopyByteArrayStream()
-      MemoryUtil.toStream(t, stream)
+      memoryUtil.toStream(t, stream)
       FileIndex().apply {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_BIRTHDAY

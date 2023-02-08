@@ -3,6 +3,7 @@ package com.elementary.tasks.notes.create
 import android.content.ClipData
 import android.content.ContentResolver
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
@@ -23,6 +25,7 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
@@ -51,10 +54,12 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import timber.log.Timber
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.Random
 import java.util.UUID
+
 
 class CreateNoteViewModel(
   private val id: String,
@@ -72,7 +77,9 @@ class CreateNoteViewModel(
   private val backupTool: BackupTool,
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val uiNoteEditAdapter: UiNoteEditAdapter
+  private val uiNoteEditAdapter: UiNoteEditAdapter,
+  private val noteImageRepository: NoteImageRepository,
+  private val noteToOldNoteConverter: NoteToOldNoteConverter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -124,7 +131,7 @@ class CreateNoteViewModel(
         if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
           val any = MemoryUtil.readFromUri(contextProvider.context, uri, FileConfig.FILE_NAME_NOTE)
           if (any != null && any is OldNote) {
-            BackupTool.oldNoteToNew(any)?.also {
+            noteToOldNoteConverter.toNote(any)?.also {
               isFromFile = true
               onNoteLoaded(it)
               findSame(it.getKey())
@@ -183,7 +190,6 @@ class CreateNoteViewModel(
         palette.postValue(uiNoteEdit.colorPalette)
         fontStyle.postValue(uiNoteEdit.typeface)
         images.postValue(uiNoteEdit.images)
-//        colorOpacity.postValue(Pair(uiNoteEdit.colorPosition, uiNoteEdit.opacity))
       }
       isNoteEdited = true
       localReminder = reminderDao.getByNoteKey(if (id == "") "1" else id)?.also { reminder ->
@@ -221,8 +227,8 @@ class CreateNoteViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       var imageFile = UiNoteImage(
         state = UiNoteImageState.LOADING,
-        data = null,
-        id = 0
+        id = 0,
+        fileName = UUID.randomUUID().toString()
       )
       var list = images.value ?: listOf()
       var mutable = list.toMutableList()
@@ -232,10 +238,16 @@ class CreateNoteViewModel(
         images.postValue(mutable)
       }
 
-      val outputStream = ByteArrayOutputStream()
-      bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+      val bos = ByteArrayOutputStream()
+      bitmap.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos)
+      val bitmapdata = bos.toByteArray()
+      val bs = ByteArrayInputStream(bitmapdata)
+
+      val filePath = noteImageRepository.saveTemporaryImage(imageFile.fileName, bs)
+
+      Timber.d("addBitmap: size=${bos.size()}")
       imageFile = imageFile.copy(
-        data = outputStream.toByteArray(),
+        filePath = filePath,
         state = UiNoteImageState.READY
       )
 
@@ -281,6 +293,7 @@ class CreateNoteViewModel(
       for (image in noteWithImages.images) {
         notesDao.delete(image)
       }
+      noteImageRepository.clearFolder(note.key)
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -403,7 +416,7 @@ class CreateNoteViewModel(
 
     val pair = colorOpacity.value ?: Pair(newColor(), opacity)
 
-    var noteWithImages = localNote
+    val noteWithImages = localNote
     var note = noteWithImages?.note
     if (note == null) {
       note = Note()
@@ -415,15 +428,16 @@ class CreateNoteViewModel(
     note.palette = palette.value ?: 0
     note.opacity = pair.second
 
-    if (noteWithImages == null) {
-      noteWithImages = NoteWithImages()
-    }
-
-    noteWithImages.images = images.map {
-      ImageFile(image = it.data, id = it.id)
-    }
-    noteWithImages.note = note
-    return noteWithImages
+    return (noteWithImages ?: NoteWithImages()).copy(
+      images = images.map {
+        ImageFile(
+          id = it.id,
+          fileName = it.fileName,
+          filePath = it.filePath
+        )
+      },
+      note = note
+    )
   }
 
   private fun saveReminder(reminder: Reminder) {
@@ -446,19 +460,18 @@ class CreateNoteViewModel(
   }
 
   private fun saveImages(list: List<ImageFile>, id: String) {
-    val oldList = notesDao.getImages(id)
+    val oldList = notesDao.getImagesByNoteId(id)
     Timber.d("saveImages: ${oldList.size}")
     for (image in oldList) {
       Timber.d("saveImages: delete -> ${image.id}, ${image.noteId}")
       notesDao.delete(image)
     }
-    if (list.isNotEmpty()) {
-      val newList = list.map {
-        it.noteId = id
-        it
+    noteImageRepository.moveImagesToFolder(list, id)
+      .map { it.copy(noteId = id) }
+      .takeIf { it.isNotEmpty() }
+      ?.also {
+        Timber.d("saveImages: new list -> $it")
+        notesDao.insertAll(it)
       }
-      Timber.d("saveImages: new list -> $newList")
-      notesDao.insertAll(newList)
-    }
   }
 }

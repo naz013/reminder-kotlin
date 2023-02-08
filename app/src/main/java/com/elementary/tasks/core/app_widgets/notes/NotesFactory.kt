@@ -9,15 +9,15 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.isAlmostTransparent
 
 class NotesFactory(
   private val context: Context,
-  private val appDb: AppDb,
+  private val noteRepository: NoteRepository,
   private val themeProvider: ThemeProvider
 ) : RemoteViewsService.RemoteViewsFactory {
 
@@ -29,7 +29,7 @@ class NotesFactory(
 
   override fun onDataSetChanged() {
     notes.clear()
-    notes.addAll(appDb.notesDao().getAll())
+    notes.addAll(noteRepository.getAll())
   }
 
   override fun onDestroy() {
