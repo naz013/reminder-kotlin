@@ -5,19 +5,28 @@ import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.models.*
-import com.elementary.tasks.core.utils.io.BackupTool
+import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
+import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.models.OldNote
+import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.sms.create.TemplateActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.sms.create.TemplateActivity
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class IntentActivity : ThemedActivity() {
+
+  private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -42,7 +51,7 @@ class IntentActivity : ThemedActivity() {
                 finish()
             }
             is OldNote -> {
-                val noteWithImages = BackupTool.oldNoteToNew(any)
+                val noteWithImages = noteToOldNoteConverter.toNote(any)
                 if (noteWithImages != null) {
                     startActivity(Intent(this, CreateNoteActivity::class.java)
                       .putExtra(Constants.INTENT_ITEM, noteWithImages))

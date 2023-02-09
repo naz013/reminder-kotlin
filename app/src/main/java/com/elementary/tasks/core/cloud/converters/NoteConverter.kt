@@ -2,7 +2,6 @@ package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
-import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
@@ -11,7 +10,10 @@ import timber.log.Timber
 import java.io.InputStream
 import java.lang.ref.WeakReference
 
-class NoteConverter : Convertible<NoteWithImages> {
+class NoteConverter(
+  private val noteToOldNoteConverter: NoteToOldNoteConverter,
+  private val memoryUtil: MemoryUtil
+) : Convertible<NoteWithImages> {
 
   override fun metadata(t: NoteWithImages): Metadata {
     return Metadata(
@@ -26,7 +28,7 @@ class NoteConverter : Convertible<NoteWithImages> {
   override fun convert(t: NoteWithImages): FileIndex? {
     return try {
       val stream = CopyByteArrayStream()
-      MemoryUtil.toStream(t, stream)
+      memoryUtil.toStream(t, stream)
       FileIndex().apply {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_NOTE
@@ -46,13 +48,7 @@ class NoteConverter : Convertible<NoteWithImages> {
       val weakNote = WeakReference(MemoryUtil.fromStream(stream, OldNote::class.java))
       stream.close()
       val oldNote = weakNote.get() ?: return null
-      val noteWithImages = NoteWithImages()
-      oldNote.images.forEach {
-        it.noteId = oldNote.key
-      }
-      noteWithImages.note = Note(oldNote)
-      noteWithImages.images = oldNote.images
-      return noteWithImages
+      return noteToOldNoteConverter.toNote(oldNote)
     } catch (e: Exception) {
       Timber.e(e)
       null

@@ -31,6 +31,7 @@ import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListData
@@ -90,7 +91,8 @@ class ConversationViewModel(
   private val language: Language,
   private val contextProvider: ContextProvider,
   private val contactsReader: ContactsReader,
-  private val voiceAnalyticsTracker: VoiceAnalyticsTracker
+  private val voiceAnalyticsTracker: VoiceAnalyticsTracker,
+  private val noteRepository: NoteRepository
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _shoppingLists = MutableLiveData<List<UiReminderList>>()
@@ -257,7 +259,7 @@ class ConversationViewModel(
   fun getNotes() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = LinkedList(notesDao.getAll()).map { uiNoteListAdapter.convert(it) }
+      val list = LinkedList(noteRepository.getAll()).map { uiNoteListAdapter.convert(it) }
       postInProgress(false)
       _notes.postValue(list)
     }

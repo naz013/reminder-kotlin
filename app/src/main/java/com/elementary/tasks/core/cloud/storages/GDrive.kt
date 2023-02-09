@@ -4,12 +4,13 @@ import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.settings.export.backups.UserItem
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
@@ -18,7 +19,6 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.ByteArrayInputStream
@@ -114,8 +114,8 @@ class GDrive(
         stream.close()
         Timber.d("backup: STREAM ${driveFile.id}, ${metadata.fileName}")
         if (BuildConfig.DEBUG) showContent(driveFile.id)
-      } catch (e: Exception) {
-      } catch (e: OutOfMemoryError) {
+      } catch (e: Throwable) {
+        Timber.d(e)
       }
     }
   }
@@ -141,50 +141,52 @@ class GDrive(
         }
         request.pageToken = filesResult.nextPageToken
       } while (request.pageToken != null)
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
+      Timber.d(e)
       return null
     }
     return null
   }
 
-  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
-    val channel = Channel<InputStream>()
-
-    val service = driveService
-    if (service == null) {
-      channel.cancel()
-      return channel
-    }
+  override suspend fun <T> restoreAll(
+    ext: String,
+    deleteFile: Boolean,
+    convertible: Convertible<T>,
+    outputChannel: DataChannel<T>
+  ) {
+    Timber.d("restoreAll: start, isLogged=$isLogged, service=$driveService")
+    val service = driveService ?: return
     if (!isLogged) {
-      channel.cancel()
-      return channel
+      return
     }
-    withContext(dispatcherProvider.io()) {
-      try {
-        val request = service.files().list()
-          .setSpaces("appDataFolder")
-          .setFields("nextPageToken, files(id, name)")
-          .setQ("mimeType = 'text/plain' and name contains '$ext'")
-        do {
-          val filesResult = request.execute()
-          val fileList = filesResult.files as ArrayList<File>
-          for (f in fileList) {
-            Timber.d("restoreAll: ${f.name}, ${f.id}, $ext")
-            val title = f.name
-            if (title.endsWith(ext)) {
-              channel.send(service.files().get(f.id).executeMediaAsInputStream())
-              if (deleteFile) {
-                service.files().delete(f.id).execute()
-              }
+    try {
+      val request = service.files().list()
+        .setSpaces("appDataFolder")
+        .setFields("nextPageToken, files(id, name)")
+        .setQ("mimeType = 'text/plain' and name contains '$ext'")
+      do {
+        val filesResult = request.execute()
+        val fileList = filesResult.files as ArrayList<File>
+        for (f in fileList) {
+          Timber.d("restoreAll: ${f.name}, ${f.id}, $ext")
+          val shouldDownload = f.name.endsWith(ext)
+          Timber.d("restoreAll: should download = $shouldDownload")
+          if (shouldDownload) {
+            val obj = convertible.convert(service.files().get(f.id).executeMediaAsInputStream())
+            Timber.d("restoreAll: converted = $obj")
+            if (obj != null) {
+              outputChannel.onNewData(obj)
+            }
+            if (deleteFile) {
+              service.files().delete(f.id).execute()
             }
           }
-          request.pageToken = filesResult.nextPageToken
-        } while (request.pageToken != null)
-      } catch (e: Exception) {
-      }
-      channel.close()
+        }
+        request.pageToken = filesResult.nextPageToken
+      } while (request.pageToken != null)
+    } catch (e: Throwable) {
+      Timber.d(e)
     }
-    return channel
   }
 
   override suspend fun delete(fileName: String) {

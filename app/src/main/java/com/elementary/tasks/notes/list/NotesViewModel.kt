@@ -6,17 +6,22 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.repository.NoteImageRepository
+import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
@@ -33,14 +38,19 @@ class NotesViewModel(
   private val notesDao: NotesDao,
   private val textProvider: TextProvider,
   private val uiNoteListAdapter: UiNoteListAdapter,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val noteRepository: NoteRepository,
+  private val noteImageRepository: NoteImageRepository,
+  private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
+  private val notifier: Notifier
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
   private val noteSortProcessor = NoteSortProcessor()
-  private val notesData = SearchableNotesData(dispatcherProvider, viewModelScope, notesDao)
+  private val notesData =
+    SearchableNotesData(dispatcherProvider, viewModelScope, notesDao, noteRepository)
   val notes = Transformations.map(notesData) { list ->
     noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
   }
@@ -93,6 +103,7 @@ class NotesViewModel(
       for (image in noteWithImages.images) {
         notesDao.delete(image)
       }
+      noteImageRepository.clearFolder(note.key)
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -123,15 +134,25 @@ class NotesViewModel(
     }
   }
 
+  fun showNoteInNotification(id: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val noteWithImages = notesDao.getById(id) ?: return@launch
+      uiNoteNotificationAdapter.convert(noteWithImages).also {
+        withUIContext { notifier.showNoteNotification(it) }
+      }
+    }
+  }
+
   internal class SearchableNotesData(
     dispatcherProvider: DispatcherProvider,
     parentScope: CoroutineScope,
-    private val notesDao: NotesDao
+    private val notesDao: NotesDao,
+    private val noteRepository: NoteRepository
   ) : SearchableLiveData<List<NoteWithImages>>(parentScope + dispatcherProvider.default()) {
 
     override fun runQuery(query: String): List<NoteWithImages> {
       return if (query.isEmpty()) {
-        notesDao.getAll()
+        noteRepository.getAll()
       } else {
         notesDao.searchByText(query.lowercase())
       }

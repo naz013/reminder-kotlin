@@ -34,7 +34,7 @@ class PhotoPagerAdapter(private val images: List<UiNoteImage>) : PagerAdapter() 
   private fun loadPhoto(imageView: ImageView, position: Int) {
     val image = images[position]
     Glide.with(imageView.context)
-      .load(image.data)
+      .load(image.filePath)
       .into(imageView)
   }
 }

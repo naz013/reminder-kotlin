@@ -95,6 +95,8 @@ abstract class AppDb : RoomDatabase() {
       override fun migrate(database: SupportSQLiteDatabase) {
         runCatching {
           database.execSQL("ALTER TABLE Reminder ADD COLUMN taskListId TEXT")
+          database.execSQL("ALTER TABLE ImageFile ADD COLUMN filePath TEXT DEFAULT '' NOT NULL")
+          database.execSQL("ALTER TABLE ImageFile ADD COLUMN fileName TEXT DEFAULT '' NOT NULL")
         }
       }
     }

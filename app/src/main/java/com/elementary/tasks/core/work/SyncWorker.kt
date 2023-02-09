@@ -57,8 +57,8 @@ class SyncWorker(
       notifyMsg(textProvider.getText(R.string.syncing_groups))
       val groupRepository = syncManagers.repositoryManager.groupDataFlowRepository
       val groupConverter = syncManagers.converterManager.groupConverter
-      BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
-        .restore(IndexTypes.TYPE_GROUP, deleteFile = true)
+      val groupFlow = BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
+      groupFlow.restore(IndexTypes.TYPE_GROUP, deleteFile = true)
       val list = reminderGroupDao.all()
       if (list.isEmpty()) {
         val defUiID = groupsUtil.initDefault()
@@ -68,7 +68,7 @@ class SyncWorker(
         }
         reminderDao.insertAll(items)
       }
-      BulkDataFlow(groupRepository, groupConverter, storage, completable = null).backup()
+      groupFlow.backup()
 
       notifyMsg(textProvider.getText(R.string.syncing_reminders))
       val reminderRepository = syncManagers.repositoryManager.reminderDataFlowRepository

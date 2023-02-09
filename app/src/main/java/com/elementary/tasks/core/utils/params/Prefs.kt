@@ -602,6 +602,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)
     set(value) = putBoolean(PrefsConstants.DYNAMIC_COLORS, value)
 
+  var noteMigrationDone: Boolean
+    get() = getBoolean("note_migration", false)
+    set(value) = putBoolean("note_migration", value)
+
   var reminderCreatorParams: ReminderCreatorConfig
     get() = ReminderCreatorConfig(
       getString(

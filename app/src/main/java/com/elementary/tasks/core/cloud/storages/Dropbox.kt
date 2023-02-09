@@ -10,13 +10,11 @@ import com.dropbox.core.v2.files.WriteMode
 import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.DispatcherProvider
-import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ByteArrayInputStream
@@ -24,7 +22,6 @@ import java.io.InputStream
 
 class Dropbox(
   private val prefs: Prefs,
-  private val dispatcherProvider: DispatcherProvider,
   private val dateTimeManager: DateTimeManager
 ) : Storage() {
 
@@ -66,8 +63,8 @@ class Dropbox(
           .uploadAndFinish(fis)
         fis.close()
         stream.close()
-      } catch (_: Exception) {
-      } catch (_: OutOfMemoryError) {
+      } catch (e: Throwable) {
+        Timber.d(e)
       }
     }
   }
@@ -85,8 +82,8 @@ class Dropbox(
         .withMode(WriteMode.OVERWRITE)
         .uploadAndFinish(fis)
       fis.close()
-    } catch (_: Exception) {
-    } catch (_: OutOfMemoryError) {
+    } catch (e: Throwable) {
+      Timber.d(e)
     }
   }
 
@@ -99,43 +96,42 @@ class Dropbox(
     Timber.d("restore: $fileName, $folder")
     return try {
       api.files().download(folder + fileName).inputStream
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
       Timber.d("restore: ${e.message}")
       null
     }
   }
 
-  override suspend fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
-    val channel = Channel<InputStream>()
+  override suspend fun <T> restoreAll(
+    ext: String,
+    deleteFile: Boolean,
+    convertible: Convertible<T>,
+    outputChannel: DataChannel<T>
+  ) {
     if (!isLinked) {
-      channel.cancel()
-      return channel
+      return
     }
-    val api = mDBApi
-    if (api == null) {
-      channel.cancel()
-      return channel
-    }
+    val api = mDBApi ?: return
     val folder = folderFromExt(ext)
     Timber.d("restoreAll: $ext, $folder")
-    launchIo {
-      try {
-        val result = api.files().listFolder(templateFolder)
-        if (result != null) {
-          for (e in result.entries) {
-            val fileName = e.name
-            channel.send(api.files().download(folder + fileName).inputStream)
-            if (deleteFile) {
-              api.files().deleteV2(e.pathLower)
-            }
+    try {
+      val result = api.files().listFolder(templateFolder)
+      if (result != null) {
+        for (e in result.entries) {
+          val fileName = e.name
+          val obj = convertible.convert(api.files().download(folder + fileName).inputStream)
+          Timber.d("restoreAll: obj=$obj")
+          if (obj != null) {
+            outputChannel.onNewData(obj)
+          }
+          if (deleteFile) {
+            api.files().deleteV2(e.pathLower)
           }
         }
-      } catch (e: Exception) {
-        Timber.d("restoreAll: ${e.message}")
       }
-      channel.close()
+    } catch (e: Throwable) {
+      Timber.d(e)
     }
-    return channel
   }
 
   override suspend fun delete(fileName: String) {
@@ -147,8 +143,8 @@ class Dropbox(
     val folder = folderFromFileName(fileName)
     try {
       api.files().deleteV2(folder + fileName)
-    } catch (e: DbxException) {
-      Timber.d("delete: ${e.message}")
+    } catch (e: Throwable) {
+      Timber.d(e)
     }
   }
 

@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes.list
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -277,12 +276,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
   }
 
   private fun showInStatusBar(note: UiNoteList) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-        notifier.showNoteNotification(note.text, note.uniqueId, note.images.firstOrNull()?.data)
-      }
-    } else {
-      notifier.showNoteNotification(note.text, note.uniqueId, note.images.firstOrNull()?.data)
+    permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+      viewModel.showNoteInNotification(note.id)
     }
   }
 

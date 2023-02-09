@@ -13,11 +13,16 @@ import java.util.*
 data class ImageFile(
   @SerializedName("image")
   @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+  @Deprecated("use filePath")
   var image: ByteArray? = null,
   @SerializedName("noteId")
-  var noteId: String = "",
+  val noteId: String = "",
   @PrimaryKey(autoGenerate = true)
-  var id: Int = 0
+  val id: Int = 0,
+  @SerializedName("filePath")
+  var filePath: String = "",
+  @SerializedName("fileName")
+  var fileName: String = ""
 ) : Parcelable {
 
   override fun equals(other: Any?): Boolean {

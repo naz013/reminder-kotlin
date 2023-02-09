@@ -2,8 +2,14 @@ package com.elementary.tasks.core.cloud.repositories
 
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.repository.NoteImageRepository
+import com.elementary.tasks.core.data.repository.NoteRepository
 
-class NoteDataFlowRepository(appDb: AppDb) : DatabaseRepository<NoteWithImages>(appDb) {
+class NoteDataFlowRepository(
+  appDb: AppDb,
+  private val noteRepository: NoteRepository,
+  private val noteImageRepository: NoteImageRepository
+) : DatabaseRepository<NoteWithImages>(appDb) {
   override suspend fun get(id: String): NoteWithImages? {
     return appDb.notesDao().getById(id)
   }
@@ -17,7 +23,7 @@ class NoteDataFlowRepository(appDb: AppDb) : DatabaseRepository<NoteWithImages>(
   }
 
   override suspend fun all(): List<NoteWithImages> {
-    return appDb.notesDao().getAll()
+    return noteRepository.getAll()
   }
 
   override suspend fun delete(t: NoteWithImages) {
@@ -26,5 +32,6 @@ class NoteDataFlowRepository(appDb: AppDb) : DatabaseRepository<NoteWithImages>(
     for (image in t.images) {
       appDb.notesDao().delete(image)
     }
+    noteImageRepository.clearFolder(note.key)
   }
 }

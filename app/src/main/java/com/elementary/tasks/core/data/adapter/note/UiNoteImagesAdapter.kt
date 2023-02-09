@@ -12,7 +12,8 @@ class UiNoteImagesAdapter {
   private fun convertImage(imageFile: ImageFile): UiNoteImage {
     return UiNoteImage(
       id = imageFile.id,
-      data = imageFile.image
+      filePath = imageFile.filePath,
+      fileName = imageFile.fileName
     )
   }
 }

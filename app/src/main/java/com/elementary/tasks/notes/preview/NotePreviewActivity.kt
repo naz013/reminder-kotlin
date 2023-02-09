@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes.preview
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -197,14 +196,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun moveToStatus() {
     val uiNotePreview = viewModel.note.value ?: return
-    val uniqueId = uiNotePreview.uniqueId
-    val image = uiNotePreview.images.firstOrNull()?.data
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-        notifier.showNoteNotification(uiNotePreview.text, uniqueId, image)
-      }
-    } else {
-      notifier.showNoteNotification(uiNotePreview.text, uniqueId, image)
+    permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+      viewModel.showNoteInNotification(uiNotePreview.id)
     }
   }
 

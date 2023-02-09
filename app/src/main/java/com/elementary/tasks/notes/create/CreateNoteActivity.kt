@@ -781,10 +781,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
     return true
   }
-
-  companion object {
-    const val MENU_ITEM_DELETE = 12
-  }
 }
 
 private var Slider.valueInt: Int

@@ -8,7 +8,9 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
-class GroupConverter : Convertible<ReminderGroup> {
+class GroupConverter(
+  private val memoryUtil: MemoryUtil
+) : Convertible<ReminderGroup> {
 
   override fun metadata(t: ReminderGroup): Metadata {
     return Metadata(
@@ -23,7 +25,7 @@ class GroupConverter : Convertible<ReminderGroup> {
   override fun convert(t: ReminderGroup): FileIndex? {
     return try {
       val stream = CopyByteArrayStream()
-      MemoryUtil.toStream(t, stream)
+      memoryUtil.toStream(t, stream)
       FileIndex().apply {
         this.stream = stream
         this.ext = FileConfig.FILE_NAME_GROUP

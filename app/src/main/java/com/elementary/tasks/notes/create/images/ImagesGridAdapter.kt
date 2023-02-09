@@ -64,7 +64,7 @@ class ImagesGridAdapter : ListAdapter<UiNoteImage, ImagesGridAdapter.PhotoViewHo
     }
 
     private fun loadImage(imageView: ImageView, image: UiNoteImage) {
-      Glide.with(imageView).load(image.data).into(imageView)
+      Glide.with(imageView).load(image.filePath).into(imageView)
     }
   }
 }

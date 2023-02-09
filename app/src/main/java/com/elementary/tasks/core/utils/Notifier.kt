@@ -8,7 +8,6 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.text.TextUtils
 import android.view.View
@@ -20,6 +19,7 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.ReminderRepository
+import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
@@ -133,38 +133,38 @@ class Notifier(
   }
 
   // Checked for Notification permission
-  fun showNoteNotification(text: String, uniqueId: Int, image: ByteArray?) {
+  fun showNoteNotification(uiNoteNotification: UiNoteNotification) {
     val builder = NotificationCompat.Builder(context, CHANNEL_NOTES)
     builder.setContentText(context.getString(R.string.note))
     builder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
     builder.setSmallIcon(R.drawable.ic_twotone_note_white)
-    builder.setContentTitle(text)
+    builder.setContentTitle(uiNoteNotification.text)
     val isWear = prefs.getBoolean(WEAR_NOTIFICATION)
     if (isWear) {
       builder.setOnlyAlertOnce(true)
       builder.setGroup("GROUP")
       builder.setGroupSummary(true)
     }
+    val image = uiNoteNotification.image
     if (image != null) {
-      val bitmap = BitmapFactory.decodeByteArray(image, 0, image.size)
-      builder.setLargeIcon(bitmap)
+      builder.setLargeIcon(image)
       val s = NotificationCompat.BigPictureStyle()
-      s.bigLargeIcon(bitmap)
-      s.bigPicture(bitmap)
+      s.bigLargeIcon(image)
+      s.bigPicture(image)
       builder.setStyle(s)
     }
-    notify(uniqueId, builder.build())
+    notify(uiNoteNotification.uniqueId, builder.build())
     if (isWear) {
       val wearableNotificationBuilder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
       wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_note_white)
-      wearableNotificationBuilder.setContentTitle(text)
+      wearableNotificationBuilder.setContentTitle(uiNoteNotification.text)
       wearableNotificationBuilder.setContentText(context.getString(R.string.note))
       wearableNotificationBuilder.setOngoing(false)
       wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
       wearableNotificationBuilder.setOnlyAlertOnce(true)
       wearableNotificationBuilder.setGroup("GROUP")
       wearableNotificationBuilder.setGroupSummary(false)
-      notify(uniqueId, wearableNotificationBuilder.build())
+      notify(uiNoteNotification.uniqueId, wearableNotificationBuilder.build())
     }
   }
 

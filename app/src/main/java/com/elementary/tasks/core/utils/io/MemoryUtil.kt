@@ -9,6 +9,7 @@ import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
@@ -37,54 +38,9 @@ import java.util.*
 import kotlin.math.ln
 import kotlin.math.pow
 
-
-object MemoryUtil {
-
-  private const val DIR_SD = "backup"
-  private const val DIR_PREFS = "preferences"
-  private const val DIR_NOTES_SD = "notes"
-  private const val DIR_GROUP_SD = "groups"
-  private const val DIR_BIRTHDAY_SD = "birthdays"
-  private const val DIR_PLACES_SD = "places"
-  private const val DIR_TEMPLATES_SD = "templates"
-
-  private val isSdPresent: Boolean
-    get() {
-      val state = Environment.getExternalStorageState()
-      return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
-    }
-
-  val remindersDir = getDir(DIR_SD)
-  val groupsDir = getDir(DIR_GROUP_SD)
-  val birthdaysDir = getDir(DIR_BIRTHDAY_SD)
-  val notesDir = getDir(DIR_NOTES_SD)
-  val placesDir = getDir(DIR_PLACES_SD)
-  val templatesDir = getDir(DIR_TEMPLATES_SD)
-  val prefsDir = getDir(DIR_PREFS)
-  val parent = getDir("")
-  val imagesDir = getDir("image_cache")
-
-  private fun getDir(directory: String): File? {
-    return if (isSdPresent) {
-      val sdPath = Environment.getExternalStorageDirectory()
-      val dir = File("$sdPath/JustReminder/$directory")
-      if (!dir.exists() && dir.mkdirs()) {
-        dir
-      } else dir
-    } else {
-      null
-    }
-  }
-
-  fun humanReadableByte(bytes: Long, si: Boolean): String {
-    val unit = if (si) 1000 else 1024
-    if (bytes < unit) {
-      return "$bytes B"
-    }
-    val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
-    val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""
-    return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
-  }
+class MemoryUtil(
+  private val noteToOldNoteConverter: NoteToOldNoteConverter
+) {
 
   @Throws(IOException::class)
   fun writeFileNoEncryption(file: File, data: String?): String? {
@@ -118,49 +74,6 @@ object MemoryUtil {
     return file.toString()
   }
 
-  fun <T> fromStream(stream: InputStream, clazz: Class<T>): T? {
-    try {
-      val output64 = Base64InputStream(stream, Base64.DEFAULT)
-      val bufferedReader = BufferedReader(InputStreamReader(output64))
-      val reader = JsonReader(bufferedReader)
-      Timber.d("fromStream: $stream, $clazz")
-      val t: T?
-      try {
-        t = Gson().fromJson<T>(reader, clazz)
-      } catch (e: Exception) {
-        return null
-      } catch (e: OutOfMemoryError) {
-        return null
-      }
-      reader.close()
-      return t
-    } catch (e: Exception) {
-      e.printStackTrace()
-      return null
-    }
-  }
-
-  fun <T> fromStreamNoDecrypt(stream: InputStream, clazz: Class<T>): T? {
-    try {
-      val bufferedReader = BufferedReader(InputStreamReader(stream))
-      val reader = JsonReader(bufferedReader)
-      Timber.d("fromStream: $stream, $clazz")
-      val t: T?
-      try {
-        t = Gson().fromJson<T>(reader, clazz)
-      } catch (e: Exception) {
-        return null
-      } catch (e: OutOfMemoryError) {
-        return null
-      }
-      reader.close()
-      return t
-    } catch (e: Exception) {
-      e.printStackTrace()
-      return null
-    }
-  }
-
   fun toStream(any: Any, outputStream: OutputStream): Boolean {
     try {
       System.gc()
@@ -178,7 +91,11 @@ object MemoryUtil {
       } ?: return false
       Timber.d("toStream: $type, $any")
       try {
-        Gson().toJson(if (any is NoteWithImages) OldNote(any) else any, type, writer)
+        Gson().toJson(
+          if (any is NoteWithImages) noteToOldNoteConverter.toOldNote(any) else any,
+          type,
+          writer
+        )
       } catch (e: Exception) {
         return false
       } catch (e: OutOfMemoryError) {
@@ -193,62 +110,157 @@ object MemoryUtil {
     }
   }
 
-  fun readFromUri(context: Context, uri: Uri, source: String = ""): Any? {
-    val cr = context.contentResolver ?: return null
-    var inputStream: InputStream? = null
-    try {
-      inputStream = cr.openInputStream(uri)
-    } catch (e: Exception) {
-      e.printStackTrace()
-    }
+  companion object {
+    private const val DIR_SD = "backup"
+    private const val DIR_PREFS = "preferences"
+    private const val DIR_NOTES_SD = "notes"
+    private const val DIR_GROUP_SD = "groups"
+    private const val DIR_BIRTHDAY_SD = "birthdays"
+    private const val DIR_PLACES_SD = "places"
+    private const val DIR_TEMPLATES_SD = "templates"
 
-    if (inputStream == null) {
-      return null
-    }
-    val cursor: Cursor? = cr.query(uri, null, null,
-      null, null, null)
-
-    val name = try {
-      cursor?.use {
-        if (it.moveToFirst()) {
-          it.readString(OpenableColumns.DISPLAY_NAME) ?: source
-        } else {
-          source
-        }
-      } ?: source
-    } catch (e: Exception) {
-      source
-    }
-    Timber.d("readFromUri: $name, $source")
-    return try {
-      val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
-      val r = JsonReader(BufferedReader(InputStreamReader(output64)))
-      val type = when {
-        name.endsWith(FileConfig.FILE_NAME_PLACE) -> {
-          object : TypeToken<Place>() {}.type
-        }
-        name.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
-          object : TypeToken<Reminder>() {}.type
-        }
-        name.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
-          object : TypeToken<Birthday>() {}.type
-        }
-        name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
-          object : TypeToken<ReminderGroup>() {}.type
-        }
-        name.endsWith(FileConfig.FILE_NAME_NOTE) -> {
-          object : TypeToken<OldNote>() {}.type
-        }
-        name.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
-          object : TypeToken<SmsTemplate>() {}.type
-        }
-        else -> null
+    private val isSdPresent: Boolean
+      get() {
+        val state = Environment.getExternalStorageState()
+        return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
       }
-      Gson().fromJson(r, type)
-    } catch (e: Exception) {
-      Timber.d("readFromUri: Bad JSON")
-      e.printStackTrace()
-      null
+
+    val remindersDir = getDir(DIR_SD)
+    val groupsDir = getDir(DIR_GROUP_SD)
+    val birthdaysDir = getDir(DIR_BIRTHDAY_SD)
+    val notesDir = getDir(DIR_NOTES_SD)
+    val placesDir = getDir(DIR_PLACES_SD)
+    val templatesDir = getDir(DIR_TEMPLATES_SD)
+    val prefsDir = getDir(DIR_PREFS)
+    val parent = getDir("")
+    val imagesDir = getDir("image_cache")
+
+    private fun getDir(directory: String): File? {
+      return if (isSdPresent) {
+        val sdPath = Environment.getExternalStorageDirectory()
+        val dir = File("$sdPath/JustReminder/$directory")
+        if (!dir.exists() && dir.mkdirs()) {
+          dir
+        } else dir
+      } else {
+        null
+      }
+    }
+
+    fun humanReadableByte(bytes: Long, si: Boolean): String {
+      val unit = if (si) 1000 else 1024
+      if (bytes < unit) {
+        return "$bytes B"
+      }
+      val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
+      val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""
+      return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
+    }
+
+    fun <T> fromStream(stream: InputStream, clazz: Class<T>): T? {
+      try {
+        val output64 = Base64InputStream(stream, Base64.DEFAULT)
+        val bufferedReader = BufferedReader(InputStreamReader(output64))
+        val reader = JsonReader(bufferedReader)
+        Timber.d("fromStream: $stream, $clazz")
+        val t: T?
+        try {
+          t = Gson().fromJson<T>(reader, clazz)
+        } catch (e: Exception) {
+          return null
+        } catch (e: OutOfMemoryError) {
+          return null
+        }
+        reader.close()
+        return t
+      } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+      }
+    }
+
+    fun <T> fromStreamNoDecrypt(stream: InputStream, clazz: Class<T>): T? {
+      try {
+        val bufferedReader = BufferedReader(InputStreamReader(stream))
+        val reader = JsonReader(bufferedReader)
+        Timber.d("fromStream: $stream, $clazz")
+        val t: T?
+        try {
+          t = Gson().fromJson<T>(reader, clazz)
+        } catch (e: Exception) {
+          return null
+        } catch (e: OutOfMemoryError) {
+          return null
+        }
+        reader.close()
+        return t
+      } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+      }
+    }
+
+    fun readFromUri(context: Context, uri: Uri, source: String = ""): Any? {
+      val cr = context.contentResolver ?: return null
+      var inputStream: InputStream? = null
+      try {
+        inputStream = cr.openInputStream(uri)
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
+
+      if (inputStream == null) {
+        return null
+      }
+      val cursor: Cursor? = cr.query(
+        uri, null, null,
+        null, null, null
+      )
+
+      val name = try {
+        cursor?.use {
+          if (it.moveToFirst()) {
+            it.readString(OpenableColumns.DISPLAY_NAME) ?: source
+          } else {
+            source
+          }
+        } ?: source
+      } catch (e: Exception) {
+        source
+      }
+      Timber.d("readFromUri: $name, $source")
+      return try {
+        val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+        val bufferedReader = BufferedReader(InputStreamReader(output64))
+        val reader = JsonReader(bufferedReader)
+        val obj: Any? = when {
+          name.endsWith(FileConfig.FILE_NAME_PLACE) -> {
+            Gson().fromJson<Place>(reader, object : TypeToken<Place>() {}.type)
+          }
+          name.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
+            Gson().fromJson<Reminder>(reader, object : TypeToken<Reminder>() {}.type)
+          }
+          name.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
+            Gson().fromJson<Birthday>(reader, object : TypeToken<Birthday>() {}.type)
+          }
+          name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
+            Gson().fromJson<ReminderGroup>(reader, object : TypeToken<ReminderGroup>() {}.type)
+          }
+          name.endsWith(FileConfig.FILE_NAME_NOTE) -> {
+            Gson().fromJson<OldNote>(reader, object : TypeToken<OldNote>() {}.type)
+          }
+          name.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
+            Gson().fromJson<SmsTemplate>(reader, object : TypeToken<SmsTemplate>() {}.type)
+          }
+          else -> null
+        }
+        Timber.d("readFromUri: obj=$obj")
+        obj
+      } catch (e: Exception) {
+        Timber.d("readFromUri: Bad JSON")
+        e.printStackTrace()
+        null
+      }
     }
   }
 }
