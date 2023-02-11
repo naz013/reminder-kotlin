@@ -119,7 +119,7 @@ import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
 import com.elementary.tasks.missed_calls.MissedCallViewModel
-import com.elementary.tasks.month_view.MonthViewViewModel
+import com.elementary.tasks.monthview.CalendarViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.images.ImageDecoder
@@ -340,7 +340,7 @@ val viewModelModule = module {
   viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get()) }
 
   viewModel { DayViewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { MonthViewViewModel(get(), get(), get(), get(), get()) }
+  viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel {
     ConversationViewModel(
@@ -421,6 +421,8 @@ val viewModelModule = module {
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
+
+
 }
 
 val converterModule = module {
