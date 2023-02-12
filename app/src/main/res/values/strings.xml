@@ -286,7 +286,7 @@
     <string name="course_location">Approximate Location</string>
     <string name="course_location_explanation">To access you location, application requires Approximate Location permission</string>
     <string name="fine_location">Exact Location</string>
-    <string name="fine_location_explanation">To access you precise location, application requires Exact Location permission</string>
+    <string name="fine_location_explanation">To access your precise location, application requires Exact Location permission</string>
     <string name="call_phone">Call phone</string>
     <string name="record_audio">Record audio</string>
     <string name="record_audio_explanation">To access to microphone, application requires Record Audio permission</string>
@@ -652,7 +652,7 @@
     <string name="deleted">Deleted</string>
     <string name="post_notification">Post Notification</string>
     <string name="post_notification_explanation">To show notification in Status Bar application requires Notification permission</string>
-    <string name="call_phone_explanation">To make auto call when reminder emits application require this permission</string>
+    <string name="call_phone_explanation">To make auto call when reminder emits application requires this permission</string>
     <string name="foreground_service">Foreground Service</string>
     <string name="foreground_service_explanation">To allow application be fully functional, it requires Foreground Service permission</string>
     <string name="background_location">Background Location</string>
@@ -680,5 +680,6 @@
     <string name="group">Group</string>
     <string name="configure">Configure</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Enable or disable some parameters on Reminder creation screen</string>
+    <string name="tell_about_event">Tell about event</string>
 
 </resources>
