@@ -1,4 +1,4 @@
-package com.elementary.tasks.month_view
+package com.elementary.tasks.monthview
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

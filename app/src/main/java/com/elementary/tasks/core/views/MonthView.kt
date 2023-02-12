@@ -147,6 +147,7 @@ class MonthView : View, View.OnTouchListener {
   }
 
   fun setDate(year: Int, @IntRange(from = 1, to = 12) month: Int) {
+    this.eventsCursorMap = emptyMap()
     mDateTimeList = ArrayList()
     mMonth = month
     mYear = year
