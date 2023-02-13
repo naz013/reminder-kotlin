@@ -34,7 +34,6 @@
     <string name="no">"いいえ"</string>
     <string name="add_reminder">"リマインダーを追加しますか？"</string>
     <string name="name">"名"</string>
-    <string name="contact">"接触"</string>
     <string name="background">"バックグラウンド"</string>
     <string name="global_settings">"グローバル設定"</string>
     <string name="vibrate">"振動します"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"最終日"</string>
     <string name="delay_tracking">"遅延追跡"</string>
     <string name="no_reminder">"通知なし"</string>
-    <string name="video_call">"ビデオ通話"</string>
     <string name="c">"秒"</string>
     <string name="m">"分"</string>
     <string name="h">"時間"</string>

@@ -34,7 +34,6 @@
     <string name="no">"Нет"</string>
     <string name="add_reminder">"Добавить напоминание?"</string>
     <string name="name">"Имя"</string>
-    <string name="contact">"Контакт"</string>
     <string name="background">"Фон"</string>
     <string name="global_settings">"Глобальные настройки"</string>
     <string name="vibrate">"Вибрировать"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Последний день"</string>
     <string name="delay_tracking">"Задержка отслеживания"</string>
     <string name="no_reminder">"Без напоминания"</string>
-    <string name="video_call">"Видеозвонок"</string>
     <string name="c">"С"</string>
     <string name="m">"М"</string>
     <string name="h">"Ч"</string>

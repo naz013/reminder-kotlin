@@ -34,7 +34,6 @@
     <string name="no">"Nu"</string>
     <string name="add_reminder">"Adauga memento?"</string>
     <string name="name">"Nume"</string>
-    <string name="contact">"Contact"</string>
     <string name="background">"Fundal"</string>
     <string name="global_settings">"Setări globale"</string>
     <string name="vibrate">"Vibra"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Ultima zi"</string>
     <string name="delay_tracking">"Urmărirea întârziere"</string>
     <string name="no_reminder">"Nu memento"</string>
-    <string name="video_call">"Apel video"</string>
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"O"</string>

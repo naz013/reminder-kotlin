@@ -34,7 +34,6 @@
     <string name="no">No</string>
     <string name="add_reminder">Add reminder?</string>
     <string name="name">Name</string>
-    <string name="contact">Contact</string>
     <string name="background">Background</string>
     <string name="global_settings">Global settings</string>
     <string name="vibrate">Vibrate</string>
@@ -107,7 +106,6 @@
     <string name="last_day">Last day</string>
     <string name="delay_tracking">Delay tracking</string>
     <string name="no_reminder">No reminder</string>
-    <string name="video_call">Video call</string>
     <string name="c">S</string>
     <string name="m">M</string>
     <string name="h">H</string>

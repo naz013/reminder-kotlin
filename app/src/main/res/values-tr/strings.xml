@@ -34,7 +34,6 @@
     <string name="no">"Hayır"</string>
     <string name="add_reminder">"Hatırlatıcı ekleme?"</string>
     <string name="name">"Isim"</string>
-    <string name="contact">"Temas"</string>
     <string name="background">"Arka plân"</string>
     <string name="global_settings">"Genel Ayarlar"</string>
     <string name="vibrate">"Titremek"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Son gün"</string>
     <string name="delay_tracking">"Gecikme izleme"</string>
     <string name="no_reminder">"Hiçbir hatırlatma"</string>
-    <string name="video_call">"Görüntülü arama"</string>
     <string name="c">"S"</string>
     <string name="m">"D"</string>
     <string name="h">"S"</string>

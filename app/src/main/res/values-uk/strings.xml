@@ -34,7 +34,6 @@
     <string name="no">"Ні"</string>
     <string name="add_reminder">"Додати нагадування?"</string>
     <string name="name">"Ім'я"</string>
-    <string name="contact">"Контакт"</string>
     <string name="background">"Фон"</string>
     <string name="global_settings">"Глобальні налаштування"</string>
     <string name="vibrate">"Вібрувати"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Останній день"</string>
     <string name="delay_tracking">"Затримка відстеження"</string>
     <string name="no_reminder">"Без нагадування"</string>
-    <string name="video_call">"Відеодзвінок"</string>
     <string name="c">"С"</string>
     <string name="m">"Х"</string>
     <string name="h">"Г"</string>

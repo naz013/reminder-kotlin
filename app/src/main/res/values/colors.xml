@@ -40,8 +40,6 @@
     <color name="color_secondary_12">#1F006398</color>
     <color name="color_secondary_50">#80006398</color>
 
-    <color name="color_on_secondary_50">#000000</color>
-
     <!--OLD COLORS-->
 
     <color name="pureWhite">#FFFFFF</color>
@@ -60,11 +58,8 @@
     <color name="pureBlack">#000000</color>
 
     <color name="whitePrimary">#FFFFFF</color>
-    <color name="whitePrimary30">#4DFFFFFF</color>
 
     <color name="material_grey">#303030</color>
-    <color name="material_grey_dialog">#424242</color>
-    <color name="material_divider">#b6b6b6</color>
 
     <color name="redAccentOld">#FF5252</color>
     <color name="pinkAccentOld">#FF4081</color>
@@ -105,9 +100,7 @@
     <color name="led_teal_50">#80009688</color>
 
     <color name="redAccent">#f44336</color>
-    <color name="redAccent50">#80f44336</color>
     <color name="pinkAccent">#e91e63</color>
-    <color name="pinkAccent50">#80e91e63</color>
     <color name="purpleAccent">#9c27b0</color>
     <color name="purpleDeepAccent">#673ab7</color>
     <color name="indigoAccent">#3f51b5</color>

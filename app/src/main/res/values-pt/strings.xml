@@ -34,7 +34,6 @@
     <string name="no">"Não"</string>
     <string name="add_reminder">"Adicionar lembrete?"</string>
     <string name="name">"Nome"</string>
-    <string name="contact">"Contato"</string>
     <string name="background">"Fundo"</string>
     <string name="global_settings">"Configurações globais"</string>
     <string name="vibrate">"Vibrar"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Último dia"</string>
     <string name="delay_tracking">"Rastreamento de atraso"</string>
     <string name="no_reminder">"Sem lembrete"</string>
-    <string name="video_call">"Chamada de vídeo"</string>
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"H"</string>
