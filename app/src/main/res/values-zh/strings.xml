@@ -34,7 +34,6 @@
     <string name="no">否</string>
     <string name="add_reminder">添加提醒？</string>
     <string name="name">名称</string>
-    <string name="contact">联系</string>
     <string name="background">背景</string>
     <string name="global_settings">全局设置</string>
     <string name="vibrate">振动</string>
@@ -107,7 +106,6 @@
     <string name="last_day">最后一天</string>
     <string name="delay_tracking">延迟跟踪</string>
     <string name="no_reminder">无提醒</string>
-    <string name="video_call">视频电话</string>
     <string name="c">秒</string>
     <string name="m">分钟</string>
     <string name="h">小时</string>

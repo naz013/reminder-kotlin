@@ -34,7 +34,6 @@
     <string name="no">"Ne"</string>
     <string name="add_reminder">"Přidat připomenutí?"</string>
     <string name="name">"Jméno"</string>
-    <string name="contact">"Kontakt"</string>
     <string name="background">"Pozadí"</string>
     <string name="global_settings">"Globální nastavení"</string>
     <string name="vibrate">"Vibrovat"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Poslední den"</string>
     <string name="delay_tracking">"Zpoždění sledování"</string>
     <string name="no_reminder">"No připomínka"</string>
-    <string name="video_call">"Videohovor"</string>
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"H"</string>

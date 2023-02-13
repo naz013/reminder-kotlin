@@ -34,7 +34,6 @@
     <string name="no">"Nie"</string>
     <string name="add_reminder">"Dodać przypomnienie?"</string>
     <string name="name">"Imię"</string>
-    <string name="contact">"Kontakt"</string>
     <string name="background">"Tło"</string>
     <string name="global_settings">"Ustawienia ogólne"</string>
     <string name="vibrate">"Wibrować"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"Ostatni dzień"</string>
     <string name="delay_tracking">"Opóźnienie śledzenia"</string>
     <string name="no_reminder">"Bez przypomnienia"</string>
-    <string name="video_call">"Wideo rozmowa"</string>
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"G"</string>

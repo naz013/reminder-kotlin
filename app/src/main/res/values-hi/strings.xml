@@ -34,7 +34,6 @@
     <string name="no">"नहीं"</string>
     <string name="add_reminder">"अनुस्मारक जोड़ें?"</string>
     <string name="name">"नाम"</string>
-    <string name="contact">"संपर्क"</string>
     <string name="background">"पृष्ठभूमि"</string>
     <string name="global_settings">"वैश्विक व्यवस्था"</string>
     <string name="vibrate">"कांपना"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"आखरी दिन"</string>
     <string name="delay_tracking">"देरी ट्रैकिंग"</string>
     <string name="no_reminder">"कोई अनुस्मारक"</string>
-    <string name="video_call">"वीडियो कॉल"</string>
     <string name="c">"से"</string>
     <string name="m">"मि"</string>
     <string name="h">"स"</string>

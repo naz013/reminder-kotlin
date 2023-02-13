@@ -34,7 +34,6 @@
     <string name="no">"No"</string>
     <string name="add_reminder">"Aggiungi promemoria?"</string>
     <string name="name">"Nome"</string>
-    <string name="contact">"Contatto"</string>
     <string name="background">"Sfondo"</string>
     <string name="global_settings">"Impostazioni globali"</string>
     <string name="vibrate">"Vibrare"</string>
@@ -107,7 +106,6 @@
     <string name="last_day">"L'ultimo giorno"</string>
     <string name="delay_tracking">"Ritardo di monitoraggio"</string>
     <string name="no_reminder">"Non ricordo"</string>
-    <string name="video_call">"Video chiamata"</string>
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"O"</string>

@@ -43,18 +43,6 @@
         <item name="shapeAppearanceOverlay">?shapeAppearanceLargeComponent</item>
     </style>
 
-    <!--Navigation Drawer-->
-    <style name="Widget.MyTheme.NavigationView" parent="Widget.Material3.NavigationView">
-        <item name="itemTextAppearance">?textAppearanceBody2</item>
-    </style>
-
-    <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="android:background">?android:colorBackground</item>
-        <item name="titleTextColor">?android:textColorPrimary</item>
-    </style>
-
-
     <!--OLD STYLES-->
 
     <style name="SplashScreenTheme" parent="Theme.SplashScreen">
@@ -62,11 +50,4 @@
         <item name="postSplashScreenTheme">@style/MyTheme.DayNight</item>
     </style>
 
-    <style name="ActionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">?colorControlNormal</item>
-    </style>
-
-    <style name="BackButtonStyle" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:tint">?colorControlNormal</item>
-    </style>
 </resources>
