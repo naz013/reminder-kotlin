@@ -97,7 +97,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
     }
   }
-  private val reminderObserver: Observer<in Reminder> = Observer { reminder ->
+  private val reminderObserver: Observer<in Reminder?> = Observer { reminder ->
     if (reminder != null) {
       editReminder(reminder)
     }

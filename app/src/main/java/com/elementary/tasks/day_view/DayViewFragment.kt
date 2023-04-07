@@ -52,10 +52,24 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
         else -> false
       }
     })
-    binding.fab.setOnClickListener { showActionDialog(false) }
+    binding.fab.setOnClickListener { tryToShowActionDialog() }
     initPager()
     initViewModel()
     loadData()
+  }
+
+  private fun tryToShowActionDialog() {
+    val item = eventsPagerItem
+    val events = dayViewViewModel.events.value
+    var list = emptyList<EventModel>()
+    if (events != null && item != null) {
+      val foundItem = events.first
+      val foundList = events.second
+      if (foundItem == item) {
+        list = foundList
+      }
+    }
+    showActionDialog(list)
   }
 
   private fun initViewModel() {

@@ -1,25 +1,24 @@
 package com.elementary.tasks.home
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -106,7 +105,7 @@ class HomeViewModel(
         toTime = dateTimeManager.getDayEnd()
       )
     }
-    val mapped = Transformations.map(remindersLiveData) { list ->
+    val mapped = remindersLiveData.map { list ->
       list.map { uiReminderListAdapter.create(it) as UiReminderList }
     }
     mapped.observeForever {

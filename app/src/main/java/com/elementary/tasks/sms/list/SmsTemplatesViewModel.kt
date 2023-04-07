@@ -1,6 +1,6 @@
 package com.elementary.tasks.sms.list
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
@@ -24,7 +24,7 @@ class SmsTemplatesViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val templatesData = SearchableData(dispatcherProvider, viewModelScope, smsTemplatesDao)
-  val smsTemplates = Transformations.map(templatesData) { list ->
+  val smsTemplates = templatesData.map { list ->
     list.map { uiSmsListAdapter.convert(it) }
   }
 

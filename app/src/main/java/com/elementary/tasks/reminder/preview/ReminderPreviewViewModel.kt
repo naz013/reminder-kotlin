@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -70,7 +70,7 @@ class ReminderPreviewViewModel(
   val sharedFile = _sharedFile.toLiveData()
 
   val clearExtraData = mutableLiveDataOf<Boolean>()
-  val reminder = Transformations.map(reminderDao.loadById(id)) {
+  val reminder = reminderDao.loadById(id).map {
     uiReminderPreviewAdapter.create(it)
   }
 

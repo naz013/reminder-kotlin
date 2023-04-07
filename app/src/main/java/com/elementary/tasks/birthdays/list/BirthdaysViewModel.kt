@@ -1,6 +1,6 @@
 package com.elementary.tasks.birthdays.list
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -30,7 +30,7 @@ class BirthdaysViewModel(
     viewModelScope,
     birthdaysDao
   )
-  val birthdays = Transformations.map(birthdaysData) { list ->
+  val birthdays = birthdaysData.map { list ->
     list.map { uiBirthdayListAdapter.convert(it) }.sortedBy { it.nextBirthdayDate }
   }
 

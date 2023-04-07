@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.create.fragments.timer
 
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.adapter.UiUsedTimeListAdapter
 import com.elementary.tasks.core.data.dao.UsedTimeDao
@@ -16,7 +16,7 @@ class UsedTimeViewModel(
   private val uiUsedTimeListAdapter: UiUsedTimeListAdapter
 ) : ViewModel() {
 
-  val usedTimeList = Transformations.map(usedTimeDao.loadFirst5()) { list ->
+  val usedTimeList = usedTimeDao.loadFirst5().map { list ->
     list.map { uiUsedTimeListAdapter.convert(it) }
   }
 

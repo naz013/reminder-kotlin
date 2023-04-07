@@ -1,15 +1,15 @@
 package com.elementary.tasks.groups.list
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class GroupsViewModel(
   private val uiGroupListAdapter: UiGroupListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val allGroups = Transformations.map(reminderGroupDao.loadAll()) { list ->
+  val allGroups =reminderGroupDao.loadAll().map { list ->
     list.map { uiGroupListAdapter.convert(it) }
   }
 
