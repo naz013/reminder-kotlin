@@ -42,4 +42,8 @@
         <key>feature_google_tasks</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>terms_link</key>
+        <value>https://sukhovych.com/terms-and-conditions/</value>
+    </entry>
 </defaultsMap>

@@ -23,6 +23,14 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/termsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/terms_and_conditions"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/permissionsPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
