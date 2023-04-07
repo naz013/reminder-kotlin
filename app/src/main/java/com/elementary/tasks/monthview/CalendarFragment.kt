@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
+import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
@@ -60,6 +62,17 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
 
     initViewModel()
     showCalendar()
+
+    addMenu(R.menu.fragment_calendar, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_settings -> {
+          safeNavigation(CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment())
+          true
+        }
+
+        else -> false
+      }
+    })
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR))
   }
