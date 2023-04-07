@@ -153,6 +153,7 @@ object PrefsConstants {
   const val IS_LIST_SHOWN = "list_showcase"
 
   const val PRIVACY_POLICY_URL = "privacy_url"
+  const val TERMS_URL = "terms_url"
   const val VOICE_HELP_URLS = "voice_help_urls"
 
   const val CONVERSATION_AUTO_MIC = "conversation_auto_mic"

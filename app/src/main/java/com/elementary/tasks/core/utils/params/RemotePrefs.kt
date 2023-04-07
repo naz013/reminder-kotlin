@@ -54,12 +54,15 @@ class RemotePrefs(
 
   private fun reaAppConfigs() {
     val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
+    val termsUrl = config?.getString(TERMS_URL)
     val voiceHelpUrls = config?.getString(VOICE_HELP_URLS)
 
     Timber.d("RemoteConfig: privacyUrl=$privacyUrl")
+    Timber.d("RemoteConfig: termsUrl=$termsUrl")
     Timber.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
 
     privacyUrl?.also { prefs.privacyUrl = it }
+    termsUrl?.also { prefs.termsUrl = it }
     voiceHelpUrls?.also { prefs.voiceHelpUrls = it }
   }
 
@@ -170,6 +173,7 @@ class RemotePrefs(
     private const val VERSION_NAME = "version_name"
 
     private const val PRIVACY_POLICY_URL = "privacy_policy_link"
+    private const val TERMS_URL = "terms_link"
     private const val VOICE_HELP_URLS = "voice_help_urls"
   }
 }

@@ -590,6 +590,10 @@ class Prefs(
     get() = getString(PrefsConstants.PRIVACY_POLICY_URL, "https://sukhovych.com/reminder-privacy-policy/")
     set(value) = putString(PrefsConstants.PRIVACY_POLICY_URL, value)
 
+  var termsUrl: String
+    get() = getString(PrefsConstants.TERMS_URL, "https://sukhovych.com/terms-and-conditions/")
+    set(value) = putString(PrefsConstants.TERMS_URL, value)
+
   var voiceHelpUrls: String
     get() = getString(PrefsConstants.VOICE_HELP_URLS, "{}")
     set(value) = putString(PrefsConstants.VOICE_HELP_URLS, value)

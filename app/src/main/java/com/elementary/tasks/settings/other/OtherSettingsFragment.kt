@@ -48,9 +48,16 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     binding.addPermissionPrefs.visibility = View.VISIBLE
     binding.addPermissionPrefs.setOnClickListener { showPermissionDialog() }
     binding.privacyPolicyPrefs.setOnClickListener { openPrivacyPolicyScreen() }
+    binding.termsPrefs.setOnClickListener { openTermsScreen() }
   }
 
   override fun getTitle(): String = getString(R.string.other)
+
+  private fun openTermsScreen() {
+    navigate {
+      OtherSettingsFragmentDirections.actionOtherSettingsFragmentToTermsFragment()
+    }
+  }
 
   private fun openPrivacyPolicyScreen() {
     navigate {

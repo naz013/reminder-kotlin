@@ -8,11 +8,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.navigation.fragments.BaseWebViewFragment
 
-class PrivacyPolicyFragment : BaseWebViewFragment() {
+class TermsFragment : BaseWebViewFragment() {
 
   override val url: String
     get() {
-      return prefs.privacyUrl
+      return prefs.termsUrl
     }
 
   @SuppressLint("SetJavaScriptEnabled")
@@ -30,5 +30,5 @@ class PrivacyPolicyFragment : BaseWebViewFragment() {
     webView.webChromeClient = WebChromeClient()
   }
 
-  override fun getTitle(): String = getString(R.string.privacy_policy)
+  override fun getTitle(): String = getString(R.string.terms_and_conditions)
 }

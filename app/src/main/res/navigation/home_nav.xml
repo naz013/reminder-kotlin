@@ -418,6 +418,9 @@
             <action
                 android:id="@+id/action_otherSettingsFragment_to_privacyPolicyFragment"
                 app:destination="@id/privacyPolicyFragment" />
+            <action
+                android:id="@+id/action_otherSettingsFragment_to_termsFragment"
+                app:destination="@id/termsFragment" />
         </fragment>
         <fragment
             android:id="@+id/changesFragment"
@@ -428,6 +431,11 @@
             android:id="@+id/privacyPolicyFragment"
             android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
             android:label="@string/privacy_policy"
+            tools:layout="@layout/fragment_settings_web_view" />
+        <fragment
+            android:id="@+id/termsFragment"
+            android:name="com.elementary.tasks.settings.other.TermsFragment"
+            android:label="@string/terms_and_conditions"
             tools:layout="@layout/fragment_settings_web_view" />
     </navigation>
     <fragment
