@@ -50,4 +50,108 @@
         <item name="postSplashScreenTheme">@style/MyTheme.DayNight</item>
     </style>
 
+
+
+    <style name="BottomSheet.Base.Light" parent="Theme.Material3.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+
+        <item name="android:colorEdgeEffect">?attr/sheetsHighlightColor</item>
+        <item name="android:colorControlHighlight">?attr/sheetsHighlightColor</item>
+        <item name="sheetsBackgroundColor">@color/sheetsDayBackground</item>
+        <item name="sheetsPrimaryColor">?sheetsPrimaryColor</item>
+        <item name="android:colorActivatedHighlight">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorPressedHighlight">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorLongPressedHighlight">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorFocusedHighlight">?attr/sheetsPrimaryColor</item>
+
+        <item name="android:colorPrimary">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorPrimaryDark">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorAccent">?attr/sheetsPrimaryColor</item>
+        <item name="android:navigationBarColor">?attr/sheetsBackgroundColor</item>
+    </style>
+
+    <style name="BottomSheet.Base.Dark" parent="Theme.Material3.Dark.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+
+        <item name="android:colorEdgeEffect">?attr/sheetsHighlightColor</item>
+        <item name="android:colorControlHighlight">?attr/sheetsHighlightColor</item>
+
+        <item name="sheetsBackgroundColor">@color/sheetsNightBackground</item>
+        <item name="sheetsPrimaryColor">?colorPrimary</item>
+        <item name="android:colorPrimary">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorPrimaryDark">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorAccent">?attr/sheetsPrimaryColor</item>
+        <item name="android:navigationBarColor">?attr/sheetsBackgroundColor</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Theme.Material3.Dark.BottomSheetDialog">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="DialogSheet.Base.Light" parent="Theme.Material3.Light.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:tint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+
+        <item name="android:colorEdgeEffect">?attr/sheetsHighlightColor</item>
+        <item name="android:colorControlHighlight">?attr/sheetsHighlightColor</item>
+        <item name="sheetsBackgroundColor">@color/sheetsDayBackground</item>
+        <item name="sheetsPrimaryColor">?sheetsPrimaryColor</item>
+        <item name="android:colorActivatedHighlight">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorPressedHighlight">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorLongPressedHighlight">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorFocusedHighlight">?attr/sheetsPrimaryColor</item>
+
+        <item name="android:colorPrimary">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorPrimaryDark">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorAccent">?attr/sheetsPrimaryColor</item>
+        <item name="android:navigationBarColor">?attr/sheetsBackgroundColor</item>
+    </style>
+
+    <style name="DialogSheet.Base.Dark" parent="Theme.Material3.Dark.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+
+        <item name="android:colorEdgeEffect">?attr/sheetsHighlightColor</item>
+        <item name="android:colorControlHighlight">?attr/sheetsHighlightColor</item>
+
+        <item name="sheetsBackgroundColor">@color/sheetsNightBackground</item>
+        <item name="sheetsPrimaryColor">?colorPrimary</item>
+        <item name="android:colorPrimary">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorPrimaryDark">?attr/sheetsPrimaryColor</item>
+        <item name="android:colorAccent">?attr/sheetsPrimaryColor</item>
+        <item name="android:navigationBarColor">?attr/sheetsBackgroundColor</item>
+    </style>
+
 </resources>

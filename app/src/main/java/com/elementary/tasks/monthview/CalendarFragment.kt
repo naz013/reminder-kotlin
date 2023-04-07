@@ -1,22 +1,18 @@
 package com.elementary.tasks.monthview
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -25,8 +21,6 @@ import org.threeten.bp.LocalTime
 import timber.log.Timber
 
 class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
-
-  private var behaviour: BottomSheetBehavior<LinearLayout>? = null
 
   private val viewModel by viewModel<CalendarViewModel>()
 
@@ -58,10 +52,9 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     savedInstanceState: Bundle?
   ) = FragmentFlextCalBinding.inflate(inflater, container, false)
 
+  @SuppressLint("ClickableViewAccessibility")
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    behaviour = BottomSheetBehavior.from(binding.eventsCard)
-    behaviour?.state = BottomSheetBehavior.STATE_HIDDEN
 
     binding.weekdayView.adapter = weekdayAdapter
 
@@ -175,30 +168,18 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   }
 
   private fun showSheet(list: List<EventModel> = listOf()) {
+    val label = dateTimeManager.formatCalendarDate(date)
     withContext {
-      binding.addBirth.setOnClickListener {
-        addBirthday()
-      }
-      binding.addBirth.setOnLongClickListener {
-        toast(getString(R.string.add_birthday))
-        true
-      }
-      binding.addEvent.setOnClickListener {
-        addReminder()
-      }
-      binding.addEvent.setOnLongClickListener {
-        toast(getString(R.string.add_reminder_menu))
-        true
-      }
-      if (list.isNotEmpty()) {
-        binding.loadingView.visibility = View.VISIBLE
-        binding.eventsList.layoutManager = LinearLayoutManager(it)
-        loadEvents(binding.eventsList, binding.loadingView, list)
-      } else {
-        binding.loadingView.visibility = View.GONE
-      }
-      binding.dateLabel.text = dateTimeManager.formatCalendarDate(date)
-      behaviour?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+      DayBottomSheetDialog(
+        context = it,
+        label = label,
+        list = list,
+        addReminderCallback = { addReminder() },
+        addBirthdayCallback = { addBirthday() },
+        loadCallback = { listView, loadingView, emptyView, list ->
+          loadEvents(listView, loadingView, emptyView, list)
+        }
+      ).show()
     }
   }
 }

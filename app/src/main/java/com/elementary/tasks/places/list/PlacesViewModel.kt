@@ -1,6 +1,6 @@
 package com.elementary.tasks.places.list
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
@@ -29,7 +29,7 @@ class PlacesViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val placesData = SearchableData(dispatcherProvider, viewModelScope, placesDao)
-  val places = Transformations.map(placesData) { list ->
+  val places = placesData.map { list ->
     list.map { uiPlaceListAdapter.convert(it) }
   }
   val shareFile = mutableLiveDataOf<ShareFile<UiPlaceList>>()

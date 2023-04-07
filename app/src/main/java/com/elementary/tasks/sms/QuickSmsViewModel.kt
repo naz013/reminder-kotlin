@@ -1,18 +1,18 @@
 package com.elementary.tasks.sms
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
 import com.elementary.tasks.core.data.dao.SmsTemplatesDao
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
 class QuickSmsViewModel(
@@ -26,7 +26,7 @@ class QuickSmsViewModel(
   private val _contactInfo = mutableLiveDataOf<String>()
   val contactInfo = _contactInfo.toLiveData()
 
-  val smsTemplates = Transformations.map(smsTemplatesDao.loadAll()) { list ->
+  val smsTemplates = smsTemplatesDao.loadAll().map { list ->
     list.map { uiSmsListAdapter.convert(it) }
   }
   var number: String = ""

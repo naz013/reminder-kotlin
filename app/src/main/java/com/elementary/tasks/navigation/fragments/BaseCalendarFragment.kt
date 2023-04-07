@@ -1,29 +1,25 @@
 package com.elementary.tasks.navigation.fragments
 
 import android.content.Intent
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.databinding.DialogActionPickerBinding
 import com.elementary.tasks.day_view.day.CalendarEventsAdapter
 import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.monthview.DayBottomSheetDialog
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -50,55 +46,27 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
     skipAction = { }
   )
 
-  protected fun showActionDialog(showEvents: Boolean, list: List<EventModel> = listOf()) {
+  protected fun showActionDialog(list: List<EventModel>) {
     withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      val binding = DialogActionPickerBinding.inflate(LayoutInflater.from(it))
-      binding.addBirth.setOnClickListener {
-        mDialog?.dismiss()
-        addBirthday()
-      }
-      binding.addBirth.setOnLongClickListener {
-        showMessage(getString(R.string.add_birthday))
-        true
-      }
-      binding.addEvent.setOnClickListener {
-        mDialog?.dismiss()
-        addReminder()
-      }
-      binding.addEvent.setOnLongClickListener {
-        showMessage(getString(R.string.add_reminder_menu))
-        true
-      }
-      if (showEvents && list.isNotEmpty()) {
-        binding.loadingView.visibility = View.VISIBLE
-        binding.eventsList.layoutManager = LinearLayoutManager(it)
-        loadEvents(binding.eventsList, binding.loadingView, list)
-      } else {
-        binding.loadingView.visibility = View.GONE
-      }
-      val monthTitle = dateTimeManager.formatCalendarDate(date)
-      binding.dateLabel.text = monthTitle
-      builder.setView(binding.root)
-      builder.setOnDismissListener {
-        job?.cancel()
-      }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        dialog.dismiss()
-      }
-      mDialog = builder.create()
-      mDialog?.show()
+      DayBottomSheetDialog(
+        context = it,
+        label = dateTimeManager.formatCalendarDate(date),
+        list = list,
+        addReminderCallback = { addReminder() },
+        addBirthdayCallback = { addBirthday() },
+        loadCallback = { listView, loadingView, emptyView, list ->
+          loadEvents(listView, loadingView, emptyView, list)
+        }
+      ).show()
     }
   }
 
-  private fun showMessage(string: String) {
-    Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
-  }
-
-  protected fun loadEvents(listView: RecyclerView, emptyView: View, list: List<EventModel>) {
+  protected fun loadEvents(
+    listView: RecyclerView,
+    loadingView: View,
+    emptyView: View,
+    list: List<EventModel>
+  ) {
     this.job?.cancel()
     this.job = launchDefault {
       val res = ArrayList<EventModel>()
@@ -119,11 +87,16 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
       } catch (e: IllegalArgumentException) {
         res
       }
-      withUIContext { showList(listView, emptyView, sorted) }
+      withUIContext { showList(listView, loadingView, emptyView, sorted) }
     }
   }
 
-  private fun showList(listView: RecyclerView, emptyView: View, res: List<EventModel>) {
+  private fun showList(
+    listView: RecyclerView,
+    loadingView: View,
+    emptyView: View,
+    res: List<EventModel>
+  ) {
     val adapter = CalendarEventsAdapter(isDark)
     adapter.setEventListener(object : ActionsListener<EventModel> {
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
@@ -140,8 +113,9 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
     adapter.showMore = false
     adapter.setData(res)
     listView.adapter = adapter
-    listView.visible()
-    emptyView.gone()
+    listView.visibleGone(res.isNotEmpty())
+    emptyView.visibleGone(res.isEmpty())
+    loadingView.gone()
   }
 
   protected fun addReminder() {

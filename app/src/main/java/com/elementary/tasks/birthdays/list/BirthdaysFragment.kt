@@ -62,6 +62,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
   }
 
   private fun initViewModel() {
+    viewModel.birthdays
     viewModel.birthdays.nonNullObserve(viewLifecycleOwner) {
       mAdapter.submitList(it)
       binding.recyclerView.smoothScrollToPosition(0)

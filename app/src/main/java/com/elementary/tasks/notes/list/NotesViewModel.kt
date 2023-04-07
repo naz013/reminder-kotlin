@@ -1,6 +1,6 @@
 package com.elementary.tasks.notes.list
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -51,7 +51,7 @@ class NotesViewModel(
   private val noteSortProcessor = NoteSortProcessor()
   private val notesData =
     SearchableNotesData(dispatcherProvider, viewModelScope, notesDao, noteRepository)
-  val notes = Transformations.map(notesData) { list ->
+  val notes = notesData.map { list ->
     noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
   }
 

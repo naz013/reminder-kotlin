@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.lists.active
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -27,9 +27,7 @@ class ActiveRemindersViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val reminderData = SearchableReminderData(dispatcherProvider, viewModelScope, reminderDao)
-  val events = Transformations.map(reminderData) {
-    uiReminderListsAdapter.convert(it)
-  }
+  val events = reminderData.map { uiReminderListsAdapter.convert(it) }
 
   fun onSearchUpdate(query: String) {
     reminderData.onNewQuery(query)

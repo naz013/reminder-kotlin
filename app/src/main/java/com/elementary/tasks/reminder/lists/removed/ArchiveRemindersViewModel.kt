@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.lists.removed
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -29,7 +29,7 @@ class ArchiveRemindersViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val reminderData = SearchableReminderData(dispatcherProvider, viewModelScope, reminderDao)
-  val events = Transformations.map(reminderData) { list ->
+  val events = reminderData.map { list ->
     list.map { uiReminderListAdapter.create(it) }
   }
 
