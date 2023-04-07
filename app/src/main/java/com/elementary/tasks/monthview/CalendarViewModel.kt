@@ -9,6 +9,7 @@ import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -144,13 +145,13 @@ class CalendarViewModel(
     val map = mutableMapOf<DateTime, EventsCursor>()
     for (model in list) {
       val obj = model.model
-      if (obj is Birthday) {
-        var date = dateTimeManager.parseBirthdayDate(obj.date)
+      if (obj is UiBirthdayList) {
+        var date = dateTimeManager.parseBirthdayDate(obj.birthdayDate)
         val year = LocalDate.now().year
         if (date != null) {
           var i = -1
           while (i < 2) {
-            date = date?.withYear(year + 1)
+            date = date?.withYear(year + i)
             date?.also { setEvent(it, obj.name, birthdayColor, EventsCursor.Type.BIRTHDAY, map) }
             i++
           }
