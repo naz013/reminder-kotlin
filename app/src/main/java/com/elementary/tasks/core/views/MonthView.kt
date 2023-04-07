@@ -222,7 +222,6 @@ class MonthView : View, View.OnTouchListener {
       }
       drawRectText(dateTime.day.toString(), canvas, rect, color, i, typeface)
     }
-    Timber.d("onDraw: ${(System.currentTimeMillis() - start)}")
   }
 
   private fun drawEvents(canvas: Canvas, eventsCursor: EventsCursor, rect: Rect) {
