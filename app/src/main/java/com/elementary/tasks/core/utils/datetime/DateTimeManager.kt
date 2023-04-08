@@ -28,6 +28,14 @@ class DateTimeManager(
   private val language: Language
 ) {
 
+  fun getCurrentDateTime(): LocalDateTime {
+    return LocalDateTime.now()
+  }
+
+  fun getCurrentDate(): LocalDate {
+    return getCurrentDateTime().toLocalDate()
+  }
+
   fun getPlaceDateTimeFromGmt(dateTime: String?): LocalDate? {
     return try {
       fromGmtToLocal(dateTime)?.toLocalDate()

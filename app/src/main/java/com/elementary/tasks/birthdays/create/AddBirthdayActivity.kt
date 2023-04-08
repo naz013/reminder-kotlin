@@ -43,7 +43,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     initTopAppBar()
-    initContact()
+    initContactView()
     binding.scrollView.listenScrollableView { binding.appBar.isSelected = it > 0 }
     binding.birthDate.setOnClickListener { dateDialog() }
     binding.pickContact.setOnClickListener { pickContact() }
@@ -58,7 +58,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     binding.numberView.setText(contact.phone)
   }
 
-  private fun initContact() {
+  private fun initContactView() {
     if (prefs.isTelephonyAllowed) {
       binding.contactCheck.visible()
       binding.contactCheck.setOnCheckedChangeListener { _, isChecked ->
@@ -115,16 +115,17 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun loadBirthday() {
     initViewModel()
+    viewModel.load()
     when {
       intent.data != null -> {
         permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-          readUri()
+          intent.data?.let { viewModel.onFile(it) }
         }
       }
 
       intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent(birthdayFromIntent())
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
-      !intent.hasExtra(Constants.INTENT_ID) -> viewModel.onDateChanged(LocalDate.now())
+      idFromIntent().isEmpty() -> viewModel.onDateChanged(LocalDate.now())
     }
   }
 
@@ -135,10 +136,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun birthdayFromIntent(): Birthday? =
     intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
-
-  private fun readUri() {
-    intent.data?.let { viewModel.onFile(it) }
-  }
 
   private fun initViewModel() {
     viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
