@@ -17,6 +17,7 @@ internal object WorkerFactory {
       Locale.ES -> EsWorker(zoneId, contactsInterface)
       Locale.PT -> PtWorker(zoneId, contactsInterface)
       Locale.PL -> PlWorker(zoneId, contactsInterface)
+      Locale.IT -> ItWorker(zoneId, contactsInterface)
       else -> EnWorker(zoneId, contactsInterface)
     }.also {
       println("getWorker: $locale, $it")
