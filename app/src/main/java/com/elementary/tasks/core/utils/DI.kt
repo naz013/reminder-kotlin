@@ -89,6 +89,7 @@ import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
+import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
@@ -490,6 +491,7 @@ val utilModule = module {
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
   single { MemoryUtil(get()) }
+  single { UriReader(get()) }
   single { BackupTool(get(), get(), get(), get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get(), get(), get()) }

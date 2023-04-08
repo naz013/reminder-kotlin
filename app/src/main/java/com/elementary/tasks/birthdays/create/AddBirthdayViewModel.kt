@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays.create
 
-import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
@@ -9,24 +8,23 @@ import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
-import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.MemoryUtil
+import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import timber.log.Timber
 import java.util.UUID
 
 class AddBirthdayViewModel(
@@ -39,7 +37,7 @@ class AddBirthdayViewModel(
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
-  private val contextProvider: ContextProvider
+  private val uriReader: UriReader
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
@@ -56,11 +54,7 @@ class AddBirthdayViewModel(
   var isEdited = false
   var hasSameInDb = false
   var isFromFile = false
-  var selectedDate: LocalDate = LocalDate.now()
-
-  init {
-    load()
-  }
+  var selectedDate: LocalDate = dateTimeManager.getCurrentDate()
 
   fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -80,12 +74,11 @@ class AddBirthdayViewModel(
   fun onFile(uri: Uri) {
     viewModelScope.launch(dispatcherProvider.default()) {
       runCatching {
-        if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-          val any = MemoryUtil.readFromUri(contextProvider.context, uri, FileConfig.FILE_NAME_BIRTHDAY)
-          if (any != null && any is Birthday) {
-            onBirthdayLoaded(any)
-          }
-        }
+        uriReader.readBirthdayObject(uri)?.also {
+          onBirthdayLoaded(it)
+          isFromFile = true
+          findSame(it.uuId)
+        } ?: run { onDateChanged(dateTimeManager.getCurrentDate()) }
       }
     }
   }
@@ -95,6 +88,7 @@ class AddBirthdayViewModel(
   }
 
   fun onDateChanged(localDate: LocalDate) {
+    Timber.d("onDateChanged: $localDate")
     selectedDate = localDate
     _formattedDate.postValue(dateTimeManager.formatBirthdayDateForUi(selectedDate))
   }
@@ -143,7 +137,9 @@ class AddBirthdayViewModel(
     if (!isEdited) {
       isEdited = true
       editableBirthday = birthday
-      onDateChanged(dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now())
+      onDateChanged(
+        dateTimeManager.parseBirthdayDate(birthday.date) ?: dateTimeManager.getCurrentDate()
+      )
       _birthday.postValue(uiBirthdayEditAdapter.convert(birthday))
     }
   }
