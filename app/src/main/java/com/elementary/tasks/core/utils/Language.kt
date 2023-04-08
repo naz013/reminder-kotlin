@@ -1,12 +1,10 @@
 package com.elementary.tasks.core.utils
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
-import java.util.*
+import java.util.Locale
 
 class Language(
   private val prefs: Prefs,
@@ -49,31 +47,15 @@ class Language(
   }
 
   private fun setLocale(context: Context, locale: Locale): Context {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      updateResources(context, locale)
-    } else updateResourcesLegacy(context, locale)
+    return updateResources(context, locale)
   }
 
-  @TargetApi(Build.VERSION_CODES.N)
   private fun updateResources(context: Context, locale: Locale): Context {
     Locale.setDefault(locale)
     val configuration = context.resources.configuration
     configuration.setLocale(locale)
     configuration.setLayoutDirection(locale)
     return context.createConfigurationContext(configuration)
-  }
-
-  @Suppress("DEPRECATION")
-  private fun updateResourcesLegacy(context: Context, locale: Locale): Context {
-    Locale.setDefault(locale)
-    val resources = context.resources
-    val configuration = resources.configuration
-    configuration.locale = locale
-    runCatching {
-      configuration.setLayoutDirection(locale)
-      resources.updateConfiguration(configuration, resources.displayMetrics)
-    }
-    return context
   }
 
   fun getConversationLocalizedText(context: Context, id: Int): String {
@@ -93,7 +75,8 @@ class Language(
     context.getString(R.string.ukrainian),
     context.getString(R.string.spanish),
     context.getString(R.string.portuguese),
-    context.getString(R.string.polish)
+    context.getString(R.string.polish),
+    context.getString(R.string.italian)
   )
 
   fun getTextLanguage(code: Int) = when (code) {
@@ -102,6 +85,7 @@ class Language(
     2 -> SPANISH
     3 -> PORTUGUESE
     4 -> POLISH
+    5 -> ITALIAN
     else -> ENGLISH
   }
 
@@ -111,6 +95,7 @@ class Language(
     2 -> ES
     3 -> PT
     4 -> PL
+    5 -> IT
     else -> EN
   }
 
@@ -120,6 +105,7 @@ class Language(
     2 -> Locale("es", "")
     3 -> Locale("pt", "")
     4 -> Locale("pl", "")
+    5 -> Locale.ITALIAN
     else -> Locale.ENGLISH
   }
 
@@ -129,6 +115,7 @@ class Language(
     2 -> com.backdoor.engine.misc.Locale.ES
     3 -> com.backdoor.engine.misc.Locale.PT
     4 -> com.backdoor.engine.misc.Locale.PL
+    5 -> com.backdoor.engine.misc.Locale.IT
     else -> com.backdoor.engine.misc.Locale.EN
   }
 
@@ -201,6 +188,7 @@ class Language(
     private const val ES = "es-ES"
     private const val PT = "pt-PT"
     private const val PL = "pl"
+    private const val IT = "it"
 
     fun getScreenLanguage(code: Int): Locale {
       return when (code) {

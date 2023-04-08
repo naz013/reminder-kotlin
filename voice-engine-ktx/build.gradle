@@ -15,5 +15,5 @@ dependencies {
     implementation 'org.threeten:threetenbp:1.6.5'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'io.mockk:mockk:1.13.3'
+    testImplementation 'io.mockk:mockk:1.13.4'
 }
