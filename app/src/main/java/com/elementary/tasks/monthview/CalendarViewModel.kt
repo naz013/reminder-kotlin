@@ -6,6 +6,7 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.calendar.EventsCursor
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.ReminderDao
+import com.elementary.tasks.core.data.livedata.toSingleEvent
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderListData
@@ -44,7 +45,7 @@ class CalendarViewModel(
   private var dayJob: Job? = null
 
   private val _events = mutableLiveDataOf<List<EventModel>>()
-  val events = _events.toLiveData()
+  val events = _events.toSingleEvent()
 
   private val _map = mutableLiveDataOf<Map<DateTime, EventsCursor>>()
   val map = _map.toLiveData()

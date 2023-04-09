@@ -181,6 +181,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   }
 
   private fun showSheet(list: List<EventModel> = listOf()) {
+    Timber.d("showSheet: ${list.size}")
     val label = dateTimeManager.formatCalendarDate(date)
     withContext {
       DayBottomSheetDialog(
