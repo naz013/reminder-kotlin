@@ -680,5 +680,7 @@
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Enable or disable some parameters on Reminder creation screen</string>
     <string name="tell_about_event">Tell about event</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="acc_clear_search">Clear search</string>
+    <string name="acc_switch_to_map">Switch to map</string>
 
 </resources>

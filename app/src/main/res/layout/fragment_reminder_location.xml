@@ -100,20 +100,22 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.button.MaterialButton
+                <Button
+                    style="?attr/materialIconButtonFilledStyle"
                     android:id="@+id/clearButton"
-                    style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:contentDescription="@string/acc_clear_search"
                     app:icon="@drawable/ic_twotone_backspace_24px" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
+                    style="?attr/materialIconButtonFilledStyle"
                     android:id="@+id/mapButton"
-                    style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:contentDescription="@string/acc_switch_to_map"
                     app:icon="@drawable/ic_twotone_map_24px" />
 
             </LinearLayout>
