@@ -129,6 +129,15 @@
                 app:prefs_primary_text="@string/update_additional_parameters"
                 app:prefs_type="check_switch" />
 
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/ledParam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_highlight_24px"
+                app:prefs_primary_text="@string/led_color"
+                app:prefs_type="check_switch" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

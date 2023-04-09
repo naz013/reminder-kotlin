@@ -38,33 +38,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/attackDelay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/delay_tracking"
-                android:textAppearance="?textAppearanceBody1" />
-
-            <LinearLayout
-                android:id="@+id/delayLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp">
-
-                <com.elementary.tasks.core.views.DateTimeView
-                    android:id="@+id/dateView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/searchBlock"
                 android:layout_width="match_parent"
@@ -148,6 +121,33 @@
                     android:textAppearance="?textAppearanceCaption" />
 
             </RadioGroup>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/attackDelay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="@dimen/checkbox_padding"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:text="@string/delay_tracking"
+                android:textAppearance="?textAppearanceBody1" />
+
+            <LinearLayout
+                android:id="@+id/delayLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp">
+
+                <com.elementary.tasks.core.views.DateTimeView
+                    android:id="@+id/dateView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <com.elementary.tasks.core.views.GroupView
                 android:id="@+id/groupView"

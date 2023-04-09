@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
@@ -60,6 +61,11 @@ class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBindin
 
     initParam(binding.extraParam, config.isTuneExtraPickerEnabled()) {
       config.setTuneExtraPickerEnabled(it)
+    }
+
+    binding.ledParam.visibleGone(Module.isPro)
+    initParam(binding.ledParam, config.isLedPickerEnabled()) {
+      config.setLedPickerEnabled(it)
     }
   }
 
