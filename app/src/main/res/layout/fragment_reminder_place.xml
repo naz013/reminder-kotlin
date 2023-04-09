@@ -39,6 +39,26 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/mapButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:text="@string/select_place"
+                    android:tint="?android:textColorPrimary"
+                    app:cornerRadius="25dp"
+                    app:icon="@drawable/ic_twotone_map_24px" />
+
+            </LinearLayout>
+
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/attackDelay"
                 android:layout_width="wrap_content"
@@ -63,26 +83,6 @@
                     android:id="@+id/dateView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/mapButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerInside"
-                    android:text="@string/select_place"
-                    android:tint="?android:textColorPrimary"
-                    app:cornerRadius="25dp"
-                    app:icon="@drawable/ic_twotone_map_24px" />
 
             </LinearLayout>
 
