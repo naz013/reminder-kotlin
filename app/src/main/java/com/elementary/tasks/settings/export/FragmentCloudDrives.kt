@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
@@ -12,10 +11,13 @@ import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
@@ -68,9 +70,9 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     override fun onResult(isSuccess: Boolean) {
       if (isSuccess) {
         analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
-        binding.linkDropbox.text = getString(R.string.disconnect)
+        binding.linkDropbox.text = getString(R.string.logout)
       } else {
-        binding.linkDropbox.text = getString(R.string.connect)
+        binding.linkDropbox.text = getString(R.string.log_in)
       }
     }
   }
@@ -115,10 +117,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
       if (SuperUtil.isGooglePlayServicesAvailable(it) &&
         featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
       ) {
-        binding.tasksView.visibility = View.VISIBLE
+        binding.linkGTasks.visible()
         binding.linkGTasks.setOnClickListener { googleTasksButtonClick() }
+        binding.logoutGTasks.setOnClickListener { googleTasksButtonClick() }
       } else {
-        binding.tasksView.visibility = View.GONE
+        binding.linkGTasks.gone()
+        binding.logoutGTasks.gone()
       }
     }
   }
@@ -128,16 +132,18 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
       if (SuperUtil.isGooglePlayServicesAvailable(it) &&
         featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
       ) {
-        binding.driveView.visibility = View.VISIBLE
+        binding.linkGDrive.visible()
         binding.linkGDrive.setOnClickListener { googleDriveButtonClick() }
+        binding.logoutGDrive.setOnClickListener { googleDriveButtonClick() }
       } else {
-        binding.driveView.visibility = View.GONE
+        binding.linkGDrive.gone()
+        binding.logoutGDrive.gone()
       }
     }
   }
 
   private fun initDropboxButton() {
-    binding.dropboxView.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX))
+    binding.linkDropbox.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX))
     binding.linkDropbox.setOnClickListener { dropboxLogin.login() }
   }
 
@@ -148,7 +154,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   private fun switchGoogleTasksStatus() {
     withActivity {
       if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
-        Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
+        toast(R.string.google_play_services_not_installed)
         return@withActivity
       }
       if (googleLogin.isGoogleTasksLogged) {
@@ -160,11 +166,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   private fun updateProgress(loading: Boolean) {
-    if (loading) {
-      binding.progressView.visibility = View.VISIBLE
-    } else {
-      binding.progressView.visibility = View.GONE
-    }
+    binding.progressView.visibleGone(loading)
     binding.linkDropbox.isEnabled = !loading
     binding.linkGDrive.isEnabled = !loading
     binding.linkGTasks.isEnabled = !loading
@@ -177,7 +179,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   private fun switchGoogleDriveStatus() {
     withActivity {
       if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
-        Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
+        toast(R.string.google_play_services_not_installed)
         return@withActivity
       }
       if (googleLogin.isGoogleDriveLogged) {
@@ -198,18 +200,16 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   private fun updateGoogleTasksStatus(isLogged: Boolean) {
-    if (isLogged) {
-      binding.linkGTasks.text = getString(R.string.disconnect)
-    } else {
-      binding.linkGTasks.text = getString(R.string.connect)
+    runCatching {
+      binding.linkGTasks.visibleGone(!isLogged)
+      binding.logoutGTasks.visibleGone(isLogged)
     }
   }
 
   private fun updateGoogleDriveStatus(isLogged: Boolean) {
-    if (isLogged) {
-      binding.linkGDrive.text = getString(R.string.disconnect)
-    } else {
-      binding.linkGDrive.text = getString(R.string.connect)
+    runCatching {
+      binding.linkGDrive.visibleGone(!isLogged)
+      binding.logoutGDrive.visibleGone(isLogged)
     }
   }
 

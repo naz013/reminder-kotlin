@@ -245,11 +245,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun reloadView(count: Int) {
-    if (count > 0) {
-      binding.emptyItem.gone()
-    } else {
-      binding.emptyItem.visible()
-    }
+    binding.emptyItem.visibleGone(count == 0)
   }
 
   override fun getTitle(): String = getString(R.string.google_tasks)

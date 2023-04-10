@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,8 +42,15 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/application_data"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
+
         <LinearLayout
-            android:id="@+id/dropboxView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -50,48 +58,68 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/dropboxTitle"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/dropbox"
-                android:textAppearance="?textAppearanceHeadlineSmall" />
+                android:textAppearance="?textAppearanceTitleMedium" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/linkDropbox"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connect" />
+                android:text="@string/log_in" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/driveView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="24dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/gDriveTitle"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/google_drive"
-                android:textAppearance="?textAppearanceHeadlineSmall" />
+                android:textAppearance="?textAppearanceTitleMedium" />
 
-            <Button
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.google.android.gms.common.SignInButton
                 android:id="@+id/linkGDrive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connect" />
+                app:buttonSize="wide" />
+
+            <Button
+                android:id="@+id/logoutGDrive"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                android:visibility="gone" />
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/reminders"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
+
         <LinearLayout
-            android:id="@+id/tasksView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -99,18 +127,29 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/gTasksTitle"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/google_tasks"
-                android:textAppearance="?textAppearanceHeadlineSmall" />
+                android:textAppearance="?textAppearanceTitleMedium" />
 
-            <Button
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.google.android.gms.common.SignInButton
                 android:id="@+id/linkGTasks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connect" />
+                app:buttonSize="wide" />
+
+            <Button
+                android:id="@+id/logoutGTasks"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                android:visibility="gone" />
 
         </LinearLayout>
 

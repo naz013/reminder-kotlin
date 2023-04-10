@@ -116,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_google"
+                app:prefs_icon="@drawable/ic_new_g_tasks"
                 app:prefs_primary_text="@string/add_to_google_tasks"
                 app:prefs_type="check_switch" />
 

@@ -134,7 +134,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
@@ -143,13 +143,12 @@
             android:text="@string/you_not_logged_to_google_tasks"
             android:textAppearance="?textAppearanceHeadlineSmall" />
 
-        <Button
+        <com.google.android.gms.common.SignInButton
             android:id="@+id/connectButton"
-            style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/connect" />
+            app:buttonSize="wide" />
 
     </LinearLayout>
 
