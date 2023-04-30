@@ -11,11 +11,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivitySendFeedbackBinding
+import com.elementary.tasks.navigation.fragments.FeedbackFragment
 
 class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
 
-  private val url =
-    "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
+  private val url = FeedbackFragment.FORM_URL
 
   override fun inflateBinding() = ActivitySendFeedbackBinding.inflate(layoutInflater)
 
@@ -35,7 +35,7 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
       }
 
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
-        return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
+        return if (url != null && url.contains(FeedbackFragment.GITHUB_URL)) {
           startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
           true
         } else {

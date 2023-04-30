@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 class FeedbackFragment : BaseWebViewFragment() {
 
   override val url: String
-    get() = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
+    get() = FORM_URL
 
   @SuppressLint("SetJavaScriptEnabled")
   override fun setExtraParams(webView: WebView) {
@@ -25,7 +25,7 @@ class FeedbackFragment : BaseWebViewFragment() {
       override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
-        return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
+        return if (url != null && url.contains(GITHUB_URL)) {
           startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
           true
         } else {
@@ -81,5 +81,10 @@ class FeedbackFragment : BaseWebViewFragment() {
       emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reminder")
     }
     startActivity(Intent.createChooser(emailIntent, "Send mail..."))
+  }
+
+  companion object {
+    const val FORM_URL = "https://forms.gle/eycxh6zb29d3evny6"
+    const val GITHUB_URL = "https://github.com/naz013/reminder-kotlin/issues"
   }
 }
