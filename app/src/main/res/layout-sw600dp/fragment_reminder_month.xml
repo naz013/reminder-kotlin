@@ -17,6 +17,15 @@
             android:layout_marginEnd="@dimen/list_margin"
             android:orientation="vertical">
 
+            <com.elementary.tasks.core.views.ClosableTooltipView
+                android:id="@+id/explanationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="16dp"
+                app:text="@string/reminder_by_month_explanations" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import timber.log.Timber
@@ -31,6 +32,18 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
       mAdapter.delete(position)
       iFace.state.shopItems = mAdapter.data
     }
+  }
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.SHOPPING
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
   }
 
   override fun prepare(): Reminder? {

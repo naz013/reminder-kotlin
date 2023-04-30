@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.TimerPickerView
@@ -30,6 +31,18 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
   private val timesAdapter = TimesAdapter()
   private val viewModel by viewModel<UsedTimeViewModel>()
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.BY_TIMER
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
+  }
 
   override fun prepare(): Reminder? {
     val reminder = iFace.state.reminder

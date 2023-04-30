@@ -9,6 +9,7 @@ import android.widget.CompoundButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderWeekdaysBinding
 import org.threeten.bp.LocalDate
@@ -38,6 +39,18 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
       iFace.state.isWeekdaysSaved = true
       calculateNextDate()
     }
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.BY_WEEKDAY
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
+  }
 
   override fun prepare(): Reminder? {
     val reminder = iFace.state.reminder

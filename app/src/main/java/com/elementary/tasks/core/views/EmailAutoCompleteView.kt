@@ -12,6 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
@@ -154,7 +155,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
   }
 
   private fun loadContacts(callback: ((List<EmailItem>) -> Unit)?) {
-    if (isLoaded) return
+    if (isLoaded || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return
     launchDefault {
       val list = ArrayList<EmailItem>()
       val uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI

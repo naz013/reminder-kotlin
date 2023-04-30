@@ -12,6 +12,7 @@ import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.onChanged
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import org.koin.android.ext.android.inject
@@ -34,6 +35,18 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     }
   private val appName: String
     get() = packageManagerWrapper.getApplicationName(iFace.state.app)
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.LINK
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
+  }
 
   override fun prepare(): Reminder? {
     val type = type
