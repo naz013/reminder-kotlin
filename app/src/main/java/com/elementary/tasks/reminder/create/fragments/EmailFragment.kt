@@ -8,10 +8,23 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.onChanged
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding
 import timber.log.Timber
 
 class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.EMAIL
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
+  }
 
   override fun prepare(): Reminder? {
     val reminder = iFace.state.reminder

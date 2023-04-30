@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.copyExtra
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
@@ -59,6 +60,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   protected val prefs by inject<Prefs>()
   protected val themeUtil by inject<ThemeProvider>()
   protected val googleCalendarUtils by inject<GoogleCalendarUtils>()
+  protected val explanationVisibility by inject<ReminderExplanationVisibility>()
 
   private val calendars: List<GoogleCalendarUtils.CalendarItem> by lazy {
     googleCalendarUtils.getCalendarsList()
@@ -79,9 +81,28 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     getDynamicViews().forEach { initViews(it) }
+    getExplanationView().visibleGone(
+      explanationVisibility.shouldShowExplanation(getExplanationVisibilityType())
+    )
+    setCloseListenerToExplanationView(getExplanationVisibilityHideClickListener())
   }
 
   protected abstract fun getDynamicViews(): List<View>
+
+  protected abstract fun getExplanationView(): View
+
+  protected abstract fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type
+
+  protected abstract fun setCloseListenerToExplanationView(listener: View.OnClickListener)
+
+  private fun getExplanationVisibilityHideClickListener(): View.OnClickListener {
+    return View.OnClickListener {
+      explanationVisibility.explanationShowed(getExplanationVisibilityType())
+      getExplanationView().visibleGone(
+        explanationVisibility.shouldShowExplanation(getExplanationVisibilityType())
+      )
+    }
+  }
 
   private fun initViews(view: View) {
     when (view) {

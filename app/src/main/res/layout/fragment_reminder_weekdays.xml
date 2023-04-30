@@ -15,6 +15,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.elementary.tasks.core.views.ClosableTooltipView
+                android:id="@+id/explanationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                app:text="@string/reminder_by_weekday_explanations" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"

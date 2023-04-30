@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.minusMillis
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.databinding.FragmentReminderYearBinding
@@ -17,6 +18,18 @@ import org.threeten.bp.LocalTime
 import timber.log.Timber
 
 class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.BY_YEAR
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
+  }
 
   override fun prepare(): Reminder? {
     val reminder = iFace.state.reminder

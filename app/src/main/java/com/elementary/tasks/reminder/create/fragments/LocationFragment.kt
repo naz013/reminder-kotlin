@@ -13,6 +13,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.isVisible
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
 import com.elementary.tasks.core.utils.ui.fadeOutAnimation
 import com.elementary.tasks.core.utils.visibleGone
@@ -69,6 +70,18 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
 
   override fun recreateMarker() {
     mAdvancedMapFragment?.recreateMarker()
+  }
+
+  override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
+    return ReminderExplanationVisibility.Type.BY_LOCATION
+  }
+
+  override fun getExplanationView(): View {
+    return binding.explanationView
+  }
+
+  override fun setCloseListenerToExplanationView(listener: View.OnClickListener) {
+    binding.explanationView.setOnClickListener(listener)
   }
 
   override fun prepare(): Reminder? {

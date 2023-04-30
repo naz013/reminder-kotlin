@@ -137,4 +137,8 @@
     </declare-styleable>
 
     <declare-styleable name="ActionView" />
+
+    <declare-styleable name="ClosableTooltipView">
+        <attr name="text" format="string" />
+    </declare-styleable>
 </resources>

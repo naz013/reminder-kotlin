@@ -91,6 +91,7 @@ import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
@@ -422,8 +423,6 @@ val viewModelModule = module {
   viewModel { LoginStateViewModel() }
   viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { VoiceHelpViewModel(get(), get()) }
-
-
 }
 
 val converterModule = module {
@@ -487,6 +486,7 @@ fun dbModule(context: Context): Module {
 
 val utilModule = module {
   single { Prefs(get()) }
+  single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }

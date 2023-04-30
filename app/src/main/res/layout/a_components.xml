@@ -11,8 +11,8 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:liftOnScroll="false"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -38,6 +38,19 @@
             android:layout_marginEnd="@dimen/material_margin"
             android:animateLayoutChanges="true"
             android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.ClosableTooltipView
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
+                app:text="@string/reminder_email_explanations"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Input.Elevated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/reminder_by_date_explanations" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/FilledBoxStyle"
