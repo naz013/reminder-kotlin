@@ -30,13 +30,12 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.notes.create.images.ImagesGridAdapter
-import com.elementary.tasks.notes.create.images.KeepLayoutManager
+import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.google.android.material.carousel.CarouselLayoutManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -46,12 +45,12 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private var isBgDark = false
 
-  private val mAdapter = ImagesGridAdapter()
+  private val adapter = ImagesCarouselAdapter()
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
   private val permissionFlow = PermissionFlow(this, dialogues)
   private val dateTimeManager by inject<DateTimeManager>()
 
-  private val mUiHandler = Handler(Looper.getMainLooper())
+  private val uiHandler = Handler(Looper.getMainLooper())
 
   private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
@@ -117,11 +116,11 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   override fun onDestroy() {
     super.onDestroy()
     adsProvider.destroy()
-    mAdapter.actionsListener = null
+    adapter.actionsListener = null
   }
 
   private fun initImagesList() {
-    mAdapter.actionsListener = object : ActionsListener<UiNoteImage> {
+    adapter.actionsListener = object : ActionsListener<UiNoteImage> {
       override fun onAction(view: View, position: Int, t: UiNoteImage?, actions: ListActions) {
         when (actions) {
           ListActions.OPEN -> openImagePreview(position)
@@ -130,13 +129,12 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
         }
       }
     }
-    binding.imagesList.layoutManager = KeepLayoutManager(this, 6, mAdapter)
-    binding.imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
-    binding.imagesList.adapter = mAdapter
+    binding.imagesList.layoutManager = CarouselLayoutManager()
+    binding.imagesList.adapter = adapter
   }
 
   private fun openImagePreview(position: Int) {
-    imagesSingleton.setCurrent(mAdapter.currentList)
+    imagesSingleton.setCurrent(adapter.currentList)
     startActivity(
       Intent(this, ImagePreviewActivity::class.java)
         .putExtra(Constants.INTENT_POSITION, position)
@@ -241,7 +239,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun showImages(images: List<UiNoteImage>) {
-    mAdapter.submitList(images)
+    adapter.submitList(images)
   }
 
   private fun shareNote() {
@@ -262,7 +260,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun closeWindow() {
-    mUiHandler.post { finishAfterTransition() }
+    uiHandler.post { finishAfterTransition() }
   }
 
   private fun showDeleteDialog() {
