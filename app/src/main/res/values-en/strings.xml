@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Use theme colors from Wallpaper</string>
     <string name="no_action">No action</string>
     <string name="select">Select</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="acc_clear_search">Clear search</string>
+    <string name="acc_switch_to_map">Switch to map</string>
+    <string name="reminder_by_date_explanations">Set your reminder for exact date and time</string>
+    <string name="reminder_by_timer_explanations">Set your reminder by countdown timer</string>
+    <string name="reminder_by_weekday_explanations">Set your reminder for selected weekdays</string>
+    <string name="reminder_by_month_explanations">Set your reminder for the selected day of the month with monthly repeating</string>
+    <string name="reminder_by_year_explanations">Set your reminder for the exact date and time with yearly repeating. Mostly suitable for Birthdays</string>
+    <string name="reminder_email_explanations">Set your reminder for the exact date and time with fields for e-mail</string>
+    <string name="reminder_link_explanations">Set your reminder for the exact date and time with the link or application to open</string>
+    <string name="reminder_shopping_explanations">Set your reminder for the exact date and time with a list of tasks to do or a shopping list</string>
+    <string name="reminder_by_location_explanations">Set your reminder for the exact location with the constraint of entering or leaving the place</string>
+    <string name="reminder_by_places_explanations">Set your reminder for a searchable place</string>
 
 </resources>

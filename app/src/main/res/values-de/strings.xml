@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Verwenden Sie Themenfarben von Wallpaper</string>
     <string name="no_action">Keine Aktion</string>
     <string name="select">Wählen</string>
+    <string name="terms_and_conditions">Geschäftsbedingungen</string>
+    <string name="acc_clear_search">Saubere Suche</string>
+    <string name="acc_switch_to_map">Zur Karte wechseln</string>
+    <string name="reminder_by_date_explanations">Stellen Sie Ihre Erinnerung für genaues Datum und Uhrzeit ein</string>
+    <string name="reminder_by_timer_explanations">Stellen Sie Ihre Erinnerung per Countdown-Timer ein</string>
+    <string name="reminder_by_weekday_explanations">Stellen Sie Ihre Erinnerung für ausgewählte Wochentage ein</string>
+    <string name="reminder_by_month_explanations">Stellen Sie Ihre Erinnerung für den ausgewählten Tag des Monats mit monatlicher Wiederholung ein</string>
+    <string name="reminder_by_year_explanations">Stellen Sie Ihre Erinnerung für das genaue Datum und die Uhrzeit mit jährlicher Wiederholung ein. Am besten geeignet für Geburtstage</string>
+    <string name="reminder_email_explanations">Stellen Sie Ihre Erinnerung für das genaue Datum und die Uhrzeit mit Feldern für E-Mail ein</string>
+    <string name="reminder_link_explanations">Stellen Sie Ihre Erinnerung für das genaue Datum und die Uhrzeit mit dem Link oder der zu öffnenden Anwendung ein</string>
+    <string name="reminder_shopping_explanations">Stellen Sie Ihre Erinnerung für das genaue Datum und die genaue Uhrzeit mit einer Liste der zu erledigenden Aufgaben oder einer Einkaufsliste ein</string>
+    <string name="reminder_by_location_explanations">Stellen Sie Ihre Erinnerung für den genauen Standort mit der Einschränkung ein, den Ort zu betreten oder zu verlassen</string>
+    <string name="reminder_by_places_explanations">Legen Sie Ihre Erinnerung für einen durchsuchbaren Ort fest</string>
 
 </resources>

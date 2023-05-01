@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Use as cores do tema do papel de parede</string>
     <string name="no_action">Nenhuma ação</string>
     <string name="select">Selecione</string>
+    <string name="terms_and_conditions">Termos e Condições</string>
+    <string name="acc_clear_search">Limpar pesquisa</string>
+    <string name="acc_switch_to_map">Alternar para o mapa</string>
+    <string name="reminder_by_date_explanations">Defina seu lembrete para data e hora exatas</string>
+    <string name="reminder_by_timer_explanations">Defina seu lembrete por contagem regressiva</string>
+    <string name="reminder_by_weekday_explanations">Defina seu lembrete para os dias da semana selecionados</string>
+    <string name="reminder_by_month_explanations">Defina seu lembrete para o dia do mês selecionado com repetição mensal</string>
+    <string name="reminder_by_year_explanations">Defina seu lembrete para a data e hora exatas com repetição anual. Principalmente adequado para aniversários</string>
+    <string name="reminder_email_explanations">Defina seu lembrete para a data e hora exatas com campos para e-mail</string>
+    <string name="reminder_link_explanations">Defina seu lembrete para a data e hora exatas com o link ou aplicativo para abrir</string>
+    <string name="reminder_shopping_explanations">Defina seu lembrete para a data e hora exatas com uma lista de tarefas a fazer ou uma lista de compras</string>
+    <string name="reminder_by_location_explanations">Defina seu lembrete para o local exato com a restrição de entrar ou sair do local</string>
+    <string name="reminder_by_places_explanations">Defina seu lembrete para um lugar pesquisável</string>
 
 </resources>
