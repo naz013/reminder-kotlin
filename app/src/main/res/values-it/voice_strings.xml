@@ -41,4 +41,6 @@
     <string name="voice_notes">Appunti</string>
     <string name="voice_reminder_created_on">Promemoria creato il</string>
     <string name="voice_reminder_created">Promemoria creato</string>
+    <string name="voice_this_command_not_supported_on_that_screen">Questo comando non è supportato su quella schermata</string>
+    <string name="voice_found_one_reminder">Trovato un promemoria</string>
 </resources>

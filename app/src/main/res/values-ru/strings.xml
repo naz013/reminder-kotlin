@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Используйте цвета темы из обоев</string>
     <string name="no_action">Нет действий</string>
     <string name="select">Выбирать</string>
+    <string name="terms_and_conditions">Условия и положения</string>
+    <string name="acc_clear_search">Очистить поиск</string>
+    <string name="acc_switch_to_map">Переключиться на карту</string>
+    <string name="reminder_by_date_explanations">Установите напоминание на точную дату и время</string>
+    <string name="reminder_by_timer_explanations">Установите напоминание по таймеру обратного отсчета</string>
+    <string name="reminder_by_weekday_explanations">Установите напоминание для выбранных дней недели</string>
+    <string name="reminder_by_month_explanations">Установите напоминание на выбранный день месяца с ежемесячным повторением</string>
+    <string name="reminder_by_year_explanations">Установите напоминание на точную дату и время с ежегодным повторением. В основном подходит для дней рождения</string>
+    <string name="reminder_email_explanations">Установите напоминание на точную дату и время с полями для электронной почты</string>
+    <string name="reminder_link_explanations">Установите напоминание на точную дату и время со ссылкой или приложением для открытия</string>
+    <string name="reminder_shopping_explanations">Установите напоминание на точную дату и время со списком задач или списком покупок</string>
+    <string name="reminder_by_location_explanations">Установите напоминание для точного местоположения с ограничением входа или выхода из места</string>
+    <string name="reminder_by_places_explanations">Установите напоминание для доступного для поиска места</string>
 
 </resources>

@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Użyj kolorów motywu z tapety</string>
     <string name="no_action">Brak akcji</string>
     <string name="select">Wybrać</string>
+    <string name="terms_and_conditions">Regulamin</string>
+    <string name="acc_clear_search">Wyczyść wyszukiwanie</string>
+    <string name="acc_switch_to_map">Przełącz na mapę</string>
+    <string name="reminder_by_date_explanations">Ustaw przypomnienie na dokładną datę i godzinę</string>
+    <string name="reminder_by_timer_explanations">Ustaw przypomnienie za pomocą minutnika</string>
+    <string name="reminder_by_weekday_explanations">Ustaw przypomnienie na wybrane dni tygodnia</string>
+    <string name="reminder_by_month_explanations">Ustaw przypomnienie na wybrany dzień miesiąca z comiesięcznym powtarzaniem</string>
+    <string name="reminder_by_year_explanations">Ustaw przypomnienie na dokładną datę i godzinę, powtarzając je co roku. Głównie nadaje się na urodziny</string>
+    <string name="reminder_email_explanations">Ustaw przypomnienie na dokładną datę i godzinę z polami na e-mail</string>
+    <string name="reminder_link_explanations">Ustaw przypomnienie z dokładną datą i godziną za pomocą łącza lub aplikacji do otwarcia</string>
+    <string name="reminder_shopping_explanations">Ustaw przypomnienie na dokładną datę i godzinę z listą zadań do wykonania lub listą zakupów</string>
+    <string name="reminder_by_location_explanations">Ustaw przypomnienie o dokładnej lokalizacji z ograniczeniem wejścia lub wyjścia z miejsca</string>
+    <string name="reminder_by_places_explanations">Ustaw przypomnienie o miejscu, które można przeszukiwać</string>
 
 </resources>

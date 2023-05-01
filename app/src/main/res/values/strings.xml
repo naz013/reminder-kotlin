@@ -567,9 +567,7 @@
     <string name="missed_call">Missed Call</string>
     <string name="select_date_in_future">Select date in future</string>
     <string name="backup_data_now">Make backup of data now</string>
-    <string name="voice_this_command_not_supported_on_that_screen">This command not supported on that screen</string>
     <string name="portuguese">Portuguese</string>
-    <string name="voice_found_one_reminder">Found one reminder</string>
     <string name="download">Download</string>
     <string name="from_url">Download from link</string>
     <string name="wrong_url">Wrong link</string>
@@ -686,12 +684,12 @@
     <string name="reminder_by_date_explanations">Set your reminder for exact date and time</string>
     <string name="reminder_by_timer_explanations">Set your reminder by countdown timer</string>
     <string name="reminder_by_weekday_explanations">Set your reminder for selected weekdays</string>
-    <string name="reminder_by_month_explanations">Set your reminder for selected day of month with monthly repeating</string>
-    <string name="reminder_by_year_explanations">Set your reminder for exact date and time with yearly repeating. Mostly suitable for Birthdays</string>
-    <string name="reminder_email_explanations">Set your reminder for exact date and time with fields for e-mail</string>
-    <string name="reminder_link_explanations">Set your reminder for exact date and time with link or application to open</string>
-    <string name="reminder_shopping_explanations">Set your reminder for exact date and time with list of tasks todo or shopping list</string>
-    <string name="reminder_by_location_explanations">Set your reminder for exact location with constraint of entering or leaving the place</string>
-    <string name="reminder_by_places_explanations">Set your reminder for searchable place</string>
+    <string name="reminder_by_month_explanations">Set your reminder for the selected day of the month with monthly repeating</string>
+    <string name="reminder_by_year_explanations">Set your reminder for the exact date and time with yearly repeating. Mostly suitable for Birthdays</string>
+    <string name="reminder_email_explanations">Set your reminder for the exact date and time with fields for e-mail</string>
+    <string name="reminder_shopping_explanations">Set your reminder for the exact date and time with a list of tasks to do or a shopping list</string>
+    <string name="reminder_by_location_explanations">Set your reminder for the exact location with the constraint of entering or leaving the place</string>
+    <string name="reminder_by_places_explanations">Set your reminder for a searchable place</string>
+    <string name="reminder_link_explanations">Set your reminder for the exact date and time with the link or application to open</string>
 
 </resources>

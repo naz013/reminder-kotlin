@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Usa i colori del tema da Wallpaper</string>
     <string name="no_action">Nessuna azione</string>
     <string name="select">Selezionare</string>
+    <string name="terms_and_conditions">Termini e Condizioni</string>
+    <string name="acc_clear_search">Ricerca chiara</string>
+    <string name="acc_switch_to_map">Passa alla mappa</string>
+    <string name="reminder_by_date_explanations">Imposta il tuo promemoria per la data e l\'ora esatte</string>
+    <string name="reminder_by_timer_explanations">Imposta il tuo promemoria con il conto alla rovescia</string>
+    <string name="reminder_by_weekday_explanations">Imposta il tuo promemoria per i giorni della settimana selezionati</string>
+    <string name="reminder_by_month_explanations">Imposta il tuo promemoria per il giorno del mese selezionato con ripetizione mensile</string>
+    <string name="reminder_by_year_explanations">Imposta il tuo promemoria per la data e l\'ora esatte con ripetizione annuale. Principalmente adatto per i compleanni</string>
+    <string name="reminder_email_explanations">Imposta il promemoria per la data e l\'ora esatte con i campi per l\'e-mail</string>
+    <string name="reminder_link_explanations">Imposta il promemoria per la data e l\'ora esatte con il collegamento o l\'applicazione da aprire</string>
+    <string name="reminder_shopping_explanations">Imposta il tuo promemoria per la data e l\'ora esatte con un elenco di attività da svolgere o una lista della spesa</string>
+    <string name="reminder_by_location_explanations">Imposta il tuo promemoria per la posizione esatta con il vincolo di entrare o uscire dal luogo</string>
+    <string name="reminder_by_places_explanations">Imposta il tuo promemoria per un luogo ricercabile</string>
 
 </resources>

@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Використовуйте кольори теми зі шпалер</string>
     <string name="no_action">Ніяких дій</string>
     <string name="select">Виберіть</string>
+    <string name="terms_and_conditions">Правила та умови</string>
+    <string name="acc_clear_search">Очистити пошук</string>
+    <string name="acc_switch_to_map">Переключитися на карту</string>
+    <string name="reminder_by_date_explanations">Встановіть нагадування на точну дату й час</string>
+    <string name="reminder_by_timer_explanations">Встановіть нагадування за допомогою таймера зворотного відліку</string>
+    <string name="reminder_by_weekday_explanations">Встановіть нагадування на вибрані дні тижня</string>
+    <string name="reminder_by_month_explanations">Встановіть нагадування на вибраний день місяця з щомісячним повторенням</string>
+    <string name="reminder_by_year_explanations">Встановіть нагадування на точну дату й час із щорічним повторенням. В основному підходить для днів народження</string>
+    <string name="reminder_email_explanations">Встановіть своє нагадування на точну дату і час з полями для електронної пошти</string>
+    <string name="reminder_link_explanations">Встановіть нагадування на точну дату й час із посиланням або програмою для відкриття</string>
+    <string name="reminder_shopping_explanations">Встановіть нагадування на точну дату й час зі списком справ, які потрібно виконати, або списком покупок</string>
+    <string name="reminder_by_location_explanations">Встановіть нагадування для точного місцезнаходження з обмеженням входу або виходу з місця</string>
+    <string name="reminder_by_places_explanations">Налаштуйте нагадування для місця, доступного для пошуку</string>
 
 </resources>

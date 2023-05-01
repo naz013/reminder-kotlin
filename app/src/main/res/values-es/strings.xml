@@ -676,5 +676,18 @@
     <string name="use_theme_colors_from_wallpaper">Usa los colores del tema del fondo de pantalla</string>
     <string name="no_action">Sin acción</string>
     <string name="select">Seleccionar</string>
+    <string name="terms_and_conditions">Términos y condiciones</string>
+    <string name="acc_clear_search">Borrar búsqueda</string>
+    <string name="acc_switch_to_map">Cambiar al mapa</string>
+    <string name="reminder_by_date_explanations">Configure su recordatorio para la fecha y hora exactas</string>
+    <string name="reminder_by_timer_explanations">Configure su recordatorio por temporizador de cuenta regresiva</string>
+    <string name="reminder_by_weekday_explanations">Configure su recordatorio para los días de semana seleccionados</string>
+    <string name="reminder_by_month_explanations">Configure su recordatorio para el día seleccionado del mes con repetición mensual</string>
+    <string name="reminder_by_year_explanations">Configure su recordatorio para la fecha y hora exactas con repetición anual. Mayormente adecuado para cumpleaños.</string>
+    <string name="reminder_email_explanations">Configure su recordatorio para la fecha y hora exactas con campos para correo electrónico</string>
+    <string name="reminder_link_explanations">Configure su recordatorio para la fecha y hora exactas con el enlace o la aplicación para abrir</string>
+    <string name="reminder_shopping_explanations">Configure su recordatorio para la fecha y hora exactas con una lista de tareas por hacer o una lista de compras</string>
+    <string name="reminder_by_location_explanations">Configura tu recordatorio para la ubicación exacta con la restricción de entrar o salir del lugar</string>
+    <string name="reminder_by_places_explanations">Configura tu recordatorio para un lugar de búsqueda</string>
 
 </resources>
