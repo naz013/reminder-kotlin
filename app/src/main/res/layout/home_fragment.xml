@@ -197,7 +197,7 @@
                     android:background="@drawable/gradient_button_google_selector"
                     android:contentDescription="@string/google_tasks"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_google"
+                    app:srcCompat="@drawable/ic_new_g_tasks"
                     app:tint="?android:textColorPrimary" />
 
                 <androidx.appcompat.widget.AppCompatImageView

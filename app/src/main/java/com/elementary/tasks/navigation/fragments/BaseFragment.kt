@@ -26,6 +26,7 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
   protected val prefs = currentStateHolder.preferences
   protected val isDark = currentStateHolder.theme.isDark
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
+  protected val themeProvider = currentStateHolder.theme
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
+import com.google.android.material.color.DynamicColors
+
 
 class ThemeProvider(
   private val context: Context,
@@ -27,6 +29,7 @@ class ThemeProvider(
             else -> false
           }
         }
+
         else -> prefs.nightMode == AppCompatDelegate.MODE_NIGHT_YES
       }
     }
@@ -86,6 +89,23 @@ class ThemeProvider(
       return R.drawable.preview_map_day
     }
 
+  @ColorInt
+  fun getTertiaryColor(context: Context): Int {
+    return if (DynamicColors.isDynamicColorAvailable() && prefs.useDynamicColors) {
+      // if your base context is already using Material3 theme you can omit R.style argument
+      val dynamicColorContext = DynamicColors.wrapContextIfAvailable(context)
+      val attrsToResolve = intArrayOf(
+        R.attr.colorPrimary
+      )
+      val ta = dynamicColorContext.obtainStyledAttributes(attrsToResolve)
+      val tertiary = ta.getColor(0, ContextCompat.getColor(context, R.color.md_theme_tertiary))
+      ta.recycle() // recycle TypedArray
+      tertiary
+    } else {
+      ContextCompat.getColor(context, R.color.md_theme_tertiary)
+    }
+  }
+
   fun getMarkerRadiusStyle(color: Int): Marker {
     val fillColor: Int
     val strokeColor: Int
@@ -94,66 +114,82 @@ class ThemeProvider(
         fillColor = R.color.secondaryRed12
         strokeColor = R.color.secondaryRed
       }
+
       Color.PURPLE -> {
         fillColor = R.color.secondaryPurple12
         strokeColor = R.color.secondaryPurple
       }
+
       Color.LIGHT_GREEN -> {
         fillColor = R.color.secondaryGreenLight12
         strokeColor = R.color.secondaryGreenLight
       }
+
       Color.GREEN -> {
         fillColor = R.color.secondaryGreen12
         strokeColor = R.color.secondaryGreen
       }
+
       Color.LIGHT_BLUE -> {
         fillColor = R.color.secondaryBlueLight12
         strokeColor = R.color.secondaryBlueLight
       }
+
       Color.BLUE -> {
         fillColor = R.color.secondaryBlue12
         strokeColor = R.color.secondaryBlue
       }
+
       Color.YELLOW -> {
         fillColor = R.color.secondaryYellow12
         strokeColor = R.color.secondaryYellow
       }
+
       Color.ORANGE -> {
         fillColor = R.color.secondaryOrange12
         strokeColor = R.color.secondaryOrange
       }
+
       Color.CYAN -> {
         fillColor = R.color.secondaryCyan12
         strokeColor = R.color.secondaryCyan
       }
+
       Color.PINK -> {
         fillColor = R.color.secondaryPink12
         strokeColor = R.color.secondaryPink
       }
+
       Color.TEAL -> {
         fillColor = R.color.secondaryTeal12
         strokeColor = R.color.secondaryTeal
       }
+
       Color.AMBER -> {
         fillColor = R.color.secondaryAmber12
         strokeColor = R.color.secondaryAmber
       }
+
       Color.DEEP_PURPLE -> {
         fillColor = R.color.secondaryPurpleDeep12
         strokeColor = R.color.secondaryPurpleDeep
       }
+
       Color.DEEP_ORANGE -> {
         fillColor = R.color.secondaryOrangeDeep12
         strokeColor = R.color.secondaryOrangeDeep
       }
+
       Color.INDIGO -> {
         fillColor = R.color.secondaryIndigo12
         strokeColor = R.color.secondaryIndigo
       }
+
       Color.LIME -> {
         fillColor = R.color.secondaryLime12
         strokeColor = R.color.secondaryLime
       }
+
       else -> {
         fillColor = R.color.secondaryBlue12
         strokeColor = R.color.secondaryBlue
