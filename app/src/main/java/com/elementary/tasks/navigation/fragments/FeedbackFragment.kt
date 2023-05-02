@@ -84,7 +84,7 @@ class FeedbackFragment : BaseWebViewFragment() {
   }
 
   companion object {
-    const val FORM_URL = "https://forms.gle/eycxh6zb29d3evny6"
+    const val FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdn_x9tnVgG9CBmA30vHmGhDhtS-gHoq3RDnuNhJPzr2y15LQ/viewform?usp=sf_link"
     const val GITHUB_URL = "https://github.com/naz013/reminder-kotlin/issues"
   }
 }
