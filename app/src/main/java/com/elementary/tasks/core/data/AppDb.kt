@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.CalendarEventsDao
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
@@ -17,6 +15,11 @@ import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.dao.SmsTemplatesDao
 import com.elementary.tasks.core.data.dao.UsedTimeDao
+import com.elementary.tasks.core.data.migrations.MIGRATION_1_2
+import com.elementary.tasks.core.data.migrations.MIGRATION_2_3
+import com.elementary.tasks.core.data.migrations.MIGRATION_3_4
+import com.elementary.tasks.core.data.migrations.MIGRATION_4_5
+import com.elementary.tasks.core.data.migrations.MIGRATION_5_6
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -30,7 +33,8 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.data.models.UsedTime
 
-@Database(entities = [
+@Database(
+  entities = [
     Reminder::class,
     CalendarEvent::class,
     ReminderGroup::class,
@@ -43,7 +47,10 @@ import com.elementary.tasks.core.data.models.UsedTime
     Birthday::class,
     ImageFile::class,
     SmsTemplate::class
-], version = 6, exportSchema = false)
+  ],
+  version = 6,
+  exportSchema = false
+)
 abstract class AppDb : RoomDatabase() {
 
   abstract fun reminderDao(): ReminderDao
@@ -61,45 +68,6 @@ abstract class AppDb : RoomDatabase() {
   companion object {
 
     private var INSTANCE: AppDb? = null
-
-    private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-      override fun migrate(database: SupportSQLiteDatabase) {
-        runCatching { database.execSQL("DROP INDEX index_UsedTime_id") }
-      }
-    }
-    private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
-      override fun migrate(database: SupportSQLiteDatabase) {
-        runCatching { database.execSQL("DROP INDEX index_UsedTime_timeMills") }
-        runCatching { database.execSQL("DROP INDEX index_UsedTime_timeString") }
-      }
-    }
-    private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
-      override fun migrate(database: SupportSQLiteDatabase) {
-        runCatching { database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT") }
-        runCatching { database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT") }
-        runCatching {
-          database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
-        }
-        runCatching { database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT") }
-      }
-    }
-    private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
-      override fun migrate(database: SupportSQLiteDatabase) {
-        runCatching {
-          database.execSQL("ALTER TABLE Reminder ADD COLUMN calendarId INTEGER DEFAULT 0 NOT NULL")
-        }
-      }
-    }
-
-    private val MIGRATION_5_6: Migration = object : Migration(5, 6) {
-      override fun migrate(database: SupportSQLiteDatabase) {
-        runCatching {
-          database.execSQL("ALTER TABLE Reminder ADD COLUMN taskListId TEXT")
-          database.execSQL("ALTER TABLE ImageFile ADD COLUMN filePath TEXT DEFAULT '' NOT NULL")
-          database.execSQL("ALTER TABLE ImageFile ADD COLUMN fileName TEXT DEFAULT '' NOT NULL")
-        }
-      }
-    }
 
     fun getAppDatabase(context: Context): AppDb {
       var instance = INSTANCE
