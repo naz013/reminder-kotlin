@@ -540,7 +540,7 @@ val utilModule = module {
   single { WorkManagerProvider(get()) }
   single { WorkerLauncher(get(), get()) }
 
-  single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get())) }
+  single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get()), get()) }
   single { ReminderAnalyticsTracker(get()) }
   single { VoiceAnalyticsTracker(get()) }
 

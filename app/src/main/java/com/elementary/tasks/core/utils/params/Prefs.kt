@@ -61,6 +61,10 @@ class Prefs(
       notifyKey(PrefsConstants.SHOW_PERMANENT_REMINDERS)
     }
 
+  var analyticsEnabled: Boolean
+    get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, true)
+    set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)
+
   var backupAttachedFiles: Boolean
     get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
     set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)

@@ -694,5 +694,8 @@
     <string name="reminder_by_location_explanations">Set your reminder for the exact location with the constraint of entering or leaving the place</string>
     <string name="reminder_by_places_explanations">Set your reminder for a searchable place</string>
     <string name="reminder_link_explanations">Set your reminder for the exact date and time with the link or application to open</string>
+    <string name="analytics">Analytics</string>
+    <string name="collecting_of_app_analytics_is_disabled">Collecting of app analytics is disabled</string>
+    <string name="collecting_of_app_analytics_is_enabled">Collecting of app analytics is enabled</string>
 
 </resources>

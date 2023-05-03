@@ -28,6 +28,17 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     init24TimePrefs()
     initLanguagePrefs()
     initDynamicColorsPrefs()
+    initAnalyticsPrefs()
+  }
+
+  private fun initAnalyticsPrefs() {
+    binding.analyticsPrefs.setOnClickListener { changeAnalyticsPrefs() }
+    binding.analyticsPrefs.isChecked = prefs.analyticsEnabled
+  }
+
+  private fun changeAnalyticsPrefs() {
+    prefs.analyticsEnabled = !prefs.analyticsEnabled
+    binding.analyticsPrefs.isChecked = prefs.analyticsEnabled
   }
 
   private fun initDynamicColorsPrefs() {
