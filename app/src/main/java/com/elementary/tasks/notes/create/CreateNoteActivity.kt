@@ -117,7 +117,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     override fun onResults(bundle: Bundle?) {
       val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
       if (res != null && res.size > 0) {
-        setText(StringUtils.capitalize(res[0].toString().lowercase()))
+        appendText(StringUtils.capitalize(res[0].toString().lowercase()))
       }
       Timber.d("onResults: $res")
       releaseSpeech()
@@ -126,7 +126,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     override fun onPartialResults(bundle: Bundle?) {
       val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
       if (res != null && res.size > 0) {
-        setText(res[0].toString().lowercase())
+        appendText(res[0].toString().lowercase())
       }
       Timber.d("onPartialResults: $res")
     }
@@ -220,6 +220,14 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     prefs.lastNoteColor
   } else {
     Random().nextInt(ThemeProvider.NOTE_COLORS)
+  }
+
+  private fun appendText(text: String?) {
+    if (text != null) {
+      val newText = binding.taskMessage.trimmedText() + text
+      binding.taskMessage.setText(newText)
+      binding.taskMessage.setSelection(binding.taskMessage.text.toString().length)
+    }
   }
 
   private fun setText(text: String?) {
