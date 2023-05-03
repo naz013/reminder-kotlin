@@ -24,7 +24,7 @@ interface ReminderDao {
 
     @Transaction
     @Query(byIdQuery)
-    fun loadById(id: String): LiveData<Reminder>
+    fun loadById(id: String): LiveData<Reminder?>
 
     @Transaction
     @Query(byIdQuery)

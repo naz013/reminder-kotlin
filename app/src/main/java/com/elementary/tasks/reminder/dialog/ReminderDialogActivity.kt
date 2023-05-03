@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.webkit.MimeTypeMap
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
@@ -307,7 +306,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
     builder.create().show()
   }
 
-  private val mReminderObserver: Observer<in Reminder> = Observer { reminder ->
+  private val mReminderObserver: Observer<in Reminder?> = Observer { reminder ->
     if (reminder != null) {
       if (!isReminderShowed) showInfo(reminder)
     }

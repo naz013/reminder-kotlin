@@ -10,6 +10,7 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.nullObserve
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,7 +53,7 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.reminder.observe(this) { showInfo(it) }
+    viewModel.reminder.nullObserve(this) { showInfo(it) }
   }
 
   private fun showMapData(reminder: Reminder) {

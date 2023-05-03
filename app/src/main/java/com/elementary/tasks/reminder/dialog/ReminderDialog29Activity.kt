@@ -250,7 +250,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     builder.create().show()
   }
 
-  private val mReminderObserver: Observer<in Reminder> = Observer { reminder ->
+  private val mReminderObserver: Observer<in Reminder?> = Observer { reminder ->
     if (reminder != null) {
       if (!isReminderShowed) showInfo(reminder)
     }
