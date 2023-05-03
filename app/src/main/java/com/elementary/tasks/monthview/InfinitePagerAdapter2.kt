@@ -12,8 +12,7 @@ import org.threeten.bp.LocalDate
 import timber.log.Timber
 
 class InfinitePagerAdapter2(
-  private val todayColor: Int,
-  private val startDay: Int,
+  private val dataAccessor: DataAccessor,
   private val monthCallback: MonthCallback
 ) : RecyclerView.Adapter<InfinitePagerAdapter2.ViewHolder>() {
 
@@ -87,8 +86,8 @@ class InfinitePagerAdapter2(
     fun bind(monthPagerItem: MonthPagerItem, data: Map<DateTime, EventsCursor>?) {
       Timber.d("bind: $bindingAdapterPosition, $monthPagerItem, $data")
 
-      binding.monthView.setTodayColor(todayColor)
-      binding.monthView.setStartDayOfWeek(startDay)
+      binding.monthView.setTodayColor(dataAccessor.getTodayColor())
+      binding.monthView.setStartDayOfWeek(dataAccessor.getStartDay())
 
       binding.monthView.setDateClick(object : MonthView.OnDateClick {
         override fun onClick(date: LocalDate) {
@@ -104,5 +103,10 @@ class InfinitePagerAdapter2(
       data?.also { binding.monthView.setEventsMap(it) }
         ?: run { binding.monthView.setEventsMap(emptyMap()) }
     }
+  }
+
+  interface DataAccessor {
+    fun getTodayColor(): Int
+    fun getStartDay(): Int
   }
 }

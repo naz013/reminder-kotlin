@@ -11,7 +11,6 @@ import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
@@ -22,14 +21,15 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import timber.log.Timber
 
-class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
+class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback,
+  InfinitePagerAdapter2.DataAccessor {
 
   private val viewModel by viewModel<CalendarViewModel>()
 
-  private val weekdayAdapter: WeekdayArrayAdapter by lazy {
-    WeekdayArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, daysOfWeek, isDark)
-  }
-  private val infinitePagerAdapter = InfinitePagerAdapter2(prefs.todayColor, prefs.startDay, this)
+  private val infinitePagerAdapter = InfinitePagerAdapter2(
+    dataAccessor = this,
+    monthCallback = this
+  )
 
   private val daysOfWeek: ArrayList<String>
     get() {
@@ -46,6 +46,14 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
       return list
     }
 
+  override fun getStartDay(): Int {
+    return prefs.startDay
+  }
+
+  override fun getTodayColor(): Int {
+    return prefs.todayColor
+  }
+
   override fun getTitle(): String = updateMenuTitles(LocalDate.now())
 
   override fun inflate(
@@ -58,7 +66,12 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    binding.weekdayView.adapter = weekdayAdapter
+    binding.weekdayView.adapter = WeekdayArrayAdapter(
+      context = requireContext(),
+      textViewResourceId = android.R.layout.simple_list_item_1,
+      objects = daysOfWeek,
+      isDark = isDark
+    )
 
     initViewModel()
     showCalendar()
