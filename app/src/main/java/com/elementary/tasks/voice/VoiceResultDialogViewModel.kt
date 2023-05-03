@@ -1,11 +1,11 @@
 package com.elementary.tasks.voice
 
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.mapNullable
 import kotlinx.coroutines.launch
 
 class VoiceResultDialogViewModel(
@@ -15,7 +15,7 @@ class VoiceResultDialogViewModel(
   dispatcherProvider: DispatcherProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val reminder = reminderDao.loadById(id).map {
+  val reminder = reminderDao.loadById(id).mapNullable {
     uiReminderListAdapter.create(it)
   }
   var hasSameInDb: Boolean = false

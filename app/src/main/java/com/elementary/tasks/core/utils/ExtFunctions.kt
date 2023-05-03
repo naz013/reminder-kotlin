@@ -12,10 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.IntRange
+import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
@@ -24,8 +26,10 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
@@ -217,11 +221,17 @@ suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T)
   : T = withContext(Dispatchers.Main, block)
 
 @Deprecated("Use class scope for coroutine")
-fun launchDefault(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
+fun launchDefault(
+  start: CoroutineStart = CoroutineStart.DEFAULT,
+  block: suspend CoroutineScope.() -> Unit
+)
   : Job = GlobalScope.launch(Dispatchers.Default, start, block)
 
 @Deprecated("Use class scope for coroutine")
-fun launchIo(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
+fun launchIo(
+  start: CoroutineStart = CoroutineStart.DEFAULT,
+  block: suspend CoroutineScope.() -> Unit
+)
   : Job = GlobalScope.launch(Dispatchers.IO, start, block)
 
 fun EditText.onChanged(function: (String) -> Unit) {
@@ -285,7 +295,11 @@ fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) 
   })
 }
 
-fun ExportToCalendarView.bindProperty(enabled: Boolean, calendarId: Long, listener: ((Boolean, Long) -> Unit)) {
+fun ExportToCalendarView.bindProperty(
+  enabled: Boolean,
+  calendarId: Long,
+  listener: ((Boolean, Long) -> Unit)
+) {
   this.calendarState = if (enabled) {
     ExportToCalendarView.State.YES
   } else {
@@ -299,7 +313,11 @@ fun ExportToCalendarView.bindProperty(enabled: Boolean, calendarId: Long, listen
   }
 }
 
-fun ExportToGoogleTasksView.bindProperty(enabled: Boolean, listId: String?, listener: ((Boolean, String) -> Unit)) {
+fun ExportToGoogleTasksView.bindProperty(
+  enabled: Boolean,
+  listId: String?,
+  listener: ((Boolean, String) -> Unit)
+) {
   this.tasksState = if (enabled) {
     ExportToGoogleTasksView.State.YES
   } else {
@@ -398,7 +416,12 @@ fun TuneExtraView.bindProperty(value: Reminder, listener: ((Reminder) -> Unit)) 
   }
 }
 
-fun ExclusionPickerView.bindProperty(v1: List<Int>, v2: String, v3: String, listener: ((List<Int>, String, String) -> Unit)) {
+fun ExclusionPickerView.bindProperty(
+  v1: List<Int>,
+  v2: String,
+  v3: String,
+  listener: ((List<Int>, String, String) -> Unit)
+) {
   this.setHours(v1)
   this.setRangeHours(v2, v3)
   this.onExclusionUpdateListener = { a1, a2, a3 ->
@@ -416,4 +439,26 @@ fun <T> LiveData<T>.nonNullObserve(owner: LifecycleOwner, observer: Observer<T>)
       observer.onChanged(o)
     }
   }
+}
+
+fun <T> LiveData<out T?>.nullObserve(owner: LifecycleOwner, observer: Observer<T>) {
+  this.observe(owner) { o: T? ->
+    if (o != null) {
+      observer.onChanged(o)
+    }
+  }
+}
+
+@MainThread
+@CheckResult
+fun <X, Y> LiveData<X?>.mapNullable(
+  transform: (@JvmSuppressWildcards X) -> (@JvmSuppressWildcards Y)
+): LiveData<Y> {
+  val result = MediatorLiveData<Y>()
+  result.addSource(this) { x ->
+    if (x != null) {
+      result.value = transform(x)
+    }
+  }
+  return result
 }

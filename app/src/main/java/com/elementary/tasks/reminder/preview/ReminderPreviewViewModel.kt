@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.preview
 
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -25,6 +24,7 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
+import com.elementary.tasks.core.utils.mapNullable
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -70,7 +70,7 @@ class ReminderPreviewViewModel(
   val sharedFile = _sharedFile.toLiveData()
 
   val clearExtraData = mutableLiveDataOf<Boolean>()
-  val reminder = reminderDao.loadById(id).map {
+  val reminder = reminderDao.loadById(id).mapNullable {
     uiReminderPreviewAdapter.create(it)
   }
 
