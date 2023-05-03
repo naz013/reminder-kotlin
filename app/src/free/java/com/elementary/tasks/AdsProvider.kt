@@ -131,24 +131,11 @@ class AdsProvider {
 
   companion object {
     private const val ADMOB_ID = "ca-app-pub-5133908997831400~9675541050"
-    const val REMINDER_BANNER_ID = "ca-app-pub-5133908997831400/1092844800"
-    const val NOTE_BANNER_ID = "ca-app-pub-5133908997831400/9698572063"
-    const val BIRTHDAY_BANNER_ID = "ca-app-pub-5133908997831400/5543225709"
-    const val GTASKS_BANNER_ID = "ca-app-pub-5133908997831400/1152801971"
     const val REMINDER_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1084030852"
     const val NOTE_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/4831704177"
     const val ADS_VIEW_TYPE = 100
 
     private var wasError = false
-
-    fun numberOfAds(contentSize: Int): Int {
-      if (contentSize == 0) return 0
-      return when {
-        contentSize >= 8 -> 2
-        contentSize >= 16 -> 3
-        else -> 1
-      }
-    }
 
     fun hasAds(): Boolean {
       return !wasError

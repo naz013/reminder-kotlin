@@ -53,5 +53,16 @@
             app:prefs_primary_text="@string/_24_hour_time_format"
             app:prefs_type="none" />
 
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/analyticsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_analytics_24"
+            app:prefs_primary_text="@string/analytics"
+            app:prefs_secondary_text_off="@string/collecting_of_app_analytics_is_disabled"
+            app:prefs_secondary_text_on="@string/collecting_of_app_analytics_is_enabled"
+            app:prefs_type="check_switch" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
