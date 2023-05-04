@@ -21,6 +21,7 @@ import com.elementary.tasks.home.BottomNavActivity
 import hirondelle.date4j.DateTime
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -111,18 +112,17 @@ class CalendarMonthFactory(
   private fun showEvents() {
     val birthdayTime = dateTimeManager.getBirthdayLocalTime()
 
-    val isFeature = prefs.isFutureEventEnabled
     val isRemindersEnabled = prefs.isRemindersInCalendarEnabled
 
     birthdayTime?.also { widgetDataProvider.setTime(it) }
 
     if (isRemindersEnabled) {
-      widgetDataProvider.setFeature(isFeature)
+      widgetDataProvider.setFeature(prefs.isFutureEventEnabled)
     }
     widgetDataProvider.prepare()
     pagerData.clear()
 
-    var dateTime = LocalDateTime.of(LocalDate.now(), birthdayTime)
+    var dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now())
 
     var position = 0
     do {
