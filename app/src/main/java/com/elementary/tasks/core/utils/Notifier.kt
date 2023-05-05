@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.utils
 
-import android.annotation.TargetApi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,16 +16,13 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
-import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
@@ -35,7 +31,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.splash.SplashScreenActivity
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 class Notifier(
   private val context: Context,
@@ -48,16 +44,13 @@ class Notifier(
   fun createChannels() {
     val manager = systemServiceProvider.provideNotificationManager()
     manager?.run {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        createNotificationChannel(createReminderChannel())
-        createNotificationChannel(createSystemChannel())
-        createNotificationChannel(createSilentChannel())
-        createNotificationChannel(createNoteChannel())
-      }
+      createNotificationChannel(createReminderChannel())
+      createNotificationChannel(createSystemChannel())
+      createNotificationChannel(createSilentChannel())
+      createNotificationChannel(createNoteChannel())
     }
   }
 
-  @TargetApi(Build.VERSION_CODES.O)
   private fun createSystemChannel(): NotificationChannel {
     val name = context.getString(R.string.info_channel)
     val descr = context.getString(R.string.channel_for_other_info_notifications)
@@ -71,7 +64,6 @@ class Notifier(
     return channel
   }
 
-  @TargetApi(Build.VERSION_CODES.O)
   private fun createReminderChannel(): NotificationChannel {
     val name = context.getString(R.string.reminder_channel)
     val descr = context.getString(R.string.default_reminder_notifications)
@@ -85,7 +77,6 @@ class Notifier(
     return channel
   }
 
-  @TargetApi(Build.VERSION_CODES.O)
   private fun createNoteChannel(): NotificationChannel {
     val name = context.getString(R.string.note_channel)
     val descr = context.getString(R.string.default_note_notifications)
@@ -99,7 +90,6 @@ class Notifier(
     return channel
   }
 
-  @TargetApi(Build.VERSION_CODES.O)
   private fun createSilentChannel(): NotificationChannel {
     val name = context.getString(R.string.silent_channel)
     val description = context.getString(R.string.channel_for_silent_notifiations)
@@ -315,185 +305,6 @@ class Notifier(
       builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss)
       notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
     }
-  }
-
-  // Checked for Notification permission
-  fun showSimpleBirthday(id: String) {
-    val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
-    val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-    val intent = PendingIntentWrapper.getBroadcast(
-      context,
-      birthday.uniqueId,
-      BirthdayActionReceiver.show(context, id),
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
-    builder.setContentIntent(intent)
-    builder.setAutoCancel(false)
-    builder.setOngoing(true)
-    builder.priority = NotificationCompat.PRIORITY_HIGH
-    builder.setContentTitle(birthday.name)
-    if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context)
-      && prefs.isSoundInSilentModeEnabled
-    ) {
-      val melodyPath: String = if (Module.isPro && !isGlobal(prefs)) {
-        prefs.birthdayMelody
-      } else {
-        prefs.melodyFile
-      }
-      ReminderUtils.getSoundUri(context, prefs, melodyPath).let {
-        context.grantUriPermission(
-          "com.android.systemui",
-          it,
-          Intent.FLAG_GRANT_READ_URI_PERMISSION
-        )
-        builder.setSound(it)
-      }
-    }
-    var vibrate = prefs.isVibrateEnabled
-    if (Module.isPro && !isGlobal(prefs)) {
-      vibrate = prefs.isBirthdayVibrationEnabled
-    }
-    if (vibrate) {
-      vibrate = prefs.isInfiniteVibrateEnabled
-      if (Module.isPro && !isGlobal(prefs)) {
-        vibrate = prefs.isBirthdayInfiniteVibrationEnabled
-      }
-      val pattern: LongArray = if (vibrate) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-      builder.setVibrate(pattern)
-    }
-    if (Module.isPro && prefs.isLedEnabled) {
-      var ledColor = LED.getLED(prefs.ledColor)
-      if (!isGlobal(prefs)) {
-        ledColor = LED.getLED(prefs.birthdayLedColor)
-      }
-      builder.setLights(ledColor, 500, 1000)
-    }
-    builder.setContentText(context.getString(R.string.birthday))
-
-    val piDismiss = PendingIntentWrapper.getBroadcast(
-      context,
-      birthday.uniqueId,
-      BirthdayActionReceiver.hide(context, id),
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
-    builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
-
-    if (prefs.isTelephonyAllowed && !TextUtils.isEmpty(birthday.number)) {
-      val piCall = PendingIntentWrapper.getBroadcast(
-        context,
-        birthday.uniqueId,
-        BirthdayActionReceiver.call(context, id),
-        PendingIntent.FLAG_CANCEL_CURRENT
-      )
-      builder.addAction(
-        R.drawable.ic_twotone_call_white,
-        context.getString(R.string.make_call),
-        piCall
-      )
-
-      val piSms = PendingIntentWrapper.getBroadcast(
-        context,
-        birthday.uniqueId,
-        BirthdayActionReceiver.sms(context, id),
-        PendingIntent.FLAG_CANCEL_CURRENT
-      )
-      builder.addAction(
-        R.drawable.ic_twotone_send_white,
-        context.getString(R.string.send_sms),
-        piSms
-      )
-    }
-
-    notify(birthday.uniqueId, builder.build())
-  }
-
-  private fun isGlobal(prefs: Prefs): Boolean {
-    return prefs.isBirthdayGlobalEnabled
-  }
-
-  // Checked for Notification permission
-  fun showSimpleReminder(id: String) {
-    Timber.d("showSimpleReminder: ")
-    val reminder = reminderRepository.getById(id) ?: return
-    val dismissIntent = Intent(context, ReminderActionReceiver::class.java)
-    dismissIntent.action = ReminderActionReceiver.ACTION_HIDE
-    dismissIntent.putExtra(Constants.INTENT_ID, id)
-    val piDismiss = PendingIntentWrapper.getBroadcast(
-      context,
-      reminder.uniqueId,
-      dismissIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
-    val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-    val notificationIntent = ReminderActionReceiver.showIntent(context, id)
-    val intent = PendingIntentWrapper.getBroadcast(
-      context,
-      reminder.uniqueId,
-      notificationIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
-    builder.setContentIntent(intent)
-    builder.setAutoCancel(false)
-    builder.setOngoing(true)
-    builder.priority = NotificationCompat.PRIORITY_HIGH
-    builder.setContentTitle(reminder.summary)
-    val appName: String = if (Module.isPro) {
-      context.getString(R.string.app_name_pro)
-    } else {
-      context.getString(R.string.app_name)
-    }
-    if (!SuperUtil.isDoNotDisturbEnabled(context) ||
-      SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled
-    ) {
-      ReminderUtils.getSoundUri(context, prefs, reminder.melodyPath).let {
-        context.grantUriPermission(
-          "com.android.systemui",
-          it,
-          Intent.FLAG_GRANT_READ_URI_PERMISSION
-        )
-        builder.setSound(it)
-      }
-    }
-    if (prefs.isVibrateEnabled) {
-      val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-      builder.setVibrate(pattern)
-    }
-    if (Module.isPro && prefs.isLedEnabled) {
-      if (reminder.color != -1) {
-        builder.setLights(reminder.color, 500, 1000)
-      } else {
-        builder.setLights(LED.getLED(prefs.ledColor), 500, 1000)
-      }
-    }
-    builder.setContentText(appName)
-    builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
-    if (!Reminder.isGpsType(reminder.type)) {
-      val snoozeIntent = Intent(context, ReminderActionReceiver::class.java)
-      snoozeIntent.action = ReminderActionReceiver.ACTION_SNOOZE
-      snoozeIntent.putExtra(Constants.INTENT_ID, id)
-      val piSnooze = PendingIntentWrapper.getBroadcast(
-        context,
-        reminder.uniqueId,
-        snoozeIntent,
-        PendingIntent.FLAG_CANCEL_CURRENT
-      )
-      builder.addAction(
-        R.drawable.ic_twotone_snooze_24px,
-        context.getString(R.string.acc_button_snooze),
-        piSnooze
-      )
-    }
-    notify(reminder.uniqueId, builder.build())
   }
 
   companion object {

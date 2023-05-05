@@ -10,6 +10,7 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
+@Deprecated("After S")
 class SelectApplicationViewModel(
   dispatcherProvider: DispatcherProvider,
   private val packageManagerWrapper: PackageManagerWrapper

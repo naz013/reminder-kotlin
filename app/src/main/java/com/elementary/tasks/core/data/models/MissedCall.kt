@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.*
 
+@Deprecated("After S")
 @Entity
 data class MissedCall(
   @PrimaryKey

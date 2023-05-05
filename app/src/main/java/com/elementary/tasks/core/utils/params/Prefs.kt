@@ -94,10 +94,12 @@ class Prefs(
     get() = getStringArray(PrefsConstants.AUTO_BACKUP_FLAGS)
     set(value) = putStringArray(PrefsConstants.AUTO_BACKUP_FLAGS, value)
 
+  @Deprecated("After Q")
   var playbackDuration: Int
     get() = getInt(PrefsConstants.PLAYBACK_DURATION)
     set(value) = putInt(PrefsConstants.PLAYBACK_DURATION, value)
 
+  @Deprecated("After Q")
   var birthdayPlaybackDuration: Int
     get() = getInt(PrefsConstants.BIRTHDAY_PLAYBACK_DURATION)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PLAYBACK_DURATION, value)
@@ -161,10 +163,12 @@ class Prefs(
     get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
 
+  @Deprecated("After S")
   var missedCallPriority: Int
     get() = getInt(PrefsConstants.MISSED_CALL_PRIORITY)
     set(value) = putInt(PrefsConstants.MISSED_CALL_PRIORITY, value)
 
+  @Deprecated("After Q")
   var unlockPriority: Int
     get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
     set(value) = putInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY, value)
@@ -232,10 +236,12 @@ class Prefs(
     get() = getInt(PrefsConstants.CONVERSATION_LOCALE)
     set(value) = putInt(PrefsConstants.CONVERSATION_LOCALE, value)
 
+  @Deprecated("After Q")
   var ttsLocale: String
     get() = getString(PrefsConstants.TTS_LOCALE)
     set(value) = putString(PrefsConstants.TTS_LOCALE, value)
 
+  @Deprecated("After Q")
   var birthdayTtsLocale: String
     get() = getString(PrefsConstants.BIRTHDAY_TTS_LOCALE)
     set(value) = putString(PrefsConstants.BIRTHDAY_TTS_LOCALE, value)
@@ -267,6 +273,7 @@ class Prefs(
     get() = getBoolean(PrefsConstants.EXPORT_TO_STOCK)
     set(value) = putBoolean(PrefsConstants.EXPORT_TO_STOCK, value)
 
+  @Deprecated("After Q")
   var isFoldingEnabled: Boolean
     get() = getBoolean(PrefsConstants.SMART_FOLD)
     set(value) = putBoolean(PrefsConstants.SMART_FOLD, value)
@@ -311,18 +318,22 @@ class Prefs(
     get() = getInt(PrefsConstants.TRACK_TIME)
     set(value) = putInt(PrefsConstants.TRACK_TIME, value)
 
+  @Deprecated("After S")
   var isMissedReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.MISSED_CALL_REMINDER)
     set(value) = putBoolean(PrefsConstants.MISSED_CALL_REMINDER, value)
 
+  @Deprecated("After S")
   var missedReminderTime: Int
     get() = getInt(PrefsConstants.MISSED_CALL_TIME)
     set(value) = putInt(PrefsConstants.MISSED_CALL_TIME, value)
 
+  @Deprecated("After S")
   var isQuickSmsEnabled: Boolean
     get() = getBoolean(PrefsConstants.QUICK_SMS)
     set(value) = putBoolean(PrefsConstants.QUICK_SMS, value)
 
+  @Deprecated("After S")
   var isFollowReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.FOLLOW_REMINDER)
     set(value) = putBoolean(PrefsConstants.FOLLOW_REMINDER, value)
@@ -335,6 +346,7 @@ class Prefs(
     get() = SuperUtil.decrypt(getString(PrefsConstants.TASKS_USER))
     set(value) = putString(PrefsConstants.TASKS_USER, SuperUtil.encrypt(value))
 
+  @Deprecated("After Q")
   var isManualRemoveEnabled: Boolean
     get() = getBoolean(PrefsConstants.NOTIFICATION_REMOVE)
     set(value) = putBoolean(PrefsConstants.NOTIFICATION_REMOVE, value)
@@ -351,10 +363,12 @@ class Prefs(
     get() = getBoolean(PrefsConstants.INFINITE_VIBRATION)
     set(value) = putBoolean(PrefsConstants.INFINITE_VIBRATION, value)
 
+  @Deprecated("After Q")
   var isSoundInSilentModeEnabled: Boolean
     get() = getBoolean(PrefsConstants.SILENT_SOUND)
     set(value) = putBoolean(PrefsConstants.SILENT_SOUND, value)
 
+  @Deprecated("After Q")
   var isInfiniteSoundEnabled: Boolean
     get() = getBoolean(PrefsConstants.INFINITE_SOUND)
     set(value) = putBoolean(PrefsConstants.INFINITE_SOUND, value)
@@ -367,22 +381,27 @@ class Prefs(
     get() = getInt(PrefsConstants.VOLUME)
     set(value) = putInt(PrefsConstants.VOLUME, value)
 
+  @Deprecated("After Q")
   var isIncreasingLoudnessEnabled: Boolean
     get() = getBoolean(PrefsConstants.INCREASING_VOLUME)
     set(value) = putBoolean(PrefsConstants.INCREASING_VOLUME, value)
 
+  @Deprecated("After Q")
   var isTtsEnabled: Boolean
     get() = getBoolean(PrefsConstants.TTS)
     set(value) = putBoolean(PrefsConstants.TTS, value)
 
+  @Deprecated("After Q")
   var isDeviceUnlockEnabled: Boolean
     get() = getBoolean(PrefsConstants.UNLOCK_DEVICE)
     set(value) = putBoolean(PrefsConstants.UNLOCK_DEVICE, value)
 
+  @Deprecated("After Q")
   var isAutoLaunchEnabled: Boolean
     get() = getBoolean(PrefsConstants.APPLICATION_AUTO_LAUNCH)
     set(value) = putBoolean(PrefsConstants.APPLICATION_AUTO_LAUNCH, value)
 
+  @Deprecated("After Q")
   var isAutoCallEnabled: Boolean
     get() = getBoolean(PrefsConstants.AUTO_CALL)
     set(value) = putBoolean(PrefsConstants.AUTO_CALL, value)
@@ -500,14 +519,17 @@ class Prefs(
     get() = getBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, value)
 
+  @Deprecated("After Q")
   var isBirthdaySilentEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_SILENT_STATUS)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_SILENT_STATUS, value)
 
+  @Deprecated("After Q")
   var isBirthdayInfiniteSoundEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_INFINITE_SOUND)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_INFINITE_SOUND, value)
 
+  @Deprecated("After Q")
   var isBirthdayWakeEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_WAKE_STATUS)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_WAKE_STATUS, value)
@@ -516,6 +538,7 @@ class Prefs(
     get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, value)
 
+  @Deprecated("After Q")
   var isBirthdayTtsEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_TTS)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_TTS, value)
@@ -574,6 +597,7 @@ class Prefs(
     get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY)
     set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
+  @Deprecated("After Q")
   var reminderType: Int
     get() = getInt(PrefsConstants.REMINDER_TYPE)
     set(reminderType) = putInt(PrefsConstants.REMINDER_TYPE, reminderType)
@@ -586,6 +610,7 @@ class Prefs(
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
+  @Deprecated("After Q")
   var isIgnoreWindowType: Boolean
     get() = getBoolean(PrefsConstants.IGNORE_WINDOW_TYPE)
     set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)

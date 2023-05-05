@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.apps.filter
 
+@Deprecated("After S")
 abstract class SearchModifier<V>(
   modifier: Modifier<V>? = null,
   callback: ((List<V>) -> Unit)? = null

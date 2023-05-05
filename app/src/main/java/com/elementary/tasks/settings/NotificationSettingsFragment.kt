@@ -86,6 +86,28 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     initWearNotification()
     initUnlockPriorityPrefs()
     initMelodyDurationPrefs()
+
+    applyChangesForQ()
+  }
+
+  private fun applyChangesForQ() {
+    if (Module.is10) {
+      binding.typePrefs.gone()
+      binding.ignoreWindowType.gone()
+      binding.smartFoldPrefs.gone()
+      binding.infiniteSoundOptionPrefs.gone()
+      binding.soundOptionPrefs.gone()
+      binding.melodyDurationPrefs.gone()
+      binding.systemPrefs.gone()
+      binding.volumePrefs.gone()
+      binding.increasePrefs.gone()
+      binding.ttsPrefs.gone()
+      binding.localePrefs.gone()
+      binding.unlockScreenPrefs.gone()
+      binding.unlockPriorityPrefs.gone()
+      binding.autoCallPrefs.gone()
+      binding.autoLaunchPrefs.gone()
+    }
   }
 
   private fun initMelodyDurationPrefs() {
@@ -95,9 +117,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initUnlockPriorityPrefs() {
-    if (Module.is10) {
-      binding.unlockPriorityPrefs.gone()
-    } else {
+    if (!Module.is10) {
       binding.unlockPriorityPrefs.visible()
       binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
       binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
@@ -155,9 +175,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initIgnoreWindowTypePrefs() {
-    if (Module.is10) {
-      binding.ignoreWindowType.gone()
-    } else {
+    if (!Module.is10) {
       binding.ignoreWindowType.visible()
       binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
       binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
@@ -329,9 +347,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initAutoCallPrefs() {
-    if (Module.is10) {
-      binding.autoCallPrefs.gone()
-    } else {
+    if (!Module.is10) {
       binding.autoCallPrefs.visible()
       binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
       binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
@@ -346,9 +362,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initAutoLaunchPrefs() {
-    if (Module.is10) {
-      binding.autoLaunchPrefs.gone()
-    } else {
+    if (!Module.is10) {
       binding.autoLaunchPrefs.visible()
       binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
       binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
@@ -362,9 +376,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initUnlockPrefs() {
-    if (Module.is10) {
-      binding.unlockScreenPrefs.gone()
-    } else {
+    if (!Module.is10) {
       binding.unlockScreenPrefs.visible()
       binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
       binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
@@ -501,9 +513,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun initReminderTypePrefs() {
-    if (Module.is10) {
-      binding.typePrefs.gone()
-    } else {
+    if (!Module.is10) {
       binding.typePrefs.visible()
       binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
       showReminderType()

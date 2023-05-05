@@ -72,6 +72,11 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
     const val ARG_BACK = "arg_back"
     const val ARG_LOGGED = "arg_logged"
 
+    fun loggedIntent(intent: Intent): Intent {
+      intent.putExtra(ARG_LOGGED, true)
+      return intent
+    }
+
     fun openLogged(context: Context, intent: Intent) {
       intent.putExtra(ARG_LOGGED, true)
       context.startActivity(intent)

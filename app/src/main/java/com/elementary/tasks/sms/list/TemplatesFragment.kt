@@ -24,6 +24,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+@Deprecated("After S")
 class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBinding>() {
 
   private val templatesAdapter = TemplatesAdapter()

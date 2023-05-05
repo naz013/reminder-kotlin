@@ -152,6 +152,7 @@ class JobScheduler(
     schedule(work)
   }
 
+  @Deprecated("After S")
   fun scheduleMissedCall(number: String?) {
     if (number == null) return
     val time = prefs.missedReminderTime
@@ -170,6 +171,7 @@ class JobScheduler(
     schedule(work)
   }
 
+  @Deprecated("After S")
   fun cancelMissedCall(number: String?) {
     if (number == null) return
     cancelReminder(number)
@@ -323,6 +325,7 @@ class JobScheduler(
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
 
     const val ARG_LOCATION = "arg_location"
+    @Deprecated("After S")
     const val ARG_MISSED = "arg_missed"
     const val ARG_REPEAT = "arg_repeated"
 

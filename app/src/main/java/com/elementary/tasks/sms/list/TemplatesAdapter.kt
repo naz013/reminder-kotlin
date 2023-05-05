@@ -11,6 +11,7 @@ import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMessageBinding
 import com.elementary.tasks.sms.UiSmsListDiffCallback
 
+@Deprecated("After S")
 internal class TemplatesAdapter : ListAdapter<UiSmsList, TemplatesAdapter.ViewHolder>(
   UiSmsListDiffCallback()
 ) {

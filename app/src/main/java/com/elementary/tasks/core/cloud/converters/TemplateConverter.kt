@@ -8,6 +8,7 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
+@Deprecated("After S")
 class TemplateConverter(
   private val memoryUtil: MemoryUtil
 ) : Convertible<SmsTemplate> {

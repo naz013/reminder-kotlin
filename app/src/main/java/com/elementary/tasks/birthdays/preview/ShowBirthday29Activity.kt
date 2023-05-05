@@ -3,7 +3,6 @@ package com.elementary.tasks.birthdays.preview
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -12,7 +11,6 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -109,27 +107,12 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
     lifecycle.removeObserver(viewModel)
   }
 
-  private fun discardMedia() {
-    ContextCompat.startForegroundService(
-      this,
-      EventOperationalService.getIntent(
-        this,
-        viewModel.getId(),
-        EventOperationalService.TYPE_BIRTHDAY,
-        EventOperationalService.ACTION_STOP,
-        viewModel.getUniqueId()
-      )
-    )
-  }
-
   private fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
-    discardMedia()
     notifier.cancel(id)
   }
 
   override fun handleBackPress(): Boolean {
-    discardMedia()
     if (prefs.isFoldingEnabled) {
       finish()
     } else {

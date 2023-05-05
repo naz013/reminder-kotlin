@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import kotlinx.coroutines.launch
 
+@Deprecated("After S")
 class QuickSmsViewModel(
   dispatcherProvider: DispatcherProvider,
   smsTemplatesDao: SmsTemplatesDao,

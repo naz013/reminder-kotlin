@@ -62,6 +62,15 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     initLedPrefs()
     initLedColorPrefs()
     initMelodyDurationPrefs()
+
+    if (Module.is10) {
+      binding.soundOptionPrefs.gone()
+      binding.infiniteSoundOptionPrefs.gone()
+      binding.wakeScreenOptionPrefs.gone()
+      binding.melodyDurationPrefs.gone()
+      binding.ttsPrefs.gone()
+      binding.localePrefs.gone()
+    }
   }
 
   private fun initMelodyDurationPrefs() {
@@ -361,9 +370,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   }
 
   private fun initWakePrefs() {
-    if (Module.is10) {
-      binding.wakeScreenOptionPrefs.gone()
-    } else {
+    if (!Module.is10) {
       binding.wakeScreenOptionPrefs.visible()
       binding.wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
       binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)

@@ -64,6 +64,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     }
     checkDoNotDisturb()
     checkBackupPrefs()
+    if (Module.is12) {
+      binding.additionalSettings.gone()
+    }
   }
 
   override fun onPause() {

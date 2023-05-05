@@ -30,6 +30,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import timber.log.Timber
 
+@Deprecated("After S")
 class FollowReminderViewModel(
   private val reminderDao: ReminderDao,
   private val reminderGroupDao: ReminderGroupDao,

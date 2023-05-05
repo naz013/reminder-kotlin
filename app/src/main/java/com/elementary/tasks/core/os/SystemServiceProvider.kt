@@ -32,6 +32,7 @@ class SystemServiceProvider(context: Context) {
     return appContext?.getSystemService(Context.SEARCH_SERVICE) as? SearchManager?
   }
 
+  @Deprecated("After S")
   fun provideTelephonyManager(): TelephonyManager? {
     return appContext?.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager?
   }

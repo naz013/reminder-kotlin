@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
+@Deprecated("After S")
 class SmsTemplatesViewModel(
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,

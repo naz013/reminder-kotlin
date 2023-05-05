@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -16,6 +17,7 @@ import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+@Deprecated("After S")
 class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>() {
 
   private val viewModel by viewModel<QuickSmsViewModel>()

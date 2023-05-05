@@ -14,6 +14,7 @@ import com.elementary.tasks.databinding.ActivityTemplateBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+@Deprecated("After S")
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
 
   private val viewModel by viewModel<CreateSmsTemplateViewModel> { parametersOf(getId()) }

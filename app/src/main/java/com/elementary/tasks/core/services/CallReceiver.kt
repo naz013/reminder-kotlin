@@ -5,40 +5,84 @@ import android.content.Intent
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import com.elementary.tasks.aftercall.FollowReminderActivity
-import com.elementary.tasks.sms.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.sms.QuickSmsActivity
 import org.koin.core.component.inject
 import timber.log.Timber
 
+@Deprecated("After S")
 class CallReceiver : BaseBroadcast() {
 
   private val appDb by inject<AppDb>()
   private val jobScheduler by inject<JobScheduler>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
 
-  private var mIncomingNumber: String? = null
-  private var prevState: Int = 0
-  private var startCallTime: Long = 0
-
   override fun onReceive(context: Context, intent: Intent) {
     if ((intent.action ?: "") == "android.intent.action.PHONE_STATE") {
       val telephony = systemServiceProvider.provideTelephonyManager()
       if (telephony != null && prefs.isTelephonyAllowed) {
-        val customPhoneListener = CustomPhoneStateListener(context, jobScheduler)
-        telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
+        val dataManager = DataManager(context, jobScheduler, appDb, prefs)
+        telephony.listen(
+          CustomPhoneStateListener(dataManager),
+          PhoneStateListener.LISTEN_CALL_STATE
+        )
       }
     }
   }
 
-  inner class CustomPhoneStateListener(
+  private class DataManager(
     private val context: Context,
-    private val jobScheduler: JobScheduler
+    private val jobScheduler: JobScheduler,
+    private val appDb: AppDb,
+    private val prefs: Prefs
+  ) {
+
+    fun showAfterCallIfCan(phoneNumber: String?, startCallTime: Long) {
+      if (prefs.isTelephonyAllowed && phoneNumber != null && prefs.isFollowReminderEnabled) {
+        FollowReminderActivity.mockScreen(context, phoneNumber, startCallTime)
+      }
+    }
+
+    fun scheduleMissedCallIfPossible(
+      phoneNumber: String?
+    ) {
+      if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && phoneNumber != null) {
+        var missedCall = appDb.missedCallsDao().getByNumber(phoneNumber)
+        if (missedCall != null) {
+          jobScheduler.cancelMissedCall(missedCall.number)
+        } else {
+          missedCall = MissedCall()
+        }
+        missedCall.dateTime = System.currentTimeMillis()
+        missedCall.number = phoneNumber
+        appDb.missedCallsDao().insert(missedCall)
+        jobScheduler.scheduleMissedCall(missedCall.number)
+      }
+    }
+
+    fun showQuickSmsIfAllowed(phoneNumber: String?) {
+      if (phoneNumber != null && prefs.isQuickSmsEnabled &&
+        prefs.isTelephonyAllowed && appDb.smsTemplatesDao().getAll().isNotEmpty()) {
+        QuickSmsActivity.openScreen(context, phoneNumber)
+      }
+    }
+  }
+
+  @Deprecated("After S")
+  private class CustomPhoneStateListener(
+    private val dataManager: DataManager
   ) : PhoneStateListener() {
 
+    private var mIncomingNumber: String? = null
+    private var prevState: Int = 0
+    private var startCallTime: Long = 0
+
+    @Deprecated("Deprecated in Java")
     override fun onCallStateChanged(state: Int, incomingNumber: String?) {
-      Timber.d("onCallStateChanged: $incomingNumber")
+      Timber.d("onCallStateChanged: state=$state, $incomingNumber")
       if (!incomingNumber.isNullOrEmpty()) {
         mIncomingNumber = incomingNumber
       } else {
@@ -54,41 +98,17 @@ class CallReceiver : BaseBroadcast() {
         TelephonyManager.CALL_STATE_IDLE -> {
           if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
             prevState = state
-            val isFollow = prefs.isFollowReminderEnabled
-            if (prefs.isTelephonyAllowed && mIncomingNumber != null && isFollow) {
-              val number = mIncomingNumber
-              if (number != null) {
-                FollowReminderActivity.mockScreen(context, number, startCallTime)
-              }
-            }
+            Timber.d("onCallStateChanged: is after $mIncomingNumber")
+            dataManager.showAfterCallIfCan(mIncomingNumber, startCallTime)
           } else if (prevState == TelephonyManager.CALL_STATE_RINGING) {
             prevState = state
             val currTime = System.currentTimeMillis()
             if (currTime - startCallTime >= 1000 * 10) {
-              val number = mIncomingNumber
-              Timber.d("onCallStateChanged: is missed $number")
-              if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && number != null) {
-                var missedCall = appDb.missedCallsDao().getByNumber(number)
-                if (missedCall != null) {
-                  jobScheduler.cancelMissedCall(missedCall.number)
-                } else {
-                  missedCall = MissedCall()
-                }
-                missedCall.dateTime = currTime
-                missedCall.number = number
-                appDb.missedCallsDao().insert(missedCall)
-                jobScheduler.scheduleMissedCall(missedCall.number)
-              }
+              Timber.d("onCallStateChanged: is missed $mIncomingNumber")
+              dataManager.scheduleMissedCallIfPossible(mIncomingNumber)
             } else {
               Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
-              if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
-                val number = mIncomingNumber
-                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().getAll()
-                    .isNotEmpty()
-                ) {
-                  QuickSmsActivity.openScreen(context, number)
-                }
-              }
+              dataManager.showQuickSmsIfAllowed(mIncomingNumber)
             }
           }
         }

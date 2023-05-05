@@ -4,6 +4,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job
 
+@Deprecated("After S")
 abstract class Modifier<V>(
   private var modifier: Modifier<V>? = null,
   private var callback: ((List<V>) -> Unit)? = null

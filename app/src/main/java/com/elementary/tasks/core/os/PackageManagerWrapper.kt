@@ -11,6 +11,7 @@ class PackageManagerWrapper(
 ) {
   val packageManager: PackageManager = context.packageManager
 
+  @Deprecated("After S")
   fun getInstalledApplications(): List<ApplicationInfo> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       packageManager.getInstalledApplications(

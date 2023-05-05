@@ -12,6 +12,7 @@ import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import java.util.Locale
 
+@Deprecated("After S")
 class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAdditionalBinding>() {
 
   private var mItemSelect: Int = 0

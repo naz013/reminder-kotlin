@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+@Deprecated("After S")
 class MissedCallDialogActivity : BaseNotificationActivity<ActivityDialogMissedCallBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }

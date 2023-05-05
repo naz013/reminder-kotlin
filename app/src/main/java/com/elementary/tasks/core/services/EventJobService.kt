@@ -1,30 +1,21 @@
 package com.elementary.tasks.core.services
 
 import android.content.Context
-import android.content.Intent
-import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
+import com.elementary.tasks.core.services.action.missedcall.MissedCallActionProcessor
+import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
-import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.work.CheckEventsWorker
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.threeten.bp.LocalDate
 import timber.log.Timber
 
 class EventJobService(
@@ -36,9 +27,10 @@ class EventJobService(
   private val appDb by inject<AppDb>()
   private val notifier by inject<Notifier>()
   private val jobScheduler by inject<JobScheduler>()
-  private val doNotDisturbManager by inject<DoNotDisturbManager>()
   private val dateTimeManager by inject<DateTimeManager>()
-  private val dispatcherProvider by inject<DispatcherProvider>()
+  private val reminderActionProcessor by inject<ReminderActionProcessor>()
+  private val birthdayActionProcessor by inject<BirthdayActionProcessor>()
+  private val missedCallActionProcessor by inject<MissedCallActionProcessor>()
 
   override suspend fun doWork(): Result {
     Timber.d(
@@ -48,7 +40,7 @@ class EventJobService(
     )
     val bundle = params.inputData
     when (val tag = params.tags.first()) {
-      JobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
+      JobScheduler.EVENT_BIRTHDAY -> birthdayAction()
       JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
       JobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
       JobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
@@ -57,24 +49,20 @@ class EventJobService(
         when {
           bundle.getBoolean(JobScheduler.ARG_MISSED, false) -> missedCallAction(tag)
           bundle.getBoolean(JobScheduler.ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
-          bundle.getBoolean(JobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(
-            context,
-            tag
-          )
-
-          else -> reminderAction(context, tag)
+          bundle.getBoolean(JobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(tag)
+          else -> reminderAction(tag)
         }
       }
     }
     return Result.success()
   }
 
-  private fun repeatedReminderAction(context: Context, tag: String?) {
+  private fun repeatedReminderAction(tag: String?) {
     val id = tag ?: ""
     val item = appDb.reminderDao().getById(id)
     if (item != null) {
       Timber.d("repeatedReminderAction: ${item.uuId}")
-      reminderAction(context, item.uuId)
+      reminderAction(item.uuId)
       jobScheduler.scheduleReminderRepeat(item)
     }
   }
@@ -100,88 +88,16 @@ class EventJobService(
     }
   }
 
-  private fun missedCallAction(tag: String) {
-    if (!doNotDisturbManager.applyDoNotDisturb(prefs.missedCallPriority)) {
-      jobScheduler.scheduleMissedCall(tag)
-      if (Module.is10 || SuperUtil.isPhoneCallActive(context)) {
-        ContextCompat.startForegroundService(
-          context,
-          EventOperationalService.getIntent(
-            context,
-            tag,
-            EventOperationalService.TYPE_MISSED,
-            EventOperationalService.ACTION_PLAY,
-            0
-          )
-        )
-      } else {
-        openMissedScreen(tag)
-      }
-    } else if (prefs.doNotDisturbAction == 0) {
-      jobScheduler.scheduleMissedCall(tag)
-    }
+  private fun missedCallAction(phoneNumber: String) {
+    missedCallActionProcessor.process(phoneNumber)
   }
 
-  private suspend fun birthdayAction(context: Context) {
-    jobScheduler.cancelDailyBirthday()
-    jobScheduler.scheduleDailyBirthday()
-    withContext(dispatcherProvider.default()) {
-      val daysBefore = prefs.daysToBirthday
-      val applyDnd = doNotDisturbManager.applyDoNotDisturb(prefs.birthdayPriority)
-
-      val date = LocalDate.now()
-      val mYear = date.year
-      val currentDate = dateTimeManager.getBirthdayDateSearch(date)
-
-      for (item in appDb.birthdaysDao().getAll()) {
-        val year = item.showedYear
-        val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
-        if (!applyDnd && birthValue == currentDate && year != mYear) {
-          withUIContext {
-            if (Module.is10) {
-              ContextCompat.startForegroundService(
-                context,
-                EventOperationalService.getIntent(
-                  context, item.uuId,
-                  EventOperationalService.TYPE_BIRTHDAY,
-                  EventOperationalService.ACTION_PLAY,
-                  item.uniqueId
-                )
-              )
-            } else {
-              showBirthday(context, item)
-            }
-          }
-        }
-      }
-    }
+  private fun birthdayAction() {
+    birthdayActionProcessor.process()
   }
 
-  private fun getBirthdayValue(month: Int, day: Int, daysBefore: Int): String {
-    val date = LocalDate.now()
-      .withMonth(month + 1)
-      .withDayOfMonth(day)
-      .minusDays(daysBefore.toLong())
-    return dateTimeManager.getBirthdayDateSearch(date)
-  }
-
-  private fun showBirthday(context: Context, item: Birthday) {
-    if (prefs.reminderType == 0) {
-      context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.uuId))
-    } else {
-      notifier.showSimpleBirthday(item.uuId)
-    }
-  }
-
-  private fun openMissedScreen(tag: String) {
-    val resultIntent = MissedCallDialogActivity.getLaunchIntent(context, tag)
-    context.startActivity(resultIntent)
-  }
-
-  private fun reminderAction(context: Context, id: String) {
-    val intent = Intent(context, ReminderActionReceiver::class.java)
-    intent.action = ReminderActionReceiver.ACTION_RUN
-    intent.putExtra(Constants.INTENT_ID, id)
-    context.sendBroadcast(intent)
+  private fun reminderAction(id: String) {
+    Timber.d("reminderAction: $id")
+    reminderActionProcessor.process(id)
   }
 }

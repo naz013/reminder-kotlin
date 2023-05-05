@@ -29,6 +29,7 @@ object FileConfig {
   /**
    * File extension for message template.
    */
+  @Deprecated("After S")
   const val FILE_NAME_TEMPLATE = ".te2"
 
   const val FILE_NAME_SETTINGS = "app.settings"

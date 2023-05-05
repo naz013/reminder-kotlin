@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 
+@Deprecated("After S")
 class MissedCallViewModel(
   private val number: String,
   dispatcherProvider: DispatcherProvider,

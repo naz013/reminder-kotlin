@@ -24,6 +24,7 @@ import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+@Deprecated("After S")
 class CreateSmsTemplateViewModel(
   private val id: String,
   dispatcherProvider: DispatcherProvider,

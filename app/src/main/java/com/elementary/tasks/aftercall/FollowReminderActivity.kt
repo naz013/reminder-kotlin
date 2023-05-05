@@ -24,6 +24,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
+@Deprecated("After S")
 class FollowReminderActivity : BindingActivity<ActivityFollowBinding>() {
 
   private val dateTimeManager by inject<DateTimeManager>()

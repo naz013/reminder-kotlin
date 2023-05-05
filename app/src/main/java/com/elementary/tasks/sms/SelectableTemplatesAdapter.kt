@@ -9,6 +9,7 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMessageBinding
 
+@Deprecated("After S")
 class SelectableTemplatesAdapter : ListAdapter<UiSmsList, SelectableTemplatesAdapter.ViewHolder>(
   UiSmsListDiffCallback()
 ) {

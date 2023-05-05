@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.elementary.tasks.core.data.models.SmsTemplate
 
+@Deprecated("After S")
 @Dao
 interface SmsTemplatesDao {
 

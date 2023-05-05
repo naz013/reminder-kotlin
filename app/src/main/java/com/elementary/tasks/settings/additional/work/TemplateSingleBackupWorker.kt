@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.withContext
 
+@Deprecated("After S")
 class TemplateSingleBackupWorker(
   private val syncManagers: SyncManagers,
   context: Context,

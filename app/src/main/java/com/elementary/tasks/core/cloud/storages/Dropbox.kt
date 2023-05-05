@@ -31,6 +31,7 @@ class Dropbox(
   private val groupFolder = "/Groups/"
   private val birthFolder = "/Birthdays/"
   private val placeFolder = "/Places/"
+  @Deprecated("After S")
   private val templateFolder = "/Templates/"
   private val settingsFolder = "/Settings/"
 

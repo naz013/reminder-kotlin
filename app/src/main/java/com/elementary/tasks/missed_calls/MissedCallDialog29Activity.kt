@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -13,7 +12,6 @@ import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.ui.missedcall.UiMissedCallShow
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -27,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
+@Deprecated("After S")
 class MissedCallDialog29Activity : BindingActivity<ActivityDialogMissedCallBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
@@ -105,17 +104,8 @@ class MissedCallDialog29Activity : BindingActivity<ActivityDialogMissedCallBindi
     binding.contactNumber.text = missedCall.number
   }
 
-  private fun discardMedia() {
-    ContextCompat.startForegroundService(this,
-      EventOperationalService.getIntent(this, viewModel.getNumber() ?: "",
-        EventOperationalService.TYPE_MISSED,
-        EventOperationalService.ACTION_STOP,
-        id))
-  }
-
   private fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
-    discardMedia()
     notifier.cancel(id)
   }
 
@@ -125,7 +115,6 @@ class MissedCallDialog29Activity : BindingActivity<ActivityDialogMissedCallBindi
   }
 
   override fun handleBackPress(): Boolean {
-    discardMedia()
     if (prefs.isFoldingEnabled) {
       finish()
     } else {

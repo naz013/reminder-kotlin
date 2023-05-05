@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.elementary.tasks.core.data.models.MissedCall
 
+@Deprecated("After S")
 @Dao
 interface MissedCallsDao {
 

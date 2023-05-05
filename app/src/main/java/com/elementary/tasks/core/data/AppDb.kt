@@ -55,7 +55,9 @@ abstract class AppDb : RoomDatabase() {
 
   abstract fun reminderDao(): ReminderDao
   abstract fun reminderGroupDao(): ReminderGroupDao
+  @Deprecated("After S")
   abstract fun missedCallsDao(): MissedCallsDao
+  @Deprecated("After S")
   abstract fun smsTemplatesDao(): SmsTemplatesDao
   abstract fun placesDao(): PlacesDao
   abstract fun calendarEventsDao(): CalendarEventsDao

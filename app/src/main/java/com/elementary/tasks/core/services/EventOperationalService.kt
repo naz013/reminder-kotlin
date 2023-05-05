@@ -22,13 +22,13 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
@@ -39,12 +39,14 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicInteger
 
+@Deprecated("After Q")
 class EventOperationalService : Service(), Sound.PlaybackCallback {
 
   private val appDb by inject<AppDb>()
@@ -511,8 +513,9 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       )
       builder.setFullScreenIntent(fullScreenPendingIntent, true)
     } else {
-      val notificationIntent = ReminderActionReceiver.showIntent(applicationContext, reminder.uuId)
-      val intent = PendingIntentWrapper.getBroadcast(
+      val notificationIntent =
+        ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uuId)
+      val intent = PendingIntentWrapper.getActivity(
         applicationContext,
         reminder.uniqueId,
         notificationIntent,

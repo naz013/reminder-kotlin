@@ -71,11 +71,7 @@ import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
-import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.core.data.repository.NoteRepository
-import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.os.ContextProvider
@@ -449,7 +445,7 @@ val storageModule = module {
   single { StorageManager(get(), get(), get(), get(), get()) }
 }
 
-val repositoryModule = module {
+val dataFlowRepositoryModule = module {
   single { BirthdayDataFlowRepository(get()) }
   single { GroupDataFlowRepository(get()) }
   single { NoteDataFlowRepository(get(), get(), get()) }
@@ -476,10 +472,6 @@ fun dbModule(context: Context): Module {
     single { appDb.smsTemplatesDao() }
     single { appDb.usedTimeDao() }
 
-    single { ReminderRepository(get()) }
-    single { BirthdayRepository(get()) }
-    single { NoteRepository(get()) }
-    single { NoteImageRepository(get()) }
     single { NoteToOldNoteConverter(get()) }
   }
 }

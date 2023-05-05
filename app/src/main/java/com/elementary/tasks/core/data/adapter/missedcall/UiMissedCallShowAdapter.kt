@@ -7,6 +7,7 @@ import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 
+@Deprecated("After S")
 class UiMissedCallShowAdapter(
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader

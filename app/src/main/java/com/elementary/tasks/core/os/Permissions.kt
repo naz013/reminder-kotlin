@@ -22,6 +22,7 @@ object Permissions {
 
   @SuppressLint("InlinedApi")
   const val BACKGROUND_LOCATION = Manifest.permission.ACCESS_BACKGROUND_LOCATION
+  @Deprecated("After S")
   const val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
   const val CALL_PHONE = Manifest.permission.CALL_PHONE
   const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
