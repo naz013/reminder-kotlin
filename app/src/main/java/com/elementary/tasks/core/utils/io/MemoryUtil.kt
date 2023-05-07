@@ -16,7 +16,6 @@ import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.SmsTemplate
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
@@ -85,7 +84,6 @@ class MemoryUtil(
         is Place -> object : TypeToken<Place>() {}.type
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is SmsTemplate -> object : TypeToken<SmsTemplate>() {}.type
         is NoteWithImages -> object : TypeToken<OldNote>() {}.type
         else -> null
       } ?: return false
@@ -248,9 +246,6 @@ class MemoryUtil(
           }
           name.endsWith(FileConfig.FILE_NAME_NOTE) -> {
             Gson().fromJson<OldNote>(reader, object : TypeToken<OldNote>() {}.type)
-          }
-          name.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
-            Gson().fromJson<SmsTemplate>(reader, object : TypeToken<SmsTemplate>() {}.type)
           }
           else -> null
         }

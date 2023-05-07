@@ -64,9 +64,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     }
     checkDoNotDisturb()
     checkBackupPrefs()
-    if (Module.is12) {
-      binding.additionalSettings.gone()
-    }
   }
 
   override fun onPause() {
@@ -127,9 +124,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     }
     binding.notesSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
-    }
-    binding.additionalSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToAdditionalSettingsFragment())
     }
     binding.notificationSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment())

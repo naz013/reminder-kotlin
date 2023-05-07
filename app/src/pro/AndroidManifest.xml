@@ -45,15 +45,6 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.elementary.tasks.core.services.MissedCallActionReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.elementary.tasks.pro.missedcall.SIMPLE_HIDE" />
-                <action android:name="com.elementary.tasks.pro.missedcall.CALL" />
-                <action android:name="com.elementary.tasks.pro.missedcall.SMS" />
-            </intent-filter>
-        </receiver>
-        <receiver
             android:name="com.elementary.tasks.core.app_widgets.events.EventActionReceiver"
             android:exported="false">
             <intent-filter>

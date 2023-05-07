@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import org.threeten.bp.LocalDate
 
+@Deprecated("After Q")
 class BirthdayCancelHandler(
   private val notifier: Notifier,
   private val birthdayRepository: BirthdayRepository,

@@ -3,6 +3,7 @@ package com.elementary.tasks.core.services.action.reminder.process
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -14,13 +15,15 @@ import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TextProvider
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
-import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import timber.log.Timber
 
-class ReminderHandlerQuiet(
+@RequiresApi(Build.VERSION_CODES.Q)
+class ReminderHandlerQ(
   private val reminderDataProvider: ReminderDataProvider,
   private val contextProvider: ContextProvider,
   private val textProvider: TextProvider,
@@ -30,34 +33,48 @@ class ReminderHandlerQuiet(
 ) : ActionHandler<Reminder> {
 
   override fun handle(data: Reminder) {
-    showNotificationWithoutSound(data)
+    showNotificationWithSound(data)
   }
 
-  private fun showNotificationWithoutSound(reminder: Reminder) {
-    Timber.d("showNotificationWithoutSound: ")
-    val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+  private fun showNotificationWithSound(reminder: Reminder) {
+    Timber.d("showReminderNotification: $reminder")
 
-    val notificationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ReminderDialog29Activity.getLaunchIntent(contextProvider.context, reminder.uuId)
-    } else {
-      ReminderDialogActivity.getLaunchIntent(contextProvider.context, reminder.uuId)
+    val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
+    if ((!SuperUtil.isDoNotDisturbEnabled(contextProvider.context) ||
+        (SuperUtil.checkNotificationPermission(contextProvider.context) && prefs.isSoundInSilentModeEnabled))
+    ) {
+      builder.setSound(reminderDataProvider.getSound(reminder.melodyPath), prefs.soundStream)
     }
+
+    reminderDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }
+    reminderDataProvider.getLedColor(reminder.color)?.also { builder.setLights(it, 500, 1000) }
+
+    builder.priority = reminderDataProvider.priority(reminder.priority)
+    builder.setContentTitle(reminder.summary)
+    builder.setAutoCancel(false)
+    builder.setOngoing(true)
+
+    builder.setContentText(reminderDataProvider.getAppName())
+    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    builder.color = ThemeProvider.getPrimaryColor(contextProvider.context)
+    builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
+
+    val notificationIntent = ReminderDialog29Activity.getLaunchIntent(
+      contextProvider.context,
+      reminder.uuId
+    )
     val intent = PendingIntentWrapper.getActivity(
       contextProvider.context,
       reminder.uniqueId,
       notificationIntent,
       PendingIntent.FLAG_CANCEL_CURRENT
     )
-    builder.setContentIntent(intent)
-    builder.setAutoCancel(false)
-    builder.setOngoing(true)
-    builder.priority = NotificationCompat.PRIORITY_LOW
-    builder.setContentTitle(reminder.summary)
-    builder.setContentText(reminderDataProvider.getAppName())
 
-    reminderDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }
-    reminderDataProvider.getLedColor(reminder.color)?.also { builder.setLights(it, 500, 1000) }
+    if (reminder.priority >= 2) {
+      builder.setFullScreenIntent(intent, true)
+    } else {
+      builder.setContentIntent(intent)
+    }
 
     val dismissIntent = getActionReceiverIntent(ReminderActionReceiver.ACTION_HIDE, reminder.uuId)
     val piDismiss = PendingIntentWrapper.getBroadcast(

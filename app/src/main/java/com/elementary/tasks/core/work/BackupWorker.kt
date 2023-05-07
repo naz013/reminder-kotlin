@@ -88,13 +88,6 @@ class BackupWorker(
         completable = null
       ).backup()
 
-      notifyMsg(context.getString(R.string.syncing_templates))
-      BulkDataFlow(
-        syncManagers.repositoryManager.templateDataFlowRepository,
-        syncManagers.converterManager.templateConverter,
-        storage,
-        completable = null
-      ).backup()
       BulkDataFlow(
         syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,

@@ -70,12 +70,6 @@ class BulkDataFlow<T>(
         completable = null
       ).backup()
       BulkDataFlow(
-        syncManagers.repositoryManager.templateDataFlowRepository,
-        syncManagers.converterManager.templateConverter,
-        storage,
-        completable = null
-      ).backup()
-      BulkDataFlow(
         syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,
         storage,

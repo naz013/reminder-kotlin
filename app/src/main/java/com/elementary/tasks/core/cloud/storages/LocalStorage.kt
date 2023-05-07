@@ -143,7 +143,6 @@ class LocalStorage(context: Context) : Storage() {
       FileConfig.FILE_NAME_GROUP -> MemoryUtil.groupsDir
       FileConfig.FILE_NAME_BIRTHDAY -> MemoryUtil.birthdaysDir
       FileConfig.FILE_NAME_PLACE -> MemoryUtil.placesDir
-      FileConfig.FILE_NAME_TEMPLATE -> MemoryUtil.templatesDir
       FileConfig.FILE_NAME_SETTINGS_EXT -> MemoryUtil.prefsDir
       else -> MemoryUtil.remindersDir
     }

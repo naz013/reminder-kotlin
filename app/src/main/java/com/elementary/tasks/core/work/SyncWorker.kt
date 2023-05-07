@@ -102,13 +102,6 @@ class SyncWorker(
         .restore(IndexTypes.TYPE_PLACE, deleteFile = true)
       BulkDataFlow(placeRepository, placeConverter, storage, completable = null).backup()
 
-      notifyMsg(textProvider.getText(R.string.syncing_templates))
-      val templateRepository = syncManagers.repositoryManager.templateDataFlowRepository
-      val templateConverter = syncManagers.converterManager.templateConverter
-      BulkDataFlow(templateRepository, templateConverter, storage, completable = null)
-        .restore(IndexTypes.TYPE_TEMPLATE, deleteFile = true)
-      BulkDataFlow(templateRepository, templateConverter, storage, completable = null).backup()
-
       BulkDataFlow(
         syncManagers.repositoryManager.settingsDataFlowRepository,
         syncManagers.converterManager.settingsConverter,

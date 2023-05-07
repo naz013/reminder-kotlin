@@ -8,7 +8,7 @@ import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.Notifier
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class ReminderCancelHandler29(
+class ReminderCancelHandlerQ(
   private val notifier: Notifier,
   private val eventControlFactory: EventControlFactory
 ) : ActionHandler<Reminder> {

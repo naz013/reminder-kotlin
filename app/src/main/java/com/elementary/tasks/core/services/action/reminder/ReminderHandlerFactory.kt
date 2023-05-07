@@ -7,12 +7,12 @@ import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.cancel.ReminderCancelHandler
-import com.elementary.tasks.core.services.action.reminder.cancel.ReminderCancelHandler29
+import com.elementary.tasks.core.services.action.reminder.cancel.ReminderCancelHandlerQ
 import com.elementary.tasks.core.services.action.reminder.process.ReminderHandler
-import com.elementary.tasks.core.services.action.reminder.process.ReminderHandler29
-import com.elementary.tasks.core.services.action.reminder.process.ReminderHandlerQuiet
+import com.elementary.tasks.core.services.action.reminder.process.ReminderHandlerQ
+import com.elementary.tasks.core.services.action.reminder.process.ReminderHandlerSilent
 import com.elementary.tasks.core.services.action.reminder.snooze.ReminderSnoozeHandler
-import com.elementary.tasks.core.services.action.reminder.snooze.ReminderSnoozeHandler29
+import com.elementary.tasks.core.services.action.reminder.snooze.ReminderSnoozeHandlerQ
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
@@ -30,7 +30,7 @@ class ReminderHandlerFactory(
   fun createAction(canShowWindow: Boolean): ActionHandler<Reminder> {
     return if (canShowWindow) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        ReminderHandler29(
+        ReminderHandlerQ(
           reminderDataProvider,
           contextProvider,
           textProvider,
@@ -42,7 +42,7 @@ class ReminderHandlerFactory(
         ReminderHandler(contextProvider, notifier)
       }
     } else {
-      ReminderHandlerQuiet(
+      ReminderHandlerSilent(
         reminderDataProvider,
         contextProvider,
         textProvider,
@@ -55,7 +55,7 @@ class ReminderHandlerFactory(
 
   fun createCancel(): ActionHandler<Reminder> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ReminderCancelHandler29(notifier, eventControlFactory)
+      ReminderCancelHandlerQ(notifier, eventControlFactory)
     } else {
       ReminderCancelHandler(notifier, eventControlFactory, contextProvider)
     }
@@ -63,7 +63,7 @@ class ReminderHandlerFactory(
 
   fun createSnooze(): ActionHandler<Reminder> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ReminderSnoozeHandler29(notifier, eventControlFactory, prefs)
+      ReminderSnoozeHandlerQ(notifier, eventControlFactory, prefs)
     } else {
       ReminderSnoozeHandler(notifier, eventControlFactory, prefs)
     }

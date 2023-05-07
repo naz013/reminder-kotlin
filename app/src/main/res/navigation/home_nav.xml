@@ -214,9 +214,6 @@
             android:id="@+id/action_settingsFragment_to_securitySettingsFragment"
             app:destination="@id/securitySettingsFragment" />
         <action
-            android:id="@+id/action_settingsFragment_to_additionalSettingsFragment"
-            app:destination="@id/additionalSettingsFragment" />
-        <action
             android:id="@+id/action_settingsFragment_to_locationSettingsFragment"
             app:destination="@id/locationSettingsFragment" />
         <action
@@ -327,24 +324,6 @@
         android:name="com.elementary.tasks.settings.security.DisablePinFragment"
         android:label="@string/disable_pin"
         tools:layout="@layout/fragment_settings_delete_pin" />
-    <fragment
-        android:id="@+id/additionalSettingsFragment"
-        android:name="com.elementary.tasks.settings.additional.AdditionalSettingsFragment"
-        android:label="@string/additional"
-        tools:layout="@layout/fragment_settings_additional">
-        <action
-            android:id="@+id/action_additionalSettingsFragment_to_templatesFragment"
-            app:destination="@id/templatesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/templatesFragment"
-        android:name="com.elementary.tasks.sms.list.TemplatesFragment"
-        android:label="@string/messages"
-        tools:layout="@layout/fragment_settings_templates_list">
-        <action
-            android:id="@+id/action_templatesFragment_to_templateActivity"
-            app:destination="@id/templateActivity" />
-    </fragment>
     <fragment
         android:id="@+id/locationSettingsFragment"
         android:name="com.elementary.tasks.settings.location.LocationSettingsFragment"
@@ -471,18 +450,6 @@
         android:name="com.elementary.tasks.settings.voice.HelpFragment"
         android:label="@string/help"
         tools:layout="@layout/fragment_settings_web_view" />
-    <activity
-        android:id="@+id/templateActivity"
-        android:name="com.elementary.tasks.sms.create.TemplateActivity"
-        android:label="@string/create_template"
-        tools:layout="@layout/activity_template">
-        <argument
-            android:name="item_id"
-            app:argType="string" />
-        <argument
-            android:name="arg_logged"
-            app:argType="boolean" />
-    </activity>
     <fragment
         android:id="@+id/testsFragment"
         android:name="com.elementary.tasks.settings.TestsFragment"

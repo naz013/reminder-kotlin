@@ -5,7 +5,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
-import com.elementary.tasks.core.services.action.missedcall.MissedCallActionProcessor
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
@@ -30,7 +29,6 @@ class EventJobService(
   private val dateTimeManager by inject<DateTimeManager>()
   private val reminderActionProcessor by inject<ReminderActionProcessor>()
   private val birthdayActionProcessor by inject<BirthdayActionProcessor>()
-  private val missedCallActionProcessor by inject<MissedCallActionProcessor>()
 
   override suspend fun doWork(): Result {
     Timber.d(
@@ -47,10 +45,31 @@ class EventJobService(
       JobScheduler.EVENT_CHECK -> eventsCheckAction()
       else -> {
         when {
-          bundle.getBoolean(JobScheduler.ARG_MISSED, false) -> missedCallAction(tag)
           bundle.getBoolean(JobScheduler.ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
-          bundle.getBoolean(JobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(tag)
-          else -> reminderAction(tag)
+          bundle.getBoolean(JobScheduler.ARG_REPEAT, false) -> {
+            val id = if (tag == "com.elementary.tasks.core.services.EventJobService") {
+              try {
+                params.tags.toList()[1]
+              } catch (t: Throwable) {
+                tag
+              }
+            } else {
+              tag
+            }
+            repeatedReminderAction(id)
+          }
+          else -> {
+            val id = if (tag == "com.elementary.tasks.core.services.EventJobService") {
+              try {
+                params.tags.toList()[1]
+              } catch (t: Throwable) {
+                tag
+              }
+            } else {
+              tag
+            }
+            reminderAction(id)
+          }
         }
       }
     }
@@ -86,10 +105,6 @@ class EventJobService(
     if (prefs.isBirthdayPermanentEnabled) {
       notifier.showBirthdayPermanent()
     }
-  }
-
-  private fun missedCallAction(phoneNumber: String) {
-    missedCallActionProcessor.process(phoneNumber)
   }
 
   private fun birthdayAction() {

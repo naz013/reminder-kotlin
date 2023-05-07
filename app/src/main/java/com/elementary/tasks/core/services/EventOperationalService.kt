@@ -20,10 +20,8 @@ import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
@@ -34,10 +32,8 @@ import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.contacts.Contacts
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import org.koin.android.ext.android.inject
@@ -169,21 +165,6 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                 val birthday = appDb.birthdaysDao().getById(id) ?: return
                 increment()
                 showBirthdayNotification(birthday)
-              }
-
-              ACTION_STOP -> {
-                notifier.cancel(notificationId)
-                decrement(true)
-              }
-            }
-          }
-
-          TYPE_MISSED -> {
-            when (action) {
-              ACTION_PLAY -> {
-                val missedCall = appDb.missedCallsDao().getByNumber(id) ?: return
-                increment()
-                showMissedNotification(missedCall)
               }
 
               ACTION_STOP -> {
@@ -337,101 +318,6 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     }
     Timber.d("STOP: left screens -> $left")
     checkForStop()
-  }
-
-  private fun showMissedNotification(missedCall: MissedCall) {
-    Timber.d("showMissedNotification: $missedCall")
-    val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-    if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-        (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
-    ) {
-      val melody = ReminderUtils.getSound(applicationContext, prefs, "")
-      if (melody.melodyType == ReminderUtils.MelodyType.FILE) {
-        playMelody(melody.uri)
-      } else {
-        applicationContext.grantUriPermission(
-          "com.android.systemui",
-          melody.uri,
-          Intent.FLAG_GRANT_READ_URI_PERMISSION
-        )
-        builder.setSound(melody.uri, prefs.soundStream)
-      }
-    }
-
-    if (prefs.isVibrateEnabled) {
-      val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-      builder.setVibrate(pattern)
-    }
-    val name: String = if (missedCall.number.isNotEmpty() && Permissions.checkPermission(
-        this,
-        Permissions.READ_CONTACTS
-      )
-    ) {
-      Contacts.getNameFromNumber(missedCall.number, this) ?: missedCall.number
-    } else {
-      missedCall.number
-    }
-    builder.priority = priority(prefs.missedCallPriority)
-    builder.setContentTitle(name)
-    builder.setAutoCancel(false)
-    if (prefs.isManualRemoveEnabled) {
-      builder.setOngoing(false)
-    } else {
-      builder.setOngoing(true)
-    }
-    if (Module.isPro && prefs.isLedEnabled) {
-      builder.setLights(ledColor(prefs.ledColor), 500, 1000)
-    }
-    builder.setContentText(appName())
-    builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-    builder.color = ThemeProvider.getPrimaryColor(applicationContext)
-    builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
-
-    val fullScreenIntent =
-      MissedCallDialog29Activity.getLaunchIntent(applicationContext, missedCall.number)
-    val fullScreenPendingIntent = PendingIntentWrapper.getActivity(
-      this,
-      missedCall.uniqueId,
-      fullScreenIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
-    builder.setFullScreenIntent(fullScreenPendingIntent, true)
-
-    val dismissIntent = getIntent(
-      applicationContext,
-      missedCall.number,
-      TYPE_MISSED,
-      ACTION_STOP,
-      missedCall.uniqueId
-    )
-    val piDismiss = PendingIntentWrapper.getService(
-      applicationContext,
-      missedCall.uniqueId,
-      dismissIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
-    builder.addAction(
-      R.drawable.ic_twotone_done_white,
-      applicationContext.getString(R.string.ok),
-      piDismiss
-    )
-
-    val isWear = prefs.isWearEnabled
-    if (isWear) {
-      builder.setOnlyAlertOnce(true)
-      builder.setGroup("missed_call")
-      builder.setGroupSummary(true)
-    }
-
-    analyticsEventSender.send(FeatureUsedEvent(Feature.MISSED_CALL))
-    notifier.notify(missedCall.uniqueId, builder.build())
-    if (isWear) {
-      showWearNotification(missedCall.uniqueId, name, appName(), "missed_call")
-    }
   }
 
   private fun isRepeatEnabled(reminder: Reminder): Boolean {
@@ -686,7 +572,6 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
     const val TYPE_REMINDER = "type_reminder"
     const val TYPE_BIRTHDAY = "type_birthday"
-    const val TYPE_MISSED = "type_missed_call"
 
     private val instanceCount = AtomicInteger(0)
 

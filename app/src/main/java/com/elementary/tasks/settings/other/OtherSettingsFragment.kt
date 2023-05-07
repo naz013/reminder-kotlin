@@ -95,9 +95,6 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     if (!Permissions.checkPermission(activity, Permissions.GET_ACCOUNTS)) {
       mDataList.add(Item(getString(R.string.get_accounts), Permissions.GET_ACCOUNTS))
     }
-    if (!Permissions.checkPermission(activity, Permissions.READ_PHONE_STATE)) {
-      mDataList.add(Item(getString(R.string.read_phone_state), Permissions.READ_PHONE_STATE))
-    }
     if (!Permissions.checkPermission(activity, Permissions.READ_CALENDAR)) {
       mDataList.add(Item(getString(R.string.read_calendar), Permissions.READ_CALENDAR))
     }

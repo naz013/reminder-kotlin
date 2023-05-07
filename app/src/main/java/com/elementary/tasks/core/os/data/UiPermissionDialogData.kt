@@ -68,11 +68,6 @@ data class UiPermissionDialogData(
       R.string.background_location,
       R.string.background_location_explanation
     )
-    val READ_PHONE_STATE = UiPermissionDialogData(
-      Permissions.READ_PHONE_STATE,
-      R.string.read_phone_state,
-      R.string.read_phone_state_explanation
-    )
     val FOREGROUND_SERVICE = UiPermissionDialogData(
       Permissions.FOREGROUND_SERVICE,
       R.string.foreground_service,

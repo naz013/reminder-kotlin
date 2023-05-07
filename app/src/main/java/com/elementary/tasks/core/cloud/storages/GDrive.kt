@@ -287,7 +287,6 @@ class GDrive(
           Timber.d("countFiles: $title")
           when {
             title.contains(FileConfig.FILE_NAME_SETTINGS) -> count++
-            title.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> count++
             title.endsWith(FileConfig.FILE_NAME_PLACE) -> count++
             title.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> count++
             title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++

@@ -5,8 +5,6 @@ enum class IndexTypes {
   TYPE_NOTE,
   TYPE_PLACE,
   TYPE_SETTINGS,
-  @Deprecated("After S")
-  TYPE_TEMPLATE,
   TYPE_GROUP,
   TYPE_BIRTHDAY
 }

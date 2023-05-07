@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 
+@Deprecated("After Q")
 class ReminderHandler(
   private val contextProvider: ContextProvider,
   private val notifier: Notifier

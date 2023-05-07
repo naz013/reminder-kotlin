@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class ReminderSnoozeHandler29(
+class ReminderSnoozeHandlerQ(
   private val notifier: Notifier,
   private val eventControlFactory: EventControlFactory,
   private val prefs: Prefs

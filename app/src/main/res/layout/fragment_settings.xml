@@ -162,14 +162,6 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/additionalSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/additional"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/locationSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

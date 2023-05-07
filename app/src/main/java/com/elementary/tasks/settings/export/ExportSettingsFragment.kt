@@ -600,7 +600,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       SyncFlag(getString(R.string.birthdays), SyncDataWorker.FLAG_BIRTHDAY, current.contains(SyncDataWorker.FLAG_BIRTHDAY)),
       SyncFlag(getString(R.string.notes), SyncDataWorker.FLAG_NOTE, current.contains(SyncDataWorker.FLAG_NOTE)),
       SyncFlag(getString(R.string.places), SyncDataWorker.FLAG_PLACE, current.contains(SyncDataWorker.FLAG_PLACE)),
-      SyncFlag(getString(R.string.messages), SyncDataWorker.FLAG_TEMPLATE, current.contains(SyncDataWorker.FLAG_TEMPLATE)),
       SyncFlag(getString(R.string.action_settings), SyncDataWorker.FLAG_SETTINGS, current.contains(SyncDataWorker.FLAG_SETTINGS))
     )
   }

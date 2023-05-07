@@ -24,10 +24,4 @@ object Actions {
     const val ACTION_SMS = "com.elementary.tasks.birthday.SMS"
     const val ACTION_HIDE_SIMPLE = "com.elementary.tasks.birthday.SIMPLE_HIDE"
   }
-
-  object MissedCall {
-    const val ACTION_CALL = "com.elementary.tasks.missedcall.CALL"
-    const val ACTION_SMS = "com.elementary.tasks.missedcall.SMS"
-    const val ACTION_HIDE_SIMPLE = "com.elementary.tasks.missedcall.SIMPLE_HIDE"
-  }
 }

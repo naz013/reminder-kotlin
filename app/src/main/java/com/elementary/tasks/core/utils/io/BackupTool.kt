@@ -14,7 +14,6 @@ import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
@@ -113,15 +112,6 @@ class BackupTool(
             allData.places.forEach { appDb.placesDao().insert(it) }
           }
 
-          if (allData.templates.isNotEmpty()) {
-            Timber.d("importAll: has templates ${allData.templates.size}")
-            hasAnyData = true
-            if (replace) {
-              appDb.smsTemplatesDao().deleteAll()
-            }
-            allData.templates.forEach { appDb.smsTemplatesDao().insert(it) }
-          }
-
           if (allData.notes.isNotEmpty()) {
             Timber.d("importAll: has notes ${allData.notes.size}")
             hasAnyData = true
@@ -165,7 +155,6 @@ class BackupTool(
       groups = appDb.reminderGroupDao().all().toMutableList(),
       notes = noteRepository.getAll().mapNotNull { noteToOldNoteConverter.toOldNote(it) },
       places = appDb.placesDao().getAll(),
-      templates = appDb.smsTemplatesDao().getAll(),
       birthdays = appDb.birthdaysDao().getAll()
     )
     return createAllDataFile(allData)
@@ -242,8 +231,6 @@ class BackupTool(
     var notes: List<OldNote> = listOf(),
     @SerializedName("places")
     var places: List<Place> = listOf(),
-    @SerializedName("templates")
-    var templates: List<SmsTemplate> = listOf(),
     @SerializedName("birthdays")
     var birthdays: List<Birthday> = listOf()
   )

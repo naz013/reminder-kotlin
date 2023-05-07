@@ -152,9 +152,10 @@ class JobScheduler(
     schedule(work)
   }
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   fun scheduleMissedCall(number: String?) {
     if (number == null) return
+    Timber.d("scheduleMissedCall: $number")
     val time = prefs.missedReminderTime
     val millis = time * INTERVAL_MINUTE
     val bundle = Data.Builder()
@@ -171,7 +172,7 @@ class JobScheduler(
     schedule(work)
   }
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   fun cancelMissedCall(number: String?) {
     if (number == null) return
     cancelReminder(number)
@@ -325,7 +326,7 @@ class JobScheduler(
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
 
     const val ARG_LOCATION = "arg_location"
-    @Deprecated("After S")
+    @Deprecated("After R")
     const val ARG_MISSED = "arg_missed"
     const val ARG_REPEAT = "arg_repeated"
 

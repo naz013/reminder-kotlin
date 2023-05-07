@@ -8,6 +8,7 @@ import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.Notifier
 
+@Deprecated("After Q")
 class ReminderCancelHandler(
   private val notifier: Notifier,
   private val eventControlFactory: EventControlFactory,

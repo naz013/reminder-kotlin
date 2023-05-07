@@ -7,5 +7,4 @@ val repositoryModule = module {
   single { BirthdayRepository(get()) }
   single { NoteRepository(get()) }
   single { NoteImageRepository(get()) }
-  single { MissedCallRepository(get()) }
 }

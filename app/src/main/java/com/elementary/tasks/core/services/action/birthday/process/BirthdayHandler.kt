@@ -11,6 +11,7 @@ import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 
+@Deprecated("After Q")
 class BirthdayHandler(
   private val contextProvider: ContextProvider,
   private val notifier: Notifier

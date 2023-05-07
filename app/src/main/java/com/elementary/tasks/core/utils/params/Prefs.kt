@@ -163,7 +163,7 @@ class Prefs(
     get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   var missedCallPriority: Int
     get() = getInt(PrefsConstants.MISSED_CALL_PRIORITY)
     set(value) = putInt(PrefsConstants.MISSED_CALL_PRIORITY, value)
@@ -318,22 +318,22 @@ class Prefs(
     get() = getInt(PrefsConstants.TRACK_TIME)
     set(value) = putInt(PrefsConstants.TRACK_TIME, value)
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   var isMissedReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.MISSED_CALL_REMINDER)
     set(value) = putBoolean(PrefsConstants.MISSED_CALL_REMINDER, value)
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   var missedReminderTime: Int
     get() = getInt(PrefsConstants.MISSED_CALL_TIME)
     set(value) = putInt(PrefsConstants.MISSED_CALL_TIME, value)
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   var isQuickSmsEnabled: Boolean
     get() = getBoolean(PrefsConstants.QUICK_SMS)
     set(value) = putBoolean(PrefsConstants.QUICK_SMS, value)
 
-  @Deprecated("After S")
+  @Deprecated("After R")
   var isFollowReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.FOLLOW_REMINDER)
     set(value) = putBoolean(PrefsConstants.FOLLOW_REMINDER, value)

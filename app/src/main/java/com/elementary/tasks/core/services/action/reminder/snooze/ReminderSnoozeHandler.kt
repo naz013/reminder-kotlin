@@ -6,6 +6,7 @@ import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 
+@Deprecated("After Q")
 class ReminderSnoozeHandler(
   private val notifier: Notifier,
   private val eventControlFactory: EventControlFactory,

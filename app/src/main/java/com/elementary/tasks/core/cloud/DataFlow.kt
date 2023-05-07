@@ -107,7 +107,6 @@ class DataFlow<T>(
       IndexTypes.TYPE_NOTE -> FileConfig.FILE_NAME_NOTE
       IndexTypes.TYPE_BIRTHDAY -> FileConfig.FILE_NAME_BIRTHDAY
       IndexTypes.TYPE_GROUP -> FileConfig.FILE_NAME_GROUP
-      IndexTypes.TYPE_TEMPLATE -> FileConfig.FILE_NAME_TEMPLATE
       IndexTypes.TYPE_PLACE -> FileConfig.FILE_NAME_PLACE
       IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
     }
