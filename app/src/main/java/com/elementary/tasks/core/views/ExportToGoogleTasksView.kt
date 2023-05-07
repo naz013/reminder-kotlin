@@ -34,14 +34,22 @@ class ExportToGoogleTasksView : LinearLayout, KoinComponent {
       selectButton(value)
     }
 
-  var taskListId: String
-    get() = taskLists[binding.selector.selectedPosition].listId
+  var taskListId: String?
+    get() {
+      return try {
+        taskLists[binding.selector.selectedPosition].listId
+      } catch (t: Throwable) {
+        null
+      }
+    }
     set(value) {
       listIdToSelect = value
       val index = taskLists.indexOfFirst { it.listId == value }
         .takeIf { it != -1 }
         ?: 0
-      binding.selector.selectItem(index)
+      if (taskLists.isNotEmpty()) {
+        binding.selector.selectItem(index)
+      }
     }
 
   constructor(context: Context) : super(context) {
@@ -108,7 +116,7 @@ class ExportToGoogleTasksView : LinearLayout, KoinComponent {
     Timber.d("setState: $state")
     this.internalState = state
     enableViews(state != State.NO)
-    listener?.onChanged(state == State.YES, taskListId)
+    taskListId?.also { listener?.onChanged(state == State.YES, it) }
   }
 
   private fun enableViews(isEnabled: Boolean) {
