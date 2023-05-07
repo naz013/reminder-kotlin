@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.services
 
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.IBinder
@@ -11,7 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -32,6 +31,7 @@ class GeolocationService : Service() {
   private val reminderDao by inject<ReminderDao>()
   private val notifier by inject<Notifier>()
   private val dateTimeManager by inject<DateTimeManager>()
+  private val reminderActionProcessor by inject<ReminderActionProcessor>()
 
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
   private var locationListener: LocationTracker.Listener = object : LocationTracker.Listener {
@@ -46,7 +46,7 @@ class GeolocationService : Service() {
   override fun onDestroy() {
     super.onDestroy()
     locationTracker.removeUpdates()
-    stopForeground(true)
+    stopForeground(STOP_FOREGROUND_REMOVE)
     Timber.d("onDestroy: ")
   }
 
@@ -154,18 +154,15 @@ class GeolocationService : Service() {
     }
   }
 
-  private fun reminderAction(context: Context, id: String) {
-    val intent = Intent(context, ReminderActionReceiver::class.java)
-    intent.action = ReminderActionReceiver.ACTION_RUN
-    intent.putExtra(Constants.INTENT_ID, id)
-    context.sendBroadcast(intent)
+  private fun reminderAction(id: String) {
+    reminderActionProcessor.process(id)
   }
 
   private suspend fun showReminder(reminder: Reminder) {
     if (reminder.isNotificationShown) return
     reminder.isNotificationShown = true
     reminderDao.insert(reminder)
-    withUIContext { reminderAction(applicationContext, reminder.uuId) }
+    withUIContext { reminderAction(reminder.uuId) }
   }
 
   private fun showNotification(roundedDistance: Int, reminder: Reminder) {

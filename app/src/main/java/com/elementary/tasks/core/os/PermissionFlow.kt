@@ -196,7 +196,6 @@ class PermissionFlow private constructor(
         null
       }
 
-      Permissions.READ_PHONE_STATE -> UiPermissionDialogData.READ_PHONE_STATE
       Permissions.FOREGROUND_SERVICE -> if (Module.isPie) {
         UiPermissionDialogData.FOREGROUND_SERVICE
       } else {

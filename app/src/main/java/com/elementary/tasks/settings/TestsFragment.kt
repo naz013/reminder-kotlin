@@ -7,15 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
-import com.elementary.tasks.aftercall.FollowReminderActivity
-import com.elementary.tasks.sms.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
-import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
-import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import java.text.SimpleDateFormat
@@ -37,23 +32,6 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen("16546848") }
     binding.birthdayNoNumber.setOnClickListener { openBirthdayScreen() }
     binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
-    binding.missedCallWindow.setOnClickListener { openMissedScreen() }
-
-    binding.quickSmsWindow.setOnClickListener { QuickSmsActivity.openScreen(requireContext(), "2454548") }
-
-    binding.afterCallWindow.setOnClickListener {
-      FollowReminderActivity.mockScreen(requireContext(), "2454548", System.currentTimeMillis())
-    }
-  }
-
-  private fun openMissedScreen() {
-    MissedCall(number = "2454548", dateTime = System.currentTimeMillis()).also {
-      if (Module.is10) {
-        MissedCallDialog29Activity.mockTest(requireContext(), it)
-      } else {
-        MissedCallDialogActivity.mockTest(requireContext(), it)
-      }
-    }
   }
 
   private fun openReminderScreen() {

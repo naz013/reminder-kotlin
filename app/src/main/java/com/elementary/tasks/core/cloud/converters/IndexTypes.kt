@@ -5,7 +5,6 @@ enum class IndexTypes {
   TYPE_NOTE,
   TYPE_PLACE,
   TYPE_SETTINGS,
-  TYPE_TEMPLATE,
   TYPE_GROUP,
   TYPE_BIRTHDAY
 }

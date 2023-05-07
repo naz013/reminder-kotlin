@@ -73,14 +73,6 @@ class DeleteFileWorker(
               completable = null
             ).delete(uuId, IndexTypes.TYPE_PLACE)
           }
-          fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
-            DataFlow(
-              syncManagers.repositoryManager.templateDataFlowRepository,
-              syncManagers.converterManager.templateConverter,
-              storage,
-              completable = null
-            ).delete(uuId, IndexTypes.TYPE_TEMPLATE)
-          }
         }
       }
     }

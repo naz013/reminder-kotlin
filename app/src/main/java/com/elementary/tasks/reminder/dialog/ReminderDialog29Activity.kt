@@ -9,12 +9,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.PowerManager
 import android.text.TextUtils
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -28,7 +26,6 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
@@ -145,13 +142,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   private fun init() {
     setUpScreenOptions()
-  }
-
-  override fun onTouchEvent(event: MotionEvent): Boolean {
-    if (MotionEvent.ACTION_DOWN == event.action) {
-      discardMedia()
-    }
-    return super.onTouchEvent(event)
   }
 
   private fun canUnlockScreen(): Boolean {
@@ -308,7 +298,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     }
 
     if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-      contactPhoto.visibility = View.VISIBLE
+      contactPhoto.visible()
       val conID = Contacts.getIdFromNumber(reminder.target, this)
 
       val name = Contacts.getNameFromNumber(reminder.target, this)
@@ -332,10 +322,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactName.text = name
       binding.contactNumber.text = reminder.target
 
-      binding.contactBlock.visibility = View.VISIBLE
+      binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.make_call)
       binding.buttonAction.visibleGone(prefs.isTelephonyAllowed)
-      binding.container.visibility = View.VISIBLE
+      binding.container.visible()
     } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
       contactPhoto.visibility = View.VISIBLE
       val conID = Contacts.getIdFromNumber(reminder.target, this)
@@ -361,11 +351,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.buttonAction.text = getString(R.string.send)
       binding.buttonAction.visibleGone(prefs.isTelephonyAllowed)
 
-      binding.contactBlock.visibility = View.VISIBLE
+      binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.send)
       binding.buttonAction.contentDescription = getString(R.string.acc_button_send_message)
 
-      binding.container.visibility = View.VISIBLE
+      binding.container.visible()
     } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
       binding.remText.setText(R.string.e_mail)
       val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
@@ -378,7 +368,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
         if (photo != null) {
           Picasso.get().load(photo).into(contactPhoto)
         } else {
-          contactPhoto.visibility = View.GONE
+          contactPhoto.gone()
         }
         val name = Contacts.getNameFromMail(reminder.target, this)
         val userInfo = (name ?: "") + "\n" + reminder.target
@@ -396,10 +386,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.messageView.contentDescription = summary
       binding.subjectView.text = reminder.subject
       binding.subjectView.contentDescription = reminder.subject
-      binding.container.visibility = View.VISIBLE
-      binding.subjectContainer.visibility = View.VISIBLE
-      binding.contactBlock.visibility = View.VISIBLE
+      binding.container.visible()
+      binding.subjectContainer.visible()
+      binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.send)
+      binding.buttonAction.visible()
     } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
       val packageManager = packageManager
       var applicationInfo: ApplicationInfo? = null
@@ -414,25 +405,29 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.remText.contentDescription = label
       binding.contactName.text = nameA
       binding.contactNumber.text = reminder.target
-      binding.contactBlock.visibility = View.VISIBLE
+      binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.open)
+      binding.buttonAction.visible()
     } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)) {
       val label = summary + "\n\n" + reminder.target
       binding.remText.text = summary
       binding.remText.contentDescription = label
       binding.contactName.text = reminder.target
       binding.contactNumber.text = reminder.target
-      binding.contactBlock.visibility = View.VISIBLE
+      binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.open)
+      binding.buttonAction.visible()
     } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP)) {
       binding.remText.text = summary
       binding.remText.contentDescription = summary
-      binding.contactBlock.visibility = View.INVISIBLE
+      binding.contactBlock.transparent()
+      binding.buttonAction.gone()
       loadData()
     } else {
       binding.remText.text = summary
       binding.remText.contentDescription = summary
-      binding.contactBlock.visibility = View.INVISIBLE
+      binding.contactBlock.transparent()
+      binding.buttonAction.gone()
     }
 
     moreActionParams.canStartAgain = Reminder.isBase(reminder.type, Reminder.BY_TIME)
@@ -481,7 +476,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   }
 
   override fun handleBackPress(): Boolean {
-    discardMedia()
     if (prefs.isFoldingEnabled) {
       jobScheduler.cancelReminder(mReminder?.uuId ?: "")
       removeFlags()
@@ -579,7 +573,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     }
     shoppingAdapter.data = reminder.shoppings
     binding.todoList.adapter = shoppingAdapter
-    binding.todoList.visibility = View.VISIBLE
+    binding.todoList.visible()
   }
 
   private fun call() {
@@ -656,16 +650,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   private fun discardNotification(id: Int) {
     Timber.d("discardNotification: $id")
-    discardMedia()
     notifier.cancel(id)
-  }
-
-  private fun discardMedia() {
-    ContextCompat.startForegroundService(this,
-      EventOperationalService.getIntent(this, mReminder?.uuId ?: "",
-        EventOperationalService.TYPE_REMINDER,
-        EventOperationalService.ACTION_STOP,
-        id))
   }
 
   private fun showWearNotification(secondaryText: String) {

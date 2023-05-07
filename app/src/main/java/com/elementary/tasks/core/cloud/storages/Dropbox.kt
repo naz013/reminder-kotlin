@@ -31,6 +31,7 @@ class Dropbox(
   private val groupFolder = "/Groups/"
   private val birthFolder = "/Birthdays/"
   private val placeFolder = "/Places/"
+  @Deprecated("After R")
   private val templateFolder = "/Templates/"
   private val settingsFolder = "/Settings/"
 
@@ -209,7 +210,6 @@ class Dropbox(
       FileConfig.FILE_NAME_GROUP -> groupFolder
       FileConfig.FILE_NAME_BIRTHDAY -> birthFolder
       FileConfig.FILE_NAME_PLACE -> placeFolder
-      FileConfig.FILE_NAME_TEMPLATE -> templateFolder
       FileConfig.FILE_NAME_SETTINGS_EXT -> settingsFolder
       FileConfig.FILE_NAME_JSON -> rootFolder
       else -> reminderFolder

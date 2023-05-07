@@ -12,16 +12,16 @@
             android:name="com.elementary.tasks.core.services.PermanentReminderReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.elementary.tasks.pro.SHOW" />
-                <action android:name="com.elementary.tasks.pro.HIDE" />
+                <action android:name="com.elementary.tasks.SHOW" />
+                <action android:name="com.elementary.tasks.HIDE" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.elementary.tasks.core.services.PermanentBirthdayReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.elementary.tasks.pro.birthday.SHOW" />
-                <action android:name="com.elementary.tasks.pro.birthday.HIDE" />
+                <action android:name="com.elementary.tasks.birthday.SHOW" />
+                <action android:name="com.elementary.tasks.birthday.HIDE" />
             </intent-filter>
         </receiver>
 
@@ -29,18 +29,17 @@
             android:name="com.elementary.tasks.core.services.ReminderActionReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.elementary.tasks.pro.reminder.SHOW_SCREEN" />
-                <action android:name="com.elementary.tasks.pro.reminder.SIMPLE_HIDE" />
-                <action android:name="com.elementary.tasks.pro.reminder.RUN" />
+                <action android:name="com.elementary.tasks.reminder.SNOOZE" />
+                <action android:name="com.elementary.tasks.reminder.SIMPLE_HIDE" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.elementary.tasks.core.services.BirthdayActionReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.elementary.tasks.pro.birthday.SHOW_SCREEN" />
-                <action android:name="com.elementary.tasks.pro.birthday.CALL" />
-                <action android:name="com.elementary.tasks.pro.birthday.SMS" />
+                <action android:name="com.elementary.tasks.birthday.SIMPLE_HIDE" />
+                <action android:name="com.elementary.tasks.birthday.CALL" />
+                <action android:name="com.elementary.tasks.birthday.SMS" />
             </intent-filter>
         </receiver>
         <receiver

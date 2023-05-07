@@ -12,7 +12,6 @@ import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
@@ -20,7 +19,6 @@ import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.elementary.tasks.sms.create.TemplateActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -87,15 +85,6 @@ class IntentActivity : ThemedActivity() {
                 }
                 finish()
             }
-            is SmsTemplate -> {
-                if (any.isValid()) {
-                    startActivity(Intent(this, TemplateActivity::class.java)
-                      .putExtra(Constants.INTENT_ITEM, any))
-                } else {
-                    toast(getString(R.string.unsupported_file_format))
-                }
-                finish()
-            }
           else -> {
             toast(getString(R.string.unsupported_file_format))
             finish()
@@ -110,10 +99,6 @@ class IntentActivity : ThemedActivity() {
       finish()
     }
   }
-}
-
-private fun SmsTemplate.isValid(): Boolean {
-  return title.isNotBlank()
 }
 
 private fun ReminderGroup.isValid(): Boolean {

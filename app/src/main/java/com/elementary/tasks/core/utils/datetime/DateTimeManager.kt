@@ -374,11 +374,7 @@ class DateTimeManager(
     return buildYearString(language, years)
   }
 
-  fun getAgeFormatted(
-    yearOfBirth: Int,
-    at: LocalDateTime = LocalDateTime.now()
-  ): String {
-    val years = getAge(yearOfBirth, at)
+  fun getAgeFormatted(years: Int): String {
     val language = Language.getScreenLanguage(prefs.appLanguage).toString().lowercase()
     return buildYearString(language, years)
   }
@@ -448,10 +444,6 @@ class DateTimeManager(
 
   fun to24HourString(time: LocalTime): String {
     return time.format(TIME_24_FORMATTER)
-  }
-
-  private fun getAge(year: Int, at: LocalDateTime = LocalDateTime.now()): Int {
-    return at.year - year
   }
 
   fun getAge(dateOfBirth: String?): Int {

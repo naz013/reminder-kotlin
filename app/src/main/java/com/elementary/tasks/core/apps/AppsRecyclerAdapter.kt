@@ -8,6 +8,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemApplicationBinding
 
+@Deprecated("After S")
 class AppsRecyclerAdapter :
   ListAdapter<UiApplicationList, AppsRecyclerAdapter.ApplicationViewHolder>(
     UiApplicationListDiffCallback()

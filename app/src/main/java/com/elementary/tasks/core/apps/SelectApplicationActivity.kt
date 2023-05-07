@@ -23,6 +23,7 @@ import com.elementary.tasks.databinding.ActivityApplicationListBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@Deprecated("After S")
 class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>() {
 
   private val viewModel by viewModel<SelectApplicationViewModel>()

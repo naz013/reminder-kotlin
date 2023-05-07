@@ -6,6 +6,5 @@ class ConverterManager(
   val noteConverter: NoteConverter,
   val placeConverter: PlaceConverter,
   val reminderConverter: ReminderConverter,
-  val settingsConverter: SettingsConverter,
-  val templateConverter: TemplateConverter
+  val settingsConverter: SettingsConverter
 )

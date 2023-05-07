@@ -86,13 +86,17 @@ enum class Feature(val value: String) {
   BIRTHDAY("birthday"),
   CREATE_BIRTHDAY("create_birthday"),
 
+  @Deprecated("After R")
   CREATE_SMS_TEMPLATE("create_sms_template"),
+  @Deprecated("After R")
   QUICK_SMS("quick_sms"),
 
   CREATE_GROUP("create_group"),
 
+  @Deprecated("After R")
   MISSED_CALL("missed_call_reminder"),
 
+  @Deprecated("After R")
   AFTER_CALL("after_call_reminder"),
 
   GOOGLE_TASK("login_google_task"),

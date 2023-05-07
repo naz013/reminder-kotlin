@@ -6,6 +6,5 @@ class RepositoryManager(
   val noteDataFlowRepository: NoteDataFlowRepository,
   val placeDataFlowRepository: PlaceDataFlowRepository,
   val reminderDataFlowRepository: ReminderDataFlowRepository,
-  val settingsDataFlowRepository: SettingsDataFlowRepository,
-  val templateDataFlowRepository: TemplateDataFlowRepository
+  val settingsDataFlowRepository: SettingsDataFlowRepository
 )

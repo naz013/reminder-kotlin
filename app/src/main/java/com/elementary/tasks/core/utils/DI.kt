@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.BuildConfig
-import com.elementary.tasks.aftercall.FollowReminderViewModel
 import com.elementary.tasks.birthdays.create.AddBirthdayViewModel
 import com.elementary.tasks.birthdays.list.BirthdaysViewModel
 import com.elementary.tasks.birthdays.preview.ShowBirthdayViewModel
@@ -35,7 +34,6 @@ import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
-import com.elementary.tasks.core.cloud.converters.TemplateConverter
 import com.elementary.tasks.core.cloud.repositories.BirthdayDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.GroupDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.NoteDataFlowRepository
@@ -43,7 +41,6 @@ import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.RepositoryManager
 import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
-import com.elementary.tasks.core.cloud.repositories.TemplateDataFlowRepository
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.storages.LocalStorage
@@ -62,7 +59,6 @@ import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.adapter.missedcall.UiMissedCallShowAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
@@ -70,12 +66,7 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
-import com.elementary.tasks.core.data.adapter.sms.UiSmsListAdapter
-import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.core.data.repository.NoteRepository
-import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.os.ContextProvider
@@ -120,7 +111,6 @@ import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
-import com.elementary.tasks.missed_calls.MissedCallViewModel
 import com.elementary.tasks.monthview.CalendarViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
@@ -146,14 +136,9 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
-import com.elementary.tasks.settings.additional.work.TemplateDeleteBackupWorker
-import com.elementary.tasks.settings.additional.work.TemplateSingleBackupWorker
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
-import com.elementary.tasks.sms.QuickSmsViewModel
-import com.elementary.tasks.sms.create.CreateSmsTemplateViewModel
-import com.elementary.tasks.sms.list.SmsTemplatesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.elementary.tasks.voice.ConversationViewModel
 import com.elementary.tasks.voice.VoiceResultDialogViewModel
@@ -180,8 +165,6 @@ val workerModule = module {
   worker { PlaceSingleBackupWorker(get(), get(), get(), get()) }
   worker { ReminderDeleteBackupWorker(get(), get(), get(), get()) }
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
-  worker { TemplateSingleBackupWorker(get(), get(), get(), get()) }
-  worker { TemplateDeleteBackupWorker(get(), get(), get(), get()) }
   worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   worker { BirthdayDeleteBackupWorker(get(), get(), get(), get()) }
@@ -208,27 +191,9 @@ val viewModelModule = module {
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
   viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
 
-  viewModel { QuickSmsViewModel(get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> CreateSmsTemplateViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { SmsTemplatesViewModel(get(), get(), get(), get()) }
-
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
-  viewModel {
-    FollowReminderViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
   viewModel { (id: String) ->
     EditReminderViewModel(
       id,
@@ -299,8 +264,6 @@ val viewModelModule = module {
     )
   }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
-
-  viewModel { (number: String) -> MissedCallViewModel(number, get(), get(), get(), get()) }
 
   viewModel { (listId: String) ->
     GoogleTaskListViewModel(
@@ -432,8 +395,7 @@ val converterModule = module {
   single { PlaceConverter(get()) }
   single { ReminderConverter(get(), get()) }
   single { SettingsConverter(get()) }
-  single { TemplateConverter(get()) }
-  single { ConverterManager(get(), get(), get(), get(), get(), get(), get()) }
+  single { ConverterManager(get(), get(), get(), get(), get(), get()) }
 }
 
 val completableModule = module {
@@ -449,15 +411,14 @@ val storageModule = module {
   single { StorageManager(get(), get(), get(), get(), get()) }
 }
 
-val repositoryModule = module {
+val dataFlowRepositoryModule = module {
   single { BirthdayDataFlowRepository(get()) }
   single { GroupDataFlowRepository(get()) }
   single { NoteDataFlowRepository(get(), get(), get()) }
   single { PlaceDataFlowRepository(get()) }
   single { ReminderDataFlowRepository(get()) }
   single { SettingsDataFlowRepository(get()) }
-  single { TemplateDataFlowRepository(get()) }
-  single { RepositoryManager(get(), get(), get(), get(), get(), get(), get()) }
+  single { RepositoryManager(get(), get(), get(), get(), get(), get()) }
 }
 
 fun dbModule(context: Context): Module {
@@ -470,16 +431,10 @@ fun dbModule(context: Context): Module {
     single { appDb.googleTaskListsDao() }
     single { appDb.googleTasksDao() }
     single { appDb.calendarEventsDao() }
-    single { appDb.missedCallsDao() }
     single { appDb.notesDao() }
     single { appDb.placesDao() }
-    single { appDb.smsTemplatesDao() }
     single { appDb.usedTimeDao() }
 
-    single { ReminderRepository(get()) }
-    single { BirthdayRepository(get()) }
-    single { NoteRepository(get()) }
-    single { NoteImageRepository(get()) }
     single { NoteToOldNoteConverter(get()) }
   }
 }
@@ -583,14 +538,10 @@ val adapterModule = module {
   single { UiBirthdayShowAdapter(get(), get()) }
   single { UiBirthdayEditAdapter() }
 
-  single { UiSmsListAdapter() }
-
   single { UiGoogleTaskListAdapter(get()) }
 
   single { UiGroupListAdapter(get()) }
   single { UiGroupEditAdapter() }
-
-  single { UiMissedCallShowAdapter(get(), get()) }
 
   single { UiUsedTimeListAdapter() }
 

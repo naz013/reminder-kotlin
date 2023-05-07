@@ -31,16 +31,15 @@
             android:name="com.elementary.tasks.core.services.ReminderActionReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.elementary.tasks.pro.reminder.SHOW_SCREEN" />
+                <action android:name="com.elementary.tasks.pro.reminder.SNOOZE" />
                 <action android:name="com.elementary.tasks.pro.reminder.SIMPLE_HIDE" />
-                <action android:name="com.elementary.tasks.pro.reminder.RUN" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.elementary.tasks.core.services.BirthdayActionReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.elementary.tasks.pro.birthday.SHOW_SCREEN" />
+                <action android:name="com.elementary.tasks.pro.birthday.SIMPLE_HIDE" />
                 <action android:name="com.elementary.tasks.pro.birthday.CALL" />
                 <action android:name="com.elementary.tasks.pro.birthday.SMS" />
             </intent-filter>

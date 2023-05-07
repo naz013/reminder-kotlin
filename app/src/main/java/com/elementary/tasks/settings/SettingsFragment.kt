@@ -125,9 +125,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     binding.notesSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
     }
-    binding.additionalSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToAdditionalSettingsFragment())
-    }
     binding.notificationSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment())
     }

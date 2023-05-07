@@ -69,7 +69,6 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -227,37 +226,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.elementary.tasks.sms.create.TemplateActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/create_template"
-            android:windowSoftInputMode="stateUnchanged">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="file" />
-                <data android:host="*" />
-                <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.te2" />
-                <data android:pathPattern=".*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.te2" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".sms.QuickSmsActivity"
-            android:excludeFromRecents="true" />
-        <activity
-            android:name=".aftercall.FollowReminderActivity"
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".groups.create.CreateGroupActivity"
             android:configChanges="keyboardHidden"
@@ -404,12 +373,6 @@
             android:name=".reminder.preview.FullscreenMapActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".missed_calls.MissedCallDialogActivity"
-            android:excludeFromRecents="true" />
-        <activity
-            android:name=".missed_calls.MissedCallDialog29Activity"
-            android:excludeFromRecents="true" />
-        <activity
             android:name=".birthdays.preview.ShowBirthdayActivity"
             android:excludeFromRecents="true" />
         <activity
@@ -435,14 +398,6 @@
             android:name=".reminder.create.ConfigureActivity"
             android:excludeFromRecents="true" />
 
-        <receiver
-            android:name=".core.services.CallReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".core.services.BootReceiver"
             android:exported="true">

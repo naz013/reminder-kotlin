@@ -26,11 +26,6 @@ object FileConfig {
    */
   const val FILE_NAME_PLACE = ".pl2"
 
-  /**
-   * File extension for message template.
-   */
-  const val FILE_NAME_TEMPLATE = ".te2"
-
   const val FILE_NAME_SETTINGS = "app.settings"
   const val FILE_NAME_SETTINGS_EXT = ".settings"
 

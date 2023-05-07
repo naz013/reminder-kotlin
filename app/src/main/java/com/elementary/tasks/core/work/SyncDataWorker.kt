@@ -90,14 +90,6 @@ class SyncDataWorker(
         BulkDataFlow(placeRepository, placeConverter, storage, completable = null).backup()
       }
 
-      if (syncFlags.contains(FLAG_TEMPLATE)) {
-        val templateRepository = syncManagers.repositoryManager.templateDataFlowRepository
-        val templateConverter = syncManagers.converterManager.templateConverter
-        BulkDataFlow(templateRepository, templateConverter, storage, completable = null)
-          .restore(IndexTypes.TYPE_TEMPLATE, deleteFile = true)
-        BulkDataFlow(templateRepository, templateConverter, storage, completable = null).backup()
-      }
-
       if (syncFlags.contains(FLAG_SETTINGS)) {
         val settingsRepository = syncManagers.repositoryManager.settingsDataFlowRepository
         val settingsConverter = syncManagers.converterManager.settingsConverter
@@ -120,7 +112,6 @@ class SyncDataWorker(
     const val FLAG_NOTE = "flag.note"
     const val FLAG_BIRTHDAY = "flag.birthday"
     const val FLAG_PLACE = "flag.place"
-    const val FLAG_TEMPLATE = "flag.template"
     const val FLAG_SETTINGS = "flag.settings"
 
     fun schedule(context: Context) {
