@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
-import java.util.*
+import java.util.Locale
 
 class Prefs(
   context: Context
@@ -55,14 +55,14 @@ class Prefs(
     set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
 
   var showPermanentOnHome: Boolean
-    get() = getBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS)
+    get() = getBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS, def = true)
     set(value) {
       putBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS, value)
       notifyKey(PrefsConstants.SHOW_PERMANENT_REMINDERS)
     }
 
   var analyticsEnabled: Boolean
-    get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, true)
+    get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, def = true)
     set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)
 
   var backupAttachedFiles: Boolean
@@ -120,11 +120,11 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.USE_FINGERPRINT, value)
 
   var shufflePinView: Boolean
-    get() = getBoolean(PrefsConstants.SHUFFLE_PIN_VIEW, true)
+    get() = getBoolean(PrefsConstants.SHUFFLE_PIN_VIEW, def = true)
     set(value) = putBoolean(PrefsConstants.SHUFFLE_PIN_VIEW, value)
 
   var isDoNotDisturbEnabled: Boolean
-    get() = getBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, false)
+    get() = getBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, def = false)
     set(value) {
       putBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_ENABLED)
@@ -163,11 +163,6 @@ class Prefs(
     get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
 
-  @Deprecated("After R")
-  var missedCallPriority: Int
-    get() = getInt(PrefsConstants.MISSED_CALL_PRIORITY)
-    set(value) = putInt(PrefsConstants.MISSED_CALL_PRIORITY, value)
-
   @Deprecated("After Q")
   var unlockPriority: Int
     get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
@@ -179,10 +174,6 @@ class Prefs(
   var isTelephonyEnabled: Boolean
     get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
     set(value) = putBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, value)
-
-  var isAutoImportSharedData: Boolean
-    get() = getBoolean(PrefsConstants.AUTO_IMPORT_SHARED_DATA, true)
-    set(value) = putBoolean(PrefsConstants.AUTO_IMPORT_SHARED_DATA, value)
 
   var moveCompleted: Boolean
     get() = getBoolean(PrefsConstants.MOVE_TO_TRASH, false)
@@ -317,26 +308,6 @@ class Prefs(
   var trackTime: Int
     get() = getInt(PrefsConstants.TRACK_TIME)
     set(value) = putInt(PrefsConstants.TRACK_TIME, value)
-
-  @Deprecated("After R")
-  var isMissedReminderEnabled: Boolean
-    get() = getBoolean(PrefsConstants.MISSED_CALL_REMINDER)
-    set(value) = putBoolean(PrefsConstants.MISSED_CALL_REMINDER, value)
-
-  @Deprecated("After R")
-  var missedReminderTime: Int
-    get() = getInt(PrefsConstants.MISSED_CALL_TIME)
-    set(value) = putInt(PrefsConstants.MISSED_CALL_TIME, value)
-
-  @Deprecated("After R")
-  var isQuickSmsEnabled: Boolean
-    get() = getBoolean(PrefsConstants.QUICK_SMS)
-    set(value) = putBoolean(PrefsConstants.QUICK_SMS, value)
-
-  @Deprecated("After R")
-  var isFollowReminderEnabled: Boolean
-    get() = getBoolean(PrefsConstants.FOLLOW_REMINDER)
-    set(value) = putBoolean(PrefsConstants.FOLLOW_REMINDER, value)
 
   var driveUser: String
     get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER))
@@ -476,7 +447,7 @@ class Prefs(
     set(value) = putInt(PrefsConstants.EVENTS_CALENDAR, value)
 
   var isBirthdayReminderEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_REMINDER)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_REMINDER, def = true)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_REMINDER, value)
 
   var birthdayTime: String
@@ -484,7 +455,7 @@ class Prefs(
     set(value) = putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, value)
 
   var isBirthdayInWidgetEnabled: Boolean
-    get() = getBoolean(PrefsConstants.WIDGET_BIRTHDAYS)
+    get() = getBoolean(PrefsConstants.WIDGET_BIRTHDAYS, def = true)
     set(value) = putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, value)
 
   var isBirthdayPermanentEnabled: Boolean
@@ -684,7 +655,6 @@ class Prefs(
       editor.putString(PrefsConstants.CUSTOM_SOUND, Constants.SOUND_NOTIFICATION)
       editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
       editor.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
-      editor.putInt(PrefsConstants.MISSED_CALL_PRIORITY, 2)
       editor.putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
       editor.putInt(PrefsConstants.APP_LANGUAGE, 0)
       editor.putInt(PrefsConstants.START_DAY, 1)
@@ -693,7 +663,6 @@ class Prefs(
       editor.putInt(PrefsConstants.APP_RUNS_COUNT, 0)
       editor.putInt(PrefsConstants.DELAY_TIME, 5)
       editor.putInt(PrefsConstants.EVENT_DURATION, 30)
-      editor.putInt(PrefsConstants.MISSED_CALL_TIME, 10)
       editor.putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
       editor.putInt(PrefsConstants.SOUND_STREAM, 5)
       editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
@@ -719,13 +688,9 @@ class Prefs(
       editor.putBoolean(PrefsConstants.UNLOCK_DEVICE, false)
       editor.putBoolean(PrefsConstants.WAKE_STATUS, false)
       editor.putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
-      editor.putBoolean(PrefsConstants.MISSED_CALL_REMINDER, false)
-      editor.putBoolean(PrefsConstants.QUICK_SMS, false)
-      editor.putBoolean(PrefsConstants.FOLLOW_REMINDER, false)
       editor.putBoolean(PrefsConstants.TTS, false)
       editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
       editor.putBoolean(PrefsConstants.REMINDER_CHANGED, false)
-      editor.putBoolean(PrefsConstants.REMINDER_IMAGE_BLUR, false)
       editor.putBoolean(PrefsConstants.SYSTEM_VOLUME, false)
       editor.putBoolean(PrefsConstants.INCREASING_VOLUME, false)
       editor.putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
@@ -812,9 +777,6 @@ class Prefs(
     if (!hasKey(PrefsConstants.BIRTHDAY_PRIORITY)) {
       putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
     }
-    if (!hasKey(PrefsConstants.MISSED_CALL_PRIORITY)) {
-      putInt(PrefsConstants.MISSED_CALL_PRIORITY, 2)
-    }
     if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER_TIME)) {
       putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "12:00")
     }
@@ -848,17 +810,11 @@ class Prefs(
     if (!hasKey(PrefsConstants.MAP_TYPE)) {
       putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
     }
-    if (!hasKey(PrefsConstants.MISSED_CALL_TIME)) {
-      putInt(PrefsConstants.MISSED_CALL_TIME, 10)
-    }
     if (!hasKey(PrefsConstants.SOUND_STREAM)) {
       putInt(PrefsConstants.SOUND_STREAM, 5)
     }
     if (!hasKey(PrefsConstants.RATE_SHOW)) {
       putBoolean(PrefsConstants.RATE_SHOW, false)
-    }
-    if (!hasKey(PrefsConstants.REMINDER_IMAGE_BLUR)) {
-      putBoolean(PrefsConstants.REMINDER_IMAGE_BLUR, false)
     }
     if (!hasKey(PrefsConstants.QUICK_NOTE_REMINDER)) {
       putBoolean(PrefsConstants.QUICK_NOTE_REMINDER, false)
@@ -899,9 +855,6 @@ class Prefs(
     if (!hasKey(PrefsConstants.INFINITE_VIBRATION)) {
       putBoolean(PrefsConstants.INFINITE_VIBRATION, false)
     }
-    if (!hasKey(PrefsConstants.SMART_FOLD)) {
-      putBoolean(PrefsConstants.SMART_FOLD, false)
-    }
     if (!hasKey(PrefsConstants.NOTIFICATION_REPEAT)) {
       putBoolean(PrefsConstants.NOTIFICATION_REPEAT, false)
     }
@@ -913,15 +866,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.CALENDAR_FEATURE_TASKS)) {
       putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, false)
-    }
-    if (!hasKey(PrefsConstants.MISSED_CALL_REMINDER)) {
-      putBoolean(PrefsConstants.MISSED_CALL_REMINDER, false)
-    }
-    if (!hasKey(PrefsConstants.QUICK_SMS)) {
-      putBoolean(PrefsConstants.QUICK_SMS, false)
-    }
-    if (!hasKey(PrefsConstants.FOLLOW_REMINDER)) {
-      putBoolean(PrefsConstants.FOLLOW_REMINDER, false)
     }
     if (!hasKey(PrefsConstants.BIRTHDAY_PERMANENT)) {
       putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
