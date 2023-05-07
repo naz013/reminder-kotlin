@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Biometrische Authentifizierung</string>
     <string name="prompt_info_description">Fahren Sie mit der biometrischen Authentifizierung fort</string>
     <string name="title_feature_birthdays">Geburtstage</string>
-    <string name="bg_location_message">Damit die Anwendung Sie benachrichtigt, wenn Sie sich in der Nähe des ausgewählten Standorts befinden, müssen Sie den Hintergrundspeicherort zulassen.</string>
+    <string name="bg_location_message">Sie müssen die Hintergrundposition erlauben, um die Anwendung zu benachrichtigen, wenn Sie sich in der Nähe des ausgewählten Standorts befinden.\nDiese App sammelt Standortdaten, um Erinnerungen nach Ort zu aktivieren, auch wenn die App geschlossen ist oder nicht verwendet wird.\nAuf die Standortdaten wird nur dort zugegriffen, wo mindestens eine aktive Standorterinnerung ist.</string>
     <string name="deleted">Gelöscht</string>
     <string name="post_notification">Posten Sie eine Benachrichtigung</string>
     <string name="post_notification_explanation">Zum Anzeigen von Benachrichtigungen in der Statusleistenanwendung ist die Benachrichtigungsberechtigung erforderlich</string>

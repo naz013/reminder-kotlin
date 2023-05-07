@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Autentificare biometrică</string>
     <string name="prompt_info_description">Procedați cu autentificarea biometrică</string>
     <string name="title_feature_birthdays">Zile de nastere</string>
-    <string name="bg_location_message">Pentru a permite aplicației să vă anunțe când veți fi aproape de locația selectată, trebuie să permiteți locația în fundal.</string>
+    <string name="bg_location_message">Trebuie să permiteți locației de fundal pentru a notifica aplicației când vă veți afla în apropierea locației selectate.\nAceastă aplicație colectează date despre locație pentru a activa mementouri în funcție de locație, chiar și atunci când aplicația este închisă sau nu este utilizată.\nDatele de locație sunt accesate numai acolo unde se află cel puțin un memento de locație activ.</string>
     <string name="deleted">Șters</string>
     <string name="post_notification">Post Notificare</string>
     <string name="post_notification_explanation">Pentru a afișa notificarea în aplicația Bara de stare necesită permisiunea de notificare</string>

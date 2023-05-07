@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Biometrické ověřování</string>
     <string name="prompt_info_description">Pokračujte v biometrickém ověřování</string>
     <string name="title_feature_birthdays">Narozeniny</string>
-    <string name="bg_location_message">Chcete-li, aby vás aplikace upozornila, když budete poblíž vybraného místa, musíte povolit umístění na pozadí.</string>
+    <string name="bg_location_message">Chcete-li aplikaci upozornit, když budete poblíž vybraného místa, musíte povolit polohu na pozadí.\nTato aplikace shromažďuje údaje o poloze, aby umožnila připomenutí podle místa, i když je aplikace zavřená nebo se nepoužívá.\nÚdaje o poloze jsou dostupné pouze tam, kde je alespoň jedno připomenutí aktivní polohy.</string>
     <string name="deleted">Smazáno</string>
     <string name="post_notification">Odeslat oznámení</string>
     <string name="post_notification_explanation">Zobrazení oznámení v aplikaci Stavový řádek vyžaduje oprávnění k oznámení</string>

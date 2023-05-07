@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Autenticação biométrica</string>
     <string name="prompt_info_description">Prossiga com a autenticação biométrica</string>
     <string name="title_feature_birthdays">Aniversários</string>
-    <string name="bg_location_message">Para permitir que o aplicativo o notifique quando você estará próximo ao local selecionado, é necessário permitir a localização em segundo plano.</string>
+    <string name="bg_location_message">Você precisa permitir que a localização em segundo plano notifique o aplicativo quando estiver perto do local selecionado.\nEste aplicativo coleta dados de localização para permitir lembretes por localização, mesmo quando o aplicativo está fechado ou não está em uso.\nOs dados de localização são acessados apenas onde estão menos um lembrete de local ativo.</string>
     <string name="deleted">Excluído</string>
     <string name="post_notification">Notificação de postagem</string>
     <string name="post_notification_explanation">Para mostrar a notificação no aplicativo Barra de status, é necessária permissão de notificação</string>

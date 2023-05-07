@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Authentification biométrique</string>
     <string name="prompt_info_description">Procéder à l\'authentification biométrique</string>
     <string name="title_feature_birthdays">Anniversaires</string>
-    <string name="bg_location_message">Pour permettre à l\'application de vous avertir lorsque vous serez à proximité de l\'emplacement sélectionné, vous devez autoriser l\'emplacement en arrière-plan.</string>
+    <string name="bg_location_message">Vous devez autoriser l\'emplacement en arrière-plan pour avertir l\'application lorsque vous serez à proximité de l\'emplacement sélectionné.\nCette application collecte les données de localisation pour activer les rappels par localisation, même lorsque l\'application est fermée ou non utilisée.\nLes données de localisation ne sont accessibles que si au moins un rappel de localisation actif.</string>
     <string name="deleted">Supprimé</string>
     <string name="post_notification">Publier une notification</string>
     <string name="post_notification_explanation">Pour afficher une notification dans l\'application de la barre d\'état, il faut une autorisation de notification</string>

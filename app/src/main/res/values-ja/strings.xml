@@ -559,7 +559,7 @@
     <string name="do_not_show_notification">通知を表示しない</string>
     <string name="do_not_remind_about_birthdays">誕生日を思い出させない</string>
     <string name="with_reminder">催促付き</string>
-    <string name="change_pin">Zmień PIN...</string>
+    <string name="change_pin">PINを変更</string>
     <string name="acc_resend_message">メッセージを再送信</string>
     <string name="backup_my_data">私のデータをバックアップする</string>
     <string name="missed_call">不在着信</string>
@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">生体認証</string>
     <string name="prompt_info_description">生体認証を続行します</string>
     <string name="title_feature_birthdays">誕生日</string>
-    <string name="bg_location_message">選択した場所の近くにいるときにアプリケーションに通知させるには、バックグラウンドの場所を許可する必要があります。</string>
+    <string name="bg_location_message">選択した場所の近くにいるときにバックグラウンドで位置情報がアプリケーションに通知されるようにする必要があります。\nこのアプリは位置データを収集して、アプリが閉じられている場合や使用されていない場合でも、場所ごとにリマインダーを有効にします。\n位置データには、 少なくとも 1 つのアクティブな場所リマインダー。</string>
     <string name="deleted">削除しました</string>
     <string name="post_notification">通知を投稿する</string>
     <string name="post_notification_explanation">ステータス バー アプリケーションに通知を表示するには、通知権限が必要です</string>
