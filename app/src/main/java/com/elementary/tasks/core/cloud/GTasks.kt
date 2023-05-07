@@ -3,15 +3,15 @@ package com.elementary.tasks.core.cloud
 import android.content.Context
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.factory.GoogleTaskFactory
+import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
 import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.google.api.client.util.Data
-import com.google.api.client.util.DateTime
 import com.google.api.services.tasks.Tasks
 import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
@@ -24,7 +24,10 @@ class GTasks(
   private val context: Context,
   private val googleTasksDao: GoogleTasksDao,
   private val googleTaskListsDao: GoogleTaskListsDao,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val dateTimeManager: DateTimeManager,
+  private val googleTaskFactory: GoogleTaskFactory,
+  private val googleTaskListFactory: GoogleTaskListFactory
 ) {
 
   private var tasksService: Tasks? = null
@@ -86,7 +89,7 @@ class GTasks(
         task.notes = item.notes
       }
       if (item.dueDate != 0L) {
-        task.due = DateTime(item.dueDate)
+        task.due = dateTimeManager.toRfc3339Format(item.dueDate)
       }
       val result: Task?
       val listId = item.listId
@@ -106,8 +109,7 @@ class GTasks(
         }
       }
       if (result != null) {
-        item.update(result)
-        googleTasksDao.insert(item)
+        googleTasksDao.insert(googleTaskFactory.update(item, result))
         return true
       }
     } catch (e: Exception) {
@@ -122,13 +124,12 @@ class GTasks(
       val task = withService { it.tasks().get(item.listId, item.taskId).execute() } ?: return
       task.status = status
       if (status == TASKS_NEED_ACTION) {
-        task.completed = Data.NULL_DATE_TIME
+        task.completed = null
       }
-      task.updated = DateTime(System.currentTimeMillis())
+      task.updated = dateTimeManager.toRfc3339Format(System.currentTimeMillis())
       val result = withService { it.tasks().update(item.listId, task.id, task).execute() }
       if (result != null) {
-        item.update(result)
-        googleTasksDao.insert(item)
+        googleTasksDao.insert(googleTaskFactory.update(item, result))
       }
     } catch (e: Exception) {
       Timber.e(e, "Failed to update task status id=${item.taskId}")
@@ -149,10 +150,14 @@ class GTasks(
       val task = withService { it.tasks().get(item.listId, item.taskId).execute() } ?: return
       task.status = TASKS_NEED_ACTION
       task.title = item.title
-      task.completed = Data.NULL_DATE_TIME
-      if (item.dueDate != 0L) task.due = DateTime(item.dueDate)
-      if (item.notes != "") task.notes = item.notes
-      task.updated = DateTime(System.currentTimeMillis())
+      task.completed = null
+      if (item.dueDate != 0L) {
+        task.due = dateTimeManager.toRfc3339Format(item.dueDate)
+      }
+      if (item.notes != "") {
+        task.notes = item.notes
+      }
+      task.updated = dateTimeManager.toRfc3339Format(System.currentTimeMillis())
       withService { it.tasks().update(item.listId, task.id, task).execute() }
     } catch (e: Exception) {
       Timber.e(e, "Failed to update task id=${item.taskId}")
@@ -173,7 +178,7 @@ class GTasks(
     taskList.title = listTitle
     try {
       val result = withService { it.tasklists().insert(taskList).execute() } ?: return
-      val item = GoogleTaskList(result, color)
+      val item = googleTaskListFactory.create(result, color)
       googleTaskListsDao.insert(item)
     } catch (e: Exception) {
       Timber.e(e, "Failed to insert task list $listTitle")
@@ -190,8 +195,7 @@ class GTasks(
       withService { it.tasklists().update(listId, taskList).execute() }
       val item = googleTaskListsDao.getById(listId)
       if (item != null) {
-        item.update(taskList)
-        googleTaskListsDao.insert(item)
+        googleTaskListsDao.insert(googleTaskListFactory.update(item, taskList))
       }
     } catch (e: Exception) {
       Timber.e(e, "Failed to update task list $listTitle")

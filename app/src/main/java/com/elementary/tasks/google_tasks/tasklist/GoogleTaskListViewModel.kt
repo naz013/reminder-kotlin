@@ -10,6 +10,8 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.factory.GoogleTaskFactory
+import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -26,7 +28,9 @@ class GoogleTaskListViewModel(
   private val updatesHelper: UpdatesHelper,
   private val googleTasksDao: GoogleTasksDao,
   private val googleTaskListsDao: GoogleTaskListsDao,
-  private val analyticsEventSender: AnalyticsEventSender
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val googleTaskFactory: GoogleTaskFactory,
+  private val googleTaskListFactory: GoogleTaskListFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   var googleTaskList = googleTaskListsDao.loadById(listId)
@@ -89,12 +93,12 @@ class GoogleTaskListViewModel(
         for (item in lists.items) {
           val listId = item.id
           var taskList = googleTaskListsDao.getById(listId)
-          if (taskList != null) {
-            taskList.update(item)
+          taskList = if (taskList != null) {
+            googleTaskListFactory.update(taskList, item)
           } else {
             val r = Random()
             val color = r.nextInt(15)
-            taskList = GoogleTaskList(item, color)
+            googleTaskListFactory.create(item, color)
           }
           googleTaskListsDao.insert(taskList)
           val tasks = gTasks.getTasks(listId)
@@ -110,9 +114,9 @@ class GoogleTaskListViewModel(
               var googleTask = googleTasksDao.getById(task.id)
               if (googleTask != null) {
                 googleTask.listId = listId
-                googleTask.update(task)
+                googleTask = googleTaskFactory.update(googleTask, task)
               } else {
-                googleTask = GoogleTask(task, listId)
+                googleTask = googleTaskFactory.create(task, listId)
               }
               googleTasks.add(googleTask)
             }

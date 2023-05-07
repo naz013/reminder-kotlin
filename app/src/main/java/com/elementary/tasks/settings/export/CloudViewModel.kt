@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.data.factory.GoogleTaskFactory
+import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.withUIContext
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,7 +21,9 @@ class CloudViewModel(
   private val appDb: AppDb,
   private val gTasks: GTasks,
   private val dispatcherProvider: DispatcherProvider,
-  private val updatesHelper: UpdatesHelper
+  private val updatesHelper: UpdatesHelper,
+  private val googleTaskFactory: GoogleTaskFactory,
+  private val googleTaskListFactory: GoogleTaskListFactory
 ) : ViewModel(), LifecycleObserver {
 
   var isLoading: MutableLiveData<Boolean> = MutableLiveData()
@@ -52,12 +54,12 @@ class CloudViewModel(
         for (item in lists.items) {
           val listId = item.id
           var taskList = appDb.googleTaskListsDao().getById(listId)
-          if (taskList != null) {
-            taskList.update(item)
+          taskList = if (taskList != null) {
+            googleTaskListFactory.update(taskList, item)
           } else {
             val r = Random()
             val color = r.nextInt(15)
-            taskList = GoogleTaskList(item, color)
+            googleTaskListFactory.create(item, color)
           }
           Timber.d("loadGoogleTasks: $taskList")
           appDb.googleTaskListsDao().insert(taskList)
@@ -66,10 +68,10 @@ class CloudViewModel(
             for (task in tasksList) {
               var googleTask = appDb.googleTasksDao().getById(task.id)
               if (googleTask != null) {
-                googleTask.update(task)
+                googleTask = googleTaskFactory.update(googleTask, task)
                 googleTask.listId = task.id
               } else {
-                googleTask = GoogleTask(task, listId)
+                googleTask = googleTaskFactory.create(task, listId)
               }
               appDb.googleTasksDao().insert(googleTask)
             }
