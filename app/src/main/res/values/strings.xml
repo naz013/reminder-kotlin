@@ -644,7 +644,7 @@
     <string name="prompt_info_subtitle">Biometric authentication</string>
     <string name="prompt_info_description">Proceed with biometric authentication</string>
     <string name="title_feature_birthdays">Birthdays</string>
-    <string name="bg_location_message">To let application notify you when you will be near selected location, you need to allow background location.</string>
+    <string name="bg_location_message">You need to allow background location to notify the application when you will be near the selected location.\nThis app collects location data to enable reminders by location even when the app is closed or not in use.\nLocation data is accessed only where is at least one active location reminder.</string>
     <string name="deleted">Deleted</string>
     <string name="post_notification">Post Notification</string>
     <string name="post_notification_explanation">To show notification in Status Bar application requires Notification permission</string>

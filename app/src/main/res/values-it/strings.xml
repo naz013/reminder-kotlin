@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Autenticazione biometrica</string>
     <string name="prompt_info_description">Procedi con l\'autenticazione biometrica</string>
     <string name="title_feature_birthdays">Compleanni</string>
-    <string name="bg_location_message">Per consentire all\'applicazione di notificarti quando sarai vicino alla posizione selezionata, devi consentire la posizione in background.</string>
+    <string name="bg_location_message">È necessario consentire alla posizione di sfondo di notificare l\'applicazione quando si sarà vicino alla posizione selezionata.\nQuesta app raccoglie i dati della posizione per abilitare i promemoria per posizione anche quando l\'app è chiusa o non è in uso.\nI dati della posizione sono accessibili solo dove è almeno un promemoria di posizione attivo.</string>
     <string name="deleted">Eliminato</string>
     <string name="post_notification">Pubblica una notifica</string>
     <string name="post_notification_explanation">Per mostrare la notifica nell\'applicazione della barra di stato è necessaria l\'autorizzazione di notifica</string>

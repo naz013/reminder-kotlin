@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Autenticación biométrica</string>
     <string name="prompt_info_description">Continuar con la autenticación biométrica</string>
     <string name="title_feature_birthdays">Cumpleaños</string>
-    <string name="bg_location_message">Para permitir que la aplicación le notifique cuando estará cerca de la ubicación seleccionada, debe permitir la ubicación en segundo plano.</string>
+    <string name="bg_location_message">Debes permitir que la ubicación en segundo plano notifique a la aplicación cuando estarás cerca de la ubicación seleccionada.\nEsta aplicación recopila datos de ubicación para habilitar recordatorios por ubicación, incluso cuando la aplicación está cerrada o no está en uso.\nLos datos de ubicación solo se acceden desde donde está menos un recordatorio de ubicación activa.</string>
     <string name="deleted">Eliminado</string>
     <string name="post_notification">Publicar notificación</string>
     <string name="post_notification_explanation">Para mostrar la notificación en la aplicación de la barra de estado, se requiere el permiso de notificación</string>

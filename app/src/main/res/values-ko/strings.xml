@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">생체 인증</string>
     <string name="prompt_info_description">생체 인증 진행</string>
     <string name="title_feature_birthdays">생일</string>
-    <string name="bg_location_message">선택한 위치 근처에있을 때 애플리케이션이 알림을 받도록하려면 백그라운드 위치를 허용해야합니다.</string>
+    <string name="bg_location_message">선택한 위치 근처에 있을 때 애플리케이션에 알리려면 백그라운드 위치를 허용해야 합니다.\n이 앱은 앱이 닫혀 있거나 사용하지 않는 경우에도 위치별 알림을 사용하기 위해 위치 데이터를 수집합니다.\n위치 데이터는 현재 위치에서만 액세스됩니다. 최소 하나의 활성 위치 알림.</string>
     <string name="deleted">삭제됨</string>
     <string name="post_notification">알림 게시</string>
     <string name="post_notification_explanation">상태 표시줄 애플리케이션에 알림을 표시하려면 알림 권한이 필요합니다.</string>

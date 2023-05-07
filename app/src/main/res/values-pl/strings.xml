@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Uwierzytelnianie biometryczne</string>
     <string name="prompt_info_description">Kontynuuj używając uwierzytelnianie biometryczne</string>
     <string name="title_feature_birthdays">Urodziny</string>
-    <string name="bg_location_message">Aby aplikacja powiadamiała Cię, kiedy będziesz w pobliżu wybranej lokalizacji, musisz zezwolić na lokalizację w tle.</string>
+    <string name="bg_location_message">Musisz zezwolić na lokalizowanie w tle, aby powiadamiała aplikację, kiedy będziesz w pobliżu wybranej lokalizacji.\nTa aplikacja zbiera dane o lokalizacji, aby włączyć przypomnienia według lokalizacji, nawet gdy aplikacja jest zamknięta lub nie jest używana.\nDane o lokalizacji są dostępne tylko tam, gdzie jest co najmniej jedno aktywne przypomnienie o lokalizacji.</string>
     <string name="deleted">Usunięto</string>
     <string name="post_notification">Opublikuj powiadomienie</string>
     <string name="post_notification_explanation">Aby wyświetlić powiadomienie w aplikacji Status Bar, wymagane jest uprawnienie Notification</string>

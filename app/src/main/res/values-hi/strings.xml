@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">बायोमेट्रिक प्रमाणीकरण</string>
     <string name="prompt_info_description">बायोमेट्रिक प्रमाणीकरण के साथ आगे बढ़ें</string>
     <string name="title_feature_birthdays">जनमदि की</string>
-    <string name="bg_location_message">जब आप चयनित स्थान के पास होंगे तो एप्लिकेशन को आपको सूचित करने के लिए, आपको पृष्ठभूमि स्थान की अनुमति देनी होगी।</string>
+    <string name="bg_location_message">जब आप चयनित स्थान के निकट होंगे तो आपको पृष्ठभूमि स्थान को एप्लिकेशन को सूचित करने की अनुमति देनी होगी। \nयह ऐप स्थान डेटा एकत्र करता है ताकि ऐप बंद होने या उपयोग में न होने पर भी अनुस्मारक को सक्षम किया जा सके। \nस्थान डेटा को केवल वहीं एक्सेस किया जाता है जहां पर है कम से कम एक सक्रिय स्थान अनुस्मारक।</string>
     <string name="deleted">हटाए गए</string>
     <string name="post_notification">अधिसूचना पोस्ट करें</string>
     <string name="post_notification_explanation">स्टेटस बार एप्लिकेशन में अधिसूचना दिखाने के लिए अधिसूचना अनुमति की आवश्यकता होती है</string>

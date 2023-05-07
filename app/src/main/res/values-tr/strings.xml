@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">Biyometrik kimlik doğrulama</string>
     <string name="prompt_info_description">Biyometrik kimlik doğrulama ile devam edin</string>
     <string name="title_feature_birthdays">Doğum günleri</string>
-    <string name="bg_location_message">Seçilen konuma yaklaştığınızda uygulamanın sizi bilgilendirmesine izin vermek için arka planda konuma izin vermeniz gerekir.</string>
+    <string name="bg_location_message">Arka planda konumun, seçilen konumun yakınında olacağınızı uygulamaya bildirmesine izin vermeniz gerekir.\nBu uygulama, uygulama kapalıyken veya kullanımda değilken bile konuma göre hatırlatıcıları etkinleştirmek için konum verilerini toplar.\nKonum verilerine yalnızca şu konumdayken erişilir en az bir aktif konum hatırlatıcısı.</string>
     <string name="deleted">Silinmiş</string>
     <string name="post_notification">Bildirim Sonrası</string>
     <string name="post_notification_explanation">Durum Çubuğu uygulamasında bildirim göstermek için Bildirim izni gerekir</string>

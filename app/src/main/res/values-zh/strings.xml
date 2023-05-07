@@ -642,7 +642,7 @@
     <string name="prompt_info_subtitle">生物特征认证</string>
     <string name="prompt_info_description">进行生物特征认证</string>
     <string name="title_feature_birthdays">生日</string>
-    <string name="bg_location_message">为了让应用程序在您靠近所选位置时通知您，您需要允许背景位置。</string>
+    <string name="bg_location_message">您需要允許後台位置以在您接近所選位置時通知應用程序。\n此應用程序會收集位置數據以啟用按位置提醒，即使該應用程序已關閉或未在使用中也是如此。\n僅在位於的位置訪問位置數據 至少一個活動位置提醒。</string>
     <string name="deleted">已刪除</string>
     <string name="post_notification">發布通知</string>
     <string name="post_notification_explanation">要在狀態欄應用程序中顯示通知需要通知權限</string>
