@@ -323,7 +323,7 @@ fun ExportToGoogleTasksView.bindProperty(
   } else {
     ExportToGoogleTasksView.State.NO
   }
-  this.taskListId = listId ?: ""
+  this.taskListId = listId
   this.listener = object : ExportToGoogleTasksView.SelectionListener {
     override fun onChanged(enabled: Boolean, taskListId: String) {
       listener.invoke(enabled, taskListId)
