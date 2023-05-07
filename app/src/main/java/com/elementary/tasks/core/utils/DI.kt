@@ -273,6 +273,8 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
       get()
     )
   }
@@ -299,10 +301,12 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
       get()
     )
   }
-  viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { DayViewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get()) }
@@ -357,7 +361,7 @@ val viewModelModule = module {
   }
   viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  viewModel { CloudViewModel(get(), get(), get(), get()) }
+  viewModel { CloudViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
 
   viewModel {
@@ -442,7 +446,7 @@ fun dbModule(context: Context): Module {
 val utilModule = module {
   single { Prefs(get()) }
   single { ReminderExplanationVisibility(get()) }
-  single { GTasks(get(), get(), get(), get()) }
+  single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
   single { MemoryUtil(get()) }

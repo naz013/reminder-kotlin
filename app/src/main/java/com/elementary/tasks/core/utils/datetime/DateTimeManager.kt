@@ -28,6 +28,21 @@ class DateTimeManager(
   private val language: Language
 ) {
 
+  fun toRfc3339Format(millis: Long): String {
+    return ZonedDateTime.of(
+      fromMillis(millis),
+      ZoneId.systemDefault()
+    ).format(RFC3339_DATE_FORMATTER).also {
+      Timber.d("toRfc3339Format: $it")
+    }
+  }
+
+  fun fromRfc3339Format(date: String?): Long {
+    if (date == null) return 0L
+    val dateTime = ZonedDateTime.parse(date)
+    return toMillis(dateTime.toLocalDateTime())
+  }
+
   fun getCurrentDateTime(): LocalDateTime {
     return LocalDateTime.now()
   }
@@ -762,7 +777,11 @@ class DateTimeManager(
     }
   }
 
-  fun getNextWeekdayTime(startTime: LocalDateTime, weekdays: List<Int>, delay: Long): LocalDateTime {
+  fun getNextWeekdayTime(
+    startTime: LocalDateTime,
+    weekdays: List<Int>,
+    delay: Long
+  ): LocalDateTime {
     var dateTime = startTime.withSecond(0)
     return if (delay > 0) {
       startTime.plusMinutes(delay)
@@ -873,6 +892,8 @@ class DateTimeManager(
     private const val GMT = "GMT"
     private val GMT_ZONE_ID = ZoneId.of(GMT)
 
+    private val RFC3339_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
     private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
     private val VOICE_ENGINE_GMT_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)

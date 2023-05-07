@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.bumptech.glide.Glide
+import com.elementary.tasks.core.data.factory.dataFactory
 import com.elementary.tasks.core.data.repository.repositoryModule
 import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.utils.Notifier
@@ -62,7 +63,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           viewModelModule,
           adapterModule,
           actionModule,
-          repositoryModule
+          repositoryModule,
+          dataFactory
         )
       )
     }

@@ -3,19 +3,21 @@ package com.elementary.tasks.google_tasks.list
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
+import com.elementary.tasks.core.data.factory.GoogleTaskFactory
+import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -28,7 +30,9 @@ class TaskListViewModel(
   private val updatesHelper: UpdatesHelper,
   private val googleTasksDao: GoogleTasksDao,
   private val googleTaskListsDao: GoogleTaskListsDao,
-  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter
+  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
+  private val googleTaskFactory: GoogleTaskFactory,
+  private val googleTaskListFactory: GoogleTaskListFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _taskList = mutableLiveDataOf<GoogleTaskList>()
@@ -78,12 +82,12 @@ class TaskListViewModel(
         for (item in lists.items) {
           val listId = item.id
           var taskList = googleTaskListsDao.getById(listId)
-          if (taskList != null) {
-            taskList.update(item)
+          taskList = if (taskList != null) {
+            googleTaskListFactory.update(taskList, item)
           } else {
             val r = Random()
             val color = r.nextInt(15)
-            taskList = GoogleTaskList(item, color)
+            googleTaskListFactory.create(item, color)
           }
           googleTaskListsDao.insert(taskList)
           val tasks = gTasks.getTasks(listId)
@@ -99,9 +103,9 @@ class TaskListViewModel(
               var googleTask = googleTasksDao.getById(task.id)
               if (googleTask != null) {
                 googleTask.listId = listId
-                googleTask.update(task)
+                googleTask = googleTaskFactory.update(googleTask, task)
               } else {
-                googleTask = GoogleTask(task, listId)
+                googleTask = googleTaskFactory.create(task, listId)
               }
               googleTasks.add(googleTask)
             }
