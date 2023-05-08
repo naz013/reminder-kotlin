@@ -25,7 +25,8 @@ import java.util.Locale
 class DateTimeManager(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
-  private val language: Language
+  private val language: Language,
+  private val nowDateTimeProvider: NowDateTimeProvider
 ) {
 
   fun toRfc3339Format(millis: Long): String {
@@ -44,7 +45,7 @@ class DateTimeManager(
   }
 
   fun getCurrentDateTime(): LocalDateTime {
-    return LocalDateTime.now()
+    return nowDateTimeProvider.nowDateTime()
   }
 
   fun getCurrentDate(): LocalDate {
@@ -71,6 +72,7 @@ class DateTimeManager(
     return try {
       LocalDate.parse(date, BIRTH_DATE_FORMATTER)
     } catch (e: Throwable) {
+      Timber.d(e, "parseBirthdayDate: failed = $date")
       null
     }
   }
@@ -82,7 +84,7 @@ class DateTimeManager(
   fun isAfterNow(gmt: String?): Boolean {
     return try {
       gmtToLocal(gmt, DateTimeFormatter.ofPattern(FIRE_DATE_PATTERN, Locale.US))
-        ?.isAfter(LocalDateTime.now()) ?: false
+        ?.isAfter(getCurrentDateTime()) ?: false
     } catch (e: Throwable) {
       false
     }
@@ -180,7 +182,7 @@ class DateTimeManager(
 
   fun getNowGmtDateTime(): String {
     return try {
-      LocalDateTime.now()
+      getCurrentDateTime()
         .atZone(ZoneId.systemDefault())
         .format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
     } catch (e: Throwable) {
@@ -190,7 +192,7 @@ class DateTimeManager(
 
   fun getGmtFromDateTime(date: LocalDate): String {
     return try {
-      LocalDateTime.of(date, LocalTime.now())
+      LocalDateTime.of(date, nowDateTimeProvider.nowTime())
         .atZone(ZoneId.systemDefault())
         .format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
     } catch (e: Throwable) {
@@ -250,13 +252,22 @@ class DateTimeManager(
     return getRemaining(fromGmtToLocal(dateTime)?.plusMinutes(delay.toLong()))
   }
 
+  fun getBirthdayRemaining(eventTime: LocalDateTime?, birthDate: LocalDate): String {
+    return if (nowDateTimeProvider.nowDate().isBefore(birthDate)) {
+      textProvider.getText(R.string.not_born)
+    } else {
+      getRemaining(eventTime)
+    }
+  }
+
   fun getRemaining(eventTime: LocalDateTime?): String {
     if (eventTime == null) return textProvider.getText(R.string.overdue)
 
-    val days = ChronoUnit.DAYS.between(LocalDateTime.now(), eventTime)
-    val hours = ChronoUnit.HOURS.between(LocalDateTime.now(), eventTime)
-    val minutes = ChronoUnit.MINUTES.between(LocalDateTime.now(), eventTime)
-    val seconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), eventTime)
+    val nowDateTime = getCurrentDateTime()
+    val days = ChronoUnit.DAYS.between(nowDateTime, eventTime)
+    val hours = ChronoUnit.HOURS.between(nowDateTime, eventTime)
+    val minutes = ChronoUnit.MINUTES.between(nowDateTime, eventTime)
+    val seconds = ChronoUnit.SECONDS.between(nowDateTime, eventTime)
 
     val language = Language.getScreenLanguage(prefs.appLanguage).toString().lowercase()
 
@@ -344,10 +355,11 @@ class DateTimeManager(
   }
 
   fun getFutureBirthdayDate(birthdayTime: LocalTime, fullDate: String): BirthDate {
-    return (parseBirthdayDate(fullDate) ?: LocalDate.now()).let { date ->
-      var dateTime = LocalDateTime.of(LocalDate.now(), birthdayTime)
+    return (parseBirthdayDate(fullDate) ?: nowDateTimeProvider.nowDate()).let { date ->
+      var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), birthdayTime)
         .withDayOfMonth(date.dayOfMonth)
-      if (dateTime.isBefore(LocalDateTime.now())) {
+        .withMonth(date.monthValue)
+      if (dateTime.isBefore(getCurrentDateTime())) {
         dateTime = dateTime.plusYears(1)
       }
       BirthDate(dateTime, date.year)
@@ -364,16 +376,16 @@ class DateTimeManager(
   }
 
   fun getMillisToBirthdayTime(): Long {
-    var dateTime = LocalDateTime.of(LocalDate.now(), getBirthdayLocalTime())
-    if (dateTime.isBefore(LocalDateTime.now())) {
+    var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), getBirthdayLocalTime())
+    if (dateTime.isBefore(getCurrentDateTime())) {
       dateTime = dateTime.plusDays(1)
     }
-    return ChronoUnit.MILLIS.between(LocalDateTime.now(), dateTime)
+    return ChronoUnit.MILLIS.between(getCurrentDateTime(), dateTime)
   }
 
   fun getBirthdayLocalTime(): LocalTime? {
     var time = toLocalTime(prefs.birthdayTime) ?: return null
-    if (time.isBefore(LocalTime.now())) {
+    if (time.isBefore(nowDateTimeProvider.nowTime())) {
       time = time.plusHours(24)
     }
     return time
@@ -416,19 +428,19 @@ class DateTimeManager(
     }
   }
 
-  fun getDayStart(dateTime: LocalDateTime = LocalDateTime.now()): String {
+  fun getDayStart(dateTime: LocalDateTime = getCurrentDateTime()): String {
     return dateTime.withHour(0)
       .withMinute(0)
       .withSecond(0)
       .let { getGmtFromDateTime(it) }
   }
 
-  fun getDayEnd(dateTime: LocalDateTime = LocalDateTime.now()): String {
+  fun getDayEnd(dateTime: LocalDateTime = getCurrentDateTime()): String {
     return getDayStart(dateTime.plusDays(1))
   }
 
   fun getBirthdayDayMonthList(
-    start: LocalDateTime = LocalDateTime.now(),
+    start: LocalDateTime = getCurrentDateTime(),
     duration: Int = 1
   ): List<String> {
     val list = mutableListOf<String>()
@@ -464,7 +476,7 @@ class DateTimeManager(
   fun getAge(dateOfBirth: String?): Int {
     if (dateOfBirth.isNullOrEmpty()) return 0
     val birthDate = parseBirthdayDate(dateOfBirth) ?: return 0
-    return LocalDate.now().year - birthDate.year
+    return nowDateTimeProvider.nowDate().year - birthDate.year
   }
 
   fun getRepeatString(repCode: List<Int>): String {
@@ -526,11 +538,11 @@ class DateTimeManager(
   }
 
   fun isCurrent(eventTime: String?): Boolean {
-    return LocalDateTime.now().isBefore(fromGmtToLocal(eventTime))
+    return getCurrentDateTime().isBefore(fromGmtToLocal(eventTime))
   }
 
   fun isCurrent(dateTime: LocalDateTime): Boolean {
-    return dateTime.isAfter(LocalDateTime.now())
+    return dateTime.isAfter(getCurrentDateTime())
   }
 
   fun getDateTime(dateTime: LocalDateTime): String {
@@ -543,7 +555,7 @@ class DateTimeManager(
 
   fun getNewNextMonthDayTime(
     reminder: Reminder,
-    fromTime: LocalDateTime = LocalDateTime.now()
+    fromTime: LocalDateTime = getCurrentDateTime()
   ): LocalDateTime {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
@@ -556,7 +568,7 @@ class DateTimeManager(
       return getSmartMonthDayTime(fromTime, reminder)
     }
 
-    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
     var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
       .withDayOfMonth(dayOfMonth)
 
@@ -584,7 +596,7 @@ class DateTimeManager(
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
 
-    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
     var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
     var yearMonth = YearMonth.from(dateTime)
 
@@ -624,7 +636,7 @@ class DateTimeManager(
   }
 
   private fun getLastMonthDayTime(fromTime: LocalDateTime, reminder: Reminder): LocalDateTime {
-    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
     var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
 
     val interval = if (reminder.repeatInterval <= 0L) {
@@ -650,13 +662,13 @@ class DateTimeManager(
 
   fun getNextYearDayTime(
     reminder: Reminder,
-    fromTime: LocalDateTime = LocalDateTime.now()
+    fromTime: LocalDateTime = getCurrentDateTime()
   ): LocalDateTime {
     val dayOfMonth = reminder.dayOfMonth
     val monthOfYear = reminder.monthOfYear + 1
     val beforeValue = reminder.remindBefore
 
-    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
 
     var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
       .withMonth(monthOfYear)
@@ -690,7 +702,7 @@ class DateTimeManager(
   fun generateDateTime(
     eventTime: String,
     repeat: Long,
-    fromTime: LocalDateTime = LocalDateTime.now()
+    fromTime: LocalDateTime = getCurrentDateTime()
   ): LocalDateTime {
     var time = fromGmtToLocal(eventTime) ?: return LocalDateTime.now()
     while (time <= fromTime) {
@@ -706,7 +718,7 @@ class DateTimeManager(
     var dateTime = if (isNew) {
       fromMillis(System.currentTimeMillis() + reminder.after)
     } else {
-      (fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now())
+      (fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime())
         .plusMillis(reminder.repeatInterval)
     }
     if (hours.isNotEmpty()) {
@@ -719,7 +731,7 @@ class DateTimeManager(
     if (fromHour.isNotEmpty() && toHour.isNotEmpty()) {
       val fromTime = toLocalTime(fromHour)
       val toTime = toLocalTime(toHour)
-      val currentDate = LocalDate.now()
+      val currentDate = nowDateTimeProvider.nowDate()
       if (fromTime != null && toTime != null) {
         val start = LocalDateTime.of(currentDate, fromTime)
         val end = LocalDateTime.of(currentDate, toTime)
@@ -741,12 +753,12 @@ class DateTimeManager(
 
   fun getNextWeekdayTime(
     reminder: Reminder,
-    fromTime: LocalDateTime = LocalDateTime.now()
+    fromTime: LocalDateTime = getCurrentDateTime()
   ): LocalDateTime {
     val weekdays = reminder.weekdays
     val beforeValue = reminder.remindBefore
 
-    var dateTIme = fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
+    var dateTIme = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
 
     while (true) {
       if (weekdays[localDayOfWeekToOld(dateTIme.dayOfWeek) - 1] == 1 &&

@@ -77,6 +77,7 @@ import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
+import com.elementary.tasks.core.utils.datetime.NowDateTimeProvider
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
@@ -516,7 +517,7 @@ val utilModule = module {
   single { InputMethodManagerWrapper(get()) }
   single { PackageManagerWrapper(get()) }
 
-  single { DateTimeManager(get(), get(), get()) }
+  single { DateTimeManager(get(), get(), get(), NowDateTimeProvider()) }
   single { DateTimePickerProvider(get()) }
   single { DoNotDisturbManager(get(), get()) }
 

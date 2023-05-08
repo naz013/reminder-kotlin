@@ -12,18 +12,17 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.dp2px
 import com.elementary.tasks.home.BottomNavActivity
-import hirondelle.date4j.DateTime
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import java.util.Calendar
-import java.util.TimeZone
 
 class CalendarMonthFactory(
   intent: Intent,
@@ -33,7 +32,7 @@ class CalendarMonthFactory(
   private val dateTimeManager: DateTimeManager
 ) : RemoteViewsService.RemoteViewsFactory {
 
-  private val dateTimeList = ArrayList<DateTime>()
+  private val dateList = ArrayList<LocalDate>()
   private val pagerData = ArrayList<WidgetItem>()
   private val widgetId: Int =
     intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
@@ -43,12 +42,12 @@ class CalendarMonthFactory(
   private val prefsProvider = CalendarWidgetPrefsProvider(context, widgetId)
 
   override fun onCreate() {
-    dateTimeList.clear()
+    dateList.clear()
     pagerData.clear()
   }
 
   override fun onDataSetChanged() {
-    dateTimeList.clear()
+    dateList.clear()
 
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()
@@ -59,52 +58,52 @@ class CalendarMonthFactory(
     mMonth = prefsMonth + 1
 
     if (year < 1) {
-      year = DateTime.now(TimeZone.getDefault()).year
+      year = LocalDate.now().year
     }
     mYear = year
 
-    val firstDateOfMonth = DateTime(year, prefsMonth + 1, 1, 0, 0, 0, 0)
-    val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
+    val firstDateOfMonth = LocalDate.of(year, prefsMonth + 1, 1)
+    val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.lengthOfMonth() - 1L)
 
-    var weekdayOfFirstDate = firstDateOfMonth.weekDay!!
-    val startDayOfWeek = prefs.startDay + 1
+    var weekdayOfFirstDate = firstDateOfMonth.dayOfWeek.value
+    val startDayOfWeek = StartDayOfWeekProtocol(prefs.startDay).getForCalendar()
 
     if (weekdayOfFirstDate < startDayOfWeek) {
       weekdayOfFirstDate += 7
     }
 
     while (weekdayOfFirstDate > 0) {
-      val dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate - startDayOfWeek)
-      if (!dateTime.lt(firstDateOfMonth)) {
+      val dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate - startDayOfWeek.toLong())
+      if (!dateTime.isBefore(firstDateOfMonth)) {
         break
       }
-      dateTimeList.add(dateTime)
+      dateList.add(dateTime)
       weekdayOfFirstDate--
     }
-    for (i in 0 until lastDateOfMonth.day) {
-      dateTimeList.add(firstDateOfMonth.plusDays(i))
+    for (i in 0L until lastDateOfMonth.dayOfMonth) {
+      dateList.add(firstDateOfMonth.plusDays(i))
     }
     var endDayOfWeek = startDayOfWeek - 1
     if (endDayOfWeek == 0) {
       endDayOfWeek = 7
     }
-    if (lastDateOfMonth.weekDay != endDayOfWeek) {
-      var i = 1
+    if (lastDateOfMonth.dayOfWeek.value != endDayOfWeek) {
+      var i = 1L
       while (true) {
         val nextDay = lastDateOfMonth.plusDays(i)
-        dateTimeList.add(nextDay)
+        dateList.add(nextDay)
         i++
-        if (nextDay.weekDay == endDayOfWeek) {
+        if (nextDay.dayOfWeek.value == endDayOfWeek) {
           break
         }
       }
     }
-    val size = dateTimeList.size
+    val size = dateList.size
     val numOfDays = 42 - size
-    val lastDateTime = dateTimeList[size - 1]
-    for (i in 1..numOfDays) {
+    val lastDateTime = dateList[size - 1]
+    for (i in 1L..numOfDays) {
       val nextDateTime = lastDateTime.plusDays(i)
-      dateTimeList.add(nextDateTime)
+      dateList.add(nextDateTime)
     }
     showEvents()
   }
@@ -144,12 +143,12 @@ class CalendarMonthFactory(
   }
 
   override fun onDestroy() {
-    dateTimeList.clear()
+    dateList.clear()
     pagerData.clear()
   }
 
   override fun getCount(): Int {
-    return dateTimeList.size
+    return dateList.size
   }
 
   override fun getViewAt(i: Int): RemoteViews {
@@ -162,9 +161,9 @@ class CalendarMonthFactory(
     val prefsMonth = prefsProvider.getMonth()
     val rv = RemoteViews(context.packageName, R.layout.list_item_month_grid)
 
-    val selDay = dateTimeList[i].day ?: 0
-    val selMonth = dateTimeList[i].month ?: 0
-    val selYear = dateTimeList[i].year ?: 0
+    val selDay = dateList[i].dayOfMonth
+    val selMonth = dateList[i].monthValue
+    val selYear = dateList[i].year
 
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()

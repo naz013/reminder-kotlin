@@ -10,6 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
+import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.day_view.day.EventModel
@@ -46,8 +47,8 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
       return list
     }
 
-  override fun getStartDay(): Int {
-    return prefs.startDay
+  override fun getStartDay(): StartDayOfWeekProtocol {
+    return StartDayOfWeekProtocol(prefs.startDay)
   }
 
   override fun getTodayColor(): Int {

@@ -120,17 +120,6 @@ object ReminderUtils {
     return repCode.none { it == 0 }
   }
 
-  fun getPriorityTitle(context: Context, priority: Int): String {
-    return when (priority) {
-      0 -> context.getString(R.string.priority_lowest)
-      1 -> context.getString(R.string.priority_low)
-      2 -> context.getString(R.string.priority_normal)
-      3 -> context.getString(R.string.priority_high)
-      4 -> context.getString(R.string.priority_highest)
-      else -> context.getString(R.string.priority_normal)
-    }
-  }
-
   enum class MelodyType {
     DEFAULT,
     RINGTONE,
