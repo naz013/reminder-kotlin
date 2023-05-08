@@ -8,6 +8,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.AppWidgetActionActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.google_tasks.TasksConstants
@@ -73,7 +74,7 @@ class TasksWidget : AppWidgetProvider() {
         rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
       }
 
-      val startActivityIntent = Intent(context, GoogleTaskActivity::class.java)
+      val startActivityIntent = AppWidgetActionActivity.createIntent(context)
       val startActivityPendingIntent = PendingIntentWrapper.getActivity(
         context,
         0,

@@ -474,6 +474,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".core.app_widgets.AppWidgetActionActivity"
+            android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateUnchanged" />
+
         <receiver
             android:name=".core.app_widgets.events.EventsWidget"
             android:exported="true"

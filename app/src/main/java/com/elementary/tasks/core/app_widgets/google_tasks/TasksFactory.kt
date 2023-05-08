@@ -8,6 +8,9 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.AppWidgetActionActivity
+import com.elementary.tasks.core.app_widgets.Direction
+import com.elementary.tasks.core.app_widgets.WidgetIntentProtocol
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
@@ -117,9 +120,16 @@ class TasksFactory(
       rv.setViewVisibility(R.id.taskDate, View.GONE)
     }
 
+    val data = WidgetIntentProtocol(
+      mapOf<String, Any?>(
+        Pair(Constants.INTENT_ID, task.taskId),
+        Pair(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+      )
+    )
+
     val fillInIntent = Intent()
-    fillInIntent.putExtra(Constants.INTENT_ID, task.taskId)
-    fillInIntent.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    fillInIntent.putExtra(AppWidgetActionActivity.DATA, data)
+    fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.GOOGLE_TASK)
     rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
     return rv
   }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.AppWidgetActionActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.os.PendingIntentWrapper
@@ -84,8 +85,8 @@ class EventsWidget : AppWidgetProvider() {
         rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
       }
 
-      val startActivityIntent = Intent(context, EventActionReceiver::class.java)
-      val startActivityPendingIntent = PendingIntentWrapper.getBroadcast(
+      val startActivityIntent = AppWidgetActionActivity.createIntent(context)
+      val startActivityPendingIntent = PendingIntentWrapper.getActivity(
         context,
         0,
         startActivityIntent,
