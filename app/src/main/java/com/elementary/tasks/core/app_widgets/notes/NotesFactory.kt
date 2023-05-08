@@ -3,12 +3,14 @@ package com.elementary.tasks.core.app_widgets.notes
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.AppWidgetActionActivity
+import com.elementary.tasks.core.app_widgets.Direction
+import com.elementary.tasks.core.app_widgets.WidgetIntentProtocol
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.Constants
@@ -83,12 +85,16 @@ class NotesFactory(
       rv.setViewVisibility(R.id.noteImage, View.GONE)
     }
     rv.setTextViewText(R.id.note, note.getSummary())
-    val fillInIntent = Intent().apply {
-      putExtras(
-        Bundle().apply {
-          putExtra(Constants.INTENT_ID, note.getKey())
-        }
+
+    val data = WidgetIntentProtocol(
+      mapOf<String, Any?>(
+        Pair(Constants.INTENT_ID, note.getKey())
       )
+    )
+
+    val fillInIntent = Intent().apply {
+      putExtra(AppWidgetActionActivity.DIRECTION, Direction.NOTE)
+      putExtra(AppWidgetActionActivity.DATA, data)
     }
     rv.setOnClickFillInIntent(R.id.note, fillInIntent)
     rv.setOnClickFillInIntent(R.id.noteImage, fillInIntent)

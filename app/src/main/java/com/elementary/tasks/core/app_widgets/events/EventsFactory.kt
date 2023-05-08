@@ -8,8 +8,10 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
-import com.elementary.tasks.Actions
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.AppWidgetActionActivity
+import com.elementary.tasks.core.app_widgets.Direction
+import com.elementary.tasks.core.app_widgets.WidgetIntentProtocol
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.BirthdayRepository
@@ -19,7 +21,6 @@ import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import java.util.Locale
 
@@ -108,20 +109,19 @@ class EventsFactory(
     if (prefs.isBirthdayInWidgetEnabled) {
       var n = 0
       val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
-      var dateTime = LocalDateTime.now()
+      var dateTime = dateTimeManager.getCurrentDateTime()
       do {
         val list = birthdayRepository.getByDayMonth(dateTime.dayOfMonth, dateTime.monthValue - 1)
         for (item in list) {
           val birthday = item.date
-          val name = item.name
           data.add(
             CalendarItem(
               type = CalendarItem.Type.BIRTHDAY,
-              summary = context.getString(R.string.birthday),
-              number = name,
+              summary = item.name,
+              number = item.number,
               timeFormatted = "",
               dateFormatted = birthday,
-              id = item.key,
+              id = item.uuId,
               dateTime = dateTimeManager.getFutureBirthdayDate(birthTime, item.date).dateTime,
               viewType = 1,
               item = item
@@ -190,7 +190,7 @@ class EventsFactory(
       rv.setTextViewTextSize(R.id.leftTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
       val number = item.number
-      if (!number.isNullOrBlank()) {
+      if (!number.isNullOrEmpty()) {
         rv.setTextViewText(R.id.taskNumber, number)
         rv.setViewVisibility(R.id.taskNumber, View.VISIBLE)
       } else {
@@ -201,13 +201,18 @@ class EventsFactory(
       rv.setTextViewText(R.id.leftTime, dateTimeManager.getRemaining(item.dateTime))
 
       if (item.id != null) {
+        val data = WidgetIntentProtocol(
+          mapOf<String, Any?>(
+            Pair(Constants.INTENT_ID, item.id)
+          )
+        )
+
         val fillInIntent = Intent()
-        fillInIntent.putExtra(Constants.INTENT_ID, item.id)
-        fillInIntent.action = Actions.Reminder.ACTION_EDIT_EVENT
+        fillInIntent.putExtra(AppWidgetActionActivity.DATA, data)
         if (item.type == CalendarItem.Type.REMINDER) {
-          fillInIntent.putExtra(EventActionReceiver.TYPE, true)
+          fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.REMINDER)
         } else {
-          fillInIntent.putExtra(EventActionReceiver.TYPE, false)
+          fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.BIRTHDAY)
         }
         rv.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
         rv.setOnClickFillInIntent(R.id.taskTime, fillInIntent)
@@ -215,8 +220,7 @@ class EventsFactory(
         rv.setOnClickFillInIntent(R.id.taskText, fillInIntent)
         rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
       }
-    }
-    if (item.viewType == 2) {
+    } else if (item.viewType == 2) {
       rv = RemoteViews(context.packageName, R.layout.list_item_widget_shop_list)
       rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
 
@@ -264,9 +268,15 @@ class EventsFactory(
         }
       }
 
+      val data = WidgetIntentProtocol(
+        mapOf<String, Any?>(
+          Pair(Constants.INTENT_ID, item.id)
+        )
+      )
+
       val fillInIntent = Intent()
-      fillInIntent.putExtra(Constants.INTENT_ID, item.id)
-      fillInIntent.putExtra(EventActionReceiver.TYPE, true)
+      fillInIntent.putExtra(AppWidgetActionActivity.DATA, data)
+      fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.REMINDER)
       rv.setOnClickFillInIntent(R.id.taskText, fillInIntent)
       rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
       rv.setOnClickFillInIntent(R.id.todoList, fillInIntent)

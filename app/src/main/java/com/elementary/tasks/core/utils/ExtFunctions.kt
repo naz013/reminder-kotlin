@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -29,7 +30,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.map
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
@@ -56,6 +56,7 @@ import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 import java.io.File
 import java.io.InputStream
+import java.io.Serializable
 import java.util.Calendar
 
 fun LocalDateTime.minusMillis(millis: Long): LocalDateTime {
@@ -66,7 +67,17 @@ fun LocalDateTime.plusMillis(millis: Long): LocalDateTime {
   return plusSeconds(millis / 1000L)
 }
 
-fun <T> Intent.readParcelable(key: String, clazz: Class<T>): T? {
+fun <T : Serializable> Intent.readSerializable(key: String, clazz: Class<T>): T? {
+  return runCatching {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      getSerializableExtra(key, clazz)
+    } else {
+      getSerializableExtra(key) as? T
+    }
+  }.getOrNull()
+}
+
+fun <T : Parcelable> Intent.readParcelable(key: String, clazz: Class<T>): T? {
   return runCatching {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       getParcelableExtra(key, clazz)

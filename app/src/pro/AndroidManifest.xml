@@ -44,12 +44,5 @@
                 <action android:name="com.elementary.tasks.pro.birthday.SMS" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="com.elementary.tasks.core.app_widgets.events.EventActionReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.elementary.tasks.pro.reminder.EVENT_EDIT" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>
