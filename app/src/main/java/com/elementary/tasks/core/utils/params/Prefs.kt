@@ -290,11 +290,14 @@ class Prefs(
     set(value) = putInt(PrefsConstants.NOTE_TEXT_SIZE, value)
 
   var radius: Int
-    get() = getInt(PrefsConstants.LOCATION_RADIUS)
+    get() = getInt(PrefsConstants.LOCATION_RADIUS, def = DefaultValues.RADIUS)
     set(value) = putInt(PrefsConstants.LOCATION_RADIUS, value)
 
   var isDistanceNotificationEnabled: Boolean
-    get() = getBoolean(PrefsConstants.TRACKING_NOTIFICATION)
+    get() = getBoolean(
+      PrefsConstants.TRACKING_NOTIFICATION,
+      def = DefaultValues.LOCATION_TRACK_NOTIFICATION
+    )
     set(value) = putBoolean(PrefsConstants.TRACKING_NOTIFICATION, value)
 
   var mapType: Int
@@ -587,7 +590,10 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)
 
   var privacyUrl: String
-    get() = getString(PrefsConstants.PRIVACY_POLICY_URL, "https://sukhovych.com/reminder-privacy-policy/")
+    get() = getString(
+      PrefsConstants.PRIVACY_POLICY_URL,
+      "https://sukhovych.com/reminder-privacy-policy/"
+    )
     set(value) = putString(PrefsConstants.PRIVACY_POLICY_URL, value)
 
   var termsUrl: String
@@ -620,9 +626,11 @@ class Prefs(
     set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
 
   fun initPrefs() {
-    val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
+    val settingsUI =
+      File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
     if (!settingsUI.exists()) {
-      val preferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
+      val preferences =
+        context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
       val editor = preferences.edit()
       editor.putInt(PrefsConstants.TODAY_COLOR, 0)
       editor.putInt(PrefsConstants.BIRTH_COLOR, 2)
@@ -632,7 +640,7 @@ class Prefs(
       editor.putString(PrefsConstants.REMINDER_IMAGE, Constants.DEFAULT)
       editor.putInt(PrefsConstants.LED_COLOR, LED.BLUE)
       editor.putInt(PrefsConstants.BIRTHDAY_LED_COLOR, LED.BLUE)
-      editor.putInt(PrefsConstants.LOCATION_RADIUS, 25)
+      editor.putInt(PrefsConstants.LOCATION_RADIUS, DefaultValues.RADIUS)
       editor.putInt(PrefsConstants.MARKER_STYLE, 5)
       editor.putInt(PrefsConstants.TRACK_TIME, 1)
       editor.putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
@@ -641,7 +649,6 @@ class Prefs(
       val localeCheck = Locale.getDefault().toString().lowercase()
       val locale = when {
         localeCheck.startsWith("uk") -> 2
-        localeCheck.startsWith("ru") -> 1
         else -> 0
       }
       editor.putInt(PrefsConstants.CONVERSATION_LOCALE, locale)
@@ -668,7 +675,10 @@ class Prefs(
       editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
       editor.putInt(PrefsConstants.MAP_STYLE, 6)
       editor.putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-      editor.putBoolean(PrefsConstants.TRACKING_NOTIFICATION, true)
+      editor.putBoolean(
+        PrefsConstants.TRACKING_NOTIFICATION,
+        DefaultValues.LOCATION_TRACK_NOTIFICATION
+      )
       editor.putBoolean(PrefsConstants.RATE_SHOW, false)
       editor.putBoolean(PrefsConstants.IS_CREATE_SHOWN, false)
       editor.putBoolean(PrefsConstants.IS_CALENDAR_SHOWN, false)

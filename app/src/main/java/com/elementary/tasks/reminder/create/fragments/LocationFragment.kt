@@ -12,10 +12,12 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
 import com.elementary.tasks.core.utils.ui.fadeOutAnimation
+import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
@@ -191,13 +193,13 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     if (!isTablet()) {
-      binding.mapContainer.visibility = View.GONE
-      binding.mapButton.visibility = View.VISIBLE
-      binding.searchBlock.visibility = View.VISIBLE
+      binding.mapContainer.gone()
+      binding.mapButton.visible()
+      binding.searchBlock.visible()
     } else {
-      binding.mapContainer.visibility = View.VISIBLE
-      binding.mapButton.visibility = View.GONE
-      binding.searchBlock.visibility = View.GONE
+      binding.mapContainer.visible()
+      binding.mapButton.gone()
+      binding.searchBlock.gone()
     }
 
     val advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
@@ -208,6 +210,8 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
         showPlaceOnMap()
       }
     })
+    advancedMapFragment.markerRadius = prefs.radius
+    advancedMapFragment.setStyle(prefs.markerStyle)
     fragmentManager?.beginTransaction()
       ?.replace(binding.mapFrame.id, advancedMapFragment)
       ?.addToBackStack(null)
@@ -216,7 +220,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
 
     binding.tuneExtraView.hasAutoExtra = false
 
-    binding.delayLayout.visibility = View.GONE
+    binding.delayLayout.gone()
     binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
       iFace.state.isDelayAdded = isChecked
       binding.delayLayout.visibleGone(isChecked)
