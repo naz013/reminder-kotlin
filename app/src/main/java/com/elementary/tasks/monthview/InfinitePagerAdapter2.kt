@@ -4,10 +4,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.calendar.EventsCursor
+import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.databinding.FragmentMonthViewBinding
-import hirondelle.date4j.DateTime
 import org.threeten.bp.LocalDate
 import timber.log.Timber
 
@@ -18,7 +18,7 @@ class InfinitePagerAdapter2(
 
   private var leftPart: List<MonthPagerItem> = emptyList()
   private var rightPart: List<MonthPagerItem> = emptyList()
-  private var mapData: Map<DateTime, EventsCursor>? = null
+  private var mapData: Map<LocalDate, EventsCursor>? = null
   private var selectedPosition: Int = 1
   private var recyclerView: RecyclerView? = null
 
@@ -31,7 +31,7 @@ class InfinitePagerAdapter2(
     }
   }
 
-  fun updateMapData(data: Map<DateTime, EventsCursor>) {
+  fun updateMapData(data: Map<LocalDate, EventsCursor>) {
     this.mapData = data
     val viewHolder = findViewHolder(selectedPosition)
     Timber.d("selectPosition: $selectedPosition, $viewHolder")
@@ -83,7 +83,7 @@ class InfinitePagerAdapter2(
     FragmentMonthViewBinding.inflate(parent.inflater(), parent, false)
   ) {
 
-    fun bind(monthPagerItem: MonthPagerItem, data: Map<DateTime, EventsCursor>?) {
+    fun bind(monthPagerItem: MonthPagerItem, data: Map<LocalDate, EventsCursor>?) {
       Timber.d("bind: $bindingAdapterPosition, $monthPagerItem, $data")
 
       binding.monthView.setTodayColor(dataAccessor.getTodayColor())
@@ -107,6 +107,6 @@ class InfinitePagerAdapter2(
 
   interface DataAccessor {
     fun getTodayColor(): Int
-    fun getStartDay(): Int
+    fun getStartDay(): StartDayOfWeekProtocol
   }
 }

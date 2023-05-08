@@ -18,12 +18,11 @@ import androidx.annotation.IntRange
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.EventsCursor
+import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.dp2px
-import hirondelle.date4j.DateTime
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 import java.lang.ref.WeakReference
 
 class MonthView : View, View.OnTouchListener {
@@ -34,8 +33,8 @@ class MonthView : View, View.OnTouchListener {
   private var currentMonth: Int = 0
   private var currentDay: Int = 0
   private var startDayOfWeek: Int = 1
-  private var mDateTimeList: MutableList<DateTime>? = null
-  private var eventsCursorMap: Map<DateTime, EventsCursor> = HashMap()
+  private var mDateList: MutableList<LocalDate>? = null
+  private var eventsCursorMap: Map<LocalDate, EventsCursor> = HashMap()
 
   private lateinit var paint: Paint
   private lateinit var circlePaint: Paint
@@ -73,7 +72,9 @@ class MonthView : View, View.OnTouchListener {
     override fun run() {
       mLongClickHandler.removeCallbacks(this)
       if (mTouchRect != null && mDateLongClick != null) {
-        mDateLongClick?.onLongClick(dateTimeToDate(mDateTimeList?.get(mTouchPosition)))
+        mDateList?.get(mTouchPosition)?.also {
+          mDateLongClick?.onLongClick(it)
+        }
       }
       cancelTouch()
       invalidate()
@@ -88,7 +89,11 @@ class MonthView : View, View.OnTouchListener {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  ) {
     init(context)
   }
 
@@ -129,8 +134,8 @@ class MonthView : View, View.OnTouchListener {
     this.mTodayColor = ThemeProvider.themedColor(context, color)
   }
 
-  fun setStartDayOfWeek(startDayOfWeek: Int) {
-    this.startDayOfWeek = startDayOfWeek + 1
+  fun setStartDayOfWeek(startDayOfWeek: StartDayOfWeekProtocol) {
+    this.startDayOfWeek = startDayOfWeek.getForCalendar()
   }
 
   fun setDateClick(dateClick: OnDateClick) {
@@ -141,60 +146,59 @@ class MonthView : View, View.OnTouchListener {
     this.mDateLongClick = dateLongClick
   }
 
-  fun setEventsMap(eventsCursorMap: Map<DateTime, EventsCursor>) {
+  fun setEventsMap(eventsCursorMap: Map<LocalDate, EventsCursor>) {
     this.eventsCursorMap = eventsCursorMap
     invalidate()
   }
 
   fun setDate(year: Int, @IntRange(from = 1, to = 12) month: Int) {
     this.eventsCursorMap = emptyMap()
-    mDateTimeList = ArrayList()
+    mDateList = ArrayList()
     mMonth = month
     mYear = year
-    val firstDateOfMonth = DateTime(mYear, mMonth, 1, 0, 0, 0, 0)
-    val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
-    var weekdayOfFirstDate = firstDateOfMonth.weekDay
+    val firstDateOfMonth = LocalDate.of(mYear, mMonth, 1)
+    val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.lengthOfMonth() - 1L)
+    var weekdayOfFirstDate = firstDateOfMonth.dayOfWeek.value
     if (weekdayOfFirstDate < startDayOfWeek) {
       weekdayOfFirstDate += 7
     }
     while (weekdayOfFirstDate > 0) {
-      val dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate - startDayOfWeek)
-      if (!dateTime.lt(firstDateOfMonth)) {
+      val dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate - startDayOfWeek.toLong())
+      if (!dateTime.isBefore(firstDateOfMonth)) {
         break
       }
-      mDateTimeList?.add(dateTime)
+      mDateList?.add(dateTime)
       weekdayOfFirstDate--
     }
-    for (i in 0 until lastDateOfMonth.day) {
-      mDateTimeList?.add(firstDateOfMonth.plusDays(i))
+    for (i in 0L until lastDateOfMonth.dayOfMonth) {
+      mDateList?.add(firstDateOfMonth.plusDays(i))
     }
     var endDayOfWeek = startDayOfWeek - 1
     if (endDayOfWeek == 0) {
       endDayOfWeek = 7
     }
-    if (lastDateOfMonth.weekDay != endDayOfWeek) {
-      var i = 1
+    if (lastDateOfMonth.dayOfWeek.value != endDayOfWeek) {
+      var i = 1L
       while (true) {
         val nextDay = lastDateOfMonth.plusDays(i)
-        mDateTimeList?.add(nextDay)
+        mDateList?.add(nextDay)
         i++
-        if (nextDay.weekDay == endDayOfWeek) {
+        if (nextDay.dayOfWeek.value == endDayOfWeek) {
           break
         }
       }
     }
-    val size = mDateTimeList?.size ?: 0
+    val size = mDateList?.size ?: 0
     val numOfDays = 42 - size
-    val lastDateTime = mDateTimeList?.get(size - 1) ?: return
-    for (i in 1..numOfDays) {
+    val lastDateTime = mDateList?.get(size - 1) ?: return
+    for (i in 1L..numOfDays) {
       val nextDateTime = WeakReference(lastDateTime.plusDays(i))
-      mDateTimeList?.add(nextDateTime.get()!!)
+      mDateList?.add(nextDateTime.get()!!)
     }
   }
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
-    val start = System.currentTimeMillis()
     this.mWidth = width
     this.mHeight = height
     if (mCells == null) {
@@ -202,9 +206,9 @@ class MonthView : View, View.OnTouchListener {
     }
     for (i in 0 until ROWS * COLS) {
       val rect = mCells!![i]
-      val dateTime = mDateTimeList!![i]
+      val dateTime = mDateList!![i]
       var typeface = mNormalTypeface
-      val color = if (mYear != dateTime.year || mMonth != dateTime.month) {
+      val color = if (mYear != dateTime.year || mMonth != dateTime.monthValue) {
         Color.GRAY
       } else {
         if (eventsCursorMap.containsKey(dateTime)) {
@@ -213,14 +217,17 @@ class MonthView : View, View.OnTouchListener {
             drawEvents(canvas, events, rect)
           }
         }
-        if (dateTime.day == currentDay && dateTime.month == currentMonth && dateTime.year == currentYear) {
+        if (dateTime.dayOfMonth == currentDay &&
+          dateTime.monthValue == currentMonth &&
+          dateTime.year == currentYear
+        ) {
           typeface = mBoldTypeface
           mTodayColor
         } else {
           mDefaultColor
         }
       }
-      drawRectText(dateTime.day.toString(), canvas, rect, color, i, typeface)
+      drawRectText(dateTime.dayOfMonth.toString(), canvas, rect, color, i, typeface)
     }
   }
 
@@ -241,7 +248,13 @@ class MonthView : View, View.OnTouchListener {
         val prev = WeakReference<EventsCursor.Event>(eventsCursor.previousWithoutMoving)
         if (prev.get() != null) {
           val end = rects[index - 1]
-          canvas.drawLine(cX.toFloat(), cY.toFloat(), end.centerX().toFloat(), end.centerY().toFloat(), circlePaint)
+          canvas.drawLine(
+            cX.toFloat(),
+            cY.toFloat(),
+            end.centerX().toFloat(),
+            end.centerY().toFloat(),
+            circlePaint
+          )
         }
       }
       canvas.drawCircle(r.centerX().toFloat(), r.centerY().toFloat(), r.width() / 4f, circlePaint)
@@ -254,10 +267,14 @@ class MonthView : View, View.OnTouchListener {
     getLocalVisibleRect(bounds.get())
     val cellWidth = mWidth / COLS
     val cellHeight = mHeight / ROWS
-    horizontalGradient = LinearGradient(0f, 0f, cellWidth.toFloat(), 0f,
-      gradientColors, null, Shader.TileMode.MIRROR)
-    verticalGradient = LinearGradient(0f, 0f, 0f, cellHeight.toFloat(),
-      gradientColors, null, Shader.TileMode.MIRROR)
+    horizontalGradient = LinearGradient(
+      0f, 0f, cellWidth.toFloat(), 0f,
+      gradientColors, null, Shader.TileMode.MIRROR
+    )
+    verticalGradient = LinearGradient(
+      0f, 0f, 0f, cellHeight.toFloat(),
+      gradientColors, null, Shader.TileMode.MIRROR
+    )
     mCells = ArrayList()
     for (i in 0 until ROWS) {
       for (j in 0 until COLS) {
@@ -287,7 +304,14 @@ class MonthView : View, View.OnTouchListener {
     circlesMap[rect] = rects
   }
 
-  private fun drawRectText(text: String, canvas: Canvas, r: Rect, color: Int, position: Int, typeface: Typeface?) {
+  private fun drawRectText(
+    text: String,
+    canvas: Canvas,
+    r: Rect,
+    color: Int,
+    position: Int,
+    typeface: Typeface?
+  ) {
     paint.textSize = dp2px(16).toFloat()
     paint.textAlign = Paint.Align.CENTER
     paint.alpha = 100
@@ -305,13 +329,17 @@ class MonthView : View, View.OnTouchListener {
     canvas.drawText(text, start, start + numOfChars, r.exactCenterX(), r.exactCenterY(), paint)
     if (position == 0 || ((position - 6) % 7) != 0) {
       borderPaint.shader = verticalGradient
-      canvas.drawLine(r.right.toFloat(), r.top.toFloat(),
-        r.right.toFloat(), r.bottom.toFloat(), borderPaint)
+      canvas.drawLine(
+        r.right.toFloat(), r.top.toFloat(),
+        r.right.toFloat(), r.bottom.toFloat(), borderPaint
+      )
     }
     if (position <= 34) {
       borderPaint.shader = horizontalGradient
-      canvas.drawLine(r.left.toFloat(), r.bottom.toFloat(),
-        r.right.toFloat(), r.bottom.toFloat(), borderPaint)
+      canvas.drawLine(
+        r.left.toFloat(), r.bottom.toFloat(),
+        r.right.toFloat(), r.bottom.toFloat(), borderPaint
+      )
     }
   }
 
@@ -331,18 +359,10 @@ class MonthView : View, View.OnTouchListener {
     val y = motionEvent.y.toInt()
     mLongClickHandler.removeCallbacks(mLongRunnable)
     if (mTouchRect != null && mTouchRect?.contains(x, y) == true && mDateClick != null) {
-      mDateClick?.onClick(dateTimeToDate(mDateTimeList?.get(mTouchPosition)))
+      mDateList?.get(mTouchPosition)?.also { mDateClick?.onClick(it) }
     }
     cancelTouch()
     invalidate()
-  }
-
-  private fun dateTimeToDate(dateTime: DateTime?): LocalDate {
-    return if (dateTime == null) {
-      LocalDate.now()
-    } else {
-      LocalDate.of(dateTime.year, dateTime.month, dateTime.day)
-    }
   }
 
   private fun performMove(motionEvent: MotionEvent) {

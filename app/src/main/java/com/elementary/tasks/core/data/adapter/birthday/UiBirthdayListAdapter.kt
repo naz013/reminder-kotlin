@@ -13,7 +13,9 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
     val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
     val nextBirthdayDateTime = dateTimeManager.getFullDateTime(dateItem.dateTime)
-    val remainingTime =  dateTimeManager.getRemaining(dateItem.dateTime)
+    val remainingTime = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
+      dateTimeManager.getBirthdayRemaining(dateItem.dateTime, it)
+    } ?: dateTimeManager.getRemaining(dateItem.dateTime)
 
     return UiBirthdayList(
       uuId = birthday.uuId,

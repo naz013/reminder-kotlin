@@ -21,7 +21,6 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.day.EventModel
-import hirondelle.date4j.DateTime
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -47,7 +46,7 @@ class CalendarViewModel(
   private val _events = mutableLiveDataOf<List<EventModel>>()
   val events = _events.toSingleEvent()
 
-  private val _map = mutableLiveDataOf<Map<DateTime, EventsCursor>>()
+  private val _map = mutableLiveDataOf<Map<LocalDate, EventsCursor>>()
   val map = _map.toLiveData()
 
   private val birthdays = birthdaysDao.loadAll()
@@ -126,7 +125,7 @@ class CalendarViewModel(
     }
   }
 
-  private fun notifyObserver(map: Map<DateTime, EventsCursor>) {
+  private fun notifyObserver(map: Map<LocalDate, EventsCursor>) {
     _map.postValue(map)
   }
 
@@ -139,11 +138,11 @@ class CalendarViewModel(
     return toSearch
   }
 
-  private fun mapData(list: List<EventModel>): Map<DateTime, EventsCursor> {
+  private fun mapData(list: List<EventModel>): Map<LocalDate, EventsCursor> {
     val birthdayColor = birthdayColor()
     val reminderColor = reminderColor()
 
-    val map = mutableMapOf<DateTime, EventsCursor>()
+    val map = mutableMapOf<LocalDate, EventsCursor>()
     for (model in list) {
       val obj = model.model
       if (obj is UiBirthdayList) {
@@ -177,16 +176,15 @@ class CalendarViewModel(
     summary: String,
     color: Int,
     type: EventsCursor.Type,
-    map: MutableMap<DateTime, EventsCursor>
+    map: MutableMap<LocalDate, EventsCursor>
   ) {
-    val key = DateTime(date.year, date.monthValue, date.dayOfMonth, 0, 0, 0, 0)
-    if (map.containsKey(key)) {
-      val eventsCursor = map[key] ?: EventsCursor()
+    if (map.containsKey(date)) {
+      val eventsCursor = map[date] ?: EventsCursor()
       eventsCursor.addEvent(summary, color, type, date)
-      map[key] = eventsCursor
+      map[date] = eventsCursor
     } else {
       val eventsCursor = EventsCursor(summary, color, type, date)
-      map[key] = eventsCursor
+      map[date] = eventsCursor
     }
   }
 

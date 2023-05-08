@@ -11,6 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -22,12 +23,35 @@ class DateTimeManagerTest {
   private val prefs = mockk<Prefs>()
   private val textProvider = mockk<TextProvider>()
   private val language = mockk<Language>()
-  private val dateTimeManager = DateTimeManager(prefs, textProvider, language)
+  private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
+  private val dateTimeManager = DateTimeManager(prefs, textProvider, language, nowDateTimeProvider)
   private val oldTimeUtil = OldTimeUtil()
 
   @Before
   fun setUp() {
     every { prefs.appLanguage } returns 1
+
+    every { nowDateTimeProvider.nowDate() } returns LocalDate.now()
+    every { nowDateTimeProvider.nowDateTime() } returns LocalDateTime.now()
+    every { nowDateTimeProvider.nowTime() } returns LocalTime.now()
+  }
+
+  @Test
+  fun testFutureBirthdayDate() {
+    val nowDate = LocalDate.of(2023, 5, 8)
+    val time = LocalTime.of(12, 0)
+    val date = "1994-06-17"
+
+    every { nowDateTimeProvider.nowDate() } returns nowDate
+
+    val result = dateTimeManager.getFutureBirthdayDate(time, date)
+
+    val expected = DateTimeManager.BirthDate(
+      dateTime = LocalDateTime.of(LocalDate.of(2023, 6, 17), time),
+      year = 1994
+    )
+
+    assertEquals(expected, result)
   }
 
   @Test
