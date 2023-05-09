@@ -706,5 +706,8 @@
     <string name="collecting_of_app_analytics_is_disabled">Collecting of app analytics is disabled</string>
     <string name="collecting_of_app_analytics_is_enabled">Collecting of app analytics is enabled</string>
     <string name="not_born">Not born</string>
+    <string name="metric_units">Metric units</string>
+    <string name="use_imperial_system">Use Imperial system</string>
+    <string name="use_metric_system">Use Metric system</string>
 
 </resources>
