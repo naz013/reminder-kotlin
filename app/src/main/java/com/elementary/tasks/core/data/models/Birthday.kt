@@ -46,27 +46,28 @@ data class Birthday(
     get() = 2
 
   @Ignore
-  constructor(name: String, date: String, number: String, showedYear: Int, contactId: Long, day: Int, month: Int) : this() {
+  constructor(
+    name: String,
+    date: String,
+    number: String,
+    showedYear: Int,
+    contactId: Long,
+    day: Int,
+    month: Int
+  ) : this() {
     this.name = name
     this.date = date
     this.number = number
-    val secKey = if (TextUtils.isEmpty(number)) "0" else number.substring(1)
+    val secKey = if (TextUtils.isEmpty(number)) {
+      "0"
+    } else {
+      number.substring(1)
+    }
     this.key = "$name|$secKey"
     this.showedYear = showedYear
     this.contactId = contactId
     this.day = day
     this.month = month
     this.dayMonth = "$day|$month"
-  }
-
-  fun getDateTime(time: Long): Long {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = System.currentTimeMillis()
-    val year = calendar.get(Calendar.YEAR)
-    calendar.timeInMillis = time
-    calendar.set(Calendar.YEAR, year)
-    calendar.set(Calendar.MONTH, month)
-    calendar.set(Calendar.DAY_OF_MONTH, day)
-    return calendar.timeInMillis
   }
 }

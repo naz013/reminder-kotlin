@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.DateValidator
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +28,8 @@ class BirthdayActionProcessor(
   private val dateTimeManager: DateTimeManager,
   private val jobScheduler: JobScheduler,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val contextProvider: ContextProvider
+  private val contextProvider: ContextProvider,
+  private val dateValidator: DateValidator = DateValidator()
 ) {
 
   private val scope = CoroutineScope(dispatcherProvider.default())
@@ -77,7 +79,10 @@ class BirthdayActionProcessor(
       val handler =
         birthdayHandlerFactory.createAction(!SuperUtil.isPhoneCallActive(contextProvider.context))
 
-      for (birthday in birthdayRepository.getAll()) {
+      val birthdays = birthdayRepository.getAll()
+        .filter { dateValidator.isLegacyMonthValid(it.month) }
+
+      for (birthday in birthdays) {
         val year = birthday.showedYear
         val birthValue = getBirthdayValue(birthday.month, birthday.day, daysBefore)
         if (!applyDnd && birthValue == currentDate && year != mYear) {

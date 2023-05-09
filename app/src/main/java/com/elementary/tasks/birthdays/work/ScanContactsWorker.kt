@@ -56,13 +56,13 @@ class ScanContactsWorker(
           val date = birthday?.let { dateTimeManager.findBirthdayDate(it) }
           if (id != null && date != null) {
             val birthdayItem = Birthday(
-              name,
-              dateTimeManager.formatBirthdayDate(date),
-              number,
-              0,
-              id,
-              date.dayOfMonth,
-              date.monthValue - 1
+              name = name,
+              date = dateTimeManager.formatBirthdayDate(date),
+              number = number,
+              showedYear = 0,
+              contactId = id,
+              day = date.dayOfMonth,
+              month = date.monthValue - 1
             )
             if (!contacts.contains(birthdayItem)) {
               i += 1
