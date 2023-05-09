@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
@@ -172,13 +173,16 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
   }
 
   private fun showRadius() {
-    binding.radiusPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
-      prefs.radius.toString()))
+    withContext {
+      val radiusFormatter = DefaultRadiusFormatter(it, prefs.useMetric)
+      binding.radiusPrefs.setDetailText(radiusFormatter.format(prefs.radius))
+    }
   }
 
   private fun showRadiusPickerDialog() {
     val radius = prefs.radius
     withActivity {
+      val radiusFormatter = DefaultRadiusFormatter(it, prefs.useMetric)
       dialogues.showRadiusDialog(it, radius, object : Dialogues.OnValueSelectedListener<Int> {
         override fun onSelected(t: Int) {
           prefs.radius = t
@@ -186,8 +190,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
         }
 
         override fun getTitle(t: Int): String {
-          return String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
-            t.toString())
+          return radiusFormatter.format(t)
         }
       })
     }

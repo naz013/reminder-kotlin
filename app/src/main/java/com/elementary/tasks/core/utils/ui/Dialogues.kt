@@ -11,6 +11,7 @@ import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
 import com.elementary.tasks.databinding.DialogBottomColorSliderBinding
 import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
@@ -82,36 +83,15 @@ class Dialogues(
     dialog.show()
   }
 
-  fun showRadiusBottomDialog(activity: Activity, current: Int, listener: (Int) -> String) {
+  fun showRadiusBottomDialog(activity: Activity, current: Int, formatter: (Int) -> String) {
     val dialog = BottomSheetDialog(activity)
     val b = DialogBottomSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
 
-    b.seekBar.addOnChangeListener { _, value, _ ->
-      b.titleView.text = listener.invoke(value.toInt())
-      val perc = value / b.seekBar.valueTo * 100f
-      if (perc > 95f && b.seekBar.valueTo.toInt() < MAX_RADIUS) {
-        b.seekBar.valueTo = b.seekBar.valueTo + (b.seekBar.valueTo * 0.2f)
-      } else if (perc < 10f && b.seekBar.valueTo.toInt() > 5000) {
-        b.seekBar.valueTo = b.seekBar.valueTo - (b.seekBar.valueTo * 0.2f)
-      }
+    RadiusSliderBehaviour(b.seekBar, current) {
+      b.titleView.text = formatter.invoke(it)
     }
-    b.seekBar.stepSize = 1f
-    b.seekBar.valueFrom = 0f
-    b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
+    b.titleView.text = formatter.invoke(current)
 
-    if (b.seekBar.valueTo < current && b.seekBar.valueTo < MAX_RADIUS) {
-      b.seekBar.valueTo = current + (b.seekBar.valueTo * 0.2f)
-    }
-    if (current > MAX_RADIUS) {
-      b.seekBar.valueTo = MAX_RADIUS.toFloat()
-    }
-    b.seekBar.valueTo = current * 2f
-    if (current == 0) {
-      b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
-    }
-    b.seekBar.value = current.toFloat()
-
-    b.titleView.text = listener.invoke(current)
     dialog.setContentView(b.root)
     dialog.show()
   }
@@ -148,33 +128,13 @@ class Dialogues(
     builder.setTitle(R.string.radius)
     val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
 
-    b.seekBar.addOnChangeListener { _, value, _ ->
-      b.titleView.text = listener.getTitle(value.toInt())
-      val perc = value / b.seekBar.valueTo * 100f
-      if (perc > 95f && b.seekBar.valueTo.toInt() < MAX_RADIUS) {
-        b.seekBar.valueTo = b.seekBar.valueTo + (b.seekBar.valueTo * 0.2f)
-      } else if (perc < 10f && b.seekBar.valueTo.toInt() > 5000) {
-        b.seekBar.valueTo = b.seekBar.valueTo - (b.seekBar.valueTo * 0.2f)
-      }
+    val behaviour = RadiusSliderBehaviour(b.seekBar, current) {
+      b.titleView.text = listener.getTitle(it)
     }
-    b.seekBar.stepSize = 1f
-    b.seekBar.valueFrom = 0f
-
-    b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
-    if (b.seekBar.valueTo < current && b.seekBar.valueTo < MAX_RADIUS) {
-      b.seekBar.valueTo = current + (b.seekBar.valueTo * 0.2f)
-    }
-    if (current > MAX_RADIUS) {
-      b.seekBar.valueTo = MAX_RADIUS.toFloat()
-    }
-    if (current == 0) {
-      b.seekBar.valueTo = MAX_DEF_RADIUS.toFloat()
-    }
-    b.seekBar.value = current.toFloat()
-
     b.titleView.text = listener.getTitle(current)
+
     builder.setView(b.root)
-    builder.setPositiveButton(R.string.ok) { _, _ -> listener.onSelected(b.seekBar.value.toInt()) }
+    builder.setPositiveButton(R.string.ok) { _, _ -> listener.onSelected(behaviour.getRadius()) }
     builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
     val dialog = builder.create()
     dialog.show()
@@ -213,8 +173,6 @@ class Dialogues(
   }
 
   companion object {
-    private const val MAX_RADIUS = 100000
-    private const val MAX_DEF_RADIUS = 5000
 
     fun getMaterialDialog(context: Context): MaterialAlertDialogBuilder {
       return MaterialAlertDialogBuilder(context)

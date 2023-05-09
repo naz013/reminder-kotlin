@@ -83,8 +83,8 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
-                    style="?attr/materialIconButtonFilledStyle"
                     android:id="@+id/clearButton"
+                    style="?attr/materialIconButtonFilledStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -92,8 +92,8 @@
                     app:icon="@drawable/ic_twotone_backspace_24px" />
 
                 <Button
-                    style="?attr/materialIconButtonFilledStyle"
                     android:id="@+id/mapButton"
+                    style="?attr/materialIconButtonFilledStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -157,6 +157,14 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
+
+            <com.elementary.tasks.core.views.RadiusPickerView
+                android:id="@+id/radiusView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp" />
 
             <com.elementary.tasks.core.views.GroupView
                 android:id="@+id/groupView"

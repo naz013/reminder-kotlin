@@ -47,6 +47,9 @@ class ReminderStateViewModel(
   var hour: Int = 0
   var minute: Int = 0
 
+  var radius: Int = 0
+  var markerStyle: Int = 0
+
   var timer: Long = 0
   var isPaused: Boolean = false
   var original: Reminder? = null

@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.ui.DefaultDistanceFormatter
 import com.elementary.tasks.core.utils.withUIContext
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -32,6 +33,7 @@ class GeolocationService : Service() {
   private val notifier by inject<Notifier>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val reminderActionProcessor by inject<ReminderActionProcessor>()
+  private val distanceFormatter = DefaultDistanceFormatter(this, prefs.useMetric)
 
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
   private var locationListener: LocationTracker.Listener = object : LocationTracker.Listener {
@@ -168,9 +170,8 @@ class GeolocationService : Service() {
   private fun showNotification(roundedDistance: Int, reminder: Reminder) {
     if (!isNotificationEnabled) return
     val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SILENT)
-    builder.setContentText(roundedDistance.toString())
     builder.setContentTitle(reminder.summary)
-    builder.setContentText(roundedDistance.toString())
+    builder.setContentText(distanceFormatter.format(roundedDistance))
     builder.priority = NotificationCompat.PRIORITY_MIN
     builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
     builder.setCategory(NotificationCompat.CATEGORY_NAVIGATION)

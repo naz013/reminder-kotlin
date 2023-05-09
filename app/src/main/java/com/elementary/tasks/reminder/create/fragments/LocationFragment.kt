@@ -30,6 +30,11 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
   private var lastPos: LatLng? = null
 
   private val mListener = object : MapListener {
+    override fun onRadiusChanged(radiusInM: Int) {
+      iFace.state.radius = radiusInM
+      binding.radiusView.radiusInM = radiusInM
+    }
+
     override fun placeChanged(place: LatLng, address: String) {
       lastPos = place
     }
@@ -61,6 +66,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       val jPlace = reminder.places[0]
       val latitude = jPlace.latitude
       val longitude = jPlace.longitude
+      iFace.state.radius = jPlace.radius
       if (mAdvancedMapFragment != null) {
         mAdvancedMapFragment?.markerRadius = jPlace.radius
         lastPos = LatLng(latitude, longitude)
@@ -202,16 +208,22 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       binding.searchBlock.gone()
     }
 
-    val advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
-      prefs.markerStyle, themeUtil.isDark)
+    val advancedMapFragment = AdvancedMapFragment.newInstance(
+      isPlaces = true,
+      isStyles = true,
+      isBack = true,
+      isZoom = true,
+      markerStyle = iFace.state.markerStyle,
+      isDark = themeUtil.isDark
+    )
     advancedMapFragment.setListener(mListener)
     advancedMapFragment.setCallback(object : MapCallback {
       override fun onMapReady() {
         showPlaceOnMap()
       }
     })
-    advancedMapFragment.markerRadius = prefs.radius
-    advancedMapFragment.setStyle(prefs.markerStyle)
+    advancedMapFragment.markerRadius = iFace.state.radius
+    advancedMapFragment.setStyle(iFace.state.markerStyle)
     fragmentManager?.beginTransaction()
       ?.replace(binding.mapFrame.id, advancedMapFragment)
       ?.addToBackStack(null)
@@ -242,6 +254,13 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       if (title != null && title.matches("".toRegex())) title = pos.toString()
       mAdvancedMapFragment?.addMarker(pos, title, true, animate = true)
     }
+
+    binding.radiusView.onRadiusChangeListener = {
+      iFace.state.radius = it
+      mAdvancedMapFragment?.markerRadius = it
+    }
+    binding.radiusView.radiusInM = iFace.state.radius
+    binding.radiusView.useMetric = prefs.useMetric
 
     editReminder()
   }
