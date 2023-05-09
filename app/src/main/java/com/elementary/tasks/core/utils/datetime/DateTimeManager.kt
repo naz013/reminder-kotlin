@@ -354,6 +354,10 @@ class DateTimeManager(
     }
   }
 
+  fun isSameDay(birthDate: LocalDate, current: LocalDate = getCurrentDate()): Boolean {
+    return birthDate.dayOfMonth == current.dayOfMonth && birthDate.monthValue == current.monthValue
+  }
+
   fun getFutureBirthdayDate(birthdayTime: LocalTime, fullDate: String): BirthDate {
     return (parseBirthdayDate(fullDate) ?: nowDateTimeProvider.nowDate()).let { date ->
       var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), birthdayTime)

@@ -3,7 +3,7 @@ package com.elementary.tasks.core.app_widgets
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.readSerializable
@@ -40,7 +40,7 @@ class AppWidgetActionActivity : ThemedActivity() {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return
         PinLoginActivity.openLogged(
           this,
-          Intent(this, AddBirthdayActivity::class.java)
+          Intent(this, BirthdayPreviewActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             .putExtra(Constants.INTENT_ID, id)
         )

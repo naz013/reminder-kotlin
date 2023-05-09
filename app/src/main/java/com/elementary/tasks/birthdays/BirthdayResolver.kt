@@ -3,11 +3,11 @@ package com.elementary.tasks.birthdays
 import android.content.Intent
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
 
 class BirthdayResolver(
@@ -43,7 +43,7 @@ class BirthdayResolver(
   }
 
   private fun openBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(view.context, Intent(view.context, AddBirthdayActivity::class.java)
+    PinLoginActivity.openLogged(view.context, Intent(view.context, BirthdayPreviewActivity::class.java)
       .putExtra(Constants.INTENT_ID, birthday.uuId))
   }
 }
