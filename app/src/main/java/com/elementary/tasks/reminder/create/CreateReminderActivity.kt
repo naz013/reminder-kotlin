@@ -119,6 +119,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
     if (savedInstanceState == null) {
       stateViewModel.reminder.priority = prefs.defaultPriority
+      stateViewModel.radius = prefs.radius
+      stateViewModel.markerStyle = prefs.markerStyle
     }
 
     loadReminder()

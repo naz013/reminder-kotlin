@@ -118,6 +118,7 @@ object PrefsConstants {
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"
   const val DYNAMIC_COLORS = "dynamic_colors_13"
   const val ANALYTICS_ENABLED = "analytics_enabled"
+  const val METRIC_SYSTEM = "metric_system"
 
   const val REMINDER_CHANGED = "reminder_changed"
   const val LAST_USED_REMINDER = "last_reminder"

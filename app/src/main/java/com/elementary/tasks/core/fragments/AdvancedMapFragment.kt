@@ -24,6 +24,7 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
 import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.AddressAutoCompleteView
@@ -418,9 +419,11 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
   }
 
   private fun showRadiusDialog() {
+    val radiusFormatter = DefaultRadiusFormatter(requireContext(), prefs.useMetric)
     dialogues.showRadiusBottomDialog(requireActivity(), markerRadius) {
       recreateMarker(it)
-      return@showRadiusBottomDialog getString(R.string.radius_x_meters, it.toString())
+      mListener?.onRadiusChanged(it)
+      return@showRadiusBottomDialog radiusFormatter.format(it)
     }
   }
 

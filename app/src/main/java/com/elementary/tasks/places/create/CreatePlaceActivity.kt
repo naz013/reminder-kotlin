@@ -215,4 +215,8 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
       }
     }
   }
+
+  override fun onRadiusChanged(radiusInM: Int) {
+
+  }
 }

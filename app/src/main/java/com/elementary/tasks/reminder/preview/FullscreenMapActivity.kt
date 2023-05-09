@@ -112,6 +112,9 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
 
           override fun placeChanged(place: LatLng, address: String) {
           }
+
+          override fun onRadiusChanged(radiusInM: Int) {
+          }
         })
         if (reminder != null) showMapData(reminder!!)
       }

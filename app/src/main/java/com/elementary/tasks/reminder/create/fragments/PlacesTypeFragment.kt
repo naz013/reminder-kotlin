@@ -25,6 +25,11 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
   private var mPlacesMap: PlacesMapFragment? = null
   private val mListener = object : MapListener {
+    override fun onRadiusChanged(radiusInM: Int) {
+      iFace.state.radius = radiusInM
+      binding.radiusView.radiusInM = radiusInM
+    }
+
     override fun placeChanged(place: LatLng, address: String) {
     }
 
@@ -191,6 +196,14 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     }
     binding.attackDelay.isChecked = iFace.state.isDelayAdded
     binding.mapButton.setOnClickListener { toggleMap() }
+
+    binding.radiusView.onRadiusChangeListener = {
+      iFace.state.radius = it
+      mPlacesMap?.markerRadius = it
+    }
+    binding.radiusView.radiusInM = iFace.state.radius
+    binding.radiusView.useMetric = prefs.useMetric
+
     editReminder()
   }
 
