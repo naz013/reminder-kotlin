@@ -369,14 +369,15 @@
             android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
+        <activity android:name=".birthdays.preview.BirthdayPreviewActivity" />
         <activity
             android:name=".reminder.preview.FullscreenMapActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".birthdays.preview.ShowBirthdayActivity"
+            android:name=".birthdays.dialog.ShowBirthdayActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".birthdays.preview.ShowBirthday29Activity"
+            android:name=".birthdays.dialog.ShowBirthday29Activity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".pin.PinLoginActivity"
@@ -629,8 +630,7 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove">
-        </provider>
+            tools:node="remove"></provider>
     </application>
 
     <queries>

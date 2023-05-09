@@ -14,7 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
+import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent

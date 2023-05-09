@@ -20,4 +20,12 @@ class BirthdayRepository(private val birthdaysDao: BirthdaysDao) {
   fun getAll(): List<Birthday> {
     return birthdaysDao.getAll()
   }
+
+  suspend fun delete(id: String) {
+    birthdaysDao.delete(id)
+  }
+
+  suspend fun delete(birthday: Birthday) {
+    birthdaysDao.delete(birthday)
+  }
 }

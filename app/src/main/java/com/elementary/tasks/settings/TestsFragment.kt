@@ -5,8 +5,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
-import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
+import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
+import com.elementary.tasks.birthdays.dialog.ShowBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Module

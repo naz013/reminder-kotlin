@@ -14,6 +14,7 @@
     <dimen name="checkbox_padding">20dp</dimen>
     <dimen name="empty_image_size">128dp</dimen>
     <dimen name="empty_animation_size">188dp</dimen>
+    <dimen name="confetti_animation_size">256dp</dimen>
     <dimen name="list_margin">0dp</dimen>
     <dimen name="material_margin">16dp</dimen>
     <dimen name="image_height">256dp</dimen>

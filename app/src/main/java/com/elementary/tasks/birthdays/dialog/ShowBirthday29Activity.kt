@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays.preview
+package com.elementary.tasks.birthdays.dialog
 
 import android.content.Context
 import android.content.Intent

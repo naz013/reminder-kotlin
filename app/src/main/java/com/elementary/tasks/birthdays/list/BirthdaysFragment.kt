@@ -50,19 +50,18 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
     addMenu(R.menu.fragment_active_menu, { false }) {
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
     }
-    binding.fab.setOnClickListener { addPlace() }
+    binding.fab.setOnClickListener { addNew() }
     initList()
     initViewModel()
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.BIRTHDAYS))
   }
 
-  private fun addPlace() {
+  private fun addNew() {
     withContext { PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java) }
   }
 
   private fun initViewModel() {
-    viewModel.birthdays
     viewModel.birthdays.nonNullObserve(viewLifecycleOwner) {
       mAdapter.submitList(it)
       binding.recyclerView.smoothScrollToPosition(0)

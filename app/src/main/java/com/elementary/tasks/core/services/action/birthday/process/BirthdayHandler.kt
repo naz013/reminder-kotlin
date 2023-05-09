@@ -3,7 +3,7 @@ package com.elementary.tasks.core.services.action.birthday.process
 import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
+import com.elementary.tasks.birthdays.dialog.ShowBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver

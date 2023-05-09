@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorPrimaryContainer"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:liftOnScroll="false">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:menu="@menu/activity_birthday_preview"
+                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+                app:navigationIconTint="?colorOnSurface" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="?colorBackgroundFloating"
+            app:cardElevation="4dp"
+            app:shapeAppearance="@style/ShapeAppearance.PreviewCard">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="ifContentScrolls">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/material_margin"
+                    android:layout_marginEnd="@dimen/material_margin"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/contactPhoto"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@string/acc_contact_photo"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        app:civ_border_width="0dp" />
+
+                    <TextView
+                        android:id="@+id/nameView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAppearance="?textAppearanceHeadlineMedium"
+                        android:textColor="?colorOnSecondaryContainer"
+                        tools:text="User Name" />
+
+                    <TextView
+                        android:id="@+id/contactNameNumberView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        android:textColor="?colorOnSecondaryContainer"
+                        tools:text="1234567890" />
+
+                    <TextView
+                        android:id="@+id/ageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAppearance="?textAppearanceTitleLarge"
+                        android:textColor="?colorOnSecondaryContainer"
+                        tools:text="25 years" />
+
+                    <TextView
+                        android:id="@+id/dateOfBirthView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorOnSecondaryContainer"
+                        tools:text="25 May, 2000" />
+
+                    <TextView
+                        android:id="@+id/nextBirthdayDateView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorOnSecondaryContainer"
+                        tools:text="25 May, 2023" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/buttonsView"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        app:selectionRequired="false"
+        app:singleSelection="true">
+
+        <Button
+            android:id="@+id/buttonCall"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/make_call"
+            android:textAllCaps="true" />
+
+        <Button
+            android:id="@+id/buttonSms"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/send_sms"
+            android:textAllCaps="true" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="@dimen/confetti_animation_size"
+        android:layout_height="@dimen/confetti_animation_size"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_speed="0.75"
+        app:lottie_rawRes="@raw/birthday_confetti" />
+
+</FrameLayout>

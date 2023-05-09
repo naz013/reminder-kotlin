@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
+import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PendingIntentWrapper
