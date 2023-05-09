@@ -18,9 +18,9 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -29,6 +29,7 @@ import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DrawableHelper
+import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
@@ -317,9 +318,11 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun showRadiusDialog() {
+    val radiusFormatter = DefaultRadiusFormatter(requireContext(), prefs.useMetric)
     dialogues.showRadiusBottomDialog(requireActivity(), markerRadius) {
       recreateMarker(it)
-      return@showRadiusBottomDialog getString(R.string.radius_x_meters, it.toString())
+      mMapListener?.onRadiusChanged(it)
+      return@showRadiusBottomDialog radiusFormatter.format(it)
     }
   }
 

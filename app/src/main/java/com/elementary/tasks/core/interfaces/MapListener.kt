@@ -6,4 +6,5 @@ interface MapListener {
   fun placeChanged(place: LatLng, address: String)
   fun onZoomClick(isFull: Boolean)
   fun onBackClick()
+  fun onRadiusChanged(radiusInM: Int)
 }

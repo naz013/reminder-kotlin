@@ -206,6 +206,14 @@
     <string name="day_of_month">Day of month</string>
     <string name="shopping_list">Shopping list</string>
     <string name="radius_x_meters">"Radius %s meters"</string>
+    <string name="radius_x_m">"Radius %s m"</string>
+    <string name="radius_x_ft">"Radius %s ft"</string>
+    <string name="radius_x_km">"Radius %s km"</string>
+    <string name="radius_x_mi">"Radius %s mi"</string>
+    <string name="dist_x_m">"Distance %s m"</string>
+    <string name="dist_x_ft">"Distance %s ft"</string>
+    <string name="dist_x_km">"Distance %s km"</string>
+    <string name="dist_x_mi">"Distance %s mi"</string>
     <string name="shopping_list_is_empty">Shopping list is empty!</string>
     <string name="you_dont_select_any_day">You not select a day!</string>
     <string name="you_dont_select_application">You don\'t select application!</string>
