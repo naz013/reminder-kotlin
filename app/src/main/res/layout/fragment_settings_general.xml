@@ -54,6 +54,17 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/unitsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_analytics_24"
+            app:prefs_primary_text="@string/metric_units"
+            app:prefs_secondary_text_off="@string/use_imperial_system"
+            app:prefs_secondary_text_on="@string/use_metric_system"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/analyticsPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

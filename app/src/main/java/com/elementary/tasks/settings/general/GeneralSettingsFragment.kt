@@ -29,6 +29,17 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     initLanguagePrefs()
     initDynamicColorsPrefs()
     initAnalyticsPrefs()
+    initUnitPrefs()
+  }
+
+  private fun initUnitPrefs() {
+    binding.unitsPrefs.setOnClickListener { changeUnitPrefs() }
+    binding.unitsPrefs.isChecked = prefs.useMetric
+  }
+
+  private fun changeUnitPrefs() {
+    prefs.useMetric = !prefs.useMetric
+    binding.unitsPrefs.isChecked = prefs.useMetric
   }
 
   private fun initAnalyticsPrefs() {
@@ -70,7 +81,10 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
       builder.setTitle(getString(R.string.application_language))
       val init = prefs.appLanguage
       mItemSelect = init
-      builder.setSingleChoiceItems(resources.getStringArray(R.array.app_languages), mItemSelect) { _, which -> mItemSelect = which }
+      builder.setSingleChoiceItems(
+        resources.getStringArray(R.array.app_languages),
+        mItemSelect
+      ) { _, which -> mItemSelect = which }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         prefs.appLanguage = mItemSelect
         dialog.dismiss()
@@ -108,11 +122,13 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
       builder.setTitle(getString(R.string._24_hour_time_format))
 
       mItemSelect = prefs.hourFormat
-      builder.setSingleChoiceItems(arrayOf(
-        getString(R.string.default_string),
-        getString(R.string.use_24_hour_format),
-        getString(R.string.use_12_hour_format)
-      ), mItemSelect) { _, which -> mItemSelect = which }
+      builder.setSingleChoiceItems(
+        arrayOf(
+          getString(R.string.default_string),
+          getString(R.string.use_24_hour_format),
+          getString(R.string.use_12_hour_format)
+        ), mItemSelect
+      ) { _, which -> mItemSelect = which }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         prefs.hourFormat = mItemSelect
         dialog.dismiss()
@@ -153,9 +169,17 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
 
   private fun themeNames(): Array<String> {
     return if (is10) {
-      arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
+      arrayOf(
+        getString(R.string.light),
+        getString(R.string.dark),
+        getString(R.string.system_default)
+      )
     } else {
-      arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.set_by_battery_saver))
+      arrayOf(
+        getString(R.string.light),
+        getString(R.string.dark),
+        getString(R.string.set_by_battery_saver)
+      )
     }
   }
 
