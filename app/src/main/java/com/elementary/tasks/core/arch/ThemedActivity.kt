@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
+import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -48,6 +49,9 @@ abstract class ThemedActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
+    if (prefs.useDynamicColors) {
+      DynamicColors.applyToActivityIfAvailable(this)
+    }
     if (savedInstanceState == null) {
       loginStateViewModel.isLogged = isLogged()
     }
