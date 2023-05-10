@@ -11,6 +11,7 @@ import com.elementary.tasks.core.utils.Module.is10
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.google.android.material.color.DynamicColors
 
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
 
@@ -60,7 +61,12 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   private fun changeDynamicPrefs() {
     prefs.useDynamicColors = !prefs.useDynamicColors
     binding.dynamicColorsPrefs.isChecked = prefs.useDynamicColors
-    restartApp()
+    withActivity {
+      if (prefs.useDynamicColors) {
+        DynamicColors.applyToActivityIfAvailable(it)
+      }
+      it.recreate()
+    }
   }
 
   private fun initLanguagePrefs() {

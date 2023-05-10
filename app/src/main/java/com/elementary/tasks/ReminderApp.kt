@@ -14,13 +14,11 @@ import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
 import com.elementary.tasks.core.utils.dataFlowRepositoryModule
 import com.elementary.tasks.core.utils.dbModule
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -72,9 +70,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
     get<Notifier>().createChannels()
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
-    if (get<Prefs>().useDynamicColors) {
-      DynamicColors.applyToActivitiesIfAvailable(this)
-    }
   }
 
   override fun onTrimMemory(level: Int) {
