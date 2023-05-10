@@ -1,16 +1,12 @@
 package com.elementary.tasks.settings
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Module
@@ -144,11 +140,15 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     binding.testsScreen.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
     }
-    binding.buySettings.setOnClickListener { showProDialog() }
-    if (!Module.isPro && !SuperUtil.isAppInstalled(requireContext(), "com.cray.software.justreminderpro")) {
-      binding.buySettings.visible()
+    binding.buyProBadge.setOnClickListener { openProPage() }
+    if (!Module.isPro && !SuperUtil.isAppInstalled(
+        requireContext(),
+        "com.cray.software.justreminderpro"
+      )
+    ) {
+      binding.buyProBadge.visible()
     } else {
-      binding.buySettings.gone()
+      binding.buyProBadge.gone()
     }
 
     withContext {
@@ -156,9 +156,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
         binding.locationSettings.setOnClickListener {
           safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment())
         }
-        binding.locationSettings.visibility = View.VISIBLE
+        binding.locationSettings.visible()
       } else {
-        binding.locationSettings.visibility = View.GONE
+        binding.locationSettings.gone()
       }
     }
   }
@@ -183,54 +183,30 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   override fun onSale(discount: String, expiryDate: String) {
     if (dateTimeManager.isAfterNow(expiryDate)) {
       val expiry = dateTimeManager.getFireFormatted(expiryDate)
-      binding.saleBadge.visibility = View.VISIBLE
-      binding.saleBadge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+      binding.saleBadge.visible()
+      binding.saleBadge.text =
+        "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
     } else {
-      binding.saleBadge.visibility = View.GONE
+      binding.saleBadge.gone()
     }
   }
 
   override fun noSale() {
-    binding.saleBadge.visibility = View.GONE
+    binding.saleBadge.gone()
   }
 
   @SuppressLint("SetTextI18n")
   override fun onUpdate(version: String) {
-    binding.updateBadge.visibility = View.VISIBLE
+    binding.updateBadge.gone()
     binding.updateBadge.text = getString(R.string.update_available) + ": " + version
     binding.updateBadge.setOnClickListener { SuperUtil.launchMarket(requireContext()) }
   }
 
   override fun noUpdate() {
-    binding.updateBadge.visibility = View.GONE
+    binding.updateBadge.gone()
   }
 
-  private fun showProDialog() {
-    dialogues.getMaterialDialog(requireContext())
-      .setTitle(getString(R.string.buy_pro))
-      .setMessage(getString(R.string.pro_advantages) + "\n" +
-        getString(R.string.different_settings_for_birthdays) + "\n" +
-        "- " + getString(R.string.additional_reminder) + ";" + "\n" +
-        getString(R.string._led_notification_) + "\n" +
-        getString(R.string.led_color_for_each_reminder) + "\n" +
-        getString(R.string.styles_for_marker) + "\n" +
-        "- " + getString(R.string.no_ads))
-      .setPositiveButton(R.string.buy) { dialog, _ ->
-        dialog.dismiss()
-        openMarket()
-      }
-      .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-      .setCancelable(true)
-      .create().show()
-  }
-
-  private fun openMarket() {
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.data = Uri.parse("market://details?id=" + "com.cray.software.justreminderpro")
-    try {
-      startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
-      Toast.makeText(context, R.string.could_not_launch_market, Toast.LENGTH_SHORT).show()
-    }
+  private fun openProPage() {
+    safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToFragmentProVersion())
   }
 }

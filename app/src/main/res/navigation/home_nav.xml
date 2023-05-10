@@ -150,8 +150,8 @@
             app:argType="string" />
         <argument
             android:name="arg_logged"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
     </activity>
     <activity
         android:id="@+id/addBirthdayActivity"
@@ -228,6 +228,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_testsFragment"
             app:destination="@id/testsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_fragmentProVersion"
+            app:destination="@id/fragmentProVersion" />
     </fragment>
     <fragment
         android:id="@+id/generalSettingsFragment"
@@ -455,4 +458,9 @@
         android:name="com.elementary.tasks.settings.TestsFragment"
         android:label="Tests"
         tools:layout="@layout/fragment_settings_tests" />
+    <fragment
+        android:id="@+id/fragmentProVersion"
+        android:name="com.elementary.tasks.settings.FragmentProVersion"
+        android:label="@string/pro_version"
+        tools:layout="@layout/fragment_settings_pro_page" />
 </navigation>

@@ -85,7 +85,6 @@
     <string name="trash">Poubelle</string>
     <string name="feedback">Réaction</string>
     <string name="help">Aidez-moi</string>
-    <string name="buy_pro">Acheter PRO</string>
     <string name="edit">Modifier</string>
     <string name="delete">Effacer</string>
     <string name="no_notes">Aucune note</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Éteindre</string>
     <string name="enabled4">Activé</string>
     <string name="choose_time">Choisissez le temps</string>
-    <string name="pro_advantages">Avantages de PRO:</string>
-    <string name="buy">Acheter</string>
-    <string name="different_settings_for_birthdays">- Différents réglages pour les anniversaires;</string>
-    <string name="_led_notification_">- Voyant de notification;</string>
-    <string name="led_color_for_each_reminder">- Couleur pour chaque rappel LED;</string>
-    <string name="styles_for_marker">- 16 styles de marqueur;</string>
     <string name="delete_this_list">Supprimer cette liste?</string>
     <string name="delete_list">Effacer la liste</string>
     <string name="new_task">Nouvelle tâche</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Indicateurs de paramètres de sauvegarde</string>
     <string name="automatically_sync">Synchroniser automatiquement</string>
     <string name="sync_flags">Drapeaux de synchronisation</string>
-    <string name="no_ads">Pas de publicité;</string>
     <string name="new_reminder">Nouveau rappel</string>
     <string name="light">Lumière</string>
     <string name="system_default">Défaillance du système</string>

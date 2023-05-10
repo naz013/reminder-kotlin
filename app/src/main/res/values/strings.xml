@@ -85,7 +85,6 @@
     <string name="trash">Trash</string>
     <string name="feedback">Feedback</string>
     <string name="help">Help</string>
-    <string name="buy_pro">Buy PRO</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="no_notes">No notes</string>
@@ -250,12 +249,6 @@
     <string name="disabled">Turned off</string>
     <string name="enabled4">Enabled</string>
     <string name="choose_time">Choose time</string>
-    <string name="pro_advantages">Advantages of PRO:</string>
-    <string name="buy">Buy</string>
-    <string name="different_settings_for_birthdays">- Different settings for birthdays;</string>
-    <string name="_led_notification_">- LED notification;</string>
-    <string name="led_color_for_each_reminder">- LED color for each reminder;</string>
-    <string name="styles_for_marker">- 16 styles for marker;</string>
     <string name="delete_this_list">Delete this list?</string>
     <string name="delete_list">Delete list</string>
     <string name="new_task">New task</string>
@@ -609,7 +602,6 @@
     <string name="backup_flags">Backup settings flags</string>
     <string name="automatically_sync">Automatically sync</string>
     <string name="sync_flags">Sync flags</string>
-    <string name="no_ads">No Advertisement;</string>
     <string name="new_reminder">New reminder</string>
     <string name="light">Light</string>
     <string name="system_default">System default</string>
@@ -702,12 +694,24 @@
     <string name="reminder_by_location_explanations">Set your reminder for the exact location with the constraint of entering or leaving the place</string>
     <string name="reminder_by_places_explanations">Set your reminder for a searchable place</string>
     <string name="reminder_link_explanations">Set your reminder for the exact date and time with the link or application to open</string>
+
     <string name="analytics">Analytics</string>
     <string name="collecting_of_app_analytics_is_disabled">Collecting of app analytics is disabled</string>
     <string name="collecting_of_app_analytics_is_enabled">Collecting of app analytics is enabled</string>
+
     <string name="not_born">Not born</string>
+
     <string name="metric_units">Metric units</string>
     <string name="use_imperial_system">Use Imperial system</string>
     <string name="use_metric_system">Use Metric system</string>
+
+    <string name="pro_version">PRO Version</string>
+    <string name="pro_advantages">Advantages of PRO:</string>
+    <string name="pro_buy">Buy PRO</string>
+    <string name="pro_no_ads">- No Advertisement</string>
+    <string name="pro_different_settings_for_birthdays">- Different settings for birthdays</string>
+    <string name="pro_led_notification">- LED notification</string>
+    <string name="pro_led_color_for_each_reminder">- LED color for each reminder</string>
+    <string name="pro_styles_for_marker">- 16 styles for marker</string>
 
 </resources>

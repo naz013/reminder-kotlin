@@ -85,7 +85,6 @@
     <string name="trash">Rifiuti</string>
     <string name="feedback">Feedback</string>
     <string name="help">Aiuto</string>
-    <string name="buy_pro">Acquista PRO</string>
     <string name="edit">Modifica</string>
     <string name="delete">Cancellare</string>
     <string name="no_notes">Nessuna nota</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Spento</string>
     <string name="enabled4">Abilitato</string>
     <string name="choose_time">Scegli il tempo</string>
-    <string name="pro_advantages">Vantaggi di PRO:</string>
-    <string name="buy">Acquistare</string>
-    <string name="different_settings_for_birthdays">- Diverse impostazioni per i compleanni;</string>
-    <string name="_led_notification_">- Notifica LED;</string>
-    <string name="led_color_for_each_reminder">- Colore per ogni promemoria LED;</string>
-    <string name="styles_for_marker">- 16 stili per marcatore;</string>
     <string name="delete_this_list">Eliminare questa lista?</string>
     <string name="delete_list">Elimina lista</string>
     <string name="new_task">Nuovo compito</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Flag delle impostazioni di backup</string>
     <string name="automatically_sync">Sincronizza automaticamente</string>
     <string name="sync_flags">Sincronizza le bandiere</string>
-    <string name="no_ads">Nessuna pubblicità;</string>
     <string name="new_reminder">Nuovo promemoria</string>
     <string name="light">Luce</string>
     <string name="system_default">Default del sistema</string>

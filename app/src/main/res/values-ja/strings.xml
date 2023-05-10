@@ -85,7 +85,6 @@
     <string name="trash">ゴミ</string>
     <string name="feedback">フィードバック</string>
     <string name="help">助けて</string>
-    <string name="buy_pro">PRO購入</string>
     <string name="edit">編集</string>
     <string name="delete">削除</string>
     <string name="no_notes">ノートはありません</string>
@@ -242,12 +241,6 @@
     <string name="disabled">オフ</string>
     <string name="enabled4">使用可能</string>
     <string name="choose_time">時間を選択してください</string>
-    <string name="pro_advantages">PROの利点：</string>
-    <string name="buy">購入</string>
-    <string name="different_settings_for_birthdays">- 誕生日のためのさまざまな設定。</string>
-    <string name="_led_notification_">-  LED通知を。</string>
-    <string name="led_color_for_each_reminder">- 各アラームの色をLED。</string>
-    <string name="styles_for_marker">- マーカーのための16のスタイル。</string>
     <string name="delete_this_list">このリストを削除しますか？</string>
     <string name="delete_list">削除リスト</string>
     <string name="new_task">新しい仕事</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">バックアップ設定フラグ</string>
     <string name="automatically_sync">自動同期</string>
     <string name="sync_flags">同期フラグ</string>
-    <string name="no_ads">広告がありません。</string>
     <string name="new_reminder">新しいお知らせ</string>
     <string name="light">光</string>
     <string name="system_default">システムのデフォルト</string>

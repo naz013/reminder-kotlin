@@ -85,7 +85,6 @@
     <string name="trash">Gunoi</string>
     <string name="feedback">Parere</string>
     <string name="help">Ajutor</string>
-    <string name="buy_pro">Vand PRO</string>
     <string name="edit">Edita</string>
     <string name="delete">Ștergere</string>
     <string name="no_notes">Nu există note</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Oprit</string>
     <string name="enabled4">Activat</string>
     <string name="choose_time">Selectați perioada</string>
-    <string name="pro_advantages">Avantajele PRO:</string>
-    <string name="buy">A cumpara</string>
-    <string name="different_settings_for_birthdays">- Diferite setări pentru zilele de naștere;</string>
-    <string name="_led_notification_">- Notificare LED;</string>
-    <string name="led_color_for_each_reminder">- Culoare pentru fiecare memento cu LED-uri;</string>
-    <string name="styles_for_marker">- 16 stiluri pentru markerul;</string>
     <string name="delete_this_list">Șterge această listă?</string>
     <string name="delete_list">Ștergeţi lista</string>
     <string name="new_task">Sarcina noua</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Backup setările steaguri</string>
     <string name="automatically_sync">Sincronizați automat</string>
     <string name="sync_flags">Sincronizați steagurile</string>
-    <string name="no_ads">Nicio publicitate;</string>
     <string name="new_reminder">Mesaj nou</string>
     <string name="light">Ușoară</string>
     <string name="system_default">Defectiune de sistem</string>
