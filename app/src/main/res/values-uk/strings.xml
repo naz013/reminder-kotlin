@@ -85,7 +85,6 @@
     <string name="trash">Кошик</string>
     <string name="feedback">Зворотний зв\'язок</string>
     <string name="help">Допомога</string>
-    <string name="buy_pro">Купити PRO</string>
     <string name="edit">Змінити</string>
     <string name="delete">Видалити</string>
     <string name="no_notes">Немає нотаток</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Вимкнено</string>
     <string name="enabled4">Включено</string>
     <string name="choose_time">Виберіть час</string>
-    <string name="pro_advantages">Переваги ПРО:</string>
-    <string name="buy">Купити</string>
-    <string name="different_settings_for_birthdays">- Різні налаштування для днів народжень;</string>
-    <string name="_led_notification_">- Світлодіодні повідомлення;</string>
-    <string name="led_color_for_each_reminder">- LED колір для кожного нагадування;</string>
-    <string name="styles_for_marker">- 16 стилів для маркера;</string>
     <string name="delete_this_list">Видалити цей список?</string>
     <string name="delete_list">Видалити список</string>
     <string name="new_task">Нове завдання</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Налаштування параметрів резервного копіювання</string>
     <string name="automatically_sync">Автоматично синхронізувати</string>
     <string name="sync_flags">Прапори синхронізації</string>
-    <string name="no_ads">Без реклами;</string>
     <string name="new_reminder">Нове нагадування</string>
     <string name="light">Світла</string>
     <string name="system_default">Система за замовчуванням</string>

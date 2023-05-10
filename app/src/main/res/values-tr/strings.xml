@@ -85,7 +85,6 @@
     <string name="trash">Çöp</string>
     <string name="feedback">Geribesleme</string>
     <string name="help">Yardım Edin</string>
-    <string name="buy_pro">Satın PRO</string>
     <string name="edit">Düzenleme</string>
     <string name="delete">Silmek</string>
     <string name="no_notes">Hiçbir notlar</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Kapalı</string>
     <string name="enabled4">Etkin</string>
     <string name="choose_time">Saati seçin</string>
-    <string name="pro_advantages">PRO Avantajları:</string>
-    <string name="buy">Satın almak</string>
-    <string name="different_settings_for_birthdays">- Doğum günü için farklı ayarlar;</string>
-    <string name="_led_notification_">- LED bildirimi;</string>
-    <string name="led_color_for_each_reminder">- Her hatırlatıcı renkli LED;</string>
-    <string name="styles_for_marker">- Işaretleyici için 16 stilleri;</string>
     <string name="delete_this_list">Bu listeyi sil?</string>
     <string name="delete_list">Listeyi sil</string>
     <string name="new_task">Yeni görev</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Yedekleme ayarları bayrakları</string>
     <string name="automatically_sync">Otomatik olarak senkronize et</string>
     <string name="sync_flags">Bayrakları senkronize et</string>
-    <string name="no_ads">Reklam Yok;</string>
     <string name="new_reminder">Yeni hatırlatma</string>
     <string name="light">ışık</string>
     <string name="system_default">Sistem varsayılanı</string>

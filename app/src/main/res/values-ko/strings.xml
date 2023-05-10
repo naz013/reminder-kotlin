@@ -85,7 +85,6 @@
     <string name="trash">폐물</string>
     <string name="feedback">피드백</string>
     <string name="help">도움</string>
-    <string name="buy_pro">PRO 구매</string>
     <string name="edit">편집하다</string>
     <string name="delete">지우다</string>
     <string name="no_notes">메모 없음</string>
@@ -242,12 +241,6 @@
     <string name="disabled">껐다</string>
     <string name="enabled4">사용</string>
     <string name="choose_time">시간 선택</string>
-    <string name="pro_advantages">PRO의 장점 :</string>
-    <string name="buy">사다</string>
-    <string name="different_settings_for_birthdays">- 생일에 대한 다른 설정;</string>
-    <string name="_led_notification_">- LED 알림;</string>
-    <string name="led_color_for_each_reminder">- 각 알림에 대한 LED 색상;</string>
-    <string name="styles_for_marker">- 마커 용 16 가지 스타일;</string>
     <string name="delete_this_list">이 목록을 삭제 하시겠습니까?</string>
     <string name="delete_list">목록 삭제</string>
     <string name="new_task">새 작업</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">백업 설정 플래그</string>
     <string name="automatically_sync">자동 동기화</string>
     <string name="sync_flags">동기화 플래그</string>
-    <string name="no_ads">광고 없음;</string>
     <string name="new_reminder">새로운 알리미</string>
     <string name="light">빛</string>
     <string name="system_default">시스템 기본값</string>

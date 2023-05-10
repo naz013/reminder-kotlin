@@ -85,7 +85,6 @@
     <string name="trash">कचरा</string>
     <string name="feedback">प्रतिक्रिया</string>
     <string name="help">मदद</string>
-    <string name="buy_pro">खरीदारी के समर्थक</string>
     <string name="edit">संपादित करें</string>
     <string name="delete">मिटाना</string>
     <string name="no_notes">कोई नोट</string>
@@ -242,12 +241,6 @@
     <string name="disabled">कामोत्तेजित</string>
     <string name="enabled4">सक्षम</string>
     <string name="choose_time">समय चुनें</string>
-    <string name="pro_advantages">प्रो के लाभ:</string>
-    <string name="buy">खरीदें</string>
-    <string name="different_settings_for_birthdays">- जन्मदिन के लिए विभिन्न सेटिंग्स;</string>
-    <string name="_led_notification_">- एलईडी अधिसूचना;</string>
-    <string name="led_color_for_each_reminder">- एलईडी प्रत्येक याद दिलाने के लिए रंग;</string>
-    <string name="styles_for_marker">- मार्कर के लिए 16 शैलियों;</string>
     <string name="delete_this_list">इस सूची मिटाना चाहते हैं?</string>
     <string name="delete_list">सूची को नष्ट</string>
     <string name="new_task">नया कार्य</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">बैकअप सेटिंग्स झंडे</string>
     <string name="automatically_sync">स्वचालित रूप से सिंक</string>
     <string name="sync_flags">सिंक ध्वज</string>
-    <string name="no_ads">कोई विज्ञापन नहीं;</string>
     <string name="new_reminder">नई याद दिलाते हैं</string>
     <string name="light">रोशनी</string>
     <string name="system_default">सिस्टम डिफ़ॉल्ट</string>

@@ -85,7 +85,6 @@
     <string name="trash">Odpadky</string>
     <string name="feedback">Zpětná vazba</string>
     <string name="help">Pomoc</string>
-    <string name="buy_pro">Koupit PRO</string>
     <string name="edit">Editovat</string>
     <string name="delete">Vymazat</string>
     <string name="no_notes">Žádné poznámky</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Vypnutý</string>
     <string name="enabled4">Povoleno</string>
     <string name="choose_time">Vyberte si čas</string>
-    <string name="pro_advantages">Výhody PRO:</string>
-    <string name="buy">Koupit</string>
-    <string name="different_settings_for_birthdays">- Různé nastavení pro narozeniny;</string>
-    <string name="_led_notification_">- LED oznámení;</string>
-    <string name="led_color_for_each_reminder">- LED barvu pro každou upomínku;</string>
-    <string name="styles_for_marker">- 16 styly pro značku;</string>
     <string name="delete_this_list">Smazat tento seznam?</string>
     <string name="delete_list">Smazat seznam</string>
     <string name="new_task">Nový úkol</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Záložky nastavení zálohování</string>
     <string name="automatically_sync">Automatická synchronizace</string>
     <string name="sync_flags">Synchronizovat příznaky</string>
-    <string name="no_ads">Žádná reklama;</string>
     <string name="new_reminder">Nová upomínka</string>
     <string name="light">Světlo</string>
     <string name="system_default">Výchozí systém</string>

@@ -42,6 +42,19 @@
         </LinearLayout>
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/buyProBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackground"
+            android:padding="8dp"
+            android:text="@string/pro_version"
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:textColor="?colorTertiary"
+            android:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/sale_badge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,14 +207,6 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/other"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/buySettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/buy_pro"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

@@ -85,7 +85,6 @@
     <string name="trash">废纸篓</string>
     <string name="feedback">反馈</string>
     <string name="help">帮助</string>
-    <string name="buy_pro">购买专业版</string>
     <string name="edit">编辑</string>
     <string name="delete">删除</string>
     <string name="no_notes">无笔记</string>
@@ -242,12 +241,6 @@
     <string name="disabled">已关闭</string>
     <string name="enabled4">已启用</string>
     <string name="choose_time">选择时间</string>
-    <string name="pro_advantages">专业版优势：</string>
-    <string name="buy">购买</string>
-    <string name="different_settings_for_birthdays">- 生日可以有不同设置；</string>
-    <string name="_led_notification_">- LED通知；</string>
-    <string name="led_color_for_each_reminder">- 每个提醒可以单独设置LED颜色；</string>
-    <string name="styles_for_marker">- 16种样式的标记；</string>
     <string name="delete_this_list">删除此列表？</string>
     <string name="delete_list">删除列表</string>
     <string name="new_task">新建任务</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">备份设置标志</string>
     <string name="automatically_sync">自动同步</string>
     <string name="sync_flags">同步标志</string>
-    <string name="no_ads">没有广告;</string>
     <string name="new_reminder">新提醒</string>
     <string name="light">光</string>
     <string name="system_default">系统默认</string>

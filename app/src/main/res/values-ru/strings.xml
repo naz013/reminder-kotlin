@@ -85,7 +85,6 @@
     <string name="trash">Корзина</string>
     <string name="feedback">Обратная связь</string>
     <string name="help">Помощь</string>
-    <string name="buy_pro">Купить PRO</string>
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="no_notes">Нет заметок</string>
@@ -242,12 +241,6 @@
     <string name="disabled">Выключен</string>
     <string name="enabled4">Включено</string>
     <string name="choose_time">Выберите время</string>
-    <string name="pro_advantages">Преимущества PRO:</string>
-    <string name="buy">Купить</string>
-    <string name="different_settings_for_birthdays">- Различные настройки для дней рождений;</string>
-    <string name="_led_notification_">- Светодиодные уведомления;</string>
-    <string name="led_color_for_each_reminder">- LED цвет для каждого напоминания;</string>
-    <string name="styles_for_marker">- 16 стилей для маркера;</string>
     <string name="delete_this_list">Удалить этот список?</string>
     <string name="delete_list">Удалить список</string>
     <string name="new_task">Новое задание</string>
@@ -599,7 +592,6 @@
     <string name="backup_flags">Флаги настроек резервного копирования</string>
     <string name="automatically_sync">Автоматически синхронизировать</string>
     <string name="sync_flags">Флаги настроек синхронизации</string>
-    <string name="no_ads">Без рекламы;</string>
     <string name="new_reminder">Новое напоминание</string>
     <string name="light">Светлая</string>
     <string name="system_default">Системные установки по умолчанию</string>
