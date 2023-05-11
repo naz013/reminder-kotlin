@@ -59,19 +59,15 @@
     <string name="color">रंग</string>
     <string name="files">फ़ाइलें</string>
     <string name="delete_all">सभी हटा दो</string>
-    <string name="connect">कनेक्ट</string>
     <string name="search">खोज</string>
     <string name="text_size">टेक्स्ट का साइज़</string>
     <string name="exclusion">बहिष्करण</string>
     <string name="hours">घंटे</string>
     <string name="ok">ठीक है</string>
     <string name="cancel">रद्द करना</string>
-    <string name="type">टाइप</string>
     <string name="message">संदेश</string>
     <string name="date_and_time">दिनांक और समय</string>
     <string name="tomorrow">कल</string>
-    <string name="next_business_day">अगला कारोबारी दिन</string>
-    <string name="after">के बाद</string>
     <string name="time">टाइम</string>
     <string name="google_tasks">गूगल टास्क</string>
     <string name="add_to_calendar">कैलेंडर में जोड़ें</string>
@@ -80,7 +76,6 @@
     <string name="tasks">कार्य</string>
     <string name="groups">समूह</string>
     <string name="places">स्थान</string>
-    <string name="messages">संदेश</string>
     <string name="backup_files">बैकअप फ़ाइलें</string>
     <string name="trash">कचरा</string>
     <string name="feedback">प्रतिक्रिया</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">क्लाउड सेवाएं</string>
     <string name="clean">शुद्ध आंकड़े</string>
     <string name="backup_settings">सेटिंग्स की बैकअप बनाएँ</string>
-    <string name="missed_call_reminder">के बारे में चूक कॉल याद दिलाएं</string>
-    <string name="quick_sms">त्वरित एसएमएस</string>
-    <string name="show_quick_answer_window">कॉल अस्वीकृति के बाद जवाब खिड़की दिखाएँ</string>
-    <string name="after_call_reminder">कॉल के बाद अनुस्मारक</string>
     <string name="_24_hour_time_format">24 घंटे का समय स्वरूप</string>
     <string name="smart_fold">बुद्धिमान तह</string>
     <string name="disable_folding_reminder_window">अनुस्मारक विंडो के बुद्धिमान तह को अक्षम करें</string>
@@ -204,7 +195,14 @@
     <string name="location">स्थान</string>
     <string name="day_of_month">महीने का दिन</string>
     <string name="shopping_list">खरीदारी की सूची</string>
-    <string name="radius_x_meters">"त्रिज्या %s मीटर"</string>
+    <string name="radius_x_m">"त्रिज्या %s मी"</string>
+    <string name="radius_x_ft">"त्रिज्या %s फुट"</string>
+    <string name="radius_x_km">"त्रिज्या %s किमी"</string>
+    <string name="radius_x_mi">"त्रिज्या %s मील"</string>
+    <string name="dist_x_m">"दूरी %s मि"</string>
+    <string name="dist_x_ft">"दूरी %s फ़ीट"</string>
+    <string name="dist_x_km">"दूरी %s किमी"</string>
+    <string name="dist_x_mi">"दूरी %s मि"</string>
     <string name="shopping_list_is_empty">खरीदारी की सूची खाली है!</string>
     <string name="you_dont_select_any_day">आप एक दिन का चयन नहीं!</string>
     <string name="you_dont_select_application">आप आवेदन का चयन नहीं करते!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">कार्य हटाएँ</string>
     <string name="move_to_another_list">एक और सूची में ले जाएँ</string>
     <string name="edit_birthday">जन्मदिन संपादित करें</string>
-    <string name="disconnect">डिस्कनेक्ट</string>
     <string name="you_dont_select_any_calendar">आप एक कैलेंडर का चयन नहीं करते!</string>
     <string name="please_wait">कृपया प्रतीक्षा करें…</string>
     <string name="no_events_found">कोई इवेंट नहीं!</string>
     <string name="events_found">घटना (s) पाया</string>
     <string name="x_minutes">"%s मिनट"</string>
     <string name="x_hours">"%s घंटे"</string>
-    <string name="last_called">अंतिम में बुलाया</string>
     <string name="x_years">"%s साल"</string>
     <string name="x_days">"%s दिन"</string>
     <string name="reminder_snoozed">अनुस्मारक snoozed</string>
     <string name="choose_application">आवेदन चुनें</string>
-    <string name="no_messages">कोई संदेश नहीं</string>
     <string name="birthday">जन्मदिन</string>
     <string name="permanent">स्थायी</string>
     <string name="today">आज</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">माइक्रोफ़ोन तक पहुंचने के लिए, एप्लिकेशन को रिकॉर्ड ऑडियो अनुमति की आवश्यकता होती है</string>
     <string name="get_accounts">खातों जाओ</string>
     <string name="get_accounts_explanation">लॉगिन करने के लिए, एप्लिकेशन को खाते की अनुमति प्राप्त करने की आवश्यकता होती है</string>
-    <string name="read_phone_state">पढ़ें फ़ोन की स्थिति</string>
-    <string name="read_phone_state_explanation">छूटी हुई कॉल का पता लगाने के लिए, एप्लिकेशन को फ़ोन स्थिति पढ़ने की अनुमति की आवश्यकता होती है</string>
     <string name="read_contacts">संपर्क पढ़ें</string>
     <string name="read_contacts_explanation">अपने संपर्कों से नंबर लेने के लिए, एप्लिकेशन को संपर्क पढ़ने की अनुमति की आवश्यकता होती है</string>
     <string name="read_calendar">पढ़ें कैलेंडर</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s सेकंड"</string>
     <string name="say_something">कुछ कहें</string>
     <string name="no_recognizer_found">भाषण मान्यता प्रणाली नहीं मिला!</string>
-    <string name="same_group">एक ही समूह!</string>
     <string name="change_group">समूह बदलें</string>
     <string name="move_to_trash">रद्दी में डालें</string>
     <string name="all_files_removed">सभी फाइलों को हटा दिया</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">कचरे को मंजूरी दे दी</string>
     <string name="trash_is_empty">कचरा खाली है</string>
     <string name="reminder_is_outdated">अनुस्मारक पुरानी हो चुकी है, यह पहली बार संपादित</string>
-    <string name="reminder_created">अनुस्मारक बनाया</string>
-    <string name="reminder_created_on">अनुस्मारक पर बनाया गया</string>
     <string name="everyday">हर दिन</string>
     <string name="reminder">अनुस्मारक</string>
     <string name="export_and_sync">निर्यात और सिंक</string>
-    <string name="additional">अतिरिक्त</string>
     <string name="other">अन्य</string>
     <string name="general">सामान्य</string>
     <string name="xW">"%s डब्ल्यू"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">खोजें जगह है …</string>
     <string name="add_all">सभी को जोड़ो</string>
     <string name="no_places_found">जगह नहीं पाया!</string>
-    <string name="additional_reminder">अनुस्मारक के अतिरिक्त प्रकार - स्थान</string>
     <string name="add_reminder_menu">अनुस्मारक जोड़े</string>
     <string name="task_summary_is_empty">टास्क सारांश खाली है!</string>
     <string name="x_day">%s दिन</string>
@@ -358,7 +346,6 @@
     <string name="refresh">ताज़ा करना</string>
     <string name="move_forward">आगे बढ़ो</string>
     <string name="move_backward">वापस आना</string>
-    <string name="create_task">कार्य बनाएँ</string>
     <string name="could_not_launch_market">बाजार में लांच नहीं कर सका</string>
     <string name="all_permissions_are_enabled">सभी अनुमतियाँ सक्षम हैं</string>
     <string name="delete_this_reminder">इस अनुस्मारक मिटाना चाहते हैं?</string>
@@ -369,14 +356,12 @@
     <string name="dark">अंधेरा</string>
     <string name="x_out_of_x" formatted="false">%d बाहर के %d</string>
     <string name="syncing_places">स्थानों सिंक्रनाइज़ किए जा रहे …</string>
-    <string name="syncing_templates">संदेश टेम्पलेट्स सिंक्रनाइज़ किए जा रहे …</string>
     <string name="work">काम</string>
     <string name="personal">निजी</string>
     <string name="auto_call">ऑटो कॉल</string>
     <string name="enable_making_phone_calls_automatically">स्वचालित रूप से फोन कॉल करने के लिए सक्षम करें</string>
     <string name="update_available">अपडेट उपलब्ध</string>
     <string name="would_you_like_to_install_tts">आप पाठ से वाक् इंजन स्थापित करने के लिए करना चाहते हैं?</string>
-    <string name="install">इंस्टॉल करें</string>
     <string name="all_reminders_were_disabled">सभी अनुस्मारक अक्षम हो जाते हैं</string>
     <string name="log_in">लॉग इन करें</string>
     <string name="failed_to_login">लॉगिन करने में विफल</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">पूर्ण स्क्रीन</string>
     <string name="acc_contact_photo">संपर्क का फोटो</string>
     <string name="acc_button_ok">ठीक</string>
-    <string name="acc_button_cancel">रद्द करना</string>
     <string name="acc_button_snooze">दिन में झपकी लेना</string>
     <string name="acc_button_snooze_for">के लिए स्नूज़</string>
     <string name="acc_button_move_to_status_bar">स्थिति बार पर जाएं</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">अन्य सूचनात्मक सूचनाओं के लिए चैनल</string>
     <string name="add_note">नोट जोड़े</string>
     <string name="yearly">हर साल</string>
-    <string name="attach_file">फ़ाइल जोड़ें</string>
     <string name="location_tracking_service_running">स्थान ट्रैकिंग सेवा चल रही है</string>
     <string name="application_language">एप्लिकेशन भाषा</string>
     <string name="cant_find_app_for_that_file_type">इस फ़ाइल को खोलने वाला एप्लिकेशन नहीं मिल सकता है</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">ईवेंट सूचना को न दोहराएं</string>
     <string name="repeat_event_notification_when_no_action">कोई उपयोगकर्ता कार्रवाई नहीं होने पर घटना की सूचना दोहराएं</string>
     <string name="allow_folding_event_window">तह घटना खिड़की की अनुमति दें</string>
-    <string name="create_reminders_for_missed_calls">मिस्ड कॉल के बारे में अनुस्मारक बनाएँ</string>
-    <string name="show_event_screen_after_phone_call">फ़ोन कॉल के बाद ईवेंट निर्माण स्क्रीन दिखाएं</string>
     <string name="last_color">अंतिम रंग</string>
     <string name="do_not_remember_last_color">आखिरी इस्तेमाल किया रंग याद नहीं है</string>
     <string name="export">निर्यात</string>
@@ -502,13 +483,9 @@
     <string name="new_place">नयी जगह</string>
     <string name="edit_place">जगह संपादित करें</string>
     <string name="select_place">जगह का चयन करें</string>
-    <string name="create_template">टेम्पलेट बनाएँ</string>
-    <string name="edit_template">टेम्पलेट संपादित करें</string>
     <string name="move_to_place">स्थान पर ले जाएं</string>
     <string name="create_group">समूह बनाएँ</string>
     <string name="make_default">डिफ़ॉल्ट बनाना</string>
-    <string name="do_not_create_reminder_for_missed_calls">मिस्ड कॉल के लिए अनुस्मारक न बनाएं</string>
-    <string name="do_not_show_sms_screen_after_call">रिजेक्टेड कॉल के बाद एसएमएस स्क्रीन न दिखाएं</string>
     <string name="recent_places">हाल के स्थान</string>
     <string name="found_places">जगह मिली</string>
     <string name="repeat_every">हर बार दोहराएं</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">रिमाइंडर न बनाएं</string>
     <string name="do_not_show_in_home_screen_widget">होम स्क्रीन विजेट में न दिखाएं</string>
     <string name="do_not_show_permanent_notification">स्थायी अधिसूचना न दिखाएं</string>
-    <string name="do_not_show_after_calls">कॉल के बाद ईवेंट निर्माण स्क्रीन न दिखाएं</string>
     <string name="silent_channel">मूक चैनल</string>
     <string name="channel_for_silent_notifiations">मौन सूचनाओं के लिए चैनल</string>
     <string name="sync_data_now">अब डेटा सिंक करें</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">जन्मदिन के बारे में याद न दिलाएं</string>
     <string name="with_reminder">रिमाइंडर के साथ</string>
     <string name="change_pin">पिन बदलें</string>
-    <string name="acc_resend_message">संदेश को फिर से भेजें</string>
     <string name="backup_my_data">मेरे डेटा के कॉपी रखें</string>
-    <string name="missed_call">मिस कॉल</string>
-    <string name="select_date_in_future">भविष्य में तारीख का चयन करें</string>
     <string name="backup_data_now">अब डेटा का बैकअप बनाएं</string>
     <string name="portuguese">पुर्तगाली</string>
     <string name="download">डाउनलोड</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">के लिए केवल अनलॉक स्क्रीन की अनुमति दें</string>
     <string name="import_file">फ़ाइल आयात करें</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play सेवाएँ नहीं मिलीं, कुछ कार्यक्षमता अक्षम है!</string>
-    <string name="none">कोई नहीं</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">अपने अनुस्मारक को सुरक्षित रखने के लिए डेटा बैकअप सक्षम करें</string>
     <string name="x_weeks">%s सप्ताह</string>
     <string name="are_you_sure">क्या आपको यकीन है?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक</string>
     <string name="unsupported_file_format">असमर्थित फ़ाइल स्वरूप</string>
     <string name="same_place_message">आवेदन में समान पहचानकर्ता के साथ स्थान पाया गया। दोनों को रखें या वर्तमान को बदलें?</string>
-    <string name="same_template_message">एक ही पहचानकर्ता के साथ एसएमएस टेम्पलेट आवेदन में पाया गया था। दोनों को रखें या वर्तमान को बदलें?</string>
     <string name="same_group_message">आवेदन में पाया गया समान पहचानकर्ता वाला समूह। दोनों को रखें या वर्तमान को बदलें?</string>
     <string name="same_reminder_message">आवेदन में समान पहचानकर्ता के साथ अनुस्मारक मिला। दोनों को रखें या वर्तमान को बदलें?</string>
     <string name="same_note_message">आवेदन में पाए गए समान पहचानकर्ता के साथ नोट करें। दोनों को रखें या वर्तमान को बदलें?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">फोन कॉल और एस.एम.एस.</string>
     <string name="choose_ringtone">रिंगटोन चुनें</string>
     <string name="select_ringtone_for_notifications">सूचनाओं के लिए रिंगटोन चुनें</string>
-    <string name="try_again">पुनः प्रयास करें</string>
     <string name="enter_your_pin">अपना पिन दर्ज करो?</string>
     <string name="enter_pin">पिन दर्ज करें</string>
     <string name="prompt_info_subtitle">बायोमेट्रिक प्रमाणीकरण</string>
     <string name="prompt_info_description">बायोमेट्रिक प्रमाणीकरण के साथ आगे बढ़ें</string>
-    <string name="title_feature_birthdays">जनमदि की</string>
     <string name="bg_location_message">जब आप चयनित स्थान के निकट होंगे तो आपको पृष्ठभूमि स्थान को एप्लिकेशन को सूचित करने की अनुमति देनी होगी। \nयह ऐप स्थान डेटा एकत्र करता है ताकि ऐप बंद होने या उपयोग में न होने पर भी अनुस्मारक को सक्षम किया जा सके। \nस्थान डेटा को केवल वहीं एक्सेस किया जाता है जहां पर है कम से कम एक सक्रिय स्थान अनुस्मारक।</string>
     <string name="deleted">हटाए गए</string>
     <string name="post_notification">अधिसूचना पोस्ट करें</string>
@@ -665,7 +634,6 @@
     <string name="group">समूह</string>
     <string name="configure">कॉन्फ़िगर</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">रिमाइंडर निर्माण स्क्रीन पर कुछ पैरामीटर सक्षम या अक्षम करें</string>
-    <string name="tell_about_event">घटनाओं के बारे में बताएं</string>
     <string name="terms_and_conditions">नियम और शर्तें</string>
     <string name="acc_clear_search">स्पष्ट खोज</string>
     <string name="acc_switch_to_map">मानचित्र पर स्विच करें</string>
@@ -685,4 +653,16 @@
     <string name="analytics">एनालिटिक्स</string>
     <string name="collecting_of_app_analytics_is_disabled">ऐप एनालिटिक्स का संग्रह अक्षम है</string>
     <string name="collecting_of_app_analytics_is_enabled">ऐप एनालिटिक्स का संग्रह सक्षम है</string>
+    <string name="not_born">पैदा नहीं हुआ</string>
+    <string name="metric_units">मीट्रिक इकाइयां</string>
+    <string name="use_imperial_system">इंपीरियल सिस्टम का प्रयोग करें</string>
+    <string name="use_metric_system">मीट्रिक प्रणाली का प्रयोग करें</string>
+    <string name="pro_version">प्रो संस्करण</string>
+    <string name="pro_advantages">प्रो के लाभ:</string>
+    <string name="pro_buy">खरीदारी के समर्थक</string>
+    <string name="pro_no_ads">- कोई विज्ञापन नहीं</string>
+    <string name="pro_different_settings_for_birthdays">- जन्मदिन के लिए अलग सेटिंग्स</string>
+    <string name="pro_led_notification">- एलईडी अधिसूचना</string>
+    <string name="pro_led_color_for_each_reminder">- एलईडी प्रत्येक याद दिलाने के लिए रंग</string>
+    <string name="pro_styles_for_marker">- मार्कर के लिए 16 शैलियों</string>
 </resources>

@@ -59,19 +59,15 @@
     <string name="color">Color</string>
     <string name="files">Files</string>
     <string name="delete_all">Delete all</string>
-    <string name="connect">Connect</string>
     <string name="search">Search</string>
     <string name="text_size">Text size</string>
     <string name="exclusion">Exclusion</string>
     <string name="hours">Hours</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="type">Type</string>
     <string name="message">Message</string>
     <string name="date_and_time">Date and time</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="next_business_day">Next business day</string>
-    <string name="after">After</string>
     <string name="time">Time</string>
     <string name="google_tasks">Google Tasks</string>
     <string name="add_to_calendar">Add to Calendar</string>
@@ -80,7 +76,6 @@
     <string name="tasks">Tasks</string>
     <string name="groups">Groups</string>
     <string name="places">Places</string>
-    <string name="messages">Messages</string>
     <string name="backup_files">Backup files</string>
     <string name="trash">Trash</string>
     <string name="feedback">Feedback</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">Cloud services</string>
     <string name="clean">Clear data</string>
     <string name="backup_settings">Create backup of settings</string>
-    <string name="missed_call_reminder">Remind about missed calls</string>
-    <string name="quick_sms">Quick SMS</string>
-    <string name="show_quick_answer_window">Show answer window after call rejection</string>
-    <string name="after_call_reminder">Reminder after call</string>
     <string name="_24_hour_time_format">24 hour</string>
     <string name="smart_fold">Intelligent folding</string>
     <string name="disable_folding_reminder_window">Disable intelligent folding of reminder window</string>
@@ -204,7 +195,6 @@
     <string name="location">Location</string>
     <string name="day_of_month">Day of month</string>
     <string name="shopping_list">Shopping list</string>
-    <string name="radius_x_meters">"Radius %s meters"</string>
     <string name="radius_x_m">"Radius %s m"</string>
     <string name="radius_x_ft">"Radius %s ft"</string>
     <string name="radius_x_km">"Radius %s km"</string>
@@ -262,19 +252,16 @@
     <string name="delete_task">Delete task</string>
     <string name="move_to_another_list">Move to another list</string>
     <string name="edit_birthday">Edit birthday</string>
-    <string name="disconnect">Disconnect</string>
     <string name="you_dont_select_any_calendar">You don\'t select a calendar!</string>
     <string name="please_wait">Please wait...</string>
     <string name="no_events_found">No events found!</string>
     <string name="events_found">event(s) found</string>
     <string name="x_minutes">"%s minutes"</string>
     <string name="x_hours">"%s hours"</string>
-    <string name="last_called">Last called at</string>
     <string name="x_years">"%s years"</string>
     <string name="x_days">"%s days"</string>
     <string name="reminder_snoozed">Reminder snoozed</string>
     <string name="choose_application">Choose application</string>
-    <string name="no_messages">No messages</string>
     <string name="birthday">Birthday</string>
     <string name="permanent">Permanent</string>
     <string name="today">Today</string>
@@ -291,8 +278,6 @@
     <string name="record_audio_explanation">To access to microphone, application requires Record Audio permission</string>
     <string name="get_accounts">Get accounts</string>
     <string name="get_accounts_explanation">To login, application requires Get Accounts permission</string>
-    <string name="read_phone_state">Read phone state</string>
-    <string name="read_phone_state_explanation">To detect missed calls, application requires Read phone state permission</string>
     <string name="read_contacts">Read contacts</string>
     <string name="read_contacts_explanation">To pick number from your contacts, application require Read Contacts permission</string>
     <string name="read_calendar">Read calendar</string>
@@ -306,7 +291,6 @@
     <string name="x_seconds">"%s seconds"</string>
     <string name="say_something">Say something</string>
     <string name="no_recognizer_found">Speech recognition system not found!</string>
-    <string name="same_group">Same group!</string>
     <string name="change_group">Change group</string>
     <string name="move_to_trash">Move to trash</string>
     <string name="all_files_removed">All files removed</string>
@@ -324,12 +308,9 @@
     <string name="trash_cleared">Trash cleared</string>
     <string name="trash_is_empty">Trash is empty</string>
     <string name="reminder_is_outdated">Reminder is outdated, edit it first</string>
-    <string name="reminder_created">Reminder created</string>
-    <string name="reminder_created_on">Reminder created on</string>
     <string name="everyday">Everyday</string>
     <string name="reminder">Reminder</string>
     <string name="export_and_sync">Export &amp; sync</string>
-    <string name="additional">Additional</string>
     <string name="other">Other</string>
     <string name="general">General</string>
     <string name="xW">"%sW"</string>
@@ -351,7 +332,6 @@
     <string name="search_place">Search place…</string>
     <string name="add_all">Add all</string>
     <string name="no_places_found">Place not found!</string>
-    <string name="additional_reminder">Additional type of reminder - Places</string>
     <string name="add_reminder_menu">Add reminder</string>
     <string name="task_summary_is_empty">Task summary is empty!</string>
     <string name="x_day">%s day</string>
@@ -366,7 +346,6 @@
     <string name="refresh">Refresh</string>
     <string name="move_forward">Move forward</string>
     <string name="move_backward">Return back</string>
-    <string name="create_task">Create task</string>
     <string name="could_not_launch_market">Couldn\'t launch market</string>
     <string name="all_permissions_are_enabled">All permissions are enabled</string>
     <string name="delete_this_reminder">Delete this reminder?</string>
@@ -378,14 +357,12 @@
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
     <string name="syncing_places">Syncing places...</string>
-    <string name="syncing_templates">Syncing message templates...</string>
     <string name="work">Work</string>
     <string name="personal">Personal</string>
     <string name="auto_call">Auto call</string>
     <string name="enable_making_phone_calls_automatically">Enable making phone calls automatically</string>
     <string name="update_available">Update available</string>
     <string name="would_you_like_to_install_tts">Would you like to install Text-to-Speech engine?</string>
-    <string name="install">Install</string>
     <string name="all_reminders_were_disabled">All reminders are disabled</string>
     <string name="log_in">Log In</string>
     <string name="failed_to_login">Failed to login</string>
@@ -408,7 +385,6 @@
     <string name="full_screen">Full screen</string>
     <string name="acc_contact_photo">Photo of the contact</string>
     <string name="acc_button_ok">OK</string>
-    <string name="acc_button_cancel">Cancel</string>
     <string name="acc_button_snooze">Snooze</string>
     <string name="acc_button_snooze_for">Snooze for</string>
     <string name="acc_button_move_to_status_bar">Move to Status bar</string>
@@ -432,7 +408,6 @@
     <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
     <string name="add_note">Add note</string>
     <string name="yearly">Annually</string>
-    <string name="attach_file">Attach file</string>
     <string name="location_tracking_service_running">Location tracking service running</string>
     <string name="application_language">Application language</string>
     <string name="cant_find_app_for_that_file_type">Can\'t find application that can open this file.</string>
@@ -488,8 +463,6 @@
     <string name="do_no_repeat_event_notification">Do not repeat event notification</string>
     <string name="repeat_event_notification_when_no_action">Repeat event notification when no user action</string>
     <string name="allow_folding_event_window">Allow folding event window</string>
-    <string name="create_reminders_for_missed_calls">Create reminders about missed calls</string>
-    <string name="show_event_screen_after_phone_call">Show event creation screen after phone call</string>
     <string name="last_color">Last color</string>
     <string name="do_not_remember_last_color">Do not remember last used color</string>
     <string name="export">Export</string>
@@ -511,13 +484,9 @@
     <string name="new_place">New place</string>
     <string name="edit_place">Edit place</string>
     <string name="select_place">Select place</string>
-    <string name="create_template">Create template</string>
-    <string name="edit_template">Edit template</string>
     <string name="move_to_place">Move to place</string>
     <string name="create_group">Create group</string>
     <string name="make_default">Make default</string>
-    <string name="do_not_create_reminder_for_missed_calls">Do not create reminder for missed calls</string>
-    <string name="do_not_show_sms_screen_after_call">Do not show SMS screen after rejected call</string>
     <string name="recent_places">recent places</string>
     <string name="found_places">found places</string>
     <string name="repeat_every">Repeat every</string>
@@ -532,7 +501,6 @@
     <string name="do_not_use_fingerprint_to_login">Do not use fingerprint to login</string>
     <string name="allow_fingerprint_login">Allow login with fingerprint</string>
     <string name="fingerprint">Fingerprint</string>
-    <string name="pin" translatable="false">PIN</string>
     <string name="repeat_pin">Repeat PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
     <string name="pin_not_match">PIN not match</string>
@@ -547,7 +515,6 @@
     <string name="do_not_create_reminder">Do not create reminder</string>
     <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
     <string name="do_not_show_permanent_notification">Do not show permanent notification</string>
-    <string name="do_not_show_after_calls">Do not show event creation screen after calls</string>
     <string name="silent_channel">Silent channel</string>
     <string name="channel_for_silent_notifiations">Channel for silent notifications</string>
     <string name="sync_data_now">Sync data now</string>
@@ -563,10 +530,7 @@
     <string name="do_not_remind_about_birthdays">Do not remind about birthdays</string>
     <string name="with_reminder">With reminder</string>
     <string name="change_pin">Change PIN</string>
-    <string name="acc_resend_message">Resend message</string>
     <string name="backup_my_data">Backup my data</string>
-    <string name="missed_call">Missed Call</string>
-    <string name="select_date_in_future">Select date in future</string>
     <string name="backup_data_now">Make backup of data now</string>
     <string name="portuguese">Portuguese</string>
     <string name="download">Download</string>
@@ -591,7 +555,6 @@
     <string name="allow_unlock_for_priority">Allow unlock screen only for</string>
     <string name="import_file">Import file</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services not found, some functionality is disabled!</string>
-    <string name="none">None</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Enable data backup to keep your reminders in safe</string>
     <string name="x_weeks">%s weeks</string>
     <string name="are_you_sure">Are you sure?</string>
@@ -622,7 +585,6 @@
     <string name="permanent_on_home">Permanent reminder on home screen</string>
     <string name="unsupported_file_format">Unsupported file format</string>
     <string name="same_place_message">Place with same ID was found in application. Keep both or replace current?</string>
-    <string name="same_template_message">SMS template with same ID was found in application. Keep both or replace current?</string>
     <string name="same_group_message">Group with same ID was found in application. Keep both or replace current?</string>
     <string name="same_reminder_message">Reminder with same ID was found in application. Keep both or replace current?</string>
     <string name="same_note_message">Note with same ID was found in application. Keep both or replace current?</string>
@@ -638,12 +600,10 @@
     <string name="phone_calls_and_sms">Phone calls and SMS</string>
     <string name="choose_ringtone">Choose ringtone</string>
     <string name="select_ringtone_for_notifications">Select ringtone for notifications</string>
-    <string name="try_again">Try again</string>
     <string name="enter_your_pin">Enter your PIN?</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="prompt_info_subtitle">Biometric authentication</string>
     <string name="prompt_info_description">Proceed with biometric authentication</string>
-    <string name="title_feature_birthdays">Birthdays</string>
     <string name="bg_location_message">You need to allow background location to notify the application when you will be near the selected location.\nThis app collects location data to enable reminders by location even when the app is closed or not in use.\nLocation data is accessed only where is at least one active location reminder.</string>
     <string name="deleted">Deleted</string>
     <string name="post_notification">Post Notification</string>
@@ -676,7 +636,6 @@
     <string name="group">Group</string>
     <string name="configure">Configure</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Enable or disable some parameters on Reminder creation screen</string>
-    <string name="tell_about_event">Tell about event</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="acc_clear_search">Clear search</string>
     <string name="acc_switch_to_map">Switch to map</string>

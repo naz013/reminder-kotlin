@@ -59,19 +59,15 @@
     <string name="color">颜色</string>
     <string name="files">文件</string>
     <string name="delete_all">删除全部</string>
-    <string name="connect">连接</string>
     <string name="search">搜索</string>
     <string name="text_size">文本大小</string>
     <string name="exclusion">排除时间</string>
     <string name="hours">小时</string>
     <string name="ok">好的</string>
     <string name="cancel">取消</string>
-    <string name="type">输入</string>
     <string name="message">信息</string>
     <string name="date_and_time">日期和时间</string>
     <string name="tomorrow">明天</string>
-    <string name="next_business_day">下一个工作日</string>
-    <string name="after">之后</string>
     <string name="time">时间</string>
     <string name="google_tasks">谷歌任务</string>
     <string name="add_to_calendar">添加到日历</string>
@@ -80,7 +76,6 @@
     <string name="tasks">任务</string>
     <string name="groups">分组</string>
     <string name="places">地点</string>
-    <string name="messages">信息</string>
     <string name="backup_files">备份文件</string>
     <string name="trash">废纸篓</string>
     <string name="feedback">反馈</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">云服务</string>
     <string name="clean">清除数据</string>
     <string name="backup_settings">创建设置的备份</string>
-    <string name="missed_call_reminder">未接电话提醒</string>
-    <string name="quick_sms">快速短信</string>
-    <string name="show_quick_answer_window">拒接来电后显示回复窗口</string>
-    <string name="after_call_reminder">通话后提醒</string>
     <string name="_24_hour_time_format">24小时时间格式</string>
     <string name="smart_fold">智能折叠</string>
     <string name="disable_folding_reminder_window">禁用智能折叠提醒窗口</string>
@@ -204,7 +195,14 @@
     <string name="location">位置</string>
     <string name="day_of_month">每月</string>
     <string name="shopping_list">购物清单</string>
-    <string name="radius_x_meters">"半径 %s 米"</string>
+    <string name="radius_x_m">"半徑 %s 米"</string>
+    <string name="radius_x_ft">"半徑 %s 英尺"</string>
+    <string name="radius_x_km">"半徑 %s 公里"</string>
+    <string name="radius_x_mi">"半徑 %s 英里"</string>
+    <string name="dist_x_m">"距離 %s 米"</string>
+    <string name="dist_x_ft">"距離 %s 英尺"</string>
+    <string name="dist_x_km">"距離 %s 公里"</string>
+    <string name="dist_x_mi">"距離 %s 英里"</string>
     <string name="shopping_list_is_empty">购物清单为空！</string>
     <string name="you_dont_select_any_day">未选择日期！</string>
     <string name="you_dont_select_application">未选择应用！</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">删除任务</string>
     <string name="move_to_another_list">移动到另一个列表</string>
     <string name="edit_birthday">编辑生日</string>
-    <string name="disconnect">断开连接</string>
     <string name="you_dont_select_any_calendar">未选择日历！</string>
     <string name="please_wait">请稍等...</string>
     <string name="no_events_found">未找到事件！</string>
     <string name="events_found">找到事件</string>
     <string name="x_minutes">"%s 分钟"</string>
     <string name="x_hours">"%s 小时"</string>
-    <string name="last_called">上次呼叫在</string>
     <string name="x_years">"%s 年"</string>
     <string name="x_days">"%s 天"</string>
     <string name="reminder_snoozed">提醒已延后</string>
     <string name="choose_application">选择应用</string>
-    <string name="no_messages">无信息</string>
     <string name="birthday">生日</string>
     <string name="permanent">固定</string>
     <string name="today">今天</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">要訪問麥克風，應用程序需要錄製音頻權限</string>
     <string name="get_accounts">获取账户</string>
     <string name="get_accounts_explanation">要登錄，應用程序需要獲取帳戶權限</string>
-    <string name="read_phone_state">读取手机状态</string>
-    <string name="read_phone_state_explanation">要檢測未接來電，應用程序需要讀取電話狀態權限</string>
     <string name="read_contacts">读取联系人</string>
     <string name="read_contacts_explanation">要從您的聯繫人中選擇號碼，應用程序需要讀取聯繫人權限</string>
     <string name="read_calendar">读取日历</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s 秒"</string>
     <string name="say_something">说点什么</string>
     <string name="no_recognizer_found">未找到语音识别系统！</string>
-    <string name="same_group">同一个分组！</string>
     <string name="change_group">更改分组</string>
     <string name="move_to_trash">移动到废纸篓</string>
     <string name="all_files_removed">全部文件已移除</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">废纸篓已清除</string>
     <string name="trash_is_empty">废纸篓为空</string>
     <string name="reminder_is_outdated">提醒已过期，请先编辑</string>
-    <string name="reminder_created">提醒已创建</string>
-    <string name="reminder_created_on">提醒创建于</string>
     <string name="everyday">每天</string>
     <string name="reminder">提醒</string>
     <string name="export_and_sync">导出和同步</string>
-    <string name="additional">额外</string>
     <string name="other">其他</string>
     <string name="general">通用</string>
     <string name="xW">"%s周"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">搜索地点...</string>
     <string name="add_all">添加全部</string>
     <string name="no_places_found">未找到地点！</string>
-    <string name="additional_reminder">提醒的额外类型-地点</string>
     <string name="add_reminder_menu">添加提醒</string>
     <string name="task_summary_is_empty">任务概要为空！</string>
     <string name="x_day">%s 天</string>
@@ -358,7 +346,6 @@
     <string name="refresh">刷新</string>
     <string name="move_forward">前移</string>
     <string name="move_backward">退回</string>
-    <string name="create_task">创建任务</string>
     <string name="could_not_launch_market">无法启动市场</string>
     <string name="all_permissions_are_enabled">所有权限已启用</string>
     <string name="delete_this_reminder">删除此提醒？</string>
@@ -369,14 +356,12 @@
     <string name="dark">暗</string>
     <string name="x_out_of_x" formatted="false">%d 超出 %d</string>
     <string name="syncing_places">正在同步地点...</string>
-    <string name="syncing_templates">正在同步信息模板...</string>
     <string name="work">工作</string>
     <string name="personal">个人</string>
     <string name="auto_call">自动拨打电话</string>
     <string name="enable_making_phone_calls_automatically">启用自动拨打电话</string>
     <string name="update_available">有可用更新</string>
     <string name="would_you_like_to_install_tts">需要安装文字转语音引擎吗？</string>
-    <string name="install">安装</string>
     <string name="all_reminders_were_disabled">全部提醒已禁用</string>
     <string name="log_in">登录</string>
     <string name="failed_to_login">登录失败</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">全屏</string>
     <string name="acc_contact_photo">联系人照片</string>
     <string name="acc_button_ok">好的</string>
-    <string name="acc_button_cancel">取消</string>
     <string name="acc_button_snooze">推迟</string>
     <string name="acc_button_snooze_for">推迟</string>
     <string name="acc_button_move_to_status_bar">移动到状态栏</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">其他消息通知的通道</string>
     <string name="add_note">添加笔记</string>
     <string name="yearly">每年</string>
-    <string name="attach_file">附加文件</string>
     <string name="location_tracking_service_running">位置跟踪服务正在运行</string>
     <string name="application_language">应用语言</string>
     <string name="cant_find_app_for_that_file_type">找不到能打开此文件的应用。</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">不要重复事件通知</string>
     <string name="repeat_event_notification_when_no_action">没有用户操作时重复事件通知</string>
     <string name="allow_folding_event_window">允许折叠事件窗口</string>
-    <string name="create_reminders_for_missed_calls">创建有关未接来电的提醒</string>
-    <string name="show_event_screen_after_phone_call">通过电话后显示活动创建屏幕</string>
     <string name="last_color">最后的颜色</string>
     <string name="do_not_remember_last_color">不记得上次使用的颜色了</string>
     <string name="export">出口</string>
@@ -502,13 +483,9 @@
     <string name="new_place">新的地方</string>
     <string name="edit_place">编辑地点</string>
     <string name="select_place">选择地点</string>
-    <string name="create_template">创建模板</string>
-    <string name="edit_template">编辑模板</string>
     <string name="move_to_place">搬到地方</string>
     <string name="create_group">创建组</string>
     <string name="make_default">使默认</string>
-    <string name="do_not_create_reminder_for_missed_calls">不要为未接来电创建提醒</string>
-    <string name="do_not_show_sms_screen_after_call">拒绝通话后不显示短信屏幕</string>
     <string name="recent_places">最近的地方</string>
     <string name="found_places">找到的地方</string>
     <string name="repeat_every">重复一遍</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">不要创建提醒</string>
     <string name="do_not_show_in_home_screen_widget">不要在主屏幕小部件中显示</string>
     <string name="do_not_show_permanent_notification">不要显示永久通知</string>
-    <string name="do_not_show_after_calls">调用后不要显示事件创建屏幕</string>
     <string name="silent_channel">沉默的渠道</string>
     <string name="channel_for_silent_notifiations">静音通知的频道</string>
     <string name="sync_data_now">立即同步数据</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">不要提醒生日</string>
     <string name="with_reminder">提醒</string>
     <string name="change_pin">更改PIN码</string>
-    <string name="acc_resend_message">重新发送消息</string>
     <string name="backup_my_data">备份我的数据</string>
-    <string name="missed_call">未接来电</string>
-    <string name="select_date_in_future">将来选择日期</string>
     <string name="backup_data_now">立即备份数据</string>
     <string name="portuguese">葡萄牙语</string>
     <string name="download">下载</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">仅允许解锁屏幕</string>
     <string name="import_file">导入文件</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">未找到Google Play服务，某些功能已停用！</string>
-    <string name="none">没有</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">启用数据备份以确保您的提醒安全</string>
     <string name="x_weeks">%s 周</string>
     <string name="are_you_sure">你确定吗？</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">主屏幕上的永久提醒</string>
     <string name="unsupported_file_format">不支持的文件格式</string>
     <string name="same_place_message">在申请中找到了具有相同标识符的地方。 保持两者还是更换电流？</string>
-    <string name="same_template_message">在应用程序中找到具有相同标识符的SMS模板。 保持两者还是更换电流？</string>
     <string name="same_group_message">在应用程序中找到相同标识符的组。 保持两者还是更换电流？</string>
     <string name="same_reminder_message">在应用程序中找到了具有相同标识符的提醒。 保持两者还是更换电流？</string>
     <string name="same_note_message">注意在应用程序中找到相同的标识符 保持两者还是更换电流？</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">电话和短信</string>
     <string name="choose_ringtone">选择铃声</string>
     <string name="select_ringtone_for_notifications">选择通知铃声</string>
-    <string name="try_again">再试一次</string>
     <string name="enter_your_pin">输入您的PIN码？</string>
     <string name="enter_pin">输入密码</string>
     <string name="prompt_info_subtitle">生物特征认证</string>
     <string name="prompt_info_description">进行生物特征认证</string>
-    <string name="title_feature_birthdays">生日</string>
     <string name="bg_location_message">您需要允許後台位置以在您接近所選位置時通知應用程序。\n此應用程序會收集位置數據以啟用按位置提醒，即使該應用程序已關閉或未在使用中也是如此。\n僅在位於的位置訪問位置數據 至少一個活動位置提醒。</string>
     <string name="deleted">已刪除</string>
     <string name="post_notification">發布通知</string>
@@ -665,7 +634,6 @@
     <string name="group">團體</string>
     <string name="configure">配置</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">在提醒創建屏幕上啟用或禁用某些參數</string>
-    <string name="tell_about_event">说出事件</string>
     <string name="terms_and_conditions">條款和條件</string>
     <string name="acc_clear_search">清除搜索</string>
     <string name="acc_switch_to_map">切換到地圖</string>
@@ -685,4 +653,16 @@
     <string name="analytics">分析</string>
     <string name="collecting_of_app_analytics_is_disabled">應用分析的收集被禁用</string>
     <string name="collecting_of_app_analytics_is_enabled">應用程序分析的收集已啟用</string>
+    <string name="not_born">未出生</string>
+    <string name="metric_units">公制單位</string>
+    <string name="use_imperial_system">使用英制單位</string>
+    <string name="use_metric_system">使用公制</string>
+    <string name="pro_version">PRO 版本</string>
+    <string name="pro_advantages">专业版优势：</string>
+    <string name="pro_buy">购买专业版</string>
+    <string name="pro_no_ads">- 没有广告</string>
+    <string name="pro_different_settings_for_birthdays">- 生日可以有不同设置</string>
+    <string name="pro_led_notification">- LED通知</string>
+    <string name="pro_led_color_for_each_reminder">- 每个提醒可以单独设置LED颜色</string>
+    <string name="pro_styles_for_marker">- 16种样式的标记</string>
 </resources>
