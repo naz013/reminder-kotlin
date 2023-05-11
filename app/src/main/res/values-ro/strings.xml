@@ -59,19 +59,15 @@
     <string name="color">Culoare</string>
     <string name="files">Fişiere</string>
     <string name="delete_all">Sterge tot</string>
-    <string name="connect">Lega</string>
     <string name="search">A cauta</string>
     <string name="text_size">Dimensiunea textului</string>
     <string name="exclusion">Excludere</string>
     <string name="hours">Ore</string>
     <string name="ok">Bine</string>
     <string name="cancel">Anula</string>
-    <string name="type">Tip</string>
     <string name="message">Mesaj</string>
     <string name="date_and_time">Data si ora</string>
     <string name="tomorrow">Mâine</string>
-    <string name="next_business_day">În următoarea zi lucrătoare</string>
-    <string name="after">După</string>
     <string name="time">Timp</string>
     <string name="google_tasks">Sarcini Google</string>
     <string name="add_to_calendar">Adaugă în calendar</string>
@@ -80,7 +76,6 @@
     <string name="tasks">Sarcini</string>
     <string name="groups">Grupuri</string>
     <string name="places">locuri</string>
-    <string name="messages">Mesaje</string>
     <string name="backup_files">Fișiere de rezervă</string>
     <string name="trash">Gunoi</string>
     <string name="feedback">Parere</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">Servicii de nor</string>
     <string name="clean">Date clare</string>
     <string name="backup_settings">Creare backup de setări</string>
-    <string name="missed_call_reminder">Amintește apeluri pierdute despre</string>
-    <string name="quick_sms">SMS-uri rapid</string>
-    <string name="show_quick_answer_window">Arăta fereastra răspuns după respingerea apelului</string>
-    <string name="after_call_reminder">Memento după apel</string>
     <string name="_24_hour_time_format">Formatul de timp 24 oră</string>
     <string name="smart_fold">Pliere inteligent</string>
     <string name="disable_folding_reminder_window">Dezactivați plierea inteligentă a ferestrei de memento</string>
@@ -204,7 +195,14 @@
     <string name="location">Locaţie</string>
     <string name="day_of_month">Zi a lunii</string>
     <string name="shopping_list">Lista de cumparaturi</string>
-    <string name="radius_x_meters">"Raza %s metri"</string>
+    <string name="radius_x_m">"Raza %s m"</string>
+    <string name="radius_x_ft">"Raza %s ft"</string>
+    <string name="radius_x_km">"Raza %s km"</string>
+    <string name="radius_x_mi">"Raza %s mi"</string>
+    <string name="dist_x_m">"Distanța %s m"</string>
+    <string name="dist_x_ft">"Distanța %s ft"</string>
+    <string name="dist_x_km">"Distanța %s km"</string>
+    <string name="dist_x_mi">"Distanța %s mi"</string>
     <string name="shopping_list_is_empty">Lista de cumpărături este gol!</string>
     <string name="you_dont_select_any_day">Nu selectați o zi!</string>
     <string name="you_dont_select_application">Nu selectați aplicație!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">Șterge sarcină</string>
     <string name="move_to_another_list">Mutați în altă listă</string>
     <string name="edit_birthday">Edita zi de naștere</string>
-    <string name="disconnect">Deconecta</string>
     <string name="you_dont_select_any_calendar">Nu selectați un calendar!</string>
     <string name="please_wait">Te rog asteapta…</string>
     <string name="no_events_found">Nu sunt relatate evenimente!</string>
     <string name="events_found">Eveniment (e) găsit</string>
     <string name="x_minutes">"%s minute"</string>
     <string name="x_hours">"%s ore"</string>
-    <string name="last_called">Ultima numit la</string>
     <string name="x_years">"%s ani"</string>
     <string name="x_days">"%s zile"</string>
     <string name="reminder_snoozed">Memento amânate</string>
     <string name="choose_application">Alegeți aplicația</string>
-    <string name="no_messages">Nu există mesaje</string>
     <string name="birthday">Aniversare</string>
     <string name="permanent">Permanentă</string>
     <string name="today">Astăzi</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">Pentru a accesa microfon, aplicația necesită permisiunea Înregistrare audio</string>
     <string name="get_accounts">Obține conturi</string>
     <string name="get_accounts_explanation">Pentru a vă autentifica, aplicația necesită permisiunea Obțineți conturi</string>
-    <string name="read_phone_state">Citire stare de telefon</string>
-    <string name="read_phone_state_explanation">Pentru a detecta apelurile pierdute, aplicația necesită permisiunea Citiți starea telefonului</string>
     <string name="read_contacts">Citit de contact</string>
     <string name="read_contacts_explanation">Pentru a alege un număr din persoanele de contact, aplicația necesită permisiunea Citire Contacte</string>
     <string name="read_calendar">Calendarul citit</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s secunde"</string>
     <string name="say_something">Spune ceva</string>
     <string name="no_recognizer_found">Sistemul de vorbire de recunoaștere nu a fost găsit!</string>
-    <string name="same_group">Același grup!</string>
     <string name="change_group">Grup schimbare</string>
     <string name="move_to_trash">Aruncă la gunoi</string>
     <string name="all_files_removed">Toate fișierele eliminate</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">Gunoi eliminat</string>
     <string name="trash_is_empty">Coșul de gunoi este gol</string>
     <string name="reminder_is_outdated">Memento este depășit, se modifica în primul rând</string>
-    <string name="reminder_created">Memento creat</string>
-    <string name="reminder_created_on">Memento a fost creată pe</string>
     <string name="everyday">In fiecare zi</string>
     <string name="reminder">Aducere aminte</string>
     <string name="export_and_sync">Export și sincronizare</string>
-    <string name="additional">Adiţional</string>
     <string name="other">Alte</string>
     <string name="general">Generalități</string>
     <string name="xW">"%sS"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">Locul de căutare …</string>
     <string name="add_all">Adăugaţi tot</string>
     <string name="no_places_found">Plasa nu a fost găsit!</string>
-    <string name="additional_reminder">Tip suplimentar de memento - Locuri</string>
     <string name="add_reminder_menu">Adauga memento</string>
     <string name="task_summary_is_empty">Rezumat sarcină este gol!</string>
     <string name="x_day">%s zile</string>
@@ -358,7 +346,6 @@
     <string name="refresh">Reîmprospăta</string>
     <string name="move_forward">Mergi inainte</string>
     <string name="move_backward">Reveni înapoi</string>
-    <string name="create_task">Creează sarcină</string>
     <string name="could_not_launch_market">Nu a putut fi lansat pe piață</string>
     <string name="all_permissions_are_enabled">Toate permisiunile sunt activate</string>
     <string name="delete_this_reminder">Șterge acest memento?</string>
@@ -369,14 +356,12 @@
     <string name="dark">Întuneric</string>
     <string name="x_out_of_x" formatted="false">%d din %d</string>
     <string name="syncing_places">Locuri sincronizeze… </string>
-    <string name="syncing_templates">Se sincronizează șabloane de mesaje …</string>
     <string name="work">Muncă</string>
     <string name="personal">Personale</string>
     <string name="auto_call">Apel automat</string>
     <string name="enable_making_phone_calls_automatically">Activați efectuarea de apeluri telefonice automat</string>
     <string name="update_available">Actualizare disponibila</string>
     <string name="would_you_like_to_install_tts">Doriți să instalați text-to-speech motor?</string>
-    <string name="install">Instalare</string>
     <string name="all_reminders_were_disabled">Toate memento-uri sunt dezactivate</string>
     <string name="log_in">Logare</string>
     <string name="failed_to_login">Eroare la autentificare</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">Ecran complet</string>
     <string name="acc_contact_photo">Fotografia contactului</string>
     <string name="acc_button_ok">O.K</string>
-    <string name="acc_button_cancel">Anulare</string>
     <string name="acc_button_snooze">Pui de somn</string>
     <string name="acc_button_snooze_for">Snooze pentru</string>
     <string name="acc_button_move_to_status_bar">Treceți la bara de stare</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">Canal pentru alte notificări informative</string>
     <string name="add_note">Adauga notita</string>
     <string name="yearly">Anual</string>
-    <string name="attach_file">Ataseaza fisier</string>
     <string name="location_tracking_service_running">Serviciul de urmărire a locației este în desfășurare</string>
     <string name="application_language">Limba aplicației</string>
     <string name="cant_find_app_for_that_file_type">Nu se poate găsi o aplicație care poate deschide acest fișier.</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">Nu repetați notificarea evenimentului</string>
     <string name="repeat_event_notification_when_no_action">Repetarea notificării evenimentului atunci când nu este efectuată nicio acțiune de către utilizator</string>
     <string name="allow_folding_event_window">Permiteți deschiderea ferestrei evenimentului</string>
-    <string name="create_reminders_for_missed_calls">Creați mementouri despre apelurile pierdute</string>
-    <string name="show_event_screen_after_phone_call">Afișați ecranul de creare a evenimentelor după apelul telefonic</string>
     <string name="last_color">Ultima culoare</string>
     <string name="do_not_remember_last_color">Nu-mi amintesc ultima culoare folosită</string>
     <string name="export">Exportă</string>
@@ -502,13 +483,9 @@
     <string name="new_place">Loc nou</string>
     <string name="edit_place">Editați locul</string>
     <string name="select_place">Selectați locul</string>
-    <string name="create_template">Creați șablon</string>
-    <string name="edit_template">Editați șablonul</string>
     <string name="move_to_place">Treceți la loc</string>
     <string name="create_group">Creați un grup</string>
     <string name="make_default">Face implicit</string>
-    <string name="do_not_create_reminder_for_missed_calls">Nu creați memento pentru apelurile pierdute</string>
-    <string name="do_not_show_sms_screen_after_call">Nu afișați ecranul SMS după apelul respins</string>
     <string name="recent_places">Locuri recente</string>
     <string name="found_places">locurile găsite</string>
     <string name="repeat_every">Repetați fiecare</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">Nu creați memento</string>
     <string name="do_not_show_in_home_screen_widget">Nu se afișează în widgetul de pe ecranul de întâmpinare</string>
     <string name="do_not_show_permanent_notification">Nu afișați notificarea permanentă</string>
-    <string name="do_not_show_after_calls">Nu afișați ecranul de creare a evenimentelor după apeluri</string>
     <string name="silent_channel">Canal silențios</string>
     <string name="channel_for_silent_notifiations">Canal pentru notificări silențioase</string>
     <string name="sync_data_now">Sincronizați acum datele</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">Nu vă amintiți despre zilele de naștere</string>
     <string name="with_reminder">Cu memento</string>
     <string name="change_pin">Schimba pin-ul</string>
-    <string name="acc_resend_message">Retrimiteți mesajul</string>
     <string name="backup_my_data">Copiați-mi datele</string>
-    <string name="missed_call">Apel pierdut</string>
-    <string name="select_date_in_future">Selectați data în viitor</string>
     <string name="backup_data_now">Actualizați acum datele</string>
     <string name="portuguese">Portugheză</string>
     <string name="download">Descarca</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">Permiteți ecranul de deblocare numai pentru</string>
     <string name="import_file">Fișier de import</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Serviciile Google Play nu au fost găsite, unele funcții sunt dezactivate!</string>
-    <string name="none">Nici unul</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Activați backupul de date pentru a vă menține mementourile în siguranță</string>
     <string name="x_weeks">%s săptămâni</string>
     <string name="are_you_sure">Esti sigur?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">Remediu permanent pe ecranul de pornire</string>
     <string name="unsupported_file_format">Format de fișier neacceptat</string>
     <string name="same_place_message">Locul cu același identificator a fost găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
-    <string name="same_template_message">Șablonul SMS cu același identificator a fost găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
     <string name="same_group_message">Grup cu același identificator găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
     <string name="same_reminder_message">Memento cu același identificator a fost găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
     <string name="same_note_message">Notă cu același identificator găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">Apeluri telefonice și SMS</string>
     <string name="choose_ringtone">Alegeți tonul de apel</string>
     <string name="select_ringtone_for_notifications">Selectați ton de apel pentru notificări</string>
-    <string name="try_again">Încearcă din nou</string>
     <string name="enter_your_pin">Introduceți codul PIN?</string>
     <string name="enter_pin">Introdu PIN</string>
     <string name="prompt_info_subtitle">Autentificare biometrică</string>
     <string name="prompt_info_description">Procedați cu autentificarea biometrică</string>
-    <string name="title_feature_birthdays">Zile de nastere</string>
     <string name="bg_location_message">Trebuie să permiteți locației de fundal pentru a notifica aplicației când vă veți afla în apropierea locației selectate.\nAceastă aplicație colectează date despre locație pentru a activa mementouri în funcție de locație, chiar și atunci când aplicația este închisă sau nu este utilizată.\nDatele de locație sunt accesate numai acolo unde se află cel puțin un memento de locație activ.</string>
     <string name="deleted">Șters</string>
     <string name="post_notification">Post Notificare</string>
@@ -665,7 +634,6 @@
     <string name="group">Grupul</string>
     <string name="configure">Configurați</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Activați sau dezactivați unii parametri pe ecranul de creare a mementourilor</string>
-    <string name="tell_about_event">Spuneți despre evenimente</string>
     <string name="terms_and_conditions">Términos y condiciones</string>
     <string name="acc_clear_search">Ștergeți căutarea</string>
     <string name="acc_switch_to_map">Comutați la hartă</string>
@@ -685,4 +653,16 @@
     <string name="analytics">Analitice</string>
     <string name="collecting_of_app_analytics_is_disabled">Colectarea datelor analitice ale aplicației este dezactivată</string>
     <string name="collecting_of_app_analytics_is_enabled">Colectarea datelor analitice ale aplicației este activată</string>
+    <string name="not_born">Nu nascut</string>
+    <string name="metric_units">Unități metrice</string>
+    <string name="use_imperial_system">Utilizați sistemul imperial</string>
+    <string name="use_metric_system">Utilizați sistemul metric</string>
+    <string name="pro_version">Versiunea PRO</string>
+    <string name="pro_advantages">Avantajele PRO:</string>
+    <string name="pro_buy">Vand PRO</string>
+    <string name="pro_no_ads">- Fără publicitate</string>
+    <string name="pro_different_settings_for_birthdays">- Setări diferite pentru zile de naștere</string>
+    <string name="pro_led_notification">- Notificare LED</string>
+    <string name="pro_led_color_for_each_reminder">- Culoare pentru fiecare memento cu LED-uri</string>
+    <string name="pro_styles_for_marker">- 16 stiluri pentru markerul</string>
 </resources>

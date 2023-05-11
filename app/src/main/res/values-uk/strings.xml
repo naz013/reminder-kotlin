@@ -59,19 +59,15 @@
     <string name="color">Колір</string>
     <string name="files">Файли</string>
     <string name="delete_all">Видалити все</string>
-    <string name="connect">Підключити</string>
     <string name="search">Пошук</string>
     <string name="text_size">Розмір тексту</string>
     <string name="exclusion">Виняток</string>
     <string name="hours">Години</string>
     <string name="ok">ОК</string>
     <string name="cancel">Скасувати</string>
-    <string name="type">Тип</string>
     <string name="message">Повідомлення</string>
     <string name="date_and_time">Дата і час</string>
     <string name="tomorrow">Завтра</string>
-    <string name="next_business_day">На наступний робочий день</string>
-    <string name="after">Після</string>
     <string name="time">Час</string>
     <string name="google_tasks">Завдання Google</string>
     <string name="add_to_calendar">Додати в календар</string>
@@ -80,7 +76,6 @@
     <string name="tasks">Завдання</string>
     <string name="groups">Групи</string>
     <string name="places">Місця</string>
-    <string name="messages">Повідомлення</string>
     <string name="backup_files">Резервні копії</string>
     <string name="trash">Кошик</string>
     <string name="feedback">Зворотний зв\'язок</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">Хмарні сервіси</string>
     <string name="clean">Очистити дані</string>
     <string name="backup_settings">Резервна копія налаштувань</string>
-    <string name="missed_call_reminder">Нагадати про пропущені виклики</string>
-    <string name="quick_sms">Швидке SMS</string>
-    <string name="show_quick_answer_window">Показати вікно швидкої відповіді після відхилення виклику</string>
-    <string name="after_call_reminder">Нагадування після виклику</string>
     <string name="_24_hour_time_format">Формат часу 24 години</string>
     <string name="smart_fold">Розумне згортання</string>
     <string name="disable_folding_reminder_window">Вимкнути інтелектуальне складання вікна нагадування</string>
@@ -204,7 +195,14 @@
     <string name="location">Місцезнаходження</string>
     <string name="day_of_month">День місяця</string>
     <string name="shopping_list">Список покупок</string>
-    <string name="radius_x_meters">"Радіус %s метрів"</string>
+    <string name="radius_x_m">"Радіус %s м"</string>
+    <string name="radius_x_ft">"Радіус %s футів"</string>
+    <string name="radius_x_km">"Радіус %s км"</string>
+    <string name="radius_x_mi">"Радіус %s миль"</string>
+    <string name="dist_x_m">"Відстань %s м"</string>
+    <string name="dist_x_ft">"Відстань %s футів"</string>
+    <string name="dist_x_km">"Відстань %s км"</string>
+    <string name="dist_x_mi">"Відстань %s миль"</string>
     <string name="shopping_list_is_empty">Список покупок порожній!</string>
     <string name="you_dont_select_any_day">Ви не вибрали день!</string>
     <string name="you_dont_select_application">Ви не обрали додаток!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">Видалити завдання</string>
     <string name="move_to_another_list">Перемістити до іншого списку</string>
     <string name="edit_birthday">Редагувати день народження</string>
-    <string name="disconnect">Від\'єднати</string>
     <string name="you_dont_select_any_calendar">Ви не обрали календар!</string>
     <string name="please_wait">Будь ласка, зачекайте…</string>
     <string name="no_events_found">Події не знайдені!</string>
     <string name="events_found">подія (й) знайдено</string>
     <string name="x_minutes">"%s хвилин"</string>
     <string name="x_hours">"%s годин"</string>
-    <string name="last_called">Востаннє викликався в</string>
     <string name="x_years">"%s років"</string>
     <string name="x_days">"%s днів"</string>
     <string name="reminder_snoozed">Нагадування відкладено</string>
     <string name="choose_application">Виберіть програму</string>
-    <string name="no_messages">Повідомлень немає</string>
     <string name="birthday">День народження</string>
     <string name="permanent">Постійне</string>
     <string name="today">Сьогодні</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">Для доступу до мікрофона програмі потрібен дозвіл на запис аудіо</string>
     <string name="get_accounts">Отримувати облікові записи</string>
     <string name="get_accounts_explanation">Для входу програмі потрібен дозвіл на отримання облікових записів</string>
-    <string name="read_phone_state">Читати стан телефону</string>
-    <string name="read_phone_state_explanation">Щоб виявити пропущені дзвінки, програмі потрібен дозвіл на читання стану телефону</string>
     <string name="read_contacts">Читати контакти</string>
     <string name="read_contacts_explanation">Щоб вибрати номер із ваших контактів, програмі потрібен дозвіл на читання контактів</string>
     <string name="read_calendar">Читати календар</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s секунд"</string>
     <string name="say_something">Скажіть що-небудь</string>
     <string name="no_recognizer_found">Система розпізнавання мови не знайдена!</string>
-    <string name="same_group">Та ж група!</string>
     <string name="change_group">Змінити групу</string>
     <string name="move_to_trash">Перемістити в кошик</string>
     <string name="all_files_removed">Всі файли видалені</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">Кошик очищено</string>
     <string name="trash_is_empty">Кошик порожній</string>
     <string name="reminder_is_outdated">Нагадування застаріло, змініть його спочатку</string>
-    <string name="reminder_created">Нагадування створено</string>
-    <string name="reminder_created_on">Нагадування створено на </string>
     <string name="everyday">Щоденно</string>
     <string name="reminder">Нагадування</string>
     <string name="export_and_sync">Експорт і синхронізація</string>
-    <string name="additional">Додатково</string>
     <string name="other">Інші</string>
     <string name="general">Загальні</string>
     <string name="xW">"%sТ"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">Пошук місця…</string>
     <string name="add_all">Додати все</string>
     <string name="no_places_found">Місце не знайдено!</string>
-    <string name="additional_reminder">Додатковий тип нагадування - Місця</string>
     <string name="add_reminder_menu">Додати нагадування</string>
     <string name="task_summary_is_empty">Завдання не може бути порожнім!</string>
     <string name="x_day">%s день</string>
@@ -358,7 +346,6 @@
     <string name="refresh">Оновити</string>
     <string name="move_forward">Вперед</string>
     <string name="move_backward">Назад</string>
-    <string name="create_task">Створити завдання</string>
     <string name="could_not_launch_market">Не вдалося запустити Play Market</string>
     <string name="all_permissions_are_enabled">Всі дозволи включені</string>
     <string name="delete_this_reminder">Видалити це нагадування?</string>
@@ -369,14 +356,12 @@
     <string name="dark">Темна</string>
     <string name="x_out_of_x" formatted="false">%d з %d</string>
     <string name="syncing_places">Синхронізація місць …</string>
-    <string name="syncing_templates">Синхронізація шаблонів повідомлень …</string>
     <string name="work">Робота</string>
     <string name="personal">Особисті</string>
     <string name="auto_call">Автоматичний виклик</string>
     <string name="enable_making_phone_calls_automatically">Включити автоматичні телефонні дзвінки</string>
     <string name="update_available">Доступне оновлення</string>
     <string name="would_you_like_to_install_tts">Ви хочете встановити Text-To-Speech?</string>
-    <string name="install">Встановити</string>
     <string name="all_reminders_were_disabled">Всі нагадування вимкнено</string>
     <string name="log_in">Увійти</string>
     <string name="failed_to_login">Не вдалося увійти в систему</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">Повноекранне</string>
     <string name="acc_contact_photo">Фотографія контакту</string>
     <string name="acc_button_ok">Добре</string>
-    <string name="acc_button_cancel">Скасувати</string>
     <string name="acc_button_snooze">Відкласти</string>
     <string name="acc_button_snooze_for">Відтермінувати на</string>
     <string name="acc_button_move_to_status_bar">Перемістити в рядку стану</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">Канал для інших інформаційних повідомлень</string>
     <string name="add_note">Додати нотатку</string>
     <string name="yearly">Щорічно</string>
-    <string name="attach_file">Прикріпити файл</string>
     <string name="location_tracking_service_running">Служба відстеження місцезнаходження працює</string>
     <string name="application_language">Мова програми</string>
     <string name="cant_find_app_for_that_file_type">Не вдається знайти програму, яка може відкрити цей файл.</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">Не повторюват сповіщення про подію</string>
     <string name="repeat_event_notification_when_no_action">Повторювати сповіщення про подію, коли немає дій від користувача</string>
     <string name="allow_folding_event_window">Дозволити складання вікна події</string>
-    <string name="create_reminders_for_missed_calls">Створюdfnb нагадування про пропущені дзвінки</string>
-    <string name="show_event_screen_after_phone_call">Показувати екран створення події після телефонного дзвінка</string>
     <string name="last_color">Останній колір</string>
     <string name="do_not_remember_last_color">Не запам\'ятовувати останній використаний колір</string>
     <string name="export">Експорт</string>
@@ -502,13 +483,9 @@
     <string name="new_place">Нове місце</string>
     <string name="edit_place">Редагувати місце</string>
     <string name="select_place">Виберіть місце</string>
-    <string name="create_template">Створити шаблон</string>
-    <string name="edit_template">Редагувати шаблон</string>
     <string name="move_to_place">Переміститись на місце</string>
     <string name="create_group">Створити групу</string>
     <string name="make_default">Використовувати за замовчуванням</string>
-    <string name="do_not_create_reminder_for_missed_calls">Не створювати нагадування про пропущені виклики</string>
-    <string name="do_not_show_sms_screen_after_call">Не відображати екран SMS після відхилення виклику</string>
     <string name="recent_places">недавні місця</string>
     <string name="found_places">знайдені місця</string>
     <string name="repeat_every">Повторіть кожну</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">Не створювати нагадування</string>
     <string name="do_not_show_in_home_screen_widget">Не показувати у віджеті головного екрана</string>
     <string name="do_not_show_permanent_notification">Не показувати постійне сповіщення</string>
-    <string name="do_not_show_after_calls">Не показувати екран створення події після дзвінків</string>
     <string name="silent_channel">Безшумний канал</string>
     <string name="channel_for_silent_notifiations">Канал для сповіщень</string>
     <string name="sync_data_now">Синхронізувати дані зараз</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">Не нагадувати про дні народження</string>
     <string name="with_reminder">З нагадуванням</string>
     <string name="change_pin">Змінити PIN-код</string>
-    <string name="acc_resend_message">Повторно надіслати повідомлення</string>
     <string name="backup_my_data">Резервне копіювання моїх даних</string>
-    <string name="missed_call">Пропущений виклик</string>
-    <string name="select_date_in_future">Виберіть дату в майбутньому</string>
     <string name="backup_data_now">Створити резервну копію даних зараз</string>
     <string name="portuguese">Португальська</string>
     <string name="download">Завантажити</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">Дозволити розблокувати екран лише для</string>
     <string name="import_file">Імпортувати файл</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Служб Google Play не знайдено, деякі функції вимкнено!</string>
-    <string name="none">Немає</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Увімкніть резервне копіювання даних, щоб зберегти ваші нагадування в безпеці</string>
     <string name="x_weeks">%s тижнів</string>
     <string name="are_you_sure">Ви впевнені?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">Постійне нагадування на головному екрані</string>
     <string name="unsupported_file_format">Непідтримуваний формат файлу</string>
     <string name="same_place_message">Місце з таким же ідентифікатором знайдено в додатку. Тримати обидва або замінити поточний?</string>
-    <string name="same_template_message">У програмі знайдено шаблон SMS із тим самим ідентифікатором. Тримати обидва або замінити поточний?</string>
     <string name="same_group_message">Група з тим самим ідентифікатором, знайденим у додатку. Тримати обидва або замінити поточний?</string>
     <string name="same_reminder_message">Нагадування з таким же ідентифікатором знайдено в додатку. Тримати обидва або замінити поточний?</string>
     <string name="same_note_message">Примітка з тим самим ідентифікатором, який знайдено у застосуванні. Тримати обидва або замінити поточний?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">Телефонні дзвінки та SMS</string>
     <string name="choose_ringtone">Виберіть мелодію дзвінка</string>
     <string name="select_ringtone_for_notifications">Виберіть мелодію дзвінка для сповіщень</string>
-    <string name="try_again">Спробуйте ще раз</string>
     <string name="enter_your_pin">Введіть свій PIN-код?</string>
     <string name="enter_pin">Введіть PIN-код</string>
     <string name="prompt_info_subtitle">Біометрична аутентифікація</string>
     <string name="prompt_info_description">Продовжити за допомогою біометричної автентифікації</string>
-    <string name="title_feature_birthdays">Дні народження</string>
     <string name="bg_location_message">Ви повинні дозволити фонове розташування повідомляти додатку коли ви будете поблизу вибраної локації.\nЦей додаток збирає дані про місцезнаходження, щоб увімкнути нагадування по місцезнаходженню, навіть якщо програма закрита чи не використовується.\nДоступ до даних про Місцезнаходження отримують лише один нагадування про активне розташування.</string>
     <string name="deleted">Видалено</string>
     <string name="post_notification">Опублікувати сповіщення</string>
@@ -665,7 +634,6 @@
     <string name="group">Група</string>
     <string name="configure">Налаштувати</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Увімкніть або вимкніть деякі параметри на екрані створення нагадування</string>
-    <string name="tell_about_event">Проговорювати подію</string>
     <string name="terms_and_conditions">Правила та умови</string>
     <string name="acc_clear_search">Очистити пошук</string>
     <string name="acc_switch_to_map">Переключитися на карту</string>
@@ -685,4 +653,16 @@
     <string name="analytics">Аналітика</string>
     <string name="collecting_of_app_analytics_is_disabled">Збір аналітики застосунку вимкнено</string>
     <string name="collecting_of_app_analytics_is_enabled">Увімкнено збір аналітики застосунку</string>
+    <string name="not_born">Не народився</string>
+    <string name="metric_units">Метричні одиниці</string>
+    <string name="use_imperial_system">Використовувати Імперську систему</string>
+    <string name="use_metric_system">Використовувати Метричну систему</string>
+    <string name="pro_version">PRO версія</string>
+    <string name="pro_advantages">Переваги ПРО:</string>
+    <string name="pro_buy">Купити PRO</string>
+    <string name="pro_no_ads">- Без реклами</string>
+    <string name="pro_different_settings_for_birthdays">- Різні налаштування для днів народжень</string>
+    <string name="pro_led_notification">- Світлодіодні повідомлення</string>
+    <string name="pro_led_color_for_each_reminder">- Колір світлодіоду для кожного нагадування</string>
+    <string name="pro_styles_for_marker">- 16 стилів для маркера</string>
 </resources>

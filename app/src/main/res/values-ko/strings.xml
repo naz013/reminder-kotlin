@@ -59,19 +59,15 @@
     <string name="color">색깔</string>
     <string name="files">파일들</string>
     <string name="delete_all">모두 삭제</string>
-    <string name="connect">잇다</string>
     <string name="search">수색</string>
     <string name="text_size">텍스트 크기</string>
     <string name="exclusion">제외</string>
     <string name="hours">시간</string>
     <string name="ok">승인</string>
     <string name="cancel">취소</string>
-    <string name="type">유형</string>
     <string name="message">메시지</string>
     <string name="date_and_time">날짜와 시간</string>
     <string name="tomorrow">내일</string>
-    <string name="next_business_day">익일 영업일</string>
-    <string name="after">후</string>
     <string name="time">시각</string>
     <string name="google_tasks">Google 할 일 목록</string>
     <string name="add_to_calendar">캘린더에 추가</string>
@@ -80,7 +76,6 @@
     <string name="tasks">할 일 목록</string>
     <string name="groups">여러 떼</string>
     <string name="places">장소</string>
-    <string name="messages">메시지</string>
     <string name="backup_files">백업 파일</string>
     <string name="trash">폐물</string>
     <string name="feedback">피드백</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">클라우드 서비스</string>
     <string name="clean">데이터 지우기</string>
     <string name="backup_settings">설정 백업 만들기</string>
-    <string name="missed_call_reminder">부재중 전화 알림</string>
-    <string name="quick_sms">빠른 SMS</string>
-    <string name="show_quick_answer_window">전화 거부 후 답변 창 표시</string>
-    <string name="after_call_reminder">통화 후 알림</string>
     <string name="_24_hour_time_format">24 시간</string>
     <string name="smart_fold">지능형 폴딩</string>
     <string name="disable_folding_reminder_window">리마인더 창의 지능형 접기 비활성화</string>
@@ -204,7 +195,14 @@
     <string name="location">위치</string>
     <string name="day_of_month">일</string>
     <string name="shopping_list">쇼핑리스트</string>
-    <string name="radius_x_meters">"반경 %s 미터"</string>
+    <string name="radius_x_m">"반지름 %s m"</string>
+    <string name="radius_x_ft">"반지름 %s피트"</string>
+    <string name="radius_x_km">"반지름 %s km"</string>
+    <string name="radius_x_mi">"반경 %s마일"</string>
+    <string name="dist_x_m">"거리 %s미터"</string>
+    <string name="dist_x_ft">"거리 %s피트"</string>
+    <string name="dist_x_km">"거리 %s킬로미터"</string>
+    <string name="dist_x_mi">"거리 %s마일"</string>
     <string name="shopping_list_is_empty">쇼핑 목록이 비어 있습니다!</string>
     <string name="you_dont_select_any_day">하루를 선택하지 마십시오!</string>
     <string name="you_dont_select_application">신청서를 선택하지 마십시오!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">작업 삭제</string>
     <string name="move_to_another_list">다른 목록으로 이동</string>
     <string name="edit_birthday">생일 수정</string>
-    <string name="disconnect">연결 끊기</string>
     <string name="you_dont_select_any_calendar">당신은 달력을 선택하지 않습니다!</string>
     <string name="please_wait">잠시만 기다려주십시오 ...</string>
     <string name="no_events_found">이벤트가 없습니다!</string>
     <string name="events_found">이벤트가 발견되었습니다.</string>
     <string name="x_minutes">"%s 분"</string>
     <string name="x_hours">"%s 시간"</string>
-    <string name="last_called">마지막으로에서 전화했습니다.</string>
     <string name="x_years">"%s 년"</string>
     <string name="x_days">"%s 일"</string>
     <string name="reminder_snoozed">일시 중지 된 알림</string>
     <string name="choose_application">신청서 선택</string>
-    <string name="no_messages">메시지 없음</string>
     <string name="birthday">생일</string>
     <string name="permanent">퍼머넌트</string>
     <string name="today">오늘</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">마이크에 액세스하려면 애플리케이션에 오디오 녹음 권한이 필요합니다.</string>
     <string name="get_accounts">계정 가져 오기</string>
     <string name="get_accounts_explanation">로그인하려면 애플리케이션에 계정 가져오기 권한이 필요합니다.</string>
-    <string name="read_phone_state">휴대 전화 상태 읽기</string>
-    <string name="read_phone_state_explanation">부재중 전화를 감지하려면 애플리케이션에 전화 상태 읽기 권한이 필요합니다.</string>
     <string name="read_contacts">연락처 읽기</string>
     <string name="read_contacts_explanation">연락처에서 번호를 선택하려면 애플리케이션에 연락처 읽기 권한이 필요합니다.</string>
     <string name="read_calendar">캘린더 읽기</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s 초"</string>
     <string name="say_something">뭐라고 말해봐.</string>
     <string name="no_recognizer_found">음성 인식 시스템을 찾을 수 없습니다!</string>
-    <string name="same_group">같은 그룹!</string>
     <string name="change_group">그룹 변경</string>
     <string name="move_to_trash">휴지통으로 이동</string>
     <string name="all_files_removed">모든 파일이 삭제되었습니다.</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">휴지통이 삭제되었습니다.</string>
     <string name="trash_is_empty">휴지통이 비어 있습니다.</string>
     <string name="reminder_is_outdated">알림이 오래된 것입니다. 먼저 수정하십시오.</string>
-    <string name="reminder_created">알림 생성됨</string>
-    <string name="reminder_created_on">작성된 알림</string>
     <string name="everyday">매일</string>
     <string name="reminder">조언</string>
     <string name="export_and_sync">내보내기 및 동기화</string>
-    <string name="additional">추가</string>
     <string name="other">다른</string>
     <string name="general">일반</string>
     <string name="xW">"%s 승"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">장소 검색 ...</string>
     <string name="add_all">모두 추가</string>
     <string name="no_places_found">장소를 찾을 수 없습니다!</string>
-    <string name="additional_reminder">추가 유형의 알림 - 장소</string>
     <string name="add_reminder_menu">알림 추가</string>
     <string name="task_summary_is_empty">작업 요약이 비어 있습니다!</string>
     <string name="x_day">%s 일</string>
@@ -358,7 +346,6 @@
     <string name="refresh">새롭게 하다</string>
     <string name="move_forward">앞으로 움직이다</string>
     <string name="move_backward">뒤로 돌아 가기</string>
-    <string name="create_task">작업 만들기</string>
     <string name="could_not_launch_market">시장 진출 실패</string>
     <string name="all_permissions_are_enabled">모든 권한이 사용 가능합니다.</string>
     <string name="delete_this_reminder">이 알림을 삭제 하시겠습니까?</string>
@@ -369,14 +356,12 @@
     <string name="dark">어두운</string>
     <string name="x_out_of_x" formatted="false">%d %d</string>
     <string name="syncing_places">장소 동기화 중 ...</string>
-    <string name="syncing_templates">메시지 템플릿 동기화 중 ...</string>
     <string name="work">작업</string>
     <string name="personal">개인적인</string>
     <string name="auto_call">자동 통화</string>
     <string name="enable_making_phone_calls_automatically">자동 전화 걸기</string>
     <string name="update_available">사용 가능한 업데이트</string>
     <string name="would_you_like_to_install_tts">텍스트 음성 변환 엔진을 설치 하시겠습니까?</string>
-    <string name="install">설치</string>
     <string name="all_reminders_were_disabled">모든 알림은 사용할 수 없습니다.</string>
     <string name="log_in">로그인</string>
     <string name="failed_to_login">로그인 실패</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">전체 화면</string>
     <string name="acc_contact_photo">연락처 사진</string>
     <string name="acc_button_ok">승인</string>
-    <string name="acc_button_cancel">취소</string>
     <string name="acc_button_snooze">선잠</string>
     <string name="acc_button_snooze_for">스누즈</string>
     <string name="acc_button_move_to_status_bar">상태 표시 줄로 이동</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">기타 유익한 알림 채널</string>
     <string name="add_note">메모를 추가</string>
     <string name="yearly">매년</string>
-    <string name="attach_file">파일을 첨부</string>
     <string name="location_tracking_service_running">실행중인 위치 추적 서비스</string>
     <string name="application_language">응용 프로그램 언어</string>
     <string name="cant_find_app_for_that_file_type">이 파일을 열 수있는 응용 프로그램을 찾을 수 없습니다.</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">이벤트 통지를 반복하지 마십시오.</string>
     <string name="repeat_event_notification_when_no_action">사용자 작업이 없을 때 이벤트 알림 반복</string>
     <string name="allow_folding_event_window">접기 이벤트 창 허용</string>
-    <string name="create_reminders_for_missed_calls">부재중 전화에 대한 알림 만들기</string>
-    <string name="show_event_screen_after_phone_call">전화 통화 후 이벤트 생성 화면 표시</string>
     <string name="last_color">마지막 색상</string>
     <string name="do_not_remember_last_color">마지막으로 사용한 색상을 기억하지 마십시오.</string>
     <string name="export">수출</string>
@@ -502,13 +483,9 @@
     <string name="new_place">새로운 장소</string>
     <string name="edit_place">장소 수정</string>
     <string name="select_place">장소 선택</string>
-    <string name="create_template">템플릿 만들기</string>
-    <string name="edit_template">템플릿 수정</string>
     <string name="move_to_place">장소로 이동</string>
     <string name="create_group">그룹 만들기</string>
     <string name="make_default">기본값으로 설정</string>
-    <string name="do_not_create_reminder_for_missed_calls">부재중 전화에 대한 알림을 생성하지 마십시오.</string>
-    <string name="do_not_show_sms_screen_after_call">거부 된 통화 후에 SMS 화면을 표시하지 않음</string>
     <string name="recent_places">최근 장소</string>
     <string name="found_places">찾은 곳</string>
     <string name="repeat_every">매 반복</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">알림을 생성하지 마십시오.</string>
     <string name="do_not_show_in_home_screen_widget">홈 화면 위젯에 표시 안 함</string>
     <string name="do_not_show_permanent_notification">영구적 인 알림 표시 안 함</string>
-    <string name="do_not_show_after_calls">통화 후 이벤트 생성 화면을 표시하지 않음</string>
     <string name="silent_channel">무음 채널</string>
     <string name="channel_for_silent_notifiations">무음 알림 채널</string>
     <string name="sync_data_now">지금 데이터 동기화</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">생일에 대해 생각 나지 마라.</string>
     <string name="with_reminder">알림 있음</string>
     <string name="change_pin">PIN 변경</string>
-    <string name="acc_resend_message">메시지 다시 보내기</string>
     <string name="backup_my_data">내 데이터 백업</string>
-    <string name="missed_call">부재중 전화</string>
-    <string name="select_date_in_future">앞으로 날짜 선택</string>
     <string name="backup_data_now">지금 데이터 백업하기</string>
     <string name="portuguese">포르투갈 인</string>
     <string name="download">다운로드</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">잠금 해제 화면 만 허용</string>
     <string name="import_file">파일 가져 오기</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play 서비스를 찾을 수 없으면 일부 기능이 사용 중지됩니다.</string>
-    <string name="none">없음</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">미리 알림을 안전하게 유지하려면 데이터 백업을 사용하십시오.</string>
     <string name="x_weeks">%s 주</string>
     <string name="are_you_sure">확실해?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">홈 화면의 영구 알림</string>
     <string name="unsupported_file_format">지원되지 않는 파일 형식</string>
     <string name="same_place_message">애플리케이션에서 동일한 식별자가있는 장소가 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
-    <string name="same_template_message">동일한 식별자를 가진 SMS 템플릿이 응용 프로그램에서 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
     <string name="same_group_message">응용 프로그램에서 동일한 식별자가있는 그룹. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
     <string name="same_reminder_message">응용 프로그램에서 동일한 식별자가있는 알림이 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
     <string name="same_note_message">응용 프로그램과 동일한 식별자가있는 참고. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">전화 통화 및 SMS</string>
     <string name="choose_ringtone">벨소리를 선택</string>
     <string name="select_ringtone_for_notifications">알림 벨소리 선택</string>
-    <string name="try_again">다시 시도하십시오</string>
     <string name="enter_your_pin">PIN을 입력 하시겠습니까?</string>
     <string name="enter_pin">PIN을 입력하십시오</string>
     <string name="prompt_info_subtitle">생체 인증</string>
     <string name="prompt_info_description">생체 인증 진행</string>
-    <string name="title_feature_birthdays">생일</string>
     <string name="bg_location_message">선택한 위치 근처에 있을 때 애플리케이션에 알리려면 백그라운드 위치를 허용해야 합니다.\n이 앱은 앱이 닫혀 있거나 사용하지 않는 경우에도 위치별 알림을 사용하기 위해 위치 데이터를 수집합니다.\n위치 데이터는 현재 위치에서만 액세스됩니다. 최소 하나의 활성 위치 알림.</string>
     <string name="deleted">삭제됨</string>
     <string name="post_notification">알림 게시</string>
@@ -665,7 +634,6 @@
     <string name="group">그룹</string>
     <string name="configure">구성</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">미리 알림 생성 화면에서 일부 매개 변수 활성화 또는 비활성화</string>
-    <string name="tell_about_event">이벤트에 대해 알리기</string>
     <string name="terms_and_conditions">이용약관</string>
     <string name="acc_clear_search">검색 지우기</string>
     <string name="acc_switch_to_map">지도로 전환</string>
@@ -685,4 +653,16 @@
     <string name="analytics">분석</string>
     <string name="collecting_of_app_analytics_is_disabled">앱 애널리틱스 수집이 비활성화되었습니다.</string>
     <string name="collecting_of_app_analytics_is_enabled">앱 애널리틱스 수집이 활성화됨</string>
+    <string name="not_born">태어나지 않음</string>
+    <string name="metric_units">미터법 단위</string>
+    <string name="use_imperial_system">임페리얼 시스템 사용</string>
+    <string name="use_metric_system">미터법 사용</string>
+    <string name="pro_version">PRO 버전</string>
+    <string name="pro_advantages">PRO의 장점 :</string>
+    <string name="pro_buy">PRO 구매</string>
+    <string name="pro_no_ads">- 광고 없음</string>
+    <string name="pro_different_settings_for_birthdays">- 생일에 대한 다른 설정</string>
+    <string name="pro_led_notification">- LED 알림</string>
+    <string name="pro_led_color_for_each_reminder">- 각 알림에 대한 LED 색상</string>
+    <string name="pro_styles_for_marker">- 마커 용 16 가지 스타일</string>
 </resources>

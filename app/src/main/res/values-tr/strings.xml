@@ -59,19 +59,15 @@
     <string name="color">Renk</string>
     <string name="files">Dosyalar</string>
     <string name="delete_all">Hepsini sil</string>
-    <string name="connect">Bağlamak</string>
     <string name="search">Arama</string>
     <string name="text_size">Yazı Boyutu</string>
     <string name="exclusion">Hariç tutma</string>
     <string name="hours">Saat</string>
     <string name="ok">Tamam</string>
     <string name="cancel">İptal</string>
-    <string name="type">Tip</string>
     <string name="message">Mesaj</string>
     <string name="date_and_time">Tarih ve saat</string>
     <string name="tomorrow">Yarın</string>
-    <string name="next_business_day">Ertesi iş günü</string>
-    <string name="after">Sonra</string>
     <string name="time">Zaman</string>
     <string name="google_tasks">Google Görevler</string>
     <string name="add_to_calendar">Takvime ekle</string>
@@ -80,7 +76,6 @@
     <string name="tasks">Görevler</string>
     <string name="groups">Gruplar</string>
     <string name="places">Yerler</string>
-    <string name="messages">Mesajlar</string>
     <string name="backup_files">Yedekleme dosyaları</string>
     <string name="trash">Çöp</string>
     <string name="feedback">Geribesleme</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">Bulut hizmetleri</string>
     <string name="clean">Net veriler</string>
     <string name="backup_settings">Ayarların yedeğini oluşturun</string>
-    <string name="missed_call_reminder">Yaklaşık cevapsız çağrıları hatırlatın</string>
-    <string name="quick_sms">Hızlı SMS</string>
-    <string name="show_quick_answer_window">Çağrı reddetme sonra cevap penceresini göster</string>
-    <string name="after_call_reminder">Çağrısından sonra Hatırlatma</string>
     <string name="_24_hour_time_format">24 saatlik zaman biçimi</string>
     <string name="smart_fold">Akıllı katlama</string>
     <string name="disable_folding_reminder_window">Hatırlatma penceresinin akıllı katlanmasını devre dışı bırakın</string>
@@ -204,7 +195,14 @@
     <string name="location">Yer</string>
     <string name="day_of_month">Ayın Günü</string>
     <string name="shopping_list">Alışveriş listesi</string>
-    <string name="radius_x_meters">"Radius %s metre"</string>
+    <string name="radius_x_m">"Yarıçap %s m"</string>
+    <string name="radius_x_ft">"Yarıçap %s ft"</string>
+    <string name="radius_x_km">"Yarıçap %s km"</string>
+    <string name="radius_x_mi">"Yarıçap %s mil"</string>
+    <string name="dist_x_m">"Mesafe %s m"</string>
+    <string name="dist_x_ft">"Mesafe %s ft"</string>
+    <string name="dist_x_km">"Mesafe %s km"</string>
+    <string name="dist_x_mi">"Mesafe %s mil"</string>
     <string name="shopping_list_is_empty">Alışveriş listesi boş!</string>
     <string name="you_dont_select_any_day">Bir gün seçin!</string>
     <string name="you_dont_select_application">Uygulamayı seçmeyin!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">Görevi sil</string>
     <string name="move_to_another_list">Başka bir listeye taşı</string>
     <string name="edit_birthday">Düzenleme doğum günü</string>
-    <string name="disconnect">Kesmek</string>
     <string name="you_dont_select_any_calendar">Bir takvim seçmeyin!</string>
     <string name="please_wait">Lütfen bekle…</string>
     <string name="no_events_found">Etkinlik bulunamadı!</string>
     <string name="events_found">olay (lar) bulundu</string>
     <string name="x_minutes">"%s dakika"</string>
     <string name="x_hours">"%s saat"</string>
-    <string name="last_called">Son olarak adlandırılan</string>
     <string name="x_years">"%s yıllar"</string>
     <string name="x_days">"%s gün"</string>
     <string name="reminder_snoozed">Hatırlatma ertelendi</string>
     <string name="choose_application">Uygulama seçin</string>
-    <string name="no_messages">Mesaj yok</string>
     <string name="birthday">Doğum günü</string>
     <string name="permanent">Kalıcı</string>
     <string name="today">Bugün</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">Mikrofona erişmek için uygulama, Ses Kaydı izni gerektirir</string>
     <string name="get_accounts">Hesapları alın</string>
     <string name="get_accounts_explanation">Giriş yapmak için, uygulama Hesap Al izni gerektirir</string>
-    <string name="read_phone_state">Telefon durumunu oku</string>
-    <string name="read_phone_state_explanation">Cevapsız aramaları algılamak için uygulama, Telefon durumunu okuma izni gerektirir</string>
     <string name="read_contacts">Kişileri oku</string>
     <string name="read_contacts_explanation">Kişilerinizden numara seçmek için, uygulama Kişileri Okuma izni gerektirir</string>
     <string name="read_calendar">Oku takvim</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s saniye"</string>
     <string name="say_something">Bir şey söyle</string>
     <string name="no_recognizer_found">Konuşma tanıma sistemi bulunamadı!</string>
-    <string name="same_group">Aynı grup!</string>
     <string name="change_group">Değişim grubu</string>
     <string name="move_to_trash">Çöp kutusuna taşıyın</string>
     <string name="all_files_removed">Tüm dosyalar kaldırılır</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">Çöp temizlendi</string>
     <string name="trash_is_empty">Çöp boş</string>
     <string name="reminder_is_outdated">Hatırlatma modası geçmiş, ilk olarak düzenlemek</string>
-    <string name="reminder_created">Hatırlatma oluşturuldu</string>
-    <string name="reminder_created_on">Üzerinde hatırlatıcı oluşturuldu</string>
     <string name="everyday">Her gün</string>
     <string name="reminder">Hatırlatma</string>
     <string name="export_and_sync">İhracat ve senkronizasyon</string>
-    <string name="additional">Ek</string>
     <string name="other">Diğer</string>
     <string name="general">Genel</string>
     <string name="xW">"%sH"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">Arama yeri …</string>
     <string name="add_all">Hepsini ekle</string>
     <string name="no_places_found">Yeri bulunamadı!</string>
-    <string name="additional_reminder">Hatırlatma Ek tip - Yerler</string>
     <string name="add_reminder_menu">Hatırlatıcı ekleme</string>
     <string name="task_summary_is_empty">Görev özeti boş!</string>
     <string name="x_day">%s gün</string>
@@ -358,7 +346,6 @@
     <string name="refresh">Yenile</string>
     <string name="move_forward">İlerlemek</string>
     <string name="move_backward">Geri dön</string>
-    <string name="create_task">Görev oluştur</string>
     <string name="could_not_launch_market">Pazar başlatılamadı</string>
     <string name="all_permissions_are_enabled">Tüm izinler etkindir</string>
     <string name="delete_this_reminder">Bu hatırlatma silinsin mi?</string>
@@ -369,14 +356,12 @@
     <string name="dark">Karanlık</string>
     <string name="x_out_of_x" formatted="false">%d - %d</string>
     <string name="syncing_places">Yer senkronize ediliyor …</string>
-    <string name="syncing_templates">İleti şablonlarını senkronize ediliyor …</string>
     <string name="work">İş</string>
     <string name="personal">Kişisel</string>
     <string name="auto_call">Otomatik çağrı</string>
     <string name="enable_making_phone_calls_automatically">Otomatik olarak telefon görüşmelerini etkinleştirmeyi etkinleştir</string>
     <string name="update_available">Güncelleme uygun</string>
     <string name="would_you_like_to_install_tts">Text-to-Speech motorunu yüklemek ister misiniz?</string>
-    <string name="install">Yükle</string>
     <string name="all_reminders_were_disabled">Tüm hatırlatıcılar devre dışı bırakıldı</string>
     <string name="log_in">Oturum aç</string>
     <string name="failed_to_login">Giriş yapılamadı</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">Tam ekran</string>
     <string name="acc_contact_photo">İrtibat fotoğrafı</string>
     <string name="acc_button_ok">tamam</string>
-    <string name="acc_button_cancel">İptal etmek</string>
     <string name="acc_button_snooze">şekerleme</string>
     <string name="acc_button_snooze_for">Için erteleme</string>
     <string name="acc_button_move_to_status_bar">Durum çubuğuna git</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">Diğer bilgilendirme amaçlı bildirimler için kanal</string>
     <string name="add_note">Not ekle</string>
     <string name="yearly">Yıllık</string>
-    <string name="attach_file">Dosya eki</string>
     <string name="location_tracking_service_running">Konum izleme servisi çalışıyor</string>
     <string name="application_language">Uygulama dili</string>
     <string name="cant_find_app_for_that_file_type">Bu dosyayı açabilen bir uygulama bulamıyor.</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">Etkinlik bildirimini tekrarlama</string>
     <string name="repeat_event_notification_when_no_action">Kullanıcı işlemi olmadığında olay bildirimini tekrarla</string>
     <string name="allow_folding_event_window">Katlanan etkinlik penceresine izin ver</string>
-    <string name="create_reminders_for_missed_calls">Cevapsız çağrılar hakkında hatırlatıcı oluşturma</string>
-    <string name="show_event_screen_after_phone_call">Telefon görüşmesinden sonra etkinlik oluşturma ekranını göster</string>
     <string name="last_color">Son renk</string>
     <string name="do_not_remember_last_color">Son kullanılan rengi hatırlamıyorum</string>
     <string name="export">Ihracat</string>
@@ -502,13 +483,9 @@
     <string name="new_place">Yeni yer</string>
     <string name="edit_place">Yer düzenle</string>
     <string name="select_place">Yer seçiniz</string>
-    <string name="create_template">Şablon oluştur</string>
-    <string name="edit_template">Şablonu düzenle</string>
     <string name="move_to_place">Yerine taşı</string>
     <string name="create_group">Grup oluştur</string>
     <string name="make_default">Varsayılan yap</string>
-    <string name="do_not_create_reminder_for_missed_calls">Cevapsız çağrılar için hatırlatıcı oluşturma</string>
-    <string name="do_not_show_sms_screen_after_call">Reddedilen aramadan sonra SMS ekranını gösterme</string>
     <string name="recent_places">son gidilen yerler</string>
     <string name="found_places">yerler bulundu</string>
     <string name="repeat_every">Her tekrarla</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">Hatırlatma oluşturmayın</string>
     <string name="do_not_show_in_home_screen_widget">Ana ekran widget\'ında gösterme</string>
     <string name="do_not_show_permanent_notification">Kalıcı bildirim gösterme</string>
-    <string name="do_not_show_after_calls">Çağrılardan sonra etkinlik oluşturma ekranını gösterme</string>
     <string name="silent_channel">Sessiz kanal</string>
     <string name="channel_for_silent_notifiations">Sessiz bildirimler için kanal</string>
     <string name="sync_data_now">Verileri şimdi senkronize et</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">Doğum günlerini hatırlatmayın</string>
     <string name="with_reminder">Hatırlatma ile</string>
     <string name="change_pin">Pin\'i değiştir</string>
-    <string name="acc_resend_message">Mesajı tekrar gönder</string>
     <string name="backup_my_data">Verimi yedekle</string>
-    <string name="missed_call">Cevapsız arama</string>
-    <string name="select_date_in_future">Gelecekte tarih seçin</string>
     <string name="backup_data_now">Verileri şimdi yedekle</string>
     <string name="portuguese">Portekizce</string>
     <string name="download">İndir</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">Sadece ekran kilidini aç</string>
     <string name="import_file">Önemli dosya</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Servisleri bulunamadı, bazı işlevler devre dışı!</string>
-    <string name="none">Yok</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Hatırlatıcılarınızı güvende tutmak için veri yedeklemeyi etkinleştirin</string>
     <string name="x_weeks">%s hafta</string>
     <string name="are_you_sure">Emin misiniz?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">Ana ekranda kalıcı hatırlatma</string>
     <string name="unsupported_file_format">Desteklenmeyen dosya formatı</string>
     <string name="same_place_message">Uygulamada aynı tanımlayıcıya sahip yer bulundu. Her ikisini de sakla ya da akımı değiştir?</string>
-    <string name="same_template_message">Uygulamada aynı tanımlayıcıya sahip SMS şablonu bulundu. Her ikisini de sakla ya da akımı değiştir?</string>
     <string name="same_group_message">Uygulamada bulunan aynı tanımlayıcıya sahip grup. İkisini de saklayın veya akımı değiştirin?</string>
     <string name="same_reminder_message">Uygulamada aynı tanımlayıcıya sahip hatırlatıcı bulundu. İkisini de saklayın veya akımı değiştirin?</string>
     <string name="same_note_message">Uygulamada bulunan aynı tanımlayıcıya dikkat edin. Her ikisini de sakla ya da akımı değiştir?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">Telefon görüşmeleri ve SMS</string>
     <string name="choose_ringtone">Zil sesi seç</string>
     <string name="select_ringtone_for_notifications">Bildirimler için zil sesi seçin</string>
-    <string name="try_again">Tekrar deneyin</string>
     <string name="enter_your_pin">PIN\'inizi girin</string>
     <string name="enter_pin">PIN girin</string>
     <string name="prompt_info_subtitle">Biyometrik kimlik doğrulama</string>
     <string name="prompt_info_description">Biyometrik kimlik doğrulama ile devam edin</string>
-    <string name="title_feature_birthdays">Doğum günleri</string>
     <string name="bg_location_message">Arka planda konumun, seçilen konumun yakınında olacağınızı uygulamaya bildirmesine izin vermeniz gerekir.\nBu uygulama, uygulama kapalıyken veya kullanımda değilken bile konuma göre hatırlatıcıları etkinleştirmek için konum verilerini toplar.\nKonum verilerine yalnızca şu konumdayken erişilir en az bir aktif konum hatırlatıcısı.</string>
     <string name="deleted">Silinmiş</string>
     <string name="post_notification">Bildirim Sonrası</string>
@@ -665,7 +634,6 @@
     <string name="group">Grup</string>
     <string name="configure">Yapılandır</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Hatırlatıcı oluşturma ekranında bazı parametreleri etkinleştirin veya devre dışı bırakın</string>
-    <string name="tell_about_event">Olaylar hakkında bilgi ver</string>
     <string name="terms_and_conditions">Şartlar ve koşullar</string>
     <string name="acc_clear_search">Aramayı Temizle</string>
     <string name="acc_switch_to_map">Haritaya geç</string>
@@ -685,4 +653,16 @@
     <string name="analytics">Analitik</string>
     <string name="collecting_of_app_analytics_is_disabled">Uygulama analizlerinin toplanması devre dışı bırakıldı</string>
     <string name="collecting_of_app_analytics_is_enabled">Uygulama analizlerinin toplanması etkinleştirildi</string>
+    <string name="not_born">Doğmadı</string>
+    <string name="metric_units">Metrik birimler</string>
+    <string name="use_imperial_system">İmparatorluk sistemini kullan</string>
+    <string name="use_metric_system">Metrik sistemi kullan</string>
+    <string name="pro_version">PRO sürümü</string>
+    <string name="pro_advantages">PRO Avantajları:</string>
+    <string name="pro_buy">Satın PRO</string>
+    <string name="pro_no_ads">- Reklam Yok</string>
+    <string name="pro_different_settings_for_birthdays">- Doğum günü için farklı ayarlar</string>
+    <string name="pro_led_notification">- LED bildirimi</string>
+    <string name="pro_led_color_for_each_reminder">- Her hatırlatıcı renkli LED</string>
+    <string name="pro_styles_for_marker">- Işaretleyici için 16 stilleri</string>
 </resources>

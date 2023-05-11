@@ -59,19 +59,15 @@
     <string name="color">Color</string>
     <string name="files">Archivos</string>
     <string name="delete_all">Eliminar todos</string>
-    <string name="connect">Conectar</string>
     <string name="search">Buscar</string>
     <string name="text_size">Tamaño del texto</string>
     <string name="exclusion">Exclusión</string>
     <string name="hours">Horas</string>
     <string name="ok">DE ACUERDO</string>
     <string name="cancel">Cancelar</string>
-    <string name="type">Tipo</string>
     <string name="message">Mensaje</string>
     <string name="date_and_time">Fecha y hora</string>
     <string name="tomorrow">Mañana</string>
-    <string name="next_business_day">Siguiente día de negocios</string>
-    <string name="after">Después</string>
     <string name="time">Hora</string>
     <string name="google_tasks">Tareas de Google</string>
     <string name="add_to_calendar">Añadir al calendario</string>
@@ -80,7 +76,6 @@
     <string name="tasks">Tareas</string>
     <string name="groups">Grupos</string>
     <string name="places">Lugares</string>
-    <string name="messages">Mensajes</string>
     <string name="backup_files">Archivos de respaldo</string>
     <string name="trash">Basura</string>
     <string name="feedback">Realimentación</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">Servicios en la nube</string>
     <string name="clean">Borrar datos</string>
     <string name="backup_settings">Crear copia de seguridad de los ajustes</string>
-    <string name="missed_call_reminder">Recuerde a las llamadas perdidas acerca</string>
-    <string name="quick_sms">SMS rápida</string>
-    <string name="show_quick_answer_window">Mostrar ventana de respuesta después de rechazo de llamada</string>
-    <string name="after_call_reminder">Recordatorio después de la llamada</string>
     <string name="_24_hour_time_format">Formato de 24 horas</string>
     <string name="smart_fold">Plegado inteligente</string>
     <string name="disable_folding_reminder_window">Deshabilitar el plegado inteligente de la ventana de recordatorio</string>
@@ -204,7 +195,14 @@
     <string name="location">Ubicación</string>
     <string name="day_of_month">Día del mes</string>
     <string name="shopping_list">Lista de la compra</string>
-    <string name="radius_x_meters">"Radio de %s metros"</string>
+    <string name="radius_x_m">"Radio %s m"</string>
+    <string name="radius_x_ft">"Radio %s ft"</string>
+    <string name="radius_x_km">"Radio %s km"</string>
+    <string name="radius_x_mi">"Radio %s millas"</string>
+    <string name="dist_x_m">"Distancia %s m"</string>
+    <string name="dist_x_ft">"Distancia %s ft"</string>
+    <string name="dist_x_km">"Distancia %s km"</string>
+    <string name="dist_x_mi">"Distancia %s mi"</string>
     <string name="shopping_list_is_empty">La lista está vacía!</string>
     <string name="you_dont_select_any_day">No se selecciona un día!</string>
     <string name="you_dont_select_application">No selecciona la aplicación!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">Eliminar tarea</string>
     <string name="move_to_another_list">Mover a otra lista</string>
     <string name="edit_birthday">Editar cumpleaños</string>
-    <string name="disconnect">Desconectar</string>
     <string name="you_dont_select_any_calendar">No selecciona un calendario!</string>
     <string name="please_wait">Por favor espera…</string>
     <string name="no_events_found">No se han encontrado eventos!</string>
     <string name="events_found">evento (s) encontrado</string>
     <string name="x_minutes">"%s minutos"</string>
     <string name="x_hours">"%s horas"</string>
-    <string name="last_called">Última llamada en</string>
     <string name="x_years">"%s años"</string>
     <string name="x_days">"%s días"</string>
     <string name="reminder_snoozed">Recordatorio dormitado</string>
     <string name="choose_application">Elija la aplicación</string>
-    <string name="no_messages">Ningún mensaje</string>
     <string name="birthday">Cumpleaños</string>
     <string name="permanent">Permanente</string>
     <string name="today">Hoy</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">Para acceder al micrófono, la aplicación requiere el permiso Grabar audio</string>
     <string name="get_accounts">Obtener cuentas</string>
     <string name="get_accounts_explanation">Para iniciar sesión, la aplicación requiere el permiso Obtener cuentas</string>
-    <string name="read_phone_state">Leer el estado del teléfono</string>
-    <string name="read_phone_state_explanation">Para detectar llamadas perdidas, la aplicación requiere permiso para leer el estado del teléfono</string>
     <string name="read_contacts">Leer los contactos</string>
     <string name="read_contacts_explanation">Para elegir el número de sus contactos, la aplicación requiere permiso de lectura de contactos</string>
     <string name="read_calendar">Leer calendario</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s segundos"</string>
     <string name="say_something">Di algo</string>
     <string name="no_recognizer_found">Sistema de reconocimiento de voz no encontrado!</string>
-    <string name="same_group">Mismo grupo!</string>
     <string name="change_group">Cambio de grupo</string>
     <string name="move_to_trash">Mover a la papelera</string>
     <string name="all_files_removed">Todos los archivos eliminados</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">Basura aclarado</string>
     <string name="trash_is_empty">Papelera está vacía</string>
     <string name="reminder_is_outdated">Recordatorio es obsoleta, editarlo primera</string>
-    <string name="reminder_created">Recordatorio creado</string>
-    <string name="reminder_created_on">Recordatorio creado en</string>
     <string name="everyday">Cada día</string>
     <string name="reminder">Recordatorio</string>
     <string name="export_and_sync">Exportación y sincronización</string>
-    <string name="additional">Adicional</string>
     <string name="other">Otro</string>
     <string name="general">General</string>
     <string name="xW">"%sS"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">Buscar lugar …</string>
     <string name="add_all">Añadir todo</string>
     <string name="no_places_found">Coloque No encontrado!</string>
-    <string name="additional_reminder">tipo adicional de recordatorio - Lugares</string>
     <string name="add_reminder_menu">Añadir recordatorio</string>
     <string name="task_summary_is_empty">resumen de la tarea está vacía!</string>
     <string name="x_day">%s día</string>
@@ -358,7 +346,6 @@
     <string name="refresh">Refrescar</string>
     <string name="move_forward">Seguir adelante</string>
     <string name="move_backward">Regresará</string>
-    <string name="create_task">Crear tarea</string>
     <string name="could_not_launch_market">No se pudo iniciar mercado</string>
     <string name="all_permissions_are_enabled">Todos los permisos están habilitados</string>
     <string name="delete_this_reminder">Eliminar este recordatorio?</string>
@@ -369,14 +356,12 @@
     <string name="dark">Oscuro</string>
     <string name="x_out_of_x" formatted="false">%d de cada %d</string>
     <string name="syncing_places">Sincronizando lugares …</string>
-    <string name="syncing_templates">Sincronización de plantillas de mensaje …</string>
     <string name="work">Trabajo</string>
     <string name="personal">Personal</string>
     <string name="auto_call">Llamada automática</string>
     <string name="enable_making_phone_calls_automatically">Habilitar llamadas telefónicas automáticamente</string>
     <string name="update_available">Actualización disponible</string>
     <string name="would_you_like_to_install_tts">¿Desea instalar un motor de conversión de texto a voz?</string>
-    <string name="install">Instalar</string>
     <string name="all_reminders_were_disabled">Todos los recordatorios están inhabilitados</string>
     <string name="log_in">Iniciar sesión</string>
     <string name="failed_to_login">Error al iniciar sesión</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">Pantalla completa</string>
     <string name="acc_contact_photo">Foto del contacto</string>
     <string name="acc_button_ok">De acuerdo</string>
-    <string name="acc_button_cancel">Cancelar</string>
     <string name="acc_button_snooze">dormitar</string>
     <string name="acc_button_snooze_for">Snooze para</string>
     <string name="acc_button_move_to_status_bar">Mover a la barra de estado</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">Canal para otras notificaciones informativas.</string>
     <string name="add_note">Añadir la nota</string>
     <string name="yearly">Anualmente</string>
-    <string name="attach_file">Adjuntar archivo</string>
     <string name="location_tracking_service_running">Servicio de seguimiento de ubicación en ejecución</string>
     <string name="application_language">Lenguaje de aplicación</string>
     <string name="cant_find_app_for_that_file_type">No se puede encontrar la aplicación que puede abrir este archivo.</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">No repetir la notificación de eventos.</string>
     <string name="repeat_event_notification_when_no_action">Repita la notificación de eventos cuando no hay acción del usuario.</string>
     <string name="allow_folding_event_window">Permitir ventana de evento plegable</string>
-    <string name="create_reminders_for_missed_calls">Crear recordatorios sobre llamadas perdidas</string>
-    <string name="show_event_screen_after_phone_call">Mostrar pantalla de creación de eventos después de una llamada telefónica</string>
     <string name="last_color">Ultimo color</string>
     <string name="do_not_remember_last_color">No recuerdo el último color usado.</string>
     <string name="export">Exportar</string>
@@ -502,13 +483,9 @@
     <string name="new_place">Nuevo lugar</string>
     <string name="edit_place">Editar lugar</string>
     <string name="select_place">Seleccionar lugar</string>
-    <string name="create_template">Crear plantilla</string>
-    <string name="edit_template">Editar plantilla</string>
     <string name="move_to_place">Mover al lugar</string>
     <string name="create_group">Crea un grupo</string>
     <string name="make_default">Hacer por defecto</string>
-    <string name="do_not_create_reminder_for_missed_calls">No cree recordatorios para llamadas perdidas</string>
-    <string name="do_not_show_sms_screen_after_call">No mostrar la pantalla de SMS después de la llamada rechazada</string>
     <string name="recent_places">lugares recientes</string>
     <string name="found_places">lugares encontrados</string>
     <string name="repeat_every">Repite cada</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">No crear recordatorio</string>
     <string name="do_not_show_in_home_screen_widget">No mostrar en el widget de la pantalla de inicio</string>
     <string name="do_not_show_permanent_notification">No mostrar notificación permanente.</string>
-    <string name="do_not_show_after_calls">No mostrar la pantalla de creación de eventos después de las llamadas</string>
     <string name="silent_channel">Canal silencioso</string>
     <string name="channel_for_silent_notifiations">Canal para notificaciones silenciosas.</string>
     <string name="sync_data_now">Sincronizar datos ahora</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">No recuerdes los cumpleaños</string>
     <string name="with_reminder">Con recordatorio</string>
     <string name="change_pin">Cambiar PIN</string>
-    <string name="acc_resend_message">Reenviar mensaje</string>
     <string name="backup_my_data">Respalda mi información</string>
-    <string name="missed_call">Llamada perdida</string>
-    <string name="select_date_in_future">Seleccionar fecha en el futuro</string>
     <string name="backup_data_now">Hacer copia de seguridad de los datos ahora</string>
     <string name="portuguese">Portugués</string>
     <string name="download">Descargar</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">Permitir desbloquear la pantalla sólo para</string>
     <string name="import_file">Importar archivo</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">No se han encontrado los servicios de Google Play, algunas funciones están desactivadas.</string>
-    <string name="none">Ninguno</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Habilite la copia de seguridad de datos para mantener sus recordatorios a salvo</string>
     <string name="x_weeks">%s semanas</string>
     <string name="are_you_sure">¿Estás seguro?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">Recordatorio permanente en la pantalla de inicio</string>
     <string name="unsupported_file_format">Formato de archivo no soportado</string>
     <string name="same_place_message">Se encontró un lugar con el mismo identificador en la aplicación. Mantener ambos o reemplazar actual?</string>
-    <string name="same_template_message">Se encontró una plantilla de SMS con el mismo identificador en la aplicación. Mantener ambos o reemplazar actual?</string>
     <string name="same_group_message">Grupo con el mismo identificador encontrado en la aplicación. Mantener ambos o reemplazar actual?</string>
     <string name="same_reminder_message">Se encontró un recordatorio con el mismo identificador en la aplicación. Mantener ambos o reemplazar actual?</string>
     <string name="same_note_message">Nota con el mismo identificador encontrado en la aplicación. Mantener ambos o reemplazar actual?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">Llamadas telefónicas y SMS</string>
     <string name="choose_ringtone">Elegir tono de llamada</string>
     <string name="select_ringtone_for_notifications">Seleccionar tono de llamada para notificaciones</string>
-    <string name="try_again">Inténtalo de nuevo</string>
     <string name="enter_your_pin">¿Introduce tu PIN?</string>
     <string name="enter_pin">Ingrese su PIN</string>
     <string name="prompt_info_subtitle">Autenticación biométrica</string>
     <string name="prompt_info_description">Continuar con la autenticación biométrica</string>
-    <string name="title_feature_birthdays">Cumpleaños</string>
     <string name="bg_location_message">Debes permitir que la ubicación en segundo plano notifique a la aplicación cuando estarás cerca de la ubicación seleccionada.\nEsta aplicación recopila datos de ubicación para habilitar recordatorios por ubicación, incluso cuando la aplicación está cerrada o no está en uso.\nLos datos de ubicación solo se acceden desde donde está menos un recordatorio de ubicación activa.</string>
     <string name="deleted">Eliminado</string>
     <string name="post_notification">Publicar notificación</string>
@@ -665,7 +634,6 @@
     <string name="group">Grupo</string>
     <string name="configure">Configurar</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Habilite o deshabilite algunos parámetros en la pantalla de creación de recordatorios</string>
-    <string name="tell_about_event">Informar sobre el evento</string>
     <string name="terms_and_conditions">Términos y condiciones</string>
     <string name="acc_clear_search">Borrar búsqueda</string>
     <string name="acc_switch_to_map">Cambiar al mapa</string>
@@ -685,4 +653,16 @@
     <string name="analytics">Analíticas</string>
     <string name="collecting_of_app_analytics_is_disabled">La recogida de análisis de aplicaciones está desactivada</string>
     <string name="collecting_of_app_analytics_is_enabled">La recogida de análisis de aplicaciones está habilitada</string>
+    <string name="not_born">No nacido</string>
+    <string name="metric_units">Unidades métricas</string>
+    <string name="use_imperial_system">Usa el sistema imperial</string>
+    <string name="use_metric_system">Usar sistema métrico</string>
+    <string name="pro_version">Versión PRO</string>
+    <string name="pro_advantages">Ventajas de PRO:</string>
+    <string name="pro_buy">Comprar PRO</string>
+    <string name="pro_no_ads">- No Publicidad</string>
+    <string name="pro_different_settings_for_birthdays">- Diferentes configuraciones para los cumpleaños</string>
+    <string name="pro_led_notification">- LED de notificación</string>
+    <string name="pro_led_color_for_each_reminder">- Color para cada recordatorio de LED</string>
+    <string name="pro_styles_for_marker">- 16 estilos de marcador</string>
 </resources>

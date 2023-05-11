@@ -59,19 +59,15 @@
     <string name="color">Barva</string>
     <string name="files">Soubory</string>
     <string name="delete_all">Smazat všechny</string>
-    <string name="connect">Připojit</string>
     <string name="search">Vyhledávání</string>
     <string name="text_size">Velikost textu</string>
     <string name="exclusion">Vyloučení</string>
     <string name="hours">Hodiny</string>
     <string name="ok">Dobře</string>
     <string name="cancel">Zrušit</string>
-    <string name="type">Typ</string>
     <string name="message">Zpráva</string>
     <string name="date_and_time">Datum a čas</string>
     <string name="tomorrow">Zítra</string>
-    <string name="next_business_day">Následující pracovní den</string>
-    <string name="after">Po</string>
     <string name="time">Čas</string>
     <string name="google_tasks">Úkoly mapu</string>
     <string name="add_to_calendar">Přidat do kalendáře</string>
@@ -80,7 +76,6 @@
     <string name="tasks">úkoly</string>
     <string name="groups">Skupiny</string>
     <string name="places">Místa</string>
-    <string name="messages">Zprávy</string>
     <string name="backup_files">Záložní soubory</string>
     <string name="trash">Odpadky</string>
     <string name="feedback">Zpětná vazba</string>
@@ -131,10 +126,6 @@
     <string name="cloud_services">Cloudové služby</string>
     <string name="clean">Vyčistit data</string>
     <string name="backup_settings">Vytvořit zálohu nastavení</string>
-    <string name="missed_call_reminder">Připomínat zmeškané hovory</string>
-    <string name="quick_sms">Rychlé SMS</string>
-    <string name="show_quick_answer_window">Zobrazit odpověď okna Po odmítnutí hovoru</string>
-    <string name="after_call_reminder">Připomínka po výzvě</string>
     <string name="_24_hour_time_format">Formát času 24 hodin</string>
     <string name="smart_fold">inteligentní skládací</string>
     <string name="disable_folding_reminder_window">Zakázat inteligentní skládání okna připomenutí</string>
@@ -204,7 +195,14 @@
     <string name="location">Umístění</string>
     <string name="day_of_month">Den v měsíci</string>
     <string name="shopping_list">Nákupní seznam</string>
-    <string name="radius_x_meters">"Poloměr %s metrů"</string>
+    <string name="radius_x_m">"Poloměr %s m"</string>
+    <string name="radius_x_ft">"Poloměr %s stop"</string>
+    <string name="radius_x_km">"Poloměr %s km"</string>
+    <string name="radius_x_mi">"Poloměr %s mil"</string>
+    <string name="dist_x_m">"Vzdálenost %s m"</string>
+    <string name="dist_x_ft">"Vzdálenost %s stop"</string>
+    <string name="dist_x_km">"Vzdálenost %s km"</string>
+    <string name="dist_x_mi">"Vzdálenost %s mil"</string>
     <string name="shopping_list_is_empty">Nákupní seznam je prázdný!</string>
     <string name="you_dont_select_any_day">Nebudete moci zvolit jeden den!</string>
     <string name="you_dont_select_application">Nevyberete aplikace!</string>
@@ -254,19 +252,16 @@
     <string name="delete_task">Smazat úkol</string>
     <string name="move_to_another_list">Přesunout do jiného seznamu</string>
     <string name="edit_birthday">Editovat narozeniny</string>
-    <string name="disconnect">Odpojit</string>
     <string name="you_dont_select_any_calendar">Nevyberete kalendář!</string>
     <string name="please_wait">Prosím, čekejte...</string>
     <string name="no_events_found">Nebyla nalezena žádná akce!</string>
     <string name="events_found">Událost (y)</string>
     <string name="x_minutes">"%s minut"</string>
     <string name="x_hours">"%s hodin"</string>
-    <string name="last_called">Poslední zavolal na</string>
     <string name="x_years">"%s roky"</string>
     <string name="x_days">"%s dní"</string>
     <string name="reminder_snoozed">Připomínka byla odložena</string>
     <string name="choose_application">Vyberte si aplikaci</string>
-    <string name="no_messages">Žádné zprávy</string>
     <string name="birthday">Narozeniny</string>
     <string name="permanent">Trvalý</string>
     <string name="today">Dnes</string>
@@ -283,8 +278,6 @@
     <string name="record_audio_explanation">Pro přístup k mikrofonu vyžaduje aplikace oprávnění Record Audio</string>
     <string name="get_accounts">Získat účty</string>
     <string name="get_accounts_explanation">K přihlášení aplikace vyžaduje oprávnění Získat účty</string>
-    <string name="read_phone_state">Přečtěte stavu telefonu</string>
-    <string name="read_phone_state_explanation">Pro detekci zmeškaných hovorů vyžaduje aplikace oprávnění Číst stav telefonu</string>
     <string name="read_contacts">Přečtěte kontaktů</string>
     <string name="read_contacts_explanation">K výběru čísla z vašich kontaktů vyžaduje aplikace oprávnění Číst kontakty</string>
     <string name="read_calendar">Přečtěte si kalendář</string>
@@ -298,7 +291,6 @@
     <string name="x_seconds">"%s sekund"</string>
     <string name="say_something">Řekni něco</string>
     <string name="no_recognizer_found">Systém rozpoznávání řeči nebyl nalezen!</string>
-    <string name="same_group">Stejná skupina!</string>
     <string name="change_group">Změna skupina</string>
     <string name="move_to_trash">Přesunout do koše</string>
     <string name="all_files_removed">Všechny soubory odstraněny</string>
@@ -316,12 +308,9 @@
     <string name="trash_cleared">Koš vymazány</string>
     <string name="trash_is_empty">Koš je prázdný</string>
     <string name="reminder_is_outdated">Připomínka je zastaralý, upravit jej nejprve</string>
-    <string name="reminder_created">Připomenutí vytvořil</string>
-    <string name="reminder_created_on">Připomenutí bylo vytvořeno</string>
     <string name="everyday">Každý den</string>
     <string name="reminder">Připomínka</string>
     <string name="export_and_sync">Exportovat &amp; synchronizovat</string>
-    <string name="additional">Další</string>
     <string name="other">Ostatní</string>
     <string name="general">Generál</string>
     <string name="xW">"%sT"</string>
@@ -343,7 +332,6 @@
     <string name="search_place">Hledání místa ...</string>
     <string name="add_all">Přidat vše</string>
     <string name="no_places_found">Umístěte nebyl nalezen!</string>
-    <string name="additional_reminder">Dalším typem připomenutí - Místa</string>
     <string name="add_reminder_menu">Přidat připomenutí</string>
     <string name="task_summary_is_empty">Souhrnný úkol je prázdný!</string>
     <string name="x_day">%s den</string>
@@ -358,7 +346,6 @@
     <string name="refresh">Obnovit</string>
     <string name="move_forward">Pohyb vpřed</string>
     <string name="move_backward">Vrátit zpět</string>
-    <string name="create_task">Vytvořit úkolu</string>
     <string name="could_not_launch_market">Nelze spustit trhu</string>
     <string name="all_permissions_are_enabled">Jsou povolena všechna oprávnění</string>
     <string name="delete_this_reminder">Smazat toto připomenutí?</string>
@@ -369,14 +356,12 @@
     <string name="dark">Temný</string>
     <string name="x_out_of_x" formatted="false">%d z %d</string>
     <string name="syncing_places">Synchronizace místa ...</string>
-    <string name="syncing_templates">Synchronizace šablony zpráv...</string>
     <string name="work">Práce</string>
     <string name="personal">Osobní</string>
     <string name="auto_call">Auto volání</string>
     <string name="enable_making_phone_calls_automatically">Povolit automaticky telefonování</string>
     <string name="update_available">Je k dispozici aktualizace</string>
     <string name="would_you_like_to_install_tts">Chtěli byste nainstalovat Text-to-Speech motor?</string>
-    <string name="install">Nainstalujte</string>
     <string name="all_reminders_were_disabled">Všechny upomínky jsou vypnuté</string>
     <string name="log_in">Přihlásit se</string>
     <string name="failed_to_login">Přihlášení selhalo</string>
@@ -399,7 +384,6 @@
     <string name="full_screen">Celá obrazovka</string>
     <string name="acc_contact_photo">Fotografie kontaktu</string>
     <string name="acc_button_ok">OK</string>
-    <string name="acc_button_cancel">zrušení</string>
     <string name="acc_button_snooze">Podřimovat</string>
     <string name="acc_button_snooze_for">Odložte pro</string>
     <string name="acc_button_move_to_status_bar">Přesuňte se na stavový řádek</string>
@@ -423,7 +407,6 @@
     <string name="channel_for_other_info_notifications">Kanál pro další informační oznámení</string>
     <string name="add_note">Přidat poznámku</string>
     <string name="yearly">Každoročně</string>
-    <string name="attach_file">Přiložit soubor</string>
     <string name="location_tracking_service_running">Služba sledování polohy je spuštěna</string>
     <string name="application_language">Jazyk aplikace</string>
     <string name="cant_find_app_for_that_file_type">Nelze najít aplikaci, která může tento soubor otevřít.</string>
@@ -479,8 +462,6 @@
     <string name="do_no_repeat_event_notification">Neopakujte oznámení o událostech</string>
     <string name="repeat_event_notification_when_no_action">Opakujte upozornění na událost, pokud žádná akce uživatele</string>
     <string name="allow_folding_event_window">Povolit skládání okna událostí</string>
-    <string name="create_reminders_for_missed_calls">Vytvořte si připomenutí zmeškaných hovorů</string>
-    <string name="show_event_screen_after_phone_call">Zobrazit obrazovku vytvoření události po telefonickém hovoru</string>
     <string name="last_color">Poslední barva</string>
     <string name="do_not_remember_last_color">Nepamatuji si poslední použitou barvu</string>
     <string name="export">Vývozní</string>
@@ -502,13 +483,9 @@
     <string name="new_place">Nové místo</string>
     <string name="edit_place">Upravte místo</string>
     <string name="select_place">Vyberte místo</string>
-    <string name="create_template">Vytvořte šablonu</string>
-    <string name="edit_template">Upravit šablonu</string>
     <string name="move_to_place">Přesuňte se na místo</string>
     <string name="create_group">Vytvořit skupinu</string>
     <string name="make_default">Nastavit výchozí</string>
-    <string name="do_not_create_reminder_for_missed_calls">Nevytvářejte připomenutí zmeškaných hovorů</string>
-    <string name="do_not_show_sms_screen_after_call">Po odmítnutí hovoru nezobrazovat obrazovku SMS</string>
     <string name="recent_places">Nedávné místa</string>
     <string name="found_places">nalezená místa</string>
     <string name="repeat_every">Opakujte každý</string>
@@ -537,7 +514,6 @@
     <string name="do_not_create_reminder">Nevytvářejte připomenutí</string>
     <string name="do_not_show_in_home_screen_widget">Nezobrazovat v widgetu domovské obrazovky</string>
     <string name="do_not_show_permanent_notification">Nezobrazovat trvalé oznámení</string>
-    <string name="do_not_show_after_calls">Nezobrazovat obrazovku vytváření událostí po hovorech</string>
     <string name="silent_channel">Tichý kanál</string>
     <string name="channel_for_silent_notifiations">Kanál pro tiché oznámení</string>
     <string name="sync_data_now">Synchronizace dat nyní</string>
@@ -553,10 +529,7 @@
     <string name="do_not_remind_about_birthdays">Nepřipomínejte na narozeniny</string>
     <string name="with_reminder">S připomínkou</string>
     <string name="change_pin">Změnit kód PIN</string>
-    <string name="acc_resend_message">Znovu odeslat zprávu</string>
     <string name="backup_my_data">Zálohujte data</string>
-    <string name="missed_call">Zmeškaný hovor</string>
-    <string name="select_date_in_future">V budoucnu vyberte datum</string>
     <string name="backup_data_now">Proveďte zálohování dat</string>
     <string name="portuguese">Portugalština</string>
     <string name="download">Stažení</string>
@@ -581,7 +554,6 @@
     <string name="allow_unlock_for_priority">Povolit obrazovku pro odemčení pouze pro</string>
     <string name="import_file">Importovat soubor</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Služby Google Play nebyly nalezeny, některé funkce jsou zakázány!</string>
-    <string name="none">Žádný</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Aktivujte zálohování dat, chcete-li, aby vaše připomenutí byla v bezpečí</string>
     <string name="x_weeks">%s týdnů</string>
     <string name="are_you_sure">Jsi si jistá?</string>
@@ -612,7 +584,6 @@
     <string name="permanent_on_home">Trvalé připomenutí na domovské obrazovce</string>
     <string name="unsupported_file_format">Nepodporovaný formát souboru</string>
     <string name="same_place_message">Místo se stejným identifikátorem bylo nalezeno v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
-    <string name="same_template_message">V aplikaci byla nalezena šablona SMS se stejným identifikátorem. Ponechat oba nebo nahradit aktuální?</string>
     <string name="same_group_message">Skupina se stejným identifikátorem nalezeným v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
     <string name="same_reminder_message">Připomenutí se stejným identifikátorem bylo nalezeno v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
     <string name="same_note_message">Poznámka se stejným identifikátorem nalezeným v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
@@ -628,12 +599,10 @@
     <string name="phone_calls_and_sms">Telefonní hovory a SMS</string>
     <string name="choose_ringtone">Vyberte vyzváněcí tón</string>
     <string name="select_ringtone_for_notifications">Vyberte vyzváněcí tón pro upozornění</string>
-    <string name="try_again">Zkus to znovu</string>
     <string name="enter_your_pin">Zadejte svůj PIN?</string>
     <string name="enter_pin">Zadejte PIN</string>
     <string name="prompt_info_subtitle">Biometrické ověřování</string>
     <string name="prompt_info_description">Pokračujte v biometrickém ověřování</string>
-    <string name="title_feature_birthdays">Narozeniny</string>
     <string name="bg_location_message">Chcete-li aplikaci upozornit, když budete poblíž vybraného místa, musíte povolit polohu na pozadí.\nTato aplikace shromažďuje údaje o poloze, aby umožnila připomenutí podle místa, i když je aplikace zavřená nebo se nepoužívá.\nÚdaje o poloze jsou dostupné pouze tam, kde je alespoň jedno připomenutí aktivní polohy.</string>
     <string name="deleted">Smazáno</string>
     <string name="post_notification">Odeslat oznámení</string>
@@ -665,7 +634,6 @@
     <string name="group">Skupina</string>
     <string name="configure">Konfigurovat</string>
     <string name="enable_or_disable_some_parameters_on_reminder_creation_screen">Povolte nebo zakažte některé parametry na obrazovce vytváření připomenutí</string>
-    <string name="tell_about_event">Řekněte o událostech</string>
     <string name="terms_and_conditions">Pravidla a podmínky</string>
     <string name="acc_clear_search">Vymazat vyhledávání</string>
     <string name="acc_switch_to_map">Přepnout na mapu</string>
@@ -685,4 +653,16 @@
     <string name="analytics">Analytika</string>
     <string name="collecting_of_app_analytics_is_disabled">Sběr analytických aplikací je zakázán</string>
     <string name="collecting_of_app_analytics_is_enabled">Sběr analytických aplikací je povolen</string>
+    <string name="not_born">Nenarozen</string>
+    <string name="metric_units">Metrické jednotky</string>
+    <string name="use_imperial_system">Použijte imperiální systém</string>
+    <string name="use_metric_system">Použijte metrický systém</string>
+    <string name="pro_version">Verze PRO</string>
+    <string name="pro_advantages">Výhody PRO:</string>
+    <string name="pro_buy">Koupit PRO</string>
+    <string name="pro_no_ads">- Žádná reklama</string>
+    <string name="pro_different_settings_for_birthdays">- Různé nastavení pro narozeniny</string>
+    <string name="pro_led_notification">- LED oznámení</string>
+    <string name="pro_led_color_for_each_reminder">- LED barvu pro každou upomínku</string>
+    <string name="pro_styles_for_marker">- 16 styly pro značku</string>
 </resources>
