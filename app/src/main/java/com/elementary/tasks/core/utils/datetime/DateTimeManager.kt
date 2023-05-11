@@ -542,7 +542,9 @@ class DateTimeManager(
   }
 
   fun isCurrent(eventTime: String?): Boolean {
-    return getCurrentDateTime().isBefore(fromGmtToLocal(eventTime))
+    return fromGmtToLocal(eventTime)?.let {
+      getCurrentDateTime().isBefore(it)
+    } ?: false
   }
 
   fun isCurrent(dateTime: LocalDateTime): Boolean {
