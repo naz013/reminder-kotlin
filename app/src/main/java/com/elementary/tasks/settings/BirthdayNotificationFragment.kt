@@ -67,6 +67,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
       binding.soundOptionPrefs.gone()
       binding.infiniteSoundOptionPrefs.gone()
       binding.wakeScreenOptionPrefs.gone()
+      binding.chooseSoundPrefs.gone()
       binding.melodyDurationPrefs.gone()
       binding.ttsPrefs.gone()
       binding.localePrefs.gone()
