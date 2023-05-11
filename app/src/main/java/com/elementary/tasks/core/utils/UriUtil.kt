@@ -7,7 +7,6 @@ import androidx.core.content.FileProvider
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 import java.io.File
 
@@ -27,8 +26,7 @@ object UriUtil {
         } else {
           withUIContext { onReady.invoke(true, path) }
         }
-      } catch (e: Exception) {
-        FirebaseCrashlytics.getInstance().recordException(e)
+      } catch (e: Throwable) {
         withUIContext { onReady.invoke(false, null) }
       }
     }
@@ -38,8 +36,7 @@ object UriUtil {
     Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $filePath")
     return try {
       FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
-    } catch (e: java.lang.Exception) {
-      FirebaseCrashlytics.getInstance().recordException(e)
+    } catch (e: Throwable) {
       null
     }
   }
@@ -48,8 +45,7 @@ object UriUtil {
     Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $file")
     return try {
       FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
-    } catch (e: java.lang.Exception) {
-      FirebaseCrashlytics.getInstance().recordException(e)
+    } catch (e: Throwable) {
       null
     }
   }
