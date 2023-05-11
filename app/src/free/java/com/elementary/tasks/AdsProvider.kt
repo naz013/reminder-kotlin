@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.elementary.tasks.core.utils.SuperUtil
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -142,8 +143,12 @@ class AdsProvider {
     }
 
     fun init(context: Context) {
-      MobileAds.initialize(context) {
-        Timber.d("init: $it")
+      if (SuperUtil.isGooglePlayServicesAvailable(context)) {
+        MobileAds.initialize(context) {
+          Timber.d("init: $it")
+        }
+      } else {
+        wasError = true
       }
     }
   }
