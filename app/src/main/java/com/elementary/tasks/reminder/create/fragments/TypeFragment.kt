@@ -200,17 +200,25 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         }
       }
       is LoudnessPickerView -> {
-        view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
-        view.bindProperty(iFace.state.reminder.volume) { loudness ->
-          iFace.state.reminder.volume = loudness
+        if (!Module.is10) {
+          view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
+          view.bindProperty(iFace.state.reminder.volume) { loudness ->
+            iFace.state.reminder.volume = loudness
+          }
+        } else {
+          view.gone()
         }
       }
       is MelodyView -> {
-        view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
-        this.melodyView = view
-        view.onFileSelectListener = { iFace.selectMelody() }
-        view.bindProperty(iFace.state.reminder.melodyPath) { melody ->
-          iFace.state.reminder.melodyPath = melody
+        if (!Module.is10) {
+          view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
+          this.melodyView = view
+          view.onFileSelectListener = { iFace.selectMelody() }
+          view.bindProperty(iFace.state.reminder.melodyPath) { melody ->
+            iFace.state.reminder.melodyPath = melody
+          }
+        } else {
+          view.gone()
         }
       }
       is PriorityPickerView -> {
@@ -277,10 +285,10 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         }
       }
       is LoudnessPickerView -> {
-        view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
+        view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled() && !Module.is10)
       }
       is MelodyView -> {
-        view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
+        view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled() && !Module.is10)
       }
       is PriorityPickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())

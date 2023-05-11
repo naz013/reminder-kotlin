@@ -63,7 +63,7 @@ class ReminderActionProcessor(
       if (!ignore) {
         windowType = reminder.windowType
       }
-      Timber.d("start: ignore -> $ignore, event -> $reminder")
+      Timber.d("process: ignore -> $ignore, event -> $reminder")
       if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
         if (prefs.doNotDisturbAction == 0) {
           val delayTime = dateTimeManager.millisToEndDnd(
@@ -79,6 +79,7 @@ class ReminderActionProcessor(
         val canShowWindow = windowType == 0 && !SuperUtil.isPhoneCallActive(contextProvider.context)
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
         val handler = reminderHandlerFactory.createAction(canShowWindow)
+        Timber.d("process: handler=$handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
         }
