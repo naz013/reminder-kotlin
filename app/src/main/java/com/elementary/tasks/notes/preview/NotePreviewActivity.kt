@@ -69,7 +69,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun loadAds() {
-    if (!Module.isPro) {
+    if (!Module.isPro && AdsProvider.hasAds()) {
       binding.adsCard.visible()
       adsProvider.showBanner(
         binding.adsHolder,

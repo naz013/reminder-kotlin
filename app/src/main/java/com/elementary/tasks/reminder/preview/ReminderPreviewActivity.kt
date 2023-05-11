@@ -114,7 +114,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun getId() = intentString(Constants.INTENT_ID)
 
   private fun loadAds() {
-    if (!Module.isPro) {
+    if (!Module.isPro && AdsProvider.hasAds()) {
       binding.adsCard.visible()
       adsProvider.showBanner(
         binding.adsHolder,
