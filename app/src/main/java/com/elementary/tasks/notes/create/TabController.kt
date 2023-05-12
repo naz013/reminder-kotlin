@@ -41,6 +41,7 @@ class TabController(
   enum class Tab {
     COLOR,
     FONT,
+    REMINDER,
     NONE
   }
 

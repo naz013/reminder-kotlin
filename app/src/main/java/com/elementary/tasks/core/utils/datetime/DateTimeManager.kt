@@ -380,7 +380,8 @@ class DateTimeManager(
   }
 
   fun getMillisToBirthdayTime(): Long {
-    var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), getBirthdayLocalTime())
+    val birthdayTime = getBirthdayLocalTime() ?: return 0L
+    var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), birthdayTime)
     if (dateTime.isBefore(getCurrentDateTime())) {
       dateTime = dateTime.plusDays(1)
     }
