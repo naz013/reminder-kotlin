@@ -55,44 +55,6 @@
                     android:hint="@string/note"
                     android:textSize="@dimen/create_note_text_size" />
 
-                <LinearLayout
-                    android:id="@+id/remindContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center|end"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/remindDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="27/11/2014" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/remindTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginEnd="24dp"
-                        android:gravity="center"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="20:00" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/discardReminder"
-                        android:layout_width="@dimen/create_note_image_button_size"
-                        android:layout_height="@dimen/create_note_image_button_size"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_remove_reminder"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_cancel_24px" />
-
-                </LinearLayout>
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/imagesList"
                     android:layout_width="match_parent"
@@ -185,15 +147,32 @@
                             android:scaleType="centerInside"
                             app:srcCompat="@drawable/ic_twotone_image_24px" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/reminderButton"
+                        <FrameLayout
                             android:layout_width="56dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_add_reminder"
-                            android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_alarm_24px" />
+                            android:layout_marginStart="8dp">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/reminderButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/acc_add_reminder"
+                                android:scaleType="centerInside"
+                                app:srcCompat="@drawable/ic_twotone_alarm_24px" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/reminderDotView"
+                                android:layout_width="6dp"
+                                android:layout_height="6dp"
+                                android:layout_gravity="bottom|end"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@drawable/note_reminder_dot"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+
+                        </FrameLayout>
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/fontButton"
@@ -217,12 +196,64 @@
                     tools:visibility="visible">
 
                     <LinearLayout
-                        android:id="@+id/fontLayout"
+                        android:id="@+id/reminderLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone"
                         tools:visibility="visible">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/reminderSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reminder"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/remindDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:textAppearance="?textAppearanceTitleLarge"
+                                tools:text="27/11/2014" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/remindTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="24dp"
+                                android:layout_marginEnd="24dp"
+                                android:gravity="center"
+                                android:textAppearance="?textAppearanceTitleLarge"
+                                tools:text="20:00" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/fontLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="gone">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/fontStyleLabel"

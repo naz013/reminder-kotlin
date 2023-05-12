@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -141,6 +142,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       override fun onTabSelected(tab: TabController.Tab) {
         binding.colorLayout.gone()
         binding.fontLayout.gone()
+        binding.reminderLayout.gone()
         when (tab) {
           TabController.Tab.FONT -> {
             binding.fontLayout.visible()
@@ -148,6 +150,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
           TabController.Tab.COLOR -> {
             binding.colorLayout.visible()
+          }
+
+          TabController.Tab.REMINDER -> {
+            binding.reminderLayout.visible()
           }
 
           TabController.Tab.NONE -> {
@@ -178,10 +184,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
     binding.taskMessage.textSize = prefs.lastNoteFontSize.toFloat()
 
-    binding.remindDate.setOnClickListener { dateDialog() }
-    binding.remindTime.setOnClickListener { timeDialog() }
     binding.micButton.setOnClickListener { tryMicClick() }
-    binding.discardReminder.setOnClickListener { viewModel.isReminderAttached.postValue(false) }
+
     binding.clickView.setOnClickListener {
       Timber.d("onCreate: on outside touch")
       hideKeyboard(binding.taskMessage.windowToken)
@@ -349,7 +353,18 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       tabController.onTabClick(TabController.Tab.COLOR)
     }
     binding.imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
-    binding.reminderButton.setOnClickListener { switchReminder() }
+
+    binding.reminderButton.setOnClickListener {
+      tabController.onTabClick(TabController.Tab.REMINDER)
+    }
+    binding.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
+      viewModel.isReminderAttached.postValue(isChecked)
+    }
+    binding.remindDate.setOnClickListener { dateDialog() }
+    binding.remindTime.setOnClickListener { timeDialog() }
+
+    viewModel.isReminderAttached.postValue(false)
+
     binding.paletteButton.setOnClickListener { showPaletteDialog() }
     binding.fontButton.setOnClickListener {
       tabController.onTabClick(TabController.Tab.FONT)
@@ -384,12 +399,17 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
   }
 
-  private fun updateTextColors() {
-    val textColor = if (isBgDark) {
+  @ColorInt
+  private fun getTextColor(): Int {
+    return if (isBgDark) {
       colorOf(R.color.pureWhite)
     } else {
       colorOf(R.color.pureBlack)
     }
+  }
+
+  private fun updateTextColors() {
+    val textColor = getTextColor()
     binding.taskMessage.setTextColor(textColor)
     binding.taskMessage.setHintTextColor(textColor)
     binding.taskMessage.backgroundTintList = ContextCompat.getColorStateList(
@@ -399,25 +419,29 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         R.color.pureBlack
       }
     )
-    binding.remindDate.setTextColor(textColor)
-    binding.remindTime.setTextColor(textColor)
     binding.opacityLabel.setTextColor(textColor)
-    binding.opacityBar.thumbTintList = ColorStateList.valueOf(textColor)
-    binding.opacityBar.trackActiveTintList = ColorStateList.valueOf(textColor)
-    binding.opacityBar.trackInactiveTintList = ColorStateList.valueOf(textColor.adjustAlpha(24))
+
+    val stateList = ColorStateList.valueOf(textColor)
+    val inactiveStateList = ColorStateList.valueOf(textColor.adjustAlpha(24))
+
+    binding.opacityBar.thumbTintList = stateList
+    binding.opacityBar.trackActiveTintList = stateList
+    binding.opacityBar.trackInactiveTintList = inactiveStateList
 
     binding.fontSizeLabel.setTextColor(textColor)
     binding.fontStyleLabel.setTextColor(textColor)
     binding.fontStyleView.setTextColor(textColor)
-    binding.fontSizeBar.thumbTintList = ColorStateList.valueOf(textColor)
-    binding.fontSizeBar.trackActiveTintList = ColorStateList.valueOf(textColor)
-    binding.fontSizeBar.trackInactiveTintList = ColorStateList.valueOf(textColor.adjustAlpha(24))
-  }
 
-  private fun isReminderAdded(): Boolean = viewModel.isReminderAttached.value ?: false
+    binding.fontSizeBar.thumbTintList = stateList
+    binding.fontSizeBar.trackActiveTintList = stateList
+    binding.fontSizeBar.trackInactiveTintList = inactiveStateList
 
-  private fun switchReminder() {
-    viewModel.isReminderAttached.postValue(!isReminderAdded())
+    binding.reminderDotView.backgroundTintList = stateList
+    binding.reminderSwitch.setTextColor(textColor)
+    binding.reminderSwitch.thumbIconTintList = stateList
+    binding.reminderSwitch.trackDecorationTintList = stateList
+
+    updateDateTimeViewState(viewModel.isReminderAttached.value ?: false)
   }
 
   private fun getId(): String = intentString(Constants.INTENT_ID)
@@ -451,6 +475,22 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
   }
 
+  private fun updateDateTimeViewState(isEnabled: Boolean) {
+    if (binding.reminderSwitch.isChecked != isEnabled) {
+      binding.reminderSwitch.isChecked = isEnabled
+    }
+    binding.reminderDotView.visibleGone(isEnabled)
+    binding.remindDate.isEnabled = isEnabled
+    binding.remindTime.isEnabled = isEnabled
+    val textColor = if (isEnabled) {
+      getTextColor()
+    } else {
+      getTextColor().adjustAlpha(50)
+    }
+    binding.remindDate.setTextColor(textColor)
+    binding.remindTime.setTextColor(textColor)
+  }
+
   private fun initViewModel() {
     viewModel.colorOpacity.nonNullObserve(this) {
       Timber.d("observeStates: opacity $it")
@@ -466,9 +506,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     viewModel.dateFormatted.nonNullObserve(this) {
       binding.remindDate.text = it
     }
-    viewModel.isReminderAttached.nonNullObserve(this) {
-      binding.remindContainer.visibleGone(it)
-    }
+    viewModel.isReminderAttached.nonNullObserve(this) { updateDateTimeViewState(it) }
     viewModel.fontStyle.nonNullObserve(this) { updateFontStyle(it) }
     viewModel.fontSize.nonNullObserve(this) { updateFontSize(it) }
     viewModel.images.nonNullObserve(this) {
@@ -553,9 +591,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun updateIcons() {
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
-    binding.discardReminder.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark)
-    )
     binding.micButton.setImageDrawable(
       ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isBgDark)
     )

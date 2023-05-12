@@ -48,7 +48,6 @@
                 android:stateListAnimator="@animator/card_animator"
                 android:visibility="gone"
                 app:cardCornerRadius="5dp"
-                app:contentPadding="1dp"
                 tools:visibility="visible">
 
                 <LinearLayout
