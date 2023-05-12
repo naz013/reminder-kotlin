@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -16,6 +17,7 @@ import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.data.ui.UiReminderPreview
 import com.elementary.tasks.core.data.ui.UiShareData
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
@@ -24,7 +26,6 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
-import com.elementary.tasks.core.utils.mapNullable
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -38,7 +39,7 @@ import org.threeten.bp.LocalTime
 import timber.log.Timber
 
 class ReminderPreviewViewModel(
-  id: String,
+  private val id: String,
   private val reminderDao: ReminderDao,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
@@ -70,8 +71,20 @@ class ReminderPreviewViewModel(
   val sharedFile = _sharedFile.toLiveData()
 
   val clearExtraData = mutableLiveDataOf<Boolean>()
-  val reminder = reminderDao.loadById(id).mapNullable {
-    uiReminderPreviewAdapter.create(it)
+
+  private val _reminder = mutableLiveDataOf<UiReminderPreview>()
+  val reminder = _reminder.toLiveData()
+
+  override fun onResume(owner: LifecycleOwner) {
+    super.onResume(owner)
+    loadReminder()
+  }
+
+  private fun loadReminder() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val reminder = reminderDao.getById(id) ?: return@launch
+      _reminder.postValue(uiReminderPreviewAdapter.create(reminder))
+    }
   }
 
   fun saveNewShopList(shopList: List<ShopItem>) {
@@ -79,6 +92,7 @@ class ReminderPreviewViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderDao.getById(reminderId)?.also {
         saveReminder(it.copy(shoppings = shopList))
+        loadReminder()
       }
     }
   }
@@ -93,6 +107,7 @@ class ReminderPreviewViewModel(
       workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)
+      loadReminder()
     }
   }
 
@@ -147,6 +162,7 @@ class ReminderPreviewViewModel(
           postInProgress(false)
           postCommand(Commands.SAVED)
         }
+        loadReminder()
       }
     }
   }
