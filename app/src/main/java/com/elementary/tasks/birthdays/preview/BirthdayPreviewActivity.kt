@@ -104,7 +104,7 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
 
       if (birthday.photo != null) {
         binding.contactPhoto.visible()
-        binding.contactPhoto.setImageURI(birthday.photo)
+        binding.contactPhoto.setImageBitmap(birthday.photo)
       } else {
         binding.contactPhoto.gone()
       }

@@ -103,59 +103,11 @@
                 android:text="@string/attach_contact"
                 android:textColor="?colorOnBackground" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/container"
-                style="?attr/materialCardViewFilledStyle"
+            <com.elementary.tasks.core.views.ContactPickerView
+                android:id="@+id/pickContactView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="invisible"
-                app:cardCornerRadius="@dimen/default_corner_radius"
-                app:contentPadding="@dimen/default_content_padding"
-                tools:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/numberLayout"
-                        style="@style/FilledBoxStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <com.elementary.tasks.core.views.PhoneAutoCompleteView
-                            android:id="@+id/numberView"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:ems="10"
-                            android:gravity="bottom"
-                            android:hint="@string/phone"
-                            android:inputType="text|phone"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
-                            android:singleLine="true"
-                            android:textColor="?colorOnSurfaceVariant" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <Button
-                        android:id="@+id/pickContact"
-                        style="?attr/materialIconButtonFilledStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:contentDescription="@string/acc_select_number_from_contacts"
-                        app:icon="@drawable/ic_twotone_contacts_24px" />
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
 

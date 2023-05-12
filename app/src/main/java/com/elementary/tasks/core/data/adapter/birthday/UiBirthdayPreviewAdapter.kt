@@ -27,7 +27,7 @@ class UiBirthdayPreviewAdapter(
       uuId = birthday.uuId,
       name = birthday.name,
       number = birthday.number,
-      photo = contactId?.let { contactsReader.getPhoto(it) },
+      photo = contactId?.let { contactsReader.getPhotoBitmap(it) },
       contactName = contactId?.let { contactsReader.getNameFromNumber(birthday.number) },
       dateOfBirth = dateOfBirthFormatted,
       nextBirthdayDate = nextBirthdayDate,

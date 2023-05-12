@@ -34,7 +34,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.contacts.Contacts
+import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
@@ -48,7 +48,6 @@ import com.elementary.tasks.databinding.ActivityDialogReminderBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
-import com.squareup.picasso.Picasso
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -61,6 +60,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
   private val jobScheduler by inject<JobScheduler>()
   private val dateTimeManager by inject<DateTimeManager>()
+  private val contactsReader by inject<ContactsReader>()
   private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
@@ -299,15 +299,15 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
     if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
       contactPhoto.visible()
-      val conID = Contacts.getIdFromNumber(reminder.target, this)
+      val conID = contactsReader.getIdFromNumber(reminder.target)
 
-      val name = Contacts.getNameFromNumber(reminder.target, this)
+      val name = contactsReader.getNameFromNumber(reminder.target)
       binding.remText.setText(R.string.make_call)
       val userTitle = (name ?: "") + "\n" + reminder.target
 
-      val photo = Contacts.getPhoto(conID)
+      val photo = contactsReader.getPhotoBitmap(conID)
       if (photo != null) {
-        Picasso.get().load(photo).into(contactPhoto)
+        contactPhoto.setImageBitmap(photo)
       } else {
         BitmapUtils.imageFromName(name ?: reminder.target) {
           contactPhoto.setImageDrawable(it)
@@ -328,8 +328,8 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.container.visible()
     } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
       contactPhoto.visibility = View.VISIBLE
-      val conID = Contacts.getIdFromNumber(reminder.target, this)
-      val name = Contacts.getNameFromNumber(reminder.target, this)
+      val conID = contactsReader.getIdFromNumber(reminder.target)
+      val name = contactsReader.getNameFromNumber(reminder.target)
       binding.remText.setText(R.string.send_sms)
       val userInfo = (name ?: "") + "\n" + reminder.target
       binding.contactInfo.text = userInfo
@@ -337,9 +337,9 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.messageView.text = summary
       binding.messageView.contentDescription = summary
 
-      val photo = Contacts.getPhoto(conID)
+      val photo = contactsReader.getPhotoBitmap(conID)
       if (photo != null) {
-        Picasso.get().load(photo).into(contactPhoto)
+        contactPhoto.setImageBitmap(photo)
       } else {
         BitmapUtils.imageFromName(name ?: reminder.target) {
           contactPhoto.setImageDrawable(it)
@@ -359,18 +359,18 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
       binding.remText.setText(R.string.e_mail)
       val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-        Contacts.getIdFromMail(reminder.target, this)
+        contactsReader.getIdFromMail(reminder.target)
       } else {
         0
       }
       if (conID != 0L) {
-        val photo = Contacts.getPhoto(conID)
+        val photo = contactsReader.getPhotoBitmap(conID)
         if (photo != null) {
-          Picasso.get().load(photo).into(contactPhoto)
+          contactPhoto.setImageBitmap(photo)
         } else {
           contactPhoto.gone()
         }
-        val name = Contacts.getNameFromMail(reminder.target, this)
+        val name = contactsReader.getNameFromMail(reminder.target)
         val userInfo = (name ?: "") + "\n" + reminder.target
         binding.contactInfo.text = userInfo
         binding.contactInfo.contentDescription = userInfo

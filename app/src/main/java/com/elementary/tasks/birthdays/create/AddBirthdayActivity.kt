@@ -11,7 +11,6 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
@@ -23,6 +22,7 @@ import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleInvisible
+import com.elementary.tasks.core.views.ContactPickerView
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -36,7 +36,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private val permissionFlow = PermissionFlow(this, dialogues)
-  private val contactPicker = ContactPicker(this) { showContact(it) }
 
   override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
 
@@ -46,16 +45,20 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     initContactView()
     binding.scrollView.listenScrollableView { binding.appBar.isSelected = it > 0 }
     binding.birthDate.setOnClickListener { dateDialog() }
-    binding.pickContact.setOnClickListener { pickContact() }
+
+    binding.pickContactView.contactPicker = ContactPicker(this) { }
+    binding.pickContactView.listener = object : ContactPickerView.OnNumberChangeListener {
+      override fun onChanged(phoneNumber: String, contactInfo: ContactPickerView.ContactInfo?) {
+        contactInfo?.also {
+          if (binding.birthName.text.toString().trim() == "") {
+            binding.birthName.setText(it.name)
+          }
+        }
+      }
+    }
+
     loadBirthday()
     setInitState().takeIf { savedInstanceState == null }
-  }
-
-  private fun showContact(contact: ContactData) {
-    if (binding.birthName.text.toString().trim() == "") {
-      binding.birthName.setText(contact.name)
-    }
-    binding.numberView.setText(contact.phone)
   }
 
   private fun initContactView() {
@@ -63,7 +66,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       binding.contactCheck.visible()
       binding.contactCheck.setOnCheckedChangeListener { _, isChecked ->
         if (isChecked && !prefs.isTelephonyAllowed) return@setOnCheckedChangeListener
-        viewModel.onContactAttached(isChecked)
+        permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+          viewModel.onContactAttached(isChecked)
+        }
       }
     } else {
       binding.contactCheck.gone()
@@ -107,7 +112,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     binding.toolbar.setTitle(R.string.edit_birthday)
     binding.birthName.setText(birthday.name)
     if (!TextUtils.isEmpty(birthday.number)) {
-      binding.numberView.setText(birthday.number)
+      binding.pickContactView.number = birthday.number
       binding.contactCheck.isChecked = true
     }
     updateMenu()
@@ -150,11 +155,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       Timber.d("onDateChanged: $it")
       binding.birthDate.text = it
     }
-    viewModel.isContactAttached.nonNullObserve(this) { binding.container.visibleInvisible(it) }
-  }
-
-  private fun pickContact() {
-    permissionFlow.askPermission(Permissions.READ_CONTACTS) { contactPicker.pickContact() }
+    viewModel.isContactAttached.nonNullObserve(this) { binding.pickContactView.visibleInvisible(it) }
   }
 
   private fun askCopySaving() {
@@ -185,10 +186,10 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       binding.birthNameLayout.showError(R.string.must_be_not_empty)
       return
     }
-    val number = binding.numberView.trimmedText().takeIf { binding.contactCheck.isChecked }
+    val number = binding.pickContactView.number.takeIf { binding.contactCheck.isChecked }
     if (binding.contactCheck.isChecked) {
       if (number.isNullOrEmpty()) {
-        binding.numberLayout.showError(R.string.you_dont_insert_number)
+        binding.pickContactView.showError(R.string.you_dont_insert_number)
         return
       }
       permissionFlow.askPermission(Permissions.READ_CONTACTS) {

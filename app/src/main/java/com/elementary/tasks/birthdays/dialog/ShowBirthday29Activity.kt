@@ -20,7 +20,6 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ActivityDialogBirthdayBinding
-import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -74,7 +73,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
     if (viewModel.isEventShowed) return
 
     birthday.photo?.also {
-      Picasso.get().load(it).into(binding.contactPhoto)
+      binding.contactPhoto.setImageBitmap(it)
       binding.contactPhoto.visible()
     } ?: run { binding.contactPhoto.gone() }
 

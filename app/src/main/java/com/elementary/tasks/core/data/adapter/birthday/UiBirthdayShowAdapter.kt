@@ -24,7 +24,7 @@ class UiBirthdayShowAdapter(
       name = birthday.name,
       number = birthday.number,
       ageFormatted = ageFormatted,
-      photo = contactsReader.getPhoto(contactId),
+      photo = contactsReader.getPhotoBitmap(contactId),
       uniqueId = birthday.uniqueId,
     )
   }
