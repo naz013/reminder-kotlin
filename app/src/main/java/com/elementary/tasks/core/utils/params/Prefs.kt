@@ -9,6 +9,7 @@ import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.ui.font.FontParams
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
 import java.util.Locale
@@ -289,10 +290,6 @@ class Prefs(
     get() = getInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME)
     set(value) = putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, value)
 
-  var noteTextSize: Int
-    get() = getInt(PrefsConstants.NOTE_TEXT_SIZE)
-    set(value) = putInt(PrefsConstants.NOTE_TEXT_SIZE, value)
-
   var radius: Int
     get() = getInt(PrefsConstants.LOCATION_RADIUS, def = DefaultValues.RADIUS)
     set(value) = putInt(PrefsConstants.LOCATION_RADIUS, value)
@@ -563,6 +560,22 @@ class Prefs(
     get() = getBoolean(PrefsConstants.LIVE_CONVERSATION)
     set(value) = putBoolean(PrefsConstants.LIVE_CONVERSATION, value)
 
+  var isNoteFontSizeRememberingEnabled: Boolean
+    get() = getBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, def = true)
+    set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, value)
+
+  var lastNoteFontSize: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_FONT_SIZE, def = FontParams.DEFAULT_FONT_SIZE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_FONT_SIZE, value)
+
+  var isNoteFontStyleRememberingEnabled: Boolean
+    get() = getBoolean(PrefsConstants.REMEMBER_NOTE_FONT_STYLE, def = true)
+    set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_FONT_STYLE, value)
+
+  var lastNoteFontStyle: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_FONT_STYLE, value)
+
   var isNoteColorRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_COLOR)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, value)
@@ -648,7 +661,6 @@ class Prefs(
       editor.putInt(PrefsConstants.MARKER_STYLE, 5)
       editor.putInt(PrefsConstants.TRACK_TIME, 1)
       editor.putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
-      editor.putInt(PrefsConstants.NOTE_TEXT_SIZE, 4)
       editor.putInt(PrefsConstants.VOLUME, 25)
       val localeCheck = Locale.getDefault().toString().lowercase()
       val locale = when {
@@ -775,9 +787,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.QUICK_NOTE_REMINDER_TIME)) {
       putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
-    }
-    if (!hasKey(PrefsConstants.NOTE_TEXT_SIZE)) {
-      putInt(PrefsConstants.NOTE_TEXT_SIZE, 4)
     }
     if (!hasKey(PrefsConstants.START_DAY)) {
       putInt(PrefsConstants.START_DAY, 1)

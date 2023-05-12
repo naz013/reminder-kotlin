@@ -39,6 +39,15 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:text="@string/additional_font_styles_for_notes"
+                android:textAppearance="?textAppearanceTitleSmall" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/pro_different_settings_for_birthdays"
                 android:textAppearance="?textAppearanceTitleSmall" />
 

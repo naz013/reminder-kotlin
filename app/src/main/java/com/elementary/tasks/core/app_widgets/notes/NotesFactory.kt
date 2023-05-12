@@ -21,24 +21,22 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
-import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.ui.font.FontParams
 
 class NotesFactory(
   private val context: Context,
   private val noteRepository: NoteRepository,
-  private val themeProvider: ThemeProvider,
-  private val prefs: Prefs
+  private val themeProvider: ThemeProvider
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private val notes = ArrayList<NoteWithImages>()
-  private var defaultTextSize = 14
+  private var defaultTextSize = FontParams.DEFAULT_FONT_SIZE
 
   override fun onCreate() {
     notes.clear()
   }
 
   override fun onDataSetChanged() {
-    defaultTextSize = prefs.noteTextSize + 12
     notes.clear()
     notes.addAll(noteRepository.getAll())
   }

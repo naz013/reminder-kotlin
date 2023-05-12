@@ -10,14 +10,13 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.font.FontParams
 
 class UiNoteListAdapter(
   private val dateTimeManager: DateTimeManager,
   private val themeProvider: ThemeProvider,
   private val contextProvider: ContextProvider,
-  private val prefs: Prefs,
   private val uiNoteImagesAdapter: UiNoteImagesAdapter
 ) {
 
@@ -42,7 +41,7 @@ class UiNoteListAdapter(
     }
 
     val textSize = if (noteWithImages.getFontSize() == -1) {
-      prefs.noteTextSize + 12
+      FontParams.DEFAULT_FONT_SIZE
     } else {
       noteWithImages.getFontSize()
     }

@@ -22,9 +22,30 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
     super.onViewCreated(view, savedInstanceState)
     initNoteReminderPrefs()
     initNoteTime()
-    initTextSizePrefs()
     initNoteColorRememberPrefs()
     initColorOpacityPrefs()
+    initFontSizePrefs()
+    initFontStylePrefs()
+  }
+
+  private fun initFontSizePrefs() {
+    binding.noteFontSizeRememberPrefs.setOnClickListener { changeFontSizePrefs() }
+    binding.noteFontSizeRememberPrefs.isChecked = prefs.isNoteFontSizeRememberingEnabled
+  }
+
+  private fun changeFontSizePrefs() {
+    prefs.isNoteFontSizeRememberingEnabled = !prefs.isNoteFontSizeRememberingEnabled
+    binding.noteFontSizeRememberPrefs.isChecked = prefs.isNoteFontSizeRememberingEnabled
+  }
+
+  private fun initFontStylePrefs() {
+    binding.noteFontStyleRememberPrefs.setOnClickListener { changeFontStylePrefs() }
+    binding.noteFontStyleRememberPrefs.isChecked = prefs.isNoteFontStyleRememberingEnabled
+  }
+
+  private fun changeFontStylePrefs() {
+    prefs.isNoteFontStyleRememberingEnabled = !prefs.isNoteFontStyleRememberingEnabled
+    binding.noteFontStyleRememberPrefs.isChecked = prefs.isNoteFontStyleRememberingEnabled
   }
 
   private fun initNoteColorRememberPrefs() {
@@ -41,21 +62,6 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
   private fun initColorOpacityPrefs() {
     binding.noteColorOpacity.setOnClickListener { showOpacityPickerDialog() }
     showNoteColorSaturation()
-  }
-
-  private fun initTextSizePrefs() {
-    binding.textSize.setOnClickListener { showTextSizePickerDialog() }
-    showTextSize()
-  }
-
-  private fun showTextSize() {
-    binding.textSize.setDetailText(
-      String.format(
-        Locale.getDefault(),
-        "%d pt",
-        prefs.noteTextSize + 12
-      )
-    )
   }
 
   private fun initNoteReminderPrefs() {
@@ -94,36 +100,6 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
     val isChecked = binding.noteReminderPrefs.isChecked
     binding.noteReminderPrefs.isChecked = !isChecked
     prefs.isNoteReminderEnabled = !isChecked
-  }
-
-  private fun showTextSizePickerDialog() {
-    withActivity {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(R.string.text_size)
-      val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-
-      b.seekBar.addOnChangeListener { _, value, _ ->
-        b.titleView.text = String.format(Locale.getDefault(), "%d pt", value.toInt() + 12)
-      }
-      b.seekBar.stepSize = 1f
-      b.seekBar.valueFrom = 0f
-      b.seekBar.valueTo = 18f
-
-      val textSize = prefs.noteTextSize
-      b.seekBar.value = textSize.toFloat()
-
-      b.titleView.text = String.format(Locale.getDefault(), "%d pt", textSize + 12)
-      builder.setView(b.root)
-      builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-        prefs.noteTextSize = b.seekBar.value.toInt()
-        showTextSize()
-        dialogInterface.dismiss()
-      }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-      val dialog = builder.create()
-      dialog.show()
-      Dialogues.setFullWidthDialog(dialog, it)
-    }
   }
 
   private fun showTimePickerDialog() {

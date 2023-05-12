@@ -49,7 +49,6 @@ object PrefsConstants {
   const val STATUS_BAR_ICON = "status_icon"
   const val STATUS_BAR_NOTIFICATION = "status_notification"
   const val TRACK_TIME = "tracking_time"
-  const val NOTE_TEXT_SIZE = "text_size"
   const val QUICK_NOTE_REMINDER = "quick_note_reminder"
   const val QUICK_NOTE_REMINDER_TIME = "quick_note_reminder_time"
   const val TIME_MORNING = "time_morning"
@@ -79,9 +78,15 @@ object PrefsConstants {
   const val RATE_COUNT = "rate_count"
   const val USER_LOGGED = "user_logged"
   const val LIVE_CONVERSATION = "live_conversation"
+
   const val REMEMBER_NOTE_COLOR = "remember_note_color"
+  const val REMEMBER_NOTE_FONT_SIZE = "remember_note_font_size"
+  const val REMEMBER_NOTE_FONT_STYLE = "remember_note_font_style"
   const val LAST_NOTE_COLOR = "last_note_color"
+  const val LAST_NOTE_FONT_SIZE = "last_note_font_size"
+  const val LAST_NOTE_FONT_STYLE = "last_note_font_style"
   const val NOTE_COLOR_OPACITY = "note_color_opacity"
+
   const val REMINDER_TYPE = "notification_type"
   const val DROPBOX_UID = "dropbox_uid"
   const val DROPBOX_TOKEN = "dropbox_token"

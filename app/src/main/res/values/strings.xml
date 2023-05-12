@@ -672,5 +672,10 @@
     <string name="pro_led_notification">- LED notification</string>
     <string name="pro_led_color_for_each_reminder">- LED color for each reminder</string>
     <string name="pro_styles_for_marker">- 16 styles for marker</string>
+    <string name="use_default_text_size">Use default text size</string>
+    <string name="remember_last_set_text_size">Remember last set text size</string>
+    <string name="use_default_font_style">Use default font style</string>
+    <string name="remember_last_set_font_style">Remember last set font style</string>
+    <string name="additional_font_styles_for_notes">- Additional Font styles for Notes</string>
 
 </resources>
