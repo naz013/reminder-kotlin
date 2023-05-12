@@ -3,7 +3,9 @@ package com.elementary.tasks.core.utils.io
 import android.content.Context
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
+import com.elementary.tasks.AssetsUtilExtended
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.Module
 
 object AssetsUtil {
 
@@ -34,6 +36,10 @@ object AssetsUtil {
 
     list.add("Lobster Regular")
 
+    if (Module.isPro) {
+      list.addAll(AssetsUtilExtended.getFontNames())
+    }
+
     return list
   }
 
@@ -60,7 +66,11 @@ object AssetsUtil {
       18 -> ResourcesCompat.getFont(context, R.font.merriweathersans_lightitalic)
       19 -> ResourcesCompat.getFont(context, R.font.merriweathersans_regular)
       20 -> ResourcesCompat.getFont(context, R.font.lobster_regular)
-      else -> ResourcesCompat.getFont(context, R.font.roboto_regular)
+      else -> if (Module.isPro) {
+        AssetsUtilExtended.getTypeface(context, code)
+      } else {
+        ResourcesCompat.getFont(context, R.font.roboto_regular)
+      }
     }
   }
 }

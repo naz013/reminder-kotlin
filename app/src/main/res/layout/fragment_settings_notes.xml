@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -35,15 +34,6 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/textSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_text_fields_24px"
-            app:prefs_primary_text="@string/text_size"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/noteColorRememberPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,6 +51,27 @@
             app:prefs_icon="@drawable/ic_twotone_opacity_24px"
             app:prefs_primary_text="@string/color_saturation"
             app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/noteFontSizeRememberPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_text_fields_24px"
+            app:prefs_primary_text="@string/text_size"
+            app:prefs_secondary_text_off="@string/use_default_text_size"
+            app:prefs_secondary_text_on="@string/remember_last_set_text_size"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/noteFontStyleRememberPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/font_style"
+            app:prefs_secondary_text_off="@string/use_default_font_style"
+            app:prefs_secondary_text_on="@string/remember_last_set_font_style"
+            app:prefs_type="check_switch" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

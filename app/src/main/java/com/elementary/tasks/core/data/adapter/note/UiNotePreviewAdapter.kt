@@ -6,12 +6,12 @@ import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.ui.font.FontParams
 
 class UiNotePreviewAdapter(
   private val themeProvider: ThemeProvider,
   private val contextProvider: ContextProvider,
-  private val uiNoteImagesAdapter: UiNoteImagesAdapter,
-  private val prefs: Prefs
+  private val uiNoteImagesAdapter: UiNoteImagesAdapter
 ) {
 
   fun convert(noteWithImages: NoteWithImages): UiNotePreview {
@@ -22,7 +22,7 @@ class UiNotePreviewAdapter(
     )
 
     val textSize = if (noteWithImages.getFontSize() == -1) {
-      prefs.noteTextSize + 12
+      FontParams.DEFAULT_FONT_SIZE
     } else {
       noteWithImages.getFontSize()
     }

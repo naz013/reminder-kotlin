@@ -272,7 +272,7 @@
                             android:stepSize="1"
                             android:value="16"
                             android:valueFrom="6"
-                            android:valueTo="100"
+                            android:valueTo="150"
                             app:labelBehavior="floating"
                             app:tickVisible="false" />
 

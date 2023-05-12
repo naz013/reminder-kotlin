@@ -2,16 +2,15 @@ package com.elementary.tasks.core.data.adapter.note
 
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
-import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.ui.font.FontParams
 
 class UiNoteEditAdapter(
-  private val uiNoteImagesAdapter: UiNoteImagesAdapter,
-  private val prefs: Prefs
+  private val uiNoteImagesAdapter: UiNoteImagesAdapter
 ) {
 
   fun convert(noteWithImages: NoteWithImages): UiNoteEdit {
     val textSize = if (noteWithImages.getFontSize() == -1) {
-      prefs.noteTextSize + 12
+      FontParams.DEFAULT_FONT_SIZE
     } else {
       noteWithImages.getFontSize()
     }

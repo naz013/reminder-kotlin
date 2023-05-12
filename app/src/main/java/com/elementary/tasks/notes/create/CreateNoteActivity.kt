@@ -46,6 +46,7 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.font.FontParams
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
@@ -175,7 +176,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     initMenu()
     hideRecording()
 
-    binding.taskMessage.textSize = (prefs.noteTextSize + 12).toFloat()
+    binding.taskMessage.textSize = prefs.lastNoteFontSize.toFloat()
 
     binding.remindDate.setOnClickListener { dateDialog() }
     binding.remindTime.setOnClickListener { timeDialog() }
@@ -237,6 +238,18 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     val opacity = prefs.noteColorOpacity
     viewModel.colorOpacity.postValue(newPair(color, opacity))
     viewModel.palette.postValue(prefs.notePalette)
+
+    if (prefs.isNoteFontSizeRememberingEnabled) {
+      viewModel.onFontSizeChanged(prefs.lastNoteFontSize)
+    } else {
+      viewModel.onFontSizeChanged(FontParams.DEFAULT_FONT_SIZE)
+    }
+
+    if (prefs.isNoteFontStyleRememberingEnabled) {
+      viewModel.onFontStyleChanged(prefs.lastNoteFontStyle)
+    } else {
+      viewModel.onFontStyleChanged(FontParams.DEFAULT_FONT_STYLE)
+    }
 
     return Pair(color, opacity)
   }
@@ -359,6 +372,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
     binding.fontSizeBar.addOnChangeListener { _, value, _ ->
       viewModel.onFontSizeChanged(value.toInt())
+      prefs.lastNoteFontSize = value.toInt()
     }
     binding.fontSizeBar.setLabelFormatter { "${it.toInt()}" }
   }
@@ -665,6 +679,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun updateFontStyle(fontStyle: Int) {
     binding.taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
     binding.fontStyleView.typeface = AssetsUtil.getTypeface(this, fontStyle)
+
+    val fontName = runCatching { AssetsUtil.getFontNames()[fontStyle] }.getOrNull()
+      ?: getString(R.string.font_style)
+    binding.fontStyleView.text = fontName
   }
 
   private fun updateFontSize(fontSize: Int) {
@@ -715,6 +733,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
     builder.setSingleChoiceItems(adapter, viewModel.fontStyle.value ?: 0) { _, which ->
       viewModel.onFontStyleChanged(which)
+      prefs.lastNoteFontStyle = which
     }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
     builder.create().show()
