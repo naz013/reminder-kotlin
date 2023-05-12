@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.io.readString
 
 class ContactPicker(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (ContactData) -> Unit
+  private var resultCallback: (ContactData) -> Unit
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
@@ -37,6 +37,11 @@ class ContactPicker(
 
   fun pickContact() {
     launch(Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI))
+  }
+
+  fun pickContact(resultCallback: (ContactData) -> Unit) {
+    this.resultCallback = resultCallback
+    pickContact()
   }
 
   private fun readResults(uri: Uri) {

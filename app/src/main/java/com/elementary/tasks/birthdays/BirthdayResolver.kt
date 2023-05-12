@@ -3,6 +3,7 @@ package com.elementary.tasks.birthdays
 import android.content.Intent
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.Constants
@@ -17,6 +18,7 @@ class BirthdayResolver(
 
   fun resolveAction(view: View, birthday: UiBirthdayList, listActions: ListActions) {
     when (listActions) {
+      ListActions.EDIT -> editBirthday(view, birthday)
       ListActions.OPEN -> openBirthday(view, birthday)
       ListActions.MORE -> showMore(view, birthday)
       else -> {
@@ -29,7 +31,7 @@ class BirthdayResolver(
     val items = arrayOf(context.getString(R.string.edit), context.getString(R.string.delete))
     Dialogues.showPopup(view, { item ->
       if (item == 0) {
-        openBirthday(view, birthday)
+        editBirthday(view, birthday)
       } else if (item == 1) {
         askConfirmation(view, items[item]) {
           if (it) deleteAction.invoke(birthday)
@@ -44,6 +46,11 @@ class BirthdayResolver(
 
   private fun openBirthday(view: View, birthday: UiBirthdayList) {
     PinLoginActivity.openLogged(view.context, Intent(view.context, BirthdayPreviewActivity::class.java)
+      .putExtra(Constants.INTENT_ID, birthday.uuId))
+  }
+
+  private fun editBirthday(view: View, birthday: UiBirthdayList) {
+    PinLoginActivity.openLogged(view.context, Intent(view.context, AddBirthdayActivity::class.java)
       .putExtra(Constants.INTENT_ID, birthday.uuId))
   }
 }
