@@ -21,7 +21,9 @@ data class Note(
   var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
   @SerializedName("updatedAt")
   var updatedAt: String? = null,
-  var opacity: Int = 100) : Parcelable {
+  var opacity: Int = 100,
+  var fontSize: Int = -1
+) : Parcelable {
 
   @Ignore
   constructor(oldNote: OldNote) : this() {
@@ -33,5 +35,6 @@ data class Note(
     this.uniqueId = oldNote.uniqueId
     this.summary = oldNote.summary
     this.updatedAt = oldNote.updatedAt
+    this.fontSize = oldNote.fontSize
   }
 }

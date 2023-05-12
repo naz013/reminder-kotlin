@@ -42,6 +42,7 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.core.utils.ui.font.FontParams
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.create.images.ImageDecoder
@@ -98,7 +99,8 @@ class CreateNoteViewModel(
   val parsedText = _parsedText.toLiveData()
 
   var colorOpacity: MutableLiveData<Pair<Int, Int>> = MutableLiveData()
-  var fontStyle: MutableLiveData<Int> = MutableLiveData()
+  var fontStyle: MutableLiveData<Int> = MutableLiveData(FontParams.DEFAULT_FONT_STYLE)
+  var fontSize: MutableLiveData<Int> = MutableLiveData(FontParams.DEFAULT_FONT_SIZE)
   var palette: MutableLiveData<Int> = MutableLiveData()
   var isReminderAttached: MutableLiveData<Boolean> = MutableLiveData()
   var images: MutableLiveData<List<UiNoteImage>> = MutableLiveData()
@@ -123,6 +125,14 @@ class CreateNoteViewModel(
 
   init {
     load()
+  }
+
+  fun onFontSizeChanged(value: Int) {
+    fontSize.postValue(value)
+  }
+
+  fun onFontStyleChanged(value: Int) {
+    fontStyle.postValue(value)
   }
 
   fun loadFromFile(uri: Uri) {
@@ -189,6 +199,7 @@ class CreateNoteViewModel(
       if (!isNoteEdited) {
         palette.postValue(uiNoteEdit.colorPalette)
         fontStyle.postValue(uiNoteEdit.typeface)
+        fontSize.postValue(uiNoteEdit.fontSize)
         images.postValue(uiNoteEdit.images)
       }
       isNoteEdited = true
@@ -424,7 +435,8 @@ class CreateNoteViewModel(
     note.summary = text
     note.date = dateTimeManager.getNowGmtDateTime()
     note.color = pair.first
-    note.style = fontStyle.value ?: 0
+    note.style = fontStyle.value ?: FontParams.DEFAULT_FONT_STYLE
+    note.fontSize = fontSize.value ?: FontParams.DEFAULT_FONT_SIZE
     note.palette = palette.value ?: 0
     note.opacity = pair.second
 

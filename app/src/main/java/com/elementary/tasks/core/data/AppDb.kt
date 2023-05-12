@@ -19,6 +19,7 @@ import com.elementary.tasks.core.data.migrations.MIGRATION_3_4
 import com.elementary.tasks.core.data.migrations.MIGRATION_4_5
 import com.elementary.tasks.core.data.migrations.MIGRATION_5_6
 import com.elementary.tasks.core.data.migrations.MIGRATION_6_7
+import com.elementary.tasks.core.data.migrations.MIGRATION_7_8
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -43,7 +44,7 @@ import com.elementary.tasks.core.data.models.UsedTime
     Birthday::class,
     ImageFile::class
   ],
-  version = 7,
+  version = 8,
   exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {
@@ -72,7 +73,8 @@ abstract class AppDb : RoomDatabase() {
             MIGRATION_3_4,
             MIGRATION_4_5,
             MIGRATION_5_6,
-            MIGRATION_6_7
+            MIGRATION_6_7,
+            MIGRATION_7_8
           )
           .allowMainThreadQueries()
           .build()

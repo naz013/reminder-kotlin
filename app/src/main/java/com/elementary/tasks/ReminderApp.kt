@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.dataFlowRepositoryModule
 import com.elementary.tasks.core.utils.dbModule
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
+import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
@@ -62,7 +63,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           adapterModule,
           actionModule,
           repositoryModule,
-          dataFactory
+          dataFactory,
+          uiUtilsModule
         )
       )
     }

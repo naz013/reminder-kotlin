@@ -36,9 +36,9 @@ val adapterModule = module {
   single { UiUsedTimeListAdapter() }
 
   single { UiNoteImagesAdapter() }
-  single { UiNoteEditAdapter(get()) }
+  single { UiNoteEditAdapter(get(), get()) }
   single { UiNoteListAdapter(get(), get(), get(), get(), get()) }
-  single { UiNotePreviewAdapter(get(), get(), get()) }
+  single { UiNotePreviewAdapter(get(), get(), get(), get()) }
   single { UiNoteNotificationAdapter(get(), get()) }
 
   single { UiPlaceListAdapter(get(), get(), get()) }

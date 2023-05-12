@@ -6,6 +6,6 @@ import org.koin.android.ext.android.get
 
 class NotesService : RemoteViewsService() {
   override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-    return NotesFactory(applicationContext, get(), get())
+    return NotesFactory(applicationContext, get(), get(), get())
   }
 }

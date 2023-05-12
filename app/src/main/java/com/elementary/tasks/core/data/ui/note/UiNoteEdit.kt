@@ -7,5 +7,6 @@ data class UiNoteEdit(
   val images: List<UiNoteImage>,
   val colorPosition: Int,
   val colorPalette: Int,
-  val opacity: Int
+  val opacity: Int,
+  val fontSize: Int
 )

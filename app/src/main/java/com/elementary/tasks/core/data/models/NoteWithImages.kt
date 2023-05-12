@@ -5,8 +5,8 @@ import androidx.annotation.Keep
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.elementary.tasks.core.interfaces.NoteInterface
+import com.elementary.tasks.core.utils.ui.font.FontParams
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 @Keep
 @Parcelize
@@ -34,7 +34,7 @@ data class NoteWithImages(
   }
 
   override fun getStyle(): Int {
-    return note?.style ?: 0
+    return note?.style ?: FontParams.DEFAULT_FONT_STYLE
   }
 
   override fun getOpacity(): Int {
@@ -43,5 +43,9 @@ data class NoteWithImages(
 
   override fun getPalette(): Int {
     return note?.palette ?: 0
+  }
+
+  fun getFontSize(): Int {
+    return note?.fontSize ?: FontParams.DEFAULT_FONT_SIZE
   }
 }
