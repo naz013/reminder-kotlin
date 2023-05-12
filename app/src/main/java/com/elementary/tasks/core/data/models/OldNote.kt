@@ -22,5 +22,7 @@ data class OldNote(
   @SerializedName("updatedAt")
   val updatedAt: String? = null,
   @SerializedName("uniqueId")
-  val uniqueId: Int = 0
+  val uniqueId: Int = 0,
+  @SerializedName("fontSize")
+  val fontSize: Int = -1
 )

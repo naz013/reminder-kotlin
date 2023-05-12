@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.View
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
@@ -86,6 +87,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
   private fun initViewModel() {
+    lifecycle.addObserver(viewModel)
     viewModel.note.nonNullObserve(this) { showNote(it) }
     viewModel.reminder.observe(this) { showReminder(it) }
     viewModel.result.nonNullObserve(this) { commands ->
@@ -208,6 +210,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     showImages(uiNotePreview.images)
     binding.noteText.text = uiNotePreview.text
     binding.noteText.typeface = uiNotePreview.typeface
+    binding.noteText.setTextSize(TypedValue.COMPLEX_UNIT_SP, uiNotePreview.textSize)
     window.statusBarColor = uiNotePreview.backgroundColor
     window.navigationBarColor = uiNotePreview.backgroundColor
     binding.windowBackground.setBackgroundColor(uiNotePreview.backgroundColor)

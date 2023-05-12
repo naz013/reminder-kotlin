@@ -11,6 +11,7 @@ import android.os.Parcelable
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,6 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
-import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
@@ -135,6 +135,35 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
   }
 
+  private val tabController = TabController(
+    object : TabController.Listener {
+      override fun onTabSelected(tab: TabController.Tab) {
+        binding.colorLayout.gone()
+        binding.fontLayout.gone()
+        when (tab) {
+          TabController.Tab.FONT -> {
+            binding.fontLayout.visible()
+          }
+
+          TabController.Tab.COLOR -> {
+            binding.colorLayout.visible()
+          }
+
+          TabController.Tab.NONE -> {
+          }
+        }
+      }
+
+      override fun onShow() {
+        binding.expandedLayout.visible()
+      }
+
+      override fun onHide() {
+        binding.expandedLayout.gone()
+      }
+    }
+  )
+
   override fun inflateBinding() = ActivityCreateNoteBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -208,8 +237,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     val opacity = prefs.noteColorOpacity
     viewModel.colorOpacity.postValue(newPair(color, opacity))
     viewModel.palette.postValue(prefs.notePalette)
-
-    viewModel.fontStyle.postValue(0)
 
     return Pair(color, opacity)
   }
@@ -305,11 +332,16 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private fun initMenu() {
     binding.micButton.visibleGone(Module.hasMicrophone(this))
 
-    binding.colorButton.setOnClickListener { toggleColorView() }
+    binding.colorButton.setOnClickListener {
+      tabController.onTabClick(TabController.Tab.COLOR)
+    }
     binding.imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
     binding.reminderButton.setOnClickListener { switchReminder() }
-    binding.fontButton.setOnClickListener { showStyleDialog() }
     binding.paletteButton.setOnClickListener { showPaletteDialog() }
+    binding.fontButton.setOnClickListener {
+      tabController.onTabClick(TabController.Tab.FONT)
+    }
+    binding.fontStyleView.setOnClickListener { showStyleDialog() }
 
     binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
     binding.colorSlider.setListener { position, _ ->
@@ -318,11 +350,17 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         prefs.lastNoteColor = position
       }
     }
+
     binding.opacityBar.addOnChangeListener { slider, value, _ ->
       prefs.noteColorOpacity = slider.valueInt
       viewModel.colorOpacity.postValue(newPair(opacity = slider.valueInt))
     }
     binding.opacityBar.setLabelFormatter { "${it.toInt()}%" }
+
+    binding.fontSizeBar.addOnChangeListener { _, value, _ ->
+      viewModel.onFontSizeChanged(value.toInt())
+    }
+    binding.fontSizeBar.setLabelFormatter { "${it.toInt()}" }
   }
 
   private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
@@ -353,14 +391,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     binding.opacityBar.thumbTintList = ColorStateList.valueOf(textColor)
     binding.opacityBar.trackActiveTintList = ColorStateList.valueOf(textColor)
     binding.opacityBar.trackInactiveTintList = ColorStateList.valueOf(textColor.adjustAlpha(24))
-  }
 
-  private fun toggleColorView() {
-    binding.colorLayout.visibleGone(isColorPickerHidden())
-  }
-
-  private fun isColorPickerHidden(): Boolean {
-    return !binding.colorLayout.isVisible()
+    binding.fontSizeLabel.setTextColor(textColor)
+    binding.fontStyleLabel.setTextColor(textColor)
+    binding.fontStyleView.setTextColor(textColor)
+    binding.fontSizeBar.thumbTintList = ColorStateList.valueOf(textColor)
+    binding.fontSizeBar.trackActiveTintList = ColorStateList.valueOf(textColor)
+    binding.fontSizeBar.trackInactiveTintList = ColorStateList.valueOf(textColor.adjustAlpha(24))
   }
 
   private fun isReminderAdded(): Boolean = viewModel.isReminderAttached.value ?: false
@@ -419,6 +456,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       binding.remindContainer.visibleGone(it)
     }
     viewModel.fontStyle.nonNullObserve(this) { updateFontStyle(it) }
+    viewModel.fontSize.nonNullObserve(this) { updateFontSize(it) }
     viewModel.images.nonNullObserve(this) {
       Timber.d("observeStates: images -> $it")
       imagesGridAdapter.submitList(it)
@@ -532,6 +570,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     Timber.d("editNote: $uiNoteEdit")
     binding.colorSlider.setSelection(uiNoteEdit.colorPosition)
     binding.opacityBar.valueInt = uiNoteEdit.opacity
+    binding.fontSizeBar.valueInt = uiNoteEdit.fontSize
     setText(uiNoteEdit.text)
     val pair = newPair(uiNoteEdit.colorPosition, uiNoteEdit.opacity)
     updateDarkness(pair)
@@ -625,6 +664,11 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   private fun updateFontStyle(fontStyle: Int) {
     binding.taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
+    binding.fontStyleView.typeface = AssetsUtil.getTypeface(this, fontStyle)
+  }
+
+  private fun updateFontSize(fontSize: Int) {
+    binding.taskMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
   }
 
   private fun updateBackground(pair: Pair<Int, Int>, palette: Int = palette()) {
@@ -670,7 +714,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
       }
     }
     builder.setSingleChoiceItems(adapter, viewModel.fontStyle.value ?: 0) { _, which ->
-      viewModel.fontStyle.postValue(which)
+      viewModel.onFontStyleChanged(which)
     }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
     builder.create().show()
@@ -787,8 +831,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   override fun handleBackPress(): Boolean {
-    if (!isColorPickerHidden()) {
-      toggleColorView()
+    if (tabController.isTabVisible()) {
+      tabController.hide()
     } else {
       finish()
     }

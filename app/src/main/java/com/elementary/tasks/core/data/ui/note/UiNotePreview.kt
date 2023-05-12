@@ -10,5 +10,6 @@ data class UiNotePreview(
   val opacity: Int,
   val typeface: Typeface?,
   val images: List<UiNoteImage>,
-  val uniqueId: Int
+  val uniqueId: Int,
+  val textSize: Float
 )

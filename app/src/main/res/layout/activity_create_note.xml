@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        app:liftOnScroll="false"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -209,7 +209,7 @@
                 </HorizontalScrollView>
 
                 <LinearLayout
-                    android:id="@+id/colorLayout"
+                    android:id="@+id/expandedLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -217,57 +217,133 @@
                     tools:visibility="visible">
 
                     <LinearLayout
+                        android:id="@+id/fontLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/paletteButton"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_settings_24px" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/fontStyleLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/font_style"
+                            android:textAppearance="?textAppearanceCaption"
+                            android:textColor="@color/pureBlack" />
 
-                        <com.github.naz013.colorslider.ColorSlider
-                            android:id="@+id/colorSlider"
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/fontStyleView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="?selectableItemBackground"
+                            android:drawableStart="@drawable/ic_twotone_text_fields_24px"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:text="@string/font_style"
+                            android:textColor="@color/pureBlack"
+                            android:textSize="18sp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/fontSizeLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/text_size"
+                            android:textAppearance="?textAppearanceCaption"
+                            android:textColor="@color/pureBlack" />
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/fontSizeBar"
                             android:layout_width="match_parent"
-                            android:layout_height="36dp"
-                            android:layout_marginStart="8dp" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="16dp"
+                            android:stepSize="1"
+                            android:value="16"
+                            android:valueFrom="6"
+                            android:valueTo="100"
+                            app:labelBehavior="floating"
+                            app:tickVisible="false" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp" />
 
                     </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/opacityLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/opacity"
-                        android:textAppearance="?textAppearanceCaption"
-                        android:textColor="@color/pureBlack" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/opacityBar"
+                    <LinearLayout
+                        android:id="@+id/colorLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="16dp"
-                        android:stepSize="1"
-                        android:valueFrom="0"
-                        android:valueTo="100"
-                        app:labelBehavior="floating"
-                        app:tickVisible="false" />
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="gone">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/paletteButton"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:scaleType="centerInside"
+                                app:srcCompat="@drawable/ic_twotone_settings_24px" />
+
+                            <com.github.naz013.colorslider.ColorSlider
+                                android:id="@+id/colorSlider"
+                                android:layout_width="match_parent"
+                                android:layout_height="36dp"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/opacityLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/opacity"
+                            android:textAppearance="?textAppearanceCaption"
+                            android:textColor="@color/pureBlack" />
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/opacityBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="16dp"
+                            android:stepSize="1"
+                            android:valueFrom="0"
+                            android:valueTo="100"
+                            app:labelBehavior="floating"
+                            app:tickVisible="false" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

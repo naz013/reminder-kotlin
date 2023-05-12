@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.preview
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
@@ -59,7 +60,8 @@ class NotePreviewViewModel(
 
   var hasSameInDb: Boolean = false
 
-  init {
+  override fun onResume(owner: LifecycleOwner) {
+    super.onResume(owner)
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = notesDao.getById(key)
       if (noteWithImages != null) {

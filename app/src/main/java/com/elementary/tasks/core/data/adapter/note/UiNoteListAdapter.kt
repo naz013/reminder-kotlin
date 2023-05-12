@@ -41,6 +41,12 @@ class UiNoteListAdapter(
       ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
     }
 
+    val textSize = if (noteWithImages.getFontSize() == -1) {
+      prefs.noteTextSize + 12
+    } else {
+      noteWithImages.getFontSize()
+    }
+
     return UiNoteList(
       id = noteWithImages.getKey(),
       backgroundColor = backgroundColor,
@@ -51,7 +57,7 @@ class UiNoteListAdapter(
       ),
       textColor = textColor,
       typeface = AssetsUtil.getTypeface(contextProvider.context, noteWithImages.getStyle()),
-      fontSize = (prefs.noteTextSize + 12).toFloat(),
+      fontSize = textSize.toFloat(),
       formattedDateTime = dateTimeManager.fromGmtToLocal(noteWithImages.getGmtTime())?.let {
         dateTimeManager.getFullDateTime(it)
       } ?: "",
