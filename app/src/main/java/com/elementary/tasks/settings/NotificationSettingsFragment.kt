@@ -95,6 +95,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       binding.typePrefs.gone()
       binding.ignoreWindowType.gone()
       binding.smartFoldPrefs.gone()
+      binding.notificationDismissPrefs.gone()
       binding.infiniteSoundOptionPrefs.gone()
       binding.soundOptionPrefs.gone()
       binding.melodyDurationPrefs.gone()
