@@ -29,6 +29,7 @@ import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.google_tasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
+import com.elementary.tasks.google_tasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -191,7 +192,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
       override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
         when (actions) {
-          ListActions.EDIT -> if (t != null) editTask(t.id)
+          ListActions.OPEN -> if (t != null) openTask(t.id)
           ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
           else -> {
           }
@@ -230,11 +231,10 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     )
   }
 
-  private fun editTask(taskId: String) {
+  private fun openTask(taskId: String) {
     PinLoginActivity.openLogged(
-      requireContext(), Intent(activity, GoogleTaskActivity::class.java)
+      requireContext(), Intent(activity, GoogleTaskPreviewActivity::class.java)
         .putExtra(Constants.INTENT_ID, taskId)
-        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
     )
   }
 

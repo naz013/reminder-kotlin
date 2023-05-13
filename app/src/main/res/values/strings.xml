@@ -677,5 +677,8 @@
     <string name="use_default_font_style">Use default font style</string>
     <string name="remember_last_set_font_style">Remember last set font style</string>
     <string name="additional_font_styles_for_notes">- Additional Font styles for Notes</string>
+    <string name="complete">Complete</string>
+    <string name="not_completed">Not completed</string>
+    <string name="completed">Completed</string>
 
 </resources>

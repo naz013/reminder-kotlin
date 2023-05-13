@@ -82,6 +82,7 @@ enum class Feature(val value: String) {
 
   CREATE_GOOGLE_TASK("create_google_task"),
   CREATE_GOOGLE_TASK_LIST("create_google_task_list"),
+  GOOGLE_TASK_PREVIEW("google_task_preview"),
 
   BIRTHDAY("birthday"),
   CREATE_BIRTHDAY("create_birthday"),

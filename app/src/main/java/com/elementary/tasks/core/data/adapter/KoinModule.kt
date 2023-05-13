@@ -5,6 +5,7 @@ import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
+import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
@@ -29,6 +30,7 @@ val adapterModule = module {
   single { UiBirthdayPreviewAdapter(get(), get()) }
 
   single { UiGoogleTaskListAdapter(get()) }
+  single { UiGoogleTaskPreviewAdapter(get(), get()) }
 
   single { UiGroupListAdapter(get()) }
   single { UiGroupEditAdapter() }
