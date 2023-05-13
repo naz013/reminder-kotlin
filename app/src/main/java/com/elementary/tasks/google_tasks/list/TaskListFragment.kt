@@ -20,8 +20,11 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.TasksConstants
+import com.elementary.tasks.google_tasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -50,14 +53,17 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
           editListClick()
           true
         }
+
         MENU_ITEM_DELETE -> {
           deleteDialog()
           true
         }
+
         MENU_ITEM_CLEAR -> {
           viewModel.clearList()
           true
         }
+
         else -> false
       }
     }) { menu ->
@@ -80,8 +86,10 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   private fun editListClick() {
     viewModel.currentTaskList?.also {
-      startActivity(Intent(context, GoogleTaskListActivity::class.java)
-        .putExtra(Constants.INTENT_ID, it.listId))
+      startActivity(
+        Intent(context, GoogleTaskListActivity::class.java)
+          .putExtra(Constants.INTENT_ID, it.listId)
+      )
     }
   }
 
@@ -99,9 +107,11 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   private fun addNewTask() {
     viewModel.currentTaskList?.also {
-      PinLoginActivity.openLogged(requireContext(), Intent(context, GoogleTaskActivity::class.java)
-        .putExtra(Constants.INTENT_ID, it.listId)
-        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+      PinLoginActivity.openLogged(
+        requireContext(), Intent(context, GoogleTaskActivity::class.java)
+          .putExtra(Constants.INTENT_ID, it.listId)
+          .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
+      )
     }
   }
 
@@ -116,19 +126,20 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   private fun showResult(commands: Commands) {
     when (commands) {
       Commands.FAILED -> {
-        Toast.makeText(requireContext(), getString(R.string.failed_to_update_task), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+          requireContext(),
+          getString(R.string.failed_to_update_task),
+          Toast.LENGTH_SHORT
+        ).show()
       }
+
       else -> {
       }
     }
   }
 
   private fun updateProgress(b: Boolean) {
-    if (b) {
-      binding.progressView.visibility = View.VISIBLE
-    } else {
-      binding.progressView.visibility = View.GONE
-    }
+    binding.progressView.visibleGone(b)
   }
 
   private fun showTasks(googleTasks: List<UiGoogleTaskList>) {
@@ -143,15 +154,17 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     }
 
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL)
+      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
+        resources.getInteger(R.integer.num_of_cols),
+        StaggeredGridLayoutManager.VERTICAL
+      )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
     adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
       override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
         when (actions) {
-          ListActions.EDIT -> if (t != null) editTask(t.id)
+          ListActions.EDIT -> if (t != null) openTask(t.id)
           ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
           else -> {
           }
@@ -165,24 +178,22 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     }
   }
 
-  private fun editTask(taskId: String) {
-    PinLoginActivity.openLogged(requireContext(), Intent(activity, GoogleTaskActivity::class.java)
-      .putExtra(Constants.INTENT_ID, taskId)
-      .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
+  private fun openTask(taskId: String) {
+    PinLoginActivity.openLogged(
+      requireContext(), Intent(activity, GoogleTaskPreviewActivity::class.java)
+        .putExtra(Constants.INTENT_ID, taskId)
+        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    )
   }
 
   private fun initEmpty() {
-    binding.emptyItem.visibility = View.VISIBLE
+    binding.emptyItem.visible()
     binding.emptyText.setText(R.string.no_google_tasks)
     reloadView(0)
   }
 
   private fun reloadView(count: Int) {
-    if (count > 0) {
-      binding.emptyItem.visibility = View.GONE
-    } else {
-      binding.emptyItem.visibility = View.VISIBLE
-    }
+    binding.emptyItem.visibleGone(count == 0)
   }
 
   override fun onResume() {
