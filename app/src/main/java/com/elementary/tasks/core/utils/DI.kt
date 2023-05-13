@@ -84,6 +84,7 @@ import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.DayViewViewModel
 import com.elementary.tasks.google_tasks.GoogleTasksViewModel
 import com.elementary.tasks.google_tasks.list.TaskListViewModel
+import com.elementary.tasks.google_tasks.preview.GoogleTaskPreviewViewModel
 import com.elementary.tasks.google_tasks.task.GoogleTaskViewModel
 import com.elementary.tasks.google_tasks.tasklist.GoogleTaskListViewModel
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
@@ -268,6 +269,18 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+  viewModel { (id: String) ->
+    GoogleTaskPreviewViewModel(
+      id,
       get(),
       get(),
       get(),

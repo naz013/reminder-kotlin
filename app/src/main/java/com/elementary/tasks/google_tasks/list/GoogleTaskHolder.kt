@@ -19,7 +19,7 @@ class GoogleTaskHolder(
 
   init {
     binding.clickView.setOnClickListener {
-      listener?.invoke(it, bindingAdapterPosition, ListActions.EDIT)
+      listener?.invoke(it, bindingAdapterPosition, ListActions.OPEN)
     }
     binding.statusIcon.setOnClickListener {
       listener?.invoke(it, bindingAdapterPosition, ListActions.SWITCH)

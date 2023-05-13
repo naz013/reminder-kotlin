@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.WindowInsetsControllerCompat
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
@@ -144,5 +146,10 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   protected open fun handleBackPress(): Boolean {
     return false
+  }
+
+  protected fun updateStatusBar(view: View, isLightStatusBar: Boolean) {
+    val controller = WindowInsetsControllerCompat(window, view)
+    controller.isAppearanceLightStatusBars = isLightStatusBar
   }
 }

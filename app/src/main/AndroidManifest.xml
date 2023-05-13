@@ -370,6 +370,7 @@
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".birthdays.preview.BirthdayPreviewActivity" />
+        <activity android:name=".google_tasks.preview.GoogleTaskPreviewActivity" />
         <activity
             android:name=".reminder.preview.FullscreenMapActivity"
             android:excludeFromRecents="true" />

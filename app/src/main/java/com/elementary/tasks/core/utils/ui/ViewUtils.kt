@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -23,9 +24,11 @@ import timber.log.Timber
 
 object ViewUtils {
 
-  fun registerDragAndDrop(activity: Activity, view: View, markAction: Boolean = true,
-                          @ColorInt color: Int,
-                          onDrop: (ClipData) -> Unit, vararg mimeTypes: String) {
+  fun registerDragAndDrop(
+    activity: Activity, view: View, markAction: Boolean = true,
+    @ColorInt color: Int,
+    onDrop: (ClipData) -> Unit, vararg mimeTypes: String
+  ) {
     view.setOnDragListener { v, event ->
       return@setOnDragListener when (event.action) {
         DragEvent.ACTION_DRAG_STARTED -> {
@@ -40,27 +43,32 @@ object ViewUtils {
           }
           false
         }
+
         DragEvent.ACTION_DRAG_ENTERED -> {
           if (markAction) {
             v.setBackgroundColor(color.adjustAlpha(50))
           }
           true
         }
+
         DragEvent.ACTION_DRAG_EXITED -> {
           if (markAction) {
             v.setBackgroundColor(color.adjustAlpha(25))
           }
           true
         }
+
         DragEvent.ACTION_DROP -> {
           activity.requestDragAndDropPermissions(event)
           onDrop.invoke(event.clipData)
           true
         }
+
         DragEvent.ACTION_DRAG_ENDED -> {
           v.setBackgroundColor(Color.argb(0, 255, 255, 255))
           true
         }
+
         DragEvent.ACTION_DRAG_LOCATION -> true
         else -> false
       }
@@ -78,7 +86,8 @@ object ViewUtils {
       if (icon != null) {
         DrawableCompat.setTint(icon, color)
         DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
-        val bitmap = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val bitmap =
+          Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         icon.setBounds(0, 0, canvas.width, canvas.height)
         icon.draw(canvas)
@@ -105,11 +114,24 @@ object ViewUtils {
     return null
   }
 
-  fun tintMenuIcon(context: Context, menu: Menu?, index: Int, @DrawableRes resource: Int, isDark: Boolean) {
-    try {
-      menu?.getItem(index)?.icon = tintIcon(context, resource, isDark)
-    } catch (e: Exception) {
-    }
+  fun tintMenuIcon(
+    context: Context,
+    menu: Menu?,
+    index: Int,
+    @DrawableRes resource: Int,
+    isDark: Boolean
+  ) {
+    runCatching { menu?.getItem(index)?.icon = tintIcon(context, resource, isDark) }
+  }
+
+  fun tintMenuIconId(
+    context: Context,
+    menu: Menu?,
+    @IdRes id: Int,
+    @DrawableRes resource: Int,
+    isDark: Boolean
+  ) {
+    kotlin.runCatching { menu?.findItem(id)?.icon = tintIcon(context, resource, isDark) }
   }
 
   fun listenScrollableView(recyclerView: RecyclerView, fabListener: (show: Boolean) -> Unit) {

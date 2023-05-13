@@ -25,9 +25,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/activity_birthday_preview"
-                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
-                app:navigationIconTint="?colorOnPrimaryContainer" />
+                app:menu="@menu/activity_google_task_preview"
+                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -51,73 +50,111 @@
                     android:layout_marginEnd="@dimen/material_margin"
                     android:orientation="vertical">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/contactPhoto"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="@string/acc_contact_photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="visible"
-                        app:civ_border_color="?colorOnBackground"
-                        app:civ_border_width="1dp" />
-
-                    <TextView
-                        android:id="@+id/nameView"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/taskTitleView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:textAppearance="?textAppearanceHeadlineMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="User Name" />
-
-                    <TextView
-                        android:id="@+id/contactNameNumberView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
                         android:textAppearance="?textAppearanceHeadlineSmall"
                         android:textColor="?colorOnBackground"
-                        tools:text="1234567890" />
+                        app:drawableStartCompat="@drawable/ic_twotone_title_24px"
+                        app:drawableTint="?colorOnBackground"
+                        tools:text="Title" />
 
                     <TextView
-                        android:id="@+id/ageView"
+                        android:id="@+id/taskNotesView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
                         android:textAppearance="?textAppearanceTitleLarge"
                         android:textColor="?colorOnBackground"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/ic_twotone_text_snippet_24"
+                        app:drawableTint="?colorOnBackground"
+                        tools:text="1234567890"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/listNameView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorOnBackground"
+                        app:drawableStartCompat="@drawable/ic_twotone_list_24"
+                        app:drawableTint="?colorOnBackground"
                         tools:text="25 years" />
 
                     <TextView
-                        android:id="@+id/dateOfBirthView"
+                        android:id="@+id/dueDateView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
                         android:textAppearance="?textAppearanceTitleMedium"
                         android:textColor="?colorOnBackground"
-                        tools:text="25 May, 2000" />
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/ic_twotone_alarm_24px"
+                        app:drawableTint="?colorOnBackground"
+                        tools:text="25 years"
+                        tools:visibility="visible" />
 
                     <TextView
-                        android:id="@+id/nextBirthdayDateView"
+                        android:id="@+id/createdDateView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
                         android:textAppearance="?textAppearanceTitleMedium"
                         android:textColor="?colorOnBackground"
-                        tools:text="25 May, 2023" />
+                        app:drawableStartCompat="@drawable/ic_twotone_add_alarm_24"
+                        app:drawableTint="?colorOnBackground"
+                        tools:text="25 years" />
+
+                    <TextView
+                        android:id="@+id/completedDateView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorOnBackground"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/ic_twotone_alarm_on_24"
+                        app:drawableTint="?colorOnBackground"
+                        tools:text="25 May, 2000"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/statusView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorOnBackground"
+                        android:visibility="visible"
+                        app:drawableStartCompat="@drawable/ic_twotone_local_offer_24px"
+                        app:drawableTint="?colorOnBackground"
+                        tools:text="@string/completed"
+                        tools:visibility="visible" />
 
                 </LinearLayout>
 
@@ -127,45 +164,29 @@
 
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/buttonsView"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/buttonComplete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
         android:layout_marginBottom="32dp"
-        app:selectionRequired="false"
-        app:singleSelection="true">
-
-        <Button
-            android:id="@+id/buttonCall"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/make_call"
-            android:textAllCaps="true" />
-
-        <Button
-            android:id="@+id/buttonSms"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/send_sms"
-            android:textAllCaps="true" />
-
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+        android:contentDescription="@string/complete"
+        android:text="@string/complete"
+        android:textAllCaps="true"
+        android:visibility="gone"
+        app:icon="@drawable/ic_twotone_done_24px"
+        tools:visibility="visible" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
-        android:layout_width="@dimen/confetti_animation_size"
-        android:layout_height="@dimen/confetti_animation_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="false"
-        app:lottie_speed="0.75"
-        app:lottie_rawRes="@raw/birthday_confetti" />
+        android:padding="72dp"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/new_loading_animation"
+        tools:visibility="visible" />
 
 </FrameLayout>
