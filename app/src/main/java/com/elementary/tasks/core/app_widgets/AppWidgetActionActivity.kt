@@ -8,6 +8,7 @@ import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.readSerializable
 import com.elementary.tasks.google_tasks.TasksConstants
+import com.elementary.tasks.google_tasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
@@ -57,13 +58,23 @@ class AppWidgetActionActivity : ThemedActivity() {
       Direction.GOOGLE_TASK -> {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return
         val action = data.extra[TasksConstants.INTENT_ACTION] as? String ?: return
-        PinLoginActivity.openLogged(
-          this,
-          Intent(this, GoogleTaskActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .putExtra(Constants.INTENT_ID, id)
-            .putExtra(TasksConstants.INTENT_ACTION, action)
-        )
+        if (action == TasksConstants.CREATE) {
+          PinLoginActivity.openLogged(
+            this,
+            Intent(this, GoogleTaskActivity::class.java)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+              .putExtra(Constants.INTENT_ID, id)
+              .putExtra(TasksConstants.INTENT_ACTION, action)
+          )
+        } else {
+          PinLoginActivity.openLogged(
+            this,
+            Intent(this, GoogleTaskPreviewActivity::class.java)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+              .putExtra(Constants.INTENT_ID, id)
+              .putExtra(TasksConstants.INTENT_ACTION, action)
+          )
+        }
       }
     }
     finish()
