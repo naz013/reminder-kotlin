@@ -680,5 +680,6 @@
     <string name="complete">Complete</string>
     <string name="not_completed">Not completed</string>
     <string name="completed">Completed</string>
+    <string name="widget_birthdays_description">Show all birthdays</string>
 
 </resources>

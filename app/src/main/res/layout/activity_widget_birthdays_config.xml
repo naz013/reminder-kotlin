@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:liftOnScroll="false"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_clear_black_24dp"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/birthdays"
+            app:titleCentered="true" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.elementary.tasks.core.views.gradient.UiGradientFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:gradientFrameLayout_cornerRadius="0dp"
+        app:gradientFrameLayout_endColor="?colorTertiary"
+        app:gradientFrameLayout_startColor="?colorPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/headerBg"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/widget_bg_dark1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/widgetTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:singleLine="true"
+                    android:text="@string/birthdays"
+                    android:textAppearance="?textAppearanceHeadline5"
+                    android:textSize="18sp"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:id="@+id/btn_settings"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="centerInside"
+                    tools:srcCompat="@drawable/ic_twotone_settings_24px" />
+
+                <ImageView
+                    android:id="@+id/btn_add_task"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="centerInside"
+                    tools:srcCompat="@drawable/ic_twotone_add_24px" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widgetBg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/listItemCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/widget_bg_white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/statusIconView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:scaleType="centerInside"
+                        tools:src="@drawable/ic_twotone_cake_24px" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/nameView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textColor="@color/pureBlack"
+                            android:text="User Name" />
+
+                        <TextView
+                            android:id="@+id/ageBirthDateView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:singleLine="true"
+                            android:textColor="@color/pureBlack"
+                            android:text="25 years" />
+
+                        <TextView
+                            android:id="@+id/leftTimeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:singleLine="true"
+                            android:textColor="@color/pureBlack"
+                            android:text="5 days" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.elementary.tasks.core.views.gradient.UiGradientFrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/background" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp">
+
+                <com.github.naz013.colorslider.ColorSlider
+                    android:id="@+id/bgColorSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    app:cs_colors="@array/widget_colors" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/list_item_background" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp">
+
+                <com.github.naz013.colorslider.ColorSlider
+                    android:id="@+id/listItemBgColorSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    app:cs_colors="@array/widget_colors" />
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:text="@string/save"
+        android:textAllCaps="true"
+        android:visibility="visible"
+        app:icon="@drawable/ic_twotone_done_24px" />
+</LinearLayout>
