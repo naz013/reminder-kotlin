@@ -477,6 +477,17 @@
         </activity>
 
         <activity
+            android:name=".core.app_widgets.birthdays.BirthdaysWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".core.app_widgets.AppWidgetActionActivity"
             android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
@@ -536,6 +547,24 @@
 
         <service
             android:name=".core.app_widgets.google_tasks.TasksService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".core.app_widgets.birthdays.BirthdaysWidget"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/birthdays">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/birthdays_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name=".core.app_widgets.birthdays.BirthdaysService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity

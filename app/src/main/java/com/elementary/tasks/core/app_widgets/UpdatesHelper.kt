@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import com.elementary.tasks.core.app_widgets.birthdays.BirthdaysWidget
 import com.elementary.tasks.core.app_widgets.calendar.CalendarWidget
 import com.elementary.tasks.core.app_widgets.events.EventsWidget
 import com.elementary.tasks.core.app_widgets.google_tasks.TasksWidget
@@ -23,6 +24,7 @@ class UpdatesHelper(
     context.sendBroadcast(intent)
     updateCalendarWidget()
     updateTasksWidget()
+    updateBirthdaysWidget()
   }
 
   fun updateNotesWidget() {
@@ -51,6 +53,16 @@ class UpdatesHelper(
 
     val ids = AppWidgetManager.getInstance(context)
       .getAppWidgetIds(ComponentName(context, TasksWidget::class.java))
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    context.sendBroadcast(intent)
+  }
+
+  fun updateBirthdaysWidget() {
+    val intent = Intent(context, BirthdaysWidget::class.java)
+    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+
+    val ids = AppWidgetManager.getInstance(context)
+      .getAppWidgetIds(ComponentName(context, BirthdaysWidget::class.java))
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
     context.sendBroadcast(intent)
   }
