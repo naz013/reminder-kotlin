@@ -7,6 +7,7 @@ import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
@@ -37,7 +38,8 @@ class AddBirthdayViewModel(
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
-  private val uriReader: UriReader
+  private val uriReader: UriReader,
+  private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
@@ -127,6 +129,8 @@ class AddBirthdayViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       birthdaysDao.delete(id)
       notifier.showBirthdayPermanent()
+      updatesHelper.updateTasksWidget()
+      updatesHelper.updateBirthdaysWidget()
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -157,6 +161,8 @@ class AddBirthdayViewModel(
       birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
       birthdaysDao.insert(birthday)
       notifier.showBirthdayPermanent()
+      updatesHelper.updateBirthdaysWidget()
+      updatesHelper.updateTasksWidget()
       workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)

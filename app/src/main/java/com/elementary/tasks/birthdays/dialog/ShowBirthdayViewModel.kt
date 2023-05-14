@@ -3,19 +3,20 @@ package com.elementary.tasks.birthdays.dialog
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 
@@ -26,7 +27,8 @@ class ShowBirthdayViewModel(
   private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
   private val dateTimeManager: DateTimeManager,
-  private val uiBirthdayShowAdapter: UiBirthdayShowAdapter
+  private val uiBirthdayShowAdapter: UiBirthdayShowAdapter,
+  private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayShow>()
@@ -78,6 +80,8 @@ class ShowBirthdayViewModel(
       birthday.showedYear = LocalDate.now().year
       birthdaysDao.insert(birthday)
       notifier.showBirthdayPermanent()
+      updatesHelper.updateBirthdaysWidget()
+      updatesHelper.updateTasksWidget()
       workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)

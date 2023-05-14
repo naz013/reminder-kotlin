@@ -6,6 +6,7 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
@@ -26,7 +27,8 @@ class BirthdayPreviewViewModel(
   private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter
+  private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
+  private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayPreview>()
@@ -54,6 +56,8 @@ class BirthdayPreviewViewModel(
       birthdayRepository.delete(id)
       notifier.showBirthdayPermanent()
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      updatesHelper.updateBirthdaysWidget()
+      updatesHelper.updateTasksWidget()
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

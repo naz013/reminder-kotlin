@@ -3,6 +3,7 @@ package com.elementary.tasks.birthdays.create
 import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
@@ -34,6 +35,7 @@ class AddBirthdayViewModelTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>()
   private val uriReader = mockk<UriReader>()
+  private val updatesHelper = mockk<UpdatesHelper>()
 
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
 
@@ -52,7 +54,8 @@ class AddBirthdayViewModelTest : BaseTest() {
       dateTimeManager = dateTimeManager,
       analyticsEventSender = analyticsEventSender,
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
-      uriReader = uriReader
+      uriReader = uriReader,
+      updatesHelper = updatesHelper
     )
   }
 

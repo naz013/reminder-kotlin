@@ -157,7 +157,18 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> ShowBirthdayViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    ShowBirthdayViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { (id: String) ->
     AddBirthdayViewModel(
       id,
@@ -169,12 +180,13 @@ val viewModelModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get()) }
+  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { BirthdayPreviewViewModel(get(), get(), get(), get(), get(), get(), get(),) }
+  viewModel { BirthdayPreviewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
