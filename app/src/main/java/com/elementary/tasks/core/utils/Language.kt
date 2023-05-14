@@ -182,6 +182,7 @@ class Language(
     const val SPANISH = "es"
     const val UKRAINIAN = "uk"
     const val PORTUGUESE = "pt"
+    const val BULGARIAN = "bg"
 
     private const val EN = "en-US"
     private const val UK = "uk-UA"
@@ -195,20 +196,21 @@ class Language(
         0 -> Locale.getDefault()
         1 -> Locale.ENGLISH
         2 -> Locale.GERMAN
-        3 -> Locale("es", "")
+        3 -> Locale(SPANISH, "")
         4 -> Locale.FRENCH
         5 -> Locale.ITALIAN
-        6 -> Locale("pt", "")
-        7 -> Locale("pl", "")
+        6 -> Locale(PORTUGUESE, "")
+        7 -> Locale(POLISH, "")
         8 -> Locale("cs", "")
         9 -> Locale("ro", "")
         10 -> Locale("tr", "")
-        11 -> Locale("uk", "")
-        12 -> Locale("ru", "")
+        11 -> Locale(UKRAINIAN, "")
+        12 -> Locale(RUSSIAN, "")
         13 -> Locale.JAPANESE
         14 -> Locale.CHINESE
         15 -> Locale("hi", "")
         16 -> Locale.KOREAN
+        17 -> Locale(BULGARIAN, "")
         else -> Locale.getDefault()
       }
     }
