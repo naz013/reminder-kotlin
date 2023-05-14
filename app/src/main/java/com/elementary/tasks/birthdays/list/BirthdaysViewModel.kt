@@ -3,6 +3,7 @@ package com.elementary.tasks.birthdays.list
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
@@ -22,7 +23,8 @@ class BirthdaysViewModel(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier
+  private val notifier: Notifier,
+  private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val birthdaysData = SearchableBirthdayData(
@@ -45,6 +47,8 @@ class BirthdaysViewModel(
       notifier.showBirthdayPermanent()
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       birthdaysData.refresh()
+      updatesHelper.updateTasksWidget()
+      updatesHelper.updateBirthdaysWidget()
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
