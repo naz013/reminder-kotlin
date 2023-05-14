@@ -243,11 +243,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     viewModel.colorOpacity.postValue(newPair(color, opacity))
     viewModel.palette.postValue(prefs.notePalette)
 
-    if (prefs.isNoteFontSizeRememberingEnabled) {
-      viewModel.onFontSizeChanged(prefs.lastNoteFontSize)
+    val fontSize = if (prefs.isNoteFontSizeRememberingEnabled) {
+      prefs.lastNoteFontSize
     } else {
-      viewModel.onFontSizeChanged(FontParams.DEFAULT_FONT_SIZE)
+      FontParams.DEFAULT_FONT_SIZE
     }
+    viewModel.onFontSizeChanged(fontSize)
+    binding.fontSizeBar.value = fontSize.toFloat()
 
     if (prefs.isNoteFontStyleRememberingEnabled) {
       viewModel.onFontStyleChanged(prefs.lastNoteFontStyle)
