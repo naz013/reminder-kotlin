@@ -57,7 +57,7 @@ class BirthdaysFactory(
 
     birthdayRepository.getAll()
       .map { uiBirthdayWidgetListAdapter.convert(it) }
-      .sortedBy { it.nextBirthdayDate }
+      .sortedBy { it.millis }
       .also { list.addAll(it) }
   }
 
