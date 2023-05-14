@@ -105,6 +105,9 @@ class NotesViewModel(
       }
       noteImageRepository.clearFolder(note.key)
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+
+      notesData.refresh()
+
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -129,6 +132,9 @@ class NotesViewModel(
       note.updatedAt = DateTimeManager.gmtDateTime
       notesDao.insert(note)
       workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, note.key)
+
+      notesData.refresh()
+
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
