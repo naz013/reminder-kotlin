@@ -20,7 +20,7 @@ class UiBirthdayWidgetListAdapter(private val dateTimeManager: DateTimeManager) 
       uuId = birthday.uuId,
       name = birthday.name,
       remainingTimeFormatted = remainingTime,
-      nextBirthdayDate = dateTimeManager.toMillis(dateItem.dateTime),
+      millis = dateTimeManager.toMillis(dateItem.dateTime),
       ageFormattedAndBirthdayDate = "$ageFormatted ($birthDate)"
     )
   }

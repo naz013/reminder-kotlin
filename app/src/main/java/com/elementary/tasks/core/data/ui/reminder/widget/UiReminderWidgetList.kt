@@ -1,11 +1,11 @@
-package com.elementary.tasks.core.data.ui.birthday
+package com.elementary.tasks.core.data.ui.reminder.widget
 
 import com.elementary.tasks.core.data.ui.widget.DateSorted
 
-data class UiBirthdayWidgetList(
+data class UiReminderWidgetList(
   val uuId: String,
-  val name: String = "",
-  val ageFormattedAndBirthdayDate: String = "",
+  val text: String = "",
+  val dateTime: String = "",
   val remainingTimeFormatted: String = "",
   override val millis: Long
 ) : DateSorted

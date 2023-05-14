@@ -16,6 +16,7 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
+import com.elementary.tasks.core.data.adapter.reminder.UiReminderWidgetListAdapter
 import org.koin.dsl.module
 
 val adapterModule = module {
@@ -24,6 +25,7 @@ val adapterModule = module {
   single { UiReminderPreviewAdapter(get(), get(), get(), get()) }
   single { UiReminderListAdapter(get(), get(), get()) }
   single { UiReminderListsAdapter(get(), get(), get()) }
+  single { UiReminderWidgetListAdapter(get(), get()) }
 
   single { UiBirthdayListAdapter(get()) }
   single { UiBirthdayShowAdapter(get(), get()) }
