@@ -156,6 +156,15 @@
                         tools:text="@string/completed"
                         tools:visibility="visible" />
 
+                    <LinearLayout
+                        android:id="@+id/ads_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="64dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical" />
+
                 </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>

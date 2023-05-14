@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.view.updatePadding
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.arch.BindingActivity
@@ -12,6 +13,7 @@ import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
@@ -27,14 +29,20 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
   private val viewModel by viewModel<BirthdayPreviewViewModel> { parametersOf(idFromIntent()) }
 
   private val permissionFlow = PermissionFlow(this, dialogues)
+  private val adsProvider = AdsProvider()
+  private var initPaddingTop: Int? = null
 
   override fun inflateBinding() = ActivityBirthdayPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (initPaddingTop == null) {
+      initPaddingTop = binding.rootView.paddingTop
+    }
+
     drawBehindSystemBars(binding.rootView) { insets ->
       binding.rootView.updatePadding(
-        top = binding.rootView.paddingTop + insets.top
+        top = (initPaddingTop ?: 0) + insets.top
       )
     }
 
@@ -46,7 +54,18 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
     binding.contactPhoto.gone()
     binding.contactNameNumberView.gone()
 
+    loadAds()
+
     initViewModel()
+  }
+
+  private fun loadAds() {
+    if (!Module.isPro && AdsProvider.hasAds()) {
+      adsProvider.showBanner(
+        binding.adsHolder,
+        AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID
+      )
+    }
   }
 
   private fun tryToMakeCall() {

@@ -4,13 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
@@ -30,6 +31,7 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   private val viewModel by viewModel<GoogleTaskPreviewViewModel> { parametersOf(idFromIntent()) }
 
   private var initPaddingTop: Int? = null
+  private val adsProvider = AdsProvider()
 
   override fun inflateBinding() = ActivityGoogleTaskPreviewBinding.inflate(layoutInflater)
 
@@ -41,7 +43,6 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     }
 
     drawBehindSystemBars(binding.rootView) { insets ->
-      Timber.d("drawBehindSystemBars: $insets")
       binding.rootView.updatePadding(
         top = (initPaddingTop ?: 0) + insets.top
       )
@@ -51,7 +52,18 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
 
     binding.buttonComplete.setOnClickListener { viewModel.onComplete() }
 
+    loadAds()
+
     initViewModel()
+  }
+
+  private fun loadAds() {
+    if (!Module.isPro && AdsProvider.hasAds()) {
+      adsProvider.showBanner(
+        binding.adsHolder,
+        AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID
+      )
+    }
   }
 
   private fun initTopAppBar() {

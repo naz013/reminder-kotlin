@@ -119,6 +119,15 @@
                         android:textColor="?colorOnBackground"
                         tools:text="25 May, 2023" />
 
+                    <LinearLayout
+                        android:id="@+id/ads_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="64dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical" />
+
                 </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>
@@ -165,7 +174,7 @@
         android:layout_gravity="center"
         app:lottie_autoPlay="false"
         app:lottie_loop="false"
-        app:lottie_speed="0.75"
-        app:lottie_rawRes="@raw/birthday_confetti" />
+        app:lottie_rawRes="@raw/birthday_confetti"
+        app:lottie_speed="0.75" />
 
 </FrameLayout>

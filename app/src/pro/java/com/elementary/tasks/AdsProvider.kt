@@ -9,6 +9,12 @@ class AdsProvider {
   fun showBanner(
     viewGroup: ViewGroup,
     bannerId: String,
+    failListener: (() -> Unit)? = null
+  ) {}
+
+  fun showNativeBanner(
+    viewGroup: ViewGroup,
+    bannerId: String,
     @LayoutRes res: Int,
     failListener: (() -> Unit)? = null
   ) {}
@@ -17,17 +23,10 @@ class AdsProvider {
   }
 
   companion object {
-    const val REMINDER_BANNER_ID = ""
-    const val NOTE_BANNER_ID = ""
-    const val BIRTHDAY_BANNER_ID = ""
-    const val GTASKS_BANNER_ID = ""
     const val REMINDER_PREVIEW_BANNER_ID = ""
     const val NOTE_PREVIEW_BANNER_ID = ""
-    const val ADS_VIEW_TYPE = 100
-
-    fun numberOfAds(contentSize: Int): Int {
-      return 0
-    }
+    const val BIRTHDAY_PREVIEW_BANNER_ID = ""
+    const val GOOGLE_TASKS_PREVIEW_BANNER_ID = ""
 
     fun hasAds() = false
 
