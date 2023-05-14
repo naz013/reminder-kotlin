@@ -2,7 +2,6 @@ package com.elementary.tasks
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
@@ -10,9 +9,14 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.visible
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.nativead.NativeAd
@@ -29,6 +33,33 @@ class AdsProvider {
   }
 
   fun showBanner(
+    viewGroup: ViewGroup,
+    bannerId: String,
+    failListener: (() -> Unit)? = null
+  ) {
+    val adView = AdView(viewGroup.context)
+    adView.setAdSize(AdSize.LARGE_BANNER)
+    adView.adUnitId = bannerId
+
+    viewGroup.removeAllViews()
+    viewGroup.addView(adView)
+
+    val adRequest = AdRequest.Builder().build()
+    adView.loadAd(adRequest)
+
+    adView.adListener = object: AdListener() {
+      override fun onAdFailedToLoad(adError : LoadAdError) {
+        adView.gone()
+        failListener?.invoke()
+      }
+
+      override fun onAdLoaded() {
+        adView.visible()
+      }
+    }
+  }
+
+  fun showNativeBanner(
     viewGroup: ViewGroup,
     bannerId: String,
     @LayoutRes res: Int,
@@ -78,54 +109,54 @@ class AdsProvider {
 
     (adView.headlineView as TextView).text = nativeAd.headline
     if (nativeAd.body == null) {
-      adView.bodyView?.visibility = View.INVISIBLE
+      adView.bodyView?.transparent()
     } else {
-      adView.bodyView?.visibility = View.VISIBLE
+      adView.bodyView?.visible()
       (adView.bodyView as TextView).text = nativeAd.body
     }
 
     if (nativeAd.callToAction == null) {
-      adView.callToActionView?.visibility = View.INVISIBLE
+      adView.callToActionView?.transparent()
     } else {
-      adView.callToActionView?.visibility = View.VISIBLE
+      adView.callToActionView?.visible()
       (adView.callToActionView as Button).text = nativeAd.callToAction
     }
 
     if (nativeAd.icon == null) {
-      adView.iconView?.visibility = View.GONE
+      adView.iconView?.gone()
     } else {
       (adView.iconView as ImageView).setImageDrawable(
         nativeAd.icon?.drawable
       )
-      adView.iconView?.visibility = View.VISIBLE
+      adView.iconView?.visible()
     }
 
     if (nativeAd.price == null) {
-      adView.priceView?.visibility = View.INVISIBLE
+      adView.priceView?.transparent()
     } else {
-      adView.priceView?.visibility = View.VISIBLE
+      adView.priceView?.visible()
       (adView.priceView as TextView).text = nativeAd.price
     }
 
     if (nativeAd.store == null) {
-      adView.storeView?.visibility = View.INVISIBLE
+      adView.storeView?.transparent()
     } else {
-      adView.storeView?.visibility = View.VISIBLE
+      adView.storeView?.visible()
       (adView.storeView as TextView).text = nativeAd.store
     }
 
     if (nativeAd.starRating == null) {
-      adView.starRatingView?.visibility = View.INVISIBLE
+      adView.starRatingView?.transparent()
     } else {
       (adView.starRatingView as RatingBar).rating = nativeAd.starRating!!.toFloat()
-      adView.starRatingView?.visibility = View.VISIBLE
+      adView.starRatingView?.visible()
     }
 
     if (nativeAd.advertiser == null) {
-      adView.advertiserView?.visibility = View.INVISIBLE
+      adView.advertiserView?.transparent()
     } else {
       (adView.advertiserView as TextView).text = nativeAd.advertiser
-      adView.advertiserView?.visibility = View.VISIBLE
+      adView.advertiserView?.visible()
     }
     adView.setNativeAd(nativeAd)
   }
@@ -134,7 +165,8 @@ class AdsProvider {
     private const val ADMOB_ID = "ca-app-pub-5133908997831400~9675541050"
     const val REMINDER_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1084030852"
     const val NOTE_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/4831704177"
-    const val ADS_VIEW_TYPE = 100
+    const val BIRTHDAY_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1262280397"
+    const val GOOGLE_TASKS_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/5192898494"
 
     private var wasError = false
 

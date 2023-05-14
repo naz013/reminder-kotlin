@@ -116,7 +116,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun loadAds() {
     if (!Module.isPro && AdsProvider.hasAds()) {
       binding.adsCard.visible()
-      adsProvider.showBanner(
+      adsProvider.showNativeBanner(
         binding.adsHolder,
         AdsProvider.REMINDER_PREVIEW_BANNER_ID,
         R.layout.list_item_ads_hor
