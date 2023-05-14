@@ -11,5 +11,4 @@
     android:description="@string/widget_combined_description"
     android:updatePeriodMillis="1800000"
     android:widgetFeatures="reconfigurable"
-    android:previewLayout="@layout/widget_combined_buttons"
     android:widgetCategory="home_screen|keyguard" />
