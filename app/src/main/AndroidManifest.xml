@@ -506,7 +506,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/current_widget_metadata" />
+                android:resource="@xml/reminders_widget_metadata" />
         </receiver>
 
         <service
