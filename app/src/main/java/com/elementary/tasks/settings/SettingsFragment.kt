@@ -180,30 +180,25 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
   }
 
   @SuppressLint("SetTextI18n")
-  override fun onSale(discount: String, expiryDate: String) {
-    if (dateTimeManager.isAfterNow(expiryDate)) {
-      val expiry = dateTimeManager.getFireFormatted(expiryDate)
-      binding.saleBadge.visible()
-      binding.saleBadge.text =
-        "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+  override fun onUpdateChanged(hasUpdate: Boolean, version: String) {
+    Timber.d("onUpdateChanged: $hasUpdate, $version")
+    if (hasUpdate) {
+      binding.updateBadge.visible()
+      binding.updateBadge.text = getString(R.string.new_update_message, version)
+      binding.updateBadge.setOnClickListener { SuperUtil.launchMarket(requireContext()) }
     } else {
-      binding.saleBadge.gone()
+      binding.updateBadge.gone()
     }
   }
 
-  override fun noSale() {
-    binding.saleBadge.gone()
-  }
-
-  @SuppressLint("SetTextI18n")
-  override fun onUpdate(version: String) {
-    binding.updateBadge.gone()
-    binding.updateBadge.text = getString(R.string.update_available) + ": " + version
-    binding.updateBadge.setOnClickListener { SuperUtil.launchMarket(requireContext()) }
-  }
-
-  override fun noUpdate() {
-    binding.updateBadge.gone()
+  override fun onSaleChanged(showDiscount: Boolean, discount: String, until: String) {
+    Timber.d("onSaleChanged: $showDiscount, $discount")
+    if (showDiscount) {
+      binding.saleBadge.visible()
+      binding.saleBadge.text = getString(R.string.new_sale_message, discount, until)
+    } else {
+      binding.saleBadge.gone()
+    }
   }
 
   private fun openProPage() {

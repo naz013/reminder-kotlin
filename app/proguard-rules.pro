@@ -131,19 +131,6 @@
 
 -dontwarn com.google.common.**
 
--dontwarn com.evernote.android.job.gcm.**
--dontwarn com.evernote.android.job.GcmAvailableHelper
--dontwarn com.evernote.android.job.work.**
--dontwarn com.evernote.android.job.WorkManagerAvailableHelper
-
--keep public class com.evernote.android.job.v21.PlatformJobService
--keep public class com.evernote.android.job.v14.PlatformAlarmService
--keep public class com.evernote.android.job.v14.PlatformAlarmReceiver
--keep public class com.evernote.android.job.JobBootReceiver
--keep public class com.evernote.android.job.JobRescheduleService
--keep public class com.evernote.android.job.gcm.PlatformGcmService
--keep public class com.evernote.android.job.work.PlatformWorker
-
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
@@ -168,3 +155,17 @@
 -keepclassmembers class * extends androidx.work.Worker {
     public <init>(android.content.Context,androidx.work.WorkerParameters);
 }
+
+-keepclassmembers,allowobfuscation class * {
+ @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-keep class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-dontwarn com.oracle.svm.core.annotate.AutomaticFeature
+-dontwarn com.oracle.svm.core.annotate.Delete
+-dontwarn com.oracle.svm.core.annotate.TargetClass
+-dontwarn org.graalvm.nativeimage.hosted.Feature
+-dontwarn org.koin.core.parameter.DefinitionParameters

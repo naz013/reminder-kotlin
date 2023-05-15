@@ -47,4 +47,14 @@ class PackageManagerWrapper(
   } catch (e: Throwable) {
     ""
   }
+
+  fun getVersionCode(): Long = try {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+      getPackageInfo(context.packageName).longVersionCode
+    } else {
+      getPackageInfo(context.packageName).versionCode.toLong()
+    }
+  } catch (e: Throwable) {
+    0
+  }
 }

@@ -51,6 +51,14 @@ class Prefs(
     }
   }
 
+  var saleMessage: String
+    get() = getString(PrefsConstants.SALE_MESSAGE)
+    set(value) = putString(PrefsConstants.SALE_MESSAGE, value)
+
+  var internalMessage: String
+    get() = getString(PrefsConstants.INTERNAL_MESSAGE)
+    set(value) = putString(PrefsConstants.INTERNAL_MESSAGE, value)
+
   var useMetric: Boolean
     get() = getBoolean(PrefsConstants.METRIC_SYSTEM, def = true)
     set(value) = putBoolean(PrefsConstants.METRIC_SYSTEM, value)

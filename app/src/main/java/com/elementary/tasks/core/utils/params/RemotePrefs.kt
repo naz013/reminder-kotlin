@@ -1,17 +1,21 @@
 package com.elementary.tasks.core.utils.params
 
-import android.content.Context
-import android.content.pm.PackageManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
+import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.google.gson.Gson
 import timber.log.Timber
 
 class RemotePrefs(
-  context: Context,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val packageManagerWrapper: PackageManagerWrapper,
+  private val dateTimeManager: DateTimeManager
 ) {
 
   private val config: FirebaseRemoteConfig? = try {
@@ -20,10 +24,8 @@ class RemotePrefs(
     null
   }
 
-  private val mObservers = mutableListOf<SaleObserver>()
+  private val mSaleObservers = mutableListOf<SaleObserver>()
   private val mUpdateObservers = mutableListOf<UpdateObserver>()
-  private val pm: PackageManager = context.packageManager
-  private val packageName: String = context.packageName
 
   init {
     val configSettings = FirebaseRemoteConfigSettings.Builder()
@@ -43,16 +45,90 @@ class RemotePrefs(
       if (task.isSuccessful) {
         config.fetchAndActivate()
       }
-      reaAppConfigs()
+      readAppConfigs()
       readFeatureFlags()
-      displayVersionMessage()
-      if (!Module.isPro) displaySaleMessage()
+      readUpdateMessage()
+      if (!Module.isPro) {
+        readSaleMessage()
+      }
     }?.addOnFailureListener {
       it.printStackTrace()
     }
   }
 
-  private fun reaAppConfigs() {
+  private fun readUpdateMessage() {
+    val json = config?.getString(UPDATE_MESSAGE)
+
+    val updateMessage = runCatching { Gson().fromJson(json, UpdateMessageV2::class.java) }.getOrNull()
+
+    Timber.d("readUpdateMessage: json=$json")
+    Timber.d("readUpdateMessage: message=$updateMessage")
+
+    if (updateMessage != null) {
+      val currentVersionCode = packageManagerWrapper.getVersionCode()
+      if (updateMessage.versionCode > currentVersionCode) {
+        notifyUpdateObservers(true, updateMessage.versionName)
+      } else {
+        notifyUpdateObservers(false, "")
+      }
+    } else {
+      notifyUpdateObservers(false, "")
+    }
+  }
+
+  private fun notifyUpdateObservers(hasUpdate: Boolean, version: String) {
+    for (observer in mUpdateObservers) {
+      observer.onUpdateChanged(hasUpdate, version)
+    }
+  }
+
+  private fun readSaleMessage() {
+    val json = config?.getString(PRO_SALE_MESSAGE)
+
+    val saleMessageV2 = runCatching { Gson().fromJson(json, SaleMessageV2::class.java) }.getOrNull()
+
+    Timber.d("readSaleMessage: json=$json")
+    Timber.d("readSaleMessage: message=$saleMessageV2")
+
+    if (saleMessageV2 != null) {
+      prefs.saleMessage = json ?: ""
+      checkSaleMessage(saleMessageV2)
+    } else {
+      val oldJson = prefs.saleMessage.takeIf { it.isNotEmpty() } ?: return
+      runCatching {
+        Gson().fromJson(oldJson, SaleMessageV2::class.java)?.also { checkSaleMessage(it) }
+      }
+    }
+  }
+
+  private fun checkSaleMessage(saleMessageV2: SaleMessageV2) {
+    val now = dateTimeManager.getCurrentDateTime()
+    val startDateTime = dateTimeManager.fromRfc3339ToLocal(saleMessageV2.startAt)
+    val endDateTime = dateTimeManager.fromRfc3339ToLocal(saleMessageV2.endAt)
+
+    Timber.d("checkSaleMessage: now=$now")
+    Timber.d("checkSaleMessage: startDateTime=$startDateTime")
+    Timber.d("checkSaleMessage: endDateTime=$endDateTime")
+
+    if (startDateTime != null && endDateTime != null) {
+      if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
+        val userDateTime = dateTimeManager.getFullDateTime(endDateTime)
+        notifySaleObservers(true, saleMessageV2.salePercentage, userDateTime)
+      } else {
+        notifySaleObservers(false, "", "")
+      }
+    } else {
+      notifySaleObservers(false, "", "")
+    }
+  }
+
+  private fun notifySaleObservers(hasSale: Boolean, discount: String, endDate: String) {
+    for (observer in mSaleObservers) {
+      observer.onSaleChanged(hasSale, discount, endDate)
+    }
+  }
+
+  private fun readAppConfigs() {
     val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
     val termsUrl = config?.getString(TERMS_URL)
     val voiceHelpUrls = config?.getString(VOICE_HELP_URLS)
@@ -95,85 +171,34 @@ class RemotePrefs(
   }
 
   fun addSaleObserver(observer: SaleObserver) {
-    if (!mObservers.contains(observer)) {
-      mObservers.add(observer)
+    if (!mSaleObservers.contains(observer)) {
+      mSaleObservers.add(observer)
     }
     fetchConfig()
   }
 
   fun removeSaleObserver(observer: SaleObserver) {
-    if (mObservers.contains(observer)) {
-      mObservers.remove(observer)
-    }
-  }
-
-  private fun displayVersionMessage() {
-    val versionCode = config?.getLong(VERSION_CODE) ?: 0
-    try {
-      val pInfo = pm.getPackageInfo(packageName, 0)
-      val verCode = pInfo.versionCode
-      if (versionCode > verCode) {
-        val version = config?.getString(VERSION_NAME) ?: ""
-        for (observer in mUpdateObservers) {
-          observer.onUpdate(version)
-        }
-        return
-      }
-    } catch (e: PackageManager.NameNotFoundException) {
-      e.printStackTrace()
-    }
-
-    notifyNoUpdate()
-  }
-
-  private fun notifyNoUpdate() {
-    for (observer in mUpdateObservers) {
-      observer.noUpdate()
-    }
-  }
-
-  private fun displaySaleMessage() {
-    val isSale = config?.getBoolean(SALE_STARTED) ?: false
-    if (isSale) {
-      val expiry = config?.getString(SALE_EXPIRY_DATE) ?: ""
-      val discount = config?.getString(SALE_VALUE) ?: ""
-      for (observer in mObservers) {
-        observer.onSale(discount, expiry)
-      }
-      return
-    }
-    notifyNoSale()
-  }
-
-  private fun notifyNoSale() {
-    for (observer in mObservers) {
-      observer.noSale()
+    if (mSaleObservers.contains(observer)) {
+      mSaleObservers.remove(observer)
     }
   }
 
   interface UpdateObserver {
-    fun onUpdate(version: String)
-
-    fun noUpdate()
+    fun onUpdateChanged(hasUpdate: Boolean, version: String)
   }
 
   interface SaleObserver {
-    fun onSale(discount: String, expiryDate: String)
-
-    fun noSale()
+    fun onSaleChanged(showDiscount: Boolean, discount: String, until: String)
   }
 
   companion object {
 
-    private const val SALE_STARTED = "sale_started"
-    private const val SALE_VALUE = "sale_save_value"
-    private const val SALE_EXPIRY_DATE = "sale_until_time_utc"
-
-    private const val VERSION_CODE = "version_code"
-    private const val VERSION_NAME = "version_name"
-
     private const val PRIVACY_POLICY_URL = "privacy_policy_link"
     private const val TERMS_URL = "terms_link"
     private const val VOICE_HELP_URLS = "voice_help_urls"
+
+    private const val UPDATE_MESSAGE = "update_message_v2"
+    private const val PRO_SALE_MESSAGE = "pro_sale_message_v2"
+    private const val INTERNAL_MESSAGE = "internal_message_v1"
   }
 }
