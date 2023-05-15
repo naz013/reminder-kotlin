@@ -11,7 +11,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.PrefsConstants
@@ -22,11 +21,10 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
-  RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
+  RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, RemotePrefs.MessageObserver {
 
   private val remotePrefs: RemotePrefs by inject()
   private val doNotDisturbManager by inject<DoNotDisturbManager>()
-  private val dateTimeManager by inject<DateTimeManager>()
 
   private val prefsObserver: (String) -> Unit = {
     Handler(Looper.getMainLooper()).post {
@@ -55,6 +53,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
     prefs.addObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
     remotePrefs.addUpdateObserver(this)
+    remotePrefs.addMessageObserver(this)
     if (!Module.isPro) {
       remotePrefs.addSaleObserver(this)
     }
@@ -73,6 +72,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
       remotePrefs.removeSaleObserver(this)
     }
     remotePrefs.removeUpdateObserver(this)
+    remotePrefs.removeMessageObserver(this)
   }
 
   private fun checkBackupPrefs() {
@@ -203,5 +203,14 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
 
   private fun openProPage() {
     safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToFragmentProVersion())
+  }
+
+  override fun onMessageChanged(showMessage: Boolean, message: String) {
+    if (showMessage) {
+      binding.internalMessageBadge.visible()
+      binding.internalMessageBadge.text = message
+    } else {
+      binding.internalMessageBadge.gone()
+    }
   }
 }

@@ -5,6 +5,7 @@ import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
 import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
 import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -26,6 +27,7 @@ class RemotePrefs(
 
   private val mSaleObservers = mutableListOf<SaleObserver>()
   private val mUpdateObservers = mutableListOf<UpdateObserver>()
+  private val mMessageObservers = mutableListOf<MessageObserver>()
 
   init {
     val configSettings = FirebaseRemoteConfigSettings.Builder()
@@ -48,6 +50,7 @@ class RemotePrefs(
       readAppConfigs()
       readFeatureFlags()
       readUpdateMessage()
+      readInternalMessage()
       if (!Module.isPro) {
         readSaleMessage()
       }
@@ -59,7 +62,8 @@ class RemotePrefs(
   private fun readUpdateMessage() {
     val json = config?.getString(UPDATE_MESSAGE)
 
-    val updateMessage = runCatching { Gson().fromJson(json, UpdateMessageV2::class.java) }.getOrNull()
+    val updateMessage =
+      runCatching { Gson().fromJson(json, UpdateMessageV2::class.java) }.getOrNull()
 
     Timber.d("readUpdateMessage: json=$json")
     Timber.d("readUpdateMessage: message=$updateMessage")
@@ -128,6 +132,52 @@ class RemotePrefs(
     }
   }
 
+  private fun readInternalMessage() {
+    val json = config?.getString(INTERNAL_MESSAGE)
+
+    val internalMessageV1 =
+      runCatching { Gson().fromJson(json, InternalMessageV1::class.java) }.getOrNull()
+
+    Timber.d("readInternalMessage: json=$json")
+    Timber.d("readInternalMessage: message=$internalMessageV1")
+
+    if (internalMessageV1 != null) {
+      prefs.internalMessage = json ?: ""
+      checkInternalMessage(internalMessageV1)
+    } else {
+      val oldJson = prefs.internalMessage.takeIf { it.isNotEmpty() } ?: return
+      runCatching {
+        Gson().fromJson(oldJson, InternalMessageV1::class.java)?.also { checkInternalMessage(it) }
+      }
+    }
+  }
+
+  private fun checkInternalMessage(internalMessageV1: InternalMessageV1) {
+    val now = dateTimeManager.getCurrentDateTime()
+    val startDateTime = dateTimeManager.fromRfc3339ToLocal(internalMessageV1.startAt)
+    val endDateTime = dateTimeManager.fromRfc3339ToLocal(internalMessageV1.endAt)
+
+    Timber.d("checkInternalMessage: now=$now")
+    Timber.d("checkInternalMessage: startDateTime=$startDateTime")
+    Timber.d("checkInternalMessage: endDateTime=$endDateTime")
+
+    if (startDateTime != null && endDateTime != null) {
+      if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
+        notifyMessageObservers(true, internalMessageV1.message)
+      } else {
+        notifyMessageObservers(false, "")
+      }
+    } else {
+      notifyMessageObservers(false, "")
+    }
+  }
+
+  private fun notifyMessageObservers(showMessage: Boolean, message: String) {
+    for (observer in mMessageObservers) {
+      observer.onMessageChanged(showMessage, message)
+    }
+  }
+
   private fun readAppConfigs() {
     val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
     val termsUrl = config?.getString(TERMS_URL)
@@ -183,12 +233,29 @@ class RemotePrefs(
     }
   }
 
+  fun addMessageObserver(observer: MessageObserver) {
+    if (!mMessageObservers.contains(observer)) {
+      mMessageObservers.add(observer)
+    }
+    fetchConfig()
+  }
+
+  fun removeMessageObserver(observer: MessageObserver) {
+    if (mMessageObservers.contains(observer)) {
+      mMessageObservers.remove(observer)
+    }
+  }
+
   interface UpdateObserver {
     fun onUpdateChanged(hasUpdate: Boolean, version: String)
   }
 
   interface SaleObserver {
     fun onSaleChanged(showDiscount: Boolean, discount: String, until: String)
+  }
+
+  interface MessageObserver {
+    fun onMessageChanged(showMessage: Boolean, message: String)
   }
 
   companion object {
