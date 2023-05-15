@@ -44,6 +44,11 @@ class DateTimeManager(
     return toMillis(dateTime.toLocalDateTime())
   }
 
+  fun fromRfc3339ToLocal(date: String?): LocalDateTime? {
+    if (date == null) return null
+    return runCatching { ZonedDateTime.parse(date).toLocalDateTime() }.getOrNull()
+  }
+
   fun getCurrentDateTime(): LocalDateTime {
     return nowDateTimeProvider.nowDateTime()
   }

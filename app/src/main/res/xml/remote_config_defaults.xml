@@ -46,4 +46,16 @@
         <key>terms_link</key>
         <value>https://sukhovych.com/terms-and-conditions/</value>
     </entry>
+    <entry>
+        <key>update_message_v2</key>
+        <value>{ "versionCode": 0, "versionName": "0.0", "createdAt": "2023-05-15T06:18:56+0000" }</value>
+    </entry>
+    <entry>
+        <key>pro_sale_message_v2</key>
+        <value>{   "salePercentage": "0%",   "startAt": "2021-05-15T06:18:56+0000",   "endAt": "2021-05-19T06:18:56+0000" }</value>
+    </entry>
+    <entry>
+        <key>internal_message_v1</key>
+        <value>{   "message": "",   "startAt": "2021-05-15T06:18:56+0000",   "endAt": "2021-05-19T06:18:56+0000" }</value>
+    </entry>
 </defaultsMap>
