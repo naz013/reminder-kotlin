@@ -79,6 +79,18 @@
             tools:text="New update" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/internal_message_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorOnBackground"
+            android:visibility="gone"
+            tools:text="New update" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/backupBadge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
