@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- LED известяване</string>
     <string name="pro_led_color_for_each_reminder">- LED цвят за всяко напомняне</string>
     <string name="pro_styles_for_marker">- 16 стила за маркер</string>
+    <string name="use_default_text_size">Използвайте размера на текста по подразбиране</string>
+    <string name="remember_last_set_text_size">Запомнете последния зададен размер на текста</string>
+    <string name="use_default_font_style">Използвайте стила на шрифта по подразбиране</string>
+    <string name="remember_last_set_font_style">Запомнете последния зададен стил на шрифта</string>
+    <string name="additional_font_styles_for_notes">- Допълнителни стилове на шрифтове за бележки</string>
+    <string name="complete">Да завърши</string>
+    <string name="not_completed">Незавършен</string>
+    <string name="completed">Завършено</string>
+    <string name="widget_birthdays_description">Показване на всички рождени дни</string>
+    <string name="new_sale_message">🔥 PRO версията е в продажба. Купете го с %s отстъпка. Офертата е налична до %s</string>
+    <string name="new_update_message">🎉 Налична е нова версия: %s</string>
 </resources>

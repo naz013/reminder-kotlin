@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- LED bildirimi</string>
     <string name="pro_led_color_for_each_reminder">- Her hatırlatıcı renkli LED</string>
     <string name="pro_styles_for_marker">- Işaretleyici için 16 stilleri</string>
+    <string name="use_default_text_size">Varsayılan metin boyutunu kullan</string>
+    <string name="remember_last_set_text_size">Son ayarlanan metin boyutunu hatırla</string>
+    <string name="use_default_font_style">Varsayılan yazı tipi stilini kullan</string>
+    <string name="remember_last_set_font_style">Son ayarlanan yazı tipi stilini hatırla</string>
+    <string name="additional_font_styles_for_notes">- Notlar için Ek Yazı Tipleri</string>
+    <string name="complete">Tamamlamak</string>
+    <string name="not_completed">Tamamlanmamıs</string>
+    <string name="completed">Tamamlanmış</string>
+    <string name="widget_birthdays_description">Tüm doğum günlerini göster</string>
+    <string name="new_sale_message">🔥 PRO versiyonu satışta. %s indirimle satın alın. %s tarihine kadar geçerli teklif</string>
+    <string name="new_update_message">🎉 Yeni sürüm mevcut: %s</string>
 </resources>

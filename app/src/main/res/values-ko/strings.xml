@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- LED 알림</string>
     <string name="pro_led_color_for_each_reminder">- 각 알림에 대한 LED 색상</string>
     <string name="pro_styles_for_marker">- 마커 용 16 가지 스타일</string>
+    <string name="use_default_text_size">기본 텍스트 크기 사용</string>
+    <string name="remember_last_set_text_size">마지막으로 설정한 텍스트 크기 기억</string>
+    <string name="use_default_font_style">기본 글꼴 스타일 사용</string>
+    <string name="remember_last_set_font_style">마지막으로 설정한 글꼴 스타일 기억</string>
+    <string name="additional_font_styles_for_notes">- 메모용 추가 글꼴 스타일</string>
+    <string name="complete">완료하려면</string>
+    <string name="not_completed">완료되지 않음</string>
+    <string name="completed">완전한</string>
+    <string name="widget_birthdays_description">모든 생일 표시</string>
+    <string name="new_sale_message">🔥 PRO 버전이 판매 중입니다. %s 할인으로 구매하세요. %s까지 제공되는 제안</string>
+    <string name="new_update_message">🎉 사용 가능한 새 버전: %s</string>
 </resources>

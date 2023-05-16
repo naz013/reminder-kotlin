@@ -681,7 +681,7 @@
     <string name="not_completed">Not completed</string>
     <string name="completed">Completed</string>
     <string name="widget_birthdays_description">Show all birthdays</string>
-    <string name="new_sale_message">🔥 PRO version is on sale. Buy it with %s discount. Offer available until %s</string>
+    <string name="new_sale_message">🔥 PRO version is on sale. Buy it with a %s discount. Offer available until %s</string>
     <string name="new_update_message">🎉 New version available: %s</string>
 
 </resources>

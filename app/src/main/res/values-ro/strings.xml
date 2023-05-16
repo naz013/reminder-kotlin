@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- Notificare LED</string>
     <string name="pro_led_color_for_each_reminder">- Culoare pentru fiecare memento cu LED-uri</string>
     <string name="pro_styles_for_marker">- 16 stiluri pentru markerul</string>
+    <string name="use_default_text_size">Utilizați dimensiunea implicită a textului</string>
+    <string name="remember_last_set_text_size">Amintiți-vă ultima dimensiune setată a textului</string>
+    <string name="use_default_font_style">Utilizați stilul de font implicit</string>
+    <string name="remember_last_set_font_style">Amintiți-vă ultimul stil de font setat</string>
+    <string name="additional_font_styles_for_notes">- Stiluri suplimentare de font pentru Note</string>
+    <string name="complete">A completa</string>
+    <string name="not_completed">Incomplet</string>
+    <string name="completed">Efectuat</string>
+    <string name="widget_birthdays_description">Afișați toate zilele de naștere</string>
+    <string name="new_sale_message">🔥 Versiunea PRO este la reducere. Cumpărați-l cu o reducere %s. Oferta disponibilă până la %s</string>
+    <string name="new_update_message">🎉 Versiune nouă disponibilă: %s</string>
 </resources>
