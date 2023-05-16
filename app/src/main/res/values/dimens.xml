@@ -38,5 +38,6 @@
     <dimen name="default_corner_radius">5dp</dimen>
     <dimen name="default_content_padding">8dp</dimen>
     <dimen name="carousel_image_width">172dp</dimen>
+    <dimen name="timer_button_size">72dp</dimen>
 
 </resources>

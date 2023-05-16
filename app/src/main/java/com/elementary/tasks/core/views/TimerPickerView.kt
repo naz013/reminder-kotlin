@@ -5,14 +5,14 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.TimerPickerViewBinding
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.databinding.ViewTimerPickerBinding
 import timber.log.Timber
 
 class TimerPickerView : LinearLayout {
 
-  private lateinit var binding: TimerPickerViewBinding
+  private lateinit var binding: ViewTimerPickerBinding
   private var timeString = "000000"
   private var mListener: TimerListener? = null
 
@@ -38,7 +38,7 @@ class TimerPickerView : LinearLayout {
   private fun init(context: Context) {
     orientation = VERTICAL
     View.inflate(context, R.layout.view_timer_picker, this)
-    binding = TimerPickerViewBinding(this)
+    binding = ViewTimerPickerBinding.bind(this)
 
     binding.deleteButton.setOnClickListener {
       timeString = timeString.substring(0, timeString.length - 1)
