@@ -82,7 +82,7 @@ data class Reminder(
   @SerializedName("repeatInterval")
   var repeatInterval: Long = 0,
   @SerializedName("repeatLimit")
-  var repeatLimit: Int = 0,
+  var repeatLimit: Int = -1,
   @SerializedName("after")
   var after: Long = 0,
   @SerializedName("weekdays")
