@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- Світлодіодні повідомлення</string>
     <string name="pro_led_color_for_each_reminder">- Колір світлодіоду для кожного нагадування</string>
     <string name="pro_styles_for_marker">- 16 стилів для маркера</string>
+    <string name="use_default_text_size">Використовувати розмір тексту за замовчуванням</string>
+    <string name="remember_last_set_text_size">Запам\'ятати останній встановлений розмір тексту</string>
+    <string name="use_default_font_style">Використовувати стиль шрифту за замовчуванням</string>
+    <string name="remember_last_set_font_style">Запам\'ятати останній встановлений стиль шрифту</string>
+    <string name="additional_font_styles_for_notes">— Додаткові стилі шрифтів для приміток</string>
+    <string name="complete">Завершити</string>
+    <string name="not_completed">Не завершено</string>
+    <string name="completed">Завершено</string>
+    <string name="widget_birthdays_description">Показати всі дні народження</string>
+    <string name="new_sale_message">🔥 У продажу є PRO версія. Придбай зі знижкою %s. Пропозиція діє до %s</string>
+    <string name="new_update_message">🎉 Доступна нова версія: %s</string>
 </resources>

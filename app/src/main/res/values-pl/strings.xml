@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- Powiadomienia LED</string>
     <string name="pro_led_color_for_each_reminder">- Wybor koloru LED dla każdego przypomnienia</string>
     <string name="pro_styles_for_marker">- 16 stylów dla markera</string>
+    <string name="use_default_text_size">Użyj domyślnego rozmiaru tekstu</string>
+    <string name="remember_last_set_text_size">Zapamiętaj ostatnio ustawiony rozmiar tekstu</string>
+    <string name="use_default_font_style">Użyj domyślnego stylu czcionki</string>
+    <string name="remember_last_set_font_style">Zapamiętaj ostatnio ustawiony styl czcionki</string>
+    <string name="additional_font_styles_for_notes">- Dodatkowe style czcionek dla notatek</string>
+    <string name="complete">Ukończyć</string>
+    <string name="not_completed">Nie skończone</string>
+    <string name="completed">Zakończony</string>
+    <string name="widget_birthdays_description">Pokaż wszystkie urodziny</string>
+    <string name="new_sale_message">🔥 Wersja PRO jest w sprzedaży. Kup z rabatem %s. Oferta dostępna do %s</string>
+    <string name="new_update_message">🎉 Dostępna nowa wersja: %s</string>
 </resources>

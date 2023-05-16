@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- LED通知</string>
     <string name="pro_led_color_for_each_reminder">- 每个提醒可以单独设置LED颜色</string>
     <string name="pro_styles_for_marker">- 16种样式的标记</string>
+    <string name="use_default_text_size">使用默認文字大小</string>
+    <string name="remember_last_set_text_size">記住上次設置的文字大小</string>
+    <string name="use_default_font_style">使用默認字體樣式</string>
+    <string name="remember_last_set_font_style">記住上次設置的字體樣式</string>
+    <string name="additional_font_styles_for_notes">- 筆記的其他字體樣式</string>
+    <string name="complete">去完成</string>
+    <string name="not_completed">沒完成</string>
+    <string name="completed">完全的</string>
+    <string name="widget_birthdays_description">顯示所有生日</string>
+    <string name="new_sale_message">🔥 PRO 版本正在銷售中。 以 %s 折扣購買。 優惠直到 %s</string>
+    <string name="new_update_message">🎉 可用的新版本：%s</string>
 </resources>

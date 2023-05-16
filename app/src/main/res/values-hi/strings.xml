@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- एलईडी अधिसूचना</string>
     <string name="pro_led_color_for_each_reminder">- एलईडी प्रत्येक याद दिलाने के लिए रंग</string>
     <string name="pro_styles_for_marker">- मार्कर के लिए 16 शैलियों</string>
+    <string name="use_default_text_size">डिफ़ॉल्ट पाठ आकार का प्रयोग करें</string>
+    <string name="remember_last_set_text_size">अंतिम सेट टेक्स्ट आकार याद रखें</string>
+    <string name="use_default_font_style">डिफ़ॉल्ट फ़ॉन्ट शैली का प्रयोग करें</string>
+    <string name="remember_last_set_font_style">अंतिम सेट फ़ॉन्ट शैली याद रखें</string>
+    <string name="additional_font_styles_for_notes">- नोट्स के लिए अतिरिक्त फ़ॉन्ट शैली</string>
+    <string name="complete">को पूरा करने के</string>
+    <string name="not_completed">पूरा नहीं हुआ</string>
+    <string name="completed">पुरा होना।</string>
+    <string name="widget_birthdays_description">सभी जन्मदिन दिखाएं</string>
+    <string name="new_sale_message">🔥 प्रो संस्करण बिक्री पर है। इसे %s छूट के साथ खरीदें। ऑफ़र %s तक उपलब्ध है</string>
+    <string name="new_update_message">🎉 नया संस्करण उपलब्ध है: %s</string>
 </resources>

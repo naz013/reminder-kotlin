@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- LED oznámení</string>
     <string name="pro_led_color_for_each_reminder">- LED barvu pro každou upomínku</string>
     <string name="pro_styles_for_marker">- 16 styly pro značku</string>
+    <string name="use_default_text_size">Použít výchozí velikost textu</string>
+    <string name="remember_last_set_text_size">Zapamatujte si poslední nastavenou velikost textu</string>
+    <string name="use_default_font_style">Použít výchozí styl písma</string>
+    <string name="remember_last_set_font_style">Zapamatujte si poslední nastavený styl písma</string>
+    <string name="additional_font_styles_for_notes">- Další styly písma pro poznámky</string>
+    <string name="complete">Dokončit</string>
+    <string name="not_completed">Nedokončený</string>
+    <string name="completed">Dokončeno</string>
+    <string name="widget_birthdays_description">Zobrazit všechny narozeniny</string>
+    <string name="new_sale_message">🔥 PRO verze je v prodeji. Kupte se slevou %s. Nabídka je dostupná do %s</string>
+    <string name="new_update_message">🎉 K dispozici nová verze: %s</string>
 </resources>

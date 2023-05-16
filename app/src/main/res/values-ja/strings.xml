@@ -665,4 +665,15 @@
     <string name="pro_led_notification">- LED通知</string>
     <string name="pro_led_color_for_each_reminder">- 各リマインダーの LED の色</string>
     <string name="pro_styles_for_marker">- 16 種類のマーカースタイル</string>
+    <string name="use_default_text_size">デフォルトのテキスト サイズを使用する</string>
+    <string name="remember_last_set_text_size">最後に設定したテキスト サイズを記憶する</string>
+    <string name="use_default_font_style">デフォルトのフォントスタイルを使用する</string>
+    <string name="remember_last_set_font_style">最後に設定したフォント スタイルを記憶する</string>
+    <string name="additional_font_styles_for_notes">- メモ用の追加のフォント スタイル</string>
+    <string name="complete">完了するには</string>
+    <string name="not_completed">まだ終わってない</string>
+    <string name="completed">完了しました</string>
+    <string name="widget_birthdays_description">すべての誕生日を表示</string>
+    <string name="new_sale_message">🔥 PRO版が販売中です。 %s 割引で購入してください。 オファーは %s まで利用可能です</string>
+    <string name="new_update_message">🎉 新しいバージョンが利用可能です: %s</string>
 </resources>
