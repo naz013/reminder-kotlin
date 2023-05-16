@@ -4,18 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:viewBindingIgnore="true">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/emptyButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp" />
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/deleteButton"
+            android:layout_toEndOf="@+id/emptyButton"
             android:gravity="center">
 
             <com.google.android.material.textview.MaterialTextView
@@ -85,8 +94,8 @@
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_backspace_24px"
@@ -103,40 +112,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="1"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="2"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="3"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -146,38 +176,58 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="4"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="5"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="6"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -187,38 +237,58 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="7"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="8"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="9"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -228,37 +298,59 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
-            android:text="0"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:text=""
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             android:visibility="invisible"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/b0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
             android:text="0"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:gravity="center"
-            android:text="0"
-            android:textAppearance="?textAppearanceHeadline4"
+            android:text=""
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             android:visibility="invisible"
             tools:ignore="HardcodedText" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/timer_button_size"
+            android:layout_weight="1" />
+
     </LinearLayout>
+
 </LinearLayout>

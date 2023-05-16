@@ -8,4 +8,8 @@
         <item name="cornerSizeTopLeft">25dp</item>
         <item name="cornerSizeTopRight">25dp</item>
     </style>
+
+    <style name="ShapeAppearance.TimerButton" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <item name="cornerFamily">cut</item>
+    </style>
 </resources>
