@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/notification_type"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_height="24dp"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_mobile_screen_share_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroup"

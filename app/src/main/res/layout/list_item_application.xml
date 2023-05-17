@@ -23,7 +23,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:textAppearance="?textAppearanceTitleMedium"
-        android:textColor="?colorOnPrimaryContainer"
+        android:textColor="?colorOnSurface"
         tools:text="Application" />
 
 </com.google.android.material.card.MaterialCardView>

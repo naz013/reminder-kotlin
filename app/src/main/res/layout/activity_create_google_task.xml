@@ -130,7 +130,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="?selectableItemBackground"
                         android:textAppearance="?textAppearanceHeadlineSmall"
-                        android:textColor="?colorOnSurfaceVariant"
+                        android:textColor="?colorOnSurface"
                         tools:text="Tue, 5 Nov 2015" />
 
                 </LinearLayout>
@@ -169,7 +169,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="?selectableItemBackground"
                         android:textAppearance="?textAppearanceHeadlineSmall"
-                        android:textColor="?colorOnSurfaceVariant"
+                        android:textColor="?colorOnSurface"
                         tools:text="14:05" />
 
                 </LinearLayout>
@@ -208,7 +208,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="?selectableItemBackground"
                         android:textAppearance="?textAppearanceHeadlineMedium"
-                        android:textColor="?colorOnSurfaceVariant"
+                        android:textColor="?colorOnSurface"
                         tools:text="Reminder" />
 
                 </LinearLayout>

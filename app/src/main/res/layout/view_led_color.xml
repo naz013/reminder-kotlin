@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/led_color"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <RadioGroup

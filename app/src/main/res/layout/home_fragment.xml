@@ -240,7 +240,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/remindersHeader"
-            style="@style/UiComponentListCard"
+            style="@style/UiComponentListCard.Reminders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -259,7 +259,7 @@
                     android:layout_weight="1"
                     android:text="@string/reminders_"
                     android:textAppearance="?textAppearanceTitleLarge"
-                    android:textColor="?colorOnPrimaryContainer" />
+                    android:textColor="?colorOnSurface" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/addReminderButton"
@@ -269,7 +269,7 @@
                     android:contentDescription="@string/acc_add_reminder"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_add_circle_24px"
-                    app:tint="?colorOnPrimaryContainer" />
+                    app:tint="?colorOnSurface" />
 
             </LinearLayout>
 
@@ -338,7 +338,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/birthdaysHeader"
-                style="@style/UiComponentListCard"
+                style="@style/UiComponentListCard.Birthdays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -357,7 +357,7 @@
                         android:layout_weight="1"
                         android:text="@string/birthdays"
                         android:textAppearance="?textAppearanceTitleLarge"
-                        android:textColor="?colorOnPrimaryContainer" />
+                        android:textColor="?colorOnSurfaceVariant" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/addBirthdayButton"
@@ -367,7 +367,7 @@
                         android:contentDescription="@string/add_birthday"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_add_circle_24px"
-                        app:tint="?colorOnPrimaryContainer" />
+                        app:tint="?colorOnSurfaceVariant" />
 
                 </LinearLayout>
 

@@ -23,7 +23,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:textAppearance="?textAppearanceTitleLarge"
-            android:textColor="?colorOnPrimaryContainer"
+            android:textColor="@color/pureBlack"
             tools:text="Name" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -34,7 +34,7 @@
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-            app:tint="?colorOnPrimaryContainer" />
+            app:tint="@color/pureBlack" />
 
     </LinearLayout>
 

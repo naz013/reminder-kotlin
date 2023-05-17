@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/repeat"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -38,7 +38,7 @@
                     android:layout_height="32dp"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_repeat_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                             android:gravity="center|start"
                             android:text="@string/repeat_every"
                             android:textAppearance="?textAppearanceCaption"
-                            android:textColor="?colorOnSurfaceVariant" />
+                            android:textColor="?colorOnSurface" />
 
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/repeatTitle"
@@ -74,7 +74,7 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:textAppearance="?textAppearanceBodyLarge"
-                            android:textColor="?colorOnSurfaceVariant"
+                            android:textColor="?colorOnSurface"
                             tools:text="10" />
 
                         <Spinner

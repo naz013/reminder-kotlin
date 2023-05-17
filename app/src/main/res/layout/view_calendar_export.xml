@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/add_to_calendar"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup

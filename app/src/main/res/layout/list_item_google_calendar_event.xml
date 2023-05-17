@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceBodyLarge"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Task" />
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_marginTop="8dp"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceBodyMedium"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Calendar name" />
 
             <TextView
@@ -49,7 +49,7 @@
                 android:layout_marginTop="8dp"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceBodySmall"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Note" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:textAppearance="?textAppearanceBodySmall"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="14/04" />
 
             <TextView
@@ -70,7 +70,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
                 android:textAppearance="?textAppearanceBodySmall"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="14/04" />
 
         </LinearLayout>
@@ -91,6 +91,6 @@
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_delete_24px"
-            app:tint="?colorOnPrimaryContainer" />
+            app:tint="?colorOnSurface" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

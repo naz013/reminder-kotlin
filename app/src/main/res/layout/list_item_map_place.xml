@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?textAppearanceHeadlineSmall"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="25" />
 
             <TextView
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textAppearance="?textAppearanceTitleMedium"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="sept
 2018" />
 
@@ -47,7 +47,7 @@
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
             android:textAppearance="?textAppearanceHeadlineSmall"
-            android:textColor="?colorOnPrimaryContainer"
+            android:textColor="?colorOnSurface"
             tools:text="Task" />
 
         <androidx.appcompat.widget.AppCompatImageView
