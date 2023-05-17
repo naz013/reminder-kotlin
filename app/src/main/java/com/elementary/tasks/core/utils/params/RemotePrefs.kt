@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils.params
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
@@ -16,7 +17,8 @@ import timber.log.Timber
 class RemotePrefs(
   private val prefs: Prefs,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val language: Language
 ) {
 
   private val config: FirebaseRemoteConfig? = try {
@@ -163,12 +165,24 @@ class RemotePrefs(
 
     if (startDateTime != null && endDateTime != null) {
       if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
-        notifyMessageObservers(true, internalMessageV1.message)
+        notifyMessageObservers(true, getMessageText(internalMessageV1))
       } else {
         notifyMessageObservers(false, "")
       }
     } else {
       notifyMessageObservers(false, "")
+    }
+  }
+
+  private fun getMessageText(internalMessageV1: InternalMessageV1): String {
+    return if (internalMessageV1.localized.isEmpty()) {
+      internalMessageV1.message
+    } else {
+      val locale = language.getCurrentLocale().lowercase()
+      internalMessageV1.localized
+        .firstOrNull { it.lang.lowercase() == locale }
+        ?.text
+        ?: internalMessageV1.message
     }
   }
 
