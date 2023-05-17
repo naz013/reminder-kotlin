@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceTitleMedium"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Task" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_marginTop="8dp"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Note" />
 
         </LinearLayout>
@@ -60,7 +60,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorOnPrimaryContainer"
+            android:textColor="?colorOnSurface"
             tools:text="14/04" />
 
     </LinearLayout>

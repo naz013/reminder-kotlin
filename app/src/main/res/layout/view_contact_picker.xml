@@ -46,7 +46,7 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:singleLine="true"
-                        android:textColor="?colorOnSurfaceVariant" />
+                        android:textColor="?colorOnSurface" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,7 +80,7 @@
                     android:visibility="gone"
                     app:civ_border_width="0dp"
                     app:srcCompat="@drawable/ic_twotone_person_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/contactPhotoView"
@@ -106,7 +106,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textAppearance="?textAppearanceTitleMedium"
-                    android:textColor="?colorOnSurfaceVariant"
+                    android:textColor="?colorOnSurface"
                     tools:text="Some User" />
 
             </LinearLayout>

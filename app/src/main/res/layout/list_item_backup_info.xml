@@ -28,7 +28,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-                app:tint="?colorOnPrimaryContainer" />
+                app:tint="?colorOnSurface" />
 
             <TextView
                 android:id="@+id/sourceName"
@@ -38,7 +38,7 @@
                 android:layout_toStartOf="@+id/moreButton"
                 android:gravity="center_vertical"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Name" />
 
         </RelativeLayout>
@@ -67,7 +67,7 @@
                 android:layout_toEndOf="@+id/userPhoto"
                 android:gravity="center_vertical"
                 android:textAppearance="?textAppearanceTitleMedium"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Name" />
 
         </RelativeLayout>
@@ -100,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?textAppearanceBodyLarge"
-                    android:textColor="?colorOnPrimaryContainer"
+                    android:textColor="?colorOnSurface"
                     tools:text="Name" />
 
                 <TextView
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textAppearance="?textAppearanceBodyLarge"
-                    android:textColor="?colorOnPrimaryContainer"
+                    android:textColor="?colorOnSurface"
                     tools:text="Name" />
 
             </LinearLayout>
@@ -131,7 +131,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/files"
                 android:textAppearance="?textAppearanceBodyLarge"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="Name" />
 
             <TextView
@@ -141,7 +141,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
                 android:textAppearance="?textAppearanceTitleLarge"
-                android:textColor="?colorOnPrimaryContainer"
+                android:textColor="?colorOnSurface"
                 tools:text="5" />
 
         </LinearLayout>

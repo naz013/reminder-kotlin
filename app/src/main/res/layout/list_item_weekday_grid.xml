@@ -12,4 +12,5 @@
         android:textAppearance="?textAppearanceTitleSmall"
         android:textSize="14sp"
         tools:text="SUN" />
+
 </FrameLayout>

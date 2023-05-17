@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textAppearance="?textAppearanceTitleLarge"
-            android:textColor="?colorOnPrimaryContainer"
+            android:textColor="?colorOnSurface"
             tools:text="Task" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -40,7 +40,7 @@
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-            app:tint="?colorOnPrimaryContainer" />
+            app:tint="?colorOnSurface" />
 
     </LinearLayout>
 

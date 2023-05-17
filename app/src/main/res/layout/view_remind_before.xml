@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/before_time"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_height="32dp"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:textAppearance="?textAppearanceBodyLarge"
-                            android:textColor="?colorOnSurfaceVariant"
+                            android:textColor="?colorOnSurface"
                             tools:text="10" />
 
                         <Spinner

@@ -23,7 +23,7 @@
                 android:text="@string/action"
                 android:textStyle="bold"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant" />
+                android:textColor="?colorOnSurface" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/actionGroup"
@@ -87,7 +87,7 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:singleLine="true"
-                        android:textColor="?colorOnSurfaceVariant" />
+                        android:textColor="?colorOnSurface" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

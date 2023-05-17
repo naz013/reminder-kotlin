@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/melody"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -38,7 +38,7 @@
                     android:layout_height="48dp"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_music_note_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <TextView
                     android:id="@+id/text"
@@ -48,7 +48,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:textAppearance="?textAppearanceTitleMedium"
-                    android:textColor="?colorOnSurfaceVariant"
+                    android:textColor="?colorOnSurface"
                     tools:text="File Name" />
 
                 <Button

@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/exclusion"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_height="48dp"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_timeline_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <TextView
                     android:id="@+id/text"
@@ -48,7 +48,7 @@
                     android:layout_weight="1"
                     android:text="@string/not_selected"
                     android:textAppearance="?textAppearanceTitleMedium"
-                    android:textColor="?colorOnSurfaceVariant" />
+                    android:textColor="?colorOnSurface" />
 
                 <Button
                     android:id="@+id/selectButton"

@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/radius"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurfaceVariant"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_height="24dp"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_track_changes_24px"
-                    app:tint="?colorOnSurfaceVariant" />
+                    app:tint="?colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?textAppearanceBodyMedium"
-                        android:textColor="?colorOnSurfaceVariant"
+                        android:textColor="?colorOnSurface"
                         tools:text="@string/default_string" />
 
                     <com.google.android.material.slider.Slider
