@@ -4,9 +4,9 @@
 
     <stroke
         android:width="0.5dp"
-        android:color="?colorSecondary" />
+        android:color="?colorTertiary" />
 
-    <solid android:color="?colorSecondary" />
+    <solid android:color="?colorTertiary" />
 
     <size
         android:width="24dp"

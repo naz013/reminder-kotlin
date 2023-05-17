@@ -201,7 +201,7 @@ class ExclusionPickerView : LinearLayout, KoinComponent {
     selected.addAll(mHours)
     for (button in buttons) {
       button.id = i
-      button.setBackgroundResource(R.drawable.toggle_blue)
+      button.setBackgroundResource(R.drawable.toggle_weekday_tertiary)
       this.buttons.add(button)
       if (selected.contains(i - 100)) button.isChecked = true
       i++

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,9 +9,9 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginStart="64dp"
         android:layout_marginEnd="64dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <com.elementary.tasks.core.views.ClosableTooltipView
@@ -94,7 +93,8 @@
                     android:id="@+id/mondayCheck"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:checked="true"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
@@ -107,7 +107,8 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
                     android:textColor="@color/weekday_text_selector"
@@ -119,7 +120,8 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
                     android:textColor="@color/weekday_text_selector"
@@ -131,7 +133,8 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
                     android:textColor="@color/weekday_text_selector"
@@ -143,7 +146,8 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
                     android:textColor="@color/weekday_text_selector"
@@ -155,7 +159,8 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
                     android:textColor="@color/weekday_text_selector"
@@ -167,13 +172,16 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/toggle_weekday_tertiary"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceOverline"
                     android:textColor="@color/weekday_text_selector"
                     android:textOff="@string/sun"
                     android:textOn="@string/sun" />
+
             </LinearLayout>
+
         </HorizontalScrollView>
 
         <LinearLayout
