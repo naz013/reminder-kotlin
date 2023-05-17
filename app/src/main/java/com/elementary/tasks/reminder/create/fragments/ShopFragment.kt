@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import timber.log.Timber
@@ -119,13 +121,9 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
 
     binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
       iFace.state.isDelayAdded = isChecked
-      if (isChecked) {
-        binding.delayLayout.visibility = View.VISIBLE
-      } else {
-        binding.delayLayout.visibility = View.GONE
-      }
+      binding.dateView.visibleGone(isChecked)
     }
-    binding.delayLayout.visibility = View.GONE
+    binding.dateView.gone()
     binding.attackDelay.isChecked = iFace.state.isDelayAdded
 
     editReminder()
