@@ -5,24 +5,13 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
+import com.elementary.tasks.core.views.common.ValueSliderView
 import com.elementary.tasks.databinding.ViewRepeatLimitBinding
 
 class RepeatLimitView : LinearLayout {
 
   private lateinit var binding: ViewRepeatLimitBinding
   var onLevelUpdateListener: ((level: Int) -> Unit)? = null
-  private var level: Int = 0
-    get() {
-      return field - 1
-    }
-    private set(value) {
-      field = value
-      if (value > 0) {
-        binding.labelView.text = "${value - 1}"
-      } else {
-        binding.labelView.text = context.getString(R.string.no_limits)
-      }
-    }
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -38,12 +27,11 @@ class RepeatLimitView : LinearLayout {
 
   override fun setEnabled(enabled: Boolean) {
     super.setEnabled(enabled)
-    binding.sliderView.isEnabled = enabled
+    binding.valueSlider.isEnabled = enabled
   }
 
   fun setLimit(level: Int) {
-    binding.sliderView.value = (level + 1).toFloat()
-    this.level = binding.sliderView.value.toInt()
+    binding.valueSlider.value = level.toFloat()
   }
 
   private fun init(context: Context) {
@@ -51,9 +39,21 @@ class RepeatLimitView : LinearLayout {
     orientation = HORIZONTAL
     binding = ViewRepeatLimitBinding.bind(this)
 
-    binding.sliderView.addOnChangeListener { _, value, _ ->
-      level = value.toInt()
-      onLevelUpdateListener?.invoke(level)
+    binding.valueSlider.valueFormatter = object : ValueSliderView.ValueFormatter {
+      override fun apply(value: Float): String {
+        val int = value.toInt()
+        return if (int < 0) {
+          context.getString(R.string.no_limits)
+        } else {
+          "$int"
+        }
+      }
+    }
+    binding.valueSlider.setRange(-1f, 365f, 1f)
+    binding.valueSlider.onValueChangeListener = object : ValueSliderView.OnValueChangeListener {
+      override fun onChanged(value: Float, displayValue: String) {
+        onLevelUpdateListener?.invoke(value.toInt())
+      }
     }
   }
 }
