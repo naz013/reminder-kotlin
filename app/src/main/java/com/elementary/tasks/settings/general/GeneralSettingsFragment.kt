@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Module.is10
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import com.elementary.tasks.splash.SplashScreenActivity
@@ -34,6 +36,11 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     initDynamicColorsPrefs()
     initAnalyticsPrefs()
     initUnitPrefs()
+
+    binding.themePreviewPrefs.visibleGone(BuildConfig.DEBUG)
+    binding.themePreviewPrefs.setOnClickListener {
+      safeNavigation(GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToUiPreviewFragment())
+    }
   }
 
   private fun initUnitPrefs() {

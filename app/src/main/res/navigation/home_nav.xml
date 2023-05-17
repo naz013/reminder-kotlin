@@ -236,7 +236,11 @@
         android:id="@+id/generalSettingsFragment"
         android:name="com.elementary.tasks.settings.general.GeneralSettingsFragment"
         android:label="@string/general"
-        tools:layout="@layout/fragment_settings_general" />
+        tools:layout="@layout/fragment_settings_general" >
+        <action
+            android:id="@+id/action_generalSettingsFragment_to_uiPreviewFragment"
+            app:destination="@id/uiPreviewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/remindersSettingsFragment"
         android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
@@ -463,4 +467,9 @@
         android:name="com.elementary.tasks.settings.FragmentProVersion"
         android:label="@string/pro_version"
         tools:layout="@layout/fragment_settings_pro_page" />
+    <fragment
+        android:id="@+id/uiPreviewFragment"
+        android:name="com.elementary.tasks.settings.general.UiPreviewFragment"
+        android:label="Theme Preview"
+        tools:layout="@layout/fragment_settings_theme_preview"/>
 </navigation>
