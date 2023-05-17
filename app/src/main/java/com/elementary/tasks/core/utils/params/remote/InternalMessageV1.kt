@@ -10,5 +10,7 @@ data class InternalMessageV1(
   @SerializedName("startAt")
   val startAt: String,
   @SerializedName("endAt")
-  val endAt: String
+  val endAt: String,
+  @SerializedName("localized")
+  val localized: List<LocalizedMessage> = emptyList()
 )

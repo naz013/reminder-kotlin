@@ -12,6 +12,13 @@ class Language(
   private val textProvider: TextProvider
 ) {
 
+  fun getCurrentLocale(): String {
+    val defLocale = context.resources.configuration.locale
+    val locale = runCatching { context.resources.configuration.locales.get(0) }.getOrNull()
+      ?: defLocale
+    return locale.language
+  }
+
   /**
    * Holder locale for tts.
    *
