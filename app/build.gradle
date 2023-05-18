@@ -12,8 +12,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 294
-        versionName '9.0.4'
+        versionCode 295
+        versionName '9.0.5'
         multiDexEnabled true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
@@ -76,7 +76,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 265
+            versionCode 266
 
             def api = props.get('proApiKey', "API_KEY")
             def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
@@ -98,8 +98,8 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
             jniDebuggable false
             if (shouldSign) {
                 productFlavors.free.signingConfig signingConfigs.freeApp

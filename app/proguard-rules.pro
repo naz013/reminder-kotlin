@@ -15,7 +15,6 @@
 
 -dontwarn com.google.errorprone.annotations.*
 -dontwarn java.lang.ClassValue
--keep class java.lang.ClassValue { *; }
 
 -dontwarn org.apache.**
 -dontwarn de.hdodenhof.circleimageview.**
@@ -43,10 +42,6 @@
 -dontnote org.dmfs.rfc5545.**
 -dontnote com.backdoor.simpleai.**
 -dontnote okhttp3.internal.platform.**
-
--keep class * extends java.util.ListResourceBundle {
-    protected Object[][] getContents();
-}
 
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
     public static final *** NULL;
@@ -105,30 +100,12 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.AppGlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-
 -dontwarn org.hamcrest.**
 -dontwarn android.test.**
 -dontwarn android.support.test.**
-
--keep class org.hamcrest.** {
-   *;
-}
-
--keep class org.junit.** { *; }
 -dontwarn org.junit.**
-
--keep class junit.** { *; }
 -dontwarn junit.**
-
--keep class sun.misc.** { *; }
 -dontwarn sun.misc.**
-
 -dontwarn com.google.common.**
 
 -keepattributes *Annotation*
@@ -145,19 +122,11 @@
 
 -keepattributes Signature
 
--keepclassmembers class com.yourcompany.models.** {
-    *;
-}
-
 -keep,allowobfuscation @interface kotlin.coroutines.jvm.internal.** { *; }
 -keep @interface kotlin.coroutines.jvm.internal.DebugMetadata { *; }
 
 -keepclassmembers class * extends androidx.work.Worker {
     public <init>(android.content.Context,androidx.work.WorkerParameters);
-}
-
--keepclassmembers,allowobfuscation class * {
- @com.google.gson.annotations.SerializedName <fields>;
 }
 
 -keep class * {
