@@ -8,6 +8,8 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
@@ -27,14 +29,22 @@ class PhotoSelectionUtil(
   private val activity: ComponentActivity,
   private val dialogues: Dialogues,
   private val mCallback: UriCallback?
-) {
+): DefaultLifecycleObserver {
 
-  private val permissionFlow = PermissionFlow(activity, dialogues)
-  private val multiPicturePicker = MultiPicturePicker(activity) { mCallback?.onImageSelected(it) }
-  private val cameraPhotoPicker = CameraPhotoPicker(activity) {
-    mCallback?.onImageSelected(listOf(it))
+  private lateinit var permissionFlow: PermissionFlow
+  private lateinit var multiPicturePicker: MultiPicturePicker
+  private lateinit var cameraPhotoPicker: CameraPhotoPicker
+
+  private val coroutineScope = CoroutineScope(Job())
+
+  override fun onCreate(owner: LifecycleOwner) {
+    super.onCreate(owner)
+    permissionFlow = PermissionFlow(activity, dialogues)
+    multiPicturePicker = MultiPicturePicker(activity) { mCallback?.onImageSelected(it) }
+    cameraPhotoPicker = CameraPhotoPicker(activity) {
+      mCallback?.onImageSelected(listOf(it))
+    }
   }
-  private val context = CoroutineScope(Job())
 
   fun selectImage() {
     val hasCamera = Module.hasCamera(activity)
@@ -71,7 +81,7 @@ class PhotoSelectionUtil(
   }
 
   fun onDestroy() {
-    context.cancel()
+    coroutineScope.cancel()
   }
 
   private fun tryToPickFromGallery() {
@@ -137,7 +147,7 @@ class PhotoSelectionUtil(
 
   private fun downloadUrl(url: String) {
     if (Patterns.WEB_URL.matcher(url).matches()) {
-      context.launch(Dispatchers.Default) {
+      coroutineScope.launch(Dispatchers.Default) {
         try {
           val bitmap = Picasso.get()
             .load(url)

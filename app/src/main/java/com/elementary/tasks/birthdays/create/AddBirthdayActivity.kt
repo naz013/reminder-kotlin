@@ -9,7 +9,6 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -34,8 +33,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private val viewModel by viewModel<AddBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
-
-  private val permissionFlow = PermissionFlow(this, dialogues)
 
   override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
 

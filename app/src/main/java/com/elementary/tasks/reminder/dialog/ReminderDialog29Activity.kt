@@ -24,7 +24,6 @@ import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Constants
@@ -61,7 +60,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val jobScheduler by inject<JobScheduler>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val contactsReader by inject<ContactsReader>()
-  private val permissionFlow = PermissionFlow(this, dialogues)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
 

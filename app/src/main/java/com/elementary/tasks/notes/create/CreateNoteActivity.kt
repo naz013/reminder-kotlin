@@ -27,7 +27,6 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
@@ -76,7 +75,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private var isBgDark = false
 
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private val viewModel by viewModel<CreateNoteViewModel> { parametersOf(getId()) }
   private val photoSelectionUtil = PhotoSelectionUtil(this, dialogues, this)
   private val loginLauncher = LoginLauncher(this) {
@@ -175,6 +173,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    lifecycle.addObserver(photoSelectionUtil)
 
     isBgDark = isDarkMode
 

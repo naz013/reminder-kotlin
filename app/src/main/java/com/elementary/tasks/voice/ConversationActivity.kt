@@ -29,7 +29,6 @@ import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
@@ -47,7 +46,6 @@ import java.util.Locale
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private var speech: SpeechRecognizer? = null
   private val conversationAdapter = ConversationAdapter(currentStateHolder)
   private val viewModel by viewModel<ConversationViewModel>()

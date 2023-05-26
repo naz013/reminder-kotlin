@@ -9,7 +9,6 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -27,7 +26,6 @@ import timber.log.Timber
 class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() {
 
   private val viewModel by viewModel<ShowBirthdayViewModel> { parametersOf(getId()) }
-  private val permissionFlow = PermissionFlow(this, dialogues)
 
   override fun inflateBinding() = ActivityDialogBirthdayBinding.inflate(layoutInflater)
 

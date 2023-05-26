@@ -9,7 +9,6 @@ import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
@@ -25,7 +24,6 @@ import org.koin.core.parameter.parametersOf
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
 
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private var googleMap: AdvancedMapFragment? = null
   private val loginLauncher = LoginLauncher(this) {
     if (!it) {

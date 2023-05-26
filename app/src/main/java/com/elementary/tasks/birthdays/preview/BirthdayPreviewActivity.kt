@@ -10,7 +10,6 @@ import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
@@ -28,7 +27,6 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
 
   private val viewModel by viewModel<BirthdayPreviewViewModel> { parametersOf(idFromIntent()) }
 
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private val adsProvider = AdsProvider()
   private var initPaddingTop: Int? = null
 
