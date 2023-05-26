@@ -37,12 +37,14 @@ class SearchMenuHandler(
 
   fun initSearchMenu(activity: Activity, menu: Menu, @IdRes searchItemId: Int) {
     mSearchMenu = menu.findItem(searchItemId)
-    mSearchMenu?.let { searchMenu ->
+    mSearchMenu?.also { searchMenu ->
       mSearchView = searchMenu.actionView as SearchView?
-      mSearchView?.let { searchView ->
+      mSearchView?.also { searchView ->
         hintRes?.also { searchView.queryHint = searchView.context.getString(it) }
-        if (searchManager != null) {
-          searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
+        searchManager?.also { searchManager ->
+          runCatching {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
+          }
         }
         searchView.setOnQueryTextListener(queryTextListener)
         searchView.setOnCloseListener(searchCloseListener)
