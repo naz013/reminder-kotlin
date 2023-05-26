@@ -12,8 +12,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 295
-        versionName '9.0.5'
+        versionCode 296
+        versionName '9.0.6'
         multiDexEnabled true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
@@ -76,7 +76,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 266
+            versionCode 267
 
             def api = props.get('proApiKey', "API_KEY")
             def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
@@ -170,9 +170,9 @@ dependencies {
     implementation "androidx.biometric:biometric:1.1.0"
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.fragment:fragment-ktx:1.5.7'
-    implementation "androidx.activity:activity-ktx:1.7.1"
+    implementation "androidx.activity:activity-ktx:1.7.2"
     implementation "androidx.collection:collection-ktx:1.2.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03"
@@ -212,7 +212,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
-    freeImplementation 'com.google.android.gms:play-services-ads:22.0.0'
+    freeImplementation 'com.google.android.gms:play-services-ads:22.1.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
