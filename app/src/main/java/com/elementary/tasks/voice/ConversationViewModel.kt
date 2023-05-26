@@ -329,14 +329,20 @@ class ConversationViewModel(
   }
 
   fun findSuggestion(suggestion: String): Model? {
-    recognizer.setContactHelper(ContactHelper())
-    return recognizer.recognize(suggestion).also { model ->
+    return runCatching {
+      recognizer.setContactHelper(ContactHelper())
+      val model = try {
+        recognizer.recognize(suggestion)
+      } catch (throwable: Throwable) {
+        null
+      }
       if (model == null) {
         voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.FAIL)
       } else {
         voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.SUCCESS, model)
       }
-    }
+      model
+    }.getOrNull()
   }
 
   fun findResults(matches: List<*>): Reminder? {
@@ -344,7 +350,7 @@ class ConversationViewModel(
     for (i in matches.indices) {
       val key = matches[i]
       val keyStr = key.toString()
-      val model = recognizer.recognize(keyStr)
+      val model = runCatching { recognizer.recognize(keyStr) }.getOrNull()
       if (model != null) {
         Timber.d("findResults: $model")
         voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.SUCCESS, model)
