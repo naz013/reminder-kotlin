@@ -16,9 +16,14 @@ import org.koin.android.ext.android.inject
 abstract class BindingFragment<B : ViewBinding> : Fragment() {
 
   protected val dialogues by inject<Dialogues>()
-  protected val permissionFlow = PermissionFlow(this, dialogues)
+  protected lateinit var permissionFlow: PermissionFlow
 
   protected lateinit var binding: B
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,

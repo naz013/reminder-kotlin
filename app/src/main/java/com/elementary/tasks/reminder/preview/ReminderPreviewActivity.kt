@@ -27,7 +27,6 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -68,7 +67,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private var mGoogleMap: AdvancedMapFragment? = null
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
 

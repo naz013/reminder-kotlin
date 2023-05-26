@@ -13,7 +13,6 @@ import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
@@ -38,7 +37,6 @@ import java.util.Locale
 class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBinding>() {
 
   private val viewModel by viewModel<ShowBirthdayViewModel> { parametersOf(getId()) }
-  private val permissionFlow = PermissionFlow(this, dialogues)
 
   override var isScreenResumed: Boolean = false
     private set

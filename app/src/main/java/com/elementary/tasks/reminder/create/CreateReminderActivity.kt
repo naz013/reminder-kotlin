@@ -22,7 +22,6 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.UriPicker
@@ -66,7 +65,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val conversationViewModel by viewModel<ConversationViewModel>()
   private val stateViewModel by viewModel<ReminderStateViewModel>()
 
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private val melodyPicker = MelodyPicker(this) {
     fragment?.onMelodySelect(it)
     showCurrentMelody()

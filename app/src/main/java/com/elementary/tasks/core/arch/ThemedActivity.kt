@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowInsetsControllerCompat
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
@@ -35,6 +36,7 @@ abstract class ThemedActivity : AppCompatActivity() {
   protected val dialogues by inject<Dialogues>()
   protected val notifier by inject<Notifier>()
   protected val updatesHelper by inject<UpdatesHelper>()
+  protected lateinit var permissionFlow: PermissionFlow
 
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
 
@@ -50,6 +52,7 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
     AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
     if (prefs.useDynamicColors) {
       DynamicColors.applyToActivityIfAvailable(this)

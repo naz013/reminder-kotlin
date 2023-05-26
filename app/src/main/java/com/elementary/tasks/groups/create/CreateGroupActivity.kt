@@ -6,7 +6,6 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -18,8 +17,6 @@ import org.koin.core.parameter.parametersOf
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   private val viewModel by viewModel<CreateGroupViewModel> { parametersOf(getId()) }
-
-  private val permissionFlow = PermissionFlow(this, dialogues)
 
   override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
 

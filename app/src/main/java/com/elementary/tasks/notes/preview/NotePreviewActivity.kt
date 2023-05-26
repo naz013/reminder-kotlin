@@ -15,7 +15,6 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
@@ -48,7 +47,6 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private val adapter = ImagesCarouselAdapter()
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
-  private val permissionFlow = PermissionFlow(this, dialogues)
   private val dateTimeManager by inject<DateTimeManager>()
 
   private val uiHandler = Handler(Looper.getMainLooper())
