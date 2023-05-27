@@ -9,6 +9,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.WidgetPrefsHolder
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -19,7 +20,8 @@ class CalendarWeekdayFactory(
   private val context: Context,
   intent: Intent,
   private val prefs: Prefs,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val widgetPrefsHolder: WidgetPrefsHolder
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private val weekdaysList = ArrayList<String>()
@@ -27,7 +29,10 @@ class CalendarWeekdayFactory(
     AppWidgetManager.EXTRA_APPWIDGET_ID,
     AppWidgetManager.INVALID_APPWIDGET_ID
   )
-  private val prefsProvider = CalendarWidgetPrefsProvider(context, widgetId)
+  private val prefsProvider = widgetPrefsHolder.findOrCreate(
+    widgetId,
+    CalendarWidgetPrefsProvider::class.java
+  )
 
   override fun onCreate() {
     weekdaysList.clear()

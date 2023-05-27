@@ -195,6 +195,14 @@
     <string name="location">Location</string>
     <string name="day_of_month">Day of month</string>
     <string name="shopping_list">Shopping list</string>
+    <string name="radius_x_m">"Radius %s m"</string>
+    <string name="radius_x_ft">"Radius %s ft"</string>
+    <string name="radius_x_km">"Radius %s km"</string>
+    <string name="radius_x_mi">"Radius %s mi"</string>
+    <string name="dist_x_m">"Distance %s m"</string>
+    <string name="dist_x_ft">"Distance %s ft"</string>
+    <string name="dist_x_km">"Distance %s km"</string>
+    <string name="dist_x_mi">"Distance %s mi"</string>
     <string name="shopping_list_is_empty">Shopping list is empty!</string>
     <string name="you_dont_select_any_day">You not select a day!</string>
     <string name="you_dont_select_application">You don\'t select application!</string>
@@ -645,8 +653,72 @@
     <string name="reminder_by_location_explanations">Set your reminder for the exact location with the constraint of entering or leaving the place</string>
     <string name="reminder_by_places_explanations">Set your reminder for a searchable place</string>
     <string name="reminder_link_explanations">Set your reminder for the exact date and time with the link or application to open</string>
+
     <string name="analytics">Analytics</string>
     <string name="collecting_of_app_analytics_is_disabled">Collecting of app analytics is disabled</string>
     <string name="collecting_of_app_analytics_is_enabled">Collecting of app analytics is enabled</string>
+
+    <string name="not_born">Not born</string>
+
+    <string name="metric_units">Metric units</string>
+    <string name="use_imperial_system">Use Imperial system</string>
+    <string name="use_metric_system">Use Metric system</string>
+
+    <string name="pro_version">PRO Version</string>
+    <string name="pro_advantages">Advantages of PRO:</string>
+    <string name="pro_buy">Buy PRO</string>
+    <string name="pro_no_ads">- No Advertisement</string>
+    <string name="pro_different_settings_for_birthdays">- Different settings for birthdays</string>
+    <string name="pro_led_notification">- LED notification</string>
+    <string name="pro_led_color_for_each_reminder">- LED color for each reminder</string>
+    <string name="pro_styles_for_marker">- 16 styles for marker</string>
+    <string name="use_default_text_size">Use default text size</string>
+    <string name="remember_last_set_text_size">Remember last set text size</string>
+    <string name="use_default_font_style">Use default font style</string>
+    <string name="remember_last_set_font_style">Remember last set font style</string>
+    <string name="additional_font_styles_for_notes">- Additional Font styles for Notes</string>
+    <string name="complete">Complete</string>
+    <string name="not_completed">Not completed</string>
+    <string name="completed">Completed</string>
+    <string name="widget_birthdays_description">Show all birthdays</string>
+    <string name="new_sale_message">🔥 PRO version is on sale. Buy it with a %s discount. Offer available until %s</string>
+    <string name="new_update_message">🎉 New version available: %s</string>
+
+    <string name="reminder_recur_explanations">Set custom repeatable reminder. Use iCalendar rules and RFC 5545</string>
+    <string name="recur_custom">Custom</string>
+    <string name="recur_minutely">Minutely</string>
+    <string name="recur_hourly">Hourly</string>
+    <string name="recur_monthly">Monthly</string>
+    <string name="recur_yearly">Yearly</string>
+    <string name="recur_weekly">Weekly</string>
+    <string name="recur_daily">Daily</string>
+    <string name="recur_not_set">Not set</string>
+    <string name="recur_count">Count</string>
+    <string name="recur_interval">Interval</string>
+    <string name="recur_frequency">Frequency</string>
+    <string name="recur_until">Until</string>
+    <string name="recur_day_s">Day (s)</string>
+    <string name="recur_month_s">Month (s)</string>
+    <string name="recur_day_s_of_month">Day (s) of Month</string>
+    <string name="recur_hour_s">Hour (s)</string>
+    <string name="recur_minute_s">Minute (s)</string>
+    <string name="recur_day_s_of_year">Day (s) of Year</string>
+    <string name="recur_week_number_s">Week Number (s)</string>
+    <string name="recur_add_parameter">Add parameter</string>
+    <string name="recur_presets">Presets</string>
+    <string name="recur_save">Save</string>
+    <string name="recur_monday">Monday</string>
+    <string name="recur_tuesday">Tuesday</string>
+    <string name="recur_wednesday">Wednesday</string>
+    <string name="recur_sunday">Sunday</string>
+    <string name="recur_saturday">Saturday</string>
+    <string name="recur_friday">Friday</string>
+    <string name="recur_thursday">Thursday</string>
+    <string name="recur_clear_selection">Clear selection</string>
+    <string name="recur_select_all">Select all</string>
+    <string name="recur_build">Build</string>
+    <string name="recur_preview">Preview</string>
+    <string name="recur_customize">Customize</string>
+    <string name="recur_wrong_parameters_message">Wrong parameters used, there is no date-times available!</string>
 
 </resources>

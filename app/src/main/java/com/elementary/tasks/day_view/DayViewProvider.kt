@@ -1,19 +1,24 @@
 package com.elementary.tasks.day_view
 
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
+import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
+import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.plusMillis
 import com.elementary.tasks.day_view.day.EventModel
+import timber.log.Timber
 
 class DayViewProvider(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val recurrenceManager: RecurrenceManager
 ) {
 
   fun loadReminders(isFuture: Boolean, reminders: List<Reminder>): List<EventModel> {
@@ -97,6 +102,32 @@ class DayViewProvider(
               )
             )
           } while (days < max)
+        } else if (Reminder.isBase(type, Reminder.BY_RECUR)) {
+          val dates = runCatching {
+            recurrenceManager.parseObject(reminder.recurDataObject)
+          }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
+
+          val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+          var localItem = reminder
+
+          dates?.mapNotNull { it.dateTime }
+            ?.forEach { localDateTime ->
+              if (baseTime != localDateTime) {
+                localItem = Reminder(localItem, true).apply {
+                  this.eventTime = dateTimeManager.getGmtFromDateTime(localDateTime)
+                }
+                data.add(
+                  EventModel(
+                    reminder.viewType,
+                    uiReminderListAdapter.create(localItem),
+                    localDateTime.dayOfMonth,
+                    localDateTime.monthValue,
+                    localDateTime.year,
+                    0
+                  )
+                )
+              }
+            }
         } else {
           if (repeatTime == 0L) {
             continue

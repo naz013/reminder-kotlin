@@ -77,6 +77,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     reminder.after = after
     reminder.delay = 0
     reminder.eventCount = 0
+    reminder.recurDataObject = null
 
     val startTime = dateTimeManager.generateNextTimer(reminder, true)
     Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")

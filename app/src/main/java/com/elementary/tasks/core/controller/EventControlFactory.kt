@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber
 
@@ -23,7 +24,8 @@ class EventControlFactory(
   private val textProvider: TextProvider,
   private val reminderDao: ReminderDao,
   private val googleTasksDao: GoogleTasksDao,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val recurEventManager: RecurEventManager
 ) {
 
   fun getController(reminder: Reminder): EventControl {
@@ -125,6 +127,20 @@ class EventControlFactory(
           textProvider,
           dateTimeManager,
           googleTasksDao
+        )
+      Reminder.isBase(reminder.type, Reminder.BY_RECUR) ->
+        RecurEvent(
+          reminder,
+          reminderDao,
+          prefs,
+          googleCalendarUtils,
+          notifier,
+          jobScheduler,
+          updatesHelper,
+          textProvider,
+          dateTimeManager,
+          googleTasksDao,
+          recurEventManager
         )
 
       else -> DateEvent(

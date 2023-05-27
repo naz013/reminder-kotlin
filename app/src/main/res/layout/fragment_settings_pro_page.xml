@@ -39,6 +39,24 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:text="@string/additional_recur_type"
+                android:textAppearance="?textAppearanceTitleSmall" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/additional_places_type"
+                android:textAppearance="?textAppearanceTitleSmall" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/additional_font_styles_for_notes"
                 android:textAppearance="?textAppearanceTitleSmall" />
 

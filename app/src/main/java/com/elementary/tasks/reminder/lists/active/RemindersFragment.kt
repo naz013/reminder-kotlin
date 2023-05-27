@@ -143,7 +143,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
     reloadEmptyView(0)
   }
 
-  override fun getTitle(): String = getString(R.string.tasks)
+  override fun getTitle(): String = getString(R.string.reminders)
 
   private fun reloadEmptyView(count: Int) {
     binding.emptyItem.visibleGone(count == 0)

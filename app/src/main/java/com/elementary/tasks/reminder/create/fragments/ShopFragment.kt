@@ -65,6 +65,8 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     reminder.dayOfMonth = 0
     reminder.delay = 0
     reminder.eventCount = 0
+    reminder.recurDataObject = null
+
     if (binding.attackDelay.isChecked) {
       val startTime = binding.dateView.selectedDateTime
       val time = dateTimeManager.getGmtFromDateTime(startTime)

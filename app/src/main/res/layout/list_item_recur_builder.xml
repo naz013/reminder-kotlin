@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clickView"
+    style="@style/UiComponentListCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:contentPadding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/nameView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorOnSurface"
+            tools:text="Application" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/removeButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginStart="16dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_clear_black_24dp"
+            app:tint="?colorOnSurface" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

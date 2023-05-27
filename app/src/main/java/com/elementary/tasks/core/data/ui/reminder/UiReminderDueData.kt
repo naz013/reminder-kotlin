@@ -8,5 +8,6 @@ data class UiReminderDueData(
   val before: String?,
   val remaining: String?,
   val millis: Long = 0,
-  val localDateTime: LocalDateTime? = null
+  val localDateTime: LocalDateTime? = null,
+  val recurRule: String? = null
 )

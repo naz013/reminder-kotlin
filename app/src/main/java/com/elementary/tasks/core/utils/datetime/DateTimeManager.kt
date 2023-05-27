@@ -219,6 +219,10 @@ class DateTimeManager(
     return ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
   }
 
+  fun toMillis(zonedDateTime: ZonedDateTime): Long {
+    return zonedDateTime.toInstant().toEpochMilli()
+  }
+
   fun toMillis(dateTime: String?): Long {
     return fromGmtToLocal(dateTime)?.let { toMillis(it) } ?: 0L
   }
@@ -915,6 +919,7 @@ class DateTimeManager(
 
     private const val GMT = "GMT"
     private val GMT_ZONE_ID = ZoneId.of(GMT)
+    val UTC_ZONE_ID = ZoneId.of("UTC")
 
     private val RFC3339_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)

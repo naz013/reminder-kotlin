@@ -26,7 +26,7 @@ class DateTimeView : LinearLayout, KoinComponent {
   private var time: LocalTime = LocalTime.now()
   private var isSingleMode = false
   private var onSelectListener: OnSelectListener? = null
-  var onDateChangeListener: OnDateChangeListener? = null
+  private val onDateChangeListeners = mutableListOf<OnDateChangeListener>()
   private var dateTimeFormatter = dateTimeManager.fullDateFormatter()
 
   var selectedDateTime: LocalDateTime
@@ -56,6 +56,14 @@ class DateTimeView : LinearLayout, KoinComponent {
 
   fun setOnSelectListener(listener: OnSelectListener) {
     onSelectListener = listener
+  }
+
+  fun addOnDateChangeListener(listener: OnDateChangeListener) {
+    onDateChangeListeners.add(listener)
+  }
+
+  fun removeOnDateChangeListener(listener: OnDateChangeListener) {
+    onDateChangeListeners.remove(listener)
   }
 
   private fun init(context: Context) {
@@ -92,13 +100,19 @@ class DateTimeView : LinearLayout, KoinComponent {
   private fun updateDate(localDate: LocalDate) {
     binding.dateField.text = localDate.format(dateTimeFormatter)
     onSelectListener?.onDateSelect(localDate)
-    onDateChangeListener?.onChanged(LocalDateTime.of(date, time))
+    notifyOnDateChange(LocalDateTime.of(date, time))
   }
 
   private fun updateTime(localTime: LocalTime) {
     binding.timeField.text = dateTimeManager.getTime(localTime)
     onSelectListener?.onTimeSelect(localTime)
-    onDateChangeListener?.onChanged(LocalDateTime.of(date, time))
+    notifyOnDateChange(LocalDateTime.of(date, time))
+  }
+
+  private fun notifyOnDateChange(localDateTime: LocalDateTime) {
+    onDateChangeListeners.forEach {
+      it.onChanged(localDateTime)
+    }
   }
 
   private fun selectDate() {

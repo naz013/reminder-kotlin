@@ -115,6 +115,8 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     reminder.delay = 0
     reminder.eventCount = 0
     reminder.repeatInterval = 0
+    reminder.recurDataObject = null
+
     if (binding.attackDelay.isChecked) {
       val startTime = binding.dateView.selectedDateTime
       reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)

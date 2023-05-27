@@ -16,6 +16,7 @@ sealed class UiReminderList {
 sealed class UiReminderListData : UiReminderList() {
   abstract val group: UiGroupList?
   abstract val isRepeating: Boolean
+  abstract val canSkip: Boolean
   abstract val status: UiReminderStatus
   abstract val due: UiReminderDueData?
   abstract val summary: String
@@ -37,7 +38,8 @@ data class UiReminderListActive(
   val isRunning: Boolean,
   override val status: UiReminderStatus,
   val actionTarget: UiReminderTarget?,
-  override val isRepeating: Boolean
+  override val isRepeating: Boolean,
+  override val canSkip: Boolean
 ) : UiReminderListData()
 
 data class UiReminderListActiveGps(
@@ -54,6 +56,7 @@ data class UiReminderListActiveGps(
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val due: UiReminderDueData? = null
+  override val canSkip: Boolean = false
 }
 
 data class UiReminderListActiveShop(
@@ -69,6 +72,7 @@ data class UiReminderListActiveShop(
   val shopList: List<ShopItem>
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
+  override val canSkip: Boolean = false
 }
 
 data class UiReminderListRemoved(
@@ -82,7 +86,9 @@ data class UiReminderListRemoved(
   override val status: UiReminderStatus,
   override val due: UiReminderDueData,
   override val isRepeating: Boolean
-) : UiReminderListData()
+) : UiReminderListData() {
+  override val canSkip: Boolean = false
+}
 
 data class UiReminderListRemovedGps(
   override val id: String,
@@ -97,6 +103,7 @@ data class UiReminderListRemovedGps(
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val due: UiReminderDueData? = null
+  override val canSkip: Boolean = false
 }
 
 data class UiReminderListRemovedShop(
@@ -111,4 +118,5 @@ data class UiReminderListRemovedShop(
   val shopList: List<ShopItem>
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
+  override val canSkip: Boolean = false
 }
