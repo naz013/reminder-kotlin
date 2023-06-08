@@ -6,6 +6,7 @@ import com.elementary.tasks.core.services.action.birthday.BirthdayHandlerFactory
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import com.elementary.tasks.core.services.action.reminder.ReminderHandlerFactory
+import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcessor
 import org.koin.dsl.module
 
 val actionModule = module {
@@ -32,4 +33,6 @@ val actionModule = module {
 
   single { ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   single { BirthdayActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+
+  single { ReminderRepeatProcessor(get(), get(), get(), get()) }
 }

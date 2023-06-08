@@ -254,7 +254,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
     if (moreActionParams.canSnooze) {
       map[getString(R.string.acc_button_snooze)] = { delay() }
       map[getString(R.string.acc_button_snooze_for)] = {
-        jobScheduler.cancelReminder(mReminder?.uuId ?: "")
+        jobScheduler.cancelReminder(mReminder?.uniqueId ?: 0)
         showDialog()
         discardNotification(id)
       }
@@ -555,7 +555,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
   override fun handleBackPress(): Boolean {
     discardMedia()
     if (prefs.isFoldingEnabled) {
-      jobScheduler.cancelReminder(uuId)
+      jobScheduler.cancelReminder(mReminder?.uniqueId ?: 0)
       removeFlags()
       finish()
     } else {
@@ -890,7 +890,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
       finish()
       return
     }
-    jobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uniqueId)
     val control = mControl
     launchDefault {
       if (control != null) {

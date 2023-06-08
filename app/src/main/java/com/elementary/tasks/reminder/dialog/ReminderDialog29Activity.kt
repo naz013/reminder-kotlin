@@ -190,7 +190,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     if (moreActionParams.canSnooze) {
       map[getString(R.string.acc_button_snooze)] = { delay() }
       map[getString(R.string.acc_button_snooze_for)] = {
-        jobScheduler.cancelReminder(mReminder?.uuId ?: "")
+        jobScheduler.cancelReminder(mReminder?.uniqueId ?: 0)
         showDialog()
         discardNotification(id)
       }
@@ -475,7 +475,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   override fun handleBackPress(): Boolean {
     if (prefs.isFoldingEnabled) {
-      jobScheduler.cancelReminder(mReminder?.uuId ?: "")
+      jobScheduler.cancelReminder(mReminder?.uniqueId ?: 0)
       removeFlags()
       finish()
     } else {
@@ -680,7 +680,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       finish()
       return
     }
-    jobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uniqueId)
     val control = mControl
     launchDefault {
       if (control != null) {

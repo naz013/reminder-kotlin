@@ -47,7 +47,7 @@ class LocationEvent(
   }
 
   override fun stop(): Boolean {
-    jobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uniqueId)
     reminder.isActive = false
     if (prefs.moveCompleted) {
       reminder.isRemoved = true
@@ -97,7 +97,7 @@ class LocationEvent(
   }
 
   override fun pause(): Boolean {
-    jobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uniqueId)
     notifier.cancel(reminder.uniqueId)
     stopTracking(true)
     return true
