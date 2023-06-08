@@ -112,7 +112,7 @@ class BottomNavActivity :
   }
 
   override fun handleBackPress(): Boolean {
-    Timber.d("handleBackPress: $mFragment, ${navController.backQueue.size}")
+    Timber.d("handleBackPress: $mFragment")
     if (mFragment is HomeFragment) {
       finishAffinity()
     } else {

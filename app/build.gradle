@@ -12,8 +12,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 296
-        versionName '9.0.6'
+        versionCode 297
+        versionName '9.0.7'
         multiDexEnabled true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
@@ -76,7 +76,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 267
+            versionCode 268
 
             def api = props.get('proApiKey', "API_KEY")
             def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
@@ -171,7 +171,7 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
     implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
+    implementation 'androidx.fragment:fragment-ktx:1.6.0'
     implementation "androidx.activity:activity-ktx:1.7.2"
     implementation "androidx.collection:collection-ktx:1.2.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
@@ -196,8 +196,8 @@ dependencies {
     //noinspection KaptUsageInsteadOfKsp
     kapt 'androidx.room:room-compiler:2.5.1'
 
-    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
-    implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
 
     implementation "com.google.android.play:core-ktx:1.8.1"
 
