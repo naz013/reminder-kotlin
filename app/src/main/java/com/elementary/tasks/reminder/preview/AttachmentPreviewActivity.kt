@@ -43,4 +43,9 @@ class AttachmentPreviewActivity : BindingActivity<ActivityAttachmentPreviewBindi
     binding.toolbar.setNavigationOnClickListener { supportFinishAfterTransition() }
     binding.toolbar.title = ""
   }
+
+  override fun handleBackPress(): Boolean {
+    supportFinishAfterTransition()
+    return true
+  }
 }
