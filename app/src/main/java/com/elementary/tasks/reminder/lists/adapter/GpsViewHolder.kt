@@ -27,7 +27,7 @@ class GpsViewHolder(
 ) {
 
   init {
-    binding.itemCheck.visibleGone(editable)
+    binding.switchWrapper.visibleGone(editable)
     binding.buttonMore.visibleGone(showMore)
     binding.todoList.gone()
     binding.itemCard.setOnClickListener {
@@ -37,7 +37,7 @@ class GpsViewHolder(
         ListActions.OPEN
       )
     }
-    binding.itemCheck.setOnClickListener {
+    binding.switchWrapper.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,

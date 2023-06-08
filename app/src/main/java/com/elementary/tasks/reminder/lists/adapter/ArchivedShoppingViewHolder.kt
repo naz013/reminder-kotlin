@@ -26,20 +26,13 @@ class ArchivedShoppingViewHolder(
 ) {
 
   init {
-    binding.itemCheck.gone()
+    binding.switchWrapper.gone()
     binding.reminderPhone.gone()
     binding.itemCard.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
         ListActions.OPEN
-      )
-    }
-    binding.itemCheck.setOnClickListener {
-      listener?.invoke(
-        it,
-        bindingAdapterPosition,
-        ListActions.SWITCH
       )
     }
 

@@ -19,7 +19,6 @@ import java.util.Locale
 
 class ArchivedGpsViewHolder(
   parent: ViewGroup,
-  editable: Boolean,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
 ) : BaseUiReminderListViewHolder<ListItemReminderBinding, UiReminderListRemovedGps>(
@@ -27,22 +26,14 @@ class ArchivedGpsViewHolder(
 ) {
 
   init {
-    binding.itemCheck.visibleGone(editable)
     binding.buttonMore.visibleGone(showMore)
     binding.todoList.gone()
-    binding.itemCheck.gone()
+    binding.switchWrapper.gone()
     binding.itemCard.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
         ListActions.OPEN
-      )
-    }
-    binding.itemCheck.setOnClickListener {
-      listener?.invoke(
-        it,
-        bindingAdapterPosition,
-        ListActions.SWITCH
       )
     }
     binding.buttonMore.setOnClickListener {
