@@ -44,8 +44,8 @@ class ReminderActionProcessor(
   fun cancel(id: String) {
     Timber.d("cancel: $id")
     scope.launch {
-      jobScheduler.cancelReminder(id)
       val reminder = reminderRepository.getById(id) ?: return@launch
+      jobScheduler.cancelReminder(reminder.uniqueId)
       withContext(dispatcherProvider.main()) {
         reminderHandlerFactory.createCancel().handle(reminder)
       }
@@ -72,7 +72,7 @@ class ReminderActionProcessor(
             LocalDateTime.now().minusMinutes(1)
           )
           if (delayTime > 0) {
-            jobScheduler.scheduleReminderDelay(delayTime, id)
+            jobScheduler.scheduleReminderDelay(delayTime, id, reminder.uniqueId)
           }
         }
       } else {

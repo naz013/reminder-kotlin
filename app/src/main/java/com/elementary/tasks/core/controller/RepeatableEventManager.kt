@@ -77,7 +77,7 @@ abstract class RepeatableEventManager(
 
   override fun pause(): Boolean {
     notifier.cancel(reminder.uniqueId)
-    jobScheduler.cancelReminder(reminder.uuId)
+    jobScheduler.cancelReminder(reminder.uniqueId)
     return true
   }
 
@@ -92,6 +92,6 @@ abstract class RepeatableEventManager(
   }
 
   override fun setDelay(delay: Int) {
-    jobScheduler.scheduleReminderDelay(delay, reminder.uuId)
+    jobScheduler.scheduleReminderDelay(delay, reminder.uuId, reminder.uniqueId)
   }
 }

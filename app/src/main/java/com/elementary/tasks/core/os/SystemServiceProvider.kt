@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.os
 
 import android.app.ActivityManager
+import android.app.AlarmManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.app.SearchManager
@@ -55,5 +56,9 @@ class SystemServiceProvider(context: Context) {
 
   fun providePowerManager(): PowerManager? {
     return appContext?.getSystemService(Context.POWER_SERVICE) as? PowerManager?
+  }
+
+  fun provideAlarmManager(): AlarmManager? {
+    return appContext?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager?
   }
 }

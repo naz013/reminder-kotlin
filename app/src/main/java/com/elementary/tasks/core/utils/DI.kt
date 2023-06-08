@@ -487,7 +487,7 @@ val utilModule = module {
   single { RemotePrefs(get(), get(), get(), get()) }
 
   single { Notifier(get(), get(), get(), get(), get()) }
-  single { JobScheduler(get(), get(), get()) }
+  single { JobScheduler(get(), get(), get(), get()) }
   single { UpdatesHelper(get()) }
 
   factory { WidgetDataProvider(get(), get(), get()) }

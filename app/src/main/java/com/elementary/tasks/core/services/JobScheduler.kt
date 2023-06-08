@@ -1,6 +1,10 @@
 package com.elementary.tasks.core.services
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -11,6 +15,9 @@ import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.minusMillis
@@ -25,7 +32,8 @@ import java.util.concurrent.TimeUnit
 class JobScheduler(
   private val context: Context,
   private val prefs: Prefs,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val systemServiceProvider: SystemServiceProvider
 ) {
 
   fun scheduleEventCheck() {
@@ -154,66 +162,58 @@ class JobScheduler(
 
   fun scheduleReminderRepeat(reminder: Reminder): Boolean {
     val minutes = prefs.notificationRepeatTime
-    val millis = minutes * INTERVAL_MINUTE
+    val millis = System.currentTimeMillis() + (minutes * INTERVAL_MINUTE)
     if (millis <= 0) {
       return false
     }
     Timber.d("scheduleReminderRepeat: $millis, ${reminder.uuId}")
 
-    val bundle = Data.Builder()
-      .putBoolean(ARG_REPEAT, true)
-      .build()
-
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(reminder.uuId)
-      .setInputData(bundle)
-      .setConstraints(getDefaultConstraints())
-      .build()
-
-    schedule(work)
+    scheduleWithAlarm(
+      action = AlarmReceiver.ACTION_REMINDER_REPEAT,
+      bundle = Bundle().apply {
+        putString(Constants.INTENT_ID, reminder.uuId)
+      },
+      millis = millis,
+      requestCode = reminder.uniqueId
+    )
     return true
   }
 
-  fun scheduleReminderDelay(minutes: Int, uuId: String) {
-    scheduleReminderDelay(INTERVAL_MINUTE * minutes, uuId)
+  fun scheduleReminderDelay(minutes: Int, uuId: String, requestCode: Int) {
+    scheduleReminderDelay(INTERVAL_MINUTE * minutes, uuId, requestCode)
   }
 
-  fun scheduleReminderDelay(millis: Long, uuId: String) {
+  fun scheduleReminderDelay(millis: Long, uuId: String, requestCode: Int) {
     if (millis <= 0) {
       return
     }
     Timber.d("scheduleReminderDelay: $millis, $uuId")
 
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(uuId)
-      .setConstraints(getDefaultConstraints())
-      .build()
-
-    schedule(work)
+    scheduleWithAlarm(
+      action = AlarmReceiver.ACTION_REMINDER,
+      bundle = Bundle().apply {
+        putString(Constants.INTENT_ID, uuId)
+      },
+      millis = System.currentTimeMillis() + millis,
+      requestCode = requestCode
+    )
   }
 
   fun scheduleGpsDelay(reminder: Reminder): Boolean {
-    val due = dateTimeManager.toMillis(reminder.eventTime)
-    val millis = due - System.currentTimeMillis()
-    if (due == 0L || millis <= 0) {
+    val millis = dateTimeManager.toMillis(reminder.eventTime)
+    if (millis <= 0) {
       return false
     }
     Timber.d("scheduleGpsDelay: $millis, ${reminder.uuId}")
 
-    val bundle = Data.Builder()
-      .putBoolean(ARG_LOCATION, true)
-      .build()
-
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(reminder.uuId)
-      .setInputData(bundle)
-      .setConstraints(getDefaultConstraints())
-      .build()
-
-    schedule(work)
+    scheduleWithAlarm(
+      action = AlarmReceiver.ACTION_REMINDER_GPS,
+      bundle = Bundle().apply {
+        putString(Constants.INTENT_ID, reminder.uuId)
+      },
+      millis = millis,
+      requestCode = reminder.uniqueId
+    )
     return true
   }
 
@@ -232,20 +232,46 @@ class JobScheduler(
       due = due.withSecond(0)
     }
     if (due == null) {
+      Timber.d("scheduleReminder: return due is NULL")
       return
     }
-    var millis = dateTimeManager.toMillis(due) - System.currentTimeMillis()
-    if (millis < 0) {
-      millis = 100L
+    val millis = dateTimeManager.toMillis(due)
+    if (millis <= 0) {
+      Timber.d("scheduleReminder: return due is 0")
+      return
     }
 
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(reminder.uuId)
-      .setConstraints(getDefaultConstraints())
-      .build()
+    scheduleWithAlarm(
+      action = AlarmReceiver.ACTION_REMINDER,
+      bundle = Bundle().apply {
+        putString(Constants.INTENT_ID, reminder.uuId)
+      },
+      millis = millis,
+      requestCode = reminder.uniqueId
+    )
+  }
 
-    schedule(work)
+  private fun scheduleWithAlarm(
+    action: String,
+    bundle: Bundle,
+    millis: Long,
+    requestCode: Int
+  ) {
+    val intent = Intent(context, AlarmReceiver::class.java)
+    intent.action = action
+    intent.putExtras(bundle)
+    val pendingIntent = PendingIntentWrapper.getBroadcast(
+      context = context,
+      requestCode = requestCode,
+      intent = intent,
+      flags = PendingIntent.FLAG_CANCEL_CURRENT,
+      ignoreIn13 = false
+    )
+    systemServiceProvider.provideAlarmManager()?.setExact(
+      AlarmManager.RTC_WAKEUP,
+      millis,
+      pendingIntent
+    )
   }
 
   private fun getDefaultConstraints(): Constraints {
@@ -257,9 +283,22 @@ class JobScheduler(
       .build()
   }
 
-  fun cancelReminder(uuId: String) {
-    Timber.i("cancelReminder: $uuId")
+  private fun cancelReminder(uuId: String) {
+    Timber.i("cancelReminder: uuId=$uuId")
     WorkManager.getInstance(context).cancelAllWorkByTag(uuId)
+  }
+
+  fun cancelReminder(requestCode: Int) {
+    Timber.i("cancelReminder: requestCode=$requestCode")
+    val intent = Intent(context, AlarmReceiver::class.java)
+    val pendingIntent = PendingIntentWrapper.getBroadcast(
+      context = context,
+      requestCode = requestCode,
+      intent = intent,
+      flags = PendingIntent.FLAG_CANCEL_CURRENT,
+      ignoreIn13 = false
+    )
+    systemServiceProvider.provideAlarmManager()?.cancel(pendingIntent)
   }
 
   fun scheduleSaveNewTask(googleTask: GoogleTask, uuId: String) {
@@ -298,11 +337,6 @@ class JobScheduler(
     const val EVENT_AUTO_BACKUP = "event_auto_backup"
     const val EVENT_CHECK = "event_check"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
-
-    const val ARG_LOCATION = "arg_location"
-    @Deprecated("After R")
-    const val ARG_MISSED = "arg_missed"
-    const val ARG_REPEAT = "arg_repeated"
 
     private const val INTERVAL_MINUTE = 60 * 1000L
     private const val INTERVAL_HOUR = 60 * INTERVAL_MINUTE
