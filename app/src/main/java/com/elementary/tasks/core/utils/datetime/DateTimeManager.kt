@@ -366,8 +366,8 @@ class DateTimeManager(
   fun getFutureBirthdayDate(birthdayTime: LocalTime, fullDate: String): BirthDate {
     return (parseBirthdayDate(fullDate) ?: nowDateTimeProvider.nowDate()).let { date ->
       var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), birthdayTime)
-        .withDayOfMonth(date.dayOfMonth)
         .withMonth(date.monthValue)
+        .withDayOfMonth(date.dayOfMonth)
       if (dateTime.isBefore(getCurrentDateTime())) {
         dateTime = dateTime.plusYears(1)
       }
