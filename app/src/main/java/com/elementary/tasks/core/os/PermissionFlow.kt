@@ -148,7 +148,9 @@ class PermissionFlow private constructor(
       }
 
       else -> {
-        launcher.launch(permission)
+        runCatching {
+          launcher.launch(permission)
+        }
       }
     }
   }
@@ -209,7 +211,9 @@ class PermissionFlow private constructor(
   }
 
   private fun requestPermissionAfterRationale(permission: String) {
-    launcher.launch(permission)
+    runCatching {
+      launcher.launch(permission)
+    }
   }
 
   private fun showPermissionExplanation(dialogData: UiPermissionDialogData) {
