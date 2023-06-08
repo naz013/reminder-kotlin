@@ -26,7 +26,7 @@ class ReminderViewHolder(
 ) {
 
   init {
-    binding.itemCheck.visibleGone(editable)
+    binding.switchWrapper.visibleGone(editable)
     binding.buttonMore.visibleGone(showMore)
     binding.todoList.gone()
     binding.itemCard.setOnClickListener {
@@ -36,7 +36,7 @@ class ReminderViewHolder(
         ListActions.OPEN
       )
     }
-    binding.itemCheck.setOnClickListener {
+    binding.switchWrapper.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,

@@ -91,7 +91,7 @@ class UiReminderListRecyclerAdapter(
         ShoppingViewHolder(parent, isEditable, showMore = true, isDark = isDark, listener)
       }
       UiReminderViewType.GPS_REMOVED.value -> {
-        ArchivedGpsViewHolder(parent, isEditable, showMore = true, listener)
+        ArchivedGpsViewHolder(parent, showMore = true, listener)
       }
       UiReminderViewType.SHOPPING_REMOVED.value -> {
         ArchivedShoppingViewHolder(parent, showMore = true, isDark = isDark, listener)

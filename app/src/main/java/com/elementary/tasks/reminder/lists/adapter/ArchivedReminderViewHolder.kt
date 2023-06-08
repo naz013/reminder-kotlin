@@ -27,19 +27,12 @@ class ArchivedReminderViewHolder(
   init {
     binding.buttonMore.visibleGone(showMore)
     binding.todoList.gone()
-    binding.itemCheck.gone()
+    binding.switchWrapper.gone()
     binding.itemCard.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
         ListActions.OPEN
-      )
-    }
-    binding.itemCheck.setOnClickListener {
-      listener?.invoke(
-        it,
-        bindingAdapterPosition,
-        ListActions.SWITCH
       )
     }
     binding.buttonMore.setOnClickListener {

@@ -28,11 +28,7 @@ class ShoppingViewHolder(
 ) {
 
   init {
-    if (editable) {
-      binding.itemCheck.visible()
-    } else {
-      binding.itemCheck.gone()
-    }
+    binding.switchWrapper.visibleGone(editable)
     binding.reminderPhone.gone()
     binding.itemCard.setOnClickListener {
       listener?.invoke(
@@ -41,7 +37,7 @@ class ShoppingViewHolder(
         ListActions.OPEN
       )
     }
-    binding.itemCheck.setOnClickListener {
+    binding.switchWrapper.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
