@@ -72,7 +72,7 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
       isStyles = false, isBack = false, isZoom = false, isDark = isDark)
     map.setCallback(mReadyCallback)
     map.setOnMarkerClick(mOnMarkerClick)
-    parentFragmentManager.beginTransaction()
+    childFragmentManager.beginTransaction()
       .replace(R.id.fragment_container, map)
       .addToBackStack(null)
       .commit()
