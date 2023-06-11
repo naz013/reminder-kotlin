@@ -46,6 +46,7 @@ import com.elementary.tasks.reminder.create.fragments.TimerFragment
 import com.elementary.tasks.reminder.create.fragments.TypeFragment
 import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
+import com.elementary.tasks.reminder.create.fragments.recur.RecurFragment
 import com.elementary.tasks.voice.ConversationViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
@@ -78,6 +79,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private var isEditing: Boolean = false
   private var isTablet = false
   private var hasLocation = false
+  private var selectorList = emptyList<UiSelectorReminder>()
+
   override val state: ReminderStateViewModel
     get() = stateViewModel
   override val defGroup: ReminderGroup?
@@ -85,16 +88,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   override var canExportToTasks: Boolean = false
   override var canExportToCalendar: Boolean = false
 
-  private val typeSelectListener = object : AdapterView.OnItemSelectedListener {
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-      prefs.lastUsedReminder = position
-      openScreen(position)
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>) {
-
-    }
-  }
   private val reminderObserver: Observer<in Reminder?> = Observer { reminder ->
     if (reminder != null) {
       editReminder(reminder)
@@ -124,18 +117,19 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     loadReminder()
   }
 
-  private fun openScreen(position: Int) {
-    when (position) {
-      DATE -> replaceFragment(DateFragment())
-      TIMER -> replaceFragment(TimerFragment())
-      WEEK -> replaceFragment(WeekFragment())
-      EMAIL -> replaceFragment(EmailFragment())
-      APP -> replaceFragment(ApplicationFragment())
-      MONTH -> replaceFragment(MonthFragment())
-      SHOP -> replaceFragment(ShopFragment())
-      YEAR -> replaceFragment(YearFragment())
-      GPS -> replaceFragment(LocationFragment())
-      GPS_PLACE -> replaceFragment(PlacesTypeFragment())
+  private fun openScreen(uiSelectorType: UiSelectorType) {
+    when (uiSelectorType) {
+      UiSelectorType.DATE -> replaceFragment(DateFragment())
+      UiSelectorType.TIMER -> replaceFragment(TimerFragment())
+      UiSelectorType.WEEK -> replaceFragment(WeekFragment())
+      UiSelectorType.EMAIL -> replaceFragment(EmailFragment())
+      UiSelectorType.APP -> replaceFragment(ApplicationFragment())
+      UiSelectorType.MONTH -> replaceFragment(MonthFragment())
+      UiSelectorType.SHOP -> replaceFragment(ShopFragment())
+      UiSelectorType.YEAR -> replaceFragment(YearFragment())
+      UiSelectorType.GPS -> replaceFragment(LocationFragment())
+      UiSelectorType.GPS_PLACE -> replaceFragment(PlacesTypeFragment())
+      UiSelectorType.RECUR -> replaceFragment(RecurFragment())
     }
   }
 
@@ -246,66 +240,91 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         stateViewModel.reminder.groupTitle = group.groupTitle
       }
     }
-    val current = binding.navSpinner.selectedItemPosition
-    var toSelect = 0
+    val current = binding.navSpinner.selectedItemPosition.let { selectorList.getOrNull(it) }?.type
+    var toSelect: UiSelectorType = UiSelectorType.DATE
     when (reminder.type) {
-      Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = DATE
-      Reminder.BY_TIME, Reminder.BY_TIME_CALL, Reminder.BY_TIME_SMS -> toSelect = TIMER
-      Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = WEEK
-      Reminder.BY_DATE_EMAIL -> toSelect = EMAIL
-      Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = APP
-      Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = MONTH
-      Reminder.BY_DATE_SHOP -> toSelect = SHOP
+      Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = UiSelectorType.DATE
+      Reminder.BY_TIME, Reminder.BY_TIME_CALL, Reminder.BY_TIME_SMS -> toSelect = UiSelectorType.TIMER
+      Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = UiSelectorType.WEEK
+      Reminder.BY_DATE_EMAIL -> toSelect = UiSelectorType.EMAIL
+      Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = UiSelectorType.APP
+      Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = UiSelectorType.MONTH
+      Reminder.BY_DATE_SHOP -> toSelect = UiSelectorType.SHOP
       Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS ->
-        toSelect = YEAR
+        toSelect = UiSelectorType.YEAR
+      Reminder.BY_RECUR, Reminder.BY_RECUR_CALL, Reminder.BY_RECUR_SMS -> {
+        toSelect = if (Module.isPro) {
+          UiSelectorType.RECUR
+        } else {
+          UiSelectorType.DATE
+        }
+      }
       else -> {
         if (hasLocation) {
           when (reminder.type) {
             Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
-            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = GPS
+            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = UiSelectorType.GPS
 
             else -> if (Module.isPro) {
               toSelect = when (reminder.type) {
-                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> GPS_PLACE
-                else -> DATE
+                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> UiSelectorType.GPS_PLACE
+                else -> UiSelectorType.DATE
               }
             }
           }
         } else {
-          toSelect = DATE
+          toSelect = UiSelectorType.DATE
         }
       }
     }
     if (current == toSelect) {
       openScreen(toSelect)
     } else {
-      binding.navSpinner.setSelection(toSelect)
+      val index = selectorList.indexOfFirst { it.type == toSelect }
+      if (index != -1) {
+        binding.navSpinner.setSelection(index)
+      }
     }
   }
 
   private fun initNavigation() {
     val list = mutableListOf<UiSelectorReminder>()
-    list.add(UiSelectorReminder(getString(R.string.by_date)))
-    list.add(UiSelectorReminder(getString(R.string.timer)))
-    list.add(UiSelectorReminder(getString(R.string.alarm)))
-    list.add(UiSelectorReminder(getString(R.string.e_mail)))
+    list.add(UiSelectorReminder(getString(R.string.by_date), UiSelectorType.DATE))
+    list.add(UiSelectorReminder(getString(R.string.timer), UiSelectorType.TIMER))
+    list.add(UiSelectorReminder(getString(R.string.alarm), UiSelectorType.WEEK))
+    list.add(UiSelectorReminder(getString(R.string.e_mail), UiSelectorType.EMAIL))
     if (Module.is12) {
-      list.add(UiSelectorReminder(getString(R.string.open_link)))
+      list.add(UiSelectorReminder(getString(R.string.open_link), UiSelectorType.APP))
     } else {
-      list.add(UiSelectorReminder(getString(R.string.launch_application)))
+      list.add(UiSelectorReminder(getString(R.string.launch_application), UiSelectorType.APP))
     }
-    list.add(UiSelectorReminder(getString(R.string.day_of_month)))
-    list.add(UiSelectorReminder(getString(R.string.yearly)))
-    list.add(UiSelectorReminder(getString(R.string.shopping_list)))
+    list.add(UiSelectorReminder(getString(R.string.day_of_month), UiSelectorType.MONTH))
+    list.add(UiSelectorReminder(getString(R.string.yearly), UiSelectorType.YEAR))
+    list.add(UiSelectorReminder(getString(R.string.shopping_list), UiSelectorType.SHOP))
     if (hasLocation) {
-      list.add(UiSelectorReminder(getString(R.string.location)))
+      list.add(UiSelectorReminder(getString(R.string.location), UiSelectorType.GPS))
       if (Module.isPro) {
-        list.add(UiSelectorReminder(getString(R.string.places)))
+        list.add(UiSelectorReminder(getString(R.string.places), UiSelectorType.GPS_PLACE))
       }
     }
+    if (Module.isPro) {
+      list.add(UiSelectorReminder(getString(R.string.recur_custom), UiSelectorType.RECUR))
+    }
+
+    selectorList = list
     val adapter = TitleNavigationAdapter(list)
+
     binding.navSpinner.adapter = adapter
-    binding.navSpinner.onItemSelectedListener = typeSelectListener
+    binding.navSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+      override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        prefs.lastUsedReminder = position
+        openScreen(list[position].type)
+      }
+
+      override fun onNothingSelected(parent: AdapterView<*>) {
+
+      }
+    }
   }
 
   private fun initActionBar() {
@@ -557,7 +576,21 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     return true
   }
 
-  private class UiSelectorReminder(val title: String)
+  private data class UiSelectorReminder(val title: String, val type: UiSelectorType)
+
+  private enum class UiSelectorType {
+    DATE,
+    TIMER,
+    WEEK,
+    EMAIL,
+    APP,
+    MONTH,
+    YEAR,
+    SHOP,
+    GPS,
+    GPS_PLACE,
+    RECUR,
+  }
 
   private inner class TitleNavigationAdapter(private val items: List<UiSelectorReminder>) : BaseAdapter() {
 
@@ -599,5 +632,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     private const val SHOP = 7
     private const val GPS = 8
     private const val GPS_PLACE = 9
+    private const val RECUR = 10
   }
 }

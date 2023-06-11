@@ -4,15 +4,19 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.WidgetPrefsHolder
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
+import org.koin.android.ext.android.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
 class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfigBinding>() {
+
+  private val widgetPrefsHolder by inject<WidgetPrefsHolder>()
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -111,7 +115,7 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
         AppWidgetManager.INVALID_APPWIDGET_ID
       )
     }
-    prefsProvider = CalendarWidgetPrefsProvider(this, widgetID)
+    prefsProvider = widgetPrefsHolder.findOrCreate(widgetID, CalendarWidgetPrefsProvider::class.java)
     resultValue = Intent()
     resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
     setResult(RESULT_CANCELED, resultValue)

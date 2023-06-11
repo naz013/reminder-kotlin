@@ -386,6 +386,7 @@
             android:excludeFromRecents="true" />
         <activity android:name="com.elementary.tasks.settings.other.SendFeedbackActivity" />
         <activity android:name=".other.PrivacyPolicyActivity" />
+        <activity android:name=".reminder.create.fragments.recur.RecurHelpActivity" />
         <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"

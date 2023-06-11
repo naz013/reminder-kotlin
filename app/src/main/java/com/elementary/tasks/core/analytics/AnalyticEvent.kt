@@ -47,6 +47,7 @@ data class ReminderFeatureUsedEvent(
       type.isTimer() -> "timer"
       type.isYearly() -> "yearly"
       type.isByDate() -> "by_date"
+      type.isRecur() -> "recur"
       else -> "other"
     }
   }

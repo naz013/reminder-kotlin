@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/mondayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recur_monday" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/tuesdayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/recur_tuesday" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/wednesdayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/recur_wednesday" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/thursdayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/recur_thursday" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/fridayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/recur_friday" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/saturdayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/recur_saturday" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/sundayCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/recur_sunday" />
+
+</LinearLayout>

@@ -158,11 +158,13 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
       is DateTimeView -> {
         view.setDateTime(iFace.state.reminder.eventTime)
-        view.onDateChangeListener = object : DateTimeView.OnDateChangeListener {
-          override fun onChanged(dateTime: LocalDateTime) {
-            iFace.state.reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+        view.addOnDateChangeListener(
+          object : DateTimeView.OnDateChangeListener {
+            override fun onChanged(dateTime: LocalDateTime) {
+              iFace.state.reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+            }
           }
-        }
+        )
       }
       is ExportToCalendarView -> {
         view.visibleGone(iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled())

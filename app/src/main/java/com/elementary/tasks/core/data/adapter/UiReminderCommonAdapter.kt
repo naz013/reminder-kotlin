@@ -18,6 +18,8 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
+import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
+import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.params.Prefs
 
 class UiReminderCommonAdapter(
@@ -25,7 +27,8 @@ class UiReminderCommonAdapter(
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader,
-  private val packageManagerWrapper: PackageManagerWrapper
+  private val packageManagerWrapper: PackageManagerWrapper,
+  private val recurrenceManager: RecurrenceManager
 ) {
 
   fun getPriorityTitle(priority: Int): String {
@@ -90,6 +93,7 @@ class UiReminderCommonAdapter(
 
       type.isBase(UiReminderType.Base.WEEKDAY) -> dateTimeManager.getRepeatString(data.weekdays)
       type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
+      type.isBase(UiReminderType.Base.RECUR) -> textProvider.getText(R.string.recur_custom)
       else -> IntervalUtil.getInterval(data.repeatInterval) { getIntervalPattern(it) }
     }
     return UiReminderDueData(
@@ -98,8 +102,20 @@ class UiReminderCommonAdapter(
       dateTime = due,
       remaining = getRemaining(data),
       millis = dueMillis,
-      localDateTime = dateTime
+      localDateTime = dateTime,
+      recurRule = getRecurRules(data, type)
     )
+  }
+
+  private fun getRecurRules(reminder: Reminder, type: UiReminderType): String? {
+    return if (type.isRecur()) {
+      runCatching { recurrenceManager.parseObject(reminder.recurDataObject) }
+        .getOrNull()
+        ?.map?.values?.firstOrNull { it.tagType == TagType.RRULE }
+        ?.buildString()
+    } else {
+      null
+    }
   }
 
   private fun getRemaining(reminder: Reminder): String {
@@ -148,6 +164,7 @@ class UiReminderCommonAdapter(
       type.isBase(UiReminderType.Base.TIMER) -> textProvider.getText(R.string.timer)
       type.isBase(UiReminderType.Base.PLACE) -> textProvider.getText(R.string.places)
       type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
+      type.isBase(UiReminderType.Base.RECUR) -> textProvider.getText(R.string.recur_custom)
       else -> textProvider.getText(R.string.by_date)
     }
   }

@@ -384,6 +384,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       binding.repeatView.visible()
       binding.repeat.text = it
     } ?: run { binding.repeatView.gone() }
+
+    due?.recurRule?.let {
+      binding.repeatView.visible()
+      binding.repeat.text = it
+    } ?: run { binding.repeatView.gone() }
   }
 
   private fun showPhoneContact(target: UiReminderTarget?) {

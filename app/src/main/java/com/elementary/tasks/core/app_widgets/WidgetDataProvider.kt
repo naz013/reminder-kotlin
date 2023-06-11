@@ -5,13 +5,19 @@ import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
+import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
+import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.plusMillis
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+import timber.log.Timber
 
 class WidgetDataProvider(
   private val dateTimeManager: DateTimeManager,
   private val reminderRepository: ReminderRepository,
-  private val birthdayRepository: BirthdayRepository
+  private val birthdayRepository: BirthdayRepository,
+  private val recurrenceManager: RecurrenceManager
 ) {
 
   private val data: MutableList<Item> = ArrayList()
@@ -27,7 +33,7 @@ class WidgetDataProvider(
     this.birthdayTime = birthdayTime
   }
 
-  fun setFeature(isFeature: Boolean) {
+  fun setFuture(isFeature: Boolean) {
     this.isFeature = isFeature
   }
 
@@ -39,14 +45,13 @@ class WidgetDataProvider(
     return data[position]
   }
 
-  fun hasReminder(day: Int, month: Int, year: Int): Boolean {
+  fun hasReminder(date: LocalDate): Boolean {
     var res = false
     for (item in data) {
       if (res) {
         break
       }
-      res = item.day == day && item.month == month && item.year == year &&
-        item.type == WidgetType.REMINDER
+      res = item.date == date && item.type == WidgetType.REMINDER
     }
     return res
   }
@@ -54,7 +59,9 @@ class WidgetDataProvider(
   fun hasBirthday(day: Int, month: Int): Boolean {
     var res = false
     for (item in data) {
-      if (item.day == day && item.month == month && item.type == WidgetType.BIRTHDAY) {
+      if (item.date.dayOfMonth == day && item.date.monthValue == month &&
+        item.type == WidgetType.BIRTHDAY
+      ) {
         res = true
         break
       }
@@ -73,14 +80,7 @@ class WidgetDataProvider(
     for (item in reminders) {
       val mType = item.type
       var eventTime = dateTimeManager.fromGmtToLocal(item.eventTime) ?: continue
-      data.add(
-        Item(
-          eventTime.dayOfMonth,
-          eventTime.monthValue,
-          eventTime.year,
-          WidgetType.REMINDER
-        )
-      )
+      data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
       val repeatTime = item.repeatInterval
       val limit = item.repeatLimit.toLong()
       val count = item.eventCount
@@ -99,14 +99,7 @@ class WidgetDataProvider(
             val weekDay = dateTimeManager.localDayOfWeekToOld(eventTime.dayOfWeek)
             if (list[weekDay - 1] == 1) {
               days++
-              data.add(
-                Item(
-                  eventTime.dayOfMonth,
-                  eventTime.monthValue,
-                  eventTime.year,
-                  WidgetType.REMINDER
-                )
-              )
+              data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
             }
           } while (days < max)
         } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
@@ -119,15 +112,21 @@ class WidgetDataProvider(
             item.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
             eventTime = dateTimeManager.getNewNextMonthDayTime(item)
             days++
-            data.add(
-              Item(
-                eventTime.dayOfMonth,
-                eventTime.monthValue,
-                eventTime.year,
-                WidgetType.REMINDER
-              )
-            )
+            data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
           } while (days < max)
+        } else if (Reminder.isBase(mType, Reminder.BY_RECUR)) {
+          val dates = runCatching {
+            recurrenceManager.parseObject(item.recurDataObject)
+          }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
+
+          val baseTime = dateTimeManager.fromGmtToLocal(item.eventTime)
+
+          dates?.mapNotNull { it.dateTime }
+            ?.forEach { localDateTime ->
+              if (baseTime != localDateTime) {
+                data.add(Item(localDateTime.toLocalDate(), WidgetType.REMINDER))
+              }
+            }
         } else {
           if (repeatTime == 0L) {
             continue
@@ -140,14 +139,7 @@ class WidgetDataProvider(
           do {
             eventTime = eventTime.plusMillis(repeatTime)
             days++
-            data.add(
-              Item(
-                eventTime.dayOfMonth,
-                eventTime.monthValue,
-                eventTime.year,
-                WidgetType.REMINDER
-              )
-            )
+            data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
           } while (days < max)
         }
       }
@@ -158,9 +150,12 @@ class WidgetDataProvider(
     val birthdays = birthdayRepository.getAll()
     for (item in birthdays) {
       val date = dateTimeManager.parseBirthdayDate(item.date) ?: continue
-      data.add(Item(date.dayOfMonth, date.monthValue, 0, WidgetType.BIRTHDAY))
+      data.add(Item(date, WidgetType.BIRTHDAY))
     }
   }
 
-  class Item(var day: Int, var month: Int, var year: Int, val type: WidgetType)
+  data class Item(
+    val date: LocalDate,
+    val type: WidgetType
+  )
 }

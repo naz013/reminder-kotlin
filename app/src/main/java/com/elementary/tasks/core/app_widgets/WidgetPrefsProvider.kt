@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.app_widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 
 abstract class WidgetPrefsProvider(
@@ -10,16 +11,18 @@ abstract class WidgetPrefsProvider(
 
   private val sp = context.getSharedPreferences(fileName, Context.MODE_PRIVATE)
 
+  @SuppressLint("ApplySharedPref")
   fun putFloat(key: String, value: Float) {
-    sp.edit().putFloat(key + widgetId, value).apply()
+    sp.edit().putFloat(key + widgetId, value).commit()
   }
 
   fun getFloat(key: String, def: Float = 0f): Float {
     return sp.getFloat(key + widgetId, def)
   }
 
+  @SuppressLint("ApplySharedPref")
   fun putInt(key: String, value: Int) {
-    sp.edit().putInt(key + widgetId, value).apply()
+    sp.edit().putInt(key + widgetId, value).commit()
   }
 
   fun getInt(key: String, def: Int = 0): Int {

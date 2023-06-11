@@ -86,6 +86,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     reminder.dayOfMonth = 0
     reminder.delay = 0
     reminder.eventCount = 0
+    reminder.recurDataObject = null
     return reminder
   }
 

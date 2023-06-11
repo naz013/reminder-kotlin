@@ -79,6 +79,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
       iFace.showSnackbar(getString(R.string.you_dont_select_any_day))
       return null
     }
+
     reminder.weekdays = weekdays
     reminder.target = number
     reminder.type = type
@@ -86,6 +87,8 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     reminder.delay = 0
     reminder.eventCount = 0
     reminder.repeatInterval = 0
+    reminder.recurDataObject = null
+
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
     val startTime = dateTimeManager.getNextWeekdayTime(reminder)
     if (!dateTimeManager.isCurrent(startTime)) {

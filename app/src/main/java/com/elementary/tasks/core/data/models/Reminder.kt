@@ -130,6 +130,8 @@ data class Reminder(
   var updatedAt: String? = null,
   @SerializedName("taskListId")
   var taskListId: String? = null,
+  @SerializedName("recurDataObject")
+  var recurDataObject: String? = null,
   @ColumnInfo(name = "groupTitle")
   @Transient
   var groupTitle: String? = "",
@@ -261,9 +263,22 @@ data class Reminder(
     const val BY_DAY_OF_YEAR = 90
     const val BY_DAY_OF_YEAR_CALL = 91
     const val BY_DAY_OF_YEAR_SMS = 92
+    const val BY_RECUR = 100
+    const val BY_RECUR_CALL = 101
+    const val BY_RECUR_SMS = 102
 
     fun gpsTypes(): IntArray {
-      return intArrayOf(BY_LOCATION, BY_LOCATION_CALL, BY_LOCATION_SMS, BY_OUT, BY_OUT_CALL, BY_OUT_SMS, BY_PLACES, BY_PLACES_CALL, BY_PLACES_SMS)
+      return intArrayOf(
+        BY_LOCATION,
+        BY_LOCATION_CALL,
+        BY_LOCATION_SMS,
+        BY_OUT,
+        BY_OUT_CALL,
+        BY_OUT_SMS,
+        BY_PLACES,
+        BY_PLACES_CALL,
+        BY_PLACES_SMS
+      )
     }
 
     fun isBase(type: Int, base: Int): Boolean {

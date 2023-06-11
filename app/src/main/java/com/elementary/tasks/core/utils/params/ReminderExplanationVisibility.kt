@@ -26,7 +26,8 @@ class ReminderExplanationVisibility(
     LINK,
     BY_LOCATION,
     BY_PLACE,
-    SHOPPING
+    SHOPPING,
+    BY_RECUR
   }
 
   companion object {

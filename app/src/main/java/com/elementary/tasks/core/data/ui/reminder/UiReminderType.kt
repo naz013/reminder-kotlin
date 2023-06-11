@@ -8,27 +8,29 @@ data class UiReminderType(
     base.value + kind.value
   )
 
-  fun isCall() = isKind(Kind.CALL)
+  fun isCall(): Boolean = isKind(Kind.CALL)
 
-  fun isSms() = isKind(Kind.SMS)
+  fun isSms(): Boolean = isKind(Kind.SMS)
 
-  fun isApp() = isKind(Kind.APP)
+  fun isApp(): Boolean = isKind(Kind.APP)
 
-  fun isLink() = isKind(Kind.LINK)
+  fun isLink(): Boolean = isKind(Kind.LINK)
 
-  fun isShopping() = isKind(Kind.SHOPPING)
+  fun isShopping(): Boolean = isKind(Kind.SHOPPING)
 
-  fun isEmail() = isKind(Kind.EMAIL)
+  fun isEmail(): Boolean = isKind(Kind.EMAIL)
 
-  fun isByDate() = isBase(Base.DATE)
+  fun isByDate(): Boolean = isBase(Base.DATE)
 
-  fun isTimer() = isBase(Base.TIMER)
+  fun isTimer(): Boolean = isBase(Base.TIMER)
 
-  fun isByWeekday() = isBase(Base.WEEKDAY)
+  fun isByWeekday(): Boolean = isBase(Base.WEEKDAY)
 
-  fun isMonthly() = isBase(Base.MONTHLY)
+  fun isMonthly(): Boolean = isBase(Base.MONTHLY)
 
-  fun isYearly() = isBase(Base.YEARLY)
+  fun isYearly(): Boolean = isBase(Base.YEARLY)
+
+  fun isRecur(): Boolean = isBase(Base.RECUR)
 
   private fun isKind(kind: Kind): Boolean {
     return value % Base.DATE.value == kind.value
@@ -57,7 +59,8 @@ data class UiReminderType(
     MONTHLY(60),
     LOCATION_OUT(70),
     PLACE(80),
-    YEARLY(90)
+    YEARLY(90),
+    RECUR(100)
   }
 
   enum class Kind(val value: Int) {

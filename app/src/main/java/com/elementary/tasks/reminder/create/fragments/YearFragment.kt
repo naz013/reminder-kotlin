@@ -62,6 +62,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     reminder.delay = 0
     reminder.eventCount = 0
     reminder.repeatInterval = 0
+    reminder.recurDataObject = null
 
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(getDateTime())
     val startTime = dateTimeManager.getNextYearDayTime(reminder)

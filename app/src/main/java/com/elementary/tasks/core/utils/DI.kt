@@ -60,6 +60,10 @@ import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.datetime.NowDateTimeProvider
+import com.elementary.tasks.core.utils.datetime.RecurEventManager
+import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
+import com.elementary.tasks.core.utils.datetime.recurrence.builder.RuleBuilder
+import com.elementary.tasks.core.utils.datetime.recurrence.parser.TagParser
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
@@ -480,9 +484,16 @@ val utilModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
+
+  single { RuleBuilder() }
+  single { TagParser() }
+
+  single { RecurrenceManager(get(), get(), get()) }
+  single { RecurEventManager(get()) }
 
   single { RemotePrefs(get(), get(), get(), get()) }
 
@@ -490,7 +501,7 @@ val utilModule = module {
   single { JobScheduler(get(), get(), get(), get()) }
   single { UpdatesHelper(get()) }
 
-  factory { WidgetDataProvider(get(), get(), get()) }
+  factory { WidgetDataProvider(get(), get(), get(), get()) }
 
   single { SyncWorker(get(), get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }
@@ -501,7 +512,7 @@ val utilModule = module {
   single { NoteImageMigration(get(), get()) }
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
-  single { DayViewProvider(get(), get(), get()) }
+  single { DayViewProvider(get(), get(), get(), get()) }
 
   single { DispatcherProvider() }
 

@@ -71,6 +71,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
     reminder.after = 0L
     reminder.delay = 0
     reminder.eventCount = 0
+    reminder.recurDataObject = null
     return reminder
   }
 

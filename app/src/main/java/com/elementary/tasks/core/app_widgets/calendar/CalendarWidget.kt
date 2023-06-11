@@ -10,18 +10,23 @@ import android.text.format.DateUtils
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.WidgetPrefsHolder
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.Calendar
 import java.util.Formatter
 import java.util.GregorianCalendar
 import java.util.Locale
 
-class CalendarWidget : AppWidgetProvider() {
+class CalendarWidget : AppWidgetProvider(), KoinComponent {
+
+  private val widgetPrefsHolder by inject<WidgetPrefsHolder>()
 
   override fun onUpdate(
     context: Context,
@@ -29,7 +34,14 @@ class CalendarWidget : AppWidgetProvider() {
     appWidgetIds: IntArray
   ) {
     for (id in appWidgetIds) {
-      updateWidget(context, appWidgetManager, CalendarWidgetPrefsProvider(context, id))
+      updateWidget(
+        context = context,
+        appWidgetManager = appWidgetManager,
+        sp = widgetPrefsHolder.findOrCreate(
+          id,
+          CalendarWidgetPrefsProvider::class.java
+        )
+      )
     }
     super.onUpdate(context, appWidgetManager, appWidgetIds)
   }
@@ -40,7 +52,14 @@ class CalendarWidget : AppWidgetProvider() {
     appWidgetId: Int,
     newOptions: Bundle?
   ) {
-    updateWidget(context, appWidgetManager, CalendarWidgetPrefsProvider(context, appWidgetId))
+    updateWidget(
+      context = context,
+      appWidgetManager = appWidgetManager,
+      sp = widgetPrefsHolder.findOrCreate(
+        appWidgetId,
+        CalendarWidgetPrefsProvider::class.java
+      )
+    )
     super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
   }
 
@@ -174,23 +193,23 @@ class CalendarWidget : AppWidgetProvider() {
       val nextIntent = Intent(context, CalendarNextReceiver::class.java)
       nextIntent.action = CalendarNextReceiver.ACTION_NEXT
       nextIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
-      nextIntent.putExtra(CalendarNextReceiver.ARG_VALUE, 2)
       val nextPendingIntent = PendingIntentWrapper.getBroadcast(
         context,
-        0,
+        sp.widgetId,
         nextIntent,
         PendingIntent.FLAG_MUTABLE,
         ignoreIn13 = true
       )
       rv.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent)
 
+      Timber.d("updateWidget: id = ${sp.widgetId}")
+
       val previousIntent = Intent(context, CalendarPreviousReceiver::class.java)
       previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS
       previousIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
-      previousIntent.putExtra(CalendarPreviousReceiver.ARG_VALUE, 1)
       val previousPendingIntent = PendingIntentWrapper.getBroadcast(
         context,
-        0,
+        sp.widgetId,
         previousIntent,
         PendingIntent.FLAG_MUTABLE,
         ignoreIn13 = true

@@ -53,7 +53,7 @@ class ReminderResolver(
 
   private fun showActionDialog(view: View, reminder: UiReminderListData) {
     val context = view.context
-    val items = if (reminder.status.active && !reminder.status.removed && reminder.isRepeating) {
+    val items = if (reminder.status.active && !reminder.status.removed && reminder.canSkip) {
       arrayOf(context.getString(R.string.open), context.getString(R.string.edit), context.getString(R.string.move_to_trash), context.getString(R.string.skip_event))
     } else {
       arrayOf(context.getString(R.string.open), context.getString(R.string.edit), context.getString(R.string.move_to_trash))
