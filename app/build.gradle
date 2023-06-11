@@ -12,8 +12,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 297
-        versionName '9.0.7'
+        versionCode 298
+        versionName '9.0.8'
         multiDexEnabled true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
@@ -76,7 +76,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 268
+            versionCode 269
 
             def api = props.get('proApiKey', "API_KEY")
             def placesApiKey = props.get('proPlacesApiKey', "\"API_KEY\"")
