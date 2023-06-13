@@ -19,7 +19,9 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
+import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.common.ValueSliderView
@@ -30,6 +32,7 @@ import com.elementary.tasks.databinding.FragmentReminderRecurBinding
 import com.elementary.tasks.reminder.create.fragments.RepeatableTypeFragment
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamBuilderAdapter
 import com.elementary.tasks.reminder.create.fragments.recur.intdialog.IntListAdapter
+import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetPicker
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewDataAdapter
 import com.google.android.material.tabs.TabLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,6 +42,7 @@ import timber.log.Timber
 class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
   private val viewModel by viewModel<RecurBuilderViewModel>()
+  private lateinit var presetPicker: PresetPicker
 
   private val previewAdapter = PreviewDataAdapter()
   private val builderAdapter = ParamBuilderAdapter(
@@ -114,6 +118,14 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
     Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+
+    if (binding.savePresetCheck.isChecked) {
+      viewModel.addPreset(
+        recurObject = eventData.recurObject,
+        name = binding.presetNameInput.trimmedText()
+      )
+    }
+
     return reminder
   }
 
@@ -140,6 +152,13 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
       binding.actionView,
       binding.dateView
     )
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    presetPicker = PresetPicker(this) {
+      viewModel.onPresetSelected(it)
+    }
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -191,9 +210,12 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     binding.ruleList.adapter = builderAdapter
 
     binding.addParamButton.setOnClickListener { showParamSelectorDialog() }
-    binding.presetsButton.setOnClickListener {  }
+    binding.presetsButton.setOnClickListener { presetPicker.pickPreset() }
     binding.helpButton.setOnClickListener {
       startActivity(Intent(requireContext(), RecurHelpActivity::class.java))
+    }
+    binding.savePresetCheck.setOnCheckedChangeListener { buttonView, isChecked ->
+      binding.presetNameLayout.visibleGone(isChecked)
     }
 
     binding.previewList.layoutManager = LinearLayoutManager(context)

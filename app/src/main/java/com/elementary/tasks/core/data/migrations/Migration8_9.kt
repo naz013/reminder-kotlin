@@ -8,5 +8,9 @@ val MIGRATION_8_9: Migration = object : Migration(8, 9) {
     runCatching {
       database.execSQL("ALTER TABLE Reminder ADD COLUMN recurDataObject TEXT")
     }
+    runCatching {
+      database.execSQL("CREATE TABLE RecurPreset (`id` TEXT, `recurObject` TEXT, `name` TEXT," +
+        "PRIMARY KEY(`id`))")
+    }
   }
 }

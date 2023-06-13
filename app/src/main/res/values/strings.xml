@@ -724,5 +724,8 @@
     <string name="additional_places_type">- Additional Reminder type - Places, where You can set POI as targets</string>
     <string name="recur_rfc_5545_doc">RFC 5545 Documentation</string>
     <string name="recur_need_help">Need help?</string>
+    <string name="recur_save_as_preset">Also save as Preset</string>
+    <string name="recur_preset_name_hint">Preset name... (give some meaningful name)</string>
+    <string name="recur_no_presets">No presets</string>
 
 </resources>

@@ -154,6 +154,7 @@ object PrefsConstants {
   const val IS_CREATE_SHOWN = "create_showcase"
   const val IS_CALENDAR_SHOWN = "calendar_showcase"
   const val IS_LIST_SHOWN = "list_showcase"
+  const val IS_PRESET_INIT = "preset_init"
 
   const val PRIVACY_POLICY_URL = "privacy_url"
   const val TERMS_URL = "terms_url"

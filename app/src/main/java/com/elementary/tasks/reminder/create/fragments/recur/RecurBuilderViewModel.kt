@@ -2,7 +2,9 @@ package com.elementary.tasks.reminder.create.fragments.recur
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.models.RecurPreset
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.repository.RecurPresetRepository
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
@@ -42,7 +44,8 @@ class RecurBuilderViewModel(
   dispatcherProvider: DispatcherProvider,
   private val paramToTextAdapter: ParamToTextAdapter,
   private val recurrenceManager: RecurrenceManager,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val recurPresetRepository: RecurPresetRepository
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val builderParamLogic = BuilderParamLogic()
@@ -77,6 +80,40 @@ class RecurBuilderViewModel(
       calculateEvents(used)
       _usedParams.postValue(used)
       _dateTime.postValue(startDateTime)
+    }
+  }
+
+  fun onPresetSelected(presetId: String) {
+    Timber.d("onPresetSelected: $presetId")
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val preset = recurPresetRepository.getById(presetId) ?: return@launch
+
+      val params = runCatching { recurrenceManager.parseObject(preset.recurObject) }.getOrNull()
+        ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
+        ?.params
+        ?.map { it.toBuilderParam() }
+        ?: emptyList()
+
+      if (params.isNotEmpty()) {
+        builderParamLogic.clearUsed()
+        builderParamLogic.addOrUpdateParams(params)
+
+        val used = createUsedDataList(builderParamLogic.getUsed())
+        calculateEvents(used)
+
+        _usedParams.postValue(used)
+        _availableParams.postValue(createAvailableDataList(builderParamLogic.getAvailable()))
+      }
+    }
+  }
+
+  fun addPreset(recurObject: String, name: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val preset = RecurPreset(
+        recurObject = recurObject,
+        name = name
+      )
+      recurPresetRepository.save(preset)
     }
   }
 

@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.groups.GroupsUtil
 import kotlinx.coroutines.launch
 
@@ -26,12 +27,20 @@ class SplashViewModel(
   featureManager: FeatureManager,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val groupsUtil: GroupsUtil,
-  private val noteImageMigration: NoteImageMigration
+  private val noteImageMigration: NoteImageMigration,
+  private val presetInitProcessor: PresetInitProcessor
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
     gTasks.isLogged
   val openHome = mutableLiveDataOf<Boolean>()
+
+  override fun onCreate(owner: LifecycleOwner) {
+    super.onCreate(owner)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      presetInitProcessor.run()
+    }
+  }
 
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)

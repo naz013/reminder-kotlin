@@ -401,7 +401,20 @@ val viewModelModule = module {
   }
   viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
-  viewModel { SplashViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel {
+    SplashViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { VoiceHelpViewModel(get(), get()) }
 }
 
@@ -451,6 +464,7 @@ fun dbModule(context: Context): Module {
     single { appDb.notesDao() }
     single { appDb.placesDao() }
     single { appDb.usedTimeDao() }
+    single { appDb.recurPresetDao() }
 
     single { NoteToOldNoteConverter(get()) }
   }
@@ -458,6 +472,7 @@ fun dbModule(context: Context): Module {
 
 val utilModule = module {
   single { Prefs(get()) }
+  single { PresetInitProcessor(get(), get()) }
   single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }

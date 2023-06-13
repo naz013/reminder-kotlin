@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.PlacesDao
+import com.elementary.tasks.core.data.dao.RecurPresetDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.dao.UsedTimeDao
@@ -28,6 +29,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.models.RecurPreset
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.UsedTime
@@ -43,7 +45,8 @@ import com.elementary.tasks.core.data.models.UsedTime
     GoogleTask::class,
     UsedTime::class,
     Birthday::class,
-    ImageFile::class
+    ImageFile::class,
+    RecurPreset::class
   ],
   version = 9,
   exportSchema = false
@@ -59,6 +62,7 @@ abstract class AppDb : RoomDatabase() {
   abstract fun googleTaskListsDao(): GoogleTaskListsDao
   abstract fun googleTasksDao(): GoogleTasksDao
   abstract fun usedTimeDao(): UsedTimeDao
+  abstract fun recurPresetDao(): RecurPresetDao
 
   companion object {
 
