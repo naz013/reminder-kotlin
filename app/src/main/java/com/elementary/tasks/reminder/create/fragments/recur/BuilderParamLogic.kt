@@ -46,4 +46,8 @@ class BuilderParamLogic {
   fun getUsed(): List<BuilderParam<*>> {
     return usedParams.toList()
   }
+
+  fun clearUsed() {
+    usedParams.clear()
+  }
 }

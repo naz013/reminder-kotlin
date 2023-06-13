@@ -63,6 +63,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.METRIC_SYSTEM, def = true)
     set(value) = putBoolean(PrefsConstants.METRIC_SYSTEM, value)
 
+  var initPresets: Boolean
+    get() = getBoolean(PrefsConstants.IS_PRESET_INIT, def = true)
+    set(value) = putBoolean(PrefsConstants.IS_PRESET_INIT, value)
+
   var trackCalendarIds: Array<Long>
     get() = getLongArray(PrefsConstants.CALENDAR_IDS)
     set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
