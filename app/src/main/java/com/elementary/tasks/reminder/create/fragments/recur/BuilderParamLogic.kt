@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
-
 class BuilderParamLogic {
 
   private var allParams: Set<BuilderParam<*>> = emptySet()
@@ -33,9 +31,6 @@ class BuilderParamLogic {
 
   fun removeParam(builderParam: BuilderParam<*>) {
     if (allParams.isEmpty()) return
-    if (builderParam.recurParamType == RecurParamType.COUNT) {
-      return
-    }
     usedParams.remove(builderParam)
   }
 

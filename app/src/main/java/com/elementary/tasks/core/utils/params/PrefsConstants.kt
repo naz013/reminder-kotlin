@@ -125,6 +125,8 @@ object PrefsConstants {
   const val ANALYTICS_ENABLED = "analytics_enabled"
   const val METRIC_SYSTEM = "metric_system"
 
+  const val RECUR_SHOW_ADVANCED_DAY_DIALOG = "recur_adv_day_dialog"
+
   const val SALE_MESSAGE = "sale_message_json_v2"
   const val INTERNAL_MESSAGE = "internal_message_json_v1"
 

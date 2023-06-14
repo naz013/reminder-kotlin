@@ -179,6 +179,16 @@
                 android:visibility="gone"
                 tools:visibility="gone">
 
+                <com.elementary.tasks.core.views.ClosableTooltipView
+                    android:id="@+id/previewErrorTooltip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:visibility="gone"
+                    app:text="@string/reminder_recur_explanations" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/previewList"
                     android:layout_width="match_parent"

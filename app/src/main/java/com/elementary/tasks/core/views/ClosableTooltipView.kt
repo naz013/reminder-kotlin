@@ -42,6 +42,10 @@ class ClosableTooltipView : FrameLayout {
     }
   }
 
+  fun setText(text: String) {
+    binding.textView.text = text
+  }
+
   override fun setOnClickListener(l: OnClickListener?) {
     binding.closeIconView.setOnClickListener(l)
   }

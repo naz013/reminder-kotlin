@@ -68,6 +68,15 @@ data class ByDayRecurParam(
   }
 }
 
+data class WeekStartRecurParam(
+  val value: DayValue
+) : RecurParam(RecurParamType.WEEKSTART) {
+
+  override fun buildValue(): String {
+    return value.buildString()
+  }
+}
+
 data class ByMonthDayRecurParam(
   val value: List<Int> // Valid values are 1 to 31 or -31 to -1
 ) : RecurParam(RecurParamType.BYMONTHDAY) {
@@ -118,19 +127,32 @@ data class ByWeekNumberRecurParam(
   }
 }
 
+data class BySetPosRecurParam(
+  val value: List<Int> // Valid values are 1 to 366 or -366 to -1
+) : RecurParam(RecurParamType.BYSETPOS) {
+
+  override fun buildValue(): String? {
+    return value.takeIf { it.isNotEmpty() }
+      ?.joinToString(",") { it.toString() }
+  }
+}
+
 data class DayValue(val value: String) : Buildable {
 
   var isDefault: Boolean = false
+    private set
+  var hasPrefix: Boolean = false
     private set
   var day: Day? = null
     private set
 
   init {
+    validateDay()
     Day.values().firstOrNull { it.value == value }?.also {
       isDefault = true
       day = it
     }
-    validateDay()
+    hasPrefix = hasPrefix(value)
   }
 
   constructor(day: Day) : this(day.value)
@@ -140,15 +162,25 @@ data class DayValue(val value: String) : Buildable {
   }
 
   private fun validateDay() {
-    var result = false
-    Day.values().forEach {
-      if (!result) {
-        result = value.contains(it.value)
+    if (!containsDay(value)) {
+      throw IllegalArgumentException("Should contain one of: SU,MO,TU,WE,TH,FR,SA, but was $value")
+    }
+  }
+
+  private fun containsDay(value: String): Boolean {
+    return Day.values().map { it.value }.any { value.contains(it) }
+  }
+
+  private fun hasPrefix(value: String): Boolean {
+    return Day.values().map { it.value }.firstOrNull { value.contains(it) }?.let { day ->
+      val withoutDay = value.replace(day, "")
+      if (withoutDay.isEmpty()) {
+        false
+      } else {
+        val integer = runCatching { withoutDay.toInt() }.getOrNull()
+        integer != null
       }
-    }
-    if (!result) {
-      throw IllegalArgumentException("Should contain one of: SU,MO,TU,WE,TH,FR,SA")
-    }
+    } ?: false
   }
 }
 
@@ -173,6 +205,8 @@ enum class RecurParamType(val value: String) {
   BYMINUTE("BYMINUTE"), // 0,20,40
   BYYEARDAY("BYYEARDAY"), // 1,100,200
   BYWEEKNO("BYWEEKNO"), // 20
+  WEEKSTART("WKST"), // MO, TU, WE, TH, FR, SA, and SU
+  BYSETPOS("BYSETPOS"), // 1 to 366 or -366 to -1
 }
 
 enum class Day(val value: String) {

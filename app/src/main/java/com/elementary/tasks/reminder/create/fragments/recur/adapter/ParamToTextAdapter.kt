@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder.create.fragments.recur.adapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
@@ -35,6 +36,8 @@ class ParamToTextAdapter(
       RecurParamType.BYMINUTE -> textProvider.getText(R.string.recur_minute_s)
       RecurParamType.BYYEARDAY -> textProvider.getText(R.string.recur_day_s_of_year)
       RecurParamType.BYWEEKNO -> textProvider.getText(R.string.recur_week_number_s)
+      RecurParamType.BYSETPOS -> textProvider.getText(R.string.recur_set_pos)
+      RecurParamType.WEEKSTART -> textProvider.getText(R.string.recur_week_start)
     }
   }
   
@@ -46,6 +49,7 @@ class ParamToTextAdapter(
       is Int -> getIntText(value)
       is UtcDateTime -> getDateTimeText(value)
       is List<*> -> getListText(value)
+      is DayValue -> getDayText(value)
       else -> value.toString()
     }
   }
@@ -72,6 +76,19 @@ class ParamToTextAdapter(
 
   private fun getDayText(dayValue: DayValue): String {
     return dayValue.value
+  }
+
+  fun getDayFullText(dayValue: DayValue): String {
+    return when (dayValue.day) {
+      Day.MO -> textProvider.getText(R.string.recur_monday)
+      Day.TU -> textProvider.getText(R.string.recur_tuesday)
+      Day.WE -> textProvider.getText(R.string.recur_wednesday)
+      Day.TH -> textProvider.getText(R.string.recur_thursday)
+      Day.FR -> textProvider.getText(R.string.recur_friday)
+      Day.SA -> textProvider.getText(R.string.recur_saturday)
+      Day.SU -> textProvider.getText(R.string.recur_sunday)
+      else -> dayValue.value
+    }
   }
   
   fun getFreqText(freqType: FreqType): String {
