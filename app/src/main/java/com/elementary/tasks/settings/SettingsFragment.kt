@@ -137,6 +137,10 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment())
     }
     binding.securitySettings.setOnClickListener { askPin() }
+    binding.troubleshootingSettings.setOnClickListener {
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToFragmentTroubleshooting())
+    }
+
     binding.testsScreen.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
     }

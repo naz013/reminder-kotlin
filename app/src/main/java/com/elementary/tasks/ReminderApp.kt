@@ -9,6 +9,7 @@ import com.elementary.tasks.core.app_widgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.data.factory.dataFactory
 import com.elementary.tasks.core.data.repository.repositoryModule
+import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.completableModule
@@ -68,7 +69,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           dataFactory,
           uiUtilsModule,
           reminderModule,
-          widgetModule
+          widgetModule,
+          osModule
         )
       )
     }

@@ -178,6 +178,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/troubleshootingSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_troubleshoot_24"
+            app:prefs_primary_text="@string/troubleshooting"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/securitySettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
