@@ -3,9 +3,11 @@ package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
 import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthRecurParam
+import com.elementary.tasks.core.utils.datetime.recurrence.BySetPosRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByWeekNumberRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByYearDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.CountRecurParam
+import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
@@ -13,6 +15,7 @@ import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -260,6 +263,27 @@ class RecurParamParserTest {
 
     val expected = listOf(
       ByWeekNumberRecurParam(listOf(20))
+    )
+    assertEquals(expected, result)
+  }
+
+  @Test
+  fun testParseSingleParam_WeekStart() {
+    val result = recurParamParser.parse("WKST=SU")
+
+    val expected = listOf(
+      WeekStartRecurParam(DayValue(Day.SU))
+    )
+    assertEquals(expected, result)
+    assertEquals(true, expected.first().value.isDefault)
+  }
+
+  @Test
+  fun testParseSingleParam_BySetPos() {
+    val result = recurParamParser.parse("BYSETPOS=-1")
+
+    val expected = listOf(
+      BySetPosRecurParam(listOf(-1))
     )
     assertEquals(expected, result)
   }

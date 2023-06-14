@@ -472,7 +472,7 @@ fun dbModule(context: Context): Module {
 
 val utilModule = module {
   single { Prefs(get()) }
-  single { PresetInitProcessor(get(), get()) }
+  single { PresetInitProcessor(get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }

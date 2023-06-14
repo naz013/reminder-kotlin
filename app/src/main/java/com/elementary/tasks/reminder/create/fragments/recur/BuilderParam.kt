@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
+import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
 
@@ -25,3 +26,5 @@ data class BuilderParam<T>(
 data class UiBuilderParam<T>(val text: String, val param: BuilderParam<T>)
 
 data class UiFreqParam(val text: String, val freqType: FreqType)
+
+data class UiDayParam(val text: String, val dayValue: DayValue)

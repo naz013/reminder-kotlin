@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
-import com.elementary.tasks.core.utils.visibleInvisible
 import com.elementary.tasks.databinding.ListItemRecurBuilderBinding
 import com.elementary.tasks.reminder.create.fragments.recur.UiBuilderParam
 
@@ -44,7 +42,6 @@ class ParamBuilderAdapter(
 
     fun bind(param: UiBuilderParam<*>) {
       binding.nameView.text = param.text
-      binding.removeButton.visibleInvisible(param.param.recurParamType != RecurParamType.COUNT)
     }
   }
 

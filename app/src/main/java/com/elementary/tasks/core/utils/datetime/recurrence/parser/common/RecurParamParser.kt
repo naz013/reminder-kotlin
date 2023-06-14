@@ -5,9 +5,11 @@ import com.elementary.tasks.core.utils.datetime.recurrence.ByHourRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMinuteRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthRecurParam
+import com.elementary.tasks.core.utils.datetime.recurrence.BySetPosRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByWeekNumberRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByYearDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.CountRecurParam
+import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
@@ -15,6 +17,7 @@ import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
 import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
+import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
 
 class RecurParamParser {
 
@@ -52,6 +55,12 @@ class RecurParamParser {
       RecurParamType.BYMINUTE -> ByMinuteRecurParam(parseIntArray(input))
       RecurParamType.BYYEARDAY -> ByYearDayRecurParam(parseIntArray(input))
       RecurParamType.BYWEEKNO -> ByWeekNumberRecurParam(parseIntArray(input))
+      RecurParamType.WEEKSTART -> WeekStartRecurParam(
+        DayValue(
+          Day.values().first { it.value == input }
+        )
+      )
+      RecurParamType.BYSETPOS -> BySetPosRecurParam(parseIntArray(input))
     }
   }
 

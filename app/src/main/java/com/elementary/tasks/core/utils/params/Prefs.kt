@@ -67,6 +67,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.IS_PRESET_INIT, def = true)
     set(value) = putBoolean(PrefsConstants.IS_PRESET_INIT, value)
 
+  var showAdvancedDayDialog: Boolean
+    get() = getBoolean(PrefsConstants.RECUR_SHOW_ADVANCED_DAY_DIALOG, def = false)
+    set(value) = putBoolean(PrefsConstants.RECUR_SHOW_ADVANCED_DAY_DIALOG, value)
+
   var trackCalendarIds: Array<Long>
     get() = getLongArray(PrefsConstants.CALENDAR_IDS)
     set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)

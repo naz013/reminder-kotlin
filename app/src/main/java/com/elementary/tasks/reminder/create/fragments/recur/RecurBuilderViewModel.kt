@@ -1,21 +1,26 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.livedata.toSingleEvent
 import com.elementary.tasks.core.data.models.RecurPreset
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.RecurPresetRepository
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByHourRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMinuteRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthRecurParam
+import com.elementary.tasks.core.utils.datetime.recurrence.BySetPosRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByWeekNumberRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByYearDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.CountRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
+import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
@@ -29,7 +34,9 @@ import com.elementary.tasks.core.utils.datetime.recurrence.Tag
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.create.fragments.recur.intdialog.Number
@@ -39,16 +46,21 @@ import com.elementary.tasks.reminder.create.fragments.recur.preview.Style
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
+import java.util.Timer
+import java.util.TimerTask
 
 class RecurBuilderViewModel(
   dispatcherProvider: DispatcherProvider,
   private val paramToTextAdapter: ParamToTextAdapter,
   private val recurrenceManager: RecurrenceManager,
   private val dateTimeManager: DateTimeManager,
-  private val recurPresetRepository: RecurPresetRepository
+  private val recurPresetRepository: RecurPresetRepository,
+  private val prefs: Prefs,
+  private val textProvider: TextProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val builderParamLogic = BuilderParamLogic()
+  private val refreshTimer = RefreshTimer { reCalculate() }
 
   private val _availableParams = mutableLiveDataOf<List<UiBuilderParam<*>>>()
   val availableParams = _availableParams.toLiveData()
@@ -59,28 +71,41 @@ class RecurBuilderViewModel(
   private val _supportedFreq = mutableLiveDataOf<List<UiFreqParam>>()
   val supportedFreq = _supportedFreq.toLiveData()
 
+  private val _supportedDays = mutableLiveDataOf<List<UiDayParam>>()
+  val supportedDays = _supportedDays.toLiveData()
+
   private val _previewData = mutableLiveDataOf<PreviewData>()
   val previewData = _previewData.toLiveData()
 
   private val _dateTime = mutableLiveDataOf<LocalDateTime>()
   val dateTime = _dateTime.toLiveData()
 
-  private var nowDateTime = LocalDateTime.now()
+  private val _previewError = mutableLiveDataOf<String?>()
+  val previewError = _previewError.toSingleEvent()
+
   private var startDateTime = LocalDateTime.now()
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       builderParamLogic.setAllParams(RecurParamType.values().map { it.toBuilderParam() })
-      builderParamLogic.addOrUpdateParam(BuilderParam(RecurParamType.COUNT, 10))
 
       _availableParams.postValue(createAvailableDataList(builderParamLogic.getAvailable()))
       _supportedFreq.postValue(getSupportedFreq())
+      _supportedDays.postValue(getSupportedDays())
 
       val used = createUsedDataList(builderParamLogic.getUsed())
       calculateEvents(used)
       _usedParams.postValue(used)
       _dateTime.postValue(startDateTime)
     }
+  }
+
+  fun showAdvancedDayDialog(): Boolean {
+    return prefs.showAdvancedDayDialog
+  }
+
+  fun setShowAdvancedDayDialog(boolean: Boolean) {
+    prefs.showAdvancedDayDialog = boolean
   }
 
   fun onPresetSelected(presetId: String) {
@@ -163,10 +188,6 @@ class RecurBuilderViewModel(
 
   fun onEdit(reminder: Reminder) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      dateTimeManager.fromGmtToLocal(reminder.eventTime)?.also {
-        nowDateTime = it
-      }
-
       Timber.d("onEdit: recurDataObject = ${reminder.recurDataObject}")
 
       val rules = runCatching {
@@ -231,20 +252,52 @@ class RecurBuilderViewModel(
     }
   }
 
+  private fun reCalculate() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val used = createUsedDataList(builderParamLogic.getUsed())
+      calculateEvents(used)
+    }
+  }
+
   private fun calculateEvents(used: List<UiBuilderParam<*>>) {
+    _previewError.postValue(null)
+
     val (dates, scrollPosition) = generateDates(used)
+
+    if (dates.isEmpty()) {
+      refreshTimer.stop()
+
+      val hasUntilRule = used.firstOrNull {
+        it.param.recurParamType == RecurParamType.UNTIL
+      } != null
+
+      if (hasUntilRule) {
+        _previewError.postValue(textProvider.getText(R.string.recur_change_until_param_error))
+      }
+    } else {
+      refreshTimer.start()
+    }
 
     _previewData.postValue(PreviewData(scrollPosition, dates))
   }
 
   private fun generateDates(used: List<UiBuilderParam<*>>): Pair<List<PreviewItem>, Int> {
     val usedParams = used.map { it.param }
-
     Timber.d("calculateEvents: params = $usedParams")
 
-    val ruleMap = createRuleMap(usedParams)
+    if (!hasLimit(usedParams)) {
+      Timber.d("calculateEvents: no limit, show error")
+      _previewError.postValue(textProvider.getText(R.string.recur_no_limit_error))
+      return Pair(emptyList(), 0)
+    }
 
+    val ruleMap = createRuleMap(usedParams)
     return generateFromMap(ruleMap)
+  }
+
+  private fun hasLimit(params: List<BuilderParam<*>>): Boolean {
+    return params.firstOrNull { it.recurParamType == RecurParamType.COUNT } != null ||
+      params.firstOrNull { it.recurParamType == RecurParamType.UNTIL } != null
   }
 
   private fun generateFromMap(ruleMap: RuleMap): Pair<List<PreviewItem>, Int> {
@@ -258,7 +311,7 @@ class RecurBuilderViewModel(
   private fun findPosition(generated: List<UtcDateTime>): Int {
     if (generated.isEmpty()) return -1
 
-    val nowDateTime = nowDateTime.withSecond(0).withNano(0)
+    val nowDateTime = dateTimeManager.getCurrentDateTime().withNano(0)
 
     var nowSelected = false
     var position = -1
@@ -279,7 +332,7 @@ class RecurBuilderViewModel(
   }
 
   private fun convertForUi(generated: List<UtcDateTime>): Pair<List<PreviewItem>, Int> {
-    val nowDateTime = nowDateTime.withSecond(0).withNano(0)
+    val nowDateTime = dateTimeManager.getCurrentDateTime().withNano(0)
 
     var nowSelected = false
 
@@ -352,6 +405,9 @@ class RecurBuilderViewModel(
           RecurParamType.BYMONTH -> {
             recurParams.add(ByMonthRecurParam(value as List<Int>))
           }
+          RecurParamType.WEEKSTART -> {
+            recurParams.add(WeekStartRecurParam(value as DayValue))
+          }
           RecurParamType.BYDAY -> {
             recurParams.add(ByDayRecurParam(value as List<DayValue>))
           }
@@ -369,6 +425,9 @@ class RecurBuilderViewModel(
           }
           RecurParamType.BYWEEKNO -> {
             recurParams.add(ByWeekNumberRecurParam(value as List<Int>))
+          }
+          RecurParamType.BYSETPOS -> {
+            recurParams.add(BySetPosRecurParam(value as List<Int>))
           }
         }
       }
@@ -394,6 +453,37 @@ class RecurBuilderViewModel(
       )
     }.sortedBy { it.text }
   }
+
+  private fun getSupportedDays(): List<UiDayParam> {
+    return Day.values().map { DayValue(it) }.map {
+      UiDayParam(
+        text = paramToTextAdapter.getDayFullText(it),
+        dayValue = it
+      )
+    }
+  }
+
+  inner class RefreshTimer(
+    private val onRefreshListener: () -> Unit
+  ) {
+    private var timer: Timer? = null
+
+    fun start() {
+      runCatching { timer?.cancel() }
+
+      timer = Timer()
+      timer?.scheduleAtFixedRate(object : TimerTask() {
+        override fun run() {
+          onRefreshListener.invoke()
+        }
+
+      }, 15 * 1000L, 15 * 1000L)
+    }
+
+    fun stop() {
+      runCatching { timer?.cancel() }
+    }
+  }
 }
 
 private fun RecurParam.toBuilderParam(): BuilderParam<*> {
@@ -409,13 +499,15 @@ private fun RecurParam.toBuilderParam(): BuilderParam<*> {
     is ByMinuteRecurParam -> BuilderParam(this.recurParamType, this.value)
     is ByYearDayRecurParam -> BuilderParam(this.recurParamType, this.value)
     is ByWeekNumberRecurParam -> BuilderParam(this.recurParamType, this.value)
+    is BySetPosRecurParam -> BuilderParam(this.recurParamType, this.value)
+    is WeekStartRecurParam -> BuilderParam(this.recurParamType, this.value)
   }
 }
 
 private fun RecurParamType.toBuilderParam(): BuilderParam<*> {
   return when (this) {
-    RecurParamType.COUNT -> BuilderParam(this, 0)
-    RecurParamType.INTERVAL -> BuilderParam(this, 0)
+    RecurParamType.COUNT -> BuilderParam(this, 1)
+    RecurParamType.INTERVAL -> BuilderParam(this, 1)
     RecurParamType.FREQ -> BuilderParam(this, FreqType.DAILY)
     RecurParamType.UNTIL -> BuilderParam(this, UtcDateTime(LocalDateTime.now()))
     RecurParamType.BYDAY -> BuilderParam(this, emptyList<DayValue>())
@@ -425,6 +517,8 @@ private fun RecurParamType.toBuilderParam(): BuilderParam<*> {
     RecurParamType.BYMINUTE -> BuilderParam(this, emptyList<Int>())
     RecurParamType.BYYEARDAY -> BuilderParam(this, emptyList<Int>())
     RecurParamType.BYWEEKNO -> BuilderParam(this, emptyList<Int>())
+    RecurParamType.BYSETPOS -> BuilderParam(this, emptyList<Int>())
+    RecurParamType.WEEKSTART -> BuilderParam(this, DayValue(Day.MO))
   }
 }
 

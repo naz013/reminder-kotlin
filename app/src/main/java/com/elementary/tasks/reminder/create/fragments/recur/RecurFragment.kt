@@ -6,6 +6,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
@@ -18,6 +20,7 @@ import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.onTextChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
@@ -25,6 +28,7 @@ import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.common.ValueSliderView
+import com.elementary.tasks.databinding.DialogRecurDayAdvancedBinding
 import com.elementary.tasks.databinding.DialogRecurDayBinding
 import com.elementary.tasks.databinding.DialogRecurIntListBinding
 import com.elementary.tasks.databinding.DialogRecurSingleIntBinding
@@ -181,17 +185,19 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
           0 -> {
             binding.buildContentView.visible()
           }
+
           1 -> {
             binding.previewContentView.visible()
           }
+
           2 -> {
             binding.customizeContentView.visible()
           }
         }
       }
 
-      override fun onTabReselected(tab: TabLayout.Tab?) { }
-      override fun onTabUnselected(tab: TabLayout.Tab?) { }
+      override fun onTabReselected(tab: TabLayout.Tab?) {}
+      override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
       private fun hideTabViews() {
         if (binding.buildContentView.isVisible()) {
@@ -220,6 +226,9 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
     binding.previewList.layoutManager = LinearLayoutManager(context)
     binding.previewList.adapter = previewAdapter
+    binding.previewErrorTooltip.setOnClickListener {
+      binding.previewErrorTooltip.gone()
+    }
 
     viewModel.usedParams.observe(viewLifecycleOwner) {
       builderAdapter.submitList(it)
@@ -235,6 +244,11 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     }
     viewModel.availableParams.observe(viewLifecycleOwner) { }
     viewModel.supportedFreq.observe(viewLifecycleOwner) { }
+    viewModel.supportedDays.observe(viewLifecycleOwner) { }
+    viewModel.previewError.observe(viewLifecycleOwner) { error ->
+      binding.previewErrorTooltip.visibleGone(error != null)
+      error?.also { binding.previewErrorTooltip.setText(it) }
+    }
 
     editReminder()
   }
@@ -259,33 +273,43 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     when (param.param.recurParamType) {
       RecurParamType.COUNT -> showSingleIntPickerDialog(
         builderParam = param as UiBuilderParam<Int>,
-        title = getString(R.string.recur_count)
+        title = getString(R.string.recur_count),
+        minValue = 0,
+        maxValue = 500
       )
+
       RecurParamType.INTERVAL -> showSingleIntPickerDialog(
         builderParam = param as UiBuilderParam<Int>,
-        title = getString(R.string.recur_interval)
+        title = getString(R.string.recur_interval),
+        minValue = 0,
+        maxValue = 366
       )
+
       RecurParamType.UNTIL -> showDatePickerDialog(param as UiBuilderParam<UtcDateTime>)
       RecurParamType.FREQ -> showFreqPickerDialog(param as UiBuilderParam<FreqType>)
       RecurParamType.BYDAY -> showDaysPickerDialog(param as UiBuilderParam<List<DayValue>>)
+      RecurParamType.WEEKSTART -> showDayPickerDialog(param as UiBuilderParam<DayValue>)
       RecurParamType.BYMONTH -> showIntListPickerDialog(
         builderParam = param as UiBuilderParam<List<Int>>,
         title = getString(R.string.recur_month_s),
         minValue = 1,
         maxValue = 12
       )
+
       RecurParamType.BYMINUTE -> showIntListPickerDialog(
         builderParam = param as UiBuilderParam<List<Int>>,
         title = getString(R.string.recur_minute_s),
         minValue = 0,
         maxValue = 59
       )
+
       RecurParamType.BYHOUR -> showIntListPickerDialog(
         builderParam = param as UiBuilderParam<List<Int>>,
         title = getString(R.string.recur_hour_s),
         minValue = 0,
         maxValue = 23
       )
+
       RecurParamType.BYMONTHDAY -> showIntListPickerDialog(
         builderParam = param as UiBuilderParam<List<Int>>,
         title = getString(R.string.recur_day_s_of_month),
@@ -293,6 +317,7 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
         maxValue = 31,
         excludedValues = intArrayOf(0)
       )
+
       RecurParamType.BYWEEKNO -> showIntListPickerDialog(
         builderParam = param as UiBuilderParam<List<Int>>,
         title = getString(R.string.recur_week_number_s),
@@ -300,9 +325,18 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
         maxValue = 53,
         excludedValues = intArrayOf(0)
       )
+
       RecurParamType.BYYEARDAY -> showIntListPickerDialog(
         builderParam = param as UiBuilderParam<List<Int>>,
         title = getString(R.string.recur_day_s_of_year),
+        minValue = -366,
+        maxValue = 366,
+        excludedValues = intArrayOf(0)
+      )
+
+      RecurParamType.BYSETPOS -> showIntListPickerDialog(
+        builderParam = param as UiBuilderParam<List<Int>>,
+        title = getString(R.string.recur_set_pos),
         minValue = -366,
         maxValue = 366,
         excludedValues = intArrayOf(0)
@@ -348,29 +382,43 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
   }
 
   private fun showDaysPickerDialog(builderParam: UiBuilderParam<List<DayValue>>) {
+    if (viewModel.showAdvancedDayDialog() || builderParam.param.value.any { it.hasPrefix }) {
+      showAdvancedDaysPickerDialog(builderParam)
+    } else {
+      showSimplifiedDaysPickerDialog(builderParam)
+    }
+  }
+
+  private fun showSimplifiedDaysPickerDialog(builderParam: UiBuilderParam<List<DayValue>>) {
     val view = DialogRecurDayBinding.inflate(layoutInflater)
 
-    builderParam.param.value.forEach {
-      when (it.value) {
-        Day.MO.value -> {
+    builderParam.param.value.map { it.value }.forEach {
+      when {
+        it.contains(Day.MO.value)-> {
           view.mondayCheck.isChecked = true
         }
-        Day.TU.value -> {
+
+        it.contains(Day.TU.value) -> {
           view.tuesdayCheck.isChecked = true
         }
-        Day.WE.value -> {
+
+        it.contains(Day.WE.value) -> {
           view.wednesdayCheck.isChecked = true
         }
-        Day.TH.value -> {
+
+        it.contains(Day.TH.value) -> {
           view.thursdayCheck.isChecked = true
         }
-        Day.FR.value -> {
+
+        it.contains(Day.FR.value) -> {
           view.fridayCheck.isChecked = true
         }
-        Day.SA.value -> {
+
+        it.contains(Day.SA.value) -> {
           view.saturdayCheck.isChecked = true
         }
-        Day.SU.value -> {
+
+        it.contains(Day.SU.value) -> {
           view.sundayCheck.isChecked = true
         }
       }
@@ -381,36 +429,131 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
       .setTitle(getString(R.string.recur_day_s))
       .setPositiveButton(getString(R.string.recur_save)) { dialog, _ ->
         dialog.dismiss()
-
-        val days = mutableListOf<DayValue>()
-
-        if (view.mondayCheck.isChecked) {
-          days.add(DayValue(Day.MO))
-        }
-        if (view.tuesdayCheck.isChecked) {
-          days.add(DayValue(Day.TU))
-        }
-        if (view.wednesdayCheck.isChecked) {
-          days.add(DayValue(Day.WE))
-        }
-        if (view.thursdayCheck.isChecked) {
-          days.add(DayValue(Day.TH))
-        }
-        if (view.fridayCheck.isChecked) {
-          days.add(DayValue(Day.FR))
-        }
-        if (view.saturdayCheck.isChecked) {
-          days.add(DayValue(Day.SA))
-        }
-        if (view.sundayCheck.isChecked) {
-          days.add(DayValue(Day.SU))
-        }
-
         viewModel.selectOrUpdateParam(
           builderParam.param.copy(
-            value = days
+            value = dayValues(view)
           )
         )
+      }
+      .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .setNeutralButton(getString(R.string.recur_advanced)) { dialog, _ ->
+        dialog.dismiss()
+        viewModel.setShowAdvancedDayDialog(true)
+        val copyParam = builderParam.copy(
+          param = builderParam.param.copy(
+            value = dayValues(view)
+          )
+        )
+        showAdvancedDaysPickerDialog(copyParam)
+      }
+      .create()
+      .show()
+  }
+
+  private fun dayValues(view: DialogRecurDayBinding): MutableList<DayValue> {
+    val days = mutableListOf<DayValue>()
+
+    if (view.mondayCheck.isChecked) {
+      days.add(DayValue(Day.MO))
+    }
+    if (view.tuesdayCheck.isChecked) {
+      days.add(DayValue(Day.TU))
+    }
+    if (view.wednesdayCheck.isChecked) {
+      days.add(DayValue(Day.WE))
+    }
+    if (view.thursdayCheck.isChecked) {
+      days.add(DayValue(Day.TH))
+    }
+    if (view.fridayCheck.isChecked) {
+      days.add(DayValue(Day.FR))
+    }
+    if (view.saturdayCheck.isChecked) {
+      days.add(DayValue(Day.SA))
+    }
+    if (view.sundayCheck.isChecked) {
+      days.add(DayValue(Day.SU))
+    }
+    return days
+  }
+
+  private fun showAdvancedDaysPickerDialog(builderParam: UiBuilderParam<List<DayValue>>) {
+    val view = DialogRecurDayAdvancedBinding.inflate(layoutInflater)
+
+    val initValue = builderParam.param.value.joinToString(",") { it.buildString() }
+    view.daysInput.setText(initValue)
+
+    val validator = ByDayValidator()
+
+    val dialog = dialogues.getMaterialDialog(requireContext())
+      .setView(view.root)
+      .setTitle(getString(R.string.recur_day_s))
+      .setPositiveButton(getString(R.string.recur_save)) { dialog, _ ->
+        dialog.dismiss()
+        viewModel.selectOrUpdateParam(
+          builderParam.param.copy(
+            value = validator.getValues()
+          )
+        )
+      }
+      .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .setNeutralButton(getString(R.string.recur_simplified)) { dialog, _ ->
+        dialog.dismiss()
+        viewModel.setShowAdvancedDayDialog(false)
+        val copyParam = builderParam.copy(
+          param = builderParam.param.copy(
+            value = validator.getValues()
+          )
+        )
+        showSimplifiedDaysPickerDialog(copyParam)
+      }
+      .create()
+    dialog.show()
+
+    val buttonPositive: Button? = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+    val buttonNeutral: Button? = dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+
+    validator.setListener {
+      if (!it) {
+        view.daysLayout.error = getString(R.string.recur_by_day_wrong_format)
+      } else {
+        view.daysLayout.error = null
+      }
+      view.daysLayout.isErrorEnabled = !it
+
+      buttonPositive?.isEnabled = it
+      buttonNeutral?.isEnabled = it
+    }
+    validator.onTextChanged(initValue)
+
+    view.daysInput.onTextChanged { validator.onTextChanged(it?.uppercase() ?: "") }
+  }
+
+  private fun showDayPickerDialog(builderParam: UiBuilderParam<DayValue>) {
+    val availableParams = viewModel.supportedDays.value ?: emptyList()
+
+    val items = availableParams.map { it.text }.toTypedArray()
+
+    var index = availableParams.indexOfFirst { it.dayValue == builderParam.param.value }
+    if (index == -1) {
+      index = 0
+    }
+
+    dialogues.getMaterialDialog(requireContext())
+      .setTitle(getString(R.string.recur_week_start))
+      .setSingleChoiceItems(items, index) { _, which ->
+        index = which
+      }
+      .setPositiveButton(getString(R.string.recur_save)) { dialog, _ ->
+        dialog.dismiss()
+        val newParam = builderParam.param.copy(
+          value = availableParams[index].dayValue
+        )
+        viewModel.selectOrUpdateParam(newParam)
       }
       .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
         dialog.dismiss()
@@ -478,7 +621,9 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
   private fun showSingleIntPickerDialog(
     builderParam: UiBuilderParam<Int>,
-    title: String
+    title: String,
+    minValue: Int,
+    maxValue: Int
   ) {
     val view = DialogRecurSingleIntBinding.inflate(layoutInflater)
     view.intValuePicker.valueFormatter = object : ValueSliderView.ValueFormatter {
@@ -486,7 +631,7 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
         return value.toInt().toString()
       }
     }
-    view.intValuePicker.setRange(0f, 100f, 1f)
+    view.intValuePicker.setRange(minValue.toFloat(), maxValue.toFloat(), 1f)
     view.intValuePicker.value = builderParam.param.value.toFloat()
 
     dialogues.getMaterialDialog(requireContext())
