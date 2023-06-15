@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_actionHome_to_cloudDrives"
             app:destination="@+id/fragmentCloudDrives" />
+        <action
+            android:id="@+id/action_actionHome_to_changesFragment"
+            app:destination="@id/changesFragment" />
     </fragment>
 
     <fragment
@@ -416,8 +419,8 @@
         </fragment>
         <fragment
             android:id="@+id/changesFragment"
-            android:name="com.elementary.tasks.settings.other.ChangesFragment"
-            android:label="@string/changes"
+            android:name="com.elementary.tasks.settings.other.WhatsNewFragment"
+            android:label="@string/whats_new"
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
             android:id="@+id/privacyPolicyFragment"
@@ -480,4 +483,9 @@
         android:name="com.elementary.tasks.settings.troubleshooting.FragmentSettingsTroubleshooting"
         android:label="@string/troubleshooting"
         tools:layout="@layout/fragment_settings_troubleshooting" />
+    <fragment
+        android:id="@+id/changesFragment"
+        android:name="com.elementary.tasks.settings.other.WhatsNewFragment"
+        android:label="@string/whats_new"
+        tools:layout="@layout/fragment_settings_web_view" />
 </navigation>

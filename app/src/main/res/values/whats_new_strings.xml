@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whats_new_version_and_date" translatable="false">9.0.8, June 11, 2023</string>
+    <string name="whats_new_text" translatable="false">
+        🐞 Fix crash on Maps;\n🐞 Bug fixes and improvements.
+    </string>
+    <string name="whats_new_emoji_set" translatable="false">
+        🐞 - bug fix
+        ✅ - add feature
+        ❓ - questionable
+        🚨 - critical info
+        🎉 - launch of big feature
+    </string>
+</resources>

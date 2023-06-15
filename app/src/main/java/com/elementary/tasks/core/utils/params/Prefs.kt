@@ -51,6 +51,10 @@ class Prefs(
     }
   }
 
+  var lastVersionCode: Long
+    get() = getLong(PrefsConstants.LAST_VERSION_CODE, def = Long.MAX_VALUE)
+    set(value) = putLong(PrefsConstants.LAST_VERSION_CODE, value)
+
   var saleMessage: String
     get() = getString(PrefsConstants.SALE_MESSAGE)
     set(value) = putString(PrefsConstants.SALE_MESSAGE, value)

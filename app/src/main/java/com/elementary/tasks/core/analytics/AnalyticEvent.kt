@@ -131,7 +131,7 @@ enum class Screen(val value: String) {
   GROUPS("groups_list"),
   VOICE_CONTROL("voice_control"),
   TROUBLESHOOTING("troubleshooting"),
-  WHATS_NEW_VIEWED("whats_new_viewed"),
+  WHATS_NEW("whats_new"),
 }
 
 enum class Widget(val value: String) {
