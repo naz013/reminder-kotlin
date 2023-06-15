@@ -138,6 +138,8 @@ object PrefsConstants {
   const val RATE_SHOW = "show_rate"
   const val APP_RUNS_COUNT = "app_runs"
 
+  const val LAST_VERSION_CODE = "last_version_code"
+
   // birthdays reminder notification constants
   const val BIRTHDAY_USE_GLOBAL = "use_global"
   const val BIRTHDAY_VIBRATION_STATUS = "birthday_vibration_status"

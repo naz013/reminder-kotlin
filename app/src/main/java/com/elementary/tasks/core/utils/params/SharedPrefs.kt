@@ -71,11 +71,11 @@ abstract class SharedPrefs(
     prefs.edit().putLong(stringToSave, value).apply()
   }
 
-  fun getLong(stringToLoad: String): Long {
+  fun getLong(stringToLoad: String, def: Long = 0L): Long {
     return try {
-      prefs.getLong(stringToLoad, 1000)
+      prefs.getLong(stringToLoad, def)
     } catch (e: ClassCastException) {
-      java.lang.Long.parseLong(prefs.getString(stringToLoad, "1000") ?: "1000")
+      java.lang.Long.parseLong(prefs.getString(stringToLoad, "$def") ?: "$def")
     }
   }
 

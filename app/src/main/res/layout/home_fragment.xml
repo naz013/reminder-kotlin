@@ -27,7 +27,7 @@
             android:visibility="gone"
             app:cardCornerRadius="0dp"
             app:contentPadding="8dp"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             android:visibility="gone"
             app:cardCornerRadius="0dp"
             app:contentPadding="8dp"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -125,6 +125,67 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="@string/log_in"
+                        android:textAllCaps="true" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/whatsNewBanner"
+            style="?attr/materialCardViewElevatedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:cardCornerRadius="0dp"
+            app:contentPadding="8dp"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/whats_new_banner_text"
+                    android:textAppearance="?textAppearanceBodyLarge"
+                    android:textColor="?colorOnPrimaryContainer" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/whatsNewReadMoreButton"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLength="24"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/whats_new_details"
+                        android:textAllCaps="true" />
+
+                    <Button
+                        android:id="@+id/whatsNewOkButton"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:maxLength="24"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/ok"
                         android:textAllCaps="true" />
 
                 </LinearLayout>

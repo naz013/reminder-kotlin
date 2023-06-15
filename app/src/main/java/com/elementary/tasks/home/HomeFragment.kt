@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
@@ -30,13 +32,16 @@ import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
+import com.elementary.tasks.whatsnew.WhatsNewManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
+class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit,
+  WhatsNewManager.Listener {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val featureManager by inject<FeatureManager>()
+  private val whatsNewManager by inject<WhatsNewManager>()
   private val viewModel by viewModel<HomeViewModel>()
   private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
   private val birthdaysAdapter = BirthdaysRecyclerAdapter()
@@ -148,6 +153,22 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     initRemindersList()
     initBirthdaysList()
     initViewModel()
+
+    setUpWhatsNewBanner()
+
+    whatsNewManager.addListener(this)
+    lifecycle.addObserver(whatsNewManager)
+  }
+
+  private fun setUpWhatsNewBanner() {
+    binding.whatsNewOkButton.setOnClickListener {
+      whatsNewManager.hideWhatsNew()
+    }
+    binding.whatsNewReadMoreButton.setOnClickListener {
+      whatsNewManager.hideWhatsNew()
+      analyticsEventSender.send(ScreenUsedEvent(Screen.WHATS_NEW))
+      safeNavigation(HomeFragmentDirections.actionActionHomeToChangesFragment())
+    }
   }
 
   override fun onResume() {
@@ -161,6 +182,11 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     super.onPause()
     prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    whatsNewManager.removeListener(this)
   }
 
   private fun updatePrivacyBanner() {
@@ -288,5 +314,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         updateLoginBanner()
       }
     }
+  }
+
+  override fun whatsNewVisible(isVisible: Boolean) {
+    binding.whatsNewBanner.visibleGone(isVisible)
   }
 }

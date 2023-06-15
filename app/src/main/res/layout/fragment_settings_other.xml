@@ -41,6 +41,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/changesPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_rocket_whats_new"
+            app:prefs_primary_text="@string/whats_new"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/permissionsPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,15 +81,6 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_twotone_people_24px"
             app:prefs_primary_text="@string/tell_friends"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/changesPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_history_24"
-            app:prefs_primary_text="@string/changes"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

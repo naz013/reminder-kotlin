@@ -157,7 +157,6 @@
     <string name="permissions">Permissions</string>
     <string name="allow_permission">Add permission</string>
     <string name="about">About</string>
-    <string name="changes">Changes</string>
     <string name="open_source_licenses">Open source software</string>
     <string name="tell_friends">Tell friends</string>
     <string name="default_string">Default</string>
@@ -768,5 +767,9 @@
     <string name="troubleshooting_disable_battery_optimization">Disable battery optimization</string>
     <string name="troubleshooting_battery_optimization_text">Battery optimization is enabled for the Application. You can disable it, to allow the application to work propperly.</string>
     <string name="troubleshooting_no_issues_found">No issues found</string>
+
+    <string name="whats_new_banner_text">🚀 Application has been updated 😻. Click \"Details\" to read more.</string>
+    <string name="whats_new_details">Details</string>
+    <string name="whats_new">What\'s new</string>
 
 </resources>
