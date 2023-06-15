@@ -31,41 +31,53 @@ class ReminderHandlerFactory(
     return if (canShowWindow) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         ReminderHandlerQ(
-          reminderDataProvider,
-          contextProvider,
-          textProvider,
-          notifier,
-          prefs,
-          wearNotification
+          reminderDataProvider = reminderDataProvider,
+          contextProvider = contextProvider,
+          textProvider = textProvider,
+          notifier = notifier,
+          prefs = prefs,
+          wearNotification = wearNotification
         )
       } else {
-        ReminderHandler(contextProvider, notifier)
+        ReminderHandler(contextProvider = contextProvider, notifier = notifier)
       }
     } else {
       ReminderHandlerSilent(
-        reminderDataProvider,
-        contextProvider,
-        textProvider,
-        notifier,
-        prefs,
-        wearNotification
+        reminderDataProvider = reminderDataProvider,
+        contextProvider = contextProvider,
+        textProvider = textProvider,
+        notifier = notifier,
+        prefs = prefs,
+        wearNotification = wearNotification
       )
     }
   }
 
   fun createCancel(): ActionHandler<Reminder> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ReminderCancelHandlerQ(notifier, eventControlFactory)
+      ReminderCancelHandlerQ(notifier = notifier, eventControlFactory = eventControlFactory)
     } else {
-      ReminderCancelHandler(notifier, eventControlFactory, contextProvider)
+      ReminderCancelHandler(
+        notifier = notifier,
+        eventControlFactory = eventControlFactory,
+        contextProvider = contextProvider
+      )
     }
   }
 
   fun createSnooze(): ActionHandler<Reminder> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ReminderSnoozeHandlerQ(notifier, eventControlFactory, prefs)
+      ReminderSnoozeHandlerQ(
+        notifier = notifier,
+        eventControlFactory = eventControlFactory,
+        prefs = prefs
+      )
     } else {
-      ReminderSnoozeHandler(notifier, eventControlFactory, prefs)
+      ReminderSnoozeHandler(
+        notifier = notifier,
+        eventControlFactory = eventControlFactory,
+        prefs = prefs
+      )
     }
   }
 }

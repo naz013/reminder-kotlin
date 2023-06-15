@@ -9,7 +9,7 @@ import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.DispatcherProvider

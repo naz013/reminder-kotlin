@@ -57,4 +57,8 @@ class PackageManagerWrapper(
   } catch (e: Throwable) {
     0
   }
+
+  fun getPackageName(): String {
+    return context.packageName
+  }
 }

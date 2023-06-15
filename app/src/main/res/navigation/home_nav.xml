@@ -231,12 +231,15 @@
         <action
             android:id="@+id/action_settingsFragment_to_fragmentProVersion"
             app:destination="@id/fragmentProVersion" />
+        <action
+            android:id="@+id/action_settingsFragment_to_fragmentTroubleshooting"
+            app:destination="@id/fragmentTroubleshooting" />
     </fragment>
     <fragment
         android:id="@+id/generalSettingsFragment"
         android:name="com.elementary.tasks.settings.general.GeneralSettingsFragment"
         android:label="@string/general"
-        tools:layout="@layout/fragment_settings_general" >
+        tools:layout="@layout/fragment_settings_general">
         <action
             android:id="@+id/action_generalSettingsFragment_to_uiPreviewFragment"
             app:destination="@id/uiPreviewFragment" />
@@ -471,5 +474,10 @@
         android:id="@+id/uiPreviewFragment"
         android:name="com.elementary.tasks.settings.general.UiPreviewFragment"
         android:label="Theme Preview"
-        tools:layout="@layout/fragment_settings_theme_preview"/>
+        tools:layout="@layout/fragment_settings_theme_preview" />
+    <fragment
+        android:id="@+id/fragmentTroubleshooting"
+        android:name="com.elementary.tasks.settings.troubleshooting.FragmentSettingsTroubleshooting"
+        android:label="@string/troubleshooting"
+        tools:layout="@layout/fragment_settings_troubleshooting" />
 </navigation>

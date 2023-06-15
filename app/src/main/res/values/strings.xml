@@ -764,4 +764,9 @@
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Weekly on Tuesday and Thursday for five weeks</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Every other week on Tuesday and Thursday, for 8 occurrences</string>
 
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="troubleshooting_disable_battery_optimization">Disable battery optimization</string>
+    <string name="troubleshooting_battery_optimization_text">Battery optimization is enabled for the Application. You can disable it, to allow the application to work propperly.</string>
+    <string name="troubleshooting_no_issues_found">No issues found</string>
+
 </resources>

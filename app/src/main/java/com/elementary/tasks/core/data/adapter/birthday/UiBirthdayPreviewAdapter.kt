@@ -2,7 +2,7 @@ package com.elementary.tasks.core.data.adapter.birthday
 
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
-import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import org.threeten.bp.LocalTime
 

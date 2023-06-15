@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.contacts
+package com.elementary.tasks.core.os.contacts
 
 import android.content.ContentUris
 import android.content.Context

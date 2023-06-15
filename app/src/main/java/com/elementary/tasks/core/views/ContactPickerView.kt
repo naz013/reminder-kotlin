@@ -12,7 +12,7 @@ import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible

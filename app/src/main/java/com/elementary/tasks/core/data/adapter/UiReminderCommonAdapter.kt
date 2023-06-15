@@ -15,7 +15,7 @@ import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager

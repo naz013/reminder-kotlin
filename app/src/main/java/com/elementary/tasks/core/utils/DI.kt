@@ -51,12 +51,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.os.ContextProvider
-import com.elementary.tasks.core.os.InputMethodManagerWrapper
-import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.datetime.NowDateTimeProvider
@@ -126,6 +121,7 @@ import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
+import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.elementary.tasks.voice.ConversationViewModel
@@ -416,6 +412,8 @@ val viewModelModule = module {
     )
   }
   viewModel { VoiceHelpViewModel(get(), get()) }
+
+  viewModel { TroubleshootingViewModel(get(), get(), get()) }
 }
 
 val converterModule = module {
@@ -544,12 +542,6 @@ val utilModule = module {
   single { ImageDecoder(get(), get(), get()) }
 
   single { IdProvider() }
-
-  single { ContactsReader(get()) }
-  single { ContextProvider(get()) }
-  single { SystemServiceProvider(get()) }
-  single { InputMethodManagerWrapper(get()) }
-  single { PackageManagerWrapper(get()) }
 
   single { DateTimeManager(get(), get(), get(), NowDateTimeProvider()) }
   single { DateTimePickerProvider(get()) }

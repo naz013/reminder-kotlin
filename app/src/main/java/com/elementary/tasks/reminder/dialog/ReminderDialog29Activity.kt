@@ -33,7 +33,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.contacts.ContactsReader
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
