@@ -4,12 +4,14 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Widget
+import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.elementary.tasks.core.app_widgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCombinedConfigBinding
 
-class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfigBinding>() {
+class CombinedWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetCombinedConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -65,6 +67,9 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
 
   private fun savePrefs() {
     prefsProvider.setWidgetBackground(binding.bgColorSlider.selectedItem)
+
+    analyticsEventSender.send(WidgetUsedEvent(Widget.COMBINED))
+
     val appWidgetManager = AppWidgetManager.getInstance(this)
     CombinedButtonsWidget.updateWidget(this, appWidgetManager, prefsProvider)
     setResult(RESULT_OK, resultValue)

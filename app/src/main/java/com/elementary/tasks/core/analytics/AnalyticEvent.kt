@@ -36,6 +36,7 @@ data class ReminderFeatureUsedEvent(
 
   private fun getReminderType(type: UiReminderType): String {
     return when {
+      type.isRecur() -> "recur"
       type.isEmail() -> "email"
       type.isLink() -> "web_link"
       type.isApp() -> "app"
@@ -47,7 +48,6 @@ data class ReminderFeatureUsedEvent(
       type.isTimer() -> "timer"
       type.isYearly() -> "yearly"
       type.isByDate() -> "by_date"
-      type.isRecur() -> "recur"
       else -> "other"
     }
   }
@@ -75,6 +75,28 @@ data class ScreenUsedEvent(
   }
 }
 
+data class WidgetUsedEvent(
+  val widget: Widget
+) : AnalyticEvent(Event.WIDGET_USED) {
+
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.TYPE, widget.value)
+    }
+  }
+}
+
+data class PresetUsed(
+  val presetAction: PresetAction
+) : AnalyticEvent(Event.PRESET_USED) {
+
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.TYPE, presetAction.value)
+    }
+  }
+}
+
 enum class Feature(val value: String) {
   REMINDER("reminder"),
   CREATE_REMINDER("create_reminder"),
@@ -93,7 +115,9 @@ enum class Feature(val value: String) {
 
   GOOGLE_TASK("login_google_task"),
   GOOGLE_DRIVE("login_google_drive"),
-  DROPBOX("login_dropbox")
+  DROPBOX("login_dropbox"),
+
+  RECUR_EVENT_CREATED("recur_created"),
 }
 
 enum class Screen(val value: String) {
@@ -105,14 +129,33 @@ enum class Screen(val value: String) {
   CALENDAR("calendar"),
   BIRTHDAYS("birthdays_list"),
   GROUPS("groups_list"),
-  VOICE_CONTROL("voice_control")
+  VOICE_CONTROL("voice_control"),
+  TROUBLESHOOTING("troubleshooting"),
+  WHATS_NEW_VIEWED("whats_new_viewed"),
+}
+
+enum class Widget(val value: String) {
+  EVENTS("events"),
+  BIRTHDAYS("birthdays"),
+  NOTES("notes"),
+  CALENDAR("calendar"),
+  COMBINED("combined"),
+  GOOGLE_TASKS("google_tasks"),
 }
 
 enum class Event(val value: String) {
   FEATURE_USED("feature_used"),
   REMINDER_USED("reminder_used"),
   SCREEN_OPENED("screen_opened"),
-  VOICE_CONTROL_USED("voice_control_used")
+  VOICE_CONTROL_USED("voice_control_used"),
+  PRESET_USED("preset_used"),
+  WIDGET_USED("widget_used"),
+}
+
+enum class PresetAction(val value: String) {
+  CREATE("create"),
+  USE("use"),
+  DELETE("delete"),
 }
 
 object Parameter {

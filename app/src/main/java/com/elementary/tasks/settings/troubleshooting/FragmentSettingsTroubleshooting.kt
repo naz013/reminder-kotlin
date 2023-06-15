@@ -15,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Screen
+import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.visible
@@ -60,6 +62,8 @@ class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTro
   }
 
   private fun openBatteryOptimizationSettings() {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.TROUBLESHOOTING))
+
     when (Build.MANUFACTURER) {
       "samsung" -> {
         val intent = Intent()
