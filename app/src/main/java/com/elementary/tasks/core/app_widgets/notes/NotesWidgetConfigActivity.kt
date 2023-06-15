@@ -4,13 +4,15 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Widget
+import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.elementary.tasks.core.app_widgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
-class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBinding>() {
+class NotesWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetNoteConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -84,6 +86,9 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
 
   private fun savePrefs() {
     prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
+
+    analyticsEventSender.send(WidgetUsedEvent(Widget.NOTES))
+
     val appWidgetManager = AppWidgetManager.getInstance(this)
     if (!isFinishing) {
       NotesWidget.updateWidget(this, appWidgetManager, prefsProvider)

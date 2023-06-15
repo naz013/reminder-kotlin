@@ -4,15 +4,17 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Widget
+import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.elementary.tasks.core.app_widgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
-class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksConfigBinding>() {
+class EventsWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetCurrentTasksConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -166,6 +168,8 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
     prefsProvider.setItemBackground(binding.listItemBgColorSlider.selectedItem)
     prefsProvider.setTextSize(textSize.toFloat())
+
+    analyticsEventSender.send(WidgetUsedEvent(Widget.EVENTS))
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
     EventsWidget.updateWidget(this, appWidgetManager, prefsProvider)

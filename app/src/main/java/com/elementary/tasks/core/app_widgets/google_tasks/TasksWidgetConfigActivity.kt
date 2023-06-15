@@ -6,15 +6,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Widget
+import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.elementary.tasks.core.app_widgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
 import org.koin.android.ext.android.get
 
-class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfigBinding>() {
+class TasksWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetGoogleTasksConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -136,6 +138,8 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
   private fun savePrefs() {
     prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
     prefsProvider.setItemBackground(binding.listItemBgColorSlider.selectedItem)
+
+    analyticsEventSender.send(WidgetUsedEvent(Widget.GOOGLE_TASKS))
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
     TasksWidget.updateWidget(this, appWidgetManager, prefsProvider)

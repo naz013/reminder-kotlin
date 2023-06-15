@@ -2,6 +2,9 @@ package com.elementary.tasks.reminder.create.fragments.recur
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.PresetAction
+import com.elementary.tasks.core.analytics.PresetUsed
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.livedata.toSingleEvent
 import com.elementary.tasks.core.data.models.RecurPreset
@@ -56,7 +59,8 @@ class RecurBuilderViewModel(
   private val dateTimeManager: DateTimeManager,
   private val recurPresetRepository: RecurPresetRepository,
   private val prefs: Prefs,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
+  private val analyticsEventSender: AnalyticsEventSender
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val builderParamLogic = BuilderParamLogic()
@@ -128,6 +132,8 @@ class RecurBuilderViewModel(
 
         _usedParams.postValue(used)
         _availableParams.postValue(createAvailableDataList(builderParamLogic.getAvailable()))
+
+        analyticsEventSender.send(PresetUsed(PresetAction.USE))
       }
     }
   }
@@ -139,6 +145,7 @@ class RecurBuilderViewModel(
         name = name
       )
       recurPresetRepository.save(preset)
+      analyticsEventSender.send(PresetUsed(PresetAction.CREATE))
     }
   }
 

@@ -4,9 +4,11 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Widget
+import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.elementary.tasks.core.app_widgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.WidgetPrefsHolder
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
@@ -14,7 +16,7 @@ import org.koin.android.ext.android.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfigBinding>() {
+class CalendarWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetCalendarConfigBinding>() {
 
   private val widgetPrefsHolder by inject<WidgetPrefsHolder>()
 
@@ -134,6 +136,8 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
     prefsProvider.setHeaderBackground(binding.headerBgColorSlider.selectedItem)
     prefsProvider.setMonth(month)
     prefsProvider.setYear(year)
+
+    analyticsEventSender.send(WidgetUsedEvent(Widget.CALENDAR))
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
     CalendarWidget.updateWidget(this, appWidgetManager, prefsProvider)

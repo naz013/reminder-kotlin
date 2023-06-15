@@ -11,6 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Feature
+import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
@@ -39,6 +42,7 @@ import com.elementary.tasks.reminder.create.fragments.recur.intdialog.IntListAda
 import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetPicker
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewDataAdapter
 import com.google.android.material.tabs.TabLayout
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
@@ -46,6 +50,8 @@ import timber.log.Timber
 class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
   private val viewModel by viewModel<RecurBuilderViewModel>()
+  private val analyticsEventSender by inject<AnalyticsEventSender>()
+
   private lateinit var presetPicker: PresetPicker
 
   private val previewAdapter = PreviewDataAdapter()
@@ -129,6 +135,8 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
         name = binding.presetNameInput.trimmedText()
       )
     }
+
+    analyticsEventSender.send(FeatureUsedEvent(Feature.RECUR_EVENT_CREATED))
 
     return reminder
   }

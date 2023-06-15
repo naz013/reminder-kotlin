@@ -4,17 +4,16 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Widget
+import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.elementary.tasks.core.app_widgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetBirthdaysConfigBinding
-import org.koin.android.ext.android.get
 
-class BirthdaysWidgetConfigActivity : BindingActivity<ActivityWidgetBirthdaysConfigBinding>() {
+class BirthdaysWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetBirthdaysConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -130,6 +129,8 @@ class BirthdaysWidgetConfigActivity : BindingActivity<ActivityWidgetBirthdaysCon
   private fun savePrefs() {
     prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
     prefsProvider.setItemBackground(binding.listItemBgColorSlider.selectedItem)
+
+    analyticsEventSender.send(WidgetUsedEvent(Widget.BIRTHDAYS))
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
     BirthdaysWidget.updateWidget(this, appWidgetManager, prefsProvider)
