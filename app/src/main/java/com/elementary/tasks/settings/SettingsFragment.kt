@@ -98,11 +98,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     binding.saleBadge.gone()
     binding.updateBadge.gone()
     binding.doNoDisturbIcon.gone()
-    if (Module.isPro) {
-      binding.appNameBannerPro.visible()
-    } else {
-      binding.appNameBannerPro.gone()
-    }
+
     if (SuperUtil.isGooglePlayServicesAvailable(requireContext())) {
       binding.playServicesWarning.gone()
     } else {

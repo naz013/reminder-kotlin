@@ -13,6 +13,10 @@
         android:paddingStart="@dimen/material_margin"
         android:paddingEnd="@dimen/material_margin">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
+
         <LinearLayout
             android:id="@+id/progressView"
             android:layout_width="match_parent"

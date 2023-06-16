@@ -15,6 +15,10 @@
         android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_view_timeline_24"
             app:prefs_primary_text="@string/event_duration"
             app:prefs_type="none" />
 

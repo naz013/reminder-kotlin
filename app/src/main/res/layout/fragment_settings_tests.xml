@@ -15,6 +15,10 @@
         android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
+
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/birthdayDialogWindow"
             android:layout_width="match_parent"

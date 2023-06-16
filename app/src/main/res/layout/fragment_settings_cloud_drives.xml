@@ -16,6 +16,10 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
+
         <LinearLayout
             android:id="@+id/progressView"
             android:layout_width="match_parent"
