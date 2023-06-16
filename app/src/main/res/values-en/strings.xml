@@ -84,7 +84,7 @@
     <string name="delete">Delete</string>
     <string name="no_notes">No notes</string>
     <string name="next_event">Next event</string>
-    <string name="remind_me">Remind me...</string>
+    <string name="remind_me">Remind me…</string>
     <string name="repeat">Repeat</string>
     <string name="days">days</string>
     <string name="send">Send</string>
@@ -93,7 +93,7 @@
     <string name="rate">Rate</string>
     <string name="later">Later</string>
     <string name="never">Never</string>
-    <string name="url">Url...</string>
+    <string name="url">Url…</string>
     <string name="application">Application</string>
     <string name="open_link">Open link</string>
     <string name="select_day">Select day</string>
@@ -157,7 +157,6 @@
     <string name="permissions">Permissions</string>
     <string name="allow_permission">Add permission</string>
     <string name="about">About</string>
-    <string name="changes">Changes</string>
     <string name="open_source_licenses">Open source software</string>
     <string name="tell_friends">Tell friends</string>
     <string name="default_string">Default</string>
@@ -180,10 +179,10 @@
     <string name="must_be_not_empty">Must be not empty!</string>
     <string name="other_version_detected">Other application detected!</string>
     <string name="open">Open</string>
-    <string name="syncing_groups">Syncing groups...</string>
-    <string name="syncing_reminders">Syncing reminders...</string>
-    <string name="syncing_notes">Syncing notes...</string>
-    <string name="syncing_birthdays">Syncing birthdays...</string>
+    <string name="syncing_groups">Syncing groups…</string>
+    <string name="syncing_reminders">Syncing reminders…</string>
+    <string name="syncing_notes">Syncing notes…</string>
+    <string name="syncing_birthdays">Syncing birthdays…</string>
     <string name="error_sending">Error sending!</string>
     <string name="delete_this_note">Delete this note?</string>
     <string name="gallery">Gallery</string>
@@ -253,7 +252,7 @@
     <string name="move_to_another_list">Move to another list</string>
     <string name="edit_birthday">Edit birthday</string>
     <string name="you_dont_select_any_calendar">You don\'t select a calendar!</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">Please wait…</string>
     <string name="no_events_found">No events found!</string>
     <string name="events_found">event(s) found</string>
     <string name="x_minutes">"%s minutes"</string>
@@ -356,7 +355,7 @@
     <string name="remove_exclusion">Remove exclusion</string>
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
-    <string name="syncing_places">Syncing places...</string>
+    <string name="syncing_places">Syncing places…</string>
     <string name="work">Work</string>
     <string name="personal">Personal</string>
     <string name="auto_call">Auto call</string>
@@ -684,7 +683,7 @@
     <string name="new_sale_message">🔥 PRO version is on sale. Buy it with a %s discount. Offer available until %s</string>
     <string name="new_update_message">🎉 New version available: %s</string>
 
-    <string name="reminder_recur_explanations">Set custom repeatable reminder. Use iCalendar rules and RFC 5545</string>
+    <string name="reminder_recur_explanations">Set custom repeatable reminder. Use rules from RFC 5545 standard</string>
     <string name="recur_custom">Custom</string>
     <string name="recur_minutely">Minutely</string>
     <string name="recur_hourly">Hourly</string>
@@ -704,6 +703,8 @@
     <string name="recur_minute_s">Minute (s)</string>
     <string name="recur_day_s_of_year">Day (s) of Year</string>
     <string name="recur_week_number_s">Week Number (s)</string>
+    <string name="recur_week_start">Week start (WKST)</string>
+    <string name="recur_set_pos">By set position (BYSETPOS)</string>
     <string name="recur_add_parameter">Add parameter</string>
     <string name="recur_presets">Presets</string>
     <string name="recur_save">Save</string>
@@ -720,5 +721,55 @@
     <string name="recur_preview">Preview</string>
     <string name="recur_customize">Customize</string>
     <string name="recur_wrong_parameters_message">Wrong parameters used, there is no date-times available!</string>
+    <string name="additional_recur_type">- Additional Reminder type - Custom, with the possibility to set own recurrence rules</string>
+    <string name="additional_places_type">- Additional Reminder type - Places, where You can set POI as targets</string>
+    <string name="recur_rfc_5545_doc">RFC 5545 Documentation</string>
+    <string name="recur_need_help">Need help?</string>
+    <string name="recur_save_as_preset">Also save as Preset</string>
+    <string name="recur_preset_name_hint">Preset name… (give some meaningful name)</string>
+    <string name="recur_no_presets">No presets</string>
+    <string name="recur_advanced">Advanced</string>
+    <string name="recur_simplified">Simplified</string>
+    <string name="recur_no_limit_error">Cannot show preview, please add Count or Until parameter!</string>
+    <string name="recur_change_until_param_error">Please, correct Until parameter, seems it is wrong!</string>
+    <string name="recur_by_day_hint">Example: 1MO or TU,WE,FR or -2SU</string>
+    <string name="recur_by_day_explanation">Write BYDAY value according to RFC 5545 specification.\nComma separated values: MO,TU,WE,TH,FR,SA,SU with optional +-(n) prefix</string>
+    <string name="recur_by_day_wrong_format">Wrong format</string>
+
+    <string name="recur_daily_10_occurrences">Daily, 10 occurrences</string>
+    <string name="recur_every_other_day_10_occurrences">Every other day, 10 occurrences</string>
+    <string name="recur_every_10_days_5_occurrences">Every 10 days, 5 occurrences</string>
+    <string name="recur_every_day_in_may">Every day in May</string>
+    <string name="recur_weekly_for_10_occurrences">Weekly for 10 occurrences</string>
+    <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Monthly on the first Friday for 10 occurrences</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Every other month on the first and last Sunday of the month for 10 occurrences</string>
+    <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Monthly on the second-to-last Monday of the month for 6 months</string>
+    <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Monthly on the third-to-the-last day of the month</string>
+    <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Monthly on the 2nd and 15th of the month for 10 occurrences</string>
+    <string name="recur_monthly_on_the_first_and_last_day_of_the_month_for_10_occurrences">Monthly on the first and last day of the month for 10 occurrences</string>
+    <string name="recur_every_18_months_on_the_10th_thru_15th_of_the_month_for_10_occurrences">Every 18 months on the 10th through 15th of the month for 10 occurrences</string>
+    <string name="recur_every_tuesday_every_other_month">Every Tuesday, every other month</string>
+    <string name="recur_yearly_in_june_and_july_for_10_occurrences">Yearly in June and July for 10 occurrences</string>
+    <string name="recur_every_other_year_on_january_february_and_march_for_10_occurrences">Every other year on January, February, and March for 10 occurrences</string>
+    <string name="recur_every_20th_monday_of_the_year">Every 20th Monday of the year</string>
+    <string name="recur_every_thursday_in_march">Every Thursday in March</string>
+    <string name="recur_every_thursday_but_only_during_june_july_and_august">Every Thursday, but only during June, July, and August</string>
+    <string name="recur_every_friday_the_13th">Every Friday the 13th</string>
+    <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">The first Saturday that follows the first Sunday of the month</string>
+    <string name="recur_every_15_minutes_for_6_occurrences">Every 15 minutes for 6 occurrences</string>
+    <string name="recur_every_hour_and_a_half_for_4_occurrences">Every hour and a half for 4 occurrences</string>
+    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">The third instance into the month of one of Tuesday, Wednesday, or Thursday, for the next 3 months</string>
+    <string name="recur_the_second_to_last_weekday_of_the_month">The second-to-last weekday of the month</string>
+    <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Weekly on Tuesday and Thursday for five weeks</string>
+    <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Every other week on Tuesday and Thursday, for 8 occurrences</string>
+
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="troubleshooting_disable_battery_optimization">Disable battery optimization</string>
+    <string name="troubleshooting_battery_optimization_text">Battery optimization is enabled for the Application. You can disable it, to allow the application to work properly.</string>
+    <string name="troubleshooting_no_issues_found">No issues found</string>
+
+    <string name="whats_new_banner_text">🚀 Application has been updated 😻. Click \"Details\" to read more.</string>
+    <string name="whats_new_details">Details</string>
+    <string name="whats_new">What\'s new</string>
 
 </resources>
