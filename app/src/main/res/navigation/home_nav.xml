@@ -12,54 +12,94 @@
         tools:layout="@layout/home_fragment">
         <action
             android:id="@+id/action_actionHome_to_remindersFragment"
-            app:destination="@id/remindersFragment" />
+            app:destination="@id/remindersFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_birthdaysFragment"
-            app:destination="@id/birthdaysFragment" />
+            app:destination="@id/birthdaysFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_groupsFragment"
-            app:destination="@id/groupsFragment" />
+            app:destination="@id/groupsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_mapFragment"
-            app:destination="@id/mapFragment" />
+            app:destination="@id/mapFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_createReminderActivity"
             app:destination="@id/createReminderActivity" />
         <action
             android:id="@+id/action_actionHome_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_actionHome_to_addBirthdayActivity"
             app:destination="@id/addBirthdayActivity" />
         <action
             android:id="@+id/action_actionHome_to_actionNotes"
-            app:destination="@id/actionNotes" />
+            app:destination="@id/actionNotes"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_actionCalendar"
-            app:destination="@id/actionCalendar" />
+            app:destination="@id/actionCalendar"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_actionGoogle"
-            app:destination="@id/actionGoogle" />
+            app:destination="@id/actionGoogle"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_archiveFragment"
-            app:destination="@id/archiveFragment" />
+            app:destination="@id/archiveFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_cloudDrives"
-            app:destination="@+id/fragmentCloudDrives" />
+            app:destination="@+id/fragmentCloudDrives"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionHome_to_changesFragment"
-            app:destination="@id/changesFragment" />
+            app:destination="@id/changesFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment
         android:id="@+id/actionNotes"
         android:name="com.elementary.tasks.notes.list.NotesFragment"
         android:label="@string/notes"
-        tools:layout="@layout/fragment_notes">
-        <action
-            android:id="@+id/action_actionNotes_to_settingsFragment"
-            app:destination="@+id/settingsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_notes"/>
 
     <fragment
         android:id="@+id/actionCalendar"
@@ -67,14 +107,19 @@
         android:label="@string/calendar"
         tools:layout="@layout/fragment_flext_cal">
         <action
-            android:id="@+id/action_actionCalendar_to_settingsFragment"
-            app:destination="@+id/settingsFragment" />
-        <action
             android:id="@+id/action_actionCalendar_to_dayViewFragment"
-            app:destination="@id/dayViewFragment" />
+            app:destination="@id/dayViewFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionCalendar_to_calendarSettingsFragment"
-            app:destination="@id/calendarSettingsFragment" />
+            app:destination="@id/calendarSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment
@@ -83,11 +128,12 @@
         android:label="@string/tasks"
         tools:layout="@layout/fragment_google_tasks">
         <action
-            android:id="@+id/action_actionGoogle_to_settingsFragment"
-            app:destination="@+id/settingsFragment" />
-        <action
             android:id="@+id/action_actionGoogle_to_taskListFragment"
-            app:destination="@id/taskListFragment" />
+            app:destination="@id/taskListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/remindersFragment"
@@ -96,22 +142,27 @@
         tools:layout="@layout/fragment_reminders">
         <action
             android:id="@+id/action_remindersFragment_to_archiveFragment"
-            app:destination="@id/archiveFragment" />
+            app:destination="@id/archiveFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_remindersFragment_to_createReminderActivity"
             app:destination="@id/createReminderActivity" />
         <action
             android:id="@+id/action_remindersFragment_to_groupsFragment"
-            app:destination="@id/groupsFragment" />
+            app:destination="@id/groupsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/birthdaysFragment"
         android:name="com.elementary.tasks.birthdays.list.BirthdaysFragment"
         android:label="@string/birthdays"
         tools:layout="@layout/fragment_birthdays">
-        <action
-            android:id="@+id/action_birthdaysFragment_to_settingsFragment"
-            app:destination="@+id/settingsFragment" />
         <action
             android:id="@+id/action_birthdaysFragment_to_addBirthdayActivity"
             app:destination="@id/addBirthdayActivity" />
@@ -120,11 +171,7 @@
         android:id="@+id/groupsFragment"
         android:name="com.elementary.tasks.groups.list.GroupsFragment"
         android:label="@string/groups"
-        tools:layout="@layout/fragment_groups">
-        <action
-            android:id="@+id/action_groupsFragment_to_settingsFragment"
-            app:destination="@+id/settingsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_groups"/>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.elementary.tasks.navigation.fragments.MapFragment"
@@ -197,46 +244,102 @@
         tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_generalSettingsFragment"
-            app:destination="@id/generalSettingsFragment" />
+            app:destination="@id/generalSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_remindersSettingsFragment"
-            app:destination="@id/remindersSettingsFragment" />
+            app:destination="@id/remindersSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_exportSettingsFragment"
-            app:destination="@id/exportSettingsFragment" />
+            app:destination="@id/exportSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_notificationSettingsFragment"
-            app:destination="@id/notificationSettingsFragment" />
+            app:destination="@id/notificationSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_calendarSettingsFragment"
-            app:destination="@id/calendarSettingsFragment" />
+            app:destination="@id/calendarSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_birthdaySettingsFragment"
-            app:destination="@id/birthdaySettingsFragment" />
+            app:destination="@id/birthdaySettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_securitySettingsFragment"
-            app:destination="@id/securitySettingsFragment" />
+            app:destination="@id/securitySettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_locationSettingsFragment"
-            app:destination="@id/locationSettingsFragment" />
+            app:destination="@id/locationSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_otherSettingsFragment"
-            app:destination="@id/navigation2" />
+            app:destination="@id/navigation2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_noteSettingsFragment"
-            app:destination="@id/noteSettingsFragment" />
+            app:destination="@id/noteSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_voiceSettingsFragment"
-            app:destination="@id/voiceSettingsFragment" />
+            app:destination="@id/voiceSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_testsFragment"
-            app:destination="@id/testsFragment" />
+            app:destination="@id/testsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_fragmentProVersion"
-            app:destination="@id/fragmentProVersion" />
+            app:destination="@id/fragmentProVersion"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_fragmentTroubleshooting"
-            app:destination="@id/fragmentTroubleshooting" />
+            app:destination="@id/fragmentTroubleshooting"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/generalSettingsFragment"
@@ -245,7 +348,11 @@
         tools:layout="@layout/fragment_settings_general">
         <action
             android:id="@+id/action_generalSettingsFragment_to_uiPreviewFragment"
-            app:destination="@id/uiPreviewFragment" />
+            app:destination="@id/uiPreviewFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/remindersSettingsFragment"
@@ -259,10 +366,18 @@
         tools:layout="@layout/fragment_settings_export">
         <action
             android:id="@+id/action_exportSettingsFragment_to_fragmentCloudDrives"
-            app:destination="@id/fragmentCloudDrives" />
+            app:destination="@id/fragmentCloudDrives"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_exportSettingsFragment_to_backupsFragment"
-            app:destination="@id/backupsFragment" />
+            app:destination="@id/backupsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/fragmentCloudDrives"
@@ -281,7 +396,11 @@
         tools:layout="@layout/fragment_settings_calendar">
         <action
             android:id="@+id/action_calendarSettingsFragment_to_fragmentEventsImport"
-            app:destination="@id/fragmentEventsImport" />
+            app:destination="@id/fragmentEventsImport"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/notificationSettingsFragment"
@@ -300,7 +419,11 @@
         tools:layout="@layout/fragment_settings_birthdays_settings">
         <action
             android:id="@+id/action_birthdaySettingsFragment_to_birthdayNotificationFragment"
-            app:destination="@id/birthdayNotificationFragment" />
+            app:destination="@id/birthdayNotificationFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/birthdayNotificationFragment"
@@ -314,13 +437,25 @@
         tools:layout="@layout/fragment_settings_security">
         <action
             android:id="@+id/action_securitySettingsFragment_to_addPinFragment"
-            app:destination="@id/addPinFragment" />
+            app:destination="@id/addPinFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_securitySettingsFragment_to_changePinFragment"
-            app:destination="@id/changePinFragment" />
+            app:destination="@id/changePinFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_securitySettingsFragment_to_disablePinFragment"
-            app:destination="@id/disablePinFragment" />
+            app:destination="@id/disablePinFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/addPinFragment"
@@ -344,10 +479,18 @@
         tools:layout="@layout/fragment_settings_location">
         <action
             android:id="@+id/action_locationSettingsFragment_to_mapStyleFragment"
-            app:destination="@id/mapStyleFragment" />
+            app:destination="@id/mapStyleFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_locationSettingsFragment_to_placesFragment"
-            app:destination="@id/placesFragment" />
+            app:destination="@id/placesFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/mapStyleFragment"
@@ -400,22 +543,46 @@
             tools:layout="@layout/fragment_settings_other">
             <action
                 android:id="@+id/action_otherSettingsFragment_to_permissionsFragment"
-                app:destination="@id/permissionsFragment" />
+                app:destination="@id/permissionsFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
             <action
                 android:id="@+id/action_otherSettingsFragment_to_feedbackFragment"
-                app:destination="@id/feedbackFragment" />
+                app:destination="@id/feedbackFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
             <action
                 android:id="@+id/action_otherSettingsFragment_to_changesFragment"
-                app:destination="@id/changesFragment" />
+                app:destination="@id/changesFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
             <action
                 android:id="@+id/action_otherSettingsFragment_to_ossFragment"
-                app:destination="@id/ossFragment" />
+                app:destination="@id/ossFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
             <action
                 android:id="@+id/action_otherSettingsFragment_to_privacyPolicyFragment"
-                app:destination="@id/privacyPolicyFragment" />
+                app:destination="@id/privacyPolicyFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
             <action
                 android:id="@+id/action_otherSettingsFragment_to_termsFragment"
-                app:destination="@id/termsFragment" />
+                app:destination="@id/termsFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         </fragment>
         <fragment
             android:id="@+id/changesFragment"
@@ -445,10 +612,18 @@
         tools:layout="@layout/fragment_settings_voice">
         <action
             android:id="@+id/action_voiceSettingsFragment_to_timeOfDayFragment"
-            app:destination="@id/timeOfDayFragment" />
+            app:destination="@id/timeOfDayFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_voiceSettingsFragment_to_helpFragment2"
-            app:destination="@id/voiceHelpFragment" />
+            app:destination="@id/voiceHelpFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <deepLink
             android:id="@+id/deepLink"
             app:uri="reminderapp.com/settings" />
