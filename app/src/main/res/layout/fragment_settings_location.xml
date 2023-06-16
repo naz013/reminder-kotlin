@@ -15,6 +15,10 @@
         android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
+
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/notificationOptionPrefs"
             android:layout_width="match_parent"
@@ -59,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_style_24px"
             app:prefs_primary_text="@string/style_of_marker"
             app:prefs_pro="true"
             app:prefs_type="view" />

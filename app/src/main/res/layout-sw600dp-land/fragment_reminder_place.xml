@@ -29,15 +29,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                style="@style/FilledBoxStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="48dp"
-                android:layout_marginEnd="16dp"
-                app:boxBackgroundColor="?colorSecondary12"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp">
+                android:layout_marginEnd="16dp">
 
                 <com.elementary.tasks.core.views.FixedTextInputEditText
                     android:id="@+id/taskSummary"

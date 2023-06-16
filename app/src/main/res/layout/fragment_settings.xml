@@ -14,32 +14,9 @@
         android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
-        <LinearLayout
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/appNameBanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/app_name"
-                android:textAppearance="?textAppearanceDisplaySmall" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/appNameBannerPro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center"
-                android:text="PRO"
-                android:textAppearance="?textAppearanceDisplaySmall"
-                android:textColor="?colorTertiary" />
-
-        </LinearLayout>
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/buyProBadge"

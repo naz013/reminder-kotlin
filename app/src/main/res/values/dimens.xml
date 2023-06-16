@@ -39,5 +39,6 @@
     <dimen name="default_content_padding">8dp</dimen>
     <dimen name="carousel_image_width">172dp</dimen>
     <dimen name="timer_button_size">72dp</dimen>
+    <dimen name="collapse_toolbar_margin_top">24dp</dimen>
 
 </resources>

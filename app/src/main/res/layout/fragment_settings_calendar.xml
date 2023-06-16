@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -14,6 +13,10 @@
         android:layout_marginStart="@dimen/list_margin"
         android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/eventsImportPrefs"
@@ -37,6 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_palette_24px"
             app:prefs_primary_text="@string/today_color"
             app:prefs_type="view" />
 
@@ -45,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_cake_24px"
+            app:prefs_icon="@drawable/ic_twotone_palette_24px"
             app:prefs_primary_text="@string/birthdays_color"
             app:prefs_type="view" />
 
@@ -63,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_palette_24px"
             app:prefs_primary_text="@string/reminders_color"
             app:prefs_type="view" />
 
