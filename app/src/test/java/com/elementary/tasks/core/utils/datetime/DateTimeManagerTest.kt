@@ -42,7 +42,10 @@ class DateTimeManagerTest {
     val time = LocalTime.of(12, 0)
     val date = "1994-06-17"
 
+    val nowDateTime = LocalDateTime.of(nowDate, LocalTime.now())
+
     every { nowDateTimeProvider.nowDate() } returns nowDate
+    every { nowDateTimeProvider.nowDateTime() } returns nowDateTime
 
     val result = dateTimeManager.getFutureBirthdayDate(time, date)
 
