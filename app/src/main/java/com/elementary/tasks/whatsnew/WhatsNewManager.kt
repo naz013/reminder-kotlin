@@ -4,6 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.params.Prefs
+import timber.log.Timber
 
 class WhatsNewManager(
   private val prefs: Prefs,
@@ -16,6 +17,9 @@ class WhatsNewManager(
     super.onResume(owner)
     val versionCode = packageManagerWrapper.getVersionCode()
     val prefsVersionCode = prefs.lastVersionCode
+
+    Timber.d("onResume: versionCode=$versionCode, prefsVersionCode=$prefsVersionCode")
+
     if (prefsVersionCode < versionCode) {
       notifyListeners(true)
     } else {

@@ -1,10 +1,13 @@
 package com.elementary.tasks
 
+import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 
 class AdsProvider {
+
+  fun showConsentMessage(activity: Activity) {}
 
   fun showBanner(
     viewGroup: ViewGroup,

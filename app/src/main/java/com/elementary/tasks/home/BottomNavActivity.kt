@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
@@ -32,6 +33,7 @@ class BottomNavActivity :
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
   private var mFragment: BaseFragment<*>? = null
   private lateinit var navController: NavController
+  private val adsProvider = AdsProvider()
 
   override fun inflateBinding() = ActivityBottomNavBinding.inflate(layoutInflater)
 
@@ -65,6 +67,8 @@ class BottomNavActivity :
         }
       }
     }
+
+    adsProvider.showConsentMessage(this)
   }
 
   override fun onResume() {
