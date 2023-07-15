@@ -86,6 +86,7 @@ class LocationTracker(
     listener.onUpdate(latitude, longitude)
   }
 
+  @Deprecated("Deprecated in Java")
   override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
     Timber.d("onStatusChanged: $provider")
     updateListener()
