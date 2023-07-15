@@ -22,8 +22,10 @@ class FeedbackFragment : BaseWebViewFragment() {
     super.setExtraParams(webView)
     webView.settings.javaScriptEnabled = true
     webView.webViewClient = object : WebViewClient() {
+      @Deprecated("Deprecated in Java")
       override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
+      @Deprecated("Deprecated in Java")
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
         return if (url != null && url.contains(GITHUB_URL)) {
           startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))

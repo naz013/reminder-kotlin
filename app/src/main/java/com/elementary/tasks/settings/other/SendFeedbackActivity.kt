@@ -26,6 +26,7 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
 
     binding.webView.settings.javaScriptEnabled = true
     binding.webView.webViewClient = object : WebViewClient() {
+      @Deprecated("Deprecated in Java")
       override fun onReceivedError(
         view: WebView,
         errorCode: Int,
@@ -34,6 +35,7 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
       ) {
       }
 
+      @Deprecated("Deprecated in Java")
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
         return if (url != null && url.contains(FeedbackFragment.GITHUB_URL)) {
           startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))

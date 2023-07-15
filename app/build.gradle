@@ -147,7 +147,7 @@ dependencies {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
     implementation('com.google.apis:google-api-services-tasks:v1-rev20230401-2.0.0')
-    implementation 'com.google.http-client:google-http-client-gson:1.43.2'
+    implementation 'com.google.http-client:google-http-client-gson:1.43.3'
     implementation('com.google.api-client:google-api-client-android:2.2.0') {
         exclude group: 'org.apache.httpcomponents'
     }
@@ -176,8 +176,8 @@ dependencies {
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2'
 
     implementation('androidx.work:work-runtime:2.8.1') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
@@ -190,17 +190,17 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.6.1'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-    implementation 'androidx.room:room-runtime:2.5.1'
-    implementation 'androidx.room:room-ktx:2.5.1'
+    implementation 'androidx.room:room-runtime:2.5.2'
+    implementation 'androidx.room:room-ktx:2.5.2'
     //noinspection KaptUsageInsteadOfKsp
-    kapt 'androidx.room:room-compiler:2.5.1'
+    kapt 'androidx.room:room-compiler:2.5.2'
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
 
     implementation "com.google.android.play:core-ktx:1.8.1"
 
-    implementation platform('com.google.firebase:firebase-bom:31.5.0')
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
 
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -209,9 +209,9 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
-    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'com.google.android.gms:play-services-auth:20.6.0'
 
-    freeImplementation 'com.google.android.gms:play-services-ads:22.1.0'
+    freeImplementation 'com.google.android.gms:play-services-ads:22.2.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
@@ -240,12 +240,12 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test:core:1.5.0'
-    testImplementation 'org.mockito:mockito-core:5.3.1'
+    testImplementation 'org.mockito:mockito-core:5.4.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation 'io.mockk:mockk:1.13.5'
     testImplementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation "androidx.lifecycle:lifecycle-runtime-testing:2.6.1"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
 
     androidTestImplementation 'io.mockk:mockk-android:1.13.5'
     androidTestImplementation 'androidx.test:runner:1.5.2'
