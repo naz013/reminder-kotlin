@@ -50,7 +50,8 @@ class NoteToOldNoteConverter(
       key = note.key,
       summary = note.summary,
       updatedAt = note.updatedAt,
-      fontSize = note.fontSize
+      fontSize = note.fontSize,
+      archived = note.archived
     )
   }
 }

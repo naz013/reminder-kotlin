@@ -60,13 +60,21 @@ class NotePreviewViewModel(
 
   var hasSameInDb: Boolean = false
 
+  override fun onCreate(owner: LifecycleOwner) {
+    super.onCreate(owner)
+    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
+  }
+
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
+    loadInternal()
+  }
+
+  private fun loadInternal() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = notesDao.getById(key)
       if (noteWithImages != null) {
         _note.postValue(uiNotePreviewAdapter.convert(noteWithImages))
-        analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
       }
     }
   }
@@ -77,6 +85,35 @@ class NotePreviewViewModel(
       uiNoteNotificationAdapter.convert(noteWithImages).also {
         withUIContext { notifier.showNoteNotification(it) }
       }
+    }
+  }
+
+  fun toggleArchiveFlag() {
+    postInProgress(true)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val noteWithImages = notesDao.getById(key)
+      if (noteWithImages == null) {
+        postInProgress(false)
+        postError(textProvider.getText(R.string.notes_failed_to_update))
+        return@launch
+      }
+
+      val note = noteWithImages.note
+      if (note == null) {
+        postInProgress(false)
+        postError(textProvider.getText(R.string.notes_failed_to_update))
+        return@launch
+      }
+
+      note.archived = !note.archived
+      notesDao.insert(note)
+
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+
+      loadInternal()
+
+      postInProgress(false)
+      postCommand(Commands.UPDATED)
     }
   }
 

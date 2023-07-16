@@ -371,6 +371,7 @@ class CreateNoteViewModel(
       noteWithImages.note?.key = UUID.randomUUID().toString()
       reminder?.noteId = noteWithImages.getKey()
     }
+    noteWithImages.note?.archived = false
     analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
     saveNote(noteWithImages, reminder)
   }

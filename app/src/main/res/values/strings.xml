@@ -772,4 +772,10 @@
     <string name="whats_new_details">Details</string>
     <string name="whats_new">What\'s new</string>
 
+    <string name="notes_archive">Archive</string>
+    <string name="notes_move_to_archive">Move to archive</string>
+    <string name="notes_unarchive">Unarchive</string>
+    <string name="notes_failed_to_update">Failed to update</string>
+    <string name="notes_archive_is_empty">Archive is empty</string>
+
 </resources>

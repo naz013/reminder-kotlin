@@ -5,7 +5,6 @@ import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.font.FontParams
 
 class UiNotePreviewAdapter(
@@ -35,7 +34,8 @@ class UiNotePreviewAdapter(
       text = noteWithImages.getSummary(),
       uniqueId = noteWithImages.note?.uniqueId ?: 1133,
       opacity = noteWithImages.getOpacity(),
-      textSize = textSize.toFloat()
+      textSize = textSize.toFloat(),
+      isArchived = noteWithImages.note?.archived ?: false
     )
   }
 }

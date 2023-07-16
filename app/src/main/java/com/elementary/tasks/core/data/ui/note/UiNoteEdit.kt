@@ -8,5 +8,6 @@ data class UiNoteEdit(
   val colorPosition: Int,
   val colorPalette: Int,
   val opacity: Int,
-  val fontSize: Int
+  val fontSize: Int,
+  val isArchived: Boolean
 )

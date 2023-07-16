@@ -11,5 +11,6 @@ data class UiNotePreview(
   val typeface: Typeface?,
   val images: List<UiNoteImage>,
   val uniqueId: Int,
-  val textSize: Float
+  val textSize: Float,
+  val isArchived: Boolean
 )
