@@ -17,13 +17,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_archive"
-        android:icon="@drawable/ic_twotone_storage_24"
-        android:title="@string/notes_archive"
-        app:iconTint="?colorOnSurface"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/action_order"
         android:icon="@drawable/ic_twotone_sort_24px"
         android:title="@string/order"

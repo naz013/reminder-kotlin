@@ -22,7 +22,8 @@ class UiNoteEditAdapter(
       colorPosition = noteWithImages.getColor(),
       colorPalette = noteWithImages.getPalette(),
       opacity = noteWithImages.getOpacity(),
-      fontSize = textSize
+      fontSize = textSize,
+      isArchived = noteWithImages.note?.archived ?: false
     )
   }
 }

@@ -99,6 +99,7 @@ import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.list.NotesViewModel
+import com.elementary.tasks.notes.list.archived.ArchivedNotesViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewViewModel
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
@@ -355,6 +356,21 @@ val viewModelModule = module {
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel {
     NotesViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+  viewModel {
+    ArchivedNotesViewModel(
       get(),
       get(),
       get(),

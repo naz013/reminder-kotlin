@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes.list
+package com.elementary.tasks.notes.list.archived
 
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
+import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.repository.NoteRepository
@@ -22,13 +23,17 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.notes.list.NoteSortProcessor
+import com.elementary.tasks.notes.list.SearchableNotesData
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-class NotesViewModel(
+class ArchivedNotesViewModel(
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val backupTool: BackupTool,
@@ -51,7 +56,7 @@ class NotesViewModel(
     parentScope = viewModelScope,
     notesDao = notesDao,
     noteRepository = noteRepository,
-    isArchived = false
+    isArchived = true
   )
   val notes = notesData.map { list ->
     noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
@@ -65,7 +70,7 @@ class NotesViewModel(
     notesData.refresh()
   }
 
-  fun moveToArchive(id: String) {
+  fun unArchive(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = notesDao.getById(id)
@@ -82,7 +87,7 @@ class NotesViewModel(
         return@launch
       }
 
-      note.archived = true
+      note.archived = false
       notesDao.insert(note)
 
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
@@ -91,27 +96,6 @@ class NotesViewModel(
 
       postInProgress(false)
       postCommand(Commands.UPDATED)
-    }
-  }
-
-  fun shareNote(id: String) {
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val note = notesDao.getById(id)
-      if (note == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.failed_to_send_note))
-        return@launch
-      }
-      val file = runBlocking {
-        backupTool.noteToFile(note)
-      }
-      postInProgress(false)
-      if (file != null) {
-        _sharedFile.postValue(Pair(note, file))
-      } else {
-        postError(textProvider.getText(R.string.failed_to_send_note))
-      }
     }
   }
 

@@ -22,19 +22,21 @@ data class Note(
   @SerializedName("updatedAt")
   var updatedAt: String? = null,
   var opacity: Int = 100,
-  var fontSize: Int = -1
+  var fontSize: Int = -1,
+  var archived: Boolean = false
 ) : Parcelable {
 
   @Ignore
-  constructor(oldNote: OldNote) : this() {
-    this.color = oldNote.color
-    this.palette = oldNote.palette
-    this.key = oldNote.key
-    this.date = oldNote.date
-    this.style = oldNote.style
-    this.uniqueId = oldNote.uniqueId
-    this.summary = oldNote.summary
-    this.updatedAt = oldNote.updatedAt
-    this.fontSize = oldNote.fontSize
-  }
+  constructor(oldNote: OldNote) : this(
+    color = oldNote.color,
+    palette = oldNote.palette,
+    key = oldNote.key,
+    date = oldNote.date,
+    style = oldNote.style,
+    uniqueId = oldNote.uniqueId,
+    summary = oldNote.summary,
+    updatedAt = oldNote.updatedAt,
+    fontSize = oldNote.fontSize,
+    archived = oldNote.archived
+  )
 }

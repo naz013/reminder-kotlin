@@ -1,7 +1,11 @@
 package com.elementary.tasks.core.data.dao
 
-import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -10,26 +14,18 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 interface NotesDao {
 
     @Transaction
-    @Query("SELECT * FROM Note")
-    fun getAllNotes(): List<Note>
+    @Query("SELECT * FROM Note WHERE archived=:isArchived")
+    fun getAllNotes(isArchived: Boolean = false): List<Note>
 
     @Transaction
-    @Query("SELECT * FROM Note WHERE LOWER(summary) LIKE '%' || :query || '%'")
-    fun searchByText(query: String): List<NoteWithImages>
-
-    @Transaction
-    @Query("SELECT * FROM Note")
-    fun loadAll(): LiveData<List<NoteWithImages>>
+    @Query("SELECT * FROM Note WHERE LOWER(summary) LIKE '%' || :query || '%' AND archived=:isArchived")
+    fun searchByText(query: String, isArchived: Boolean = false): List<NoteWithImages>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(note: Note)
 
     @Delete
     fun delete(note: Note)
-
-    @Transaction
-    @Query("SELECT * FROM Note WHERE `key`=:id")
-    fun loadById(id: String): LiveData<NoteWithImages>
 
     @Transaction
     @Query("SELECT * FROM Note WHERE `key`=:id")

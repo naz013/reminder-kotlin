@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.View
+import androidx.core.view.get
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -166,22 +167,35 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
           true
         }
 
+        R.id.action_archive -> {
+          viewModel.toggleArchiveFlag()
+          true
+        }
+
         else -> false
       }
     }
     updateIcons()
+    updateMenu()
   }
 
   private fun updateIcons() {
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
-    updateMenu()
   }
 
-  private fun updateMenu() {
+  private fun updateMenu(isArchived: Boolean = false) {
+    val archiveActionTitle = if (isArchived) {
+      getString(R.string.notes_unarchive)
+    } else {
+      getString(R.string.notes_move_to_archive)
+    }
     binding.toolbar.menu.also { menu ->
       ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isBgDark)
       ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isBgDark)
+      menu[3].setTitle(archiveActionTitle)
+      menu[1].isVisible = !isArchived
+      menu[2].isVisible = !isArchived
     }
   }
 
@@ -219,6 +233,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
     updateTextColors()
     updateIcons()
+    updateMenu(uiNotePreview.isArchived)
   }
 
   private fun updateTextColors() {
