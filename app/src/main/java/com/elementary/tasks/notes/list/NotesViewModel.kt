@@ -3,6 +3,7 @@ package com.elementary.tasks.notes.list
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
@@ -39,7 +40,8 @@ class NotesViewModel(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
   private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
-  private val notifier: Notifier
+  private val notifier: Notifier,
+  private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -91,6 +93,10 @@ class NotesViewModel(
 
       postInProgress(false)
       postCommand(Commands.UPDATED)
+
+      withUIContext {
+        updatesHelper.updateNotesWidget()
+      }
     }
   }
 
@@ -141,6 +147,10 @@ class NotesViewModel(
 
       postInProgress(false)
       postCommand(Commands.DELETED)
+
+      withUIContext {
+        updatesHelper.updateNotesWidget()
+      }
     }
   }
 
@@ -168,6 +178,10 @@ class NotesViewModel(
 
       postInProgress(false)
       postCommand(Commands.SAVED)
+
+      withUIContext {
+        updatesHelper.updateNotesWidget()
+      }
     }
   }
 

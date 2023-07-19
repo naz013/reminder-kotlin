@@ -9,6 +9,7 @@ import com.elementary.tasks.core.app_widgets.calendar.CalendarWidget
 import com.elementary.tasks.core.app_widgets.events.EventsWidget
 import com.elementary.tasks.core.app_widgets.google_tasks.TasksWidget
 import com.elementary.tasks.core.app_widgets.notes.NotesWidget
+import com.elementary.tasks.core.app_widgets.singlenote.SingleNoteWidget
 
 class UpdatesHelper(
   private val context: Context
@@ -33,6 +34,18 @@ class UpdatesHelper(
 
     val ids = AppWidgetManager.getInstance(context)
       .getAppWidgetIds(ComponentName(context, NotesWidget::class.java))
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    context.sendBroadcast(intent)
+
+    updateNoteWidgets()
+  }
+
+  private fun updateNoteWidgets() {
+    val intent = Intent(context, SingleNoteWidget::class.java)
+    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+
+    val ids = AppWidgetManager.getInstance(context)
+      .getAppWidgetIds(ComponentName(context, SingleNoteWidget::class.java))
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
     context.sendBroadcast(intent)
   }
