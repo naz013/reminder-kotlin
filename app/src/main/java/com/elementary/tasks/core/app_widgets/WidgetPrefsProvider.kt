@@ -28,4 +28,12 @@ abstract class WidgetPrefsProvider(
   fun getInt(key: String, def: Int = 0): Int {
     return sp.getInt(key + widgetId, def)
   }
+
+  fun putString(key: String, value: String) {
+    sp.edit().putString(key + widgetId, value).apply()
+  }
+
+  fun getString(key: String, def: String? = null): String? {
+    return sp.getString(key + widgetId, def)
+  }
 }

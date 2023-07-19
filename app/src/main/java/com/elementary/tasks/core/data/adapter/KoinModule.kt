@@ -12,8 +12,10 @@ import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteListSelectableAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
@@ -47,6 +49,9 @@ val adapterModule = module {
   single { UiNoteListAdapter(get(), get(), get(), get()) }
   single { UiNotePreviewAdapter(get(), get(), get()) }
   single { UiNoteNotificationAdapter(get(), get()) }
+
+  single { UiNoteListSelectableAdapter(get(), get(), get()) }
+  single { UiNoteWidgetAdapter(get(), get(), get()) }
 
   single { UiPlaceListAdapter(get(), get(), get()) }
   single { UiPlaceEditAdapter() }

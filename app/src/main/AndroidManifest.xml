@@ -456,6 +456,32 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".core.app_widgets.singlenote.SingleNoteWidget"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/note">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/single_note_widget_metadata" />
+        </receiver>
+
+        <activity
+            android:name=".core.app_widgets.singlenote.SingleNoteWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".core.app_widgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_clear_black_24dp"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/note"
+            app:titleCentered="true" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.elementary.tasks.core.views.gradient.UiGradientFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        app:gradientFrameLayout_cornerRadius="0dp"
+        app:gradientFrameLayout_endColor="?colorTertiary"
+        app:gradientFrameLayout_startColor="?colorPrimary">
+
+        <ImageView
+            android:id="@+id/note_preview"
+            android:layout_width="228dp"
+            android:layout_gravity="center"
+            android:layout_height="228dp" />
+
+    </com.elementary.tasks.core.views.gradient.UiGradientFrameLayout>
+
+    <TextView
+        style="@style/UiComponentSectionLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/notes" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:visibility="visible"
+            tools:itemCount="5"
+            tools:listitem="@layout/list_item_note_selectable" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="16dp"
+            android:text="@string/save"
+            android:textAllCaps="true"
+            android:visibility="visible"
+            app:icon="@drawable/ic_twotone_done_24px" />
+
+    </FrameLayout>
+
+</LinearLayout>

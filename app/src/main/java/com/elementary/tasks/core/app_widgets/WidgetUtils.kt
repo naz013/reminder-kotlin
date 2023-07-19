@@ -2,6 +2,7 @@ package com.elementary.tasks.core.app_widgets
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.widget.RemoteViews
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -39,6 +40,26 @@ object WidgetUtils {
 
   fun setIcon(rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {
     rv.setImageViewResource(viewId, iconId)
+  }
+
+  fun initButton(
+    context: Context,
+    rv: RemoteViews,
+    @IdRes viewId: Int,
+    icon: Bitmap?,
+    cls: Class<*>,
+    extras: ((Intent) -> Intent)? = null
+  ) {
+    var configIntent = Intent(context, cls)
+    if (extras != null) {
+      configIntent = extras.invoke(configIntent)
+    }
+    extras?.invoke(configIntent)
+    val configPendingIntent = PendingIntentWrapper.getActivity(context, 0, configIntent, 0)
+    rv.setOnClickPendingIntent(viewId, configPendingIntent)
+    icon?.also {
+      rv.setImageViewBitmap(viewId, it)
+    }
   }
 
   @DrawableRes
