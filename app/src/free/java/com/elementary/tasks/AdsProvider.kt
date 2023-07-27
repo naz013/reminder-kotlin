@@ -1,5 +1,6 @@
 package com.elementary.tasks
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,14 +23,61 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.android.ump.ConsentForm
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import timber.log.Timber
 
 class AdsProvider {
 
   private var nativeAdd: NativeAd? = null
+  private var consentInformation: ConsentInformation? = null
+  private var consentForm: ConsentForm? = null
 
   init {
     wasError = false
+  }
+
+  fun showConsentMessage(activity: Activity) {
+    val params = ConsentRequestParameters.Builder()
+      .setTagForUnderAgeOfConsent(false)
+      .build()
+
+    UserMessagingPlatform.getConsentInformation(activity).also {
+      consentInformation = it
+    }.let {
+      it.requestConsentInfoUpdate(
+        activity,
+        params,
+        {
+          if (it.isConsentFormAvailable) {
+            loadForm(activity)
+          }
+        },
+        { formError ->
+          // Handle the error.
+        }
+      )
+    }
+
+  }
+
+  private fun loadForm(activity: Activity) {
+    UserMessagingPlatform.loadConsentForm(
+      activity,
+      { consentForm ->
+        this.consentForm = consentForm
+        if (consentInformation?.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
+          consentForm.show(activity) { formError ->
+            loadForm(activity)
+          }
+        }
+      },
+      { formError ->
+
+      }
+    )
   }
 
   fun showBanner(
