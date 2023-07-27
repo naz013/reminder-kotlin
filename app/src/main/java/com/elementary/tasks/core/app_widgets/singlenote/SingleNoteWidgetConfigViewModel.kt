@@ -4,14 +4,16 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.note.UiNoteListSelectableAdapter
-import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.notes.list.SearchableNotesData
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class SingleNoteWidgetConfigViewModel(
@@ -19,7 +21,7 @@ class SingleNoteWidgetConfigViewModel(
   private val notesDao: NotesDao,
   private val uiNoteListSelectableAdapter: UiNoteListSelectableAdapter,
   noteRepository: NoteRepository,
-  private val uiNoteWidgetAdapter: UiNoteWidgetAdapter
+  private val uiNoteWidgetAdapter: RecyclableUiNoteWidgetAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _previewBitmap = mutableLiveDataOf<UiNoteWidget>()
@@ -36,10 +38,33 @@ class SingleNoteWidgetConfigViewModel(
     list.map { uiNoteListSelectableAdapter.convert(it) }
   }
 
-  fun createPreview(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+  private var previewJob: Job? = null
+
+  override fun onCleared() {
+    super.onCleared()
+    uiNoteWidgetAdapter.clear()
+  }
+
+  fun createPreview(
+    id: String,
+    verticalAlignment: NoteDrawableParams.VerticalAlignment,
+    horizontalAlignment: NoteDrawableParams.HorizontalAlignment,
+    textSize: Float
+  ) {
+    previewJob?.cancel()
+    previewJob = viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = notesDao.getById(id) ?: return@launch
-      _previewBitmap.postValue(uiNoteWidgetAdapter.convertDp(noteWithImages, 156, 156))
+      if (!isActive) return@launch
+      val preview = uiNoteWidgetAdapter.convertDp(
+        noteWithImages = noteWithImages,
+        sizeDp = 156,
+        verticalAlignment = verticalAlignment,
+        horizontalAlignment = horizontalAlignment,
+        fontSize = textSize,
+        marginDp = 8
+      )
+      if (!isActive) return@launch
+      _previewBitmap.postValue(preview)
     }
   }
 

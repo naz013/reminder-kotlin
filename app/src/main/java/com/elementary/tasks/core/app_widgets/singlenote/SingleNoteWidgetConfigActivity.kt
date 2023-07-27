@@ -3,6 +3,7 @@ package com.elementary.tasks.core.app_widgets.singlenote
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.IdRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Widget
@@ -12,6 +13,7 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
+import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.databinding.ActivityWidgetSingleNoteBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +21,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSingleNoteBinding>() {
 
   private val viewModel by viewModel<SingleNoteWidgetConfigViewModel>()
-  private val adapter = SelectableNotesRecyclerAdapter { viewModel.createPreview(it) }
+  private val adapter = SelectableNotesRecyclerAdapter {
+    viewModel.createPreview(
+      id = it,
+      horizontalAlignment = getHorizontalAlignment(),
+      verticalAlignment = getVerticalAlignment(),
+      textSize = getTextSize()
+    )
+  }
 
   private val uiNoteWidgetAdapter by inject<UiNoteWidgetAdapter>()
   private val notesDao by inject<NotesDao>()
@@ -40,6 +49,39 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
     binding.fabSave.setOnClickListener { savePrefs() }
     binding.toolbar.setNavigationOnClickListener { finish() }
 
+    binding.horGroup.setOnCheckedChangeListener { group, checkedId ->
+      adapter.getSelectedId()?.also {
+        viewModel.createPreview(
+          id = it,
+          horizontalAlignment = getHorizontalAlignment(),
+          verticalAlignment = getVerticalAlignment(),
+          textSize = getTextSize()
+        )
+      }
+    }
+    binding.verGroup.setOnCheckedChangeListener { group, checkedId ->
+      adapter.getSelectedId()?.also {
+        viewModel.createPreview(
+          id = it,
+          horizontalAlignment = getHorizontalAlignment(),
+          verticalAlignment = getVerticalAlignment(),
+          textSize = getTextSize()
+        )
+      }
+    }
+
+    binding.fontSizeBar.addOnChangeListener { _, value, _ ->
+      adapter.getSelectedId()?.also {
+        viewModel.createPreview(
+          id = it,
+          horizontalAlignment = getHorizontalAlignment(),
+          verticalAlignment = getVerticalAlignment(),
+          textSize = value
+        )
+      }
+    }
+    binding.fontSizeBar.setLabelFormatter { "${it.toInt()}" }
+
     lifecycle.addObserver(viewModel)
     viewModel.notes.nonNullObserve(this) {
       adapter.submitList(it)
@@ -47,6 +89,44 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
     }
     viewModel.previewBitmap.nonNullObserve(this) {
       binding.notePreview.setImageBitmap(it.bitmap)
+    }
+  }
+
+  private fun getTextSize(): Float {
+    return binding.fontSizeBar.value
+  }
+
+  private fun getHorizontalAlignment(): NoteDrawableParams.HorizontalAlignment {
+    return when {
+      binding.horLeft.isChecked -> NoteDrawableParams.HorizontalAlignment.LEFT
+      binding.horRight.isChecked -> NoteDrawableParams.HorizontalAlignment.RIGHT
+      else -> NoteDrawableParams.HorizontalAlignment.CENTER
+    }
+  }
+
+  private fun getVerticalAlignment(): NoteDrawableParams.VerticalAlignment {
+    return when {
+      binding.verTop.isChecked -> NoteDrawableParams.VerticalAlignment.TOP
+      binding.verBottom.isChecked -> NoteDrawableParams.VerticalAlignment.BOTTOM
+      else -> NoteDrawableParams.VerticalAlignment.CENTER
+    }
+  }
+
+  @IdRes
+  private fun getHorizontalCheck(horizontalAlignment: NoteDrawableParams.HorizontalAlignment): Int {
+    return when (horizontalAlignment) {
+      NoteDrawableParams.HorizontalAlignment.CENTER -> binding.horCenter.id
+      NoteDrawableParams.HorizontalAlignment.LEFT -> binding.horLeft.id
+      NoteDrawableParams.HorizontalAlignment.RIGHT -> binding.horRight.id
+    }
+  }
+
+  @IdRes
+  private fun getVerticalCheck(verticalAlignment: NoteDrawableParams.VerticalAlignment): Int {
+    return when (verticalAlignment) {
+      NoteDrawableParams.VerticalAlignment.CENTER -> binding.verCenter.id
+      NoteDrawableParams.VerticalAlignment.BOTTOM -> binding.verBottom.id
+      NoteDrawableParams.VerticalAlignment.TOP -> binding.verTop.id
     }
   }
 
@@ -64,16 +144,24 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
     if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
       finish()
     }
+
+    prefsProvider.getTextSize().takeIf { it > 0f && it < 250f }
+      ?.also { binding.fontSizeBar.value = it }
+    binding.verGroup.check(getVerticalCheck(prefsProvider.getVerticalAlignment()))
+    binding.horGroup.check(getHorizontalCheck(prefsProvider.getHorizontalAlignment()))
   }
 
   private fun savePrefs() {
     val noteId = adapter.getSelectedId()
     if (noteId == null) {
-      toast(getString(R.string.notes_note_not_selected))
+      toast(getString(R.string.widget_note_note_not_selected))
       return
     }
 
     prefsProvider.setNoteId(noteId)
+    prefsProvider.setHorizontalAlignment(getHorizontalAlignment())
+    prefsProvider.setVerticalAlignment(getVerticalAlignment())
+    prefsProvider.setTextSize(getTextSize())
 
     analyticsEventSender.send(WidgetUsedEvent(Widget.COMBINED))
 

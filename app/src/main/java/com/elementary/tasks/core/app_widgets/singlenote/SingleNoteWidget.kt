@@ -15,6 +15,7 @@ import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ui.dp2px
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -41,6 +42,13 @@ class SingleNoteWidget : AppWidgetProvider(), KoinComponent {
     }
   }
 
+  override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+    super.onDeleted(context, appWidgetIds)
+    for (widgetId in appWidgetIds) {
+      SingleNoteWidgetPrefsProvider(context, widgetId).clear()
+    }
+  }
+
   companion object {
 
     fun updateWidget(
@@ -57,9 +65,21 @@ class SingleNoteWidget : AppWidgetProvider(), KoinComponent {
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
 
-        val maxSize = maxOf(width, height) * 2
+        val size = maxOf(width, height) * 2
+        val baseSize = context.dp2px(156).toFloat()
+        val baseMargin = context.dp2px(8).toFloat()
 
-        val uiNoteWidget = uiNoteWidgetAdapter.convert(noteWithImages, maxSize)
+        val sizeScale = size / baseSize
+        val fontScale = sizeScale * 0.85f
+
+        val uiNoteWidget = uiNoteWidgetAdapter.convert(
+          noteWithImages = noteWithImages,
+          size = size,
+          fontSize = prefsProvider.getTextSize() * fontScale,
+          horizontalAlignment = prefsProvider.getHorizontalAlignment(),
+          verticalAlignment = prefsProvider.getVerticalAlignment(),
+          margin = baseMargin * sizeScale
+        )
 
         rv.setImageViewBitmap(R.id.note_image, uiNoteWidget.bitmap)
 

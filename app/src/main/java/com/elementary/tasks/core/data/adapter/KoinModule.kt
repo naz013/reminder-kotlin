@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.adapter
 
+import com.elementary.tasks.core.app_widgets.singlenote.RecyclableUiNoteWidgetAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
@@ -52,6 +53,7 @@ val adapterModule = module {
 
   single { UiNoteListSelectableAdapter(get(), get(), get()) }
   single { UiNoteWidgetAdapter(get(), get(), get()) }
+  single { RecyclableUiNoteWidgetAdapter(get(), get(), get()) }
 
   single { UiPlaceListAdapter(get(), get(), get()) }
   single { UiPlaceEditAdapter() }
