@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.views.TextDrawable
+import com.elementary.tasks.core.views.drawable.TextDrawable
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import timber.log.Timber

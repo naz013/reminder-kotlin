@@ -778,6 +778,14 @@
     <string name="notes_unarchive">Unarchive</string>
     <string name="notes_failed_to_update">Failed to update</string>
     <string name="notes_archive_is_empty">Archive is empty</string>
-    <string name="notes_note_not_selected">Note not selected</string>
+
+    <string name="widget_note_note_not_selected">Note not selected</string>
+    <string name="widget_note_horizontal_alignment">Horizontal alignment</string>
+    <string name="widget_note_vertical_alignment">Vertical alignment</string>
+    <string name="widget_note_center">Center</string>
+    <string name="widget_note_bottom">Bottom</string>
+    <string name="widget_note_top">Top</string>
+    <string name="widget_note_right">Right</string>
+    <string name="widget_note_left">Left</string>
 
 </resources>

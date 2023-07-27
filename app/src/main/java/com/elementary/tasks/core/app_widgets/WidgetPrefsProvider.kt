@@ -36,4 +36,16 @@ abstract class WidgetPrefsProvider(
   fun getString(key: String, def: String? = null): String? {
     return sp.getString(key + widgetId, def)
   }
+
+  fun clear() {
+    val edit = sp.edit()
+    getKeys().forEach { key ->
+      edit.remove(key + widgetId)
+    }
+    edit.apply()
+  }
+
+  open fun getKeys(): List<String> {
+    return emptyList()
+  }
 }
