@@ -163,7 +163,7 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
     prefsProvider.setVerticalAlignment(getVerticalAlignment())
     prefsProvider.setTextSize(getTextSize())
 
-    analyticsEventSender.send(WidgetUsedEvent(Widget.COMBINED))
+    analyticsEventSender.send(WidgetUsedEvent(Widget.SINGLE_NOTE))
 
     val appWidgetManager = AppWidgetManager.getInstance(this)
     SingleNoteWidget.updateWidget(
