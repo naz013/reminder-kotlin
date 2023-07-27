@@ -35,6 +35,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.visible
@@ -228,16 +229,20 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       { _, _, listActions ->
         if (listActions == ListActions.OPEN) {
           startActivity(
-            Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
+            intentForClass(NotePreviewActivity::class.java)
               .putExtra(Constants.INTENT_ID, note.id)
           )
         }
       }
     ) { _, _, imageId ->
       val imagePosition = note.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
-      imagesSingleton.setCurrent(note.images)
+      imagesSingleton.setCurrent(
+        images = note.images,
+        color = note.colorPosition,
+        palette = note.colorPalette
+      )
       startActivity(
-        Intent(this, ImagePreviewActivity::class.java)
+        intentForClass(ImagePreviewActivity::class.java)
           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
           .putExtra(Constants.INTENT_ID, note.id)
           .putExtra(Constants.INTENT_POSITION, imagePosition)
@@ -434,7 +439,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       binding.attachmentImage, "image"
     )
     startActivity(
-      Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
+      intentForClass(AttachmentPreviewActivity::class.java)
         .putExtra(Constants.INTENT_ITEM, attachmentFile),
       options.toBundle()
     )
@@ -589,7 +594,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     withReminder {
       val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.mapCard, "map")
       startActivity(
-        Intent(this, FullscreenMapActivity::class.java)
+        intentForClass(FullscreenMapActivity::class.java)
           .putExtra(Constants.INTENT_ID, it.id), options.toBundle()
       )
     }
