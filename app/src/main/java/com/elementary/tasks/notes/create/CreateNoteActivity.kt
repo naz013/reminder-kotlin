@@ -39,6 +39,7 @@ import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
@@ -648,9 +649,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   }
 
   private fun openImagePreview(position: Int) {
-    imagesSingleton.setCurrent(imagesGridAdapter.currentList)
+    imagesSingleton.setCurrent(
+      images = imagesGridAdapter.currentList,
+      color = binding.colorSlider.selectedItem,
+      palette = palette()
+    )
     startActivity(
-      Intent(this, ImagePreviewActivity::class.java)
+      intentForClass(ImagePreviewActivity::class.java)
         .putExtra(Constants.INTENT_POSITION, position)
     )
   }

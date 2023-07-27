@@ -24,6 +24,7 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
@@ -135,9 +136,12 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun openImagePreview(position: Int) {
-    imagesSingleton.setCurrent(adapter.currentList)
+    imagesSingleton.setCurrent(
+      images = adapter.currentList,
+      backgroundColor = viewModel.note.value?.backgroundColor ?: -1
+    )
     startActivity(
-      Intent(this, ImagePreviewActivity::class.java)
+      intentForClass(ImagePreviewActivity::class.java)
         .putExtra(Constants.INTENT_POSITION, position)
     )
   }

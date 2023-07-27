@@ -59,6 +59,14 @@ import java.io.InputStream
 import java.io.Serializable
 import java.util.Calendar
 
+fun Fragment.intentForClass(clazz: Class<*>): Intent {
+  return Intent(requireContext(), clazz).setClassName(requireContext().packageName, clazz.name)
+}
+
+fun Context.intentForClass(clazz: Class<*>): Intent {
+  return Intent(this, clazz).setClassName(packageName, clazz.name)
+}
+
 fun LocalDateTime.minusMillis(millis: Long): LocalDateTime {
   return minusSeconds(millis / 1000L)
 }
@@ -112,11 +120,11 @@ fun Fragment.startActivity(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) 
 }
 
 fun Activity.startActivity(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
-  startActivity(Intent(this, clazz).also { intent?.invoke(it) })
+  startActivity(intentForClass(clazz).also { intent?.invoke(it) })
 }
 
 fun Activity.finishWith(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
-  startActivity(Intent(this, clazz).also { intent?.invoke(it) })
+  startActivity(intentForClass(clazz).also { intent?.invoke(it) })
   finish()
 }
 

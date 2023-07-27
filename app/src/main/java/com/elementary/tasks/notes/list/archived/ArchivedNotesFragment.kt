@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
@@ -194,11 +195,16 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
       }
     }
     notesRecyclerAdapter.imageClickListener = { note, imagePosition ->
-      imagesSingleton.setCurrent(note.images)
-      requireContext().startActivity(Intent(requireContext(), ImagePreviewActivity::class.java)
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        .putExtra(Constants.INTENT_ID, note.id)
-        .putExtra(Constants.INTENT_POSITION, imagePosition))
+      imagesSingleton.setCurrent(
+        images = note.images,
+        color = note.colorPosition,
+        palette = note.colorPalette
+      )
+      startActivity(ImagePreviewActivity::class.java) {
+        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          .putExtra(Constants.INTENT_ID, note.id)
+          .putExtra(Constants.INTENT_POSITION, imagePosition)
+      }
     }
     binding.recyclerView.adapter = notesRecyclerAdapter
     binding.recyclerView.itemAnimator = DefaultItemAnimator()
@@ -219,7 +225,7 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
       when (item) {
         0 -> previewNote(note.id)
         1 -> PinLoginActivity.openLogged(
-          requireContext(), Intent(context, CreateNoteActivity::class.java)
+          requireContext(), intentForClass(CreateNoteActivity::class.java)
             .putExtra(Constants.INTENT_ID, note.id)
         )
 

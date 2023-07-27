@@ -501,7 +501,7 @@ val utilModule = module {
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get()) }
   single { GlobalButtonObservable() }
-  single { ImagesSingleton() }
+  single { ImagesSingleton(get()) }
   single { SyncManagers(get(), get(), get(), get()) }
   single {
     EventControlFactory(

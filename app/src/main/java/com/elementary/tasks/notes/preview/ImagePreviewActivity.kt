@@ -19,7 +19,18 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     initActionBar()
+    updateBackground()
     showImages()
+  }
+
+  private fun updateBackground() {
+    val color = imagesSingleton.getColor()
+    if (color == -1) {
+      return
+    }
+    window.statusBarColor = color
+    window.navigationBarColor = color
+    binding.containerView.setBackgroundColor(color)
   }
 
   private fun showImages() {

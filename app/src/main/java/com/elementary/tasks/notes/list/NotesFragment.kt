@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
@@ -198,9 +199,13 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
       }
     }
     notesRecyclerAdapter.imageClickListener = { note, imagePosition ->
-      imagesSingleton.setCurrent(note.images)
+      imagesSingleton.setCurrent(
+        images = note.images,
+        color = note.colorPosition,
+        palette = note.colorPalette
+      )
       requireContext().startActivity(
-        Intent(requireContext(), ImagePreviewActivity::class.java)
+        intentForClass(ImagePreviewActivity::class.java)
           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
           .putExtra(Constants.INTENT_ID, note.id)
           .putExtra(Constants.INTENT_POSITION, imagePosition)
