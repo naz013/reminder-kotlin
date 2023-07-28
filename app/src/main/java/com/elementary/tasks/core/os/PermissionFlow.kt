@@ -217,6 +217,9 @@ class PermissionFlow private constructor(
   }
 
   private fun showPermissionExplanation(dialogData: UiPermissionDialogData) {
+    if (launcher.getActivity().isFinishing) {
+      return
+    }
     dialogues.getMaterialDialog(launcher.getActivity())
       .setTitle(dialogData.title)
       .setMessage(dialogData.description)

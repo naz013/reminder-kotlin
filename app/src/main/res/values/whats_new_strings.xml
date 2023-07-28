@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_version_and_date" translatable="false">9.1.0, June 19, 2023</string>
+    <string name="whats_new_version_and_date" translatable="false">9.1.1, July 28, 2023</string>
     <string name="whats_new_text" translatable="false">
-        🎉 Add new Reminder type - Custom (only PRO version), where You can customize recurrence with RFC 5545 rules;\n
-        ✅ Add Troubleshooting page to Settings;\n
+        ✅ Add Archive page for Notes;\n
+        ✅ Add new Home screen widget - Single Note;\n
         ⭐ UI updates;\n
         🐞 Bug fixes and improvements.
     </string>
