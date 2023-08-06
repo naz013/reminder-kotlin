@@ -6,19 +6,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import coil.load
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteListSelectable
-import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.dp2px
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ListItemNoteSelectableBinding
-import timber.log.Timber
 
 class SelectableNoteViewHolder(
   parent: ViewGroup,
@@ -91,10 +88,7 @@ class SelectableNoteViewHolder(
 
   private fun setImage(imageView: ImageView, image: String?) {
     if (image == null) return
-    Glide.with(imageView)
-      .load(image)
-      .apply(RequestOptions.centerCropTransform())
-      .into(imageView)
+    imageView.load(image)
   }
 
   private fun loadImage(container: LinearLayout, uiNoteListSelectable: UiNoteListSelectable) {

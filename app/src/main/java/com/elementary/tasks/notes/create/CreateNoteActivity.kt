@@ -77,7 +77,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   private var isBgDark = false
 
   private val viewModel by viewModel<CreateNoteViewModel> { parametersOf(getId()) }
-  private val photoSelectionUtil = PhotoSelectionUtil(this, dialogues, this)
+  private val photoSelectionUtil = PhotoSelectionUtil(this, this)
   private val loginLauncher = LoginLauncher(this) {
     if (!it) {
       finish()

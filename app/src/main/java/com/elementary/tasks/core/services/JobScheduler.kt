@@ -267,7 +267,7 @@ class JobScheduler(
       flags = PendingIntent.FLAG_CANCEL_CURRENT,
       ignoreIn13 = false
     )
-    systemServiceProvider.provideAlarmManager()?.setExact(
+    systemServiceProvider.provideAlarmManager()?.setExactAndAllowWhileIdle(
       AlarmManager.RTC_WAKEUP,
       millis,
       pendingIntent

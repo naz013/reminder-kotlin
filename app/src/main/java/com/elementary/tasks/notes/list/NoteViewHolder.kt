@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import coil.load
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteList
@@ -98,10 +97,7 @@ class NoteViewHolder(
 
   private fun setImage(imageView: ImageView, image: String?) {
     if (image == null) return
-    Glide.with(imageView)
-      .load(image)
-      .apply(RequestOptions.centerCropTransform())
-      .into(imageView)
+    imageView.load(image)
   }
 
   private fun setClick(

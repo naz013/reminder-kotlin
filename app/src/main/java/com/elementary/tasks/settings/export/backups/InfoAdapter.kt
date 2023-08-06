@@ -1,7 +1,5 @@
 package com.elementary.tasks.settings.export.backups
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -9,16 +7,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
+import coil.load
 import com.elementary.tasks.R
 import com.elementary.tasks.core.chart.PieSlice
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.databinding.ListItemBackupInfoBinding
 import com.elementary.tasks.settings.export.BackupsFragment
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.util.concurrent.ExecutionException
 
 class InfoAdapter(
   private val layout: LinearLayout,
@@ -110,37 +104,8 @@ class InfoAdapter(
   }
 
   private fun loadImage(photoLink: String, userPhoto: ImageView) {
-    val dir = MemoryUtil.imagesDir
-    val image = File(dir, FILE_NAME)
-    Glide.with(userPhoto).load(image).into(userPhoto)
+    userPhoto.load(photoLink)
     userPhoto.visibility = View.VISIBLE
-    if (!image.exists()) {
-      saveImageFile(userPhoto.context, photoLink)
-    }
-  }
-
-  private fun saveImageFile(context: Context, photoLink: String) {
-    Thread {
-      try {
-        val bitmap = Glide.with(context)
-          .asBitmap()
-          .load(photoLink)
-          .submit().get()
-        val dir1 = MemoryUtil.imagesDir
-        val image1 = File(dir1, FILE_NAME)
-        if (image1.createNewFile()) {
-          val stream = FileOutputStream(image1)
-          bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-          stream.close()
-        }
-      } catch (e: InterruptedException) {
-        e.printStackTrace()
-      } catch (e: ExecutionException) {
-        e.printStackTrace()
-      } catch (e: IOException) {
-        e.printStackTrace()
-      }
-    }.start()
   }
 
   companion object {

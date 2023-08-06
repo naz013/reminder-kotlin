@@ -8,8 +8,10 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import coil.request.ImageRequest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
@@ -17,19 +19,22 @@ import com.elementary.tasks.core.os.datapicker.CameraPhotoPicker
 import com.elementary.tasks.core.os.datapicker.MultiPicturePicker
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.databinding.ViewUrlFieldBinding
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class PhotoSelectionUtil(
   private val activity: ComponentActivity,
-  private val dialogues: Dialogues,
   private val mCallback: UriCallback?
-): DefaultLifecycleObserver {
+): DefaultLifecycleObserver, KoinComponent {
+
+  private val dialogues by inject<Dialogues>()
+  private val imageLoader by inject<ImageLoader>()
 
   private lateinit var permissionFlow: PermissionFlow
   private lateinit var multiPicturePicker: MultiPicturePicker
@@ -149,9 +154,10 @@ class PhotoSelectionUtil(
     if (Patterns.WEB_URL.matcher(url).matches()) {
       coroutineScope.launch(Dispatchers.Default) {
         try {
-          val bitmap = Picasso.get()
-            .load(url)
-            .get()
+          val request = ImageRequest.Builder(activity)
+            .data(url)
+            .build()
+          val bitmap = imageLoader.execute(request).drawable?.toBitmap()
           if (bitmap != null) {
             withUIContext {
               mCallback?.onBitmapReady(bitmap)

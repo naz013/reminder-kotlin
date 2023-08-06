@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.preview
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -30,6 +29,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.ImageLoader
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -54,8 +54,6 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -70,6 +68,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
+  private val imageLoader by inject<ImageLoader>()
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
   private val adsProvider = AdsProvider()
@@ -77,26 +76,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
     openFullMap()
     false
-  }
-
-  private val imageTarget: Target = object : Target {
-    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-      Timber.d("onPrepareLoad: ")
-    }
-
-    override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-      Timber.d("onBitmapFailed: $e")
-      binding.attachmentsView.gone()
-    }
-
-    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-      Timber.d("onBitmapLoaded: ${bitmap != null}")
-      binding.attachmentsView.visible()
-      binding.attachmentImage.setImageBitmap(bitmap)
-      binding.attachmentsView.setOnClickListener {
-        withReminder { openAttachmentPreview(it.attachmentFile) }
-      }
-    }
   }
 
   override fun inflateBinding() = ActivityReminderPreviewBinding.inflate(layoutInflater)
@@ -447,15 +426,34 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun showAttachment(reminder: UiReminderPreview) {
     Timber.d("showAttachment: ${reminder.attachmentFile}")
-    reminder.attachmentFile?.let {
-      binding.attachment.text = it
+    reminder.attachmentFile?.let { path ->
+      binding.attachment.text = path
       binding.attachmentView.visible()
-      val file = File(it)
+      val onSuccess: (Drawable) -> Unit = { drawable ->
+        Timber.d("onBitmapLoaded: ")
+        binding.attachmentsView.visible()
+        binding.attachmentImage.setImageDrawable(drawable)
+        binding.attachmentsView.setOnClickListener {
+          withReminder { openAttachmentPreview(it.attachmentFile) }
+        }
+      }
+      val onFail: (Drawable?) -> Unit = {
+        Timber.d("onBitmapFailed: ")
+        binding.attachmentsView.gone()
+      }
+      val file = File(path)
       if (file.exists()) {
-        Picasso.get().load(file).into(imageTarget)
+        imageLoader.loadFromFile(
+          file = file,
+          onSuccess = onSuccess,
+          onFail = onFail
+        )
       } else {
-        val uri = Uri.parse(it)
-        Picasso.get().load(uri).into(imageTarget)
+        imageLoader.loadFromUri(
+          uri = Uri.parse(path),
+          onSuccess = onSuccess,
+          onFail = onFail
+        )
       }
     } ?: run {
       binding.attachmentView.gone()
