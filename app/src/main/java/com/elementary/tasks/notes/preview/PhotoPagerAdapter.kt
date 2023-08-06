@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
-import com.bumptech.glide.Glide
+import coil.load
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.databinding.FragmentImageBinding
 import com.github.chrisbanes.photoview.PhotoView
@@ -32,9 +32,6 @@ class PhotoPagerAdapter(private val images: List<UiNoteImage>) : PagerAdapter() 
   }
 
   private fun loadPhoto(imageView: ImageView, position: Int) {
-    val image = images[position]
-    Glide.with(imageView.context)
-      .load(image.filePath)
-      .into(imageView)
+    imageView.load(images[position].filePath)
   }
 }

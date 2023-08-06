@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
-import com.bumptech.glide.Glide
 import com.elementary.tasks.core.app_widgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.data.factory.dataFactory
@@ -16,6 +15,7 @@ import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
 import com.elementary.tasks.core.utils.dataFlowRepositoryModule
 import com.elementary.tasks.core.utils.dbModule
+import com.elementary.tasks.core.utils.newUtilsModule
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
@@ -70,7 +70,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           uiUtilsModule,
           reminderModule,
           widgetModule,
-          osModule
+          osModule,
+          newUtilsModule
         )
       )
     }
@@ -78,18 +79,5 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
     get<Notifier>().createChannels()
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
-  }
-
-  override fun onTrimMemory(level: Int) {
-    if (level == TRIM_MEMORY_UI_HIDDEN) {
-      Glide.get(this).clearMemory()
-    }
-    Glide.get(this).trimMemory(level)
-    super.onTrimMemory(level)
-  }
-
-  override fun onLowMemory() {
-    Glide.get(this).clearMemory()
-    super.onLowMemory()
   }
 }

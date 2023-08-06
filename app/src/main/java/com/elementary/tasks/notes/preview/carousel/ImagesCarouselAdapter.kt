@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
-import com.bumptech.glide.Glide
+import coil.load
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -45,7 +45,7 @@ class ImagesCarouselAdapter : ListAdapter<UiNoteImage, ImagesCarouselAdapter.Pho
     }
 
     private fun loadImage(imageView: ImageView, image: UiNoteImage) {
-      Glide.with(imageView).load(image.filePath).into(imageView)
+      imageView.load(image.filePath)
     }
   }
 }
