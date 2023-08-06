@@ -51,9 +51,12 @@ class PresetSelectionActivity : BindingActivity<ActivityRecurPresetListBinding>(
   }
 
   private fun onPresetSelected(item: UiPresetList) {
-    setResult(RESULT_OK, Intent().apply {
-      putExtra(Constants.INTENT_ID, item.id)
-    })
+    setResult(
+      RESULT_OK,
+      Intent().apply {
+        putExtra(Constants.INTENT_ID, item.id)
+      }
+    )
     finish()
   }
 

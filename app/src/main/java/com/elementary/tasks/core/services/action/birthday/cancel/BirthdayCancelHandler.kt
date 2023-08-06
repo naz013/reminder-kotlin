@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services.action.birthday.cancel
 
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.os.ContextProvider

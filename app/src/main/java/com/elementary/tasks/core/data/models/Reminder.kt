@@ -2,7 +2,11 @@ package com.elementary.tasks.core.data.models
 
 import android.os.Parcelable
 import androidx.annotation.Keep
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
@@ -221,8 +225,9 @@ data class Reminder(
   }
 
   fun isRepeating(): Boolean {
-    return !isGpsType(type) && (repeatInterval > 0L || isBase(type, BY_WEEK)
-      || isBase(type, BY_MONTH) || isBase(type, BY_DAY_OF_YEAR))
+    val harRepeat = repeatInterval > 0L || isBase(type, BY_WEEK) || isBase(type, BY_MONTH) ||
+      isBase(type, BY_DAY_OF_YEAR)
+    return !isGpsType(type) && harRepeat
   }
 
   object Kind {

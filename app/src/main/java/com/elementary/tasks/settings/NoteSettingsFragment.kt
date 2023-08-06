@@ -78,7 +78,8 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
   private fun showNoteTime() {
     binding.noteReminderTime.setDetailText(
       String.format(
-        Locale.getDefault(), getString(R.string.x_minutes),
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
         prefs.noteReminderTime.toString()
       )
     )
@@ -110,7 +111,8 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
 
       b.seekBar.addOnChangeListener { _, value, _ ->
         b.titleView.text = String.format(
-          Locale.getDefault(), getString(R.string.x_minutes),
+          Locale.getDefault(),
+          getString(R.string.x_minutes),
           value.toInt().toString()
         )
       }
@@ -122,7 +124,8 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
       b.seekBar.value = time.toFloat()
 
       b.titleView.text = String.format(
-        Locale.getDefault(), getString(R.string.x_minutes),
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
         time.toString()
       )
       builder.setView(b.root)

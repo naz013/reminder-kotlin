@@ -15,10 +15,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.visible
 import timber.log.Timber
-import java.util.*
 
 class PrefsView : RelativeLayout {
 
@@ -27,9 +26,11 @@ class PrefsView : RelativeLayout {
   var isChecked: Boolean = false
     set(checked) {
       field = checked
-      if (viewType == CHECK)
+      if (viewType == CHECK) {
         binding.prefsCheck.isChecked = checked
-      else if (viewType == SWITCH) binding.prefsSwitch.isChecked = checked
+      } else if (viewType == SWITCH) {
+        binding.prefsSwitch.isChecked = checked
+      }
       refreshDetailText()
       for (listener in mOnCheckedListeners) {
         listener.onCheckedChange(checked)
@@ -57,7 +58,11 @@ class PrefsView : RelativeLayout {
     init(context, attrs)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context, attrs)
   }
 
@@ -70,7 +75,11 @@ class PrefsView : RelativeLayout {
 
     if (attrs != null) {
       val a = context.theme.obtainStyledAttributes(
-        attrs, R.styleable.PrefsView, 0, 0)
+        /* set = */ attrs,
+        /* attrs = */ R.styleable.PrefsView,
+        /* defStyleAttr = */ 0,
+        /* defStyleRes = */ 0
+      )
       var titleText = ""
       var valueText = ""
       var divTop = false

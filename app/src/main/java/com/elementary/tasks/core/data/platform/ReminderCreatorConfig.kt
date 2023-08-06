@@ -4,7 +4,7 @@ data class ReminderCreatorConfig(private val value: String) {
 
   private val bytes = Bytes(value)
 
-  constructor(): this(DEFAULT_VALUE)
+  constructor() : this(DEFAULT_VALUE)
 
   fun toHex(): String {
     return bytes.toHexString()
@@ -117,7 +117,6 @@ data class ReminderCreatorConfig(private val value: String) {
   override fun toString(): String {
     return "ReminderCreatorConfig(bytes=$bytes)"
   }
-
 
   companion object {
     const val DEFAULT_VALUE = "FFFF0000"

@@ -60,26 +60,31 @@ class RepeatView : LinearLayout, TextWatcher {
           setProgress(progress.toInt())
           selectState(WEEKS)
         }
+
         fitInterval(mills, DateTimeManager.DAY) -> {
           val progress = mills / DateTimeManager.DAY
           setProgress(progress.toInt())
           selectState(DAYS)
         }
+
         fitInterval(mills, DateTimeManager.HOUR) -> {
           val progress = mills / DateTimeManager.HOUR
           setProgress(progress.toInt())
           selectState(HOURS)
         }
+
         fitInterval(mills, DateTimeManager.MINUTE) -> {
           val progress = mills / DateTimeManager.MINUTE
           setProgress(progress.toInt())
           selectState(MINUTES)
         }
+
         fitInterval(mills, DateTimeManager.SECOND) -> {
           val progress = mills / DateTimeManager.SECOND
           setProgress(progress.toInt())
           selectState(SECONDS)
         }
+
         else -> {
           setProgress(mills.toInt())
           selectState(0)
@@ -105,7 +110,11 @@ class RepeatView : LinearLayout, TextWatcher {
     init(context, attrs)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context, attrs)
   }
 
@@ -118,11 +127,12 @@ class RepeatView : LinearLayout, TextWatcher {
 
     binding.repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
       override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
-        if (!mIsLocked) setState(i)
+        if (!mIsLocked) {
+          setState(i)
+        }
       }
 
       override fun onNothingSelected(adapterView: AdapterView<*>) {
-
       }
     }
     binding.repeatTitle.addTextChangedListener(this)
@@ -154,10 +164,18 @@ class RepeatView : LinearLayout, TextWatcher {
     mRepeatValue = defaultValue
     setDefaultField()
     if (mState == MONTHS && mIsLocked) {
-      binding.repeatType.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times_month))
+      binding.repeatType.adapter = ArrayAdapter(
+        context,
+        android.R.layout.simple_spinner_item,
+        resources.getStringArray(R.array.repeat_times_month)
+      )
       binding.repeatType.isEnabled = false
     } else {
-      binding.repeatType.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times))
+      binding.repeatType.adapter = ArrayAdapter(
+        context,
+        android.R.layout.simple_spinner_item,
+        resources.getStringArray(R.array.repeat_times)
+      )
       binding.repeatType.isEnabled = true
     }
     setState(mState)
@@ -190,7 +208,6 @@ class RepeatView : LinearLayout, TextWatcher {
   }
 
   override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
   }
 
   override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

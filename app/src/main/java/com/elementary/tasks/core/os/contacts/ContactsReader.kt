@@ -25,8 +25,11 @@ class ContactsReader(private val context: Context) {
         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
       val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
       val c = context.contentResolver.query(
-        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-        projection, selection, null, null
+        /* uri = */ ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        /* projection = */ projection,
+        /* selection = */ selection,
+        /* selectionArgs = */ null,
+        /* sortOrder = */ null
       )
       if (c != null && c.moveToFirst()) {
         number = c.getString(0)
@@ -52,15 +55,19 @@ class ContactsReader(private val context: Context) {
         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
       val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
       val c = context.contentResolver.query(
-        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-        projection, selection, null, null
+        /* uri = */ ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        /* projection = */ projection,
+        /* selection = */ selection,
+        /* selectionArgs = */ null,
+        /* sortOrder = */ null
       )
       if (c != null && c.moveToFirst()) {
         email = c.getString(0)
         c.close()
       }
-      if (email != null)
+      if (email != null) {
         break
+      }
       part = part.substring(0, part.length - 2)
     }
     return email
@@ -70,8 +77,9 @@ class ContactsReader(private val context: Context) {
     if (contactId == 0L) return null
     try {
       val uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
-      val input = ContactsContract.Contacts.openContactPhotoInputStream(context.contentResolver, uri)
-        ?: return null
+      val input =
+        ContactsContract.Contacts.openContactPhotoInputStream(context.contentResolver, uri)
+          ?: return null
       return BitmapFactory.decodeStream(input)
     } catch (e: Throwable) {
       return null
@@ -83,18 +91,19 @@ class ContactsReader(private val context: Context) {
         context,
         Permissions.READ_CONTACTS
       )
-    ) return 0
+    ) {
+      return 0
+    }
     var phoneContactID = 0L
     try {
       val contact = Uri.encode(phoneNumber)
-      val cursor = context.contentResolver
-        .query(
-          Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
-          arrayOf(ContactsContract.PhoneLookup._ID),
-          null,
-          null,
-          null
-        )
+      val cursor = context.contentResolver.query(
+        /* uri = */ Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
+        /* projection = */ arrayOf(ContactsContract.PhoneLookup._ID),
+        /* selection = */ null,
+        /* selectionArgs = */ null,
+        /* sortOrder = */ null
+      )
       cursor?.use {
         if (it.moveToFirst()) {
           phoneContactID = cursor.getLong(
@@ -119,8 +128,13 @@ class ContactsReader(private val context: Context) {
     )
     var contactId = 0L
     val contentResolver = context.contentResolver
-    val contactLookup =
-      contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID), null, null, null)
+    val contactLookup = contentResolver.query(
+      /* uri = */ uri,
+      /* projection = */ arrayOf(ContactsContract.PhoneLookup._ID),
+      /* selection = */ null,
+      /* selectionArgs = */ null,
+      /* sortOrder = */ null
+    )
     contactLookup.use { look ->
       if (look != null && look.count > 0) {
         look.moveToNext()
@@ -131,19 +145,22 @@ class ContactsReader(private val context: Context) {
   }
 
   fun getNameFromMail(eMail: String?): String? {
-    if (eMail == null || !Permissions.checkPermission(
-        context,
-        Permissions.READ_CONTACTS
-      )
-    ) return null
+    if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+      return null
+    }
     val uri = Uri.withAppendedPath(
       ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
       Uri.encode(eMail)
     )
     var name = "?"
     val contentResolver = context.contentResolver
-    val contactLookup =
-      contentResolver.query(uri, arrayOf(ContactsContract.Data.DISPLAY_NAME), null, null, null)
+    val contactLookup = contentResolver.query(
+      /* uri = */ uri,
+      /* projection = */ arrayOf(ContactsContract.Data.DISPLAY_NAME),
+      /* selection = */ null,
+      /* selectionArgs = */ null,
+      /* sortOrder = */ null
+    )
     contactLookup.use { look ->
       if (look != null && look.count > 0) {
         look.moveToNext()
@@ -159,11 +176,14 @@ class ContactsReader(private val context: Context) {
       try {
         val contact = Uri.encode(contactNumber)
         val cursor = context.contentResolver.query(
-          Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
-          arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME),
-          null,
-          null,
-          null
+          /* uri = */ Uri.withAppendedPath(
+            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+            contact
+          ),
+          /* projection = */ arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME),
+          /* selection = */ null,
+          /* selectionArgs = */ null,
+          /* sortOrder = */ null
         )
         cursor?.use {
           if (it.moveToFirst()) {
@@ -192,8 +212,11 @@ class ContactsReader(private val context: Context) {
     try {
       val c = try {
         context.contentResolver.query(
-          ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-          projection, selection, null, null
+          /* uri = */ ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+          /* projection = */ projection,
+          /* selection = */ selection,
+          /* selectionArgs = */ null,
+          /* sortOrder = */ null
         )
       } catch (e: Exception) {
         null

@@ -57,7 +57,11 @@ class HomeViewModel(
       val fromDb = reminderDao.getById(reminder.id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, fromDb.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          fromDb.uuId
+        )
         Commands.SAVED
       }
       Commands.FAILED
@@ -72,7 +76,11 @@ class HomeViewModel(
         postInProgress(false)
         postCommand(Commands.OUTDATED)
       } else {
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, item.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          item.uuId
+        )
         postInProgress(false)
         postCommand(Commands.SAVED)
       }
@@ -85,7 +93,11 @@ class HomeViewModel(
         it.isRemoved = true
         eventControlFactory.getController(it).stop()
         reminderDao.insert(it)
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          it.uuId
+        )
         Commands.DELETED
       } ?: run {
         Commands.FAILED

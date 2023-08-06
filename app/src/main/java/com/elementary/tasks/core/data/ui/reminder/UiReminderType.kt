@@ -4,7 +4,7 @@ data class UiReminderType(
   val value: Int
 ) {
 
-  constructor(base: Base, kind: Kind): this(
+  constructor(base: Base, kind: Kind) : this(
     base.value + kind.value
   )
 
@@ -54,6 +54,7 @@ data class UiReminderType(
     TIMER(20),
     WEEKDAY(30),
     LOCATION_IN(40),
+
     @Deprecated("This type is removed from application")
     SKYPE(50),
     MONTHLY(60),

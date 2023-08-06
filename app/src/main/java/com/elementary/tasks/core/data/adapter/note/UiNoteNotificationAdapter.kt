@@ -7,10 +7,8 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
-import com.elementary.tasks.core.utils.params.Prefs
 
 class UiNoteNotificationAdapter(
   private val themeProvider: ThemeProvider,
@@ -24,8 +22,9 @@ class UiNoteNotificationAdapter(
       noteWithImages.getPalette()
     )
 
-    val textColor = if ((noteWithImages.getOpacity().isAlmostTransparent() &&
-        themeProvider.isDark) || backgroundColor.isColorDark()) {
+    val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
+      backgroundColor.isColorDark()
+    val textColor = if (isDarkBg) {
       ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
     } else {
       ContextCompat.getColor(contextProvider.context, R.color.pureBlack)

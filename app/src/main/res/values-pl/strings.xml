@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">Codziennie w maju</string>
     <string name="recur_weekly_for_10_occurrences">Tygodniowo dla 10 zdarzeń</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Miesięcznie w pierwszy piątek dla 10 zdarzeń</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Co drugi miesiąc w pierwszą i ostatnią niedzielę miesiąca za 10 zdarzeń</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Co drugi miesiąc w pierwszą i ostatnią niedzielę miesiąca za 10 zdarzeń</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Miesięcznie w drugi do ostatniego poniedziałku miesiąca przez 6 miesięcy</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Miesięcznie w trzecim do ostatniego dniu miesiąca</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Miesięcznie w 2. i 15. dniu miesiąca, 10 zdarzeń</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Pierwsza sobota, która następuje po pierwszej niedzielze miesiąca</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Co 15 minut dla 6 zdarzeń</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Co godzinę i pół dla 4 zdarzeń</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">Trzecia instancja w miesiąc 1 wtorek, środa lub czwartek przez następne 3 miesiące</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Trzecia instancja w miesiąc 1 wtorek, środa lub czwartek przez następne 3 miesiące</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Drugi do ostatniego dnia tygodnia miesiąca</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Tygodniowy we wtorek i czwartek przez pięć tygodni</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Co drugi tydzień we wtorek i czwartek, 8 zdarzeń</string>

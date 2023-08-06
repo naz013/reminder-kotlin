@@ -31,7 +31,11 @@ class PriorityPickerView : LinearLayout {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 
@@ -85,8 +89,8 @@ class PriorityPickerView : LinearLayout {
   }
 
   private fun isAnyChecked(): Boolean {
-    return binding.chipLowest.isChecked || binding.chipLow.isChecked || binding.chipNormal.isChecked
-      || binding.chipHigh.isChecked || binding.chipHighest.isChecked
+    return binding.chipLowest.isChecked || binding.chipLow.isChecked ||
+      binding.chipNormal.isChecked || binding.chipHigh.isChecked || binding.chipHighest.isChecked
   }
 
   private fun updateState(priority: Int) {

@@ -152,7 +152,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       Timber.d("onDateChanged: $it")
       binding.birthDate.text = it
     }
-    viewModel.isContactAttached.nonNullObserve(this) { binding.pickContactView.visibleInvisible(it) }
+    viewModel.isContactAttached.nonNullObserve(this) {
+      binding.pickContactView.visibleInvisible(it)
+    }
   }
 
   private fun askCopySaving() {

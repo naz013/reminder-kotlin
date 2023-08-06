@@ -184,10 +184,13 @@ internal class EsWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
     if (matcher.find()) {
       val time = matcher.group().trim()
       for (format in hourFormats) {
-        if (ignoreAny {
-            localTime = LocalTime.parse(time, format)
-            localTime
-          } != null) break
+        val ignore = ignoreAny {
+          localTime = LocalTime.parse(time, format)
+          localTime
+        }
+        if (ignore != null) {
+          break
+        }
       }
     }
     localTime
@@ -313,9 +316,9 @@ internal class EsWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   }
 
   override fun hasAction(input: String): Boolean {
-    return input.matches(".*abiert(o|a).*") || input.matches(".*ayuda.*")
-      || input.matches(".*ajustar.*") || input.matches(".*modificar.*")
-      || input.matches(".*informe.*") || input.matches(".*cambi(o|ar).*")
+    return input.matches(".*abiert(o|a).*") || input.matches(".*ayuda.*") ||
+      input.matches(".*ajustar.*") || input.matches(".*modificar.*") ||
+      input.matches(".*informe.*") || input.matches(".*cambi(o|ar).*")
   }
 
   override fun getAction(input: String): Action = when {
@@ -619,7 +622,9 @@ internal class EsWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
-      } else s
+      } else {
+        s
+      }
     } ?: ""
   }
 

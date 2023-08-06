@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">毎日5月</string>
     <string name="recur_weekly_for_10_occurrences">毎週10回のオカレンスがあります</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">最初の金曜日に10回の発生があります。</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">毎月最初と最後の日曜日に10回のオカレンスがあります</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">毎月最初と最後の日曜日に10回のオカレンスがあります</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">毎月の月曜日から月曜日までの6ヶ月</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">毎月3日～3日の最終日</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">毎月の2日と15日に10回のオカレンスがあります</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">月の最初の日曜日に続く第一土曜日</string>
     <string name="recur_every_15_minutes_for_6_occurrences">6回発生する場合は15分ごと</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">4回発生した場合、1時間半ごとに表示されます</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">今後3ヶ月の間、火曜日、水曜日、木曜日のいずれかの月の3番目のインスタンス。</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">今後3ヶ月の間、火曜日、水曜日、木曜日のいずれかの月の3番目のインスタンス。</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">月の2番目から最後の平日</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">毎週火曜日と木曜日は5週間です</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">火曜日と木曜日に隔週で 8 回</string>

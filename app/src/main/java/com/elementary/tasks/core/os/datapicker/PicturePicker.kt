@@ -23,7 +23,8 @@ class PicturePicker private constructor(
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
-), KoinComponent {
+),
+  KoinComponent {
 
   private val cacheUtil by inject<CacheUtil>()
   private val dispatcherProvider by inject<DispatcherProvider>()

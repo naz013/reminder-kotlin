@@ -46,8 +46,9 @@ class SoundStackHolder(
         mVolume++
         mHandler.postDelayed(this, 750)
         mAudioManager?.setStreamVolume(mStream, mVolume, 0)
-      } else
+      } else {
         mHandler.removeCallbacks(this)
+      }
     }
   }
 
@@ -57,14 +58,22 @@ class SoundStackHolder(
     isSystemLoudnessEnabled = prefs.isSystemLoudnessEnabled
     isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
     isIncreasingLoudnessEnabled = prefs.isIncreasingLoudnessEnabled
-    if (isSystemLoudnessEnabled) mSystemStream = prefs.soundStream
+    if (isSystemLoudnessEnabled) {
+      mSystemStream = prefs.soundStream
+    }
     if (mAudioManager == null) {
-      if (sound != null) sound?.stop(true)
-      else sound = Sound(context, prefs)
+      if (sound != null) {
+        sound?.stop(true)
+      } else {
+        sound = Sound(context, prefs)
+      }
       sound?.setCallback(this)
-      mAudioManager = context.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-      if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH))
+      mAudioManager = context.applicationContext.getSystemService(
+        Context.AUDIO_SERVICE
+      ) as AudioManager
+      if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH)) {
         mAudioManager?.mode = AudioManager.MODE_NORMAL
+      }
     }
   }
 
@@ -74,7 +83,9 @@ class SoundStackHolder(
     isSystemLoudnessEnabled = prefs.isSystemLoudnessEnabled
     isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
     isIncreasingLoudnessEnabled = prefs.isIncreasingLoudnessEnabled
-    if (isSystemLoudnessEnabled) mSystemStream = prefs.soundStream
+    if (isSystemLoudnessEnabled) {
+      mSystemStream = prefs.soundStream
+    }
   }
 
   fun setMaxVolume(maxVolume: Int) {
@@ -94,7 +105,6 @@ class SoundStackHolder(
 
   @Synchronized
   private fun restoreDefaultVolume() {
-    Timber.d("restoreDefaultVolume: $hasDefaultSaved, doNot: $isDoNotDisturbEnabled, am $mAudioManager")
     if (hasDefaultSaved && !isDoNotDisturbEnabled) {
       if (mAudioManager != null) {
         try {
@@ -103,7 +113,6 @@ class SoundStackHolder(
           mAudioManager?.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0)
         } catch (ignored: SecurityException) {
         }
-
       }
       mMusicVolume = -1
       mNotificationVolume = -1
@@ -130,14 +139,21 @@ class SoundStackHolder(
 
   private fun setPlayerVolume() {
     cancelIncreaseSound()
-    if (isHeadset) return
-    if (!hasVolumePermission) return
-    if (mAudioManager == null) return
+    if (isHeadset) {
+      return
+    }
+    if (!hasVolumePermission) {
+      return
+    }
+    if (mAudioManager == null) {
+      return
+    }
 
-    mStream = if (isSystemLoudnessEnabled)
+    mStream = if (isSystemLoudnessEnabled) {
       mSystemStream
-    else
+    } else {
       AudioManager.STREAM_MUSIC
+    }
 
     val volPercent = mMaxVolume.toFloat() / Configs.MAX_VOLUME
     val maxVol = mAudioManager?.getStreamMaxVolume(mStream) ?: 24

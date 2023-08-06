@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 class DispatcherProvider {
-    fun main(): CoroutineDispatcher = Dispatchers.Main
-    fun io(): CoroutineDispatcher = Dispatchers.IO
-    fun default(): CoroutineDispatcher = Dispatchers.Default
+  fun main(): CoroutineDispatcher = Dispatchers.Main
+  fun io(): CoroutineDispatcher = Dispatchers.IO
+  fun default(): CoroutineDispatcher = Dispatchers.Default
 }

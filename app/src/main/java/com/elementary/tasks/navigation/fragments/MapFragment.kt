@@ -68,8 +68,15 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
   }
 
   private fun initMap() {
-    val map = AdvancedMapFragment.newInstance(false, isPlaces = false, isSearch = false,
-      isStyles = false, isBack = false, isZoom = false, isDark = isDark)
+    val map = AdvancedMapFragment.newInstance(
+      isTouch = false,
+      isPlaces = false,
+      isSearch = false,
+      isStyles = false,
+      isBack = false,
+      isZoom = false,
+      isDark = isDark
+    )
     map.setCallback(mReadyCallback)
     map.setOnMarkerClick(mOnMarkerClick)
     childFragmentManager.beginTransaction()
@@ -89,7 +96,6 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
           }
         }
       }
-
     }
     binding.recyclerView.adapter = mAdapter
     reloadView()
@@ -129,8 +135,14 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
     var mapReady = false
     for (reminder in data) {
       for (place in reminder.places) {
-        mapReady = map.addMarker(LatLng(place.latitude, place.longitude),
-          place.name, false, place.marker, false, place.radius)
+        mapReady = map.addMarker(
+          pos = LatLng(place.latitude, place.longitude),
+          title = place.name,
+          clear = false,
+          markerStyle = place.marker,
+          animate = false,
+          radius = place.radius
+        )
         if (!mapReady) {
           break
         }

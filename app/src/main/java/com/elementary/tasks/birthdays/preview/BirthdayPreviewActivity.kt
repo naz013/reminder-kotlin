@@ -163,7 +163,8 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
 
   private fun editBirthday() {
     PinLoginActivity.openLogged(
-      this, Intent(this, AddBirthdayActivity::class.java)
+      context = this,
+      intent = Intent(this, AddBirthdayActivity::class.java)
         .putExtra(Constants.INTENT_ID, idFromIntent())
     )
   }

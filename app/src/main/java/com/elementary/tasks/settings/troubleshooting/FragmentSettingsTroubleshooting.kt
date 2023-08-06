@@ -25,7 +25,8 @@ import com.elementary.tasks.databinding.FragmentSettingsTroubleshootingBinding
 import com.elementary.tasks.settings.BaseSettingsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
+class FragmentSettingsTroubleshooting :
+  BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
 
   private val viewModel by viewModel<TroubleshootingViewModel>()
 
@@ -77,6 +78,7 @@ class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTro
           openAppSettings()
         }
       }
+
       "xiaomi" -> {
         var intent = Intent()
         intent.component = ComponentName(
@@ -102,6 +104,7 @@ class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTro
           }
         }
       }
+
       "huawei" -> {
         val intent = Intent()
         intent.component = ComponentName(
@@ -114,6 +117,7 @@ class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTro
           openAppSettings()
         }
       }
+
       else -> {
         openAppSettings()
       }

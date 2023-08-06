@@ -76,7 +76,13 @@ class LocationTracker(
       .addLocationRequest(locationRequest)
     val client = LocationServices.getSettingsClient(context)
     val task = client.checkLocationSettings(builder.build())
-    task.addOnSuccessListener { mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper()) }
+    task.addOnSuccessListener {
+      mFusedLocationClient?.requestLocationUpdates(
+        locationRequest,
+        mLocationCallback,
+        Looper.myLooper()
+      )
+    }
   }
 
   override fun onLocationChanged(location: Location) {

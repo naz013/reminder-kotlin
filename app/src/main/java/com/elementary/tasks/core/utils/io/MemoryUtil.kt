@@ -139,7 +139,9 @@ class MemoryUtil(
         val dir = File("$sdPath/JustReminder/$directory")
         if (!dir.exists() && dir.mkdirs()) {
           dir
-        } else dir
+        } else {
+          dir
+        }
       } else {
         null
       }
@@ -211,8 +213,12 @@ class MemoryUtil(
         return null
       }
       val cursor: Cursor? = cr.query(
-        uri, null, null,
-        null, null, null
+        /* uri = */ uri,
+        /* projection = */ null,
+        /* selection = */ null,
+        /* selectionArgs = */ null,
+        /* sortOrder = */ null,
+        /* cancellationSignal = */ null
       )
 
       val name = try {

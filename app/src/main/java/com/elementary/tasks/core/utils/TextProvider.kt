@@ -8,8 +8,10 @@ class TextProvider(initContext: Context) {
   private var context: Context = initContext
 
   fun updateContext(newContext: Context) {
-    if (newContext.resources.configuration.locale.language !=
-      context.resources.configuration.locale.language) {
+    if (
+      newContext.resources.configuration.locale.language !=
+      context.resources.configuration.locale.language
+    ) {
       this.context = newContext
     }
   }

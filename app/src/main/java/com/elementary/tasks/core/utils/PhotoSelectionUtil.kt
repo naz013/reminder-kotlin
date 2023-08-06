@@ -31,7 +31,7 @@ import timber.log.Timber
 class PhotoSelectionUtil(
   private val activity: ComponentActivity,
   private val mCallback: UriCallback?
-): DefaultLifecycleObserver, KoinComponent {
+) : DefaultLifecycleObserver, KoinComponent {
 
   private val dialogues by inject<Dialogues>()
   private val imageLoader by inject<ImageLoader>()

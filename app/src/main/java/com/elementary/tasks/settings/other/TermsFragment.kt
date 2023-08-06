@@ -5,7 +5,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.navigation.fragments.BaseWebViewFragment
 
 class TermsFragment : BaseWebViewFragment() {
@@ -21,7 +20,13 @@ class TermsFragment : BaseWebViewFragment() {
     webView.settings.javaScriptEnabled = true
     webView.webViewClient = object : WebViewClient() {
       @Deprecated("Deprecated in Java")
-      override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
+      override fun onReceivedError(
+        view: WebView,
+        errorCode: Int,
+        description: String,
+        failingUrl: String
+      ) {
+      }
 
       @Deprecated("Deprecated in Java")
       override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {

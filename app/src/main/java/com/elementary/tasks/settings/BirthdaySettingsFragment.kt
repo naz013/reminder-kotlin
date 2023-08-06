@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.JobScheduler
@@ -110,7 +110,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
   private fun initNotificationPrefs() {
     binding.birthdayNotificationPrefs.setOnClickListener {
-      safeNavigation(BirthdaySettingsFragmentDirections.actionBirthdaySettingsFragmentToBirthdayNotificationFragment())
+      safeNavigation {
+        BirthdaySettingsFragmentDirections
+          .actionBirthdaySettingsFragmentToBirthdayNotificationFragment()
+      }
     }
     binding.birthdayNotificationPrefs.setDependentView(binding.birthReminderPrefs)
   }
@@ -278,12 +281,16 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     binding.birthdayPermanentPrefs.isChecked = !isChecked
     prefs.isBirthdayPermanentEnabled = !isChecked
     if (!isChecked) {
-      requireActivity().sendBroadcast(Intent(requireContext(), PermanentBirthdayReceiver::class.java)
-        .setAction(PermanentBirthdayReceiver.ACTION_SHOW))
+      requireActivity().sendBroadcast(
+        Intent(requireContext(), PermanentBirthdayReceiver::class.java)
+          .setAction(PermanentBirthdayReceiver.ACTION_SHOW)
+      )
       jobScheduler.scheduleBirthdayPermanent()
     } else {
-      requireActivity().sendBroadcast(Intent(requireContext(), PermanentBirthdayReceiver::class.java)
-        .setAction(PermanentBirthdayReceiver.ACTION_HIDE))
+      requireActivity().sendBroadcast(
+        Intent(requireContext(), PermanentBirthdayReceiver::class.java)
+          .setAction(PermanentBirthdayReceiver.ACTION_HIDE)
+      )
       jobScheduler.cancelBirthdayPermanent()
     }
   }

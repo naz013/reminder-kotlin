@@ -15,9 +15,12 @@ import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.io.readInt
+import com.elementary.tasks.core.utils.io.readLong
+import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber
-import java.util.*
+import java.util.TimeZone
 
 class GoogleCalendarUtils(
   private val context: Context,
@@ -71,8 +74,11 @@ class GoogleCalendarUtils(
     val cr = context.contentResolver
     for (i in events.indices.reversed()) {
       val event = events.removeAt(i)
-      cr.delete(CalendarContract.Events.CONTENT_URI,
-        CalendarContract.Events._ID + "='" + event.eventId + "'", null)
+      cr.delete(
+        /* url = */ CalendarContract.Events.CONTENT_URI,
+        /* where = */ CalendarContract.Events._ID + "='" + event.eventId + "'",
+        /* selectionArgs = */ null
+      )
       calendarEventsDao.delete(event)
     }
   }
@@ -82,7 +88,11 @@ class GoogleCalendarUtils(
       return
     }
     val cr = context.contentResolver
-    cr.delete(CalendarContract.Events.CONTENT_URI, CalendarContract.Events._ID + "='" + id + "'", null)
+    cr.delete(
+      /* url = */ CalendarContract.Events.CONTENT_URI,
+      /* where = */ CalendarContract.Events._ID + "='" + id + "'",
+      /* selectionArgs = */ null
+    )
   }
 
   fun loadEvents(reminderId: String): List<EventItem> {
@@ -102,11 +112,14 @@ class GoogleCalendarUtils(
 
   @RequiresPermission(Permissions.READ_CALENDAR)
   fun getEvent(id: Long, uuId: String): EventItem? {
-    if (id == 0L) return null
+    if (id == 0L) {
+      return null
+    }
     try {
       val contentResolver = context.contentResolver
-      val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
-        arrayOf(
+      val c = contentResolver.query(
+        /* uri = */ CalendarContract.Events.CONTENT_URI,
+        /* projection = */ arrayOf(
           CalendarContract.Events.TITLE,
           CalendarContract.Events.DESCRIPTION,
           CalendarContract.Events.DTSTART,
@@ -116,7 +129,11 @@ class GoogleCalendarUtils(
           CalendarContract.Events._ID,
           CalendarContract.Events.CALENDAR_ID,
           CalendarContract.Events.ALL_DAY
-        ), CalendarContract.Events._ID + "='" + id + "'", null, "dtstart ASC")
+        ),
+        /* selection = */ CalendarContract.Events._ID + "='" + id + "'",
+        /* selectionArgs = */ null,
+        /* sortOrder = */ "dtstart ASC"
+      )
       if (c != null && c.moveToFirst()) {
         val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
         val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION))
@@ -131,8 +148,18 @@ class GoogleCalendarUtils(
 
         c.close()
 
-        return EventItem(title, description, rrule, rDate,
-          calendarId, allDay, dtStart, dtEnd, eventID, uuId)
+        return EventItem(
+          title = title,
+          description = description,
+          rrule = rrule,
+          rDate = rDate,
+          calendarId = calendarId,
+          allDay = allDay,
+          dtStart = dtStart,
+          dtEnd = dtEnd,
+          id = eventID,
+          localId = uuId
+        )
       }
     } catch (e: Exception) {
       e.printStackTrace()
@@ -151,7 +178,10 @@ class GoogleCalendarUtils(
       .setData(CalendarContract.Events.CONTENT_URI)
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
-      .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime + 60 * 1000 * prefs.calendarEventDuration)
+      .putExtra(
+        CalendarContract.EXTRA_EVENT_END_TIME,
+        startTime + 60 * 1000 * prefs.calendarEventDuration
+      )
       .putExtra(CalendarContract.Events.TITLE, summary)
       .putExtra(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder))
     try {
@@ -181,8 +211,8 @@ class GoogleCalendarUtils(
 
     if (c != null && c.moveToFirst()) {
       do {
-        val mID = c.getLong(c.getColumnIndex(projection[0]))
-        val title = c.getString(c.getColumnIndex(projection[2])) ?: ""
+        val mID = c.readLong(projection[0], 0L)
+        val title = c.readString(projection[2]) ?: ""
         ids.add(CalendarItem(title, mID))
       } while (c.moveToNext())
     }
@@ -192,33 +222,60 @@ class GoogleCalendarUtils(
 
   fun getEvents(ids: Array<Long>): List<EventItem> {
     if (ids.isEmpty()) return listOf()
-    if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+    if (!Permissions.checkPermission(
+        context,
+        Permissions.READ_CALENDAR,
+        Permissions.WRITE_CALENDAR
+      )
+    ) {
       return listOf()
     }
     val list = mutableListOf<EventItem>()
     try {
       val contentResolver = context.contentResolver
       for (id in ids) {
-        val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
-          arrayOf(CalendarContract.Events.TITLE, CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND, CalendarContract.Events.RRULE, CalendarContract.Events.RDATE, CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ALL_DAY),
-          CalendarContract.Events.CALENDAR_ID + "='" + id + "'", null, "dtstart ASC")
+        val c = contentResolver.query(
+          /* uri = */ CalendarContract.Events.CONTENT_URI,
+          /* projection = */ arrayOf(
+            CalendarContract.Events.TITLE,
+            CalendarContract.Events.DESCRIPTION,
+            CalendarContract.Events.DTSTART,
+            CalendarContract.Events.DTEND,
+            CalendarContract.Events.RRULE,
+            CalendarContract.Events.RDATE,
+            CalendarContract.Events._ID,
+            CalendarContract.Events.CALENDAR_ID,
+            CalendarContract.Events.ALL_DAY
+          ),
+          /* selection = */ CalendarContract.Events.CALENDAR_ID + "='" + id + "'",
+          /* selectionArgs = */ null,
+          /* sortOrder = */ "dtstart ASC"
+        )
         if (c != null && c.moveToFirst()) {
           do {
-            val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE))
-              ?: ""
-            val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION))
-              ?: ""
-            val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE))
-              ?: ""
-            val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE))
-              ?: ""
-            val calendarId = c.getLong(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
-            val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
-            val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
-            val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
-            val eventID = c.getLong(c.getColumnIndex(CalendarContract.Events._ID))
-            list.add(EventItem(title, description, rrule, rDate,
-              calendarId, allDay, dtStart, dtEnd, eventID, ""))
+            val title = c.readString(CalendarContract.Events.TITLE) ?: ""
+            val description = c.readString(CalendarContract.Events.DESCRIPTION) ?: ""
+            val rrule = c.readString(CalendarContract.Events.RRULE) ?: ""
+            val rDate = c.readString(CalendarContract.Events.RDATE) ?: ""
+            val calendarId = c.readLong(CalendarContract.Events.CALENDAR_ID, 0L)
+            val allDay = c.readInt(CalendarContract.Events.ALL_DAY) ?: 0
+            val dtStart = c.readLong(CalendarContract.Events.DTSTART, 0L)
+            val dtEnd = c.readLong(CalendarContract.Events.DTEND, 0L)
+            val eventID = c.readLong(CalendarContract.Events._ID, 0L)
+            list.add(
+              EventItem(
+                title = title,
+                description = description,
+                rrule = rrule,
+                rDate = rDate,
+                calendarId = calendarId,
+                allDay = allDay,
+                dtStart = dtStart,
+                dtEnd = dtEnd,
+                id = eventID,
+                localId = ""
+              )
+            )
           } while (c.moveToNext())
           c.close()
         }

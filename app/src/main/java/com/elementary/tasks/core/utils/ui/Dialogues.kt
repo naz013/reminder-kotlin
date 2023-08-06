@@ -97,7 +97,9 @@ class Dialogues(
   }
 
   fun showColorDialog(
-    activity: Activity, current: Int, title: String,
+    activity: Activity,
+    current: Int,
+    title: String,
     colors: IntArray = ThemeProvider.colorsForSlider(activity),
     onDone: (Int) -> Unit
   ) {
@@ -148,7 +150,9 @@ class Dialogues(
   fun getNullableDialog(context: Context?): MaterialAlertDialogBuilder? {
     return if (context != null) {
       getMaterialDialog(context)
-    } else null
+    } else {
+      null
+    }
   }
 
   fun askConfirmation(context: Context, title: String, onAction: (Boolean) -> Unit) {
@@ -180,7 +184,8 @@ class Dialogues(
 
     fun showPopup(
       anchor: View,
-      listener: ((Int) -> Unit)?, vararg actions: String
+      listener: ((Int) -> Unit)?,
+      vararg actions: String
     ) {
       val popupMenu = PopupMenu(anchor.context, anchor)
       popupMenu.setOnMenuItemClickListener { item ->

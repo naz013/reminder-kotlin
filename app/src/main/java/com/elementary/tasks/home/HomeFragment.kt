@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.elementary.tasks.core.utils.params.PrefsObserver
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.visible
@@ -36,7 +37,9 @@ import com.elementary.tasks.whatsnew.WhatsNewManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit,
+class HomeFragment :
+  BaseFragment<HomeFragmentBinding>(),
+  PrefsObserver,
   WhatsNewManager.Listener {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
@@ -56,6 +59,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit,
             viewModel.toggleReminder(reminder)
           }
         }
+
         else -> {
           viewModel.toggleReminder(reminder)
         }
@@ -88,6 +92,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit,
           safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
           true
         }
+
         else -> false
       }
     }) {
@@ -142,7 +147,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit,
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
     }
 
-    binding.googleButton.visibleGone(featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS))
+    binding.googleButton.visibleGone(
+      featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
+    )
     binding.googleButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
     }
@@ -227,7 +234,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit,
 
   private fun initRemindersList() {
     remindersAdapter.actionsListener = object : ActionsListener<UiReminderListData> {
-      override fun onAction(view: View, position: Int, t: UiReminderListData?, actions: ListActions) {
+      override fun onAction(
+        view: View,
+        position: Int,
+        t: UiReminderListData?,
+        actions: ListActions
+      ) {
         if (t != null) {
           mPosition = position
           reminderResolver.resolveAction(view, t, actions)

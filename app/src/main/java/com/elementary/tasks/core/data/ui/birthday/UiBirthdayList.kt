@@ -8,5 +8,5 @@ data class UiBirthdayList(
   val ageFormatted: String = "",
   val remainingTimeFormatted: String = "",
   val nextBirthdayDateFormatted: String = "",
-  val nextBirthdayDate: Long = 0L// Milliseconds
+  val nextBirthdayDate: Long = 0L // Milliseconds
 )

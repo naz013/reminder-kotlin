@@ -30,16 +30,22 @@ class PackageManagerWrapper(
     "???"
   }
 
-  fun getAppInfo(appId: String): ApplicationInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    packageManager.getApplicationInfo(appId, PackageManager.ApplicationInfoFlags.of(0))
-  } else {
-    packageManager.getApplicationInfo(appId, 0)
+  fun getAppInfo(
+    appId: String
+  ): ApplicationInfo {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      packageManager.getApplicationInfo(appId, PackageManager.ApplicationInfoFlags.of(0))
+    } else {
+      packageManager.getApplicationInfo(appId, 0)
+    }
   }
 
-  fun getPackageInfo(packageName: String): PackageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-  } else {
-    packageManager.getPackageInfo(packageName, 0)
+  fun getPackageInfo(packageName: String): PackageInfo {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+    } else {
+      packageManager.getPackageInfo(packageName, 0)
+    }
   }
 
   fun getVersionName(): String = try {

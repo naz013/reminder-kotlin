@@ -229,9 +229,9 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
   private fun showBirthdayNotification(birthday: Birthday) {
     Timber.d("showBirthdayNotification: $birthday")
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-    if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-        (SuperUtil.checkNotificationPermission(this) && isBirthdaySilenEnabled()))
-    ) {
+    val playMelody = !SuperUtil.isDoNotDisturbEnabled(this) ||
+      (SuperUtil.checkNotificationPermission(this) && isBirthdaySilenEnabled())
+    if (playMelody) {
       val melody = ReminderUtils.getSound(applicationContext, birthdayMelody(), "")
       if (melody.melodyType == ReminderUtils.MelodyType.FILE) {
         playMelody(melody.uri)
@@ -339,15 +339,15 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
     if (isTtsEnabled) {
-      if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
-      ) {
+      val playMelody = !SuperUtil.isDoNotDisturbEnabled(this) ||
+        (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)
+      if (playMelody) {
         playTts(reminder.summary, reminder.melodyPath)
       }
     } else {
-      if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
-      ) {
+      val playMelody = !SuperUtil.isDoNotDisturbEnabled(this) ||
+        (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)
+      if (playMelody) {
         val melody = ReminderUtils.getSound(applicationContext, prefs, reminder.melodyPath)
         if (melody.melodyType == ReminderUtils.MelodyType.FILE) {
           playMelody(melody.uri)

@@ -19,13 +19,20 @@ class DividerView : View {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 
   private fun init(context: Context) {
     val typedValue = TypedValue()
-    val themeArray = context.theme.obtainStyledAttributes(typedValue.data, intArrayOf(android.R.attr.textColorPrimary))
+    val themeArray = context.theme.obtainStyledAttributes(
+      typedValue.data,
+      intArrayOf(android.R.attr.textColorPrimary)
+    )
     val color = try {
       themeArray.getColor(0, 0)
     } catch (e: Exception) {

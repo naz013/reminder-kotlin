@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast
@@ -30,7 +30,8 @@ import org.dmfs.rfc5545.recur.RecurrenceRule
 import org.koin.android.ext.android.inject
 import java.util.Calendar
 
-class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(),
+class FragmentEventsImport :
+  BaseCalendarFragment<FragmentSettingsEventsImportBinding>(),
   CompoundButton.OnCheckedChangeListener {
 
   private val eventControlFactory by inject<EventControlFactory>()
@@ -259,8 +260,13 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   }
 
   private fun saveReminder(
-    itemId: Long, summary: String, dtStart: Long, repeat: Long,
-    categoryId: String, calendarId: Long, appDb: AppDb
+    itemId: Long,
+    summary: String,
+    dtStart: Long,
+    repeat: Long,
+    categoryId: String,
+    calendarId: Long,
+    appDb: AppDb
   ) {
     val reminder = Reminder()
     reminder.type = Reminder.BY_DATE

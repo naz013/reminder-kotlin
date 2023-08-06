@@ -193,7 +193,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
       b.seekBar.addOnChangeListener { _, value, _ ->
         b.titleView.text = String.format(
-          Locale.getDefault(), getString(R.string.x_minutes),
+          Locale.getDefault(),
+          getString(R.string.x_minutes),
           value.toInt().toString()
         )
       }
@@ -205,7 +206,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       b.seekBar.value = repeatTime.toFloat()
 
       b.titleView.text = String.format(
-        Locale.getDefault(), getString(R.string.x_minutes),
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
         repeatTime.toString()
       )
       builder.setView(b.root)
@@ -296,14 +298,17 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun showSnooze() {
     binding.delayForPrefs.setDetailText(
       String.format(
-        Locale.getDefault(), getString(R.string.x_minutes),
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
         prefs.snoozeTime.toString()
       )
     )
   }
 
   private fun snoozeFormat(progress: Int): String {
-    if (!isAdded) return ""
+    if (!isAdded) {
+      return ""
+    }
     return String.format(Locale.getDefault(), getString(R.string.x_minutes), progress.toString())
   }
 
@@ -612,8 +617,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun iconTintColor() =
-    if (isDark) colorOf(R.color.pureWhite)
-    else colorOf(R.color.pureBlack)
+    if (isDark) {
+      colorOf(R.color.pureWhite)
+    } else {
+      colorOf(R.color.pureBlack)
+    }
 
   private fun showMelody() {
     val filePath = prefs.melodyFile

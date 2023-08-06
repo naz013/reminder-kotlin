@@ -1,11 +1,11 @@
 package com.elementary.tasks.reminder
 
-import android.content.Intent
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -39,7 +39,11 @@ class ReminderResolver(
 
   private fun showDeletedActionDialog(view: View, reminder: UiReminderListData) {
     val context = view.context
-    val items = arrayOf(context.getString(R.string.open), context.getString(R.string.edit), context.getString(R.string.delete))
+    val items = arrayOf(
+      context.getString(R.string.open),
+      context.getString(R.string.edit),
+      context.getString(R.string.delete)
+    )
     Dialogues.showPopup(view, { item ->
       when (item) {
         0 -> previewReminder(view, reminder)
@@ -54,9 +58,18 @@ class ReminderResolver(
   private fun showActionDialog(view: View, reminder: UiReminderListData) {
     val context = view.context
     val items = if (reminder.status.active && !reminder.status.removed && reminder.canSkip) {
-      arrayOf(context.getString(R.string.open), context.getString(R.string.edit), context.getString(R.string.move_to_trash), context.getString(R.string.skip_event))
+      arrayOf(
+        context.getString(R.string.open),
+        context.getString(R.string.edit),
+        context.getString(R.string.move_to_trash),
+        context.getString(R.string.skip_event)
+      )
     } else {
-      arrayOf(context.getString(R.string.open), context.getString(R.string.edit), context.getString(R.string.move_to_trash))
+      arrayOf(
+        context.getString(R.string.open),
+        context.getString(R.string.edit),
+        context.getString(R.string.move_to_trash)
+      )
     }
     Dialogues.showPopup(view, { item ->
       when (item) {
@@ -65,6 +78,7 @@ class ReminderResolver(
         2 -> askConfirmation(view, items[item]) {
           if (it) deleteAction.invoke(reminder)
         }
+
         3 -> skipAction.invoke(reminder)
       }
     }, *items)
@@ -75,13 +89,21 @@ class ReminderResolver(
   }
 
   private fun editReminder(view: View, reminder: UiReminderListData) {
-    PinLoginActivity.openLogged(view.context,
-      Intent(view.context, CreateReminderActivity::class.java)
-        .putExtra(Constants.INTENT_ID, reminder.id))
+    view.context.run {
+      PinLoginActivity.openLogged(
+        this,
+        intentForClass(CreateReminderActivity::class.java)
+          .putExtra(Constants.INTENT_ID, reminder.id)
+      )
+    }
   }
 
   private fun previewReminder(view: View, reminder: UiReminderListData) {
-    view.context.startActivity(Intent(view.context, ReminderPreviewActivity::class.java)
-      .putExtra(Constants.INTENT_ID, reminder.id))
+    view.context.run {
+      startActivity(
+        intentForClass(ReminderPreviewActivity::class.java)
+          .putExtra(Constants.INTENT_ID, reminder.id)
+      )
+    }
   }
 }

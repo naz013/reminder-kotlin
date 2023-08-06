@@ -113,7 +113,10 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     mAdapter.listener = mActionListener
     binding.todoList.adapter = mAdapter
     binding.shopEdit.setOnEditorActionListener { _, actionId, event ->
-      if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
+      if (
+        event != null && event.keyCode == KeyEvent.KEYCODE_ENTER ||
+        actionId == EditorInfo.IME_ACTION_NEXT
+      ) {
         addNewItem()
         return@setOnEditorActionListener true
       }

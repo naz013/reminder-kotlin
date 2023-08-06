@@ -15,7 +15,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.analytics.Status
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -43,12 +43,12 @@ import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.ContextProvider
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.IdProvider
 import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
@@ -502,10 +502,11 @@ class ConversationViewModel(
       typeT = Reminder.BY_WEEK
       eventTime = dateTimeManager.getNextWeekdayTime(eventTime, weekdays, 0)
       if (model.target.isNullOrEmpty()) {
-        typeT = if (action == Action.WEEK_CALL)
+        typeT = if (action == Action.WEEK_CALL) {
           Reminder.BY_WEEK_CALL
-        else
+        } else {
           Reminder.BY_WEEK_SMS
+        }
       }
     } else if (action == Action.CALL) {
       typeT = Reminder.BY_DATE_CALL

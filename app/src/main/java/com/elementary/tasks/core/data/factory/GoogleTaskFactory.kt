@@ -45,7 +45,6 @@ class GoogleTaskFactory(
   }
 
   fun update(googleTask: GoogleTask, task: Task): GoogleTask {
-
     var isDeleted = false
     try {
       isDeleted = task.deleted ?: false

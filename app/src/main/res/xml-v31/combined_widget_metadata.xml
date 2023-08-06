@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.elementary.tasks.core.app_widgets.buttons.CombinedWidgetConfigActivity"
+    android:configure="com.elementary.tasks.core.appwidgets.buttons.CombinedWidgetConfigActivity"
     android:initialLayout="@layout/widget_combined_buttons"
     android:minHeight="40dp"
     android:minWidth="250dp"

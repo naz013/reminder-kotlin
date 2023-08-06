@@ -45,12 +45,18 @@ class BirthdayResolver(
   }
 
   private fun openBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(view.context, Intent(view.context, BirthdayPreviewActivity::class.java)
-      .putExtra(Constants.INTENT_ID, birthday.uuId))
+    PinLoginActivity.openLogged(
+      context = view.context,
+      intent = Intent(view.context, BirthdayPreviewActivity::class.java)
+        .putExtra(Constants.INTENT_ID, birthday.uuId)
+    )
   }
 
   private fun editBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(view.context, Intent(view.context, AddBirthdayActivity::class.java)
-      .putExtra(Constants.INTENT_ID, birthday.uuId))
+    PinLoginActivity.openLogged(
+      context = view.context,
+      intent = Intent(view.context, AddBirthdayActivity::class.java)
+        .putExtra(Constants.INTENT_ID, birthday.uuId)
+    )
   }
 }

@@ -68,7 +68,9 @@ class DropboxLogin(
       .setMessage(activity.getString(R.string.other_version_detected))
       .setPositiveButton(activity.getString(R.string.open)) { _, _ -> openApp() }
       .setNegativeButton(activity.getString(R.string.delete)) { _, _ -> deleteApp() }
-      .setNeutralButton(activity.getString(R.string.cancel)) { dialogInterface, _ -> dialogInterface.dismiss() }
+      .setNeutralButton(activity.getString(R.string.cancel)) { dialogInterface, _ ->
+        dialogInterface.dismiss()
+      }
       .setCancelable(true)
       .create()
   }

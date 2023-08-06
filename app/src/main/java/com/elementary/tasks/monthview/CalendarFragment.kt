@@ -13,7 +13,7 @@ import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
-import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.dayview.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,7 +22,9 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import timber.log.Timber
 
-class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback,
+class CalendarFragment :
+  BaseCalendarFragment<FragmentFlextCalBinding>(),
+  MonthCallback,
   InfinitePagerAdapter2.DataAccessor {
 
   private val viewModel by viewModel<CalendarViewModel>()
@@ -80,7 +82,9 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     addMenu(R.menu.fragment_calendar, { menuItem ->
       when (menuItem.itemId) {
         R.id.action_settings -> {
-          safeNavigation(CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment())
+          safeNavigation {
+            CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment()
+          }
           true
         }
 
@@ -112,56 +116,57 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     updateMenuTitles(date)
 
     binding.infiniteViewPager.adapter = infinitePagerAdapter
-    binding.infiniteViewPager.registerOnPageChangeCallback(object :
-      ViewPager2.OnPageChangeCallback() {
-      private var currentDate = LocalDate.now()
+    binding.infiniteViewPager.registerOnPageChangeCallback(
+      object : ViewPager2.OnPageChangeCallback() {
+        private var currentDate = LocalDate.now()
 
-      override fun onPageScrollStateChanged(state: Int) {
-        super.onPageScrollStateChanged(state)
-        if (state == ViewPager2.SCROLL_STATE_IDLE) {
-          Timber.d("onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
-          when (binding.infiniteViewPager.currentItem) {
-            0 -> {
-              // move to 4th position, current - 1
-              currentDate = currentDate.minusMonths(1)
-              infinitePagerAdapter.updateRightSide(createSide(currentDate))
-              binding.infiniteViewPager.setCurrentItem(4, false)
-            }
+        override fun onPageScrollStateChanged(state: Int) {
+          super.onPageScrollStateChanged(state)
+          if (state == ViewPager2.SCROLL_STATE_IDLE) {
+            Timber.d("onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
+            when (binding.infiniteViewPager.currentItem) {
+              0 -> {
+                // move to 4th position, current - 1
+                currentDate = currentDate.minusMonths(1)
+                infinitePagerAdapter.updateRightSide(createSide(currentDate))
+                binding.infiniteViewPager.setCurrentItem(4, false)
+              }
 
-            2 -> {
-              // move to 4th position, current + 1
-              currentDate = currentDate.plusMonths(1)
-              infinitePagerAdapter.updateRightSide(createSide(currentDate))
-              binding.infiniteViewPager.setCurrentItem(4, false)
-            }
+              2 -> {
+                // move to 4th position, current + 1
+                currentDate = currentDate.plusMonths(1)
+                infinitePagerAdapter.updateRightSide(createSide(currentDate))
+                binding.infiniteViewPager.setCurrentItem(4, false)
+              }
 
-            3 -> {
-              // move to 1st position, current - 1
-              currentDate = currentDate.minusMonths(1)
-              infinitePagerAdapter.updateLeftSide(createSide(currentDate))
-              binding.infiniteViewPager.setCurrentItem(1, false)
-            }
+              3 -> {
+                // move to 1st position, current - 1
+                currentDate = currentDate.minusMonths(1)
+                infinitePagerAdapter.updateLeftSide(createSide(currentDate))
+                binding.infiniteViewPager.setCurrentItem(1, false)
+              }
 
-            5 -> {
-              // move to 1th position, current + 1
-              currentDate = currentDate.plusMonths(1)
-              infinitePagerAdapter.updateLeftSide(createSide(currentDate))
-              binding.infiniteViewPager.setCurrentItem(1, false)
+              5 -> {
+                // move to 1th position, current + 1
+                currentDate = currentDate.plusMonths(1)
+                infinitePagerAdapter.updateLeftSide(createSide(currentDate))
+                binding.infiniteViewPager.setCurrentItem(1, false)
+              }
             }
           }
         }
-      }
 
-      override fun onPageSelected(position: Int) {
-        super.onPageSelected(position)
-        Timber.d("onPageSelected: $position")
-        if (position == 1 || position == 4) {
-          updateMenuTitles(currentDate)
-          infinitePagerAdapter.selectPosition(position)
-          viewModel.find(fromDate(currentDate))
+        override fun onPageSelected(position: Int) {
+          super.onPageSelected(position)
+          Timber.d("onPageSelected: $position")
+          if (position == 1 || position == 4) {
+            updateMenuTitles(currentDate)
+            infinitePagerAdapter.selectPosition(position)
+            viewModel.find(fromDate(currentDate))
+          }
         }
       }
-    })
+    )
     infinitePagerAdapter.updateLeftSide(createSide(LocalDate.now()))
     infinitePagerAdapter.updateRightSide(createSide(LocalDate.now().plusMonths(3)))
 

@@ -1,7 +1,8 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser
 
 import com.elementary.tasks.core.utils.datetime.recurrence.VersionTag
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class VersionTagParserTest {

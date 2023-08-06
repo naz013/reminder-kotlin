@@ -18,5 +18,5 @@ data class RecurPreset(
   @SerializedName("recurObject")
   val recurObject: String,
   @SerializedName("name")
-  var name: String,
+  var name: String
 ) : Parcelable

@@ -25,7 +25,13 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
     binding.webView.settings.javaScriptEnabled = true
     binding.webView.webViewClient = object : WebViewClient() {
       @Deprecated("Deprecated in Java")
-      override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
+      override fun onReceivedError(
+        view: WebView,
+        errorCode: Int,
+        description: String,
+        failingUrl: String
+      ) {
+      }
 
       @Deprecated("Deprecated in Java")
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {

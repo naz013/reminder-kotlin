@@ -49,7 +49,8 @@ class AlarmReceiver : BaseBroadcast() {
 
   companion object {
     const val ACTION_REMINDER = "com.elementary.tasks.core.services.alarm.REMINDER"
-    const val ACTION_REMINDER_GPS = "com.elementary.tasks.core.services.alarm.REMINDER_START_TRACKING"
+    const val ACTION_REMINDER_GPS =
+      "com.elementary.tasks.core.services.alarm.REMINDER_START_TRACKING"
     const val ACTION_REMINDER_REPEAT = "com.elementary.tasks.core.services.alarm.REMINDER_REPEAT"
   }
 }

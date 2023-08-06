@@ -25,7 +25,9 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     initRemindersPrefs()
     initFirstDayPrefs()
     binding.eventsImportPrefs.setOnClickListener {
-      safeNavigation(CalendarSettingsFragmentDirections.actionCalendarSettingsFragmentToFragmentEventsImport())
+      safeNavigation {
+        CalendarSettingsFragmentDirections.actionCalendarSettingsFragmentToFragmentEventsImport()
+      }
     }
 
     binding.reminderColorPrefs.setDependentView(binding.reminderInCalendarPrefs)
@@ -93,7 +95,9 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
   }
 
   private fun initRemindersColorPrefs() {
-    binding.reminderColorPrefs.setViewColor(ThemeProvider.colorReminderCalendar(requireContext(), prefs))
+    binding.reminderColorPrefs.setViewColor(
+      ThemeProvider.colorReminderCalendar(requireContext(), prefs)
+    )
   }
 
   private fun initRemindersPrefs() {
@@ -121,10 +125,14 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
   override fun getTitle(): String = getString(R.string.calendar)
 
   private fun initBirthdaysColorPrefs() {
-    binding.selectedColorPrefs.setViewColor(ThemeProvider.colorBirthdayCalendar(requireContext(), prefs))
+    binding.selectedColorPrefs.setViewColor(
+      ThemeProvider.colorBirthdayCalendar(requireContext(), prefs)
+    )
   }
 
   private fun initTodayColorPrefs() {
-    binding.themeColorPrefs.setViewColor(ThemeProvider.colorCurrentCalendar(requireContext(), prefs))
+    binding.themeColorPrefs.setViewColor(
+      ThemeProvider.colorCurrentCalendar(requireContext(), prefs)
+    )
   }
 }

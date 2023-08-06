@@ -42,9 +42,9 @@ import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.visibleInvisible
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
-import com.elementary.tasks.google_tasks.TasksConstants
-import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
-import com.elementary.tasks.google_tasks.task.GoogleTaskActivity
+import com.elementary.tasks.googletasks.TasksConstants
+import com.elementary.tasks.googletasks.list.GoogleTaskHolder
+import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -126,8 +126,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun sendEmail(action: UiEmailTarget) {
     TelephonyUtil.sendMail(
-      this, action.target, action.subject,
-      action.summary, action.attachmentFile
+      context = this,
+      email = action.target,
+      subject = action.subject,
+      message = action.summary,
+      filePath = action.attachmentFile
     )
   }
 
@@ -241,8 +244,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       val lat = it.latitude
       val lon = it.longitude
       mGoogleMap?.addMarker(
-        LatLng(lat, lon), reminder.summary, clear = false,
-        animate = false, radius = it.radius
+        pos = LatLng(lat, lon),
+        title = reminder.summary,
+        clear = false,
+        animate = false,
+        radius = it.radius
       )
       places += String.format(Locale.getDefault(), "%.5f %.5f", lat, lon)
       places += "\n"
@@ -415,7 +421,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     attachmentFile ?: return
     val options = ActivityOptions.makeSceneTransitionAnimation(
       this@ReminderPreviewActivity,
-      binding.attachmentImage, "image"
+      binding.attachmentImage,
+      "image"
     )
     startActivity(
       intentForClass(AttachmentPreviewActivity::class.java)
@@ -468,7 +475,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun editReminder() {
     withReminder {
       PinLoginActivity.openLogged(
-        this, Intent(this, CreateReminderActivity::class.java)
+        this,
+        intentForClass(CreateReminderActivity::class.java)
           .putExtra(Constants.INTENT_ID, it.id)
       )
     }
@@ -593,7 +601,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.mapCard, "map")
       startActivity(
         intentForClass(FullscreenMapActivity::class.java)
-          .putExtra(Constants.INTENT_ID, it.id), options.toBundle()
+          .putExtra(Constants.INTENT_ID, it.id),
+        options.toBundle()
       )
     }
   }

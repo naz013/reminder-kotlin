@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.fragments
 
-import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
@@ -17,8 +16,8 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.day_view.day.CalendarEventsAdapter
-import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.dayview.day.CalendarEventsAdapter
+import com.elementary.tasks.dayview.day.EventModel
 import com.elementary.tasks.monthview.DayBottomSheetDialog
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
@@ -122,9 +121,11 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
     if (isAdded) {
       withActivity {
         PinLoginActivity.openLogged(
-          it, Intent(it, CreateReminderActivity::class.java)
-            .putExtra(Constants.INTENT_DATE, date)
-        )
+          it,
+          CreateReminderActivity::class.java
+        ) { intent ->
+          intent.putExtra(Constants.INTENT_DATE, date)
+        }
       }
     }
   }
@@ -133,9 +134,11 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
     if (isAdded) {
       withActivity {
         PinLoginActivity.openLogged(
-          it, Intent(it, AddBirthdayActivity::class.java)
-            .putExtra(Constants.INTENT_DATE, date)
-        )
+          it,
+          AddBirthdayActivity::class.java
+        ) { intent ->
+          intent.putExtra(Constants.INTENT_DATE, date)
+        }
       }
     }
   }

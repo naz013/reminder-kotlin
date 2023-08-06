@@ -34,13 +34,48 @@ class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>()
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    binding.styleDay.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
-    binding.styleAubergine.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
-    binding.styleAuto.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
-    binding.styleDark.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
-    binding.styleNight.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
-    binding.styleRetro.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
-    binding.styleSilver.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+    binding.styleDay.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
+    binding.styleAubergine.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
+    binding.styleAuto.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
+    binding.styleDark.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
+    binding.styleNight.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
+    binding.styleRetro.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
+    binding.styleSilver.setOnCheckedChangeListener { buttonView, isChecked ->
+      invoke(
+        buttonView,
+        isChecked
+      )
+    }
 
     selectCurrent(prefs.mapStyle)
   }
@@ -72,8 +107,15 @@ class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>()
   }
 
   private fun buttons(): List<AppCompatRadioButton> {
-    return listOf(binding.styleDay, binding.styleAubergine, binding.styleAuto, binding.styleDark,
-      binding.styleNight, binding.styleRetro, binding.styleSilver)
+    return listOf(
+      binding.styleDay,
+      binding.styleAubergine,
+      binding.styleAuto,
+      binding.styleDark,
+      binding.styleNight,
+      binding.styleRetro,
+      binding.styleSilver
+    )
   }
 
   override fun getTitle(): String = getString(R.string.map_style)

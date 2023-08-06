@@ -42,17 +42,28 @@ class UiGradientLinearLayout : LinearLayout {
           5000
         )
 
-        val startColor =
-          a.getColor(R.styleable.UiGradientLinearLayout_gradientLinearLayout_startColor, -1)
-        val centerColor =
-          a.getColor(R.styleable.UiGradientLinearLayout_gradientLinearLayout_centerColor, -1)
-        val endColor =
-          a.getColor(R.styleable.UiGradientLinearLayout_gradientLinearLayout_endColor, -1)
+        val startColor = a.getColor(
+          R.styleable.UiGradientLinearLayout_gradientLinearLayout_startColor,
+          -1
+        )
+        val centerColor = a.getColor(
+          R.styleable.UiGradientLinearLayout_gradientLinearLayout_centerColor,
+          -1
+        )
+        val endColor = a.getColor(
+          R.styleable.UiGradientLinearLayout_gradientLinearLayout_endColor,
+          -1
+        )
 
-        val colorsId =
-          a.getResourceId(R.styleable.UiGradientLinearLayout_gradientLinearLayout_colors, -1)
+        val colorsId = a.getResourceId(
+          R.styleable.UiGradientLinearLayout_gradientLinearLayout_colors,
+          -1
+        )
 
-        val cornerRadius = a.getDimension(R.styleable.UiGradientLinearLayout_gradientLinearLayout_cornerRadius, 0f)
+        val cornerRadius = a.getDimension(
+          R.styleable.UiGradientLinearLayout_gradientLinearLayout_cornerRadius,
+          0f
+        )
 
         val colors = if (startColor != -1 && endColor != -1) {
           if (centerColor == -1) {

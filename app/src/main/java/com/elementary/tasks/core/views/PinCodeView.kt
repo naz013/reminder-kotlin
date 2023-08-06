@@ -7,8 +7,8 @@ import android.widget.LinearLayout
 import androidx.core.view.children
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PinCodeViewBinding
-import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.visible
 
 class PinCodeView : LinearLayout {
 
@@ -41,7 +41,11 @@ class PinCodeView : LinearLayout {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 

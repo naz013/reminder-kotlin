@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.preview
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -110,7 +109,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun editReminder() {
     val reminder = viewModel.reminder.value ?: return
     PinLoginActivity.openLogged(
-      this, Intent(this, CreateReminderActivity::class.java)
+      this,
+      intentForClass(CreateReminderActivity::class.java)
         .putExtra(Constants.INTENT_ID, reminder.uuId)
     )
   }
@@ -205,7 +205,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editNote() {
     PinLoginActivity.openLogged(
-      this, Intent(this, CreateNoteActivity::class.java)
+      this,
+      intentForClass(CreateNoteActivity::class.java)
         .putExtra(Constants.INTENT_ID, viewModel.key)
     )
   }
@@ -241,8 +242,11 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun updateTextColors() {
-    val textColor = if (isBgDark) colorOf(R.color.pureWhite)
-    else colorOf(R.color.pureBlack)
+    val textColor = if (isBgDark) {
+      colorOf(R.color.pureWhite)
+    } else {
+      colorOf(R.color.pureBlack)
+    }
     binding.noteText.setTextColor(textColor)
   }
 

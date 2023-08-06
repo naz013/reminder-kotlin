@@ -67,12 +67,14 @@ class NoteTextDrawable(
   }
 
   private fun getDarkerShade(color: Int): Int {
-    return Color.rgb((SHADE_FACTOR * Color.red(color)).toInt(),
+    return Color.rgb(
+      (SHADE_FACTOR * Color.red(color)).toInt(),
       (SHADE_FACTOR * Color.green(color)).toInt(),
-      (SHADE_FACTOR * Color.blue(color)).toInt())
+      (SHADE_FACTOR * Color.blue(color)).toInt()
+    )
   }
 
-  private fun clipCenterPartOfBackgroundImage(src: Bitmap, radius: Float) : Bitmap {
+  private fun clipCenterPartOfBackgroundImage(src: Bitmap, radius: Float): Bitmap {
     val output = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(output)
 
@@ -206,9 +208,11 @@ class NoteTextDrawable(
       heightOccupied > 0.95f -> {
         scaleDown(targetHeight, text, textWidth, scaleStep)
       }
+
       heightOccupied < 0.65f -> {
         scaleUp(targetHeight, text, textWidth, scaleStep)
       }
+
       else -> textPaint.textSize
     }
   }

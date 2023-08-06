@@ -40,7 +40,9 @@ class TuneExtraView : LinearLayout {
 
   private val customizationView: DialogSelectExtraBinding
     get() {
-      val binding = DialogSelectExtraBinding(LayoutInflater.from(context).inflate(R.layout.dialog_select_extra, null))
+      val binding = DialogSelectExtraBinding(
+        LayoutInflater.from(context).inflate(R.layout.dialog_select_extra, null)
+      )
       binding.extraSwitch.setOnCheckedChangeListener { _, isChecked ->
         binding.autoCheck.isEnabled = !isChecked
         binding.repeatCheck.isEnabled = !isChecked
@@ -82,7 +84,11 @@ class TuneExtraView : LinearLayout {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 

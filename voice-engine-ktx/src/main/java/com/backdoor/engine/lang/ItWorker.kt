@@ -3,7 +3,6 @@ package com.backdoor.engine.lang
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.ContactsInterface
-import com.backdoor.engine.misc.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
@@ -154,6 +153,7 @@ internal class ItWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
     input.matches(".*messaggio.*") -> Action.MESSAGE
     input.matches(".*lettera.*") || input.matches("posta elettronica") ||
       input.matches(".*e?( |-)?mail.*") || input.matches("carta") -> Action.MAIL
+
     else -> null
   }
 
@@ -196,10 +196,13 @@ internal class ItWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         for (format in hourFormats) {
-          if (ignoreAny {
-              localTime = LocalTime.parse(time, format)
-              localTime
-            } != null) break
+          val ignore = ignoreAny {
+            localTime = LocalTime.parse(time, format)
+            localTime
+          }
+          if (ignore != null) {
+            break
+          }
         }
       }
       localTime
@@ -254,7 +257,9 @@ internal class ItWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
-      } else s
+      } else {
+        s
+      }
     } ?: ""
   }
 
@@ -365,9 +370,9 @@ internal class ItWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   }
 
   override fun hasAction(input: String): Boolean {
-    return input.matches(".*aprire.*") || input.matches(".*aperta.*")
-      || input.matches(".*aiuto.*") || input.matches(".*regolare.*")
-      || input.matches(".*rapporto.*") || input.matches(".*modifica.*")
+    return input.matches(".*aprire.*") || input.matches(".*aperta.*") ||
+      input.matches(".*aiuto.*") || input.matches(".*regolare.*") ||
+      input.matches(".*rapporto.*") || input.matches(".*modifica.*")
   }
 
   override fun getAction(input: String): Action = when {
@@ -393,7 +398,8 @@ internal class ItWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   override fun hasDisableReminders(input: String): Boolean =
     input.matches(".*(disabilita|disattivare) (tutti i )?promemoria.*")
 
-  override fun hasGroup(input: String): Boolean = input.matches(".*(aggiungere|creare|nuovo?).* gruppo.*")
+  override fun hasGroup(input: String): Boolean =
+    input.matches(".*(aggiungere|creare|nuovo?).* gruppo.*")
 
   override fun clearGroup(input: String): String {
     return input.splitByWhitespaces().toMutableList().also {

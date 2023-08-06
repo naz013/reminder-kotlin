@@ -80,15 +80,19 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
     menuModifier: ((Menu) -> Unit)? = null
   ) {
     val menuHost: MenuHost = requireActivity()
-    menuHost.addMenuProvider(object : MenuProvider {
-      override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuRes?.also { menuInflater.inflate(it, menu) }
-        menuModifier?.invoke(menu)
-      }
+    menuHost.addMenuProvider(
+      object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+          menuRes?.also { menuInflater.inflate(it, menu) }
+          menuModifier?.invoke(menu)
+        }
 
-      override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return onMenuItemListener(menuItem)
-      }
-    }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+          return onMenuItemListener(menuItem)
+        }
+      },
+      viewLifecycleOwner,
+      Lifecycle.State.RESUMED
+    )
   }
 }

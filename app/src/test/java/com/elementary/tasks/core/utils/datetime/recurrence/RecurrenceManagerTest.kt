@@ -35,7 +35,8 @@ class RecurrenceManagerTest {
     val map = mutableMapOf<TagType, Tag>().apply {
       put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
       put(
-        TagType.RRULE, RecurrenceRuleTag(
+        TagType.RRULE,
+        RecurrenceRuleTag(
           listOf(
             FreqRecurParam(FreqType.DAILY),
             IntervalRecurParam(1),
@@ -64,7 +65,8 @@ class RecurrenceManagerTest {
     val map = mutableMapOf<TagType, Tag>().apply {
       put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
       put(
-        TagType.RRULE, RecurrenceRuleTag(
+        TagType.RRULE,
+        RecurrenceRuleTag(
           listOf(
             FreqRecurParam(FreqType.DAILY),
             IntervalRecurParam(1),
@@ -97,7 +99,8 @@ class RecurrenceManagerTest {
     val map = mutableMapOf<TagType, Tag>().apply {
       put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
       put(
-        TagType.RRULE, RecurrenceRuleTag(
+        TagType.RRULE,
+        RecurrenceRuleTag(
           listOf(
             FreqRecurParam(FreqType.WEEKLY),
             IntervalRecurParam(1),
@@ -126,7 +129,8 @@ class RecurrenceManagerTest {
     val map = mutableMapOf<TagType, Tag>().apply {
       put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
       put(
-        TagType.RRULE, RecurrenceRuleTag(
+        TagType.RRULE,
+        RecurrenceRuleTag(
           listOf(
             FreqRecurParam(FreqType.WEEKLY),
             IntervalRecurParam(1),
@@ -159,7 +163,8 @@ class RecurrenceManagerTest {
     val map = mutableMapOf<TagType, Tag>().apply {
       put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
       put(
-        TagType.RRULE, RecurrenceRuleTag(
+        TagType.RRULE,
+        RecurrenceRuleTag(
           listOf(
             FreqRecurParam(FreqType.MONTHLY),
             IntervalRecurParam(1),
@@ -190,7 +195,8 @@ class RecurrenceManagerTest {
     val map = mutableMapOf<TagType, Tag>().apply {
       put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
       put(
-        TagType.RRULE, RecurrenceRuleTag(
+        TagType.RRULE,
+        RecurrenceRuleTag(
           listOf(
             FreqRecurParam(FreqType.MONTHLY),
             IntervalRecurParam(1),

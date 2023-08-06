@@ -91,15 +91,22 @@ class InfoAdapter(
       slice.value = used
       binding.usedSizeGraph.addSlice(slice)
       slice = PieSlice()
-      val avTitle = String.format(binding.root.context.getString(R.string.available_x), free.toString())
+      val avTitle = String.format(
+        binding.root.context.getString(R.string.available_x),
+        free.toString()
+      )
       slice.title = avTitle
       slice.color = ContextCompat.getColor(binding.root.context, R.color.secondaryGreen)
       slice.value = free
       binding.usedSizeGraph.addSlice(slice)
-      binding.usedSpace.text = String.format(binding.root.context.getString(R.string.used_x),
-        MemoryUtil.humanReadableByte(model.used, false))
-      binding.freeSpace.text = String.format(binding.root.context.getString(R.string.available_x),
-        MemoryUtil.humanReadableByte(availQ, false))
+      binding.usedSpace.text = String.format(
+        binding.root.context.getString(R.string.used_x),
+        MemoryUtil.humanReadableByte(model.used, false)
+      )
+      binding.freeSpace.text = String.format(
+        binding.root.context.getString(R.string.available_x),
+        MemoryUtil.humanReadableByte(availQ, false)
+      )
     }
   }
 

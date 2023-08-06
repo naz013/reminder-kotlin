@@ -34,7 +34,9 @@ class PinFragment : AuthFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.closeButton.setOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+    binding.closeButton.setOnClickListener {
+      requireActivity().onBackPressedDispatcher.onBackPressed()
+    }
 
     binding.pinView.supportFinger = hasFinger
     binding.pinView.shuffleMode = prefs.shufflePinView

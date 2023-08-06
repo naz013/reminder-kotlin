@@ -29,7 +29,6 @@ class NotificationPolicyLauncher private constructor(
   }
 
   override fun dispatchResult(result: ActivityResult) {
-
   }
 
   private fun getIntent(): Intent {

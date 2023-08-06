@@ -68,7 +68,8 @@ import timber.log.Timber
 import java.io.File
 import java.util.Random
 
-class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
+class CreateNoteActivity :
+  BindingActivity<ActivityCreateNoteBinding>(),
   PhotoSelectionUtil.UriCallback {
 
   private val themeUtil by inject<ThemeProvider>()
@@ -374,7 +375,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     }
     binding.fontStyleView.setOnClickListener { showStyleDialog() }
 
-    binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
+    binding.colorSlider.setSelectorColorResource(
+      if (isDarkMode) {
+        R.color.pureWhite
+      } else {
+        R.color.pureBlack
+      }
+    )
     binding.colorSlider.setListener { position, _ ->
       viewModel.colorOpacity.postValue(newPair(color = position))
       if (prefs.isNoteColorRememberingEnabled) {
@@ -416,7 +423,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
     binding.taskMessage.setTextColor(textColor)
     binding.taskMessage.setHintTextColor(textColor)
     binding.taskMessage.backgroundTintList = ContextCompat.getColorStateList(
-      this, if (isBgDark) {
+      this,
+      if (isBgDark) {
         R.color.pureWhite
       } else {
         R.color.pureBlack
@@ -459,8 +467,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
         }
       }
 
-      intent?.action == Intent.ACTION_SEND_MULTIPLE
-        && intent.type?.startsWith("image/") == true -> {
+      intent?.action == Intent.ACTION_SEND_MULTIPLE &&
+        intent.type?.startsWith("image/") == true -> {
         handleSendMultipleImages(intent)
       }
 

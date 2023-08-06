@@ -23,9 +23,9 @@ class BackupSettingsWorker(
   override suspend fun doWork(): Result {
     withContext(dispatcherProvider.io()) {
       DataFlow(
-        syncManagers.repositoryManager.settingsDataFlowRepository,
-        syncManagers.converterManager.settingsConverter,
-        CompositeStorage(syncManagers.storageManager),
+        repository = syncManagers.repositoryManager.settingsDataFlowRepository,
+        convertible = syncManagers.converterManager.settingsConverter,
+        storage = CompositeStorage(syncManagers.storageManager),
         completable = null
       ).backup("")
     }
@@ -38,10 +38,12 @@ class BackupSettingsWorker(
     fun schedule(context: Context) {
       val work = OneTimeWorkRequest.Builder(BackupSettingsWorker::class.java)
         .addTag(TAG)
-        .setConstraints(Constraints.Builder()
-          .setRequiredNetworkType(NetworkType.UNMETERED)
-          .setRequiresBatteryNotLow(true)
-          .build())
+        .setConstraints(
+          Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+        )
         .build()
       WorkManager.getInstance(context).enqueue(work)
     }

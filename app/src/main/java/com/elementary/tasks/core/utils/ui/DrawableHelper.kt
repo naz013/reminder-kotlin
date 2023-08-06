@@ -44,7 +44,9 @@ class DrawableHelper(private val mContext: Context) {
     }
 
     if (mColor == 0) {
-      throw IllegalStateException("É necessário informar a cor a ser definida pelo método withColor()")
+      throw IllegalStateException(
+        "É necessário informar a cor a ser definida pelo método withColor()"
+      )
     }
 
     mWrappedDrawable = mDrawable!!.mutate()

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.BiometricProvider
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.home.BottomNavActivity
 
@@ -83,8 +84,15 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
     }
 
     fun openLogged(context: Context, clazz: Class<*>) {
-      context.startActivity(Intent(context, clazz)
-        .putExtra(ARG_LOGGED, true))
+      context.startActivity(context.intentForClass(clazz).putExtra(ARG_LOGGED, true))
+    }
+
+    fun openLogged(context: Context, clazz: Class<*>, func: (Intent) -> Unit) {
+      val intent = context.intentForClass(clazz).apply {
+        func(this)
+        putExtra(ARG_LOGGED, true)
+      }
+      context.startActivity(intent)
     }
   }
 }

@@ -20,7 +20,10 @@ class BirthdayHandler(
   override fun handle(data: Birthday) {
     sendCloseBroadcast(contextProvider.context, data.uuId)
 
-    val notificationIntent = ShowBirthdayActivity.getLaunchIntent(contextProvider.context, data.uuId)
+    val notificationIntent = ShowBirthdayActivity.getLaunchIntent(
+      context = contextProvider.context,
+      id = data.uuId
+    )
     notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
     contextProvider.context.startActivity(notificationIntent)
     notifier.cancel(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)

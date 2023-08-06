@@ -25,6 +25,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
@@ -33,9 +34,9 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.nonNullObserve
@@ -73,8 +74,8 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val isAppType: Boolean
     get() {
       val reminder = mReminder ?: return false
-      return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)
-        || Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
+      return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
+        Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
     }
 
   private val isRateDialogShowed: Boolean
@@ -131,9 +132,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
     initButtons()
     initViewModel()
-    LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(
-      ACTION_STOP_BG_ACTIVITY
-    ))
+    LocalBroadcastManager.getInstance(this).registerReceiver(
+      mLocalReceiver,
+      IntentFilter(ACTION_STOP_BG_ACTIVITY)
+    )
   }
 
   private fun getId() = intentString(Constants.INTENT_ID)
@@ -397,7 +399,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       } catch (ignored: PackageManager.NameNotFoundException) {
       }
 
-      val nameA = (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
+      val nameA = if (applicationInfo != null) {
+        packageManager.getApplicationLabel(applicationInfo).toString()
+      } else {
+        "???"
+      }
       val label = summary + "\n\n" + nameA + "\n" + reminder.target
       binding.remText.text = summary
       binding.remText.contentDescription = label
@@ -456,7 +462,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     val intent = Intent(Intent.ACTION_VIEW)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {
-      val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
+      val uri = FileProvider.getUriForFile(
+        /* context = */ this,
+        /* authority = */ BuildConfig.APPLICATION_ID + ".provider",
+        /* file = */ File(path)
+      )
       intent.data = uri
       intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
       startActivity(intent)
@@ -545,8 +555,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun editReminder() {
     discardNotification(id)
     doActions({ it.stop() }, {
-      PinLoginActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
-        .putExtra(Constants.INTENT_ID, it.uuId))
+      PinLoginActivity.openLogged(
+        this,
+        intentForClass(CreateReminderActivity::class.java)
+          .putExtra(Constants.INTENT_ID, it.uuId)
+      )
       finish()
     })
   }
@@ -580,8 +593,14 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       when {
         Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS()
         isAppType -> openApplication(it)
-        Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(this, it.target,
-          it.subject, summary, it.attachmentFile)
+        Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
+          context = this,
+          email = it.target,
+          subject = it.subject,
+          message = summary,
+          filePath = it.attachmentFile
+        )
+
         else -> makeCall()
       }
       if (!Reminder.isKind(it.type, Reminder.Kind.SMS)) {

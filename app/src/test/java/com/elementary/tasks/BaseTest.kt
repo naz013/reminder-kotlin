@@ -11,8 +11,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class BaseTest {
@@ -32,6 +30,5 @@ open class BaseTest {
 
   @After
   open fun tearDown() {
-
   }
 }

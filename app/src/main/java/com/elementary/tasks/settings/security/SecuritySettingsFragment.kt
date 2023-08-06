@@ -77,9 +77,13 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
   private fun changePinPrefs() {
     val isChecked = binding.pinSwitchPrefs.isChecked
     if (isChecked) {
-      safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment())
+      safeNavigation {
+        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment()
+      }
     } else {
-      safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment())
+      safeNavigation {
+        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment()
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.builder
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class LineComposerTest {
@@ -32,7 +33,7 @@ class LineComposerTest {
     val lines = listOf(
       "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5",
       "\nRRULE:FREQ=DAILY;INTERVAL=10;COUNT=5",
-      "\n RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5",
+      "\n RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5"
     )
 
     val result = lineComposer.compose(lines)

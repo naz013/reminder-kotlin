@@ -137,8 +137,11 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
     }
     binding.recyclerView.adapter = remindersAdapter
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.show()
-      else binding.fab.hide()
+      if (it) {
+        binding.fab.show()
+      } else {
+        binding.fab.hide()
+      }
     }
     reloadEmptyView(0)
   }

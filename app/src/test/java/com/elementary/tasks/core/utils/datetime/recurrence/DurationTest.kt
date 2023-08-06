@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.utils.datetime.recurrence
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class DurationTest {

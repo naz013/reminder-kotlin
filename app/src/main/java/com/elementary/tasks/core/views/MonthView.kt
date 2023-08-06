@@ -268,12 +268,22 @@ class MonthView : View, View.OnTouchListener {
     val cellWidth = mWidth / COLS
     val cellHeight = mHeight / ROWS
     horizontalGradient = LinearGradient(
-      0f, 0f, cellWidth.toFloat(), 0f,
-      gradientColors, null, Shader.TileMode.MIRROR
+      /* x0 = */ 0f,
+      /* y0 = */ 0f,
+      /* x1 = */ cellWidth.toFloat(),
+      /* y1 = */ 0f,
+      /* colors = */ gradientColors,
+      /* positions = */ null,
+      /* tile = */ Shader.TileMode.MIRROR
     )
     verticalGradient = LinearGradient(
-      0f, 0f, 0f, cellHeight.toFloat(),
-      gradientColors, null, Shader.TileMode.MIRROR
+      /* x0 = */ 0f,
+      /* y0 = */ 0f,
+      /* x1 = */ 0f,
+      /* y1 = */ cellHeight.toFloat(),
+      /* colors = */ gradientColors,
+      /* positions = */ null,
+      /* tile = */ Shader.TileMode.MIRROR
     )
     mCells = ArrayList()
     for (i in 0 until ROWS) {
@@ -330,15 +340,21 @@ class MonthView : View, View.OnTouchListener {
     if (position == 0 || ((position - 6) % 7) != 0) {
       borderPaint.shader = verticalGradient
       canvas.drawLine(
-        r.right.toFloat(), r.top.toFloat(),
-        r.right.toFloat(), r.bottom.toFloat(), borderPaint
+        /* startX = */ r.right.toFloat(),
+        /* startY = */ r.top.toFloat(),
+        /* stopX = */ r.right.toFloat(),
+        /* stopY = */ r.bottom.toFloat(),
+        /* paint = */ borderPaint
       )
     }
     if (position <= 34) {
       borderPaint.shader = horizontalGradient
       canvas.drawLine(
-        r.left.toFloat(), r.bottom.toFloat(),
-        r.right.toFloat(), r.bottom.toFloat(), borderPaint
+        /* startX = */ r.left.toFloat(),
+        /* startY = */ r.bottom.toFloat(),
+        /* stopX = */ r.right.toFloat(),
+        /* stopY = */ r.bottom.toFloat(),
+        /* paint = */ borderPaint
       )
     }
   }

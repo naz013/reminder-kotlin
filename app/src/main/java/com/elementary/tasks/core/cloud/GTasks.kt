@@ -49,7 +49,10 @@ class GTasks(
     Timber.d("login: ")
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
       Timber.d("user -> $user")
-      val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(TasksScopes.TASKS))
+      val credential = GoogleAccountCredential.usingOAuth2(
+        context,
+        Collections.singleton(TasksScopes.TASKS)
+      )
       credential.selectedAccountName = user
       tasksService = Tasks.Builder(NetHttpTransport(), GsonFactory(), credential)
         .setApplicationName(APPLICATION_NAME)

@@ -22,7 +22,7 @@ class NoteSortProcessor {
   }
 
   private fun sortDateAz(data: List<UiNoteList>): List<UiNoteList> {
-    return data.sortedBy { it.formattedDateTime}
+    return data.sortedBy { it.formattedDateTime }
   }
 
   private fun sortDateZa(data: List<UiNoteList>): List<UiNoteList> {

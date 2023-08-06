@@ -89,11 +89,15 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
     ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
     ViewUtils.tintMenuIcon(
-      requireContext(),
-      menu,
-      1,
-      if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px,
-      isDark
+      context = requireContext(),
+      menu = menu,
+      index = 1,
+      resource = if (enableGrid) {
+        R.drawable.ic_twotone_view_quilt_24px
+      } else {
+        R.drawable.ic_twotone_view_list_24px
+      },
+      isDark = isDark
     )
     ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_twotone_storage_24, isDark)
     ViewUtils.tintMenuIcon(requireContext(), menu, 3, R.drawable.ic_twotone_sort_24px, isDark)
@@ -214,8 +218,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
     binding.recyclerView.adapter = notesRecyclerAdapter
     binding.recyclerView.itemAnimator = DefaultItemAnimator()
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.show()
-      else binding.fab.hide()
+      if (it) {
+        binding.fab.show()
+      } else {
+        binding.fab.hide()
+      }
     }
   }
 
@@ -238,7 +245,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
         2 -> showInStatusBar(note)
         3 -> selectColor(note)
         4 -> PinLoginActivity.openLogged(
-          requireContext(), Intent(context, CreateNoteActivity::class.java)
+          requireContext(),
+          intentForClass(CreateNoteActivity::class.java)
             .putExtra(Constants.INTENT_ID, note.id)
         )
 
@@ -298,7 +306,9 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
   private fun selectColor(note: UiNoteList) {
     dialogues.showColorDialog(
-      requireActivity(), note.colorPosition, getString(R.string.color),
+      requireActivity(),
+      note.colorPosition,
+      getString(R.string.color),
       currentStateHolder.theme.noteColorsForSlider(note.colorPalette)
     ) {
       viewModel.saveNoteColor(note.id, it)

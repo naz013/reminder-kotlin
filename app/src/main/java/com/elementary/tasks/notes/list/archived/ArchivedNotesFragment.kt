@@ -22,7 +22,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
@@ -91,11 +90,15 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
     ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
     ViewUtils.tintMenuIcon(
-      requireContext(),
-      menu,
-      1,
-      if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px,
-      isDark
+      context = requireContext(),
+      menu = menu,
+      index = 1,
+      resource = if (enableGrid) {
+        R.drawable.ic_twotone_view_quilt_24px
+      } else {
+        R.drawable.ic_twotone_view_list_24px
+      },
+      isDark = isDark
     )
     ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_twotone_sort_24px, isDark)
     searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
@@ -209,8 +212,11 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
     binding.recyclerView.adapter = notesRecyclerAdapter
     binding.recyclerView.itemAnimator = DefaultItemAnimator()
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.show()
-      else binding.fab.hide()
+      if (it) {
+        binding.fab.show()
+      } else {
+        binding.fab.hide()
+      }
     }
   }
 
@@ -225,9 +231,11 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
       when (item) {
         0 -> previewNote(note.id)
         1 -> PinLoginActivity.openLogged(
-          requireContext(), intentForClass(CreateNoteActivity::class.java)
-            .putExtra(Constants.INTENT_ID, note.id)
-        )
+          requireContext(),
+          CreateNoteActivity::class.java
+        ) {
+          it.putExtra(Constants.INTENT_ID, note.id)
+        }
 
         2 -> viewModel.unArchive(note.id)
         3 -> askConfirmation(note.id)

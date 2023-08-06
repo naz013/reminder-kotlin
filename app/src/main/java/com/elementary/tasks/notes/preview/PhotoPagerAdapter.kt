@@ -21,7 +21,11 @@ class PhotoPagerAdapter(private val images: List<UiNoteImage>) : PagerAdapter() 
   }
 
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
-    val binding = FragmentImageBinding.inflate(LayoutInflater.from(container.context), container, false)
+    val binding = FragmentImageBinding.inflate(
+      LayoutInflater.from(container.context),
+      container,
+      false
+    )
     loadPhoto(binding.ivPhoto, position)
     container.addView(binding.root)
     return binding.root

@@ -26,8 +26,11 @@ class ScanContactsWorker(
     val projection =
       arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
     val cur = cr.query(
-      ContactsContract.Contacts.CONTENT_URI, projection, null, null,
-      ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
+      /* uri = */ ContactsContract.Contacts.CONTENT_URI,
+      /* projection = */ projection,
+      /* selection = */ null,
+      /* selectionArgs = */ null,
+      /* sortOrder = */ ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
     ) ?: return 0
 
     while (cur.moveToNext()) {
@@ -40,8 +43,10 @@ class ScanContactsWorker(
         ContactsContract.Contacts._ID
       )
       val where =
-        ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
-          " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
+        ContactsContract.CommonDataKinds.Event.TYPE + "=" +
+          ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
+          " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" +
+          ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
           "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
       val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
       val contacts = birthdaysDao.getAll()

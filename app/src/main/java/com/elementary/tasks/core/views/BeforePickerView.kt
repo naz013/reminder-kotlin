@@ -55,7 +55,11 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
     init(context, attrs)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(
+    context: Context,
+    attrs: AttributeSet,
+    defStyle: Int
+  ) : super(context, attrs, defStyle) {
     init(context, attrs)
   }
 
@@ -117,21 +121,25 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(weeks)
       }
+
       mills % DateTimeManager.DAY == 0L -> {
         val progress = mills / DateTimeManager.DAY
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(days)
       }
+
       mills % DateTimeManager.HOUR == 0L -> {
         val progress = mills / DateTimeManager.HOUR
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(hours)
       }
+
       mills % DateTimeManager.MINUTE == 0L -> {
         val progress = mills / DateTimeManager.MINUTE
         setProgress(progress.toInt())
         binding.beforeTypeView.setSelection(minutes)
       }
+
       mills % DateTimeManager.SECOND == 0L -> {
         val progress = mills / DateTimeManager.SECOND
         setProgress(progress.toInt())
@@ -147,7 +155,6 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
   }
 
   override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
   }
 
   override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

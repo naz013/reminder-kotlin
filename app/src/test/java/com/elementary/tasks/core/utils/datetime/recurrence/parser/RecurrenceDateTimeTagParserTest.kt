@@ -41,14 +41,16 @@ class RecurrenceDateTimeTagParserTest {
 
   @Test
   fun testParseDateTime() {
-    val result = recurrenceDateTimeTagParser.parse("RDATE;VALUE=DATE-TIME:19960402T010000Z,19960403T010000Z,19960404T010000Z")
+    val result = recurrenceDateTimeTagParser.parse(
+      "RDATE;VALUE=DATE-TIME:19960402T010000Z,19960403T010000Z,19960404T010000Z"
+    )
 
     val expected = RecurrenceDateTimeTag(
       param = ValueParam(ParamValueType.DATE_TIME),
       values = listOf(
         UtcDateTime("19960402T010000Z"),
         UtcDateTime("19960403T010000Z"),
-        UtcDateTime("19960404T010000Z"),
+        UtcDateTime("19960404T010000Z")
       )
     )
     assertEquals(expected, result)

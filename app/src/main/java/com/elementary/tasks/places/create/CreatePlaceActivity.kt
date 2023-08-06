@@ -21,7 +21,10 @@ import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
+class CreatePlaceActivity :
+  BindingActivity<ActivityCreatePlaceBinding>(),
+  MapListener,
+  MapCallback {
 
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
   private var googleMap: AdvancedMapFragment? = null
@@ -215,6 +218,5 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapLi
   }
 
   override fun onRadiusChanged(radiusInM: Int) {
-
   }
 }

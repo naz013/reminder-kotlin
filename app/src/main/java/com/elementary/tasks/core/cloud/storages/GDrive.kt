@@ -50,9 +50,11 @@ class GDrive(
           ?: return null
         val quota = about.storageQuota ?: return null
         return UserItem(
-          name = about.user.displayName ?: "", quota = quota.limit,
-          used = quota.usage, count = countFiles(), photo = about.user.photoLink
-            ?: ""
+          name = about.user.displayName ?: "",
+          quota = quota.limit,
+          used = quota.usage,
+          count = countFiles(),
+          photo = about.user.photoLink ?: ""
         )
       } catch (e: Throwable) {
         Timber.d(e, "Failed to get user data")
@@ -261,12 +263,13 @@ class GDrive(
     withContext(dispatcherProvider.default()) {
       val json = indexDataFile.toJson() ?: return@withContext
       backup(
-        json, Metadata(
-          "",
-          IndexDataFile.FILE_NAME,
-          FileConfig.FILE_NAME_JSON,
-          dateTimeManager.getNowGmtDateTime(),
-          "Index file"
+        json = json,
+        metadata = Metadata(
+          id = "",
+          fileName = IndexDataFile.FILE_NAME,
+          fileExt = FileConfig.FILE_NAME_JSON,
+          updatedAt = dateTimeManager.getNowGmtDateTime(),
+          meta = "Index file"
         )
       )
     }

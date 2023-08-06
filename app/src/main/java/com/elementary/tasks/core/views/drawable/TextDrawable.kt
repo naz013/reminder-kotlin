@@ -58,19 +58,19 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
     // drawable paint color
     val paint = paint
     paint.color = color
-
   }
 
   private fun getDarkerShade(color: Int): Int {
-    return Color.rgb((SHADE_FACTOR * Color.red(color)).toInt(),
+    return Color.rgb(
+      (SHADE_FACTOR * Color.red(color)).toInt(),
       (SHADE_FACTOR * Color.green(color)).toInt(),
-      (SHADE_FACTOR * Color.blue(color)).toInt())
+      (SHADE_FACTOR * Color.blue(color)).toInt()
+    )
   }
 
   override fun draw(canvas: Canvas) {
     super.draw(canvas)
     val r = bounds
-
 
     // draw border
     if (borderThickness > 0) {
@@ -85,10 +85,14 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
     val height = if (this.height < 0) r.height() else this.height
     val fontSize = if (this.fontSize < 0) Math.min(width, height) / 2 else this.fontSize
     textPaint.textSize = fontSize.toFloat()
-    canvas.drawText(text!!, (width / 2).toFloat(), height / 2 - (textPaint.descent() + textPaint.ascent()) / 2, textPaint)
+    canvas.drawText(
+      /* text = */ text!!,
+      /* x = */ (width / 2).toFloat(),
+      /* y = */ height / 2 - (textPaint.descent() + textPaint.ascent()) / 2,
+      /* paint = */ textPaint
+    )
 
     canvas.restoreToCount(count)
-
   }
 
   private fun drawBorder(canvas: Canvas) {
@@ -223,7 +227,16 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
 
     private fun roundRect(radius: Int): IBuilder {
       this.radius = radius.toFloat()
-      val radii = floatArrayOf(radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat())
+      val radii = floatArrayOf(
+        radius.toFloat(),
+        radius.toFloat(),
+        radius.toFloat(),
+        radius.toFloat(),
+        radius.toFloat(),
+        radius.toFloat(),
+        radius.toFloat(),
+        radius.toFloat()
+      )
       this.shape = RoundRectShape(radii, null, null)
       return this
     }

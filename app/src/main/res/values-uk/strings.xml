@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">Кожен день у травні</string>
     <string name="recur_weekly_for_10_occurrences">Щотижнево, 10 повторень</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Щомісячно, перша п\'ятниця місяця, 10 повторень</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Кожного наступного місяця в першу і останню неділю місяця, 10 повторень</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Кожного наступного місяця в першу і останню неділю місяця, 10 повторень</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Monthly on the second-to-last Monday of the month for 6 months</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Monthly on the third-to-the-last day of the month</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Щомісячно 2-е і 15-е число місяця, 10 повторень</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Перша субота, що слідує за першою неділею місяця</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Кожні 15 хвилин, 6 повторень</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Щогодини з половиною, 4 повторення</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">Третій екземпляр на місяць у вівторок, середу, або четвер, протягом наступних 3 місяців</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Третій екземпляр на місяць у вівторок, середу, або четвер, протягом наступних 3 місяців</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Другий день місяця в будні</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Щотижня у вівторок і четвер протягом п\'яти тижнів</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Кожного другого тижня у вівторок і четвер, 8 повторень</string>

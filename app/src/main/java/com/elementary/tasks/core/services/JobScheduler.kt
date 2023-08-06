@@ -22,8 +22,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
-import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
+import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
+import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.google.gson.Gson
 import timber.log.Timber
 import java.util.Calendar

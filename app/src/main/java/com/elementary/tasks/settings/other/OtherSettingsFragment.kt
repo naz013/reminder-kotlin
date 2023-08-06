@@ -120,7 +120,9 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       if (!Permissions.checkPermission(activity, Permissions.BACKGROUND_LOCATION)) {
-        mDataList.add(Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION))
+        mDataList.add(
+          Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION)
+        )
       }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -149,15 +151,21 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
   }
 
   private fun openChangesScreen() {
-    safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToChangesFragment())
+    safeNavigation {
+      OtherSettingsFragmentDirections.actionOtherSettingsFragmentToChangesFragment()
+    }
   }
 
   private fun openPermissionsScreen() {
-    safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToPermissionsFragment())
+    safeNavigation {
+      OtherSettingsFragmentDirections.actionOtherSettingsFragmentToPermissionsFragment()
+    }
   }
 
   private fun openOssScreen() {
-    safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToOssFragment())
+    safeNavigation {
+      OtherSettingsFragmentDirections.actionOtherSettingsFragmentToOssFragment()
+    }
   }
 
   private fun showPermissionDialog() {

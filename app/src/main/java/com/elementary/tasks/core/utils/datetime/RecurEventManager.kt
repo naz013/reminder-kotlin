@@ -15,7 +15,8 @@ class RecurEventManager(
 
     val map = recurrenceManager.parseObject(recurObject) ?: return null
 
-    val recurrenceDateTimeTag = map.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE) ?: return null
+    val recurrenceDateTimeTag = map.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)
+      ?: return null
     val list = recurrenceDateTimeTag.values
 
     val index = findIndex(dateTime.withNano(0), list)

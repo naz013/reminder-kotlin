@@ -80,6 +80,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
         Commands.DELETED -> {
           toast(R.string.deleted)
         }
+
         else -> {
         }
       }
@@ -93,14 +94,20 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   private fun initList() {
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
+        resources.getInteger(R.integer.num_of_cols),
+        StaggeredGridLayoutManager.VERTICAL
+      )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
     binding.recyclerView.adapter = adapter
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.show()
-      else binding.fab.hide()
+      if (it) {
+        binding.fab.show()
+      } else {
+        binding.fab.hide()
+      }
     }
     refreshView(0)
   }
@@ -132,7 +139,9 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun openPlace(place: UiPlaceList) {
-    safeNavigation(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true))
+    safeNavigation {
+      PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true)
+    }
   }
 
   private fun refreshView(count: Int) {

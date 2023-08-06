@@ -24,7 +24,8 @@ class ReplyDiffCallback(
 
   private fun areContentsTheSame(oldItem: Reply, newItem: Reply): Boolean {
     val res = if (oldItem.content is String) {
-      oldItem.uuId == newItem.uuId && oldItem.content == newItem.content && oldItem.viewType == newItem.viewType
+      oldItem.uuId == newItem.uuId && oldItem.content == newItem.content &&
+        oldItem.viewType == newItem.viewType
     } else {
       oldItem == newItem
     }

@@ -40,12 +40,14 @@ class ExceptionsDateTimeTagParserTest {
 
   @Test
   fun testParseCorrectTag_multipleElement() {
-    val result = exceptionsDateTimeTagParser.parse("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z")
+    val result = exceptionsDateTimeTagParser.parse(
+      "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"
+    )
 
     val expected = listOf(
       ZonedDateTime.of(1996, 4, 2, 1, 0, 0, 0, UTC_ZONE),
       ZonedDateTime.of(1996, 4, 3, 1, 0, 0, 0, UTC_ZONE),
-      ZonedDateTime.of(1996, 4, 4, 1, 0, 0, 0, UTC_ZONE),
+      ZonedDateTime.of(1996, 4, 4, 1, 0, 0, 0, UTC_ZONE)
     )
 
     assertEquals(expected.size, result?.values?.size)

@@ -1,11 +1,16 @@
 package com.elementary.tasks.core.chart
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Point
+import android.graphics.RectF
+import android.graphics.Region
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import java.util.*
 
 class PieGraph : View {
 
@@ -52,11 +57,24 @@ class PieGraph : View {
       val p = Path()
       paint.color = slice.color
       currentSweep = slice.value / totalValue * 360
-      p.arcTo(RectF(midX - radius, midY - radius, midX + radius, midY + radius), currentAngle + padding, currentSweep - padding)
-      p.arcTo(RectF(midX - innerRadius, midY - innerRadius, midX + innerRadius, midY + innerRadius), currentAngle + padding + (currentSweep - padding), -(currentSweep - padding))
+      p.arcTo(
+        RectF(midX - radius, midY - radius, midX + radius, midY + radius),
+        currentAngle + padding,
+        currentSweep - padding
+      )
+      p.arcTo(
+        RectF(midX - innerRadius, midY - innerRadius, midX + innerRadius, midY + innerRadius),
+        currentAngle + padding + (currentSweep - padding),
+        -(currentSweep - padding)
+      )
       p.close()
       slice.path = p
-      slice.region = Region((midX - radius).toInt(), (midY - radius).toInt(), (midX + radius).toInt(), (midY + radius).toInt())
+      slice.region = Region(
+        (midX - radius).toInt(),
+        (midY - radius).toInt(),
+        (midX + radius).toInt(),
+        (midY + radius).toInt()
+      )
       canvas.drawPath(p, paint)
       if (indexSelected == count && listener != null) {
         path.reset()
@@ -64,8 +82,26 @@ class PieGraph : View {
         paint.color = Color.parseColor("#33B5E5")
         paint.alpha = 100
         if (slices.size > 1) {
-          path.arcTo(RectF(midX - radius - padding * 2, midY - radius - padding * 2, midX + radius + padding * 2, midY + radius + padding * 2), currentAngle, currentSweep + padding)
-          path.arcTo(RectF(midX - innerRadius + padding * 2, midY - innerRadius + padding * 2, midX + innerRadius - padding * 2, midY + innerRadius - padding * 2), currentAngle + currentSweep + padding, -(currentSweep + padding))
+          path.arcTo(
+            RectF(
+              midX - radius - padding * 2,
+              midY - radius - padding * 2,
+              midX + radius + padding * 2,
+              midY + radius + padding * 2
+            ),
+            currentAngle,
+            currentSweep + padding
+          )
+          path.arcTo(
+            RectF(
+              midX - innerRadius + padding * 2,
+              midY - innerRadius + padding * 2,
+              midX + innerRadius - padding * 2,
+              midY + innerRadius - padding * 2
+            ),
+            currentAngle + currentSweep + padding,
+            -(currentSweep + padding)
+          )
           path.close()
         } else {
           path.addCircle(midX, midY, radius + padding, Path.Direction.CW)

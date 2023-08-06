@@ -25,7 +25,13 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
     initActionBar()
 
     binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(this))
-    binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
+    binding.colorSlider.setSelectorColorResource(
+      if (isDarkMode) {
+        R.color.pureWhite
+      } else {
+        R.color.pureBlack
+      }
+    )
     binding.colorSlider.setSelection(viewModel.sliderPosition)
     binding.colorSlider.setListener { position, _ ->
       viewModel.onPositionChanged(position)

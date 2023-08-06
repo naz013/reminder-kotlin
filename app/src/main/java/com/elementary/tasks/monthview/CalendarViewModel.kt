@@ -19,8 +19,8 @@ import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.day_view.DayViewProvider
-import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.dayview.DayViewProvider
+import com.elementary.tasks.dayview.day.EventModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -105,12 +105,14 @@ class CalendarViewModel(
       for (item in list) {
         if (item.viewType == EventModel.BIRTHDAY && item.monthValue == monthPagerItem.monthValue) {
           res.add(item)
-        } else if (item.monthValue == monthPagerItem.monthValue && item.year == monthPagerItem.year) {
+        } else if (
+          item.monthValue == monthPagerItem.monthValue && item.year == monthPagerItem.year
+        ) {
           res.add(item)
         }
       }
       Timber.d("runSearch: found=${res.size}")
-      (if (sort) {
+      val data = if (sort) {
         try {
           res.sortedBy { it.getMillis() }.toList()
         } catch (e: Throwable) {
@@ -118,10 +120,10 @@ class CalendarViewModel(
         }
       } else {
         res
-      }).let { mapData(it) }
-        .also {
-          withUIContext { notifyObserver(it) }
-        }
+      }
+      mapData(data).also {
+        withUIContext { notifyObserver(it) }
+      }
     }
   }
 

@@ -183,10 +183,13 @@ internal class UkWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         for (format in hourFormats) {
-          if (ignoreAny {
-              localTime = LocalTime.parse(time, format)
-              localTime
-            } != null) break
+          val ignoreAny = ignoreAny {
+            localTime = LocalTime.parse(time, format)
+            localTime
+          }
+          if (ignoreAny != null) {
+            break
+          }
         }
       }
       localTime
@@ -226,7 +229,9 @@ internal class UkWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
-      } else s
+      } else {
+        s
+      }
     }?.splitByWhitespaces()?.toMutableList()?.let { list ->
       val sb = StringBuilder()
       var hasAt = false
@@ -321,9 +326,9 @@ internal class UkWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   }
 
   override fun hasAction(input: String): Boolean {
-    return (input.startsWith("відкри") || input.matches(".*допом.*")
-      || input.matches(".*гучн(і|о)ст.*") || input.matches(".*налаштув.*")
-      || input.matches(".*повідомити.*"))
+    return input.startsWith("відкри") || input.matches(".*допом.*") ||
+      input.matches(".*гучн(і|о)ст.*") || input.matches(".*налаштув.*") ||
+      input.matches(".*повідомити.*")
   }
 
   override fun getAction(input: String): Action = when {
@@ -446,7 +451,9 @@ internal class UkWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       }.clip().let {
         if (it.contains(" пів")) {
           it.replace("пів", "")
-        } else it
+        } else {
+          it
+        }
       }
   }
 

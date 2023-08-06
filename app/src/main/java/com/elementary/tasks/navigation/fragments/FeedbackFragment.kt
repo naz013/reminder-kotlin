@@ -23,7 +23,13 @@ class FeedbackFragment : BaseWebViewFragment() {
     webView.settings.javaScriptEnabled = true
     webView.webViewClient = object : WebViewClient() {
       @Deprecated("Deprecated in Java")
-      override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
+      override fun onReceivedError(
+        view: WebView,
+        errorCode: Int,
+        description: String,
+        failingUrl: String
+      ) {
+      }
 
       @Deprecated("Deprecated in Java")
       override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
@@ -48,27 +54,43 @@ class FeedbackFragment : BaseWebViewFragment() {
           webView.reload()
           true
         }
+
         R.id.action_forward -> {
           if (webView.canGoForward()) {
             webView.goForward()
           }
           true
         }
+
         R.id.action_back -> {
           if (webView.canGoBack()) {
             webView.goBack()
           }
           true
         }
+
         R.id.action_email -> {
           sendEmail()
           true
         }
+
         else -> false
       }
     }) {
-      ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_twotone_refresh_24px, isDark)
-      ViewUtils.tintMenuIcon(requireContext(), it, 1, R.drawable.ic_twotone_local_post_office_24px, isDark)
+      ViewUtils.tintMenuIcon(
+        context = requireContext(),
+        menu = it,
+        index = 0,
+        resource = R.drawable.ic_twotone_refresh_24px,
+        isDark = isDark
+      )
+      ViewUtils.tintMenuIcon(
+        context = requireContext(),
+        menu = it,
+        index = 1,
+        resource = R.drawable.ic_twotone_local_post_office_24px,
+        isDark = isDark
+      )
     }
     activity?.invalidateOptionsMenu()
   }
@@ -86,7 +108,8 @@ class FeedbackFragment : BaseWebViewFragment() {
   }
 
   companion object {
-    const val FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdn_x9tnVgG9CBmA30vHmGhDhtS-gHoq3RDnuNhJPzr2y15LQ/viewform?usp=sf_link"
+    const val FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdn_x9tnVgG9CBmA30vHmGhDhtS-" +
+      "gHoq3RDnuNhJPzr2y15LQ/viewform?usp=sf_link"
     const val GITHUB_URL = "https://github.com/naz013/reminder-kotlin/issues"
   }
 }

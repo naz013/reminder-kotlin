@@ -31,10 +31,20 @@ class PlacesRecyclerAdapter(
 
     init {
       binding.itemCard.setOnClickListener {
-        actionsListener?.onAction(it, bindingAdapterPosition, getItem(bindingAdapterPosition), ListActions.OPEN)
+        actionsListener?.onAction(
+          view = it,
+          position = bindingAdapterPosition,
+          t = getItem(bindingAdapterPosition),
+          actions = ListActions.OPEN
+        )
       }
       binding.buttonMore.setOnClickListener {
-        actionsListener?.onAction(it, bindingAdapterPosition, getItem(bindingAdapterPosition), ListActions.MORE)
+        actionsListener?.onAction(
+          view = it,
+          position = bindingAdapterPosition,
+          t = getItem(bindingAdapterPosition),
+          actions = ListActions.MORE
+        )
       }
     }
   }

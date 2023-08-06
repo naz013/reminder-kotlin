@@ -20,6 +20,8 @@ object PlaceParser {
   private fun getCoordinates(location: Location?): LatLng? {
     return if (location != null) {
       LatLng(location.lat, location.lng)
-    } else null
+    } else {
+      null
+    }
   }
 }

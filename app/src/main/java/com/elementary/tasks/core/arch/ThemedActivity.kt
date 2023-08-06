@@ -13,7 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowInsetsControllerCompat
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.utils.Constants
@@ -68,11 +68,14 @@ abstract class ThemedActivity : AppCompatActivity() {
         invokeBackPress()
       }
     } else {
-      onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          invokeBackPress()
+      onBackPressedDispatcher.addCallback(
+        owner = this,
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+          override fun handleOnBackPressed() {
+            invokeBackPress()
+          }
         }
-      })
+      )
     }
     logId()
   }

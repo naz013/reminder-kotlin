@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.dialog
 
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
@@ -30,7 +30,11 @@ class ReminderViewModel(
         reminderDao.insert(reminder)
       }
       updatesHelper.updateTasksWidget()
-      workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      workerLauncher.startWork(
+        ReminderSingleBackupWorker::class.java,
+        Constants.INTENT_ID,
+        reminder.uuId
+      )
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

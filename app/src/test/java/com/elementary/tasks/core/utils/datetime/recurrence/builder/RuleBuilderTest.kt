@@ -14,7 +14,8 @@ import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
 import com.elementary.tasks.core.utils.datetime.recurrence.Tag
 import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class RuleBuilderTest {
@@ -60,7 +61,7 @@ class RuleBuilderTest {
             listOf(2, 3, 4, 5, 6, 7, 8)
           )
         )
-      ),
+      )
     )
 
     val result = ruleBuilder.buildString(tags)
@@ -83,7 +84,7 @@ class RuleBuilderTest {
           ByMonthDayRecurParam(
             listOf(2, 3, 4, 5, 6, 7, 8)
           ),
-          UntilRecurParam(UtcDateTime("19970714T123000Z")),
+          UntilRecurParam(UtcDateTime("19970714T123000Z"))
         )
       ),
       DateTimeEndTag(UtcDateTime("19970714T123000Z"))

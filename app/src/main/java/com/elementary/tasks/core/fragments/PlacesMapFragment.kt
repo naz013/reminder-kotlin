@@ -297,7 +297,10 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     createStyleDrawable()
 
     binding.cardSearch.setOnEditorActionListener { _, actionId, event ->
-      if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
+      if (
+        event != null && event.keyCode == KeyEvent.KEYCODE_ENTER ||
+        actionId == EditorInfo.IME_ACTION_NEXT
+      ) {
         hideKeyboard()
         loadPlaces()
         return@setOnEditorActionListener true
@@ -409,7 +412,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   private fun setMyLocation() {
     if (Permissions.checkPermission(
         requireContext(),
-        Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION
+        Permissions.ACCESS_COARSE_LOCATION,
+        Permissions.ACCESS_FINE_LOCATION
       )
     ) {
       mMap?.isMyLocationEnabled = true
@@ -441,7 +445,6 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
       }
 
       override fun onItemLongClicked(position: Int, view: View) {
-
       }
     })
     if (spinnerArray.size > 0) {
@@ -459,10 +462,16 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
       for (model in list) {
         spinnerArray.add(
           GooglePlaceItem(
-            model.name, model.id, "", model.address, LatLng(
+            name = model.name,
+            id = model.id,
+            icon = "",
+            address = model.address,
+            position = LatLng(
               model.latitude,
               model.longitude
-            ), model.tags, select
+            ),
+            types = model.tags,
+            selected = select
           )
         )
       }
