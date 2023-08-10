@@ -136,8 +136,11 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
       }
     })
 
-    binding.exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
-      iFace.state.reminder.to) { hours, from, to ->
+    binding.exclusionView.bindProperty(
+      iFace.state.reminder.hours,
+      iFace.state.reminder.from,
+      iFace.state.reminder.to
+    ) { hours, from, to ->
       iFace.state.reminder.hours = hours
       iFace.state.reminder.from = from
       iFace.state.reminder.to = to
@@ -159,7 +162,11 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
   }
 
   private fun initMostUsedList() {
-    binding.mostUserTimes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    binding.mostUserTimes.layoutManager = LinearLayoutManager(
+      context,
+      LinearLayoutManager.HORIZONTAL,
+      false
+    )
     timesAdapter.listener = {
       binding.timerPickerView.timerValue = it.timeMills
     }

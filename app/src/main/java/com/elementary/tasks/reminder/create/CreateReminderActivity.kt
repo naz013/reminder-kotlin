@@ -212,7 +212,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
             } else {
               Reminder()
             }
-          } else Reminder()
+          } else {
+            Reminder()
+          }
           editReminder(reminder, false, fromFile)
         } catch (e: Throwable) {
           Timber.d("loadReminder: ${e.message}")
@@ -243,15 +245,38 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     val current = binding.navSpinner.selectedItemPosition.let { selectorList.getOrNull(it) }?.type
     var toSelect: UiSelectorType = UiSelectorType.DATE
     when (reminder.type) {
-      Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = UiSelectorType.DATE
-      Reminder.BY_TIME, Reminder.BY_TIME_CALL, Reminder.BY_TIME_SMS -> toSelect = UiSelectorType.TIMER
-      Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = UiSelectorType.WEEK
-      Reminder.BY_DATE_EMAIL -> toSelect = UiSelectorType.EMAIL
-      Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = UiSelectorType.APP
-      Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = UiSelectorType.MONTH
-      Reminder.BY_DATE_SHOP -> toSelect = UiSelectorType.SHOP
-      Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS ->
+      Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> {
+        toSelect = UiSelectorType.DATE
+      }
+
+      Reminder.BY_TIME, Reminder.BY_TIME_CALL, Reminder.BY_TIME_SMS -> {
+        toSelect = UiSelectorType.TIMER
+      }
+
+      Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> {
+        toSelect = UiSelectorType.WEEK
+      }
+
+      Reminder.BY_DATE_EMAIL -> {
+        toSelect = UiSelectorType.EMAIL
+      }
+
+      Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> {
+        toSelect = UiSelectorType.APP
+      }
+
+      Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> {
+        toSelect = UiSelectorType.MONTH
+      }
+
+      Reminder.BY_DATE_SHOP -> {
+        toSelect = UiSelectorType.SHOP
+      }
+
+      Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> {
         toSelect = UiSelectorType.YEAR
+      }
+
       Reminder.BY_RECUR, Reminder.BY_RECUR_CALL, Reminder.BY_RECUR_SMS -> {
         toSelect = if (Module.isPro) {
           UiSelectorType.RECUR
@@ -259,16 +284,25 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
           UiSelectorType.DATE
         }
       }
+
       else -> {
         if (hasLocation) {
           when (reminder.type) {
             Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
-            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = UiSelectorType.GPS
+            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> {
+              toSelect = UiSelectorType.GPS
+            }
 
             else -> if (Module.isPro) {
               toSelect = when (reminder.type) {
-                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> UiSelectorType.GPS_PLACE
-                else -> UiSelectorType.DATE
+                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS,
+                Reminder.BY_PLACES_CALL -> {
+                  UiSelectorType.GPS_PLACE
+                }
+
+                else -> {
+                  UiSelectorType.DATE
+                }
               }
             }
           }
@@ -322,7 +356,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       }
 
       override fun onNothingSelected(parent: AdapterView<*>) {
-
       }
     }
   }
@@ -343,8 +376,10 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     builder.setSingleChoiceItems(
       ArrayAdapter(
         this,
-        android.R.layout.simple_list_item_single_choice, names
-      ), names.indexOf(stateViewModel.reminder.groupTitle)
+        android.R.layout.simple_list_item_single_choice,
+        names
+      ),
+      names.indexOf(stateViewModel.reminder.groupTitle)
     ) { dialog, which ->
       dialog.dismiss()
       showGroup(groups[which])
@@ -589,10 +624,12 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     SHOP,
     GPS,
     GPS_PLACE,
-    RECUR,
+    RECUR
   }
 
-  private inner class TitleNavigationAdapter(private val items: List<UiSelectorReminder>) : BaseAdapter() {
+  private inner class TitleNavigationAdapter(
+    private val items: List<UiSelectorReminder>
+  ) : BaseAdapter() {
 
     override fun getCount(): Int {
       return items.size

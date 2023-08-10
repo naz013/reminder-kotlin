@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.work
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes

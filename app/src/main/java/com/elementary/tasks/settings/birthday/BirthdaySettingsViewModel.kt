@@ -38,7 +38,8 @@ class BirthdaySettingsViewModel(
       val message = if (count == 0) {
         textProvider.getText(R.string.no_new_birthdays)
       } else {
-        textProvider.getText(R.string.voice_found) + " $count " + textProvider.getText(R.string.birthdays)
+        textProvider.getText(R.string.voice_found) + " $count " +
+          textProvider.getText(R.string.birthdays)
       }
       postError(StringUtils.capitalize(message.lowercase()))
     }

@@ -134,10 +134,13 @@ internal class PtWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         for (format in hourFormats) {
-          if (ignoreAny {
-              localTime = LocalTime.parse(time, format)
-              localTime
-            } != null) break
+          val ignore = ignoreAny {
+            localTime = LocalTime.parse(time, format)
+            localTime
+          }
+          if (ignore != null) {
+            break
+          }
         }
       }
       localTime
@@ -200,7 +203,9 @@ internal class PtWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
-      } else s
+      } else {
+        s
+      }
     }?.splitByWhitespaces()?.toMutableList()?.let { list ->
       val sb = StringBuilder()
       list.forEach { s ->
@@ -380,9 +385,9 @@ internal class PtWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   }
 
   override fun hasEvent(input: String): Boolean {
-    return (input.startsWith("nova") || input.startsWith("novo") ||
+    return input.startsWith("nova") || input.startsWith("novo") ||
       input.startsWith("adicionar") || input.startsWith("crio") ||
-      input.startsWith("criar"))
+      input.startsWith("criar")
   }
 
   override fun getEvent(input: String): Action = when {

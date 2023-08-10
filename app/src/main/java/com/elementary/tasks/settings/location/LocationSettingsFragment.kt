@@ -47,7 +47,9 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
   }
 
   private fun openPlacesScreen() {
-    safeNavigation(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToPlacesFragment())
+    safeNavigation {
+      LocationSettingsFragmentDirections.actionLocationSettingsFragmentToPlacesFragment()
+    }
   }
 
   private fun initMapStylePrefs() {
@@ -58,7 +60,9 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
   }
 
   private fun openMapStylesFragment() {
-    safeNavigation(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToMapStyleFragment())
+    safeNavigation {
+      LocationSettingsFragmentDirections.actionLocationSettingsFragmentToMapStyleFragment()
+    }
   }
 
   private fun initMarkerStylePrefs() {
@@ -68,8 +72,12 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
 
   private fun showStyleDialog() {
     withActivity { act ->
-      dialogues.showColorDialog(act, prefs.markerStyle,
-        getString(R.string.style_of_marker), ThemeProvider.colorsForSlider(act)) {
+      dialogues.showColorDialog(
+        act,
+        prefs.markerStyle,
+        getString(R.string.style_of_marker),
+        ThemeProvider.colorsForSlider(act)
+      ) {
         prefs.markerStyle = it
         showMarkerStyle()
       }
@@ -118,11 +126,19 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
       val time = prefs.trackTime
 
       b.timeBar.addOnChangeListener { _, value, _ ->
-        b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), value.toInt().toString())
+        b.timeTitle.text = String.format(
+          Locale.getDefault(),
+          getString(R.string.x_seconds),
+          value.toInt().toString()
+        )
       }
       b.timeBar.value = time.toFloat()
 
-      b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), time.toString())
+      b.timeTitle.text = String.format(
+        Locale.getDefault(),
+        getString(R.string.x_seconds),
+        time.toString()
+      )
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
         prefs.trackTime = b.timeBar.value.toInt()
@@ -139,8 +155,12 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
       val builder = dialogues.getMaterialDialog(it)
       builder.setCancelable(true)
       builder.setTitle(getString(R.string.map_type))
-      val types = arrayOf(getString(R.string.normal), getString(R.string.satellite),
-        getString(R.string.terrain), getString(R.string.hybrid))
+      val types = arrayOf(
+        getString(R.string.normal),
+        getString(R.string.satellite),
+        getString(R.string.terrain),
+        getString(R.string.hybrid)
+      )
       val type = prefs.mapType
       mItemSelect = getPosition(type)
       builder.setSingleChoiceItems(types, mItemSelect) { _, which -> mItemSelect = which }
@@ -183,16 +203,20 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     val radius = prefs.radius
     withActivity {
       val radiusFormatter = DefaultRadiusFormatter(it, prefs.useMetric)
-      dialogues.showRadiusDialog(it, radius, object : Dialogues.OnValueSelectedListener<Int> {
-        override fun onSelected(t: Int) {
-          prefs.radius = t
-          showRadius()
-        }
+      dialogues.showRadiusDialog(
+        it,
+        radius,
+        object : Dialogues.OnValueSelectedListener<Int> {
+          override fun onSelected(t: Int) {
+            prefs.radius = t
+            showRadius()
+          }
 
-        override fun getTitle(t: Int): String {
-          return radiusFormatter.format(t)
+          override fun getTitle(t: Int): String {
+            return radiusFormatter.format(t)
+          }
         }
-      })
+      )
     }
   }
 }

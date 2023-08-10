@@ -279,8 +279,8 @@ class Sound(
   companion object {
 
     fun isDefaultMelody(defMelody: String): Boolean {
-      return defMelody == Constants.SOUND_ALARM || defMelody == Constants.SOUND_NOTIFICATION
-        || defMelody == Constants.SOUND_RINGTONE || defMelody == Constants.DEFAULT
+      return defMelody == Constants.SOUND_ALARM || defMelody == Constants.SOUND_NOTIFICATION ||
+        defMelody == Constants.SOUND_RINGTONE || defMelody == Constants.DEFAULT
     }
   }
 }

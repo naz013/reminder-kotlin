@@ -5,7 +5,7 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.UiReminderList
 
 abstract class BaseUiReminderListViewHolder<B : ViewBinding, T : UiReminderList>(
-  binding: B,
+  binding: B
 ) : HolderBinding<B>(binding) {
 
   abstract fun setData(data: T)

@@ -7,10 +7,8 @@ import org.threeten.bp.LocalDateTime
 abstract class RepeatableTypeFragment<B : ViewBinding> : TypeFragment<B>() {
 
   protected fun validBefore(dateTime: LocalDateTime, reminder: Reminder): Boolean {
-    if ((dateTimeManager.toMillis(dateTime) - reminder.remindBefore - 100) < System.currentTimeMillis()) {
-      return false
-    }
-    return true
+    val millis = dateTimeManager.toMillis(dateTime) - reminder.remindBefore - 100
+    return millis >= System.currentTimeMillis()
   }
 
   protected fun getZeroedInt(v: Int): String {

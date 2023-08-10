@@ -95,7 +95,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     onSyncEnd.invoke()
 
     binding.cloudsPrefs.setOnClickListener {
-      safeNavigation(ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives())
+      safeNavigation {
+        ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives()
+      }
     }
 
     initBackupPrefs()
@@ -112,7 +114,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     initLocalBackupPrefs()
 
     binding.backupsPrefs.setOnClickListener {
-      safeNavigation(ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment())
+      safeNavigation {
+        ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment()
+      }
     }
     binding.backupsPrefs.setDependentView(binding.backupDataPrefs)
   }
@@ -400,11 +404,18 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     binding.autoBackupFlagsPrefs.setDependentValue(prefs.autoBackupState > 0)
   }
 
-  private fun showFlagsDialog(title: String, current: Array<String>, onSelect: (Array<String>) -> Unit) {
+  private fun showFlagsDialog(
+    title: String,
+    current: Array<String>,
+    onSelect: (Array<String>) -> Unit
+  ) {
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(title)
     val syncFlags = syncFlags(current)
-    builder.setMultiChoiceItems(syncFlags.map { it.title }.toTypedArray(), checkStates(syncFlags)) { _, which, isChecked ->
+    builder.setMultiChoiceItems(
+      syncFlags.map { it.title }.toTypedArray(),
+      checkStates(syncFlags)
+    ) { _, which, isChecked ->
       syncFlags[which].isChecked = isChecked
     }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
@@ -437,7 +448,10 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   private fun showIntervalDialog(title: String, current: Int, onSelect: (Int) -> Unit) {
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(title)
-    builder.setSingleChoiceItems(syncStates(), positionFromState(current)) { _, item -> mItemSelect = item }
+    builder.setSingleChoiceItems(
+      syncStates(),
+      positionFromState(current)
+    ) { _, item -> mItemSelect = item }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
       dialog.dismiss()
       onSelect.invoke(mItemSelect)
@@ -495,8 +509,13 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showEventDuration() {
-    binding.eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-      prefs.calendarEventDuration.toString()))
+    binding.eventDurationPrefs.setDetailText(
+      String.format(
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
+        prefs.calendarEventDuration.toString()
+      )
+    )
   }
 
   private fun showEventDurationDialog() {
@@ -505,7 +524,11 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
 
     b.seekBar.addOnChangeListener { _, value, _ ->
-      b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), value.toInt().toString())
+      b.titleView.text = String.format(
+        Locale.getDefault(),
+        getString(R.string.x_minutes),
+        value.toInt().toString()
+      )
     }
     b.seekBar.stepSize = 1f
     b.seekBar.valueFrom = 0f
@@ -514,7 +537,11 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     val duration = prefs.calendarEventDuration
     b.seekBar.value = duration.toFloat()
 
-    b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), duration.toString())
+    b.titleView.text = String.format(
+      Locale.getDefault(),
+      getString(R.string.x_minutes),
+      duration.toString()
+    )
     builder.setView(b.root)
     builder.setPositiveButton(R.string.ok) { _, _ ->
       prefs.calendarEventDuration = b.seekBar.value.toInt()
@@ -590,17 +617,43 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   override fun getTitle(): String = getString(R.string.export_and_sync)
 
   private fun syncStates(): Array<String> {
-    return arrayOf(getString(R.string.disabled), getString(R.string.one_hour), getString(R.string.six_hours),
-      getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
+    return arrayOf(
+      getString(R.string.disabled),
+      getString(R.string.one_hour),
+      getString(R.string.six_hours),
+      getString(R.string.twelve_hours),
+      getString(R.string.one_day),
+      getString(R.string.two_days)
+    )
   }
 
   private fun syncFlags(current: Array<String>): Array<SyncFlag> {
     return arrayOf(
-      SyncFlag(getString(R.string.reminders_), SyncDataWorker.FLAG_REMINDER, current.contains(SyncDataWorker.FLAG_REMINDER)),
-      SyncFlag(getString(R.string.birthdays), SyncDataWorker.FLAG_BIRTHDAY, current.contains(SyncDataWorker.FLAG_BIRTHDAY)),
-      SyncFlag(getString(R.string.notes), SyncDataWorker.FLAG_NOTE, current.contains(SyncDataWorker.FLAG_NOTE)),
-      SyncFlag(getString(R.string.places), SyncDataWorker.FLAG_PLACE, current.contains(SyncDataWorker.FLAG_PLACE)),
-      SyncFlag(getString(R.string.action_settings), SyncDataWorker.FLAG_SETTINGS, current.contains(SyncDataWorker.FLAG_SETTINGS))
+      SyncFlag(
+        getString(R.string.reminders_),
+        SyncDataWorker.FLAG_REMINDER,
+        current.contains(SyncDataWorker.FLAG_REMINDER)
+      ),
+      SyncFlag(
+        getString(R.string.birthdays),
+        SyncDataWorker.FLAG_BIRTHDAY,
+        current.contains(SyncDataWorker.FLAG_BIRTHDAY)
+      ),
+      SyncFlag(
+        getString(R.string.notes),
+        SyncDataWorker.FLAG_NOTE,
+        current.contains(SyncDataWorker.FLAG_NOTE)
+      ),
+      SyncFlag(
+        getString(R.string.places),
+        SyncDataWorker.FLAG_PLACE,
+        current.contains(SyncDataWorker.FLAG_PLACE)
+      ),
+      SyncFlag(
+        getString(R.string.action_settings),
+        SyncDataWorker.FLAG_SETTINGS,
+        current.contains(SyncDataWorker.FLAG_SETTINGS)
+      )
     )
   }
 

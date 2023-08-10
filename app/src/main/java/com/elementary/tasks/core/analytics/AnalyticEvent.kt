@@ -117,7 +117,7 @@ enum class Feature(val value: String) {
   GOOGLE_DRIVE("login_google_drive"),
   DROPBOX("login_dropbox"),
 
-  RECUR_EVENT_CREATED("recur_created"),
+  RECUR_EVENT_CREATED("recur_created")
 }
 
 enum class Screen(val value: String) {
@@ -131,7 +131,7 @@ enum class Screen(val value: String) {
   GROUPS("groups_list"),
   VOICE_CONTROL("voice_control"),
   TROUBLESHOOTING("troubleshooting"),
-  WHATS_NEW("whats_new"),
+  WHATS_NEW("whats_new")
 }
 
 enum class Widget(val value: String) {
@@ -141,7 +141,7 @@ enum class Widget(val value: String) {
   CALENDAR("calendar"),
   COMBINED("combined"),
   GOOGLE_TASKS("google_tasks"),
-  SINGLE_NOTE("single_note"),
+  SINGLE_NOTE("single_note")
 }
 
 enum class Event(val value: String) {
@@ -150,13 +150,13 @@ enum class Event(val value: String) {
   SCREEN_OPENED("screen_opened"),
   VOICE_CONTROL_USED("voice_control_used"),
   PRESET_USED("preset_used"),
-  WIDGET_USED("widget_used"),
+  WIDGET_USED("widget_used")
 }
 
 enum class PresetAction(val value: String) {
   CREATE("create"),
   USE("use"),
-  DELETE("delete"),
+  DELETE("delete")
 }
 
 object Parameter {

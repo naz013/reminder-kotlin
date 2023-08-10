@@ -44,9 +44,10 @@ class BirthdayHandlerQ(
   private fun showBirthdayNotification(birthday: Birthday) {
     Timber.d("showBirthdayNotification: $birthday")
     val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-    if ((!SuperUtil.isDoNotDisturbEnabled(context) ||
-        (SuperUtil.checkNotificationPermission(context) && birthdayDataProvider.isBirthdaySilentEnabled()))
-    ) {
+    val ignore = SuperUtil.checkNotificationPermission(context) &&
+      birthdayDataProvider.isBirthdaySilentEnabled()
+    val playMelody = !SuperUtil.isDoNotDisturbEnabled(context) || ignore
+    if (playMelody) {
       builder.setSound(birthdayDataProvider.getSound(), prefs.soundStream)
     }
 
@@ -87,7 +88,6 @@ class BirthdayHandlerQ(
     }.also {
       builder.addAction(R.drawable.ic_twotone_done_white, textProvider.getText(R.string.ok), it)
     }
-
 
     if (birthday.number.isNotEmpty()) {
       getActionReceiverIntent(BirthdayActionReceiver.ACTION_CALL, birthday.uuId).let {

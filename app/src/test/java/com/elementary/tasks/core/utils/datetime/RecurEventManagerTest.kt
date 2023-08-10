@@ -5,7 +5,8 @@ import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
 import com.elementary.tasks.core.utils.datetime.recurrence.builder.RuleBuilder
 import com.elementary.tasks.core.utils.datetime.recurrence.parser.TagParser
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class RecurEventManagerTest {

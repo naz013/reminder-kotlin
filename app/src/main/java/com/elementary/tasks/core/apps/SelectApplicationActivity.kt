@@ -35,14 +35,16 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
     R.string.search
   ) { searchModifier.setSearchValue(it) }
   private val searchModifier = object : SearchModifier<UiApplicationList>(
-    null, {
+    null,
+    {
       appsRecyclerAdapter.submitList(it)
       binding.listView.smoothScrollToPosition(0)
       refreshView(it.size)
-  }) {
+    }
+  ) {
     override fun filter(v: UiApplicationList): Boolean {
-      return searchValue.isEmpty() || (v.name
-        ?: "").lowercase().contains(searchValue.lowercase())
+      return searchValue.isEmpty() ||
+        (v.name ?: "").lowercase().contains(searchValue.lowercase())
     }
   }
 
@@ -78,7 +80,12 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
 
   private fun initRecyclerView() {
     appsRecyclerAdapter.actionsListener = object : ActionsListener<UiApplicationList> {
-      override fun onAction(view: View, position: Int, t: UiApplicationList?, actions: ListActions) {
+      override fun onAction(
+        view: View,
+        position: Int,
+        t: UiApplicationList?,
+        actions: ListActions
+      ) {
         if (t != null) {
           val intent = Intent()
           intent.putExtra(Constants.SELECTED_APPLICATION, t.packageName)

@@ -121,5 +121,5 @@ enum class TagType(val value: String) {
 
   RRULE("RRULE"),
 
-  VERSION("VERSION"),
+  VERSION("VERSION")
 }

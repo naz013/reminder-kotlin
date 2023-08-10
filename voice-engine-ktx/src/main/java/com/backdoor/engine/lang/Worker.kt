@@ -142,7 +142,8 @@ internal abstract class Worker(
             beginIndex = i
           }
         } else if (beginIndex != -1 &&
-          (hasHours(part) != -1 || hasMinutes(part) != -1 || hasConnectSpecialWord(part))) {
+          (hasHours(part) != -1 || hasMinutes(part) != -1 || hasConnectSpecialWord(part))
+        ) {
           parts[beginIndex] = allNumber.toString()
           allNumber = 0f
           beginIndex = -1
@@ -300,6 +301,7 @@ internal abstract class Worker(
               return@forEachIndexed
             }
           }
+
           Action.MESSAGE -> {
             if (getMessageType(s) != null) {
               val phoneNumber = crawlForward(list, index + 1, 2, true, {
@@ -313,6 +315,7 @@ internal abstract class Worker(
               return@forEachIndexed
             }
           }
+
           else -> {
             if (getMessageType(s) != null) {
               val email = crawlForward(list, index + 1, 2, true, {
@@ -348,7 +351,7 @@ internal abstract class Worker(
     onClear: (Int) -> Unit
   ): T? {
     var t: T? = null
-    for (i in index downTo  index - numberOfSteps + 1) {
+    for (i in index downTo index - numberOfSteps + 1) {
       if (i >= 0) {
         t = ignoreAny({ transform.invoke(list[i]) }) { null }
         if (t != null) {
@@ -395,7 +398,7 @@ internal abstract class Worker(
     numberOfSteps: Int,
     vararg matchers: String
   ) {
-    for (i in index downTo  index - numberOfSteps + 1) {
+    for (i in index downTo index - numberOfSteps + 1) {
       if (i >= 0) {
         val s = list[i]
         val areAnyMatches = matchers.any { s.matches(it) }

@@ -33,27 +33,30 @@ object Permissions {
 
   fun isNotificationsAllowed(context: Context): Boolean {
     if (Module.is13) {
-      if (ContextCompat.checkSelfPermission(context, POST_NOTIFICATION) != PackageManager.PERMISSION_GRANTED) {
-        return false
-      }
-      return true
+      return ContextCompat.checkSelfPermission(
+        context,
+        POST_NOTIFICATION
+      ) == PackageManager.PERMISSION_GRANTED
     }
     return true
   }
 
   fun isBgLocationAllowed(context: Context): Boolean {
     if (Module.is10) {
-      return ContextCompat.checkSelfPermission(context, BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+      return ContextCompat.checkSelfPermission(
+        context,
+        BACKGROUND_LOCATION
+      ) == PackageManager.PERMISSION_GRANTED
     }
     return true
   }
 
   fun checkForeground(context: Context): Boolean {
     if (Module.isPie) {
-      if (ContextCompat.checkSelfPermission(context, FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
-        return false
-      }
-      return true
+      return ContextCompat.checkSelfPermission(
+        context,
+        FOREGROUND_SERVICE
+      ) == PackageManager.PERMISSION_GRANTED
     }
     return true
   }

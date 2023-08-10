@@ -139,9 +139,11 @@ fun Int.adjustAlpha(@IntRange(from = 0, to = 100) factor: Int): Int {
 
 // Check if Color is Dark
 fun Int.isColorDark(): Boolean {
-  val darkness = 1 - (0.299 * android.graphics.Color.red(this) + 0.587
-    * android.graphics.Color.green(this) + 0.114
-    * android.graphics.Color.blue(this)) / 255
+  val darkness = 1 - (
+    0.299 * android.graphics.Color.red(this) +
+      0.587 * android.graphics.Color.green(this) +
+      0.114 * android.graphics.Color.blue(this)
+    ) / 255
   Timber.d("isColorDark: $darkness")
   return darkness >= 0.5
 }
@@ -224,34 +226,39 @@ fun View.visible() {
 }
 
 fun View.visibleGone(value: Boolean) {
-  if (value && !isVisible()) visible()
-  else if (!value && !isGone()) gone()
+  if (value && !isVisible()) {
+    visible()
+  } else if (!value && !isGone()) {
+    gone()
+  }
 }
 
 fun View.visibleInvisible(value: Boolean) {
-  if (value && !isVisible()) visible()
-  else if (!value && !isTransparent()) transparent()
+  if (value && !isVisible()) {
+    visible()
+  } else if (!value && !isTransparent()) {
+    transparent()
+  }
 }
 
 fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
   lazy(LazyThreadSafetyMode.NONE, initializer)
 
-suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T)
-  : T = withContext(Dispatchers.Main, block)
+suspend fun <T> withUIContext(
+  block: suspend CoroutineScope.() -> T
+): T = withContext(Dispatchers.Main, block)
 
 @Deprecated("Use class scope for coroutine")
 fun launchDefault(
   start: CoroutineStart = CoroutineStart.DEFAULT,
   block: suspend CoroutineScope.() -> Unit
-)
-  : Job = GlobalScope.launch(Dispatchers.Default, start, block)
+): Job = GlobalScope.launch(Dispatchers.Default, start, block)
 
 @Deprecated("Use class scope for coroutine")
 fun launchIo(
   start: CoroutineStart = CoroutineStart.DEFAULT,
   block: suspend CoroutineScope.() -> Unit
-)
-  : Job = GlobalScope.launch(Dispatchers.IO, start, block)
+): Job = GlobalScope.launch(Dispatchers.IO, start, block)
 
 fun EditText.onChanged(function: (String) -> Unit) {
   this.addTextChangedListener(object : TextWatcher {
@@ -419,7 +426,6 @@ fun WindowTypeView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
     listener.invoke(it)
   }
 }
-
 
 fun LedPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   this.led = value

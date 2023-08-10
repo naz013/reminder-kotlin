@@ -22,7 +22,7 @@ class RecentPlacesAdapter :
   }
 
   inner class ViewHolder(
-    parent: ViewGroup,
+    parent: ViewGroup
   ) : HolderBinding<ListItemMapPlaceBinding>(
     ListItemMapPlaceBinding.inflate(parent.inflater(), parent, false)
   ) {

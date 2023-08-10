@@ -8,7 +8,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
+import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toast
@@ -22,7 +22,8 @@ class VoiceRecognitionLauncher private constructor(
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
-), KoinComponent {
+),
+  KoinComponent {
 
   private val language by inject<Language>()
   private val prefs by inject<Prefs>()
@@ -60,17 +61,28 @@ class VoiceRecognitionLauncher private constructor(
     when {
       isLiveSupported -> {
         intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getActivity().getString(R.string.say_something))
+        intent.putExtra(
+          RecognizerIntent.EXTRA_LANGUAGE,
+          language.getLanguage(prefs.voiceLocale)
+        )
+        intent.putExtra(
+          RecognizerIntent.EXTRA_PROMPT,
+          getActivity().getString(R.string.say_something)
+        )
       }
+
       prefs.isLiveEnabled -> {
         (getActivity() as? VoiceWidgetDialog)?.finish()
         intent = Intent(getActivity(), ConversationActivity::class.java)
       }
+
       else -> {
         intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getActivity().getString(R.string.say_something))
+        intent.putExtra(
+          RecognizerIntent.EXTRA_PROMPT,
+          getActivity().getString(R.string.say_something)
+        )
       }
     }
     return intent

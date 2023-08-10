@@ -190,7 +190,7 @@ enum class FreqType(val value: String) {
   WEEKLY("WEEKLY"),
   DAILY("DAILY"),
   HOURLY("HOURLY"),
-  MINUTELY("MINUTELY"),
+  MINUTELY("MINUTELY")
 }
 
 enum class RecurParamType(val value: String) {
@@ -206,7 +206,7 @@ enum class RecurParamType(val value: String) {
   BYYEARDAY("BYYEARDAY"), // 1,100,200
   BYWEEKNO("BYWEEKNO"), // 20
   WEEKSTART("WKST"), // MO, TU, WE, TH, FR, SA, and SU
-  BYSETPOS("BYSETPOS"), // 1 to 366 or -366 to -1
+  BYSETPOS("BYSETPOS") // 1 to 366 or -366 to -1
 }
 
 enum class Day(val value: String) {
@@ -216,5 +216,5 @@ enum class Day(val value: String) {
   WE("WE"), // Wednesday
   TH("TH"), // Thursday
   FR("FR"), // Friday
-  SA("SA"), // Saturday
+  SA("SA") // Saturday
 }

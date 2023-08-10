@@ -23,6 +23,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
@@ -32,9 +33,9 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.toast
@@ -77,8 +78,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
   private val isAppType: Boolean
     get() {
       val reminder = mReminder ?: return false
-      return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)
-        || Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
+      return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
+        Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
     }
 
   private val isAutoCallEnabled: Boolean
@@ -461,8 +462,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
       } catch (ignored: PackageManager.NameNotFoundException) {
       }
 
-      val nameA =
-        (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
+      val nameA = if (applicationInfo != null) {
+        packageManager.getApplicationLabel(applicationInfo).toString()
+      } else {
+        "???"
+      }
       val label = summary + "\n\n" + nameA + "\n" + reminder.target
       binding.remText.text = summary
       binding.remText.contentDescription = label
@@ -634,7 +638,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
   private fun editReminder() {
     doActions({ it.stop() }, {
       PinLoginActivity.openLogged(
-        this, Intent(this, CreateReminderActivity::class.java)
+        this,
+        intentForClass(CreateReminderActivity::class.java)
           .putExtra(Constants.INTENT_ID, it.uuId)
       )
       finish()
@@ -670,8 +675,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
         Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS()
         isAppType -> openApplication(it)
         Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
-          this, it.target,
-          it.subject, summary, it.attachmentFile
+          context = this,
+          email = it.target,
+          subject = it.subject,
+          message = summary,
+          filePath = it.attachmentFile
         )
 
         else -> makeCall()
@@ -752,9 +760,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
     } else {
       builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
       builder.priority = priority()
-      if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
-      ) {
+      val playDefaultMelody = !SuperUtil.isDoNotDisturbEnabled(this) ||
+        (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)
+      if (playDefaultMelody) {
         val soundUri = soundUri
         Timber.d("showReminderNotification: $soundUri")
         sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled, prefs.playbackDuration)
@@ -820,9 +828,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityDialogReminderBi
     } else {
       builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
       builder.priority = priority()
-      if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))
-      ) {
+      val playDefaultMelody = !SuperUtil.isDoNotDisturbEnabled(this) ||
+        (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)
+      if (playDefaultMelody) {
         playDefaultMelody()
       }
       if (prefs.isVibrateEnabled) {

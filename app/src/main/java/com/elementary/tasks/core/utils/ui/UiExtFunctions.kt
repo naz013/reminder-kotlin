@@ -65,7 +65,7 @@ fun View.fadeInAnimation() {
 
 fun View.fadeOutAnimation() {
   val fadeOut = AlphaAnimation(1f, 0f)
-  fadeOut.interpolator = AccelerateInterpolator() //and this
+  fadeOut.interpolator = AccelerateInterpolator() // and this
   fadeOut.duration = 400
   animation = fadeOut
   visibility = View.GONE
@@ -73,8 +73,11 @@ fun View.fadeOutAnimation() {
 
 fun Toolbar.tintOverflowButton(isDark: Boolean): Boolean {
   val overflowIcon = overflowIcon ?: return false
-  val color = if (isDark) context.colorOf(R.color.whitePrimary)
-  else context.colorOf(R.color.pureBlack)
+  val color = if (isDark) {
+    context.colorOf(R.color.whitePrimary)
+  } else {
+    context.colorOf(R.color.pureBlack)
+  }
   val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
   overflowIcon.colorFilter = colorFilter
   return true

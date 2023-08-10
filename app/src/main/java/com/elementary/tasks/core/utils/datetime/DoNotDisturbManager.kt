@@ -15,7 +15,9 @@ class DoNotDisturbManager(
       return if (range.contains(millis)) {
         if (prefs.doNotDisturbIgnore == 5) {
           true
-        } else priority < prefs.doNotDisturbIgnore
+        } else {
+          priority < prefs.doNotDisturbIgnore
+        }
       } else {
         false
       }

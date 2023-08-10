@@ -46,27 +46,39 @@ class PresetInitProcessor(
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;INTERVAL=2;COUNT=10;BYDAY=1SU,-1SU",
-        name = textProvider.getText(R.string.recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences)
+        name = textProvider.getText(
+          R.string.recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;COUNT=6;BYDAY=-2MO",
-        name = textProvider.getText(R.string.recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months)
+        name = textProvider.getText(
+          R.string.recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;BYMONTHDAY=-3;COUNT=6",
-        name = textProvider.getText(R.string.recur_monthly_on_the_third_to_the_last_day_of_the_month)
+        name = textProvider.getText(
+          R.string.recur_monthly_on_the_third_to_the_last_day_of_the_month
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=2,15",
-        name = textProvider.getText(R.string.recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences)
+        name = textProvider.getText(
+          R.string.recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=1,-1",
-        name = textProvider.getText(R.string.recur_monthly_on_the_first_and_last_day_of_the_month_for_10_occurrences)
+        name = textProvider.getText(
+          R.string.recur_monthly_on_the_first_and_last_day_of_the_month_for_10_occurrences
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;INTERVAL=18;COUNT=10;BYMONTHDAY=10,11,12,13,14,15",
-        name = textProvider.getText(R.string.recur_every_18_months_on_the_10th_thru_15th_of_the_month_for_10_occurrences)
+        name = textProvider.getText(
+          R.string.recur_every_18_months_on_the_10th_thru_15th_of_the_month_for_10_occurrences
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;INTERVAL=2;BYDAY=TU;COUNT=10",
@@ -78,7 +90,9 @@ class PresetInitProcessor(
       ),
       createPreset(
         rule = "RRULE:FREQ=YEARLY;INTERVAL=2;COUNT=10;BYMONTH=1,2,3",
-        name = textProvider.getText(R.string.recur_every_other_year_on_january_february_and_march_for_10_occurrences)
+        name = textProvider.getText(
+          R.string.recur_every_other_year_on_january_february_and_march_for_10_occurrences
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=YEARLY;BYDAY=20MO;COUNT=10",
@@ -90,7 +104,9 @@ class PresetInitProcessor(
       ),
       createPreset(
         rule = "RRULE:FREQ=YEARLY;BYDAY=TH;BYMONTH=6,7,8;COUNT=10",
-        name = textProvider.getText(R.string.recur_every_thursday_but_only_during_june_july_and_august)
+        name = textProvider.getText(
+          R.string.recur_every_thursday_but_only_during_june_july_and_august
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13;COUNT=10",
@@ -98,7 +114,9 @@ class PresetInitProcessor(
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13;COUNT=10",
-        name = textProvider.getText(R.string.recur_the_first_saturday_that_follows_the_first_sunday_of_the_month)
+        name = textProvider.getText(
+          R.string.recur_the_first_saturday_that_follows_the_first_sunday_of_the_month
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MINUTELY;INTERVAL=15;COUNT=6",
@@ -110,7 +128,9 @@ class PresetInitProcessor(
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;COUNT=3;BYDAY=TU,WE,TH;BYSETPOS=3",
-        name = textProvider.getText(R.string.recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months)
+        name = textProvider.getText(
+          R.string.recur_the_third_instance_into_the_month_for_the_next_3_months
+        )
       ),
       createPreset(
         rule = "RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-2",
@@ -122,8 +142,10 @@ class PresetInitProcessor(
       ),
       createPreset(
         rule = "RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH",
-        name = textProvider.getText(R.string.recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences)
-      ),
+        name = textProvider.getText(
+          R.string.recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences
+        )
+      )
     )
   }
 

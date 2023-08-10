@@ -4,7 +4,6 @@ import com.elementary.tasks.core.utils.datetime.recurrence.Param
 import com.elementary.tasks.core.utils.datetime.recurrence.ParamValueType
 import com.elementary.tasks.core.utils.datetime.recurrence.ValueParam
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 
 class ParamParserTest {

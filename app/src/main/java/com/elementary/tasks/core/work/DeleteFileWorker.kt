@@ -41,6 +41,7 @@ class DeleteFileWorker(
               syncManagers.completableManager.reminderDeleteCompletable
             ).delete(uuId, IndexTypes.TYPE_REMINDER)
           }
+
           fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
             DataFlow(
               syncManagers.repositoryManager.birthdayDataFlowRepository,
@@ -49,6 +50,7 @@ class DeleteFileWorker(
               completable = null
             ).delete(uuId, IndexTypes.TYPE_BIRTHDAY)
           }
+
           fileName.endsWith(FileConfig.FILE_NAME_GROUP) -> {
             DataFlow(
               syncManagers.repositoryManager.groupDataFlowRepository,
@@ -57,6 +59,7 @@ class DeleteFileWorker(
               completable = null
             ).delete(uuId, IndexTypes.TYPE_GROUP)
           }
+
           fileName.endsWith(FileConfig.FILE_NAME_NOTE) -> {
             DataFlow(
               syncManagers.repositoryManager.noteDataFlowRepository,
@@ -65,6 +68,7 @@ class DeleteFileWorker(
               completable = null
             ).delete(uuId, IndexTypes.TYPE_NOTE)
           }
+
           fileName.endsWith(FileConfig.FILE_NAME_PLACE) -> {
             DataFlow(
               syncManagers.repositoryManager.placeDataFlowRepository,
@@ -94,13 +98,17 @@ class DeleteFileWorker(
     fun schedule(context: Context, fileName: String) {
       val work = OneTimeWorkRequest.Builder(DeleteFileWorker::class.java)
         .addTag(TAG + fileName)
-        .setInputData(Data.Builder()
-          .putString(ARG_FILE_NAME, fileName)
-          .build())
-        .setConstraints(Constraints.Builder()
-          .setRequiredNetworkType(NetworkType.UNMETERED)
-          .setRequiresBatteryNotLow(true)
-          .build())
+        .setInputData(
+          Data.Builder()
+            .putString(ARG_FILE_NAME, fileName)
+            .build()
+        )
+        .setConstraints(
+          Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+        )
         .build()
       WorkManager.getInstance(context).enqueue(work)
     }

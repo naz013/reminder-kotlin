@@ -136,7 +136,13 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
           e.printStackTrace()
         }
       } else if (type == Info.Local) {
-        if (Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+        if (
+          Permissions.checkPermission(
+            context,
+            Permissions.WRITE_EXTERNAL,
+            Permissions.READ_EXTERNAL
+          )
+        ) {
           for (file in params) {
             if (file == null || !file.exists()) {
               continue
@@ -181,7 +187,13 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
       val quotaUsed = dropbox.userQuotaNormal()
       val name = dropbox.userName()
       val count = dropbox.countFiles()
-      val userItem = UserItem(name = name, quota = quota, used = quotaUsed, count = count, photo = "")
+      val userItem = UserItem(
+        name = name,
+        quota = quota,
+        used = quotaUsed,
+        count = count,
+        photo = ""
+      )
       userItem.kind = Info.Dropbox
       list.add(userItem)
     }

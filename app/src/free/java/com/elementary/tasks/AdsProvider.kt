@@ -60,7 +60,6 @@ class AdsProvider {
         }
       )
     }
-
   }
 
   private fun loadForm(activity: Activity) {
@@ -75,7 +74,6 @@ class AdsProvider {
         }
       },
       { formError ->
-
       }
     )
   }
@@ -95,8 +93,8 @@ class AdsProvider {
     val adRequest = AdRequest.Builder().build()
     adView.loadAd(adRequest)
 
-    adView.adListener = object: AdListener() {
-      override fun onAdFailedToLoad(adError : LoadAdError) {
+    adView.adListener = object : AdListener() {
+      override fun onAdFailedToLoad(adError: LoadAdError) {
         adView.gone()
         failListener?.invoke()
       }

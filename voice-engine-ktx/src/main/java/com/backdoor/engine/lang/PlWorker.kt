@@ -35,13 +35,19 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
         it.forEachIndexed { index, s ->
           if (s.matches(".*$CALENDAR_KEY.*")) {
             it[index] = ""
-            if (index > 0 && (it[index - 1].equals("do", ignoreCase = true) ||
-                it[index - 1].matches("doda(ć|j)"))) {
-              it[index - 1] = ""
+            if (index > 0) {
+              val shouldClear = it[index - 1].equals("do", ignoreCase = true) ||
+                it[index - 1].matches("doda(ć|j)")
+              if (shouldClear) {
+                it[index - 1] = ""
+              }
             }
-            if (index > 1 && (it[index - 2].equals("do", ignoreCase = true) ||
-                it[index - 2].matches("doda(ć|j)"))) {
-              it[index - 2] = ""
+            if (index > 1) {
+              val shouldClear = it[index - 2].equals("do", ignoreCase = true) ||
+                it[index - 2].matches("doda(ć|j)")
+              if (shouldClear) {
+                it[index - 2] = ""
+              }
             }
             return@forEachIndexed
           }
@@ -167,6 +173,7 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   override fun getAmpm(input: String): Ampm? = when {
     input.matches(".*wcześnie.*") || input.matches(".*rankiem.*") ||
       input.matches(".*rano.*") -> Ampm.MORNING
+
     input.matches(".*wiecz(orem|ór).*") -> Ampm.EVENING
     input.matches(".*dzień.*") -> Ampm.NOON
     input.matches(".*nocy?.*") -> Ampm.NIGHT
@@ -190,10 +197,13 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
     if (matcher.find()) {
       val time = matcher.group().trim()
       for (format in hourFormats) {
-        if (ignoreAny {
-            localTime = LocalTime.parse(time, format)
-            localTime
-          } != null) break
+        val ignore = ignoreAny {
+          localTime = LocalTime.parse(time, format)
+          localTime
+        }
+        if (ignore != null) {
+          break
+        }
       }
     }
     localTime
@@ -271,9 +281,9 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   }
 
   override fun hasAction(input: String): Boolean {
-    return (input.matches(".*otw(orzyć|órz).*") || input.matches(".*pomoc.*")
-      || input.matches(".*głośno.*") || input.matches(".*ustawienia.*")
-      || input.matches(".*poinform.*") || input.matches(".*zgło.*"))
+    return input.matches(".*otw(orzyć|órz).*") || input.matches(".*pomoc.*") ||
+      input.matches(".*głośno.*") || input.matches(".*ustawienia.*") ||
+      input.matches(".*poinform.*") || input.matches(".*zgło.*")
   }
 
   override fun getAction(input: String): Action = when {
@@ -399,7 +409,9 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       }.clip().let {
         if (it.contains(" pół")) {
           it.replace("pół", "")
-        } else it
+        } else {
+          it
+        }
       }
   }
 
@@ -428,8 +440,10 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
     input.matches("jeden") || input.matches("jedn.*") || input.matches("pierwsz(y|a|ego)") -> 1f
     input.matches("dwaj?") || input.matches("dwie") || input.matches("dwóch") ||
       input.matches("drug(i|a|iego)") -> 2f
+
     input.matches("trzy") || input.matches("trzej") || input.matches("trzech") ||
       input.matches("trzecia?(ego)?") -> 3f
+
     input.matches("cztery") || input.matches("czterech") || input.matches("czwart(y|a|ego)") -> 4f
     input.matches("pięć") || input.matches("piąt(y|a|ego)") -> 5f
     input.matches("sześć") || input.matches("szóst(y|a|ego)") -> 6f
@@ -559,7 +573,9 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
-      } else s
+      } else {
+        s
+      }
     }?.splitByWhitespaces()?.toMutableList()?.also {
       it.forEachIndexed { i, s ->
         if (hasHours(s) != -1) {

@@ -853,11 +853,17 @@ class DateTimeManager(
     if (date.isNullOrEmpty()) return null
     val loc = Locale(language.getTextLanguage(prefs.voiceLocale))
     val formatter = if (prefs.voiceLocale == 0) {
-      if (prefs.is24HourFormat) DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy HH:mm", loc)
-      else DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy h:mm a", loc)
+      if (prefs.is24HourFormat) {
+        DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy HH:mm", loc)
+      } else {
+        DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy h:mm a", loc)
+      }
     } else {
-      if (prefs.is24HourFormat) DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy HH:mm", loc)
-      else DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy h:mm a", loc)
+      if (prefs.is24HourFormat) {
+        DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy HH:mm", loc)
+      } else {
+        DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy h:mm a", loc)
+      }
     }
     return fromGmtToLocal(date)?.format(formatter)
   }

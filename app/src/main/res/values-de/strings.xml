@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">Täglich im Mai</string>
     <string name="recur_weekly_for_10_occurrences">Wöchentlich für 10 Vorkommnisse</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Monatlich am ersten Freitag für 10 Vorkommnisse</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Jeden zweiten Monat am ersten und letzten Sonntag des Monats für 10 Vorfälle</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Jeden zweiten Monat am ersten und letzten Sonntag des Monats für 10 Vorfälle</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Monatlich am letzten Montag des Monats für 6 Monate</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Monatlich am dritten zuletzten Tag des Monats</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Monatlich am 2. und 15. des Monats für 10 Vorkommnisse</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Der erste Samstag nach dem ersten Sonntag des Monats</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Alle 15 Minuten für 6 Vorkommnisse</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Jede eineinhalb Stunde für 4 Vorkommnisse</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">Die dritte Instanz in einem Monat von Dienstag, Mittwoch oder Donnerstag für die nächsten 3 Monate</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Die dritte Instanz in einem Monat von Dienstag, Mittwoch oder Donnerstag für die nächsten 3 Monate</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Der zweite zuletzte Wochentag des Monats</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Wochentags und Donnerstag für fünf Wochen</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Jede zweite Woche Dienstag und Donnerstag bei 8 Vorfällen</string>

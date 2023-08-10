@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.arch
 
 import android.content.ContentResolver
-import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -13,6 +12,7 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.groups.create.CreateGroupActivity
@@ -39,52 +39,67 @@ class IntentActivity : ThemedActivity() {
       Timber.d("getPlace: $any")
       if (any != null) {
         when (any) {
-            is Place -> {
-                if (any.isValid()) {
-                    startActivity(Intent(this, CreatePlaceActivity::class.java)
-                      .putExtra(Constants.INTENT_ITEM, any))
-                } else {
-                    toast(getString(R.string.unsupported_file_format))
-                }
-                finish()
+          is Place -> {
+            if (any.isValid()) {
+              startActivity(
+                intentForClass(CreatePlaceActivity::class.java)
+                  .putExtra(Constants.INTENT_ITEM, any)
+              )
+            } else {
+              toast(getString(R.string.unsupported_file_format))
             }
-            is OldNote -> {
-                val noteWithImages = noteToOldNoteConverter.toNote(any)
-                if (noteWithImages != null) {
-                    startActivity(Intent(this, CreateNoteActivity::class.java)
-                      .putExtra(Constants.INTENT_ITEM, noteWithImages))
-                } else {
-                    toast(getString(R.string.unsupported_file_format))
-                }
-                finish()
+            finish()
+          }
+
+          is OldNote -> {
+            val noteWithImages = noteToOldNoteConverter.toNote(any)
+            if (noteWithImages != null) {
+              startActivity(
+                intentForClass(CreateNoteActivity::class.java)
+                  .putExtra(Constants.INTENT_ITEM, noteWithImages)
+              )
+            } else {
+              toast(getString(R.string.unsupported_file_format))
             }
-            is Birthday -> {
-                if (any.isValid()) {
-                    startActivity(Intent(this, AddBirthdayActivity::class.java)
-                      .putExtra(Constants.INTENT_ITEM, any))
-                } else {
-                    toast(getString(R.string.unsupported_file_format))
-                }
-                finish()
+            finish()
+          }
+
+          is Birthday -> {
+            if (any.isValid()) {
+              startActivity(
+                intentForClass(AddBirthdayActivity::class.java)
+                  .putExtra(Constants.INTENT_ITEM, any)
+              )
+            } else {
+              toast(getString(R.string.unsupported_file_format))
             }
-            is Reminder -> {
-                if (any.isValid()) {
-                    startActivity(Intent(this, CreateReminderActivity::class.java)
-                      .putExtra(Constants.INTENT_ITEM, any))
-                } else {
-                    toast(getString(R.string.unsupported_file_format))
-                }
-                finish()
+            finish()
+          }
+
+          is Reminder -> {
+            if (any.isValid()) {
+              startActivity(
+                intentForClass(CreateReminderActivity::class.java)
+                  .putExtra(Constants.INTENT_ITEM, any)
+              )
+            } else {
+              toast(getString(R.string.unsupported_file_format))
             }
-            is ReminderGroup -> {
-                if (any.isValid()) {
-                    startActivity(Intent(this, CreateGroupActivity::class.java)
-                      .putExtra(Constants.INTENT_ITEM, any))
-                } else {
-                    toast(getString(R.string.unsupported_file_format))
-                }
-                finish()
+            finish()
+          }
+
+          is ReminderGroup -> {
+            if (any.isValid()) {
+              startActivity(
+                intentForClass(CreateGroupActivity::class.java)
+                  .putExtra(Constants.INTENT_ITEM, any)
+              )
+            } else {
+              toast(getString(R.string.unsupported_file_format))
             }
+            finish()
+          }
+
           else -> {
             toast(getString(R.string.unsupported_file_format))
             finish()

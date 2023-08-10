@@ -24,7 +24,8 @@ import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBin
 import org.koin.android.ext.android.inject
 import java.io.File
 
-class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthdayNotificationsBinding>() {
+class BirthdayNotificationFragment :
+  BaseSettingsFragment<FragmentSettingsBirthdayNotificationsBinding>() {
 
   private val cacheUtil by inject<CacheUtil>()
   private val soundStackHolder by inject<SoundStackHolder>()
@@ -119,7 +120,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         60 -> 6
         else -> 0
       }
-      builder.setSingleChoiceItems(durationLabels(), mItemSelect) { _, which -> mItemSelect = which }
+      builder.setSingleChoiceItems(durationLabels(), mItemSelect) { _, which ->
+        mItemSelect = which
+      }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         dialog.dismiss()
         prefs.birthdayPlaybackDuration = when (mItemSelect) {
@@ -218,8 +221,11 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
   }
 
   private fun iconTintColor() =
-    if (isDark) colorOf(R.color.pureWhite)
-    else colorOf(R.color.pureBlack)
+    if (isDark) {
+      colorOf(R.color.pureWhite)
+    } else {
+      colorOf(R.color.pureBlack)
+    }
 
   private fun showMelody() {
     val filePath = prefs.birthdayMelody

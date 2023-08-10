@@ -12,12 +12,12 @@ data class ValueParam(
 }
 
 enum class ParamType(val value: String) {
-  VALUE("VALUE"),
+  VALUE("VALUE")
 }
 
 enum class ParamValueType(val value: String) {
   DATE_TIME("DATE-TIME"),
   DATE("DATE"),
   TIME("TIME"),
-  PERIOD("PERIOD"),
+  PERIOD("PERIOD")
 }

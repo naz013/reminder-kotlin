@@ -7,7 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
@@ -117,10 +117,12 @@ class SyncDataWorker(
     fun schedule(context: Context) {
       val work = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
         .addTag(TAG)
-        .setConstraints(Constraints.Builder()
-          .setRequiredNetworkType(NetworkType.UNMETERED)
-          .setRequiresBatteryNotLow(true)
-          .build())
+        .setConstraints(
+          Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+        )
         .build()
       WorkManager.getInstance(context).enqueue(work)
     }

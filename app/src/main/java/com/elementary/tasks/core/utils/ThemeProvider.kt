@@ -14,7 +14,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.google.android.material.color.DynamicColors
 
-
 class ThemeProvider(
   private val context: Context,
   private val prefs: Prefs
@@ -60,10 +59,11 @@ class ThemeProvider(
         4 -> return R.raw.map_terrain_dark
         5 -> return R.raw.map_terrain_aubergine
         6 -> {
-          return if (isDark)
+          return if (isDark) {
             R.raw.map_terrain_night
-          else
+          } else {
             R.raw.map_terrain_day
+          }
         }
       }
       return R.raw.map_terrain_day
@@ -80,10 +80,11 @@ class ThemeProvider(
         4 -> return R.drawable.preview_map_dark
         5 -> return R.drawable.preview_map_aubergine
         6 -> {
-          return if (isDark)
+          return if (isDark) {
             R.drawable.preview_map_night
-          else
+          } else {
             R.drawable.preview_map_day
+          }
         }
       }
       return R.drawable.preview_map_day
@@ -94,9 +95,7 @@ class ThemeProvider(
     return if (DynamicColors.isDynamicColorAvailable() && prefs.useDynamicColors) {
       // if your base context is already using Material3 theme you can omit R.style argument
       val dynamicColorContext = DynamicColors.wrapContextIfAvailable(context)
-      val attrsToResolve = intArrayOf(
-        R.attr.colorPrimary
-      )
+      val attrsToResolve = intArrayOf(R.attr.colorPrimary)
       val ta = dynamicColorContext.obtainStyledAttributes(attrsToResolve)
       val tertiary = ta.getColor(0, ContextCompat.getColor(context, R.color.md_theme_tertiary))
       ta.recycle() // recycle TypedArray

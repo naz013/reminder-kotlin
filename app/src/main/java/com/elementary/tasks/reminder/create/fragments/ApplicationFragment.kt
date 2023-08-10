@@ -64,8 +64,9 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
         iFace.showSnackbar(getString(R.string.you_dont_insert_link))
         return null
       }
-      if (!number.startsWith("http://") && !number.startsWith("https://"))
+      if (!number.startsWith("http://") && !number.startsWith("https://")) {
         number = "http://$number"
+      }
     }
     val startTime = binding.dateView.selectedDateTime
     if (!validBefore(startTime, reminder)) {

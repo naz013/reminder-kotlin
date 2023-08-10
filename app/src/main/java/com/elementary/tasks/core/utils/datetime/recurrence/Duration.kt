@@ -147,7 +147,6 @@ data class Duration(
     return result
   }
 
-
   companion object {
     private const val NO_DURATION = ""
     private const val START = "P"

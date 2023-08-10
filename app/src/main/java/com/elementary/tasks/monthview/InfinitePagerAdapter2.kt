@@ -51,7 +51,6 @@ class InfinitePagerAdapter2(
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     super.onAttachedToRecyclerView(recyclerView)
     this.recyclerView = recyclerView
-
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

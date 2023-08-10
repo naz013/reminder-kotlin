@@ -122,10 +122,15 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     var t = title
     if (mMap != null && pos != null) {
       markerRadius = radius
-      if (markerRadius == -1)
+      if (markerRadius == -1) {
         markerRadius = prefs.radius
-      if (clear) mMap?.clear()
-      if (t == null || t == "") t = pos.toString()
+      }
+      if (clear) {
+        mMap?.clear()
+      }
+      if (t == null || t == "") {
+        t = pos.toString()
+      }
       if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
         markerStyle = DEF_MARKER_STYLE
         createStyleDrawable()
@@ -148,7 +153,9 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
           .fillColor(colorOf(marker.fillColor))
           .strokeColor(colorOf(marker.strokeColor))
       )
-      if (animate) animate(pos)
+      if (animate) {
+        animate(pos)
+      }
     }
   }
 
@@ -202,12 +209,14 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
   fun recreateMarker(radius: Int = markerRadius) {
     markerRadius = radius
-    if (markerRadius == -1)
+    if (markerRadius == -1) {
       markerRadius = prefs.radius
+    }
     if (mMap != null && lastPos != null) {
       mMap?.clear()
-      if (markerTitle == "" || markerTitle.matches("".toRegex()))
+      if (markerTitle == "" || markerTitle.matches("".toRegex())) {
         markerTitle = lastPos!!.toString()
+      }
       mListener?.placeChanged(lastPos!!, markerTitle)
       if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
         markerStyle = DEF_MARKER_STYLE
@@ -238,8 +247,9 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     createStyleDrawable()
     if (mMap != null && lastPos != null) {
       mMap?.clear()
-      if (markerTitle == "" || markerTitle.matches("".toRegex()))
+      if (markerTitle == "" || markerTitle.matches("".toRegex())) {
         markerTitle = lastPos.toString()
+      }
       mListener?.placeChanged(lastPos!!, markerTitle)
       if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
         markerStyle = DEF_MARKER_STYLE
@@ -685,9 +695,13 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     const val THEME_MODE = "theme_mode"
 
     fun newInstance(
-      isTouch: Boolean, isPlaces: Boolean,
-      isSearch: Boolean, isStyles: Boolean,
-      isBack: Boolean, isZoom: Boolean, isDark: Boolean
+      isTouch: Boolean,
+      isPlaces: Boolean,
+      isSearch: Boolean,
+      isStyles: Boolean,
+      isBack: Boolean,
+      isZoom: Boolean,
+      isDark: Boolean
     ): AdvancedMapFragment {
       val fragment = AdvancedMapFragment()
       val args = Bundle()
@@ -704,8 +718,13 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     }
 
     fun newInstance(
-      isPlaces: Boolean, isStyles: Boolean, isBack: Boolean,
-      isZoom: Boolean, markerStyle: Int, isDark: Boolean, isRadius: Boolean = true
+      isPlaces: Boolean,
+      isStyles: Boolean,
+      isBack: Boolean,
+      isZoom: Boolean,
+      markerStyle: Int,
+      isDark: Boolean,
+      isRadius: Boolean = true
     ): AdvancedMapFragment {
       val fragment = AdvancedMapFragment()
       val args = Bundle()

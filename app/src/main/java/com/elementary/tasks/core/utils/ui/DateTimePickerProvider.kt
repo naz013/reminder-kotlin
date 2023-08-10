@@ -11,7 +11,9 @@ import org.threeten.bp.LocalTime
 class DateTimePickerProvider(private val prefs: Prefs) {
 
   fun showTimePicker(
-    context: Context, hour: Int, minute: Int,
+    context: Context,
+    hour: Int,
+    minute: Int,
     listener: TimePickerDialog.OnTimeSetListener
   ): TimePickerDialog {
     val dialog = TimePickerDialog(context, listener, hour, minute, prefs.is24HourFormat)
@@ -36,11 +38,15 @@ class DateTimePickerProvider(private val prefs: Prefs) {
     date: LocalDate,
     listener: (LocalDate) -> Unit
   ): DatePickerDialog {
+    val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+      listener.invoke(LocalDate.of(year, month + 1, dayOfMonth))
+    }
     val dialog = DatePickerDialog(
-      context,
-      { _, year, month, dayOfMonth ->
-        listener.invoke(LocalDate.of(year, month + 1, dayOfMonth))
-      }, date.year, date.monthValue - 1, date.dayOfMonth
+      /* context = */ context,
+      /* listener = */ dateListener,
+      /* year = */ date.year,
+      /* month = */ date.monthValue - 1,
+      /* dayOfMonth = */ date.dayOfMonth
     )
     dialog.datePicker.firstDayOfWeek = StartDayOfWeekProtocol(prefs.startDay).getForDatePicker()
     dialog.show()

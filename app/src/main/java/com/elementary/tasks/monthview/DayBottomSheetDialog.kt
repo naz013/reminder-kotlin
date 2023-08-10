@@ -9,9 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.DialogBottomSheetDayBinding
-import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.dayview.day.EventModel
 import com.maxkeppeler.sheets.core.Sheet
 import timber.log.Timber
+
+typealias LoadCallback = (
+  listView: RecyclerView,
+  loadingView: View,
+  emptyView: View,
+  list: List<EventModel>
+) -> Unit
 
 class DayBottomSheetDialog(
   context: Context,
@@ -19,7 +26,7 @@ class DayBottomSheetDialog(
   private val list: List<EventModel>,
   private val addReminderCallback: () -> Unit,
   private val addBirthdayCallback: () -> Unit,
-  private val loadCallback: (listView: RecyclerView, loadingView: View, emptyView: View, list: List<EventModel>) -> Unit
+  private val loadCallback: LoadCallback
 ) : Sheet() {
 
   private lateinit var binding: DialogBottomSheetDayBinding

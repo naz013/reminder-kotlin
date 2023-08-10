@@ -25,9 +25,12 @@ import timber.log.Timber
 object ViewUtils {
 
   fun registerDragAndDrop(
-    activity: Activity, view: View, markAction: Boolean = true,
+    activity: Activity,
+    view: View,
+    markAction: Boolean = true,
     @ColorInt color: Int,
-    onDrop: (ClipData) -> Unit, vararg mimeTypes: String
+    onDrop: (ClipData) -> Unit,
+    vararg mimeTypes: String
   ) {
     view.setOnDragListener { v, event ->
       return@setOnDragListener when (event.action) {

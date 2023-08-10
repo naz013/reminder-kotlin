@@ -14,14 +14,16 @@ import com.google.android.gms.maps.GoogleMap
 import java.io.File
 import java.util.Locale
 
+typealias PrefsObserver = (String) -> Unit
+
 class Prefs(
   context: Context
 ) : SharedPrefs(context) {
 
-  private val observersMap = mutableMapOf<String, List<((String) -> Unit)>>()
+  private val observersMap = mutableMapOf<String, List<PrefsObserver>>()
 
-  fun addObserver(key: String, observer: (String) -> Unit) {
-    val observers: MutableList<((String) -> Unit)> = if (observersMap.containsKey(key)) {
+  fun addObserver(key: String, observer: PrefsObserver) {
+    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
       observersMap[key]?.toMutableList() ?: mutableListOf()
     } else {
       mutableListOf()
@@ -30,8 +32,8 @@ class Prefs(
     observersMap[key] = observers
   }
 
-  fun removeObserver(key: String, observer: (String) -> Unit) {
-    val observers: MutableList<((String) -> Unit)> = if (observersMap.containsKey(key)) {
+  fun removeObserver(key: String, observer: PrefsObserver) {
+    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
       observersMap[key]?.toMutableList() ?: mutableListOf()
     } else {
       mutableListOf()
@@ -41,7 +43,7 @@ class Prefs(
   }
 
   private fun notifyKey(key: String) {
-    val observers: MutableList<((String) -> Unit)> = if (observersMap.containsKey(key)) {
+    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
       observersMap[key]?.toMutableList() ?: mutableListOf()
     } else {
       mutableListOf()
@@ -273,8 +275,11 @@ class Prefs(
   val is24HourFormat: Boolean
     get() {
       val hourFormat = hourFormat
-      return if (hourFormat == 0) DateFormat.is24HourFormat(context)
-      else hourFormat == 1
+      return if (hourFormat == 0) {
+        DateFormat.is24HourFormat(context)
+      } else {
+        hourFormat == 1
+      }
     }
 
   var hourFormat: Int
@@ -663,11 +668,14 @@ class Prefs(
     set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
 
   fun initPrefs() {
-    val settingsUI =
-      File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")
+    val settingsUI = File(
+      "/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml"
+    )
     if (!settingsUI.exists()) {
-      val preferences =
-        context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
+      val preferences = context.getSharedPreferences(
+        PrefsConstants.PREFS_NAME,
+        Context.MODE_PRIVATE
+      )
       val editor = preferences.edit()
       editor.putInt(PrefsConstants.TODAY_COLOR, 0)
       editor.putInt(PrefsConstants.BIRTH_COLOR, 2)

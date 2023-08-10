@@ -14,7 +14,7 @@ class ParamToTextAdapter(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager
 ) {
-  
+
   fun createTextWithValues(param: BuilderParam<*>): String {
     return "${getTypeText(param.recurParamType)}: ${getValueText(param.value)}"
   }
@@ -22,7 +22,7 @@ class ParamToTextAdapter(
   fun createText(param: BuilderParam<*>): String {
     return getTypeText(param.recurParamType)
   }
-  
+
   private fun getTypeText(recurParamType: RecurParamType): String {
     return when (recurParamType) {
       RecurParamType.COUNT -> textProvider.getText(R.string.recur_count)
@@ -40,10 +40,10 @@ class ParamToTextAdapter(
       RecurParamType.WEEKSTART -> textProvider.getText(R.string.recur_week_start)
     }
   }
-  
+
   private fun getValueText(value: Any?): String {
     if (value == null) return ""
-    
+
     return when (value) {
       is FreqType -> getFreqText(value)
       is Int -> getIntText(value)
@@ -53,9 +53,9 @@ class ParamToTextAdapter(
       else -> value.toString()
     }
   }
-  
+
   private fun getListText(list: List<*>): String {
-    return list.joinToString(",") { 
+    return list.joinToString(",") {
       when (it) {
         is Int -> getIntText(it)
         is DayValue -> getDayText(it)
@@ -65,11 +65,11 @@ class ParamToTextAdapter(
   }
 
   private fun getDateTimeText(utcDateTime: UtcDateTime): String {
-    return utcDateTime.dateTime?.let { 
+    return utcDateTime.dateTime?.let {
       dateTimeManager.getFullDateTime(it)
     } ?: textProvider.getText(R.string.recur_not_set)
   }
-  
+
   private fun getIntText(int: Int): String {
     return int.toString()
   }
@@ -90,7 +90,7 @@ class ParamToTextAdapter(
       else -> dayValue.value
     }
   }
-  
+
   fun getFreqText(freqType: FreqType): String {
     return when (freqType) {
       FreqType.DAILY -> textProvider.getText(R.string.recur_daily)

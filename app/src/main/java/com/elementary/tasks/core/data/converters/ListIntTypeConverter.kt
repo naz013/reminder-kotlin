@@ -6,14 +6,14 @@ import com.google.gson.reflect.TypeToken
 
 class ListIntTypeConverter {
 
-    @TypeConverter
-    fun toJson(list: List<Int>): String {
-        return Gson().toJson(list)
-    }
+  @TypeConverter
+  fun toJson(list: List<Int>): String {
+    return Gson().toJson(list)
+  }
 
-    @TypeConverter
-    fun toList(json: String?): List<Int> {
-        if (json == null) return listOf()
-        return Gson().fromJson(json, object : TypeToken<List<Int>>() {}.type)
-    }
+  @TypeConverter
+  fun toList(json: String?): List<Int> {
+    if (json == null) return listOf()
+    return Gson().fromJson(json, object : TypeToken<List<Int>>() {}.type)
+  }
 }

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.services
 
 import android.content.BroadcastReceiver
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 import org.koin.core.component.KoinComponent

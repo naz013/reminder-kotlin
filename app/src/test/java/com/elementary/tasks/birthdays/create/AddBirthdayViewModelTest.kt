@@ -3,12 +3,12 @@ package com.elementary.tasks.birthdays.create
 import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -82,9 +82,9 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { birthdaysDao.getById(ID) }.returns(null)
     every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
 
-    viewModel.formattedDate.observeForever {  }
-    viewModel.isContactAttached.observeForever {  }
-    viewModel.birthday.observeForever {  }
+    viewModel.formattedDate.observeForever { }
+    viewModel.isContactAttached.observeForever { }
+    viewModel.birthday.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
@@ -121,8 +121,8 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
 
-    viewModel.birthday.observeForever {  }
-    viewModel.formattedDate.observeForever {  }
+    viewModel.birthday.observeForever { }
+    viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
@@ -159,8 +159,8 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
 
-    viewModel.birthday.observeForever {  }
-    viewModel.formattedDate.observeForever {  }
+    viewModel.birthday.observeForever { }
+    viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
@@ -198,8 +198,8 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
 
-    viewModel.birthday.observeForever {  }
-    viewModel.formattedDate.observeForever {  }
+    viewModel.birthday.observeForever { }
+    viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
@@ -240,8 +240,8 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
     every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
 
-    viewModel.birthday.observeForever {  }
-    viewModel.formattedDate.observeForever {  }
+    viewModel.birthday.observeForever { }
+    viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
@@ -271,8 +271,8 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.getCurrentDate() }.returns(date)
     every { uriReader.readBirthdayObject(uri) }.returns(null)
 
-    viewModel.birthday.observeForever {  }
-    viewModel.formattedDate.observeForever {  }
+    viewModel.birthday.observeForever { }
+    viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
@@ -313,8 +313,8 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
     every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
 
-    viewModel.birthday.observeForever {  }
-    viewModel.formattedDate.observeForever {  }
+    viewModel.birthday.observeForever { }
+    viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)

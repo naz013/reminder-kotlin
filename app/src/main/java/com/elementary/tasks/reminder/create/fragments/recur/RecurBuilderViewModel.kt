@@ -209,11 +209,13 @@ class RecurBuilderViewModel(
               builderParamLogic.addOrUpdateParams(it)
             }
           }
+
           is DateTimeStartTag -> {
             tag.value.dateTime?.also {
               startDateTime = it
             }
           }
+
           else -> {}
         }
       }
@@ -400,39 +402,51 @@ class RecurBuilderViewModel(
           RecurParamType.FREQ -> {
             recurParams.add(FreqRecurParam(value as FreqType))
           }
+
           RecurParamType.INTERVAL -> {
             recurParams.add(IntervalRecurParam(value as Int))
           }
+
           RecurParamType.COUNT -> {
             recurParams.add(CountRecurParam(value as Int))
           }
+
           RecurParamType.UNTIL -> {
             recurParams.add(UntilRecurParam(value as UtcDateTime))
           }
+
           RecurParamType.BYMONTH -> {
             recurParams.add(ByMonthRecurParam(value as List<Int>))
           }
+
           RecurParamType.WEEKSTART -> {
             recurParams.add(WeekStartRecurParam(value as DayValue))
           }
+
           RecurParamType.BYDAY -> {
             recurParams.add(ByDayRecurParam(value as List<DayValue>))
           }
+
           RecurParamType.BYMONTHDAY -> {
             recurParams.add(ByMonthDayRecurParam(value as List<Int>))
           }
+
           RecurParamType.BYHOUR -> {
             recurParams.add(ByHourRecurParam(value as List<Int>))
           }
+
           RecurParamType.BYMINUTE -> {
             recurParams.add(ByMinuteRecurParam(value as List<Int>))
           }
+
           RecurParamType.BYYEARDAY -> {
             recurParams.add(ByYearDayRecurParam(value as List<Int>))
           }
+
           RecurParamType.BYWEEKNO -> {
             recurParams.add(ByWeekNumberRecurParam(value as List<Int>))
           }
+
           RecurParamType.BYSETPOS -> {
             recurParams.add(BySetPosRecurParam(value as List<Int>))
           }
@@ -479,12 +493,15 @@ class RecurBuilderViewModel(
       runCatching { timer?.cancel() }
 
       timer = Timer()
-      timer?.scheduleAtFixedRate(object : TimerTask() {
-        override fun run() {
-          onRefreshListener.invoke()
-        }
-
-      }, 15 * 1000L, 15 * 1000L)
+      timer?.scheduleAtFixedRate(
+        /* task = */ object : TimerTask() {
+          override fun run() {
+            onRefreshListener.invoke()
+          }
+        },
+        /* delay = */ 15 * 1000L,
+        /* period = */ 15 * 1000L
+      )
     }
 
     fun stop() {

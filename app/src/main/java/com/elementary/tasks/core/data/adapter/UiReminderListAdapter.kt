@@ -25,10 +25,14 @@ class UiReminderListAdapter(
 
   override fun create(data: Reminder): UiReminderListData {
     val type = UiReminderType(data.type)
-    val isRepeating = !type.isGpsType() && (data.repeatInterval > 0L || type.isByWeekday()
-      || type.isMonthly() || type.isYearly() || type.isRecur())
-    val canSkip = !type.isGpsType() && (data.repeatInterval > 0L || type.isByWeekday()
-      || type.isMonthly() || type.isYearly() || (type.isRecur() && hasNextRecur(data)))
+    val isRepeating = !type.isGpsType() && (
+      data.repeatInterval > 0L || type.isByWeekday() || type.isMonthly() ||
+        type.isYearly() || type.isRecur()
+      )
+    val canSkip = !type.isGpsType() && (
+      data.repeatInterval > 0L || type.isByWeekday() ||
+        type.isMonthly() || type.isYearly() || (type.isRecur() && hasNextRecur(data))
+      )
     return if (data.isRemoved) {
       when {
         type.isShopping() -> {
@@ -142,6 +146,9 @@ class UiReminderListAdapter(
 
   private fun hasNextRecur(reminder: Reminder): Boolean {
     val currentEventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-    return recurEventManager.getNextAfterDateTime(currentEventTime, reminder.recurDataObject) != null
+    return recurEventManager.getNextAfterDateTime(
+      currentEventTime,
+      reminder.recurDataObject
+    ) != null
   }
 }

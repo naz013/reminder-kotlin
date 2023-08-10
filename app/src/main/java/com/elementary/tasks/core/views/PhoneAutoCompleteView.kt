@@ -31,7 +31,11 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
     init()
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  ) {
     init()
   }
 
@@ -44,7 +48,6 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
       }
 
       override fun afterTextChanged(editable: Editable) {
-
       }
     })
     adapter = PhoneAdapter(listOf())
@@ -125,7 +128,9 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
         val matcher = constraint?.toString()?.trim()?.lowercase() ?: ""
         val results = FilterResults()
         if (matcher.isNotEmpty()) {
-          val filterList = mData.filter { it.name.lowercase().contains(matcher) || it.phone.contains(matcher) }
+          val filterList = mData.filter {
+            it.name.lowercase().contains(matcher) || it.phone.contains(matcher)
+          }
           results.count = filterList.size
           results.values = filterList
         } else {

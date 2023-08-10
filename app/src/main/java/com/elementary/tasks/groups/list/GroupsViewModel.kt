@@ -21,7 +21,7 @@ class GroupsViewModel(
   private val uiGroupListAdapter: UiGroupListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val allGroups =reminderGroupDao.loadAll().map { list ->
+  val allGroups = reminderGroupDao.loadAll().map { list ->
     list.map { uiGroupListAdapter.convert(it) }
   }
 

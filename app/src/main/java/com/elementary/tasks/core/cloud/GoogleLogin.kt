@@ -95,10 +95,13 @@ class GoogleLogin(
   }
 
   private fun processResult(resultCode: Int, data: Intent?) {
-    Timber.d("processResult: mode=${mode}, res=$resultCode, data=$data")
+    Timber.d("processResult: mode=$mode, res=$resultCode, data=$data")
     if (resultCode == RESULT_OK) {
-      if (data != null) handleSignInResult(data)
-      else sendFail()
+      if (data != null) {
+        handleSignInResult(data)
+      } else {
+        sendFail()
+      }
     } else {
       sendFail()
     }

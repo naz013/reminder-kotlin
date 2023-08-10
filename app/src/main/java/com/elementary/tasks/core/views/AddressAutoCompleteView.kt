@@ -20,7 +20,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.GeocoderTask
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
@@ -33,7 +33,6 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     override fun afterTextChanged(editable: Editable) {
-
     }
   }
   private var mImm: InputMethodManager? = null
@@ -49,7 +48,11 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     init()
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  ) {
     init()
   }
 
@@ -60,7 +63,10 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     imeOptions = EditorInfo.IME_ACTION_SEARCH
     inputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS
     setOnEditorActionListener { _, actionId, event ->
-      if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_SEARCH) {
+      if (
+        event != null && event.keyCode == KeyEvent.KEYCODE_ENTER ||
+        actionId == EditorInfo.IME_ACTION_SEARCH
+      ) {
         performTypeValue(text.toString().trim())
         hideKb()
         return@setOnEditorActionListener true
@@ -88,7 +94,9 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
   fun getAddress(position: Int): Address? {
     return if (position < foundPlaces.size) {
       foundPlaces[position]
-    } else null
+    } else {
+      null
+    }
   }
 
   private fun performTypeValue(s: String) {
@@ -116,8 +124,11 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
   }
 
   override fun getHint(): CharSequence? {
-    return if (isMeizu()) getSuperHintHack()
-    else super.getHint()
+    return if (isMeizu()) {
+      getSuperHintHack()
+    } else {
+      super.getHint()
+    }
   }
 
   private fun isMeizu(): Boolean {
@@ -142,7 +153,8 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
   }
 
-  private inner class AddressAdapter(context: Context, resource: Int, objects: List<Address>) : ArrayAdapter<Address>(context, resource, objects) {
+  private inner class AddressAdapter(context: Context, resource: Int, objects: List<Address>) :
+    ArrayAdapter<Address>(context, resource, objects) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
       val v: View = convertView

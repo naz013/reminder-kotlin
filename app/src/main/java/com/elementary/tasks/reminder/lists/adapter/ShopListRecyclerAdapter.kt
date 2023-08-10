@@ -78,9 +78,11 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
     fun bind(item: ShopItem) {
       val title = item.summary
       if (item.isChecked) {
-        binding.shopText.paintFlags = binding.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        binding.shopText.paintFlags = binding.shopText.paintFlags or
+          Paint.STRIKE_THRU_TEXT_FLAG
       } else {
-        binding.shopText.paintFlags = binding.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        binding.shopText.paintFlags = binding.shopText.paintFlags and
+          Paint.STRIKE_THRU_TEXT_FLAG.inv()
       }
       binding.itemCheck.isChecked = item.isChecked
       binding.shopText.text = title

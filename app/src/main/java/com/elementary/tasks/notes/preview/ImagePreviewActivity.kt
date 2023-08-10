@@ -42,8 +42,9 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
 
   private fun setPhotoPosition() {
     val position = intent.getIntExtra(Constants.INTENT_POSITION, -1)
-    if (position != -1)
+    if (position != -1) {
       binding.photoPager.currentItem = position
+    }
   }
 
   private fun initViewPager(images: List<UiNoteImage>) {
@@ -51,7 +52,6 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
     binding.photoPager.pageMargin = 5
     binding.photoPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
       override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
       }
 
       override fun onPageSelected(position: Int) {
@@ -59,7 +59,6 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
       }
 
       override fun onPageScrollStateChanged(state: Int) {
-
       }
     })
     setToolbarTitle(binding.photoPager.currentItem)
@@ -67,8 +66,12 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   }
 
   private fun setToolbarTitle(position: Int) {
-    binding.toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x),
-      position + 1, imagesSingleton.getCurrent().size)
+    binding.toolbar.title = String.format(
+      Locale.getDefault(),
+      getString(R.string.x_out_of_x),
+      position + 1,
+      imagesSingleton.getCurrent().size
+    )
   }
 
   private fun initActionBar() {

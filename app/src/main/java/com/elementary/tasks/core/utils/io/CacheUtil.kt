@@ -45,8 +45,14 @@ class CacheUtil(val context: Context) {
       ""
     }
 
-    val cursor: Cursor? = context.contentResolver.query(uri, null, null,
-      null, null, null)
+    val cursor: Cursor? = context.contentResolver.query(
+      /* uri = */ uri,
+      /* projection = */ null,
+      /* selection = */ null,
+      /* selectionArgs = */ null,
+      /* sortOrder = */ null,
+      /* cancellationSignal = */ null
+    )
     val name = cursor?.use {
       if (it.moveToFirst()) {
         try {

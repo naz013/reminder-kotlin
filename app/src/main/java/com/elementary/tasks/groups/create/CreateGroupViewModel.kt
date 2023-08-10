@@ -124,12 +124,12 @@ class CreateGroupViewModel(
           reminderGroup.groupUuId
         }
       ) ?: ReminderGroup(
-          groupColor = color,
-          groupDateTime = dateTimeManager.getNowGmtDateTime(),
-          groupTitle = title,
-          isDefaultGroup = isDefault,
-          groupUuId = idProvider.generateUuid()
-        )
+        groupColor = color,
+        groupDateTime = dateTimeManager.getNowGmtDateTime(),
+        groupTitle = title,
+        isDefaultGroup = isDefault,
+        groupUuId = idProvider.generateUuid()
+      )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
       if (!wasDefault && group.isDefaultGroup) {
         val groups = reminderGroupDao.all().map { it.copy(isDefaultGroup = false) }

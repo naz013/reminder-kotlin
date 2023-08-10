@@ -2,7 +2,6 @@ package com.elementary.tasks.core.cloud.storages
 
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
-import kotlinx.coroutines.channels.Channel
 import java.io.InputStream
 
 interface Backupable {

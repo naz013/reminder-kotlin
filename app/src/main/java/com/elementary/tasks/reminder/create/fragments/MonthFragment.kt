@@ -139,7 +139,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     calculateNextDate()
   }
 
-  private fun getDate(): LocalDate  {
+  private fun getDate(): LocalDate {
     return LocalDate.of(iFace.state.year, iFace.state.month + 1, iFace.state.day)
   }
 

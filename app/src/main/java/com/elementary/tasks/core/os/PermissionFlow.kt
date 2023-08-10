@@ -60,7 +60,10 @@ class PermissionFlow private constructor(
       callback.invoke(permission)
       return
     }
-    if ((permission == Permissions.READ_EXTERNAL || permission == Permissions.WRITE_EXTERNAL) && Module.is13) {
+    if (
+      (permission == Permissions.READ_EXTERNAL || permission == Permissions.WRITE_EXTERNAL) &&
+      Module.is13
+    ) {
       callback.invoke(permission)
       return
     }
@@ -127,6 +130,7 @@ class PermissionFlow private constructor(
         permissionGranted(permission)
         return
       }
+
       Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL -> {
         if (Module.is13) {
           permissionGranted(permission)
@@ -248,14 +252,15 @@ class PermissionFlow private constructor(
 
   class ActivityLauncher(private val activity: ComponentActivity) : Launcher() {
 
-    private val permissionLauncher =
-      activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-        if (isGranted) {
-          onGranted.invoke(askedPermission)
-        } else {
-          onDenied.invoke(askedPermission)
-        }
+    private val permissionLauncher = activity.registerForActivityResult(
+      ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+      if (isGranted) {
+        onGranted.invoke(askedPermission)
+      } else {
+        onDenied.invoke(askedPermission)
       }
+    }
 
     override fun getActivity(): Activity {
       return activity
@@ -270,14 +275,15 @@ class PermissionFlow private constructor(
     private val fragment: Fragment
   ) : Launcher() {
 
-    private val permissionLauncher =
-      fragment.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-        if (isGranted) {
-          onGranted.invoke(askedPermission)
-        } else {
-          onDenied.invoke(askedPermission)
-        }
+    private val permissionLauncher = fragment.registerForActivityResult(
+      ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+      if (isGranted) {
+        onGranted.invoke(askedPermission)
+      } else {
+        onDenied.invoke(askedPermission)
       }
+    }
 
     override fun getActivity(): Activity {
       return fragment.requireActivity()

@@ -38,7 +38,11 @@ class ActiveRemindersViewModel(
       val fromDb = reminderDao.getById(reminder.id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, fromDb.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          fromDb.uuId
+        )
         reminderData.refresh()
         Commands.SAVED
       }
@@ -54,7 +58,11 @@ class ActiveRemindersViewModel(
         postInProgress(false)
         postCommand(Commands.OUTDATED)
       } else {
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, item.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          item.uuId
+        )
         postInProgress(false)
         postCommand(Commands.SAVED)
       }
@@ -68,7 +76,11 @@ class ActiveRemindersViewModel(
         it.isRemoved = true
         eventControlFactory.getController(it).stop()
         reminderDao.insert(it)
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          it.uuId
+        )
         reminderData.refresh()
         Commands.DELETED
       } ?: run {

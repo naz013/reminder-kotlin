@@ -8,13 +8,13 @@ import androidx.room.TypeConverter
 
 class ShopItemsTypeConverter {
 
-    @TypeConverter
-    fun toJson(list: List<ShopItem>): String {
-        return Gson().toJson(list)
-    }
+  @TypeConverter
+  fun toJson(list: List<ShopItem>): String {
+    return Gson().toJson(list)
+  }
 
-    @TypeConverter
-    fun toList(json: String): List<ShopItem>? {
-        return Gson().fromJson<List<ShopItem>>(json, object : TypeToken<List<ShopItem>>() {}.type)
-    }
+  @TypeConverter
+  fun toList(json: String): List<ShopItem>? {
+    return Gson().fromJson<List<ShopItem>>(json, object : TypeToken<List<ShopItem>>() {}.type)
+  }
 }

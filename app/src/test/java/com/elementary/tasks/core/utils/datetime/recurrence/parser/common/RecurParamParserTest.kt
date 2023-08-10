@@ -77,7 +77,7 @@ class RecurParamParserTest {
 
     val expected = listOf(
       FreqRecurParam(FreqType.DAILY),
-      CountRecurParam(10),
+      CountRecurParam(10)
     )
     assertEquals(expected, result)
   }
@@ -87,7 +87,7 @@ class RecurParamParserTest {
     val result = recurParamParser.parse("UNTIL=19971224T000000Z")
 
     val expected = listOf(
-      UntilRecurParam(UtcDateTime("19971224T000000Z")),
+      UntilRecurParam(UtcDateTime("19971224T000000Z"))
     )
     assertEquals(expected, result)
   }
@@ -98,7 +98,7 @@ class RecurParamParserTest {
 
     val expected = listOf(
       FreqRecurParam(FreqType.DAILY),
-      UntilRecurParam(UtcDateTime("19971224T000000Z")),
+      UntilRecurParam(UtcDateTime("19971224T000000Z"))
     )
     assertEquals(expected, result)
   }
@@ -108,7 +108,7 @@ class RecurParamParserTest {
     val result = recurParamParser.parse("INTERVAL=2")
 
     val expected = listOf(
-      IntervalRecurParam(2),
+      IntervalRecurParam(2)
     )
     assertEquals(expected, result)
   }
@@ -119,7 +119,7 @@ class RecurParamParserTest {
 
     val expected = listOf(
       FreqRecurParam(FreqType.DAILY),
-      IntervalRecurParam(2),
+      IntervalRecurParam(2)
     )
     assertEquals(expected, result)
   }
@@ -131,7 +131,7 @@ class RecurParamParserTest {
     val expected = listOf(
       FreqRecurParam(FreqType.DAILY),
       IntervalRecurParam(10),
-      CountRecurParam(5),
+      CountRecurParam(5)
     )
     assertEquals(expected, result)
   }
@@ -141,7 +141,7 @@ class RecurParamParserTest {
     val result = recurParamParser.parse("BYMONTH=1")
 
     val expected = listOf(
-      ByMonthRecurParam(listOf(1)),
+      ByMonthRecurParam(listOf(1))
     )
     assertEquals(expected, result)
   }
@@ -159,9 +159,9 @@ class RecurParamParserTest {
           DayValue("WE"),
           DayValue("TH"),
           DayValue("FR"),
-          DayValue("SA"),
+          DayValue("SA")
         )
-      ),
+      )
     )
     assertEquals(expected, result)
     assertEquals(7, (result.first() as ByDayRecurParam).value.count { it.isDefault })
@@ -176,7 +176,9 @@ class RecurParamParserTest {
 
   @Test
   fun testParseSingleParam_FreqAndUntilAndMyMonthAndByDay() {
-    val result = recurParamParser.parse("FREQ=YEARLY;UNTIL=20000131T140000Z;BYMONTH=1;BYDAY=SU,MO,TU,WE,TH,FR,SA")
+    val result = recurParamParser.parse(
+      "FREQ=YEARLY;UNTIL=20000131T140000Z;BYMONTH=1;BYDAY=SU,MO,TU,WE,TH,FR,SA"
+    )
 
     val expected = listOf(
       FreqRecurParam(FreqType.YEARLY),
@@ -190,9 +192,9 @@ class RecurParamParserTest {
           DayValue("WE"),
           DayValue("TH"),
           DayValue("FR"),
-          DayValue("SA"),
+          DayValue("SA")
         )
-      ),
+      )
     )
     assertEquals(expected, result)
   }
@@ -202,7 +204,7 @@ class RecurParamParserTest {
     val result = recurParamParser.parse("BYMONTHDAY=-3")
 
     val expected = listOf(
-      ByMonthDayRecurParam(listOf(-3)),
+      ByMonthDayRecurParam(listOf(-3))
     )
     assertEquals(expected, result)
   }
@@ -213,7 +215,7 @@ class RecurParamParserTest {
 
     val expected = listOf(
       FreqRecurParam(FreqType.MONTHLY),
-      ByMonthDayRecurParam(listOf(-3)),
+      ByMonthDayRecurParam(listOf(-3))
     )
     assertEquals(expected, result)
   }
@@ -223,7 +225,7 @@ class RecurParamParserTest {
     val result = recurParamParser.parse("BYYEARDAY=1,100,200")
 
     val expected = listOf(
-      ByYearDayRecurParam(listOf(1, 100, 200)),
+      ByYearDayRecurParam(listOf(1, 100, 200))
     )
     assertEquals(expected, result)
   }
@@ -236,7 +238,7 @@ class RecurParamParserTest {
       FreqRecurParam(FreqType.YEARLY),
       IntervalRecurParam(3),
       CountRecurParam(10),
-      ByYearDayRecurParam(listOf(1, 100, 200)),
+      ByYearDayRecurParam(listOf(1, 100, 200))
     )
     assertEquals(expected, result)
   }

@@ -39,7 +39,9 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
 
     binding.themePreviewPrefs.visibleGone(BuildConfig.DEBUG)
     binding.themePreviewPrefs.setOnClickListener {
-      safeNavigation(GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToUiPreviewFragment())
+      safeNavigation {
+        GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToUiPreviewFragment()
+      }
     }
   }
 
@@ -148,7 +150,8 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
           getString(R.string.default_string),
           getString(R.string.use_24_hour_format),
           getString(R.string.use_12_hour_format)
-        ), mItemSelect
+        ),
+        mItemSelect
       ) { _, which -> mItemSelect = which }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         prefs.hourFormat = mItemSelect

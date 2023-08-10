@@ -28,13 +28,14 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import timber.log.Timber
 import java.io.UnsupportedEncodingException
-import java.util.*
+import java.util.UUID
 
 object SuperUtil {
 
   fun isPhoneCallActive(context: Context): Boolean {
     val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    return manager.mode == AudioManager.MODE_IN_CALL || manager.mode == AudioManager.MODE_IN_COMMUNICATION
+    return manager.mode == AudioManager.MODE_IN_CALL ||
+      manager.mode == AudioManager.MODE_IN_COMMUNICATION
   }
 
   fun normalizeSummary(summary: String): String {
@@ -45,7 +46,10 @@ object SuperUtil {
     }
   }
 
-  fun wakeDevice(activity: Activity, id: String = UUID.randomUUID().toString()): PowerManager.WakeLock {
+  fun wakeDevice(
+    activity: Activity,
+    id: String = UUID.randomUUID().toString()
+  ): PowerManager.WakeLock {
     val screenLock = (activity.getSystemService(Context.POWER_SERVICE) as PowerManager)
       .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "reminder:ReminderAPPTAG:$id")
     screenLock.acquire(10 * 60 * 1000L /*10 minutes*/)
@@ -58,8 +62,10 @@ object SuperUtil {
     if (Module.isOreoMr1) {
       activity.setShowWhenLocked(false)
     } else {
-      window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-        or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+      window.clearFlags(
+        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+          or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+      )
     }
   }
 
@@ -79,12 +85,16 @@ object SuperUtil {
     if (Module.isOreoMr1) {
       activity.setShowWhenLocked(false)
       activity.setTurnScreenOn(false)
-      window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+      window.clearFlags(
+        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+      )
     } else {
-      window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+      window.clearFlags(
+        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+          or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+      )
     }
     unlockOff(activity, window)
   }
@@ -95,19 +105,24 @@ object SuperUtil {
     if (Module.isOreoMr1) {
       activity.setTurnScreenOn(true)
       activity.setShowWhenLocked(true)
-      window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+      window.addFlags(
+        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+      )
     } else {
-      window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+      window.addFlags(
+        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+          or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+      )
     }
     unlockOn(activity, window)
   }
 
   fun hasVolumePermission(context: Context?): Boolean {
     if (context == null) return false
-    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+    val notificationManager =
+      context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
     return notificationManager != null && notificationManager.isNotificationPolicyAccessGranted
   }
 
@@ -116,8 +131,11 @@ object SuperUtil {
   }
 
   fun startGpsTracking(context: Context) {
-    if (!Permissions.checkForeground(context) || isServiceRunning(context, GeolocationService::class.java)
-      || !Permissions.isBgLocationAllowed(context)) {
+    if (
+      !Permissions.checkForeground(context) ||
+      isServiceRunning(context, GeolocationService::class.java) ||
+      !Permissions.isBgLocationAllowed(context)
+    ) {
       return
     }
     val intent = Intent(context, GeolocationService::class.java)
@@ -133,13 +151,22 @@ object SuperUtil {
   fun getString(fragment: Fragment, id: Int): String {
     return if (fragment.isAdded) {
       fragment.getString(id)
-    } else
+    } else {
       ""
+    }
   }
 
   fun isDoNotDisturbEnabled(context: Context): Boolean {
-    val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    return if (mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS || mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_NONE) {
+    val mNotificationManager = context.getSystemService(
+      Context.NOTIFICATION_SERVICE
+    ) as NotificationManager
+
+    val filter = mNotificationManager.currentInterruptionFilter
+
+    return if (
+      filter == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
+      filter == NotificationManager.INTERRUPTION_FILTER_NONE
+    ) {
       Timber.d("isDoNotDisturbEnabled: true")
       true
     } else {
@@ -149,7 +176,8 @@ object SuperUtil {
   }
 
   fun checkNotificationPermission(activity: Context): Boolean {
-    val notificationManager = activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val notificationManager =
+      activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     return notificationManager.isNotificationPolicyAccessGranted
   }
 
@@ -178,7 +206,10 @@ object SuperUtil {
   }
 
   fun showLocationAlert(context: Context, callbacks: ReminderInterface) {
-    callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings)) {
+    callbacks.showSnackbar(
+      context.getString(R.string.gps_not_enabled),
+      context.getString(R.string.action_settings)
+    ) {
       val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
       context.startActivity(intent)
     }
@@ -225,8 +256,9 @@ object SuperUtil {
       val m = s * 60
       val h = m * 60
       hour * h + minute * m + sec * s
-    } else
+    } else {
       0
+    }
   }
 
   fun isAppInstalled(context: Context, packageName: String): Boolean {
@@ -268,7 +300,11 @@ object SuperUtil {
     try {
       context.startActivity(goToMarket)
     } catch (e: ActivityNotFoundException) {
-      Toast.makeText(context, context.getString(R.string.could_not_launch_market), Toast.LENGTH_SHORT).show()
+      Toast.makeText(
+        context,
+        context.getString(R.string.could_not_launch_market),
+        Toast.LENGTH_SHORT
+      ).show()
     }
   }
 }

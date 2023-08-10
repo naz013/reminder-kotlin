@@ -128,7 +128,7 @@
 
     <fragment
         android:id="@+id/actionGoogle"
-        android:name="com.elementary.tasks.google_tasks.GoogleTasksFragment"
+        android:name="com.elementary.tasks.googletasks.GoogleTasksFragment"
         android:label="@string/tasks"
         tools:layout="@layout/fragment_google_tasks">
         <action
@@ -221,7 +221,7 @@
     </activity>
     <fragment
         android:id="@+id/dayViewFragment"
-        android:name="com.elementary.tasks.day_view.DayViewFragment"
+        android:name="com.elementary.tasks.dayview.DayViewFragment"
         android:label="@string/day_of_month"
         tools:layout="@layout/fragment_day_view">
         <argument
@@ -233,7 +233,7 @@
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="com.elementary.tasks.google_tasks.list.TaskListFragment"
+        android:name="com.elementary.tasks.googletasks.list.TaskListFragment"
         android:label="@string/google_tasks"
         tools:layout="@layout/fragment_google_list">
         <argument

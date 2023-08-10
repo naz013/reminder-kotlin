@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">Ogni giorno a maggio</string>
     <string name="recur_weekly_for_10_occurrences">Settimanale per 10 occorrenze</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Mensile il primo venerdì per 10 occorrenze</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Ogni altro mese la prima e l\'ultima domenica del mese per 10 occorrenze</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Ogni altro mese la prima e l\'ultima domenica del mese per 10 occorrenze</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Mensile dal secondo all\'ultimo lunedì del mese per 6 mesi</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Mensile il terzo all\'ultimo giorno del mese</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Mensile il 2 e 15 del mese per 10 occorrenze</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Il primo sabato che segue la prima domenica del mese</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Ogni 15 minuti per 6 occorrenze</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Ogni ora e mezza per 4 occorrenze</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">La terza istanza nel mese di uno di martedì, mercoledì o giovedì, per i prossimi 3 mesi</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">La terza istanza nel mese di uno di martedì, mercoledì o giovedì, per i prossimi 3 mesi</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Il secondo e ultimo giorno della settimana del mese</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Settimanale il martedì e il giovedì per cinque settimane</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Ogni altra settimana il martedì e il giovedì, per 8 occorrenze</string>

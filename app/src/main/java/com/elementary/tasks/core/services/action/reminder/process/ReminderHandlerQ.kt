@@ -38,11 +38,11 @@ class ReminderHandlerQ(
 
   private fun showNotificationWithSound(reminder: Reminder) {
     Timber.d("showReminderNotification: $reminder")
-
-    val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
-    if ((!SuperUtil.isDoNotDisturbEnabled(contextProvider.context) ||
-        (SuperUtil.checkNotificationPermission(contextProvider.context) && prefs.isSoundInSilentModeEnabled))
-    ) {
+    val context = contextProvider.context
+    val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
+    val playMelody = !SuperUtil.isDoNotDisturbEnabled(context) ||
+      (SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled)
+    if (playMelody) {
       builder.setSound(reminderDataProvider.getSound(reminder.melodyPath), prefs.soundStream)
     }
 

@@ -15,7 +15,10 @@ import java.io.ObjectOutputStream
 abstract class SharedPrefs(
   protected val context: Context
 ) {
-  private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
+  private var prefs: SharedPreferences = context.getSharedPreferences(
+    PrefsConstants.PREFS_NAME,
+    Context.MODE_PRIVATE
+  )
 
   fun getLongArray(stringToLoad: String): Array<Long> {
     return try {
@@ -189,7 +192,6 @@ abstract class SharedPrefs(
         } catch (ex: IOException) {
           ex.printStackTrace()
         }
-
       }
     }
   }

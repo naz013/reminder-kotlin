@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.preview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -104,7 +104,11 @@ class ReminderPreviewViewModel(
         reminderDao.insert(reminder)
       }
       updatesHelper.updateTasksWidget()
-      workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      workerLauncher.startWork(
+        ReminderSingleBackupWorker::class.java,
+        Constants.INTENT_ID,
+        reminder.uuId
+      )
       postInProgress(false)
       postCommand(Commands.SAVED)
       loadReminder()
@@ -158,7 +162,11 @@ class ReminderPreviewViewModel(
           postInProgress(false)
           postCommand(Commands.OUTDATED)
         } else {
-          workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+          workerLauncher.startWork(
+            ReminderSingleBackupWorker::class.java,
+            Constants.INTENT_ID,
+            reminder.uuId
+          )
           postInProgress(false)
           postCommand(Commands.SAVED)
         }
@@ -210,7 +218,11 @@ class ReminderPreviewViewModel(
             eventControlFactory.getController(reminder).stop()
             reminderDao.delete(reminder)
             googleCalendarUtils.deleteEvents(reminder.uuId)
-            workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+            workerLauncher.startWork(
+              ReminderDeleteBackupWorker::class.java,
+              Constants.INTENT_ID,
+              reminder.uuId
+            )
             Commands.DELETED
           }
         } else {
@@ -218,7 +230,11 @@ class ReminderPreviewViewModel(
             eventControlFactory.getController(reminder).stop()
             reminderDao.delete(reminder)
             googleCalendarUtils.deleteEvents(reminder.uuId)
-            workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+            workerLauncher.startWork(
+              ReminderDeleteBackupWorker::class.java,
+              Constants.INTENT_ID,
+              reminder.uuId
+            )
           }
         }
       }
@@ -232,7 +248,11 @@ class ReminderPreviewViewModel(
         it.isRemoved = true
         eventControlFactory.getController(it).stop()
         reminderDao.insert(it)
-        workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+        workerLauncher.startWork(
+          ReminderSingleBackupWorker::class.java,
+          Constants.INTENT_ID,
+          it.uuId
+        )
         Commands.DELETED
       }
     }

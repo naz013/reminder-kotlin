@@ -7,7 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
-import java.util.*
+import java.util.Locale
 
 class FixedTextInputEditText : TextInputEditText {
 
@@ -15,11 +15,18 @@ class FixedTextInputEditText : TextInputEditText {
 
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  )
 
   override fun getHint(): CharSequence? {
-    return if (isMeizu()) getSuperHintHack()
-    else super.getHint()
+    return if (isMeizu()) {
+      getSuperHintHack()
+    } else {
+      super.getHint()
+    }
   }
 
   private fun isMeizu(): Boolean {

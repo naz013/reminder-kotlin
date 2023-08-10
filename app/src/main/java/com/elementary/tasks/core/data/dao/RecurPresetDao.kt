@@ -11,27 +11,27 @@ import com.elementary.tasks.core.data.models.RecurPreset
 @Dao
 interface RecurPresetDao {
 
-    @Query("SELECT * FROM RecurPreset ORDER BY name")
-    fun getAll(): List<RecurPreset>
+  @Query("SELECT * FROM RecurPreset ORDER BY name")
+  fun getAll(): List<RecurPreset>
 
-    @Query("SELECT * FROM RecurPreset WHERE id=:id")
-    fun getById(id: String): RecurPreset?
+  @Query("SELECT * FROM RecurPreset WHERE id=:id")
+  fun getById(id: String): RecurPreset?
 
-    @Query("SELECT * FROM RecurPreset")
-    fun loadAll(): LiveData<List<RecurPreset>>
+  @Query("SELECT * FROM RecurPreset")
+  fun loadAll(): LiveData<List<RecurPreset>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(recurPreset: RecurPreset)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  fun insert(recurPreset: RecurPreset)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg items: RecurPreset)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  fun insertAll(vararg items: RecurPreset)
 
-    @Delete
-    fun delete(recurPreset: RecurPreset)
+  @Delete
+  fun delete(recurPreset: RecurPreset)
 
-    @Query("DELETE FROM RecurPreset")
-    fun deleteAll()
+  @Query("DELETE FROM RecurPreset")
+  fun deleteAll()
 
-    @Query("DELETE FROM RecurPreset WHERE id=:id")
-    fun deleteById(id: String)
+  @Query("DELETE FROM RecurPreset WHERE id=:id")
+  fun deleteById(id: String)
 }

@@ -756,8 +756,8 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       dialogInterface.dismiss()
       installTts()
     }
-    builder.setNegativeButton(getLocalized(R.string.voice_cancel)) {
-        dialogInterface, _ -> dialogInterface.dismiss()
+    builder.setNegativeButton(getLocalized(R.string.voice_cancel)) { dialogInterface, _ ->
+      dialogInterface.dismiss()
     }
     builder.create().show()
   }

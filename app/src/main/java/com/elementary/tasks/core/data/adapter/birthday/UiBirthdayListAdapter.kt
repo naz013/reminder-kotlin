@@ -25,7 +25,7 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
       ageFormatted = ageFormatted,
       remainingTimeFormatted = remainingTime,
       nextBirthdayDateFormatted = nextBirthdayDateTime,
-      nextBirthdayDate = dateTimeManager.toMillis(dateItem.dateTime),
+      nextBirthdayDate = dateTimeManager.toMillis(dateItem.dateTime)
     )
   }
 }

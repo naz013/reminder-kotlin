@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
 
-import com.elementary.tasks.core.utils.datetime.recurrence.parser.common.ArrayParser
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ArrayParserTest {

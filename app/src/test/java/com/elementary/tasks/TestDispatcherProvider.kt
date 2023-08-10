@@ -4,7 +4,6 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.StandardTestDispatcher
 
 fun mockDispatcherProvider(): DispatcherProvider {
   val dispatcherProvider = mockk<DispatcherProvider>()

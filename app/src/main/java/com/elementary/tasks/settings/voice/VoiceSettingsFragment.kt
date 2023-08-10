@@ -22,10 +22,14 @@ class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>
     super.onViewCreated(view, savedInstanceState)
     initLanguagePrefs()
     binding.timePrefs.setOnClickListener {
-      safeNavigation(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment())
+      safeNavigation(
+        VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment()
+      )
     }
     binding.helpPrefs.setOnClickListener {
-      safeNavigation(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToHelpFragment2())
+      safeNavigation(
+        VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToHelpFragment2()
+      )
     }
     initConversationPrefs()
   }

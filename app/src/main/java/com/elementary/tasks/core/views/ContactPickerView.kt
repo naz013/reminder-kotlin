@@ -10,9 +10,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
@@ -46,7 +46,11 @@ class ContactPickerView : LinearLayout, TextWatcher, KoinComponent {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 

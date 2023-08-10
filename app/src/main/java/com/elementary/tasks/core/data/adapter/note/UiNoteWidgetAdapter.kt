@@ -29,8 +29,10 @@ class UiNoteWidgetAdapter(
     noteWithImages: NoteWithImages,
     size: Int,
     fontSize: Float,
-    horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER,
-    verticalAlignment: NoteDrawableParams.VerticalAlignment = NoteDrawableParams.VerticalAlignment.CENTER,
+    horizontalAlignment: NoteDrawableParams.HorizontalAlignment =
+      NoteDrawableParams.HorizontalAlignment.CENTER,
+    verticalAlignment: NoteDrawableParams.VerticalAlignment =
+      NoteDrawableParams.VerticalAlignment.CENTER,
     margin: Float
   ): UiNoteWidget {
     val backgroundColor = themeProvider.getNoteLightColor(
@@ -39,9 +41,9 @@ class UiNoteWidgetAdapter(
       noteWithImages.getPalette()
     )
 
-    val textColor = if ((noteWithImages.getOpacity().isAlmostTransparent() &&
-        themeProvider.isDark) || backgroundColor.isColorDark()
-    ) {
+    val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
+      backgroundColor.isColorDark()
+    val textColor = if (isDarkBg) {
       ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
     } else {
       ContextCompat.getColor(contextProvider.context, R.color.pureBlack)

@@ -61,7 +61,6 @@ import java.io.File
 import java.util.Random
 import java.util.UUID
 
-
 class CreateNoteViewModel(
   private val id: String,
   private val imageDecoder: ImageDecoder,
@@ -466,7 +465,8 @@ class CreateNoteViewModel(
         eventControlFactory.getController(reminder).start()
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID, reminder.uuId
+          Constants.INTENT_ID,
+          reminder.uuId
         )
       }
     }

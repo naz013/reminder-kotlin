@@ -402,7 +402,7 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
     builderParam.param.value.map { it.value }.forEach {
       when {
-        it.contains(Day.MO.value)-> {
+        it.contains(Day.MO.value) -> {
           view.mondayCheck.isChecked = true
         }
 

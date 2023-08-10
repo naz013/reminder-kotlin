@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">În fiecare zi în mai</string>
     <string name="recur_weekly_for_10_occurrences">Săptămânal pentru 10 evenimente</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Lunar în prima vineri, pentru 10 evenimente</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Fiecare altă lună din prima şi ultima duminică a lunii pentru 10 evenimente</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Fiecare altă lună din prima şi ultima duminică a lunii pentru 10 evenimente</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Lunar, în a doua zi până la ultima lună a lunii timp de 6 luni</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Lunar, în a treia zi a lunii</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Lunar, în a doua şi a 15-a a lunii, pentru 10 evenimente</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Prima sâmbătă care urmează primei duminici a lunii</string>
     <string name="recur_every_15_minutes_for_6_occurrences">La fiecare 15 minute timp de 6 evenimente</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">În fiecare oră şi jumătate pentru 4 evenimente</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">Cea de-a treia instanţă din luna de marţi, miercuri sau joi, pentru următoarele 3 luni</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Cea de-a treia instanţă din luna de marţi, miercuri sau joi, pentru următoarele 3 luni</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">A doua zi la ultima săptămână a lunii</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Marţi şi joi, timp de cinci săptămâni</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">O dată la două săptămâni, marţi şi joi, pentru 8 evenimente</string>

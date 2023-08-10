@@ -98,7 +98,10 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
       R.drawable.ic_twotone_directions_subway_24px
     } else if (tag.contains("bicycle_store")) {
       R.drawable.ic_twotone_directions_bike_24px
-    } else if (tag.contains("car_repair") || tag.contains("car_rental") || tag.contains("car_dealer")) {
+    } else if (
+      tag.contains("car_repair") || tag.contains("car_rental") ||
+      tag.contains("car_dealer")
+    ) {
       R.drawable.ic_twotone_directions_car_24px
     } else if (tag.contains("taxi") || tag.contains("taxi_stand")) {
       R.drawable.ic_twotone_local_taxi_24px
@@ -114,8 +117,10 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
       R.drawable.ic_twotone_local_convenience_store_24px
     } else if (tag.contains("gas_station")) {
       R.drawable.ic_twotone_local_gas_station_24px
-    } else if (tag.contains("hospital") || tag.contains("doctor") ||
-      tag.contains("physiotherapist") || tag.contains("health")) {
+    } else if (
+      tag.contains("hospital") || tag.contains("doctor") ||
+      tag.contains("physiotherapist") || tag.contains("health")
+    ) {
       R.drawable.ic_twotone_local_hospital_24px
     } else if (tag.contains("grocery_or_supermarket")) {
       R.drawable.ic_twotone_local_grocery_store_24px
@@ -141,8 +146,10 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
       R.drawable.ic_twotone_local_movies_24px
     } else if (tag.contains("real_estate_agency") || tag.contains("establishment")) {
       R.drawable.ic_twotone_local_hotel_24px
-    } else if (tag.contains("clothing_store") || tag.contains("home_goods_store")
-      || tag.contains("shopping_mall") || tag.contains("shoe_store")) {
+    } else if (
+      tag.contains("clothing_store") || tag.contains("home_goods_store") ||
+      tag.contains("shopping_mall") || tag.contains("shoe_store")
+    ) {
       R.drawable.ic_twotone_local_mall_24px
     } else if (tag.contains("food")) {
       R.drawable.ic_twotone_restaurant_24px

@@ -23,8 +23,15 @@ class GooglePlaceItem {
     isSelected = false
   }
 
-  constructor(name: String, id: String, icon: String, address: String,
-              position: LatLng?, types: List<String>, selected: Boolean) {
+  constructor(
+    name: String,
+    id: String,
+    icon: String,
+    address: String,
+    position: LatLng?,
+    types: List<String>,
+    selected: Boolean
+  ) {
     this.name = name
     this.id = id
     this.icon = icon

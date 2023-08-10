@@ -33,8 +33,13 @@ class CheckEventsWorker(
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
-    if (Permissions.checkPermission(applicationContext, Permissions.READ_CALENDAR,
-        Permissions.WRITE_CALENDAR)) {
+    if (
+      Permissions.checkPermission(
+        applicationContext,
+        Permissions.READ_CALENDAR,
+        Permissions.WRITE_CALENDAR
+      )
+    ) {
       launchCheckEvents()
     }
     return Result.success()
@@ -68,7 +73,6 @@ class CheckEventsWorker(
               } catch (e: InvalidRecurrenceRuleException) {
                 e.printStackTrace()
               }
-
             }
             val summary = item.title
             val def = appDb.reminderGroupDao().defaultGroup()
@@ -96,8 +100,14 @@ class CheckEventsWorker(
     }
   }
 
-  private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long,
-                           categoryId: String, calendarId: Long) {
+  private fun saveReminder(
+    itemId: Long,
+    summary: String,
+    dtStart: Long,
+    repeat: Long,
+    categoryId: String,
+    calendarId: Long
+  ) {
     val reminder = Reminder()
     reminder.type = Reminder.BY_DATE
     reminder.repeatInterval = repeat

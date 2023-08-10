@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
 import com.elementary.tasks.core.utils.datetime.recurrence.Tag
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TagParserTest {
@@ -40,7 +40,7 @@ class TagParserTest {
             listOf(7, 8, 9, 10, 11, 12, 13)
           )
         )
-      ),
+      )
     )
     assertEquals(expected, result)
   }
@@ -64,7 +64,7 @@ class TagParserTest {
             listOf(2, 3, 4, 5, 6, 7, 8)
           )
         )
-      ),
+      )
     )
     assertEquals(expected, result)
   }

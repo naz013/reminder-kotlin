@@ -1,6 +1,5 @@
 package com.elementary.tasks.groups.list
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -59,8 +58,10 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
   private fun changeColor(uiGroupList: UiGroupList) {
     dialogues.showColorDialog(
-      requireActivity(), uiGroupList.colorPosition, getString(R.string.color),
-      ThemeProvider.colorsForSliderThemed(requireContext())
+      activity = requireActivity(),
+      current = uiGroupList.colorPosition,
+      title = getString(R.string.color),
+      colors = ThemeProvider.colorsForSliderThemed(requireContext())
     ) {
       viewModel.changeGroupColor(uiGroupList.id, it)
     }
@@ -95,8 +96,11 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
     binding.recyclerView.adapter = groupsRecyclerAdapter
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.show()
-      else binding.fab.hide()
+      if (it) {
+        binding.fab.show()
+      } else {
+        binding.fab.hide()
+      }
     }
 
     refreshView()
@@ -130,9 +134,11 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
   private fun editGroup(id: String) {
     PinLoginActivity.openLogged(
-      requireContext(), Intent(context, CreateGroupActivity::class.java)
-        .putExtra(Constants.INTENT_ID, id)
-    )
+      requireContext(),
+      CreateGroupActivity::class.java
+    ) {
+      it.putExtra(Constants.INTENT_ID, id)
+    }
   }
 
   override fun getTitle(): String = getString(R.string.groups)

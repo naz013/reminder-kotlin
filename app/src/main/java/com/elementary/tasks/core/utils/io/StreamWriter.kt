@@ -72,7 +72,9 @@ class StreamWriter(
         }
       }
       outputBuffer.put(buf, o, c)
-    } else writeConvert(buf, o, c)
+    } else {
+      writeConvert(buf, o, c)
+    }
   }
 
   override fun flush() {
@@ -94,8 +96,9 @@ class StreamWriter(
   private fun writeConvert(buf: CharArray, offset: Int, count: Int) {
     if (encoder == null) {
       val b = ByteArray(count)
-      for (i in 0 until count)
+      for (i in 0 until count) {
         b[i] = (if (buf[offset + i] <= 0xFF.toChar()) buf[offset + i] else '?').toByte()
+      }
       Timber.d("writeConvert: 0 $out")
       out?.write(b)
     } else {
@@ -121,8 +124,9 @@ class StreamWriter(
 
   override fun close() {
     Timber.d("close: ")
-    if (out == null)
+    if (out == null) {
       return
+    }
     flush()
     out?.close()
     out = null

@@ -181,10 +181,13 @@ internal class EnWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         for (format in hourFormats) {
-          if (ignoreAny {
-              localTime = LocalTime.parse(time, format)
-              localTime
-            } != null) break
+          val ignore = ignoreAny {
+            localTime = LocalTime.parse(time, format)
+            localTime
+          }
+          if (ignore != null) {
+            break
+          }
         }
       }
       localTime
@@ -238,7 +241,9 @@ internal class EnWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
       if (matcher.find()) {
         val time = matcher.group().trim()
         s.replace(time, "")
-      } else s
+      } else {
+        s
+      }
     } ?: ""
   }
 
@@ -349,11 +354,9 @@ internal class EnWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   }
 
   override fun hasAction(input: String): Boolean {
-    return (input.startsWith("open")
-      || input.matches(".*help.*")
-      || input.matches(".*adjust.*")
-      || input.matches(".*report.*")
-      || input.matches(".*change.*"))
+    return input.startsWith("open") || input.matches(".*help.*") ||
+      input.matches(".*adjust.*") || input.matches(".*report.*") ||
+      input.matches(".*change.*")
   }
 
   override fun getAction(input: String): Action = when {

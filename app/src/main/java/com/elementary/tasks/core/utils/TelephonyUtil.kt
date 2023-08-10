@@ -83,8 +83,13 @@ object TelephonyUtil {
     }
   }
 
-  fun sendMail(context: Context, email: String, subject: String,
-               message: String, filePath: String?) {
+  fun sendMail(
+    context: Context,
+    email: String,
+    subject: String,
+    message: String,
+    filePath: String?
+  ) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

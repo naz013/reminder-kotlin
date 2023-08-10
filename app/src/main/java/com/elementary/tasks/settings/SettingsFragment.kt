@@ -20,8 +20,11 @@ import com.elementary.tasks.databinding.FragmentSettingsBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
-  RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, RemotePrefs.MessageObserver {
+class SettingsFragment :
+  BaseSettingsFragment<FragmentSettingsBinding>(),
+  RemotePrefs.SaleObserver,
+  RemotePrefs.UpdateObserver,
+  RemotePrefs.MessageObserver {
 
   private val remotePrefs: RemotePrefs by inject()
   private val doNotDisturbManager by inject<DoNotDisturbManager>()
@@ -36,7 +39,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     }
   }
   private val loginLauncher = LoginLauncher(this) {
-    if (it) openSecurity()
+    if (it) {
+      openSecurity()
+    }
   }
 
   override fun inflate(
@@ -118,7 +123,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
     }
     binding.notificationSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment())
+      safeNavigation(
+        SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment()
+      )
     }
     binding.exportSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
@@ -154,7 +161,9 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     withContext {
       if (Module.hasLocation(it)) {
         binding.locationSettings.setOnClickListener {
-          safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment())
+          safeNavigation {
+            SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment()
+          }
         }
         binding.locationSettings.visible()
       } else {

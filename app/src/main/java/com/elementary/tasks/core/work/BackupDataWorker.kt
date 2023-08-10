@@ -32,10 +32,12 @@ class BackupDataWorker(
     fun schedule(context: Context) {
       val work = OneTimeWorkRequest.Builder(BackupDataWorker::class.java)
         .addTag(TAG)
-        .setConstraints(Constraints.Builder()
-          .setRequiredNetworkType(NetworkType.UNMETERED)
-          .setRequiresBatteryNotLow(true)
-          .build())
+        .setConstraints(
+          Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+        )
         .build()
       WorkManager.getInstance(context).enqueue(work)
     }

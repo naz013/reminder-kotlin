@@ -90,8 +90,11 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
     }
     binding.recyclerView.adapter = mAdapter
     ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) binding.fab.show()
-      else binding.fab.hide()
+      if (it) {
+        binding.fab.show()
+      } else {
+        binding.fab.hide()
+      }
     }
   }
 }

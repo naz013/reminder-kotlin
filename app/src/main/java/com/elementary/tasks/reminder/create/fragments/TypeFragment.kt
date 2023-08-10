@@ -131,10 +131,12 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           view.gone()
         }
       }
+
       is AttachmentView -> {
         this.attachmentView = view
         view.onFileSelectListener = { iFace.attachFile() }
-        ViewUtils.registerDragAndDrop(requireActivity(),
+        ViewUtils.registerDragAndDrop(
+          requireActivity(),
           view,
           true,
           ThemeProvider.getPrimaryColor(view.context),
@@ -150,12 +152,14 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         }
         view.visibleGone(prefs.reminderCreatorParams.isAttachmentPickerEnabled())
       }
+
       is BeforePickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isBeforePickerEnabled())
         view.bindProperty(iFace.state.reminder.remindBefore) { millis ->
           iFace.state.reminder.remindBefore = millis
         }
       }
+
       is DateTimeView -> {
         view.setDateTime(iFace.state.reminder.eventTime)
         view.addOnDateChangeListener(
@@ -166,8 +170,11 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           }
         )
       }
+
       is ExportToCalendarView -> {
-        view.visibleGone(iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled())
+        view.visibleGone(
+          iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled()
+        )
         view.bindProperty(
           iFace.state.reminder.exportToCalendar,
           iFace.state.reminder.calendarId
@@ -176,8 +183,12 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           iFace.state.reminder.calendarId = calendarId
         }
       }
+
       is ExportToGoogleTasksView -> {
-        view.visibleGone(iFace.canExportToTasks && prefs.reminderCreatorParams.isGoogleTasksPickerEnabled())
+        view.visibleGone(
+          iFace.canExportToTasks &&
+            prefs.reminderCreatorParams.isGoogleTasksPickerEnabled()
+        )
         view.bindProperty(
           iFace.state.reminder.exportToTasks,
           iFace.state.reminder.taskListId
@@ -186,11 +197,13 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           iFace.state.reminder.taskListId = listId
         }
       }
+
       is GroupView -> {
         this.groupView = view
         view.onGroupSelectListener = { iFace.selectGroup() }
         showGroup(view, iFace.state.reminder)
       }
+
       is LedPickerView -> {
         if (Module.isPro) {
           view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
@@ -201,6 +214,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           view.gone()
         }
       }
+
       is LoudnessPickerView -> {
         if (!Module.is10) {
           view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
@@ -211,6 +225,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           view.gone()
         }
       }
+
       is MelodyView -> {
         if (!Module.is10) {
           view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
@@ -223,24 +238,28 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           view.gone()
         }
       }
+
       is PriorityPickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())
         view.bindProperty(iFace.state.reminder.priority) { priority ->
           iFace.state.reminder.priority = priority
         }
       }
+
       is RepeatLimitView -> {
         view.visibleGone(prefs.reminderCreatorParams.isRepeatLimitPickerEnabled())
         view.bindProperty(iFace.state.reminder.repeatLimit) { limit ->
           iFace.state.reminder.repeatLimit = limit
         }
       }
+
       is RepeatView -> {
         view.visibleGone(prefs.reminderCreatorParams.isRepeatPickerEnabled())
         view.bindProperty(iFace.state.reminder.repeatInterval) { millis ->
           iFace.state.reminder.repeatInterval = millis
         }
       }
+
       is TextInputEditText -> {
         view.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
         view.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
@@ -249,6 +268,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           iFace.state.reminder.summary = summary.trim()
         }
       }
+
       is TuneExtraView -> {
         view.visibleGone(prefs.reminderCreatorParams.isTuneExtraPickerEnabled())
         view.dialogues = dialogues
@@ -256,6 +276,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           iFace.state.reminder.copyExtra(reminder)
         }
       }
+
       is WindowTypeView -> {
         view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
         view.bindProperty(iFace.state.reminder.windowType) { type ->
@@ -270,15 +291,25 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       is AttachmentView -> {
         view.visibleGone(prefs.reminderCreatorParams.isAttachmentPickerEnabled())
       }
+
       is BeforePickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isBeforePickerEnabled())
       }
+
       is ExportToCalendarView -> {
-        view.visibleGone(iFace.canExportToCalendar && prefs.reminderCreatorParams.isCalendarPickerEnabled())
+        view.visibleGone(
+          iFace.canExportToCalendar &&
+            prefs.reminderCreatorParams.isCalendarPickerEnabled()
+        )
       }
+
       is ExportToGoogleTasksView -> {
-        view.visibleGone(iFace.canExportToTasks && prefs.reminderCreatorParams.isGoogleTasksPickerEnabled())
+        view.visibleGone(
+          iFace.canExportToTasks &&
+            prefs.reminderCreatorParams.isGoogleTasksPickerEnabled()
+        )
       }
+
       is LedPickerView -> {
         if (Module.isPro) {
           view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
@@ -286,24 +317,31 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
           view.gone()
         }
       }
+
       is LoudnessPickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled() && !Module.is10)
       }
+
       is MelodyView -> {
         view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled() && !Module.is10)
       }
+
       is PriorityPickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())
       }
+
       is RepeatLimitView -> {
         view.visibleGone(prefs.reminderCreatorParams.isRepeatLimitPickerEnabled())
       }
+
       is RepeatView -> {
         view.visibleGone(prefs.reminderCreatorParams.isRepeatPickerEnabled())
       }
+
       is TuneExtraView -> {
         view.visibleGone(prefs.reminderCreatorParams.isTuneExtraPickerEnabled())
       }
+
       is WindowTypeView -> {
         view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
       }
@@ -311,7 +349,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   protected open fun updateActions() {
-
   }
 
   open fun onBackPressed(): Boolean {
@@ -341,7 +378,10 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     super.onResume()
     getDynamicViews().forEach { updateVisibility(it) }
     Timber.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
-    if (iFace.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(iFace.state.reminder.groupTitle)) {
+    if (
+      iFace.state.reminder.groupUuId.isBlank() ||
+      TextUtils.isEmpty(iFace.state.reminder.groupTitle)
+    ) {
       iFace.defGroup?.let {
         onGroupUpdate(it)
       }

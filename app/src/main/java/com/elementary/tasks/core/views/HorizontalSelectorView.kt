@@ -29,7 +29,11 @@ class HorizontalSelectorView : LinearLayout {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+    context,
+    attrs,
+    defStyle
+  ) {
     init(context)
   }
 
@@ -120,7 +124,12 @@ class HorizontalSelectorView : LinearLayout {
     val builder = Dialogues.getMaterialDialog(context)
     builder.setCancelable(true)
     mItemSelect = pointer
-    builder.setSingleChoiceItems(data.toTypedArray(), mItemSelect) { _, which -> mItemSelect = which }
+    builder.setSingleChoiceItems(
+      data.toTypedArray(),
+      mItemSelect
+    ) { _, which ->
+      mItemSelect = which
+    }
     builder.setPositiveButton(context.getString(R.string.save)) { dialog, _ ->
       dialog.dismiss()
       pointer = mItemSelect

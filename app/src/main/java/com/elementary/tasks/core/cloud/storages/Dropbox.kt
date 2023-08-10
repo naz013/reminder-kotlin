@@ -31,6 +31,7 @@ class Dropbox(
   private val groupFolder = "/Groups/"
   private val birthFolder = "/Birthdays/"
   private val placeFolder = "/Places/"
+
   @Deprecated("After R")
   private val templateFolder = "/Templates/"
   private val settingsFolder = "/Settings/"
@@ -184,12 +185,13 @@ class Dropbox(
     launchDefault {
       val json = indexDataFile.toJson() ?: return@launchDefault
       backup(
-        json, Metadata(
-          "",
-          IndexDataFile.FILE_NAME,
-          FileConfig.FILE_NAME_JSON,
-          dateTimeManager.getNowGmtDateTime(),
-          "Index file"
+        json = json,
+        metadata = Metadata(
+          id = "",
+          fileName = IndexDataFile.FILE_NAME,
+          fileExt = FileConfig.FILE_NAME_JSON,
+          updatedAt = dateTimeManager.getNowGmtDateTime(),
+          meta = "Index file"
         )
       )
     }

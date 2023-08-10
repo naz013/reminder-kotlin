@@ -13,6 +13,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
@@ -33,7 +34,6 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     override fun afterTextChanged(editable: Editable) {
-
     }
   }
 
@@ -45,7 +45,11 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     init(context)
   }
 
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  ) {
     init(context)
   }
 
@@ -132,10 +136,12 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
     inner class ValueFilter : Filter() {
       override fun performFiltering(constraint: CharSequence?): FilterResults {
-        val matcher = constraint?.toString()?.trim()?.toLowerCase() ?: ""
+        val matcher = constraint?.toString()?.trim()?.lowercase() ?: ""
         val results = FilterResults()
         if (matcher.isNotEmpty()) {
-          val filterList = mData.filter { it.name.toLowerCase().contains(matcher) || it.email.contains(matcher) }
+          val filterList = mData.filter {
+            it.name.lowercase().contains(matcher) || it.email.contains(matcher)
+          }
           results.count = filterList.size
           results.values = filterList
         } else {
@@ -155,7 +161,9 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
   }
 
   private fun loadContacts(callback: ((List<EmailItem>) -> Unit)?) {
-    if (isLoaded || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return
+    if (isLoaded || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+      return
+    }
     launchDefault {
       val list = ArrayList<EmailItem>()
       val uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI
@@ -164,11 +172,17 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         ContactsContract.CommonDataKinds.Email.DATA
       )
 
-      val cursor = context.contentResolver.query(uri, projection, null, null, null)
+      val cursor = context.contentResolver.query(
+        /* uri = */ uri,
+        /* projection = */ projection,
+        /* selection = */ null,
+        /* selectionArgs = */ null,
+        /* sortOrder = */ null
+      )
       if (cursor != null && cursor.moveToFirst()) {
         do {
-          val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-          val emlAddr = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA))
+          val name = cursor.readString(ContactsContract.Contacts.DISPLAY_NAME)
+          val emlAddr = cursor.readString(ContactsContract.CommonDataKinds.Email.DATA)
           if (emlAddr != null && name != null) {
             list.add(EmailItem(name, emlAddr))
           }

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
 
-import com.elementary.tasks.core.utils.datetime.recurrence.parser.common.LinesParser
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class LinesParserTest {
@@ -39,7 +38,8 @@ class LinesParserTest {
     val result = linesParser.parse(input)
 
     val expected = listOf(
-      "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5:RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5:RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5"
+      "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5:RRULE:FREQ=DAILY;INTERVAL=10;" +
+        "COUNT=5:RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5"
     )
     assertEquals(expected, result)
   }

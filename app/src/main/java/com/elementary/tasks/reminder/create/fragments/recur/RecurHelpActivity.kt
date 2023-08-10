@@ -18,7 +18,7 @@ class RecurHelpActivity : BindingActivity<ActivityWebViewBinding>() {
     initActionBar()
 
     binding.webView.settings.javaScriptEnabled = true
-    binding.webView.webViewClient = object : WebViewClient() {  }
+    binding.webView.webViewClient = object : WebViewClient() {}
     binding.webView.webChromeClient = WebChromeClient()
     binding.webView.loadUrl(URL)
   }

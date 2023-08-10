@@ -254,9 +254,12 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     builder.setContentText(birthday.ageFormatted)
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
-    if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
-        || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
-      val sound = sound
+    if (!isScreenResumed &&
+      (
+        !SuperUtil.isDoNotDisturbEnabled(this) ||
+          SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled
+        )
+    ) {
       sound?.playAlarm(soundUri, isBirthdayInfiniteSound, prefs.birthdayPlaybackDuration)
     }
     if (isVibrate) {
@@ -295,8 +298,9 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
       builder.priority = NotificationCompat.PRIORITY_LOW
     } else {
       builder.priority = priority
-      if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-          (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
+      val shouldPlayDefMelody = !SuperUtil.isDoNotDisturbEnabled(this) ||
+        (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)
+      if (shouldPlayDefMelody) {
         playDefaultMelody()
       }
       if (isVibrate) {

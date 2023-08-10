@@ -77,7 +77,10 @@ class IndexDataFile {
     lock.readLock().lock()
     for (key in jsonObject.keys()) {
       try {
-        val fileIndex = gson.fromJson(jsonObject.getJSONObject(key).toString(), FileIndex::class.java)
+        val fileIndex = gson.fromJson(
+          jsonObject.getJSONObject(key).toString(),
+          FileIndex::class.java
+        )
         if (fileIndex != null && fileIndex.isOk()) {
           jsonObject.put(fileIndex.id, gson.toJson(fileIndex))
         }

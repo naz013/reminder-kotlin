@@ -11,18 +11,22 @@ class EventsCursor {
       val index = mPosition + 1
       return if (index < events.size) {
         events[index]
-      } else
+      } else {
         null
+      }
     }
 
   val previousWithoutMoving: Event?
     get() {
-      if (mPosition == 0) return null
+      if (mPosition == 0) {
+        return null
+      }
       val index = mPosition - 1
       return if (index < events.size) {
         events[index]
-      } else
+      } else {
         null
+      }
     }
 
   val next: Event?
@@ -31,15 +35,17 @@ class EventsCursor {
         val event = events[mPosition]
         mPosition++
         event
-      } else
+      } else {
         null
+      }
     }
 
   val last: Event?
     get() = if (events.isNotEmpty()) {
       events[events.size - 1]
-    } else
+    } else {
       null
+    }
 
   constructor() {
     events.clear()

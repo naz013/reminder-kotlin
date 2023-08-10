@@ -27,11 +27,15 @@ class Language(
    */
   fun getLocale(isBirth: Boolean): Locale? {
     var res: Locale? = null
-    when ((if (isBirth) {
-      prefs.birthdayTtsLocale
-    } else {
-      prefs.ttsLocale
-    })) {
+    when (
+      (
+        if (isBirth) {
+          prefs.birthdayTtsLocale
+        } else {
+          prefs.ttsLocale
+        }
+        )
+    ) {
       ENGLISH -> res = Locale.ENGLISH
       FRENCH -> res = Locale.FRENCH
       GERMAN -> res = Locale.GERMAN

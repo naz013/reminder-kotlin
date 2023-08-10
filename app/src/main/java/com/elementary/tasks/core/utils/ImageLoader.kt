@@ -22,18 +22,18 @@ class ImageLoader(
 
   fun loadFromFile(
     file: File,
-    onSuccess: (Drawable) -> Unit = {},
-    onFail: (Drawable?) -> Unit = {},
-    onStart: (Drawable?) -> Unit = {},
+    onSuccess: (Drawable) -> Unit = { },
+    onFail: (Drawable?) -> Unit = { },
+    onStart: (Drawable?) -> Unit = { }
   ) {
     internalImageLoader.enqueue(buildRequest(file, onSuccess, onFail, onStart))
   }
 
   fun loadFromUri(
     uri: Uri,
-    onSuccess: (Drawable) -> Unit = {},
-    onFail: (Drawable?) -> Unit = {},
-    onStart: (Drawable?) -> Unit = {},
+    onSuccess: (Drawable) -> Unit = { },
+    onFail: (Drawable?) -> Unit = { },
+    onStart: (Drawable?) -> Unit = { }
   ) {
     internalImageLoader.enqueue(buildRequest(uri, onSuccess, onFail, onStart))
   }
@@ -42,7 +42,7 @@ class ImageLoader(
     any: Any,
     onSuccess: (Drawable) -> Unit,
     onFail: (Drawable?) -> Unit,
-    onStart: (Drawable?) -> Unit,
+    onStart: (Drawable?) -> Unit
   ): ImageRequest {
     return ImageRequest.Builder(context)
       .data(any)

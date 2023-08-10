@@ -38,7 +38,7 @@ class RecurrenceRuleTagParserTest {
         FreqRecurParam(FreqType.YEARLY),
         IntervalRecurParam(3),
         CountRecurParam(10),
-        ByYearDayRecurParam(listOf(1, 100, 200)),
+        ByYearDayRecurParam(listOf(1, 100, 200))
       )
     )
     assertEquals(expected, result)
@@ -46,14 +46,15 @@ class RecurrenceRuleTagParserTest {
 
   @Test
   fun testParseNormalTag_WrongValue() {
-    val result =
-      recurrenceRuleTagParser.parse("RRULE:FREQ=TIMELY;INTERVAL=3;COUNT=10;BYYEARDAY=1,100,200")
+    val result = recurrenceRuleTagParser.parse(
+      "RRULE:FREQ=TIMELY;INTERVAL=3;COUNT=10;BYYEARDAY=1,100,200"
+    )
 
     val expected = RecurrenceRuleTag(
       params = listOf(
         IntervalRecurParam(3),
         CountRecurParam(10),
-        ByYearDayRecurParam(listOf(1, 100, 200)),
+        ByYearDayRecurParam(listOf(1, 100, 200))
       )
     )
     assertEquals(expected, result)

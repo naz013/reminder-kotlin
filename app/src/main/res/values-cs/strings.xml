@@ -733,7 +733,7 @@
     <string name="recur_every_day_in_may">Každý den v květnu</string>
     <string name="recur_weekly_for_10_occurrences">Týden pro 10 výskytů</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Měsíčně v prvním pátek pro 10 událostí</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sunday_of_the_month_for_10_occurrences">Každý druhý měsíc v první a poslední neděli v měsíci pro 10 událostí</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Každý druhý měsíc v první a poslední neděli v měsíci pro 10 událostí</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Měsíčně v pondělí druhého až posledního v měsíci po dobu 6 měsíců</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Měsíčně třetí den v měsíci</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Měsíčně k 2. a 15. dni v měsíci pro 10 událostí</string>
@@ -749,7 +749,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">První sobota, která následuje první neděli v měsíci</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Každých 15 minut pro 6 výskytů</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Každou hodinu a půl pro 4 výskyty</string>
-    <string name="recur_the_third_instance_into_the_month_of_one_of_tuesday_wednesday_or_thursday_for_the_next_3_months">Třetí instance do měsíce jednoho úterý, ve středu nebo ve čtvrtek pro následující 3 měsíce</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Třetí instance do měsíce jednoho úterý, ve středu nebo ve čtvrtek pro následující 3 měsíce</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Druhý až poslední týden v měsíci</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Týdenní v úterý a ve čtvrtek po dobu pěti týdnů</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Každý druhý týden v úterý a ve čtvrtek pro 8 událostí</string>

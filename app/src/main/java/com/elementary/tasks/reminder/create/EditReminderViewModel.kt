@@ -142,7 +142,11 @@ class EditReminderViewModel(
         eventControlFactory.getController(reminder).stop()
         reminderDao.delete(reminder)
         googleCalendarUtils.deleteEvents(reminder.uuId)
-        workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        workerLauncher.startWork(
+          ReminderDeleteBackupWorker::class.java,
+          Constants.INTENT_ID,
+          reminder.uuId
+        )
         Commands.DELETED
       }
     } else {
@@ -150,7 +154,11 @@ class EditReminderViewModel(
         eventControlFactory.getController(reminder).stop()
         reminderDao.delete(reminder)
         googleCalendarUtils.deleteEvents(reminder.uuId)
-        workerLauncher.startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        workerLauncher.startWork(
+          ReminderDeleteBackupWorker::class.java,
+          Constants.INTENT_ID,
+          reminder.uuId
+        )
       }
     }
   }

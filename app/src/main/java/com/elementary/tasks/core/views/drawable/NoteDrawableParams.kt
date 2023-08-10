@@ -25,7 +25,7 @@ data class NoteDrawableParams(
   val backgroundImage: Bitmap? = null,
   val horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
   val verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-  val textAutoScale: Boolean = true,
+  val textAutoScale: Boolean = true
 ) {
 
   enum class HorizontalAlignment {
@@ -53,7 +53,7 @@ data class NoteDrawableParams(
       backgroundImage: Bitmap? = null,
       horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
       verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-      textAutoScale: Boolean = true,
+      textAutoScale: Boolean = true
     ): NoteDrawableParams {
       return NoteDrawableParams(
         context = context,
@@ -90,7 +90,7 @@ data class NoteDrawableParams(
       backgroundImage: Bitmap? = null,
       horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
       verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-      textAutoScale: Boolean = true,
+      textAutoScale: Boolean = true
     ): NoteDrawableParams {
       return NoteDrawableParams(
         context = context,
@@ -127,7 +127,7 @@ data class NoteDrawableParams(
       backgroundImage: Bitmap? = null,
       horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
       verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-      textAutoScale: Boolean = true,
+      textAutoScale: Boolean = true
     ): NoteDrawableParams {
       val radii = floatArrayOf(radius, radius, radius, radius, radius, radius, radius, radius)
       return NoteDrawableParams(
