@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_version_and_date" translatable="false">9.1.1, July 28, 2023</string>
+    <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
         ✅ Add Archive page for Notes;\n
         ✅ Add new Home screen widget - Single Note;\n
