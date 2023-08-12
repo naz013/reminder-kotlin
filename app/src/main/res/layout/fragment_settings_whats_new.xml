@@ -17,6 +17,7 @@
             android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
         <TextView
+            android:id="@+id/dateAndVersionView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/whats_new_version_and_date"

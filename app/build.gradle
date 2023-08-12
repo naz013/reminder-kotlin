@@ -97,6 +97,7 @@ android {
     }
     buildTypes {
         release {
+            buildConfigField "String", "BUILD_DATE", "\"${getDate()}\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             debuggable false
@@ -107,6 +108,7 @@ android {
             }
         }
         debug {
+            buildConfigField "String", "BUILD_DATE", "\"${getDateAndTime()}\""
             minifyEnabled false
             if (shouldSign) {
                 signingConfig signingConfigs.debugApp
@@ -141,6 +143,14 @@ android {
         abortOnError false
     }
     namespace 'com.elementary.tasks'
+}
+
+def getDateAndTime() {
+    return new Date().format('MMMM dd, yyyy hh:mm:ss')
+}
+
+def getDate() {
+    return new Date().format('MMMM dd, yyyy')
 }
 
 dependencies {

@@ -1,4 +1,4 @@
-name: Android CI
+name: Build and Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - feature/*
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
 
