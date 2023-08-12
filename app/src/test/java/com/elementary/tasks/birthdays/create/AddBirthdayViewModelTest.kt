@@ -7,6 +7,7 @@ import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -17,13 +18,11 @@ import com.elementary.tasks.mockDispatcherProvider
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.threeten.bp.LocalDate
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class AddBirthdayViewModelTest : BaseTest() {
 
   private lateinit var viewModel: AddBirthdayViewModel
@@ -36,6 +35,7 @@ class AddBirthdayViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>()
   private val uriReader = mockk<UriReader>()
   private val updatesHelper = mockk<UpdatesHelper>()
+  private val intentDataHolder = mockk<IntentDataHolder>()
 
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
 
@@ -55,7 +55,9 @@ class AddBirthdayViewModelTest : BaseTest() {
       analyticsEventSender = analyticsEventSender,
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
       uriReader = uriReader,
-      updatesHelper = updatesHelper
+      updatesHelper = updatesHelper,
+      intentDataHolder = intentDataHolder,
+      uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager)
     )
   }
 
@@ -80,7 +82,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     val formattedDate = "AAA"
 
     every { birthdaysDao.getById(ID) }.returns(null)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
     viewModel.formattedDate.observeForever { }
     viewModel.isContactAttached.observeForever { }
@@ -114,12 +116,13 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { birthday.date }.returns(birthdayDate)
     every { birthday.name }.returns(name)
     every { birthday.number }.returns(number)
+    every { birthday.ignoreYear }.returns(false)
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthday)
 
     every { birthdaysDao.getById(ID) }.returns(birthday)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
     viewModel.birthday.observeForever { }
     viewModel.formattedDate.observeForever { }
@@ -151,20 +154,23 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { birthdayObject.date }.returns(birthdayDate)
     every { birthdayObject.name }.returns(name)
     every { birthdayObject.number }.returns(number)
+    every { birthdayObject.ignoreYear }.returns(false)
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
     every { birthdaysDao.getById(ID) }.returns(null)
     every { birthdaysDao.getById(objectId) }.returns(null)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
+
+    every { intentDataHolder.get(any(), Birthday::class.java) }.returns(birthdayObject)
 
     viewModel.birthday.observeForever { }
     viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
-    viewModel.onIntent(birthdayObject)
+    viewModel.onIntent()
 
     verify(exactly = 2) { birthdaysDao.getById(any()) }
 
@@ -190,20 +196,23 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { birthdayObject.date }.returns(birthdayDate)
     every { birthdayObject.name }.returns(name)
     every { birthdayObject.number }.returns(number)
+    every { birthdayObject.ignoreYear }.returns(false)
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
     every { birthdaysDao.getById(ID) }.returns(null)
     every { birthdaysDao.getById(objectId) }.returns(birthdayObject)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
+
+    every { intentDataHolder.get(any(), Birthday::class.java) }.returns(birthdayObject)
 
     viewModel.birthday.observeForever { }
     viewModel.formattedDate.observeForever { }
 
     viewModel.load()
     viewModel.onContactAttached(false)
-    viewModel.onIntent(birthdayObject)
+    viewModel.onIntent()
 
     verify(exactly = 2) { birthdaysDao.getById(any()) }
 
@@ -231,13 +240,14 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { birthdayObject.date }.returns(birthdayDate)
     every { birthdayObject.name }.returns(name)
     every { birthdayObject.number }.returns(number)
+    every { birthdayObject.ignoreYear }.returns(false)
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
     every { birthdaysDao.getById(ID) }.returns(null)
     every { birthdaysDao.getById(objectId) }.returns(null)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
     every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
 
     viewModel.birthday.observeForever { }
@@ -267,7 +277,7 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     every { birthdaysDao.getById(ID) }.returns(null)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
     every { dateTimeManager.getCurrentDate() }.returns(date)
     every { uriReader.readBirthdayObject(uri) }.returns(null)
 
@@ -304,13 +314,14 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { birthdayObject.date }.returns(birthdayDate)
     every { birthdayObject.name }.returns(name)
     every { birthdayObject.number }.returns(number)
+    every { birthdayObject.ignoreYear }.returns(false)
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
     every { birthdaysDao.getById(ID) }.returns(null)
     every { birthdaysDao.getById(objectId) }.returns(birthdayObject)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayDateForUi(date) }.returns(formattedDate)
+    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
     every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
 
     viewModel.birthday.observeForever { }

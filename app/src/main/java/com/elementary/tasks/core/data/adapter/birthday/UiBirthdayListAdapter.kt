@@ -9,9 +9,10 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
 
   fun convert(birthday: Birthday): UiBirthdayList {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
-    val birthDate = dateTimeManager.getReadableBirthDate(birthday.date)
+    val birthDate = dateTimeManager.getReadableBirthDate(birthday.date, birthday.ignoreYear)
     val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
+      .takeIf { !birthday.ignoreYear } ?: ""
     val nextBirthdayDateTime = dateTimeManager.getFullDateTime(dateItem.dateTime)
     val remainingTime = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
       dateTimeManager.getBirthdayRemaining(dateItem.dateTime, it)

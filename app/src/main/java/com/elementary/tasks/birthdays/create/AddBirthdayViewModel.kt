@@ -14,10 +14,11 @@ import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
+import com.elementary.tasks.core.os.IntentDataHolder
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.mutableLiveDataOf
@@ -39,7 +40,9 @@ class AddBirthdayViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
   private val uriReader: UriReader,
-  private val updatesHelper: UpdatesHelper
+  private val updatesHelper: UpdatesHelper,
+  private val intentDataHolder: IntentDataHolder,
+  private val uiBirthdayDateFormatter: UiBirthdayDateFormatter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
@@ -65,11 +68,11 @@ class AddBirthdayViewModel(
     }
   }
 
-  fun onIntent(birthday: Birthday?) {
-    if (birthday != null) {
-      onBirthdayLoaded(birthday)
+  fun onIntent() {
+    intentDataHolder.get(Constants.INTENT_ITEM, Birthday::class.java)?.run {
+      onBirthdayLoaded(this)
       isFromFile = true
-      findSame(birthday.uuId)
+      findSame(uuId)
     }
   }
 
@@ -92,10 +95,15 @@ class AddBirthdayViewModel(
   fun onDateChanged(localDate: LocalDate) {
     Timber.d("onDateChanged: $localDate")
     selectedDate = localDate
-    _formattedDate.postValue(dateTimeManager.formatBirthdayDateForUi(selectedDate))
+    _formattedDate.postValue(uiBirthdayDateFormatter.getDateFormatted(localDate))
   }
 
-  fun save(name: String, number: String?, newId: Boolean = false) {
+  fun onYearCheckChanged(ignoreYear: Boolean) {
+    uiBirthdayDateFormatter.changeShowYear(!ignoreYear)
+    onDateChanged(selectedDate)
+  }
+
+  fun save(name: String, number: String?, newId: Boolean = false, ignoreYear: Boolean) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val contactId = contactsReader.getIdFromNumber(number)
       val formattedDate = dateTimeManager.formatBirthdayDate(selectedDate)
@@ -106,7 +114,10 @@ class AddBirthdayViewModel(
         number = number ?: "",
         day = selectedDate.dayOfMonth,
         month = selectedDate.monthValue - 1,
-        dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}"
+        dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
+        uuId = editableBirthday?.uuId?.takeIf { !newId } ?: UUID.randomUUID().toString(),
+        updatedAt = dateTimeManager.getNowGmtDateTime(),
+        ignoreYear = ignoreYear
       ) ?: Birthday(
         name = name,
         contactId = contactId,
@@ -114,11 +125,10 @@ class AddBirthdayViewModel(
         number = number ?: "",
         day = selectedDate.dayOfMonth,
         month = selectedDate.monthValue - 1,
-        dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}"
+        dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
+        updatedAt = dateTimeManager.getNowGmtDateTime(),
+        ignoreYear = ignoreYear
       )
-      if (newId) {
-        birthday.uuId = UUID.randomUUID().toString()
-      }
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
       saveBirthday(birthday)
     }
@@ -158,7 +168,6 @@ class AddBirthdayViewModel(
   private fun saveBirthday(birthday: Birthday) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
       birthdaysDao.insert(birthday)
       notifier.showBirthdayPermanent()
       updatesHelper.updateBirthdaysWidget()

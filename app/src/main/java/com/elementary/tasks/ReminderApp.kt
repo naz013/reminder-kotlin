@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.core.appwidgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.data.factory.dataFactory
@@ -71,7 +72,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           reminderModule,
           widgetModule,
           osModule,
-          newUtilsModule
+          newUtilsModule,
+          birthdaysModule
         )
       )
     }

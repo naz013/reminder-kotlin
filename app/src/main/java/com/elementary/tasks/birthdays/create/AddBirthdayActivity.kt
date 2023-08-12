@@ -7,7 +7,6 @@ import android.text.TextUtils
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
@@ -42,6 +41,10 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     initContactView()
     binding.scrollView.listenScrollableView { binding.appBar.isSelected = it > 0 }
     binding.birthDate.setOnClickListener { dateDialog() }
+
+    binding.yearCheck.setOnCheckedChangeListener { _, isChecked ->
+      viewModel.onYearCheckChanged(isChecked)
+    }
 
     binding.pickContactView.contactPicker = ContactPicker(this) { }
     binding.pickContactView.listener = object : ContactPickerView.OnNumberChangeListener {
@@ -112,6 +115,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       binding.pickContactView.number = birthday.number
       binding.contactCheck.isChecked = true
     }
+    binding.yearCheck.isChecked = birthday.isYearIgnored
     updateMenu()
   }
 
@@ -125,7 +129,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
         }
       }
 
-      intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent(birthdayFromIntent())
+      intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent()
       intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
       idFromIntent().isEmpty() -> viewModel.onDateChanged(LocalDate.now())
     }
@@ -135,9 +139,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun dateFromIntent(): LocalDate =
     intentSerializable(Constants.INTENT_DATE, LocalDate::class.java) ?: LocalDate.now()
-
-  private fun birthdayFromIntent(): Birthday? =
-    intentParcelable(Constants.INTENT_ITEM, Birthday::class.java)
 
   private fun initViewModel() {
     viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
@@ -192,11 +193,11 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
         return
       }
       permissionFlow.askPermission(Permissions.READ_CONTACTS) {
-        viewModel.save(contact, number, newId)
+        viewModel.save(contact, number, newId, binding.yearCheck.isChecked)
       }
       return
     }
-    viewModel.save(contact, number, newId)
+    viewModel.save(contact, number, newId, binding.yearCheck.isChecked)
   }
 
   private fun closeScreen() {
@@ -215,7 +216,11 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   }
 
   private fun dateDialog() {
-    dateTimePickerProvider.showDatePicker(this, viewModel.selectedDate) {
+    dateTimePickerProvider.showDatePicker(
+      context = this,
+      date = viewModel.selectedDate,
+      showYear = !binding.yearCheck.isChecked
+    ) {
       viewModel.onDateChanged(it)
     }
   }

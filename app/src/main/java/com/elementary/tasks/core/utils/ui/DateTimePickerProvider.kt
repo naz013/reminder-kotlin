@@ -1,8 +1,10 @@
 package com.elementary.tasks.core.utils.ui
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.view.View
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.params.Prefs
 import org.threeten.bp.LocalDate
@@ -38,6 +40,16 @@ class DateTimePickerProvider(private val prefs: Prefs) {
     date: LocalDate,
     listener: (LocalDate) -> Unit
   ): DatePickerDialog {
+    return showDatePicker(context, date, true, listener)
+  }
+
+  @SuppressLint("DiscouragedApi")
+  fun showDatePicker(
+    context: Context,
+    date: LocalDate,
+    showYear: Boolean,
+    listener: (LocalDate) -> Unit
+  ): DatePickerDialog {
     val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
       listener.invoke(LocalDate.of(year, month + 1, dayOfMonth))
     }
@@ -49,6 +61,18 @@ class DateTimePickerProvider(private val prefs: Prefs) {
       /* dayOfMonth = */ date.dayOfMonth
     )
     dialog.datePicker.firstDayOfWeek = StartDayOfWeekProtocol(prefs.startDay).getForDatePicker()
+    if (!showYear) {
+      runCatching {
+        dialog.datePicker.findViewById<View>(
+          context.resources.getIdentifier("date_picker_header_year", "id", "android")
+        ).visibility = View.GONE
+      }
+      runCatching {
+        dialog.datePicker.findViewById<View>(
+          context.resources.getIdentifier("year", "id", "android")
+        ).visibility = View.GONE
+      }
+    }
     dialog.show()
     return dialog
   }

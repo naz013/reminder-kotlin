@@ -9,7 +9,8 @@ class UiBirthdayEditAdapter {
     return UiBirthdayEdit(
       uuId = birthday.uuId,
       name = birthday.name,
-      number = birthday.number
+      number = birthday.number,
+      isYearIgnored = birthday.ignoreYear
     )
   }
 }

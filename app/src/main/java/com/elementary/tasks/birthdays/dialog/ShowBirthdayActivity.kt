@@ -11,7 +11,6 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
@@ -23,12 +22,15 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.ui.setTextOrHide
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ActivityDialogBirthdayBinding
 import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
+import com.elementary.tasks.tests.TestObjects
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -197,9 +199,14 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
   }
 
   private fun loadTest() {
-    val isMocked = intentBoolean(ARG_TEST, false)
+    val isMocked = intentBoolean(TestObjects.ARG_TEST, false)
     if (isMocked) {
-      viewModel.onTestLoad(intentParcelable(ARG_TEST_ITEM, Birthday::class.java))
+      val item = if (intentBoolean(TestObjects.ARG_TEST_HAS_NUMBER, false)) {
+        TestObjects.getBirthday(number = "123456789")
+      } else {
+        TestObjects.getBirthday()
+      }
+      viewModel.onTestLoad(item)
     }
   }
 
@@ -212,12 +219,13 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     } ?: run { binding.contactPhoto.gone() }
 
     binding.userName.text = birthday.name
-    binding.userName.contentDescription = birthday.name
+    binding.userYears.setTextOrHide(birthday.ageFormatted)
 
-    binding.userYears.text = birthday.ageFormatted
-    binding.userYears.contentDescription = birthday.ageFormatted
-
-    summary = birthday.name + "\n" + birthday.ageFormatted
+    summary = if (birthday.ageFormatted.isNullOrEmpty()) {
+      birthday.name
+    } else {
+      birthday.name + "\n" + birthday.ageFormatted
+    }
 
     if (birthday.number.isEmpty()) {
       binding.buttonCall.transparent()
@@ -251,7 +259,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     }
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(birthday.name)
-    builder.setContentText(birthday.ageFormatted)
+    birthday.ageFormatted?.also { builder.setContentText(it) }
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (!isScreenResumed &&
@@ -291,7 +299,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     Timber.d("showTTSNotification: ")
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(birthday.name)
-    builder.setContentText(birthday.ageFormatted)
+    birthday.ageFormatted?.also { builder.setContentText(it) }
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.color = colorOf(R.color.secondaryBlue)
     if (isScreenResumed) {
@@ -383,15 +391,13 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
 
   companion object {
 
-    private const val ARG_TEST = "arg_test"
-    private const val ARG_TEST_ITEM = "arg_test_item"
     private const val ARG_IS_ROTATED = "arg_rotated"
     const val ACTION_STOP_BG_ACTIVITY = "action.birthday.STOP.BG"
 
-    fun mockTest(context: Context, birthday: Birthday) {
-      val intent = Intent(context, ShowBirthdayActivity::class.java)
-      intent.putExtra(ARG_TEST, true)
-      intent.putExtra(ARG_TEST_ITEM, birthday)
+    fun mockTest(context: Context, hasNumber: Boolean = false) {
+      val intent = context.intentForClass(ShowBirthdayActivity::class.java)
+      intent.putExtra(TestObjects.ARG_TEST, true)
+      intent.putExtra(TestObjects.ARG_TEST_HAS_NUMBER, hasNumber)
       context.startActivity(intent)
     }
 

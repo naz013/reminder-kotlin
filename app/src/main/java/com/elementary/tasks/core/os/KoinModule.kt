@@ -12,4 +12,6 @@ val osModule = module {
   single { SystemServiceProvider(get()) }
   single { InputMethodManagerWrapper(get()) }
   single { PackageManagerWrapper(get()) }
+
+  single { IntentDataHolder() }
 }

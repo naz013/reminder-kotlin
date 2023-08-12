@@ -4,15 +4,16 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract
+import android.text.TextUtils
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.readString
-import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.withContext
 
 class CheckBirthdaysWorker(
@@ -90,6 +91,11 @@ class CheckBirthdaysWorker(
     val number = contactsReader.getNumber(name)
     var counter = 0
     val date = birthday?.let { dateTimeManager.findBirthdayDate(it) }
+    val key = if (TextUtils.isEmpty(number)) {
+      "0"
+    } else {
+      number.substring(1)
+    }
     if (date != null) {
       val birthdayItem = Birthday(
         name = name,
@@ -98,12 +104,13 @@ class CheckBirthdaysWorker(
         showedYear = 0,
         contactId = id,
         day = date.dayOfMonth,
-        month = date.monthValue - 1
+        month = date.monthValue - 1,
+        key = "$name|$key",
+        updatedAt = dateTimeManager.getNowGmtDateTime()
       )
-      if (!contacts.contains(birthdayItem)) {
+      if (contacts.firstOrNull { it.key == birthdayItem.key } == null) {
         counter += 1
       }
-      birthdayItem.updatedAt = dateTimeManager.getNowGmtDateTime()
       dao.insert(birthdayItem)
     }
     return counter

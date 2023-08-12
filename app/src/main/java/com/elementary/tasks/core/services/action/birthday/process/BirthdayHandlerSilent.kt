@@ -57,7 +57,11 @@ class BirthdayHandlerSilent(
     builder.setOngoing(true)
     builder.priority = NotificationCompat.PRIORITY_LOW
     builder.setContentTitle(birthday.name)
-    builder.setContentText(dateTimeManager.getAgeFormatted(dateTimeManager.getAge(birthday.date)))
+    if (!birthday.ignoreYear) {
+      builder.setContentText(
+        dateTimeManager.getAgeFormatted(dateTimeManager.getAge(birthday.date))
+      )
+    }
 
     birthdayDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }
     if (Module.isPro && birthdayDataProvider.isBirthdayLed()) {

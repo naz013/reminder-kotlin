@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.MemoryUtil
@@ -25,6 +26,7 @@ import timber.log.Timber
 class IntentActivity : ThemedActivity() {
 
   private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
+  private val intentDataHolder by inject<IntentDataHolder>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -66,10 +68,8 @@ class IntentActivity : ThemedActivity() {
 
           is Birthday -> {
             if (any.isValid()) {
-              startActivity(
-                intentForClass(AddBirthdayActivity::class.java)
-                  .putExtra(Constants.INTENT_ITEM, any)
-              )
+              intentDataHolder.putData(Constants.INTENT_ITEM, any)
+              startActivity(intentForClass(AddBirthdayActivity::class.java))
             } else {
               toast(getString(R.string.unsupported_file_format))
             }

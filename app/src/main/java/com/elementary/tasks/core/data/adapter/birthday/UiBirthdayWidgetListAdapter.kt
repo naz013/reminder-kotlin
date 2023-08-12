@@ -9,7 +9,7 @@ class UiBirthdayWidgetListAdapter(private val dateTimeManager: DateTimeManager) 
 
   fun convert(birthday: Birthday): UiBirthdayWidgetList {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
-    val birthDate = dateTimeManager.getReadableBirthDate(birthday.date)
+    val birthDate = dateTimeManager.getReadableBirthDate(birthday.date, birthday.ignoreYear)
     val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
     val remainingTime = dateTimeManager.parseBirthdayDate(birthday.date)?.let {

@@ -15,8 +15,6 @@ object RequestBuilder {
       return locale.language
     }
 
-  private val key: String = BuildConfig.PLACES_API_KEY
-
   fun getNearby(lat: Double, lng: Double, name: String): Call<PlacesResponse> {
     val req = name.replace("\\s+".toRegex(), "+")
     val params = LinkedHashMap<String, String>()
@@ -24,7 +22,7 @@ object RequestBuilder {
     params["radius"] = "50000"
     params["name"] = req
     params["language"] = language
-    params["key"] = key
+    params["key"] = BuildConfig.PLACES_API_KEY
     return RetrofitBuilder.placesApi.getNearbyPlaces(params)
   }
 
@@ -34,7 +32,7 @@ object RequestBuilder {
     url += "query=$req"
     url += "&inputtype=textquery"
     url += "&language=$language"
-    url += "&key=$key"
+    url += "&key=${BuildConfig.PLACES_API_KEY}"
     return RetrofitBuilder.placesApi.getPlaces(url)
   }
 }

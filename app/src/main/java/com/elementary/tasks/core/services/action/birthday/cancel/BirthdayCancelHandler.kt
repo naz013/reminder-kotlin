@@ -25,9 +25,12 @@ class BirthdayCancelHandler(
 ) : ActionHandler<Birthday> {
 
   override fun handle(data: Birthday) {
-    data.updatedAt = dateTimeManager.getNowGmtDateTime()
-    data.showedYear = LocalDate.now().year
-    birthdayRepository.save(data)
+    birthdayRepository.save(
+      data.copy(
+        updatedAt = dateTimeManager.getNowGmtDateTime(),
+        showedYear = LocalDate.now().year
+      )
+    )
     notifier.showBirthdayPermanent()
     notifier.cancel(data.uniqueId)
     workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, data.uuId)
