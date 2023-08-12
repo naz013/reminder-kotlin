@@ -76,9 +76,12 @@ class ShowBirthdayViewModel(
         return@launch
       }
 
-      birthday.updatedAt = dateTimeManager.getNowGmtDateTime()
-      birthday.showedYear = LocalDate.now().year
-      birthdaysDao.insert(birthday)
+      birthdaysDao.insert(
+        birthday.copy(
+          updatedAt = dateTimeManager.getNowGmtDateTime(),
+          showedYear = LocalDate.now().year
+        )
+      )
       notifier.showBirthdayPermanent()
       updatesHelper.updateBirthdaysWidget()
       updatesHelper.updateTasksWidget()

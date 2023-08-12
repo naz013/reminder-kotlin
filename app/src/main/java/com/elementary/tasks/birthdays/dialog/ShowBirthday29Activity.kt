@@ -7,18 +7,20 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.ui.setTextOrHide
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ActivityDialogBirthdayBinding
+import com.elementary.tasks.tests.TestObjects
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -61,9 +63,14 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
   }
 
   private fun loadTest() {
-    val isMocked = intentBoolean(ARG_TEST, false)
+    val isMocked = intentBoolean(TestObjects.ARG_TEST, false)
     if (isMocked) {
-      viewModel.onTestLoad(intentParcelable(ARG_TEST_ITEM, Birthday::class.java))
+      val item = if (intentBoolean(TestObjects.ARG_TEST_HAS_NUMBER, false)) {
+        TestObjects.getBirthday(number = "123456789")
+      } else {
+        TestObjects.getBirthday()
+      }
+      viewModel.onTestLoad(item)
     }
   }
 
@@ -76,10 +83,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
     } ?: run { binding.contactPhoto.gone() }
 
     binding.userName.text = birthday.name
-    binding.userName.contentDescription = birthday.name
-
-    binding.userYears.text = birthday.ageFormatted
-    binding.userYears.contentDescription = birthday.ageFormatted
+    binding.userYears.setTextOrHide(birthday.ageFormatted)
 
     if (birthday.number.isEmpty()) {
       binding.buttonCall.transparent()
@@ -146,13 +150,10 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
 
   companion object {
 
-    private const val ARG_TEST = "arg_test"
-    private const val ARG_TEST_ITEM = "arg_test_item"
-
-    fun mockTest(context: Context, birthday: Birthday) {
-      val intent = Intent(context, ShowBirthday29Activity::class.java)
-      intent.putExtra(ARG_TEST, true)
-      intent.putExtra(ARG_TEST_ITEM, birthday)
+    fun mockTest(context: Context, hasNumber: Boolean = false) {
+      val intent = context.intentForClass(ShowBirthday29Activity::class.java)
+      intent.putExtra(TestObjects.ARG_TEST, true)
+      intent.putExtra(TestObjects.ARG_TEST_HAS_NUMBER, hasNumber)
       context.startActivity(intent)
     }
 

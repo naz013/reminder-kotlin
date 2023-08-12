@@ -14,7 +14,9 @@ class UiBirthdayPreviewAdapter(
   fun convert(birthday: Birthday): UiBirthdayPreview {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val dateOfBirth = dateTimeManager.parseBirthdayDate(birthday.date)
-    val dateOfBirthFormatted = dateOfBirth?.let { dateTimeManager.getDate(it) }
+    val dateOfBirthFormatted = dateOfBirth?.let {
+      dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
+    }
     val futureBirthday = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
     val nextBirthdayDate = dateTimeManager.getFullDateTime(futureBirthday.dateTime)
     val contactId = if (birthday.number.isNotEmpty()) {
@@ -31,7 +33,7 @@ class UiBirthdayPreviewAdapter(
       contactName = contactId?.let { contactsReader.getNameFromNumber(birthday.number) },
       dateOfBirth = dateOfBirthFormatted,
       nextBirthdayDate = nextBirthdayDate,
-      ageFormatted = dateTimeManager.getAgeFormatted(birthday.date),
+      ageFormatted = dateTimeManager.getAgeFormatted(birthday.date).takeIf { !birthday.ignoreYear },
       hasBirthdayToday = dateOfBirth?.let { dateTimeManager.isSameDay(it) } ?: false
     )
   }

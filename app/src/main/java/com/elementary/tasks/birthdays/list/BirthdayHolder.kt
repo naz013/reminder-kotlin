@@ -44,8 +44,8 @@ class BirthdayHolder(
     binding.eventDate.text = listOfNotEmpty(
       item.nextBirthdayDateFormatted,
       "\n",
-      item.ageFormatted,
-      "(${item.birthdayDate})",
+      item.birthdayDate,
+      ", ${item.ageFormatted}".takeIf { item.ageFormatted.isNotEmpty() },
       "\n",
       item.remainingTimeFormatted
     ).append()

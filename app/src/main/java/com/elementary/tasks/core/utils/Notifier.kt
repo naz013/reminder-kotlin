@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.os.PendingIntentWrapper
@@ -290,20 +291,28 @@ class Notifier(
       builder.priority = NotificationCompat.PRIORITY_HIGH
       builder.setContentTitle(context.getString(R.string.events))
       val item = list[0]
-      builder.setContentText(
-        item.date + " | " + item.name + " | " + dateTimeManager.getAgeFormatted(item.date)
-      )
+      builder.setContentText(formatSummary(item))
       if (list.size > 1) {
         val stringBuilder = StringBuilder()
         for (birthday in list) {
-          stringBuilder.append(birthday.date).append(" | ").append(birthday.name).append(" | ")
-            .append(dateTimeManager.getAgeFormatted(birthday.date))
+          stringBuilder.append(formatSummary(birthday))
           stringBuilder.append("\n")
         }
         builder.setStyle(NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()))
       }
       builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss)
       notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
+    }
+  }
+
+  private fun formatSummary(birthday: Birthday): String {
+    val date = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
+      dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
+    }
+    return if (birthday.ignoreYear) {
+      date + " | " + birthday.name
+    } else {
+      date + " | " + birthday.name + " | " + dateTimeManager.getAgeFormatted(birthday.date)
     }
   }
 

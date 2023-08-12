@@ -787,5 +787,6 @@
     <string name="widget_note_top">Top</string>
     <string name="widget_note_right">Right</string>
     <string name="widget_note_left">Left</string>
+    <string name="i_don_t_know_the_year">I don\'t know a year</string>
 
 </resources>

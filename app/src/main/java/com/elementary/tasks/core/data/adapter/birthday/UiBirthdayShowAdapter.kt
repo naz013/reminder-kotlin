@@ -12,6 +12,7 @@ class UiBirthdayShowAdapter(
 
   fun convert(birthday: Birthday): UiBirthdayShow {
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
+      .takeIf { !birthday.ignoreYear }
     val number = if (birthday.contactId == 0L || birthday.number.isEmpty()) {
       contactsReader.getNumber(birthday.name)
     } else {

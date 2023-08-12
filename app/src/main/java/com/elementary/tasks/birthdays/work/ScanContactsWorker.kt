@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays.work
 
 import android.content.Context
 import android.provider.ContactsContract
+import android.text.TextUtils
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.Permissions
@@ -17,7 +18,7 @@ class ScanContactsWorker(
   private val contactsReader: ContactsReader
 ) {
 
-  fun scanContacts(): Int {
+  suspend fun scanContacts(): Int {
     if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
       return 0
     }
@@ -60,6 +61,11 @@ class ScanContactsWorker(
           val number = contactsReader.getNumber(name)
           val date = birthday?.let { dateTimeManager.findBirthdayDate(it) }
           if (id != null && date != null) {
+            val key = if (TextUtils.isEmpty(number)) {
+              "0"
+            } else {
+              number.substring(1)
+            }
             val birthdayItem = Birthday(
               name = name,
               date = dateTimeManager.formatBirthdayDate(date),
@@ -67,12 +73,13 @@ class ScanContactsWorker(
               showedYear = 0,
               contactId = id,
               day = date.dayOfMonth,
-              month = date.monthValue - 1
+              month = date.monthValue - 1,
+              key = "$name|$key",
+              updatedAt = dateTimeManager.getNowGmtDateTime()
             )
-            if (!contacts.contains(birthdayItem)) {
+            if (contacts.firstOrNull { it.key == birthdayItem.key } == null) {
               i += 1
             }
-            birthdayItem.updatedAt = dateTimeManager.getNowGmtDateTime()
             birthdaysDao.insert(birthdayItem)
           }
         }

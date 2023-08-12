@@ -4,20 +4,12 @@ import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.BuildConfig
-import com.elementary.tasks.birthdays.create.AddBirthdayViewModel
-import com.elementary.tasks.birthdays.dialog.ShowBirthdayViewModel
-import com.elementary.tasks.birthdays.list.BirthdaysViewModel
-import com.elementary.tasks.birthdays.preview.BirthdayPreviewViewModel
-import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
-import com.elementary.tasks.birthdays.work.ScanContactsWorker
-import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
+import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.appwidgets.WidgetDataProvider
-import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.LoginStateViewModel
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -120,7 +112,6 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
-import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
@@ -151,44 +142,9 @@ val workerModule = module {
   worker { ReminderDeleteBackupWorker(get(), get(), get(), get()) }
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
   worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
-
-  worker { BirthdayDeleteBackupWorker(get(), get(), get(), get()) }
-  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get()) }
-  worker { SingleBackupWorker(get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) ->
-    ShowBirthdayViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { (id: String) ->
-    AddBirthdayViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { BirthdayPreviewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
@@ -536,7 +492,6 @@ val utilModule = module {
   single { SyncWorker(get(), get(), get(), get(), get(), get()) }
   single { BackupWorker(get(), get()) }
   single { ExportAllDataWorker(get()) }
-  single { ScanContactsWorker(get(), get(), get(), get()) }
 
   factory { EnableThread(get(), get()) }
   single { NoteImageMigration(get(), get()) }

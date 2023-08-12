@@ -65,8 +65,20 @@ class DateTimeManager(
     }
   }
 
-  fun formatBirthdayDateForUi(date: LocalDate): String {
+  fun formatBirthdayDateForUi(date: LocalDate, ignoreYear: Boolean): String {
+    return if (ignoreYear) {
+      formatBirthdayDateForUi(date)
+    } else {
+      formatBirthdayFullDateForUi(date)
+    }
+  }
+
+  fun formatBirthdayFullDateForUi(date: LocalDate): String {
     return date.format(headerDateFormatter())
+  }
+
+  fun formatBirthdayDateForUi(date: LocalDate): String {
+    return date.format(dayMonthBirthdayUiFormatter())
   }
 
   fun formatBirthdayDate(date: LocalDate): String {
@@ -379,10 +391,15 @@ class DateTimeManager(
     }
   }
 
-  fun getReadableBirthDate(dateOfBirth: String?): String {
+  fun getReadableBirthDate(dateOfBirth: String?, ignoreYear: Boolean): String {
     if (dateOfBirth.isNullOrEmpty()) return ""
+    val formatter = if (ignoreYear) {
+      dayMonthBirthdayUiFormatter()
+    } else {
+      headerDateFormatter()
+    }
     return try {
-      parseBirthdayDate(dateOfBirth)?.format(BIRTH_DATE_FORMATTER) ?: dateOfBirth
+      parseBirthdayDate(dateOfBirth)?.format(formatter) ?: dateOfBirth
     } catch (e: Throwable) {
       dateOfBirth
     }
@@ -905,6 +922,9 @@ class DateTimeManager(
 
   private fun headerDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM yyyy")
 
+  private fun dayMonthBirthdayUiFormatter(): DateTimeFormatter =
+    localizedDateFormatter("d MMMM")
+
   private fun dateFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy")
 
   private fun birthdaySearchDayMonth(): DateTimeFormatter = localizedDateFormatter("dd|MM")
@@ -930,6 +950,7 @@ class DateTimeManager(
     private val RFC3339_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
     private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
+    private val BIRTH_SHORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM-dd", Locale.US)
     private val VOICE_ENGINE_GMT_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
     private val GMT_DATE_FORMATTER =

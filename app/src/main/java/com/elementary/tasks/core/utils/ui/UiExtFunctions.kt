@@ -17,6 +17,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
 import android.widget.AutoCompleteTextView
 import android.widget.ScrollView
+import android.widget.TextView
 import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
@@ -27,6 +28,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.visibleGone
 import com.google.android.material.textfield.TextInputLayout
 
 fun Context.dp2px(dp: Int): Int {
@@ -133,3 +135,8 @@ fun AppCompatEditText.trimmedText() = text.toString().trim()
 fun AutoCompleteTextView.trimmedText() = text.toString().trim()
 
 fun AppCompatTextView.text() = text.toString()
+
+fun TextView.setTextOrHide(text: String?) {
+  visibleGone(!text.isNullOrEmpty())
+  this.text = text
+}
