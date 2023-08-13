@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.apps.SelectApplicationActivity
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.intentForClass
 
 class ApplicationPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
@@ -39,6 +40,6 @@ class ApplicationPicker private constructor(
   }
 
   private fun getIntent(): Intent {
-    return Intent(getActivity(), SelectApplicationActivity::class.java)
+    return getActivity().intentForClass(SelectApplicationActivity::class.java)
   }
 }

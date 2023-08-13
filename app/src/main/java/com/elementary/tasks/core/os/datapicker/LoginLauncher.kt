@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.core.utils.buildIntent
 import com.elementary.tasks.pin.PinLoginActivity
 
 class LoginLauncher private constructor(
@@ -35,7 +36,8 @@ class LoginLauncher private constructor(
   }
 
   private fun getIntent(): Intent {
-    return Intent(getActivity(), PinLoginActivity::class.java)
-      .putExtra(PinLoginActivity.ARG_BACK, true)
+    return getActivity().buildIntent(PinLoginActivity::class.java) {
+      putExtra(PinLoginActivity.ARG_BACK, true)
+    }
   }
 }

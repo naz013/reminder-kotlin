@@ -23,7 +23,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
@@ -208,12 +207,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
         color = note.colorPosition,
         palette = note.colorPalette
       )
-      requireContext().startActivity(
-        intentForClass(ImagePreviewActivity::class.java)
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          .putExtra(Constants.INTENT_ID, note.id)
-          .putExtra(Constants.INTENT_POSITION, imagePosition)
-      )
+      requireContext().startActivity(ImagePreviewActivity::class.java) {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        putExtra(Constants.INTENT_ID, note.id)
+        putExtra(Constants.INTENT_POSITION, imagePosition)
+      }
     }
     binding.recyclerView.adapter = notesRecyclerAdapter
     binding.recyclerView.itemAnimator = DefaultItemAnimator()
@@ -244,11 +242,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
         1 -> viewModel.shareNote(note.id)
         2 -> showInStatusBar(note)
         3 -> selectColor(note)
-        4 -> PinLoginActivity.openLogged(
-          requireContext(),
-          intentForClass(CreateNoteActivity::class.java)
-            .putExtra(Constants.INTENT_ID, note.id)
-        )
+        4 -> {
+          PinLoginActivity.openLogged(requireContext(), CreateNoteActivity::class.java) {
+            putExtra(Constants.INTENT_ID, note.id)
+          }
+        }
 
         5 -> viewModel.moveToArchive(note.id)
         6 -> askConfirmation(note.id)
@@ -294,7 +292,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
   private fun previewNote(id: String?) {
     startActivity(NotePreviewActivity::class.java) {
-      it.putExtra(Constants.INTENT_ID, id)
+      putExtra(Constants.INTENT_ID, id)
     }
   }
 

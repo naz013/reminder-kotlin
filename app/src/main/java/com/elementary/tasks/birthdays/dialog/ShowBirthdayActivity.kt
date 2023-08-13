@@ -20,10 +20,11 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.buildIntent
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.ui.setTextOrHide
@@ -395,17 +396,17 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     const val ACTION_STOP_BG_ACTIVITY = "action.birthday.STOP.BG"
 
     fun mockTest(context: Context, hasNumber: Boolean = false) {
-      val intent = context.intentForClass(ShowBirthdayActivity::class.java)
-      intent.putExtra(TestObjects.ARG_TEST, true)
-      intent.putExtra(TestObjects.ARG_TEST_HAS_NUMBER, hasNumber)
-      context.startActivity(intent)
+      context.startActivity(ShowBirthdayActivity::class.java) {
+        putExtra(TestObjects.ARG_TEST, true)
+        putExtra(TestObjects.ARG_TEST_HAS_NUMBER, hasNumber)
+      }
     }
 
     fun getLaunchIntent(context: Context, id: String): Intent {
-      val resultIntent = Intent(context, ShowBirthdayActivity::class.java)
-      resultIntent.putExtra(Constants.INTENT_ID, id)
-      resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-      return resultIntent
+      return context.buildIntent(ShowBirthdayActivity::class.java) {
+        putExtra(Constants.INTENT_ID, id)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+      }
     }
   }
 }

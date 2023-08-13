@@ -5,7 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.intentForClass
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -90,20 +90,17 @@ class ReminderResolver(
 
   private fun editReminder(view: View, reminder: UiReminderListData) {
     view.context.run {
-      PinLoginActivity.openLogged(
-        this,
-        intentForClass(CreateReminderActivity::class.java)
-          .putExtra(Constants.INTENT_ID, reminder.id)
-      )
+      PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+        putExtra(Constants.INTENT_ID, reminder.id)
+      }
     }
   }
 
   private fun previewReminder(view: View, reminder: UiReminderListData) {
     view.context.run {
-      startActivity(
-        intentForClass(ReminderPreviewActivity::class.java)
-          .putExtra(Constants.INTENT_ID, reminder.id)
-      )
+      startActivity(ReminderPreviewActivity::class.java) {
+        putExtra(Constants.INTENT_ID, reminder.id)
+      }
     }
   }
 }

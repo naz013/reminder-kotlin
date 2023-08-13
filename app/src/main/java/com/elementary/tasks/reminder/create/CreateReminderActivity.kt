@@ -30,6 +30,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
@@ -424,7 +425,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       }
 
       R.id.action_configure -> {
-        startActivity(Intent(this, ConfigureActivity::class.java))
+        startActivity(ConfigureActivity::class.java)
         return true
       }
 

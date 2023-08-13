@@ -23,10 +23,10 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
@@ -108,11 +108,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editReminder() {
     val reminder = viewModel.reminder.value ?: return
-    PinLoginActivity.openLogged(
-      this,
-      intentForClass(CreateReminderActivity::class.java)
-        .putExtra(Constants.INTENT_ID, reminder.uuId)
-    )
+    PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+      putExtra(Constants.INTENT_ID, reminder.uuId)
+    }
   }
 
   override fun onDestroy() {
@@ -140,10 +138,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
       images = adapter.currentList,
       backgroundColor = viewModel.note.value?.backgroundColor ?: -1
     )
-    startActivity(
-      intentForClass(ImagePreviewActivity::class.java)
-        .putExtra(Constants.INTENT_POSITION, position)
-    )
+    startActivity(ImagePreviewActivity::class.java) {
+      putExtra(Constants.INTENT_POSITION, position)
+    }
   }
 
   private fun initActionBar() {
@@ -204,11 +201,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editNote() {
-    PinLoginActivity.openLogged(
-      this,
-      intentForClass(CreateNoteActivity::class.java)
-        .putExtra(Constants.INTENT_ID, viewModel.key)
-    )
+    PinLoginActivity.openLogged(this, CreateNoteActivity::class.java) {
+      putExtra(Constants.INTENT_ID, viewModel.key)
+    }
   }
 
   private fun moveToStatus() {

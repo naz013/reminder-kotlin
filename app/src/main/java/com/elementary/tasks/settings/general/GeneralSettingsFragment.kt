@@ -1,6 +1,5 @@
 package com.elementary.tasks.settings.general
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +9,7 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Module.is10
+import com.elementary.tasks.core.utils.finishWith
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -234,7 +234,6 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   override fun getTitle(): String = getString(R.string.general)
 
   private fun restartApp() {
-    startActivity(Intent(context, SplashScreenActivity::class.java))
-    activity?.finishAffinity()
+    activity?.finishWith(SplashScreenActivity::class.java)
   }
 }

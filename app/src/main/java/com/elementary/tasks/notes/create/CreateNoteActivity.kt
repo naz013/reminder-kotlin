@@ -39,11 +39,11 @@ import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
@@ -662,10 +662,9 @@ class CreateNoteActivity :
       color = binding.colorSlider.selectedItem,
       palette = palette()
     )
-    startActivity(
-      intentForClass(ImagePreviewActivity::class.java)
-        .putExtra(Constants.INTENT_POSITION, position)
-    )
+    startActivity(ImagePreviewActivity::class.java) {
+      putExtra(Constants.INTENT_POSITION, position)
+    }
   }
 
   private fun hideProgress() {

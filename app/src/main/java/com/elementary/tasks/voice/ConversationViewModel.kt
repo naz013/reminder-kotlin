@@ -53,6 +53,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -370,46 +371,43 @@ class ConversationViewModel(
         val types = model.type
         if (types == ActionType.ACTION && isWidget) {
           when (model.action) {
-            Action.APP -> context.startActivity(
-              Intent(
-                context,
-                SplashScreenActivity::class.java
-              )
-            )
+            Action.APP -> {
+              context.startActivity(SplashScreenActivity::class.java)
+            }
 
-            Action.HELP -> context.startActivity(
-              Intent(context, VoiceHelpActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-            )
+            Action.HELP -> {
+              context.startActivity(VoiceHelpActivity::class.java) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+              }
+            }
 
-            Action.BIRTHDAY -> PinLoginActivity.openLogged(context, AddBirthdayActivity::class.java)
-            Action.REMINDER -> PinLoginActivity.openLogged(
-              context,
-              CreateReminderActivity::class.java
-            )
+            Action.BIRTHDAY -> {
+              PinLoginActivity.openLogged(context, AddBirthdayActivity::class.java)
+            }
 
-            Action.VOLUME -> context.startActivity(
-              Intent(context, VolumeDialog::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-            )
+            Action.REMINDER -> {
+              PinLoginActivity.openLogged(context, CreateReminderActivity::class.java)
+            }
+
+            Action.VOLUME -> {
+              context.startActivity(VolumeDialog::class.java) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+              }
+            }
 
             Action.TRASH -> emptyTrash(true)
             Action.DISABLE -> disableAllReminders(true)
             Action.SETTINGS -> {
-              val activityIntent = Intent(context, BottomNavActivity::class.java)
-              activityIntent.action = Intent.ACTION_VIEW
-              activityIntent.putExtra(
-                BottomNavActivity.ARG_DEST,
-                BottomNavActivity.Companion.Dest.SETTINGS
-              )
-              context.startActivity(activityIntent)
+              context.startActivity(BottomNavActivity::class.java) {
+                action = Intent.ACTION_VIEW
+                putExtra(BottomNavActivity.ARG_DEST, BottomNavActivity.Companion.Dest.SETTINGS)
+              }
             }
 
             Action.REPORT -> {
-              context.startActivity(
-                Intent(context, SendFeedbackActivity::class.java)
-                  .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-              )
+              context.startActivity(SendFeedbackActivity::class.java) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+              }
             }
 
             else -> {
@@ -431,11 +429,10 @@ class ConversationViewModel(
     val reminder = createReminder(model) ?: return
     saveAndStartReminder(reminder)
     if (widget) {
-      contextProvider.context.startActivity(
-        Intent(contextProvider.context, VoiceResultDialog::class.java)
-          .putExtra(Constants.INTENT_ID, reminder.uuId)
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-      )
+      contextProvider.context.startActivity(VoiceResultDialog::class.java) {
+        putExtra(Constants.INTENT_ID, reminder.uuId)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+      }
     } else {
       Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()
     }

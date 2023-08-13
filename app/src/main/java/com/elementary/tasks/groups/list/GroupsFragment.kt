@@ -133,11 +133,8 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
   }
 
   private fun editGroup(id: String) {
-    PinLoginActivity.openLogged(
-      requireContext(),
-      CreateGroupActivity::class.java
-    ) {
-      it.putExtra(Constants.INTENT_ID, id)
+    PinLoginActivity.openLogged(requireContext(), CreateGroupActivity::class.java) {
+      putExtra(Constants.INTENT_ID, id)
     }
   }
 

@@ -33,13 +33,14 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.buildIntent
 import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -555,11 +556,9 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun editReminder() {
     discardNotification(id)
     doActions({ it.stop() }, {
-      PinLoginActivity.openLogged(
-        this,
-        intentForClass(CreateReminderActivity::class.java)
-          .putExtra(Constants.INTENT_ID, it.uuId)
-      )
+      PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+        putExtra(Constants.INTENT_ID, it.uuId)
+      }
       finish()
     })
   }
@@ -721,18 +720,18 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
     @RequiresApi(29)
     fun mockTest(context: Context, reminder: Reminder) {
-      val intent = Intent(context, ReminderDialog29Activity::class.java)
-      intent.putExtra(ARG_TEST, true)
-      intent.putExtra(ARG_TEST_ITEM, reminder)
-      context.startActivity(intent)
+      context.startActivity(ReminderDialog29Activity::class.java) {
+        putExtra(ARG_TEST, true)
+        putExtra(ARG_TEST_ITEM, reminder)
+      }
     }
 
     @RequiresApi(29)
     fun getLaunchIntent(context: Context, id: String): Intent {
-      val resultIntent = Intent(context, ReminderDialog29Activity::class.java)
-      resultIntent.putExtra(Constants.INTENT_ID, id)
-      resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-      return resultIntent
+      return context.buildIntent(ReminderDialog29Activity::class.java) {
+        putExtra(Constants.INTENT_ID, id)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+      }
     }
   }
 }

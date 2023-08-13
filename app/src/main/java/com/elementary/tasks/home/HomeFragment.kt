@@ -1,6 +1,5 @@
 package com.elementary.tasks.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +23,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.visible
@@ -202,12 +202,7 @@ class HomeFragment :
     } else {
       binding.privacyBanner.visible()
       binding.privacyButton.setOnClickListener {
-        startActivity(
-          Intent(
-            context,
-            PrivacyPolicyActivity::class.java
-          )
-        )
+        startActivity(PrivacyPolicyActivity::class.java)
       }
       binding.acceptButton.setOnClickListener { prefs.isPrivacyPolicyShowed = true }
     }

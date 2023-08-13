@@ -16,6 +16,7 @@ import com.elementary.tasks.core.os.datapicker.FragmentLauncherCreator
 import com.elementary.tasks.core.os.datapicker.IntentPicker
 import com.elementary.tasks.core.os.datapicker.LauncherCreator
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.buildIntent
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ActivityRecurPresetListBinding
@@ -99,6 +100,6 @@ class PresetPicker private constructor(
   }
 
   private fun getIntent(): Intent {
-    return Intent(getActivity(), PresetSelectionActivity::class.java)
+    return getActivity().buildIntent(PresetSelectionActivity::class.java)
   }
 }

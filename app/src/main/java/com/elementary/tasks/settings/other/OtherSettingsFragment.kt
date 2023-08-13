@@ -55,19 +55,19 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
   override fun getTitle(): String = getString(R.string.other)
 
   private fun openFeedbackScreen() {
-    navigate {
+    safeNavigation {
       OtherSettingsFragmentDirections.actionOtherSettingsFragmentToFeedbackFragment()
     }
   }
 
   private fun openTermsScreen() {
-    navigate {
+    safeNavigation {
       OtherSettingsFragmentDirections.actionOtherSettingsFragmentToTermsFragment()
     }
   }
 
   private fun openPrivacyPolicyScreen() {
-    navigate {
+    safeNavigation {
       OtherSettingsFragmentDirections.actionOtherSettingsFragmentToPrivacyPolicyFragment()
     }
   }

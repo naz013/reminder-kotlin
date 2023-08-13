@@ -1,5 +1,3 @@
-@file:Suppress("DeprecatedCallableAddReplaceWith")
-
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
@@ -60,11 +58,32 @@ import java.io.Serializable
 import java.util.Calendar
 
 fun Fragment.intentForClass(clazz: Class<*>): Intent {
-  return Intent(requireContext(), clazz).setClassName(requireContext().packageName, clazz.name)
+  return requireContext().intentForClass(clazz)
 }
 
 fun Context.intentForClass(clazz: Class<*>): Intent {
-  return Intent(this, clazz).setClassName(packageName, clazz.name)
+  return Intent(this, clazz)
+    .setPackage(this.packageName)
+    .setClassName(packageName, clazz.name)
+}
+
+fun Context.buildIntent(clazz: Class<*>, builder: Intent.() -> Unit = { }): Intent {
+  return intentForClass(clazz)
+    .apply { builder(this) }
+}
+
+fun Context.startActivity(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
+  buildIntent(clazz, builder)
+    .run { startActivity(this) }
+}
+
+fun Fragment.startActivity(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
+  requireActivity().startActivity(clazz, builder)
+}
+
+fun Activity.finishWith(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
+  startActivity(clazz, builder)
+  finish()
 }
 
 fun LocalDateTime.minusMillis(millis: Long): LocalDateTime {
@@ -113,19 +132,6 @@ fun String.normalizeSummary(): String {
   } else {
     this
   }
-}
-
-fun Fragment.startActivity(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
-  requireActivity().startActivity(clazz, intent)
-}
-
-fun Activity.startActivity(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
-  startActivity(intentForClass(clazz).also { intent?.invoke(it) })
-}
-
-fun Activity.finishWith(clazz: Class<*>, intent: ((Intent) -> Unit)? = null) {
-  startActivity(intentForClass(clazz).also { intent?.invoke(it) })
-  finish()
 }
 
 @ColorInt

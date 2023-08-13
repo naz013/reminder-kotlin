@@ -87,12 +87,9 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   }
 
   private fun editGoogleTask() {
-    PinLoginActivity.openLogged(
-      this,
-      GoogleTaskActivity::class.java
-    ) {
-      it.putExtra(Constants.INTENT_ID, idFromIntent())
-      it.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    PinLoginActivity.openLogged(this, GoogleTaskActivity::class.java) {
+      putExtra(Constants.INTENT_ID, idFromIntent())
+      putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
     }
   }
 
