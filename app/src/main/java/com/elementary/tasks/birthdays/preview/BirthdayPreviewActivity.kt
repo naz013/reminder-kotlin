@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays.preview
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.view.updatePadding
@@ -162,11 +161,9 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
   }
 
   private fun editBirthday() {
-    PinLoginActivity.openLogged(
-      context = this,
-      intent = Intent(this, AddBirthdayActivity::class.java)
-        .putExtra(Constants.INTENT_ID, idFromIntent())
-    )
+    PinLoginActivity.openLogged(this, AddBirthdayActivity::class.java) {
+      putExtra(Constants.INTENT_ID, idFromIntent())
+    }
   }
 
   override fun requireLogin() = true

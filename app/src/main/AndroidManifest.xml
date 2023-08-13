@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <permission android:name="com.nsystudio.permission.UPDATE_CALENDAR" />
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -79,8 +81,12 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+    <uses-permission android:name="com.nsystudio.permission.UPDATE_CALENDAR" />
 
     <application
         android:name=".ReminderApp"
@@ -115,7 +121,7 @@
 
         <activity
             android:name=".home.BottomNavActivity"
-            android:exported="true">
+            android:exported="false">
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity
@@ -349,59 +355,94 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
             </intent-filter>
         </activity>
-        <activity android:name=".notes.preview.ImagePreviewActivity" />
-        <activity android:name=".notes.preview.NotePreviewActivity" />
+        <activity
+            android:name=".notes.preview.ImagePreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".notes.preview.NotePreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".googletasks.tasklist.GoogleTaskListActivity"
             android:configChanges="keyboardHidden"
+            android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".googletasks.task.GoogleTaskActivity"
             android:configChanges="keyboardHidden"
+            android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".reminder.dialog.ReminderDialogActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".reminder.dialog.ReminderDialog29Activity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".core.apps.SelectApplicationActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
-        <activity android:name=".reminder.preview.ReminderPreviewActivity" />
-        <activity android:name=".birthdays.preview.BirthdayPreviewActivity" />
-        <activity android:name=".googletasks.preview.GoogleTaskPreviewActivity" />
+        <activity
+            android:name=".reminder.preview.ReminderPreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".birthdays.preview.BirthdayPreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".googletasks.preview.GoogleTaskPreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".reminder.preview.FullscreenMapActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".birthdays.dialog.ShowBirthdayActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".birthdays.dialog.ShowBirthday29Activity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".pin.PinLoginActivity"
-            android:excludeFromRecents="true" />
-        <activity android:name="com.elementary.tasks.settings.other.SendFeedbackActivity" />
-        <activity android:name=".other.PrivacyPolicyActivity" />
-        <activity android:name=".reminder.create.fragments.recur.RecurHelpActivity" />
-        <activity android:name=".reminder.create.fragments.recur.preset.PresetSelectionActivity" />
-        <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
+        <activity
+            android:name="com.elementary.tasks.settings.other.SendFeedbackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".other.PrivacyPolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".reminder.create.fragments.recur.RecurHelpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".reminder.create.fragments.recur.preset.PresetSelectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".reminder.preview.AttachmentPreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".core.dialogs.VoiceResultDialog"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
         <activity
             android:name=".core.dialogs.VolumeDialog"
-            android:excludeFromRecents="true" />
-        <activity android:name=".voice.ConversationActivity" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
+        <activity
+            android:name=".voice.ConversationActivity"
+            android:exported="false" />
         <activity
             android:name=".reminder.create.ConfigureActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:exported="false" />
 
         <receiver
             android:name=".core.services.BootReceiver"
@@ -424,12 +465,14 @@
             android:name=".core.services.GeolocationService"
             android:enabled="true"
             android:foregroundServiceType="location"
+            android:permission="android.permission.FOREGROUND_SERVICE_LOCATION"
             tools:targetApi="q" />
 
         <service
             android:name=".core.services.EventOperationalService"
             android:enabled="true"
-            android:foregroundServiceType="dataSync"
+            android:foregroundServiceType="mediaPlayback"
+            android:permission="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
             tools:targetApi="q" />
 
         <receiver
@@ -648,7 +691,8 @@
 
         <receiver
             android:name=".core.appwidgets.calendar.CalendarPreviousReceiver"
-            android:exported="true">
+            android:exported="false"
+            android:permission="com.nsystudio.permission.UPDATE_CALENDAR">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
             </intent-filter>
@@ -656,7 +700,8 @@
 
         <receiver
             android:name=".core.appwidgets.calendar.CalendarNextReceiver"
-            android:exported="true">
+            android:exported="false"
+            android:permission="com.nsystudio.permission.UPDATE_CALENDAR">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
             </intent-filter>

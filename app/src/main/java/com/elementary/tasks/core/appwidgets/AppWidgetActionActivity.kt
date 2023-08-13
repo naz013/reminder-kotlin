@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.readSerializable
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
@@ -30,50 +31,40 @@ class AppWidgetActionActivity : ThemedActivity() {
     when (direction) {
       Direction.REMINDER -> {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return
-        PinLoginActivity.openLogged(
-          this,
-          Intent(this, ReminderPreviewActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .putExtra(Constants.INTENT_ID, id)
-        )
+        PinLoginActivity.openLogged(this, ReminderPreviewActivity::class.java) {
+          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          putExtra(Constants.INTENT_ID, id)
+        }
       }
       Direction.BIRTHDAY -> {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return
-        PinLoginActivity.openLogged(
-          this,
-          Intent(this, BirthdayPreviewActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .putExtra(Constants.INTENT_ID, id)
-        )
+        PinLoginActivity.openLogged(this, BirthdayPreviewActivity::class.java) {
+          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          putExtra(Constants.INTENT_ID, id)
+        }
       }
       Direction.NOTE -> {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return
-        PinLoginActivity.openLogged(
-          this,
-          Intent(this, NotePreviewActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .putExtra(Constants.INTENT_ID, id)
-        )
+        PinLoginActivity.openLogged(this, NotePreviewActivity::class.java) {
+          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          putExtra(Constants.INTENT_ID, id)
+        }
       }
       Direction.GOOGLE_TASK -> {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return
         val action = data.extra[TasksConstants.INTENT_ACTION] as? String ?: return
         if (action == TasksConstants.CREATE) {
-          PinLoginActivity.openLogged(
-            this,
-            Intent(this, GoogleTaskActivity::class.java)
-              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-              .putExtra(Constants.INTENT_ID, id)
-              .putExtra(TasksConstants.INTENT_ACTION, action)
-          )
+          PinLoginActivity.openLogged(this, GoogleTaskActivity::class.java) {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra(Constants.INTENT_ID, id)
+            putExtra(TasksConstants.INTENT_ACTION, action)
+          }
         } else {
-          PinLoginActivity.openLogged(
-            this,
-            Intent(this, GoogleTaskPreviewActivity::class.java)
-              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-              .putExtra(Constants.INTENT_ID, id)
-              .putExtra(TasksConstants.INTENT_ACTION, action)
-          )
+          PinLoginActivity.openLogged(this, GoogleTaskPreviewActivity::class.java) {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra(Constants.INTENT_ID, id)
+            putExtra(TasksConstants.INTENT_ACTION, action)
+          }
         }
       }
     }
@@ -81,11 +72,12 @@ class AppWidgetActionActivity : ThemedActivity() {
   }
 
   companion object {
+
     const val DIRECTION = "arg_direction"
     const val DATA = "arg_data"
 
     fun createIntent(context: Context): Intent {
-      return Intent(context, AppWidgetActionActivity::class.java)
+      return context.intentForClass(AppWidgetActionActivity::class.java)
     }
   }
 }

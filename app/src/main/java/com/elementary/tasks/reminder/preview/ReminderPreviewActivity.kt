@@ -33,10 +33,11 @@ import com.elementary.tasks.core.utils.ImageLoader
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.buildIntent
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -157,7 +158,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       }
     }
     viewModel.sharedFile.nonNullObserve(this) {
-      TelephonyUtil.sendFile(this@ReminderPreviewActivity, it)
+      TelephonyUtil.sendFile(this, it)
     }
   }
 
@@ -193,12 +194,10 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun showTask(googleTask: UiGoogleTaskList) {
     val binding = GoogleTaskHolder(binding.dataContainer) { _, _, listActions ->
       if (listActions == ListActions.EDIT) {
-        PinLoginActivity.openLogged(
-          this@ReminderPreviewActivity,
-          Intent(this@ReminderPreviewActivity, GoogleTaskActivity::class.java)
-            .putExtra(Constants.INTENT_ID, googleTask.id)
-            .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
-        )
+        PinLoginActivity.openLogged(this, GoogleTaskActivity::class.java) {
+          putExtra(Constants.INTENT_ID, googleTask.id)
+          putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+        }
       }
     }
     binding.bind(googleTask)
@@ -210,10 +209,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       binding.dataContainer,
       { _, _, listActions ->
         if (listActions == ListActions.OPEN) {
-          startActivity(
-            intentForClass(NotePreviewActivity::class.java)
-              .putExtra(Constants.INTENT_ID, note.id)
-          )
+          startActivity(NotePreviewActivity::class.java) {
+            putExtra(Constants.INTENT_ID, note.id)
+          }
         }
       }
     ) { _, _, imageId ->
@@ -223,12 +221,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         color = note.colorPosition,
         palette = note.colorPalette
       )
-      startActivity(
-        intentForClass(ImagePreviewActivity::class.java)
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          .putExtra(Constants.INTENT_ID, note.id)
-          .putExtra(Constants.INTENT_POSITION, imagePosition)
-      )
+      startActivity(ImagePreviewActivity::class.java) {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        putExtra(Constants.INTENT_ID, note.id)
+        putExtra(Constants.INTENT_POSITION, imagePosition)
+      }
     }
     binding.hasMore = false
     binding.setData(note)
@@ -425,8 +422,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
       "image"
     )
     startActivity(
-      intentForClass(AttachmentPreviewActivity::class.java)
-        .putExtra(Constants.INTENT_ITEM, attachmentFile),
+      buildIntent(AttachmentPreviewActivity::class.java) {
+        putExtra(Constants.INTENT_ITEM, attachmentFile)
+      },
       options.toBundle()
     )
   }
@@ -474,11 +472,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun editReminder() {
     withReminder {
-      PinLoginActivity.openLogged(
-        this,
-        intentForClass(CreateReminderActivity::class.java)
-          .putExtra(Constants.INTENT_ID, it.id)
-      )
+      PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+        putExtra(Constants.INTENT_ID, it.id)
+      }
     }
   }
 
@@ -600,8 +596,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     withReminder {
       val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.mapCard, "map")
       startActivity(
-        intentForClass(FullscreenMapActivity::class.java)
-          .putExtra(Constants.INTENT_ID, it.id),
+        buildIntent(FullscreenMapActivity::class.java) {
+          putExtra(Constants.INTENT_ID, it.id)
+        },
         options.toBundle()
       )
     }

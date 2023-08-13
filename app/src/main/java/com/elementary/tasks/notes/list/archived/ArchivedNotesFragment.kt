@@ -204,9 +204,9 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
         palette = note.colorPalette
       )
       startActivity(ImagePreviewActivity::class.java) {
-        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          .putExtra(Constants.INTENT_ID, note.id)
-          .putExtra(Constants.INTENT_POSITION, imagePosition)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        putExtra(Constants.INTENT_ID, note.id)
+        putExtra(Constants.INTENT_POSITION, imagePosition)
       }
     }
     binding.recyclerView.adapter = notesRecyclerAdapter
@@ -229,16 +229,23 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
     )
     Dialogues.showPopup(view, { item ->
       when (item) {
-        0 -> previewNote(note.id)
-        1 -> PinLoginActivity.openLogged(
-          requireContext(),
-          CreateNoteActivity::class.java
-        ) {
-          it.putExtra(Constants.INTENT_ID, note.id)
+        0 -> {
+          previewNote(note.id)
         }
 
-        2 -> viewModel.unArchive(note.id)
-        3 -> askConfirmation(note.id)
+        1 -> {
+          PinLoginActivity.openLogged(requireContext(), CreateNoteActivity::class.java) {
+            putExtra(Constants.INTENT_ID, note.id)
+          }
+        }
+
+        2 -> {
+          viewModel.unArchive(note.id)
+        }
+
+        3 -> {
+          askConfirmation(note.id)
+        }
       }
     }, *items)
   }
@@ -281,7 +288,7 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
 
   private fun previewNote(id: String?) {
     startActivity(NotePreviewActivity::class.java) {
-      it.putExtra(Constants.INTENT_ID, id)
+      putExtra(Constants.INTENT_ID, id)
     }
   }
 }

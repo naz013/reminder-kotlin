@@ -33,6 +33,7 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.ActivityConversationBinding
@@ -263,10 +264,9 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
           Action.VOLUME -> {
             stopView()
-            startActivity(
-              Intent(this, VolumeDialog::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-            )
+            startActivity(VolumeDialog::class.java) {
+              addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+            }
           }
 
           Action.TRASH -> clearTrash()
@@ -614,12 +614,12 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         }
 
         R.id.action_report -> {
-          startActivity(Intent(this@ConversationActivity, SendFeedbackActivity::class.java))
+          startActivity(SendFeedbackActivity::class.java)
           return@setOnMenuItemClickListener true
         }
 
         R.id.action_help -> {
-          startActivity(Intent(this@ConversationActivity, VoiceHelpActivity::class.java))
+          startActivity(VoiceHelpActivity::class.java)
           return@setOnMenuItemClickListener true
         }
 

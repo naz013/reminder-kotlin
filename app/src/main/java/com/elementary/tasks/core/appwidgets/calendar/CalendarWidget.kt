@@ -14,6 +14,7 @@ import com.elementary.tasks.core.appwidgets.WidgetPrefsHolder
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.core.component.KoinComponent
@@ -202,11 +203,11 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
         rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
       }
 
-      val weekdayAdapter = Intent(context, CalendarWeekdayService::class.java)
+      val weekdayAdapter = context.intentForClass(CalendarWeekdayService::class.java)
       weekdayAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
       rv.setRemoteAdapter(R.id.weekdayGrid, weekdayAdapter)
 
-      val startActivityIntent = Intent(context, BottomNavActivity::class.java)
+      val startActivityIntent = context.intentForClass(BottomNavActivity::class.java)
       startActivityIntent.action = Intent.ACTION_VIEW
       val startActivityPendingIntent = PendingIntentWrapper.getActivity(
         context = context,
@@ -217,11 +218,11 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
       )
       rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
 
-      val monthAdapter = Intent(context, CalendarMonthService::class.java)
+      val monthAdapter = context.intentForClass(CalendarMonthService::class.java)
       monthAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
       rv.setRemoteAdapter(R.id.monthGrid, monthAdapter)
 
-      val nextIntent = Intent(context, CalendarNextReceiver::class.java)
+      val nextIntent = context.intentForClass(CalendarNextReceiver::class.java)
       nextIntent.action = CalendarNextReceiver.ACTION_NEXT
       nextIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
       val nextPendingIntent = PendingIntentWrapper.getBroadcast(
@@ -235,7 +236,7 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
 
       Timber.d("updateWidget: id = ${sp.widgetId}")
 
-      val previousIntent = Intent(context, CalendarPreviousReceiver::class.java)
+      val previousIntent = context.intentForClass(CalendarPreviousReceiver::class.java)
       previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS
       previousIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sp.widgetId)
       val previousPendingIntent = PendingIntentWrapper.getBroadcast(

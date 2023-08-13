@@ -1,5 +1,6 @@
 package com.elementary.tasks.splash
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -16,6 +17,7 @@ import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : ThemedActivity() {
 
   private val viewModel by viewModel<SplashViewModel>()

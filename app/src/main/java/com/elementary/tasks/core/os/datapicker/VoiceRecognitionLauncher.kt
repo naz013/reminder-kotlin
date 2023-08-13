@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.voice.ConversationActivity
@@ -73,7 +74,7 @@ class VoiceRecognitionLauncher private constructor(
 
       prefs.isLiveEnabled -> {
         (getActivity() as? VoiceWidgetDialog)?.finish()
-        intent = Intent(getActivity(), ConversationActivity::class.java)
+        intent = getActivity().intentForClass(ConversationActivity::class.java)
       }
 
       else -> {

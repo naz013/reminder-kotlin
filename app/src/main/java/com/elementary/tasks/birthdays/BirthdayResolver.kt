@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays
 
-import android.content.Intent
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -45,18 +44,14 @@ class BirthdayResolver(
   }
 
   private fun openBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(
-      context = view.context,
-      intent = Intent(view.context, BirthdayPreviewActivity::class.java)
-        .putExtra(Constants.INTENT_ID, birthday.uuId)
-    )
+    PinLoginActivity.openLogged(view.context, BirthdayPreviewActivity::class.java) {
+      putExtra(Constants.INTENT_ID, birthday.uuId)
+    }
   }
 
   private fun editBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(
-      context = view.context,
-      intent = Intent(view.context, AddBirthdayActivity::class.java)
-        .putExtra(Constants.INTENT_ID, birthday.uuId)
-    )
+    PinLoginActivity.openLogged(view.context, AddBirthdayActivity::class.java) {
+      putExtra(Constants.INTENT_ID, birthday.uuId)
+    }
   }
 }

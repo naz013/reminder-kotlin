@@ -9,6 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.BiometricProvider
 import com.elementary.tasks.core.utils.intentForClass
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.home.BottomNavActivity
 
@@ -59,7 +60,7 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
   }
 
   private fun openApplication() {
-    startActivity(Intent(this, BottomNavActivity::class.java))
+    startActivity(intentForClass(BottomNavActivity::class.java))
     finish()
   }
 
@@ -73,23 +74,15 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(), AuthFragmen
     const val ARG_BACK = "arg_back"
     const val ARG_LOGGED = "arg_logged"
 
-    fun loggedIntent(intent: Intent): Intent {
-      intent.putExtra(ARG_LOGGED, true)
-      return intent
-    }
-
-    fun openLogged(context: Context, intent: Intent) {
-      intent.putExtra(ARG_LOGGED, true)
-      context.startActivity(intent)
-    }
-
     fun openLogged(context: Context, clazz: Class<*>) {
-      context.startActivity(context.intentForClass(clazz).putExtra(ARG_LOGGED, true))
+      context.startActivity(clazz) {
+        putExtra(ARG_LOGGED, true)
+      }
     }
 
-    fun openLogged(context: Context, clazz: Class<*>, func: (Intent) -> Unit) {
+    fun openLogged(context: Context, clazz: Class<*>, builder: Intent.() -> Unit) {
       val intent = context.intentForClass(clazz).apply {
-        func(this)
+        builder(this)
         putExtra(ARG_LOGGED, true)
       }
       context.startActivity(intent)

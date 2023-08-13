@@ -10,6 +10,7 @@ import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.ui.ViewUtils
 
 object WidgetUtils {
@@ -23,7 +24,7 @@ object WidgetUtils {
     cls: Class<*>,
     extras: ((Intent) -> Intent)? = null
   ) {
-    var configIntent = Intent(context, cls)
+    var configIntent = context.intentForClass(cls)
     if (extras != null) {
       configIntent = extras.invoke(configIntent)
     }
@@ -41,7 +42,7 @@ object WidgetUtils {
     @IdRes viewId: Int,
     cls: Class<*>
   ) {
-    val configIntent = Intent(context, cls)
+    val configIntent = context.intentForClass(cls)
     val configPendingIntent = PendingIntentWrapper.getActivity(context, 0, configIntent, 0)
     rv.setOnClickPendingIntent(viewId, configPendingIntent)
     setIcon(context, rv, iconId, viewId, color)
@@ -72,7 +73,7 @@ object WidgetUtils {
     cls: Class<*>,
     extras: ((Intent) -> Intent)? = null
   ) {
-    var configIntent = Intent(context, cls)
+    var configIntent = context.intentForClass(cls)
     if (extras != null) {
       configIntent = extras.invoke(configIntent)
     }

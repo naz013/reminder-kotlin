@@ -1,6 +1,5 @@
 package com.elementary.tasks.googletasks.list
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +18,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -86,10 +86,9 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   private fun editListClick() {
     viewModel.currentTaskList?.also {
-      startActivity(
-        Intent(context, GoogleTaskListActivity::class.java)
-          .putExtra(Constants.INTENT_ID, it.listId)
-      )
+      startActivity(GoogleTaskListActivity::class.java) {
+        putExtra(Constants.INTENT_ID, it.listId)
+      }
     }
   }
 
@@ -107,12 +106,9 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   private fun addNewTask() {
     viewModel.currentTaskList?.also {
-      PinLoginActivity.openLogged(
-        requireContext(),
-        GoogleTaskActivity::class.java
-      ) { intent ->
-        intent.putExtra(Constants.INTENT_ID, it.listId)
-        intent.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
+      PinLoginActivity.openLogged(requireContext(), GoogleTaskActivity::class.java) {
+        putExtra(Constants.INTENT_ID, it.listId)
+        putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
       }
     }
   }
@@ -184,12 +180,9 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun openTask(taskId: String) {
-    PinLoginActivity.openLogged(
-      requireContext(),
-      GoogleTaskPreviewActivity::class.java
-    ) {
-      it.putExtra(Constants.INTENT_ID, taskId)
-      it.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    PinLoginActivity.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
+      putExtra(Constants.INTENT_ID, taskId)
+      putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
     }
   }
 

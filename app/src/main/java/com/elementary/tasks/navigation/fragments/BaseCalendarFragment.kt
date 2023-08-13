@@ -120,11 +120,8 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   protected fun addReminder() {
     if (isAdded) {
       withActivity {
-        PinLoginActivity.openLogged(
-          it,
-          CreateReminderActivity::class.java
-        ) { intent ->
-          intent.putExtra(Constants.INTENT_DATE, date)
+        PinLoginActivity.openLogged(it, CreateReminderActivity::class.java) {
+          putExtra(Constants.INTENT_DATE, date)
         }
       }
     }
@@ -133,11 +130,8 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>
   protected fun addBirthday() {
     if (isAdded) {
       withActivity {
-        PinLoginActivity.openLogged(
-          it,
-          AddBirthdayActivity::class.java
-        ) { intent ->
-          intent.putExtra(Constants.INTENT_DATE, date)
+        PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java) {
+          putExtra(Constants.INTENT_DATE, date)
         }
       }
     }

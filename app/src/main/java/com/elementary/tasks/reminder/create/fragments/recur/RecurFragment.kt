@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -25,6 +24,7 @@ import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.onTextChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
+import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -226,7 +226,7 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     binding.addParamButton.setOnClickListener { showParamSelectorDialog() }
     binding.presetsButton.setOnClickListener { presetPicker.pickPreset() }
     binding.helpButton.setOnClickListener {
-      startActivity(Intent(requireContext(), RecurHelpActivity::class.java))
+      startActivity(RecurHelpActivity::class.java)
     }
     binding.savePresetCheck.setOnCheckedChangeListener { buttonView, isChecked ->
       binding.presetNameLayout.visibleGone(isChecked)
