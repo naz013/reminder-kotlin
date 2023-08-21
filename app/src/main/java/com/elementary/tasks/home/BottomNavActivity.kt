@@ -89,7 +89,8 @@ class BottomNavActivity :
   }
 
   override fun onTitleChange(title: String) {
-    binding.toolbar.title = title
+    Timber.d("onTitleChange: $title")
+    binding.collapsingToolbar.title = title
   }
 
   override fun hideKeyboard() {
