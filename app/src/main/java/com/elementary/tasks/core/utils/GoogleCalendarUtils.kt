@@ -220,7 +220,7 @@ class GoogleCalendarUtils(
     return ids.sortedBy { it.id }
   }
 
-  fun getEvents(ids: Array<Long>): List<EventItem> {
+  fun getEvents(ids: List<Long>): List<EventItem> {
     if (ids.isEmpty()) return listOf()
     if (!Permissions.checkPermission(
         context,
@@ -280,7 +280,7 @@ class GoogleCalendarUtils(
           c.close()
         }
       }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
     }
     return list
   }
@@ -301,7 +301,6 @@ class GoogleCalendarUtils(
 
   data class CalendarItem(
     val name: String,
-    val id: Long,
-    var isSelected: Boolean = false
+    val id: Long
   )
 }

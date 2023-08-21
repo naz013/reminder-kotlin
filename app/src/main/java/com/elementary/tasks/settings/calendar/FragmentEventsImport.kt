@@ -1,6 +1,5 @@
 package com.elementary.tasks.settings.calendar
 
-import android.app.AlarmManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,42 +7,27 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.CalendarEvent
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
 import com.elementary.tasks.settings.BaseCalendarFragment
-import kotlinx.coroutines.Job
-import org.dmfs.rfc5545.recur.Freq
-import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
-import org.dmfs.rfc5545.recur.RecurrenceRule
 import org.koin.android.ext.android.inject
-import java.util.Calendar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentEventsImport :
   BaseCalendarFragment<FragmentSettingsEventsImportBinding>(),
   CompoundButton.OnCheckedChangeListener {
 
-  private val eventControlFactory by inject<EventControlFactory>()
-  private val appDb by inject<AppDb>()
+  private val viewModel by viewModel<EventsImportViewModel>()
+
   private val jobScheduler by inject<JobScheduler>()
-  private val updatesHelper by inject<UpdatesHelper>()
-  private val dateTimeManager by inject<DateTimeManager>()
 
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
-  private var list: List<GoogleCalendarUtils.CalendarItem> = listOf()
-  private var mJob: Job? = null
 
   private val intervalPosition: Int
     get() {
@@ -83,6 +67,32 @@ class FragmentEventsImport :
     binding.eventCalendars.layoutManager =
       LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     binding.eventCalendars.adapter = calendarsAdapter
+
+    viewModel.calendars.nonNullObserve(viewLifecycleOwner) {
+      calendarsAdapter.data = it
+    }
+    viewModel.selectedCalendars.nonNullObserve(viewLifecycleOwner) {
+      calendarsAdapter.selectIds(it)
+    }
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
+    viewModel.action.nonNullObserve(viewLifecycleOwner) { onAction(it) }
+  }
+
+  private fun onAction(importAction: EventsImportViewModel.ImportAction) {
+    when (importAction) {
+      is EventsImportViewModel.NoEventsAction -> {
+        toast(getString(R.string.no_events_found))
+      }
+      is EventsImportViewModel.EventsImportedAction -> {
+        toast("${importAction.count} " + getString(R.string.events_found))
+        PermanentReminderReceiver.show(requireContext())
+      }
+    }
+  }
+
+  private fun updateProgress(isLoading: Boolean) {
+    binding.button.isEnabled = !isLoading
+    binding.progressView.visibleGone(isLoading)
   }
 
   private fun showIntervalDialog() {
@@ -125,27 +135,18 @@ class FragmentEventsImport :
     jobScheduler.scheduleEventCheck()
   }
 
-  private fun loadCalendars() {
-    permissionFlow.askPermission(Permissions.READ_CALENDAR) {
-      list = googleCalendarUtils.getCalendarsList()
-      if (list.isEmpty()) {
-        toast(R.string.no_calendars_found)
-      }
-      calendarsAdapter.data = list
-      calendarsAdapter.selectIds(prefs.trackCalendarIds)
-    }
-  }
-
   override fun onBackStackResume() {
     super.onBackStackResume()
-    loadCalendars()
+    permissionFlow.askPermission(Permissions.READ_CALENDAR) {
+      viewModel.loadCalendars()
+    }
   }
 
   override fun getTitle(): String = getString(R.string.import_events)
 
   private fun importEvents() {
     permissionFlow.askPermissions(listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-      if (list.isEmpty()) {
+      if (calendarsAdapter.data.isEmpty()) {
         toast(R.string.no_calendars_found)
         return@askPermissions
       }
@@ -154,13 +155,7 @@ class FragmentEventsImport :
         toast(R.string.you_dont_select_any_calendar)
         return@askPermissions
       }
-      val isEnabled = prefs.isCalendarEnabled
-      if (!isEnabled) {
-        prefs.isCalendarEnabled = true
-        prefs.defaultCalendarId = selectedIds[0]
-      }
-      prefs.trackCalendarIds = selectedIds
-      import(selectedIds)
+      viewModel.importEvents(selectedIds)
     }
   }
 
@@ -184,105 +179,5 @@ class FragmentEventsImport :
     } else {
       jobScheduler.cancelEventCheck()
     }
-  }
-
-  private fun import(ids: Array<Long>) {
-    binding.button.isEnabled = false
-    binding.progressView.visibility = View.VISIBLE
-    mJob = launchDefault {
-      val currTime = System.currentTimeMillis()
-      var eventsCount = 0
-      val eventItems = googleCalendarUtils.getEvents(ids)
-      if (eventItems.isNotEmpty()) {
-        val list = appDb.calendarEventsDao().eventIds()
-        for (item in eventItems) {
-          val itemId = item.id
-          if (!list.contains(itemId)) {
-            val rrule = item.rrule
-            var repeat: Long = 0
-            if (rrule != "" && !rrule.matches("".toRegex())) {
-              try {
-                val rule = RecurrenceRule(rrule)
-                val interval = rule.interval
-                val freq = rule.freq
-                repeat = when {
-                  freq === Freq.SECONDLY -> interval * DateTimeManager.SECOND
-                  freq === Freq.MINUTELY -> interval * DateTimeManager.MINUTE
-                  freq === Freq.HOURLY -> interval * DateTimeManager.HOUR
-                  freq === Freq.WEEKLY -> interval.toLong() * 7 * DateTimeManager.DAY
-                  freq === Freq.MONTHLY -> interval.toLong() * 30 * DateTimeManager.DAY
-                  freq === Freq.YEARLY -> interval.toLong() * 365 * DateTimeManager.DAY
-                  else -> interval * DateTimeManager.DAY
-                }
-              } catch (e: InvalidRecurrenceRuleException) {
-                e.printStackTrace()
-              }
-            }
-            val summary = item.title
-            val group = appDb.reminderGroupDao().defaultGroup()
-            var categoryId = ""
-            if (group != null) {
-              categoryId = group.groupUuId
-            }
-            val calendar = Calendar.getInstance()
-            var dtStart = item.dtStart
-            calendar.timeInMillis = dtStart
-            if (dtStart >= currTime) {
-              eventsCount += 1
-              saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId, appDb)
-            } else {
-              if (repeat > 0) {
-                do {
-                  calendar.timeInMillis = dtStart + repeat * AlarmManager.INTERVAL_DAY
-                  dtStart = calendar.timeInMillis
-                } while (dtStart < currTime)
-                eventsCount += 1
-                saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId, appDb)
-              }
-            }
-          }
-        }
-      }
-
-      withUIContext {
-        binding.button.isEnabled = true
-        binding.progressView.visibility = View.GONE
-
-        if (eventsCount == 0) {
-          toast(getString(R.string.no_events_found))
-        } else {
-          toast("$eventsCount " + getString(R.string.events_found))
-          updatesHelper.updateCalendarWidget()
-          PermanentReminderReceiver.show(requireContext())
-        }
-      }
-    }
-  }
-
-  private fun saveReminder(
-    itemId: Long,
-    summary: String,
-    dtStart: Long,
-    repeat: Long,
-    categoryId: String,
-    calendarId: Long,
-    appDb: AppDb
-  ) {
-    val reminder = Reminder()
-    reminder.type = Reminder.BY_DATE
-    reminder.repeatInterval = repeat
-    reminder.groupUuId = categoryId
-    reminder.summary = summary
-    reminder.calendarId = calendarId
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-    reminder.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-    appDb.reminderDao().insert(reminder)
-    eventControlFactory.getController(reminder).start()
-    appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    mJob?.cancel()
   }
 }

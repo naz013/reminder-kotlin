@@ -112,6 +112,7 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.settings.calendar.EventsImportViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
@@ -141,7 +142,7 @@ val workerModule = module {
   worker { PlaceSingleBackupWorker(get(), get(), get(), get()) }
   worker { ReminderDeleteBackupWorker(get(), get(), get(), get()) }
   worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
-  worker { CheckEventsWorker(get(), get(), get(), get(), get(), get(), get(), get()) }
+  worker { CheckEventsWorker(get(), get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
@@ -387,6 +388,7 @@ val viewModelModule = module {
   viewModel { VoiceHelpViewModel(get(), get()) }
 
   viewModel { TroubleshootingViewModel(get(), get(), get()) }
+  viewModel { EventsImportViewModel(get(), get(), get(), get(), get()) }
 }
 
 val converterModule = module {
