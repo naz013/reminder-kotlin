@@ -3,33 +3,32 @@ package com.elementary.tasks.settings.calendar
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemCalendarBinding
 
 class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
 
-  var data: List<GoogleCalendarUtils.CalendarItem> = listOf()
+  var data: List<SelectableCalendar> = listOf()
     set(list) {
       field = list
       notifyDataSetChanged()
     }
 
-  fun selectIds(array: Array<Long>) {
+  fun selectIds(array: List<Long>) {
     if (array.isEmpty()) {
       data.forEach { it.isSelected = false }
       notifyDataSetChanged()
       return
     }
     data.forEach {
-      if (array.contains(it.id)) {
+      if (array.contains(it.calendar.id)) {
         it.isSelected = true
       }
     }
     notifyDataSetChanged()
   }
 
-  fun getSelectedIds() = data.filter { it.isSelected }.map { it.id }.toTypedArray()
+  fun getSelectedIds(): List<Long> = data.filter { it.isSelected }.map { it.calendar.id }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
@@ -50,11 +49,12 @@ class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {
         data[bindingAdapterPosition].isSelected = !data[bindingAdapterPosition].isSelected
         notifyItemChanged(bindingAdapterPosition)
       }
+      binding.checkView.isClickable = false
     }
 
-    fun bind(item: GoogleCalendarUtils.CalendarItem) {
+    fun bind(item: SelectableCalendar) {
       binding.checkView.isChecked = item.isSelected
-      binding.textView.text = item.name
+      binding.textView.text = item.calendar.name
     }
   }
 }
