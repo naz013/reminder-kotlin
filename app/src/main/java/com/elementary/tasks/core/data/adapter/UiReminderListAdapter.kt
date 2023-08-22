@@ -10,7 +10,6 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.UiReminderListRemoved
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedGps
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
-import com.elementary.tasks.core.data.ui.reminder.UiReminderIllustration
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
@@ -40,10 +39,7 @@ class UiReminderListAdapter(
             id = data.uuId,
             type = type,
             summary = data.summary,
-            illustration = UiReminderIllustration(
-              title = uiReminderCommonAdapter.getTypeString(type),
-              icon = uiReminderCommonAdapter.getReminderIllustration(type)
-            ),
+            title = uiReminderCommonAdapter.getTypeString(type),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
             group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
@@ -56,10 +52,7 @@ class UiReminderListAdapter(
             id = data.uuId,
             type = type,
             summary = data.summary,
-            illustration = UiReminderIllustration(
-              title = uiReminderCommonAdapter.getTypeString(type),
-              icon = uiReminderCommonAdapter.getReminderIllustration(type)
-            ),
+            title = uiReminderCommonAdapter.getTypeString(type),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
             group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
@@ -72,10 +65,7 @@ class UiReminderListAdapter(
             id = data.uuId,
             type = type,
             summary = data.summary,
-            illustration = UiReminderIllustration(
-              title = uiReminderCommonAdapter.getTypeString(type),
-              icon = uiReminderCommonAdapter.getReminderIllustration(type)
-            ),
+            title = uiReminderCommonAdapter.getTypeString(type),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
             group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
@@ -92,10 +82,7 @@ class UiReminderListAdapter(
             id = data.uuId,
             type = type,
             summary = data.summary,
-            illustration = UiReminderIllustration(
-              title = uiReminderCommonAdapter.getTypeString(type),
-              icon = uiReminderCommonAdapter.getReminderIllustration(type)
-            ),
+            title = uiReminderCommonAdapter.getTypeString(type),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
             group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),
@@ -109,10 +96,7 @@ class UiReminderListAdapter(
             id = data.uuId,
             type = type,
             summary = data.summary,
-            illustration = UiReminderIllustration(
-              title = uiReminderCommonAdapter.getTypeString(type),
-              icon = uiReminderCommonAdapter.getReminderIllustration(type)
-            ),
+            title = uiReminderCommonAdapter.getTypeString(type),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
             group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             isRunning = data.isActive && !data.isRemoved,
@@ -126,10 +110,7 @@ class UiReminderListAdapter(
             id = data.uuId,
             type = type,
             summary = data.summary,
-            illustration = UiReminderIllustration(
-              title = uiReminderCommonAdapter.getTypeString(type),
-              icon = uiReminderCommonAdapter.getReminderIllustration(type)
-            ),
+            title = uiReminderCommonAdapter.getTypeString(type),
             priority = uiReminderCommonAdapter.getPriorityTitle(data.priority),
             group = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle),
             due = uiReminderCommonAdapter.getDue(data, type),

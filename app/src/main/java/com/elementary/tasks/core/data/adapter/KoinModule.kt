@@ -26,7 +26,7 @@ import org.koin.dsl.module
 val adapterModule = module {
   single { UiReminderPlaceAdapter() }
   single { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get()) }
-  single { UiReminderPreviewAdapter(get(), get(), get(), get()) }
+  single { UiReminderPreviewAdapter(get(), get(), get(), get(), get()) }
   single { UiReminderListAdapter(get(), get(), get(), get(), get()) }
   single { UiReminderListsAdapter(get(), get(), get()) }
   single { UiReminderWidgetListAdapter(get(), get()) }

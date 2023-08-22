@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.data.adapter
 
-import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
@@ -13,9 +12,9 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
@@ -120,27 +119,6 @@ class UiReminderCommonAdapter(
 
   private fun getRemaining(reminder: Reminder): String {
     return dateTimeManager.getRemaining(reminder.eventTime, reminder.delay)
-  }
-
-  @DrawableRes
-  fun getReminderIllustration(type: UiReminderType): Int {
-    return when {
-      type.isCall() -> R.drawable.ic_phone_call
-      type.isSms() -> R.drawable.ic_chat
-      type.isLink() -> R.drawable.ic_browser
-      type.isApp() -> R.drawable.ic_gamepad
-      type.isEmail() -> R.drawable.ic_email_illustration
-      type.isShopping() -> R.drawable.ic_shopping_cart
-      type.isBase(UiReminderType.Base.LOCATION_IN) -> R.drawable.ic_location_illustration
-      type.isBase(UiReminderType.Base.LOCATION_OUT) -> R.drawable.ic_radar
-      type.isBase(UiReminderType.Base.PLACE) -> R.drawable.ic_placeholder
-      type.isBase(UiReminderType.Base.DATE) -> R.drawable.ic_calendar_illustration
-      type.isBase(UiReminderType.Base.WEEKDAY) -> R.drawable.ic_alarm_clock
-      type.isBase(UiReminderType.Base.MONTHLY) -> R.drawable.ic_seventeen
-      type.isBase(UiReminderType.Base.TIMER) -> R.drawable.ic_stopwatch
-      type.isBase(UiReminderType.Base.YEARLY) -> R.drawable.ic_balloons
-      else -> R.drawable.ic_bell_illustration
-    }
   }
 
   fun getTypeString(type: UiReminderType): String {

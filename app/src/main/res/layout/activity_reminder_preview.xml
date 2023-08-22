@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?colorPrimaryContainer">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/activity_reminder_preview"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIconTint="?colorOnPrimaryContainer" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:elevation="0dp"
-            app:liftOnScroll="false">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/activity_reminder_preview"
-                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
-                app:navigationIconTint="?colorOnSurface"
-                tools:title="Test" />
-
-        </com.google.android.material.appbar.AppBarLayout>
+        android:layout_marginTop="?attr/actionBarSize"
+        app:cardBackgroundColor="?colorBackgroundFloating"
+        app:cardElevation="4dp"
+        app:shapeAppearance="@style/ShapeAppearance.PreviewCard">
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="ifContentScrolls">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,15 +44,6 @@
                 android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginEnd="@dimen/material_margin"
                 android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/itemPhoto"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:layout_marginTop="16dp"
-                    android:scaleType="centerCrop"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_alarm_clock" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/type"
@@ -399,12 +393,12 @@
 
         </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:orientation="vertical">
 
         <com.google.android.material.card.MaterialCardView
@@ -451,4 +445,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>
