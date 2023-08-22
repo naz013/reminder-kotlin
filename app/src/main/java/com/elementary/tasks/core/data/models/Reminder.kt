@@ -136,6 +136,8 @@ data class Reminder(
   var taskListId: String? = null,
   @SerializedName("recurDataObject")
   var recurDataObject: String? = null,
+  @SerializedName("allDay")
+  var allDay: Boolean = false,
   @ColumnInfo(name = "groupTitle")
   @Transient
   var groupTitle: String? = "",
@@ -200,6 +202,7 @@ data class Reminder(
     this.groupColor = item.groupColor
     this.calendarId = item.calendarId
     this.taskListId = item.taskListId
+    this.allDay = item.allDay
     if (fullCopy) {
       this.uuId = item.uuId
       this.uniqueId = item.uniqueId

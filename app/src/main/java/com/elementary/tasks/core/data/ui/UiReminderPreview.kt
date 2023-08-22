@@ -24,5 +24,6 @@ data class UiReminderPreview(
   val melodyName: String?,
   val due: UiReminderDueData,
   val shopList: List<ShopItem>,
-  val places: List<UiReminderPlace>
+  val places: List<UiReminderPlace>,
+  val allDay: Boolean
 )

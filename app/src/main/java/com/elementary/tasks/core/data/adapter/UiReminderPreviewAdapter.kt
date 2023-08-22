@@ -37,7 +37,8 @@ class UiReminderPreviewAdapter(
       melodyName = getMelodyName(data.melodyPath),
       due = uiReminderCommonAdapter.getDue(data, type),
       shopList = data.shoppings,
-      places = data.places.map { uiReminderPlaceAdapter.create(it) }
+      places = data.places.map { uiReminderPlaceAdapter.create(it) },
+      allDay = data.allDay
     )
   }
 
