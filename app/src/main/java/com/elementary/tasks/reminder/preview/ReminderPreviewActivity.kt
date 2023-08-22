@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
@@ -73,6 +74,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
   private val adsProvider = AdsProvider()
+  private var initPaddingTop: Int? = null
 
   private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
     openFullMap()
@@ -83,8 +85,19 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (initPaddingTop == null) {
+      initPaddingTop = binding.rootView.paddingTop
+    }
+
+    drawBehindSystemBars(binding.rootView) { insets ->
+      binding.rootView.updatePadding(
+        top = (initPaddingTop ?: 0) + insets.top
+      )
+    }
+
+    initTopAppBar()
+
     binding.dataContainer.removeAllViewsInLayout()
-    initActionBar()
     initViews()
     initViewModel()
     loadAds()
@@ -260,13 +273,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun showInfo(reminder: UiReminderPreview) {
     Timber.d("showInfo: $reminder")
-
     binding.group.text = reminder.group?.title
     showStatus(reminder.status)
     binding.windowTypeView.text = reminder.windowType
     binding.taskText.text = reminder.summary
-    binding.type.text = reminder.illustration.title
-    binding.itemPhoto.setImageResource(reminder.illustration.icon)
+    binding.type.text = reminder.title
     binding.idView.text = reminder.id
 
     showDue(reminder.due)
@@ -604,10 +615,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
   }
 
-  private fun initActionBar() {
-    binding.toolbar.setNavigationOnClickListener { closeWindow() }
+  private fun initTopAppBar() {
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
-      when (menuItem.itemId) {
+      return@setOnMenuItemClickListener when (menuItem.itemId) {
         R.id.action_delete -> {
           removeReminder()
           true
@@ -631,6 +641,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         else -> false
       }
     }
+    binding.toolbar.setNavigationOnClickListener { closeWindow() }
     updateMenu()
   }
 

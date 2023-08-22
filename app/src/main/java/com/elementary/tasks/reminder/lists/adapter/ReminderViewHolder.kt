@@ -64,7 +64,7 @@ class ReminderViewHolder(
   @SuppressLint("SetTextI18n")
   private fun loadGroup(reminder: UiReminderListActive) {
     val priority = reminder.priority
-    val typeLabel = reminder.illustration.title
+    val typeLabel = reminder.title
     val groupName = reminder.group?.title ?: ""
     binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }

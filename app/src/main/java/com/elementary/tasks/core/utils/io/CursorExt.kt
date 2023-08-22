@@ -21,3 +21,7 @@ fun Cursor.readLong(columnName: String, def: Long): Long {
 fun Cursor.readInt(columnName: String): Int? {
   return getColumnIndex(columnName).takeIf { it >= 0 }?.let { getInt(it) }
 }
+
+fun Cursor.readInt(columnName: String, def: Int): Int {
+  return getColumnIndex(columnName).takeIf { it >= 0 }?.let { getInt(it) } ?: def
+}

@@ -3,7 +3,6 @@ package com.elementary.tasks.core.data.ui
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
-import com.elementary.tasks.core.data.ui.reminder.UiReminderIllustration
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
 import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
@@ -20,7 +19,7 @@ data class UiReminderPreview(
   val attachmentFile: String?,
   val windowType: String,
   val status: UiReminderStatus,
-  val illustration: UiReminderIllustration,
+  val title: String,
   val melodyName: String?,
   val due: UiReminderDueData,
   val shopList: List<ShopItem>,
