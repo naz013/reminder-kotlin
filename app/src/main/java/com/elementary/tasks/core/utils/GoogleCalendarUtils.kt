@@ -58,7 +58,14 @@ class GoogleCalendarUtils(
         event = cr.insert(lEventUri, values)
         if (event != null) {
           val eventID = java.lang.Long.parseLong(event.lastPathSegment ?: "")
-          calendarEventsDao.insert(CalendarEvent(reminder.uuId, event.toString(), eventID))
+          calendarEventsDao.insert(
+            CalendarEvent(
+              reminderId = reminder.uuId,
+              event = event.toString(),
+              eventId = eventID,
+              allDay = false
+            )
+          )
         }
       } catch (e: Exception) {
         Timber.d("addEvent: ${e.message}")

@@ -61,7 +61,15 @@ class EventImportProcessor(
           calendar.timeInMillis = dtStart
           if (dtStart >= currTime) {
             eventsCount += 1
-            saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId, appDb)
+            saveReminder(
+              itemId = itemId,
+              summary = summary,
+              dtStart = dtStart,
+              repeat = repeat,
+              categoryId = categoryId,
+              calendarId = item.calendarId,
+              allDay = item.allDay == 1
+            )
           } else {
             if (repeat > 0) {
               do {
@@ -69,7 +77,15 @@ class EventImportProcessor(
                 dtStart = calendar.timeInMillis
               } while (dtStart < currTime)
               eventsCount += 1
-              saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId, appDb)
+              saveReminder(
+                itemId = itemId,
+                summary = summary,
+                dtStart = dtStart,
+                repeat = repeat,
+                categoryId = categoryId,
+                calendarId = item.calendarId,
+                allDay = item.allDay == 1
+              )
             }
           }
         }
@@ -85,19 +101,28 @@ class EventImportProcessor(
     repeat: Long,
     categoryId: String,
     calendarId: Long,
-    appDb: AppDb
+    allDay: Boolean
   ) {
-    val reminder = Reminder()
-    reminder.type = Reminder.BY_DATE
-    reminder.repeatInterval = repeat
-    reminder.groupUuId = categoryId
-    reminder.summary = summary
-    reminder.calendarId = calendarId
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-    reminder.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+    val reminder = Reminder().apply {
+      this.type = Reminder.BY_DATE
+      this.repeatInterval = repeat
+      this.groupUuId = categoryId
+      this.summary = summary
+      this.calendarId = calendarId
+      this.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+      this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+      this.allDay = allDay
+    }
     appDb.reminderDao().insert(reminder)
     eventControlFactory.getController(reminder).start()
-    appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
+    appDb.calendarEventsDao().insert(
+      CalendarEvent(
+        reminderId = reminder.uuId,
+        event = summary,
+        eventId = itemId,
+        allDay = allDay
+      )
+    )
   }
 
   data class Result(
