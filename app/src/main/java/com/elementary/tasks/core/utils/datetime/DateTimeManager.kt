@@ -1013,5 +1013,5 @@ class DateTimeManager(
 
   data class Date(val year: Int, val month: Int, val day: Int)
   data class Time(val hour: Int, val minute: Int, val second: Int)
-  data class BirthDate(val dateTime: LocalDateTime, val year: Int)
+  data class BirthDate(val nextBirthdayDateTime: LocalDateTime, val year: Int)
 }

@@ -13,14 +13,14 @@ class UiBirthdayWidgetListAdapter(private val dateTimeManager: DateTimeManager) 
     val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
     val remainingTime = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
-      dateTimeManager.getBirthdayRemaining(dateItem.dateTime, it)
-    } ?: dateTimeManager.getRemaining(dateItem.dateTime)
+      dateTimeManager.getBirthdayRemaining(dateItem.nextBirthdayDateTime, it)
+    } ?: dateTimeManager.getRemaining(dateItem.nextBirthdayDateTime)
 
     return UiBirthdayWidgetList(
       uuId = birthday.uuId,
       name = birthday.name,
       remainingTimeFormatted = remainingTime,
-      millis = dateTimeManager.toMillis(dateItem.dateTime),
+      millis = dateTimeManager.toMillis(dateItem.nextBirthdayDateTime),
       ageFormattedAndBirthdayDate = "$ageFormatted ($birthDate)"
     )
   }
