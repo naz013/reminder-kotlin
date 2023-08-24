@@ -13,10 +13,11 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
     val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
       .takeIf { !birthday.ignoreYear } ?: ""
-    val nextBirthdayDateTime = dateTimeManager.getFullDateTime(dateItem.dateTime)
+    val nextBirthdayDateTime = dateTimeManager.getFullDateTime(dateItem.nextBirthdayDateTime)
     val remainingTime = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
-      dateTimeManager.getBirthdayRemaining(dateItem.dateTime, it)
-    } ?: dateTimeManager.getRemaining(dateItem.dateTime)
+      dateTimeManager.getBirthdayRemaining(dateItem.nextBirthdayDateTime, it)
+    }?.takeIf { !birthday.ignoreYear }
+      ?: dateTimeManager.getRemaining(dateItem.nextBirthdayDateTime)
 
     return UiBirthdayList(
       uuId = birthday.uuId,
@@ -26,7 +27,7 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
       ageFormatted = ageFormatted,
       remainingTimeFormatted = remainingTime,
       nextBirthdayDateFormatted = nextBirthdayDateTime,
-      nextBirthdayDate = dateTimeManager.toMillis(dateItem.dateTime)
+      nextBirthdayDate = dateTimeManager.toMillis(dateItem.nextBirthdayDateTime)
     )
   }
 }

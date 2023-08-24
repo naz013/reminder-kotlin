@@ -50,7 +50,7 @@ class DateTimeManagerTest {
     val result = dateTimeManager.getFutureBirthdayDate(time, date)
 
     val expected = DateTimeManager.BirthDate(
-      dateTime = LocalDateTime.of(LocalDate.of(2023, 6, 17), time),
+      nextBirthdayDateTime = LocalDateTime.of(LocalDate.of(2023, 6, 17), time),
       year = 1994
     )
 
