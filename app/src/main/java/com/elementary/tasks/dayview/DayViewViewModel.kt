@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.arch.OneWayLiveData
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
@@ -14,16 +17,17 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.dayview.day.EventModel
+import com.elementary.tasks.dayview.weekheader.WeekDay
+import com.elementary.tasks.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 import timber.log.Timber
 
 class DayViewViewModel(
@@ -34,11 +38,14 @@ class DayViewViewModel(
   private val reminderDao: ReminderDao,
   private val birthdaysDao: BirthdaysDao,
   reminderGroupDao: ReminderGroupDao,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val weekHeaderController: WeekHeaderController
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
   var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events
+
+  val week = OneWayLiveData<List<WeekDay>>()
 
   private var _groups: MutableList<ReminderGroup> = mutableListOf()
   val groups: List<ReminderGroup>
@@ -53,6 +60,10 @@ class DayViewViewModel(
         _groups.addAll(it)
       }
     }
+  }
+
+  fun onDateSelected(date: LocalDate) {
+    week.viewModelPost(weekHeaderController.calculateWeek(date))
   }
 
   fun findEvents(item: EventsPagerItem) {
