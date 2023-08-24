@@ -866,6 +866,10 @@ class DateTimeManager(
     return date.format(shortWeekDay())
   }
 
+  fun formatCalendarDay(date: LocalDate): String {
+    return date.format(shortDay())
+  }
+
   fun getVoiceDateTime(date: String?): String? {
     if (date.isNullOrEmpty()) return null
     val loc = Locale(language.getTextLanguage(prefs.voiceLocale))
@@ -934,6 +938,8 @@ class DateTimeManager(
   private fun calendarMonthYear(): DateTimeFormatter = localizedDateFormatter("MMMM yyyy")
 
   private fun shortWeekDay(): DateTimeFormatter = localizedDateFormatter("EEE")
+
+  private fun shortDay(): DateTimeFormatter = localizedDateFormatter("dd")
 
   companion object {
     const val SECOND: Long = 1000

@@ -8,15 +8,18 @@ import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.elementary.tasks.dayview.day.DayCallback
 import com.elementary.tasks.dayview.day.EventModel
 import com.elementary.tasks.dayview.pager.DayPagerAdapter
+import com.elementary.tasks.dayview.weekheader.WeekAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
+import timber.log.Timber
 
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
@@ -26,6 +29,8 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   private val dayViewViewModel by viewModel<DayViewViewModel>()
   private var eventsPagerItem: EventsPagerItem? = null
   private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
+
+  private val weekAdapter = WeekAdapter { scrollPositions(it.localDate) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -43,6 +48,8 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.weekGridView.adapter = weekAdapter
+
     addMenu(R.menu.fragment_day_view, { menuItem ->
       when (menuItem.itemId) {
         R.id.action_voice -> {
@@ -73,6 +80,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   }
 
   private fun initViewModel() {
+    dayViewViewModel.week.nonNullObserve(viewLifecycleOwner) { weekAdapter.submitList(it) }
     dayViewViewModel.events.observe(viewLifecycleOwner) {
       val item = eventsPagerItem
       if (it != null && item != null) {
@@ -106,6 +114,11 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     return EventsPagerItem(date.dayOfMonth, date.monthValue, date.year)
   }
 
+  private fun scrollPositions(date: LocalDate) {
+    Timber.d("scrollPositions: date=$date")
+    datePageChangeListener.jumpToDate(date)
+  }
+
   private fun showEvents(date: LocalDate) {
     this.date = date
     updateMenuTitles()
@@ -134,6 +147,15 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     var currentPage = InfiniteViewPager.OFFSET + 1
       private set
     private var currentDate: LocalDate = LocalDate.now()
+
+    fun jumpToDate(newDate: LocalDate) {
+      this.currentDate = newDate
+      refreshAdapters(currentPage)
+      dayPagerAdapter.fragments[getCurrent(currentPage)].requestData()
+      date = newDate
+      updateMenuTitles()
+      dayViewViewModel.onDateSelected(date)
+    }
 
     fun setCurrentDateTime(date: LocalDate) {
       this.currentDate = date
@@ -180,11 +202,14 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     }
 
     override fun onPageSelected(position: Int) {
+      Timber.d("onPageSelected: position=$position")
       refreshAdapters(position)
       dayPagerAdapter.fragments[getCurrent(position)].requestData()
       val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
+      Timber.d("onPageSelected: item=$item")
       date = LocalDate.of(item.year, item.month, item.day)
       updateMenuTitles()
+      dayViewViewModel.onDateSelected(date)
     }
   }
 

@@ -71,8 +71,6 @@ import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
-import com.elementary.tasks.dayview.DayViewProvider
-import com.elementary.tasks.dayview.DayViewViewModel
 import com.elementary.tasks.googletasks.GoogleTasksViewModel
 import com.elementary.tasks.googletasks.list.TaskListViewModel
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewViewModel
@@ -86,7 +84,6 @@ import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.home.HomeViewModel
-import com.elementary.tasks.monthview.CalendarViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.images.ImageDecoder
@@ -274,9 +271,6 @@ val viewModelModule = module {
     )
   }
   viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-
-  viewModel { DayViewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel {
     ConversationViewModel(
@@ -499,7 +493,6 @@ val utilModule = module {
   single { NoteImageMigration(get(), get()) }
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
-  single { DayViewProvider(get(), get(), get(), get()) }
 
   single { DispatcherProvider() }
 
