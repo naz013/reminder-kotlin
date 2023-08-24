@@ -2,9 +2,10 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
-        ✅ Add Archive page for Notes;\n
-        ✅ Add new Home screen widget - Single Note;\n
-        ⭐ UI updates;\n
+        ✅ Add possibility to create Birthday without a year;\n
+        🐞 Fix several UI bugs;\n
+        ⭐ Update Day View screen design;\n
+        ⭐ Update Reminder Preview screen design;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
