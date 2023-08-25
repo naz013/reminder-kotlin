@@ -3,7 +3,7 @@ name: Build and Publish release
 on:
   push:
     branches:
-      - release/*
+      - 'release/**'
 
 jobs:
   build_and_publish:
@@ -49,65 +49,65 @@ jobs:
         git commit -am "Bump version code and change version name"
         git push origin HEAD
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
-    - name: Create services json file for PRO version
-      run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json | base64
-
-    - name: Put data into services json file for PRO version
-      env:
-        DATA: ${{ secrets.GOOGLE_SERVICES }}
-      run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json
-
-    - name: Create services json file for FREE version
-      run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json | base64
-
-    - name: Put data into services json file for FREE version
-      env:
-        DATA: ${{ secrets.GOOGLE_SERVICES_FREE }}
-      run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json
-
-    - name: Build Release AAB
-      id: buildRelease
-      run: ./gradlew bundleRelease
-
-    - name: Create service_account.json
-      id: create-service-account
-      run: echo '${{ secrets.SERVICE_ACCOUT_JSON }}' > service_account.json
-
-    - name: Sign Free AAB
-      id: sign-free
-      uses: r0adkll/sign-android-release@v1
-      with:
-        releaseDirectory: app/build/outputs/bundle/freeRelease
-        signingKeyBase64: ${{ secrets.FREE_SIGN_KEY }}
-        alias: ${{ secrets.FREE_SIGN_KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.FREE_SIGN_KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.FREE_SIGN_KEY_PASSWORD }}
-
-    - name: Deploy FREE to Play Store (Alpha)
-      uses: r0adkll/upload-google-play@v1
-      with:
-        serviceAccountJson: service_account.json
-        packageName: com.cray.software.justreminder
-        releaseFiles: ${{ steps.sign-free.outputs.signedReleaseFile }}
-        track: alpha
-
-    - name: Sign Pro AAB
-      id: sign-pro
-      uses: r0adkll/sign-android-release@v1
-      with:
-        releaseDirectory: app/build/outputs/bundle/proRelease
-        signingKeyBase64: ${{ secrets.PRO_SIGN_KEY }}
-        alias: ${{ secrets.PRO_SIGN_KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.PRO_SIGN_KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.PRO_SIGN_KEY_PASSWORD }}
-
-    - name: Deploy PRO to Play Store (Alpha)
-      uses: r0adkll/upload-google-play@v1
-      with:
-        serviceAccountJson: service_account.json
-        packageName: com.cray.software.justreminderpro
-        releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
-        track: alpha
+#    - name: Grant execute permission for gradlew
+#      run: chmod +x gradlew
+#
+#    - name: Create services json file for PRO version
+#      run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json | base64
+#
+#    - name: Put data into services json file for PRO version
+#      env:
+#        DATA: ${{ secrets.GOOGLE_SERVICES }}
+#      run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json
+#
+#    - name: Create services json file for FREE version
+#      run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json | base64
+#
+#    - name: Put data into services json file for FREE version
+#      env:
+#        DATA: ${{ secrets.GOOGLE_SERVICES_FREE }}
+#      run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json
+#
+#    - name: Build Release AAB
+#      id: buildRelease
+#      run: ./gradlew bundleRelease
+#
+#    - name: Create service_account.json
+#      id: create-service-account
+#      run: echo '${{ secrets.SERVICE_ACCOUT_JSON }}' > service_account.json
+#
+#    - name: Sign Free AAB
+#      id: sign-free
+#      uses: r0adkll/sign-android-release@v1
+#      with:
+#        releaseDirectory: app/build/outputs/bundle/freeRelease
+#        signingKeyBase64: ${{ secrets.FREE_SIGN_KEY }}
+#        alias: ${{ secrets.FREE_SIGN_KEY_ALIAS }}
+#        keyStorePassword: ${{ secrets.FREE_SIGN_KEY_STORE_PASSWORD }}
+#        keyPassword: ${{ secrets.FREE_SIGN_KEY_PASSWORD }}
+#
+#    - name: Deploy FREE to Play Store (Alpha)
+#      uses: r0adkll/upload-google-play@v1
+#      with:
+#        serviceAccountJson: service_account.json
+#        packageName: com.cray.software.justreminder
+#        releaseFiles: ${{ steps.sign-free.outputs.signedReleaseFile }}
+#        track: alpha
+#
+#    - name: Sign Pro AAB
+#      id: sign-pro
+#      uses: r0adkll/sign-android-release@v1
+#      with:
+#        releaseDirectory: app/build/outputs/bundle/proRelease
+#        signingKeyBase64: ${{ secrets.PRO_SIGN_KEY }}
+#        alias: ${{ secrets.PRO_SIGN_KEY_ALIAS }}
+#        keyStorePassword: ${{ secrets.PRO_SIGN_KEY_STORE_PASSWORD }}
+#        keyPassword: ${{ secrets.PRO_SIGN_KEY_PASSWORD }}
+#
+#    - name: Deploy PRO to Play Store (Alpha)
+#      uses: r0adkll/upload-google-play@v1
+#      with:
+#        serviceAccountJson: service_account.json
+#        packageName: com.cray.software.justreminderpro
+#        releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
+#        track: alpha
