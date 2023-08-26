@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -17,6 +18,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.ui.ViewUtils
@@ -203,9 +205,15 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
   private fun showGoogleTaskList(googleTaskList: GoogleTaskList) {
     callback?.onTitleChange(googleTaskList.title)
-    binding.fab.backgroundTintList = ColorStateList.valueOf(
-      ThemeProvider.themedColor(requireContext(), googleTaskList.color)
-    )
+    val color = ThemeProvider.themedColor(requireContext(), googleTaskList.color)
+    binding.fab.backgroundTintList = ColorStateList.valueOf(color)
+    val textColor = if (color.isColorDark()) {
+      ContextCompat.getColor(requireContext(), R.color.pureWhite)
+    } else {
+      ContextCompat.getColor(requireContext(), R.color.pureBlack)
+    }
+    binding.fab.setTextColor(textColor)
+    binding.fab.iconTint = ColorStateList.valueOf(textColor)
     activity?.invalidateOptionsMenu()
   }
 

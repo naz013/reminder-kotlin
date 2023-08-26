@@ -92,7 +92,6 @@
         android:layout_margin="16dp"
         android:contentDescription="@string/new_task"
         android:text="@string/new_task"
-        android:tint="?colorOnSecondary"
         app:icon="@drawable/ic_twotone_add_24px" />
 
 </FrameLayout>
