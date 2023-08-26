@@ -602,7 +602,7 @@ class DateTimeManager(
     }
 
     val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), startDateTime.toLocalTime())
       .withDayOfMonth(dayOfMonth)
 
     val interval = if (reminder.repeatInterval <= 0L) {
@@ -630,7 +630,7 @@ class DateTimeManager(
     val beforeValue = reminder.remindBefore
 
     val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), startDateTime.toLocalTime())
     var yearMonth = YearMonth.from(dateTime)
 
     val interval = if (reminder.repeatInterval <= 0L) {
@@ -670,7 +670,7 @@ class DateTimeManager(
 
   private fun getLastMonthDayTime(fromTime: LocalDateTime, reminder: Reminder): LocalDateTime {
     val startDateTime = fromGmtToLocal(reminder.eventTime) ?: getCurrentDateTime()
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
+    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), startDateTime.toLocalTime())
 
     val interval = if (reminder.repeatInterval <= 0L) {
       1L

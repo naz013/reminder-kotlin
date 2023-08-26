@@ -124,13 +124,16 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     binding.repeatView.defaultValue = 1
 
     binding.tuneExtraView.hasAutoExtra = false
-    binding.lastCheck.setOnCheckedChangeListener { _, b ->
-      iFace.state.isLastDay = b
-      changeUi(b)
+
+    binding.dayOfMonthOptionGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+      if (isChecked) {
+        iFace.state.isLastDay = checkedId == R.id.lastCheck
+        changeUi(iFace.state.isLastDay)
+      }
     }
 
     if (!iFace.state.isLastDay) {
-      binding.dayCheck.isChecked = true
+      binding.dayOfMonthOptionGroup.check(R.id.dayCheck)
     }
     changeUi(iFace.state.isLastDay)
 
@@ -212,14 +215,15 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
   private fun editReminder() {
     val reminder = iFace.state.reminder
-    binding.timeField.text = dateTimeManager.getTime(
-      updateTime(dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime())
-    )
-    if (iFace.state.isLastDay && reminder.dayOfMonth == 0) {
-      binding.lastCheck.isChecked = true
+    updateTime(dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime()).also {
+      Timber.d("editReminder: time=$it")
+      binding.timeField.text = dateTimeManager.getTime(it)
+    }
+    if (iFace.state.isLastDay || reminder.dayOfMonth == 0) {
+      binding.dayOfMonthOptionGroup.check(R.id.lastCheck)
     } else {
       iFace.state.day = reminder.dayOfMonth
-      binding.dayCheck.isChecked = true
+      binding.dayOfMonthOptionGroup.check(R.id.dayCheck)
       showSelectedDay()
     }
     calculateNextDate()
