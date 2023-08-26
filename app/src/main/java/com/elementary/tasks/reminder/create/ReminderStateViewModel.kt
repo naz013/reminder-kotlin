@@ -22,7 +22,6 @@ class ReminderStateViewModel(
   var group: ReminderGroup? = null
 
   var isShopItemsEdited: Boolean = false
-  var isEdited: Boolean = false
   var isLink: Boolean = false
   var isMessage: Boolean = false
   var isDelayAdded: Boolean = false

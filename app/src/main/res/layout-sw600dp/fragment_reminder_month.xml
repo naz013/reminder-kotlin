@@ -74,89 +74,107 @@
 
             </LinearLayout>
 
-            <RadioGroup
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/dayOfMonthOptionGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
+                app:checkedButton="@+id/dayCheck"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <Button
                     android:id="@+id/dayCheck"
-                    android:layout_width="wrap_content"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/select_day"
-                    android:textAppearance="?textAppearanceCaption" />
+                    android:layout_weight="1"
+                    android:text="@string/select_day" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <Button
                     android:id="@+id/lastCheck"
-                    android:layout_width="wrap_content"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/last_day"
-                    android:textAppearance="?textAppearanceCaption" />
+                    android:layout_weight="1"
+                    android:text="@string/last_day" />
 
-            </RadioGroup>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/day_view"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_today_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/monthDayField"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="25" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/day_of_month"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
 
-            <LinearLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/monthDayField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="?colorOnSurface"
+                        android:layout_marginTop="8dp"
+                        android:background="?selectableItemBackground"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        tools:text="25" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_functions_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/calculatedNextTime"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:textAppearance="?textAppearanceBody1"
-                    tools:text="25" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/estimated_next_reminder"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/calculatedNextTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="?colorOnSurface"
+                        android:layout_marginTop="8dp"
+                        android:background="?selectableItemBackground"
+                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        tools:text="25" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.elementary.tasks.core.views.GroupView
                 android:id="@+id/groupView"
