@@ -79,12 +79,23 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    if (googleLogin.isGoogleTasksLogged) {
+      addMenu(
+        R.menu.fragment_google_tasks_menu,
+        {
+          when (it.itemId) {
+            R.id.action_add -> {
+              startActivity(GoogleTaskListActivity::class.java)
+            }
+          }
+          true
+        }
+      )
+    }
+
     binding.progressMessageView.text = getString(R.string.please_wait)
     binding.fab.setOnClickListener { addNewTask() }
     binding.connectButton.setOnClickListener { googleTasksButtonClick() }
-    binding.addTaskListButton.setOnClickListener {
-      startActivity(GoogleTaskListActivity::class.java)
-    }
 
     updateProgress(false)
     initEmpty()

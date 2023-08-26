@@ -49,22 +49,11 @@
                 android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addTaskListButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_google_selector"
-                    android:contentDescription="@string/new_tasks_list"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_add_24px"
-                    app:tint="?android:textColorPrimary" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listsView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:itemCount="1"
+                    tools:itemCount="2"
                     tools:listitem="@layout/list_item_google_tasks_list" />
 
             </LinearLayout>
