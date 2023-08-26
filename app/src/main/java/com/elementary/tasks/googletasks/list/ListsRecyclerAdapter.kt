@@ -56,14 +56,14 @@ class ListsRecyclerAdapter :
         intArrayOf(android.R.attr.state_pressed),
         tint(
           ContextCompat.getDrawable(context, R.drawable.gradient_button_google_pressed),
-          color
+          color.adjustAlpha(75)
         )
       )
       stateListDrawable.addState(
         intArrayOf(),
         tint(
-          ContextCompat.getDrawable(context, R.drawable.gradient_button_google),
-          color.adjustAlpha(50)
+          ContextCompat.getDrawable(context, R.drawable.gradient_button_google_pressed),
+          color
         )
       )
       return stateListDrawable
