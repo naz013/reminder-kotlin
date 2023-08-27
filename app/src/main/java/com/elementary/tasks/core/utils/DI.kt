@@ -432,6 +432,7 @@ fun dbModule(context: Context): Module {
     single { appDb.placesDao() }
     single { appDb.usedTimeDao() }
     single { appDb.recurPresetDao() }
+    single { appDb.recentQueryDao() }
 
     single { NoteToOldNoteConverter(get()) }
   }

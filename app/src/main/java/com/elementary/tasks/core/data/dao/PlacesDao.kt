@@ -11,6 +11,9 @@ import com.elementary.tasks.core.data.models.Place
 @Dao
 interface PlacesDao {
 
+  @Query("SELECT * FROM Place WHERE LOWER(name) LIKE '%' || :query || '%'")
+  fun search(query: String): LiveData<List<Place>>
+
   @Query("SELECT * FROM Place")
   fun getAll(): List<Place>
 

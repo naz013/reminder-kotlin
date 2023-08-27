@@ -1,408 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     tools:context="com.elementary.tasks.home.HomeFragment">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical">
-
-        <View
-            android:id="@+id/headerView"
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/privacyBanner"
-            style="?attr/materialCardViewElevatedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="0dp"
-            app:contentPadding="8dp"
-            tools:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/by_continue_using_reminder_application_you_accept_privacy_policy"
-                    android:textAppearance="?textAppearanceBodyMedium"
-                    android:textColor="?colorOnPrimaryContainer" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/privacyButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLength="24"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/privacy_policy"
-                        android:textAllCaps="true" />
-
-                    <Button
-                        android:id="@+id/acceptButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:maxLength="24"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/accept"
-                        android:textAllCaps="true" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/loginBanner"
-            style="?attr/materialCardViewElevatedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="0dp"
-            app:contentPadding="8dp"
-            tools:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it"
-                    android:textAppearance="?textAppearanceBodyMedium"
-                    android:textColor="?colorOnPrimaryContainer" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/loginDismissButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLength="24"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/dismiss"
-                        android:textAllCaps="true" />
-
-                    <Button
-                        android:id="@+id/loginButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:maxLength="24"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/log_in"
-                        android:textAllCaps="true" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/whatsNewBanner"
-            style="?attr/materialCardViewElevatedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="0dp"
-            app:contentPadding="8dp"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/whats_new_banner_text"
-                    android:textAppearance="?textAppearanceBodyLarge"
-                    android:textColor="?colorOnPrimaryContainer" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/whatsNewReadMoreButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLength="24"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/whats_new_details"
-                        android:textAllCaps="true" />
-
-                    <Button
-                        android:id="@+id/whatsNewOkButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:maxLength="24"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/ok"
-                        android:textAllCaps="true" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <HorizontalScrollView
-            android:id="@+id/horizontalSelector"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/remindersButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_birthdays_selector"
-                    android:contentDescription="@string/notes"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/notesButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_calendar_selector"
-                    android:contentDescription="@string/notes"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_note_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/calendarButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_reminders_selector"
-                    android:contentDescription="@string/calendar"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_today_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/birthdaysButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_notes_selector"
-                    android:contentDescription="@string/calendar"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_cake_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/googleButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_google_selector"
-                    android:contentDescription="@string/google_tasks"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_new_g_tasks"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/groupsButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_groups_selector"
-                    android:contentDescription="@string/groups"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/mapButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/gradient_button_map_selector"
-                    android:contentDescription="@string/map"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_map_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/archiveButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/gradient_button_birthdays_selector"
-                    android:contentDescription="@string/trash"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_dns_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/remindersHeader"
-            style="@style/UiComponentListCard.Reminders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/reminders_"
-                    android:textAppearance="?textAppearanceTitleLarge"
-                    android:textColor="?colorOnSurface" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addReminderButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/acc_add_reminder"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_add_circle_24px"
-                    app:tint="?colorOnSurface" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/emptyRemindersState"
-            style="@style/UiComponentListCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            app:contentPadding="0dp">
-
-            <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:gradientLinearLayout_animate="true"
-                app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
-                app:gradientLinearLayout_endColor="?colorSecondary"
-                app:gradientLinearLayout_orientation="TL_BR"
-                app:gradientLinearLayout_startColor="?colorPrimary">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="32dp"
-                    app:srcCompat="@drawable/ic_empty_state_calendar"
-                    app:tint="?colorOnTertiary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="32dp"
-                    android:gravity="center"
-                    android:text="@string/you_re_all_done"
-                    android:textAppearance="?textAppearanceTitleLarge"
-                    android:textColor="?colorOnTertiary" />
-
-            </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/remindersList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            android:visibility="gone"
-            tools:itemCount="3"
-            tools:listitem="@layout/list_item_reminder" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/searchbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:id="@+id/birthdaysBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
+            <Space
+                android:id="@+id/headerView"
+                android:layout_width="match_parent"
+                android:layout_height="88dp" />
+
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/birthdaysHeader"
-                style="@style/UiComponentListCard.Birthdays"
+                android:id="@+id/privacyBanner"
+                style="?attr/materialCardViewElevatedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="0dp"
+                app:contentPadding="8dp"
+                tools:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/by_continue_using_reminder_application_you_accept_privacy_policy"
+                        android:textAppearance="?textAppearanceBodyMedium"
+                        android:textColor="?colorOnPrimaryContainer" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/privacyButton"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/privacy_policy"
+                            android:textAllCaps="true" />
+
+                        <Button
+                            android:id="@+id/acceptButton"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/accept"
+                            android:textAllCaps="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/loginBanner"
+                style="?attr/materialCardViewElevatedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="0dp"
+                app:contentPadding="8dp"
+                tools:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it"
+                        android:textAppearance="?textAppearanceBodyMedium"
+                        android:textColor="?colorOnPrimaryContainer" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/loginDismissButton"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/dismiss"
+                            android:textAllCaps="true" />
+
+                        <Button
+                            android:id="@+id/loginButton"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/log_in"
+                            android:textAllCaps="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/whatsNewBanner"
+                style="?attr/materialCardViewElevatedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="0dp"
+                app:contentPadding="8dp"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/whats_new_banner_text"
+                        android:textAppearance="?textAppearanceBodyLarge"
+                        android:textColor="?colorOnPrimaryContainer" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/whatsNewReadMoreButton"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/whats_new_details"
+                            android:textAllCaps="true" />
+
+                        <Button
+                            android:id="@+id/whatsNewOkButton"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/ok"
+                            android:textAllCaps="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/remindersButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_birthdays_selector"
+                        android:contentDescription="@string/notes"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/notesButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_calendar_selector"
+                        android:contentDescription="@string/notes"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_note_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/calendarButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_reminders_selector"
+                        android:contentDescription="@string/calendar"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_today_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/birthdaysButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_notes_selector"
+                        android:contentDescription="@string/calendar"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_cake_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/googleButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_google_selector"
+                        android:contentDescription="@string/google_tasks"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_new_g_tasks"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/groupsButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_groups_selector"
+                        android:contentDescription="@string/groups"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_local_offer_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/mapButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_map_selector"
+                        android:contentDescription="@string/map"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_map_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/archiveButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/gradient_button_birthdays_selector"
+                        android:contentDescription="@string/trash"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_dns_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/remindersHeader"
+                style="@style/UiComponentListCard.Reminders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp">
 
                 <LinearLayout
@@ -415,33 +322,32 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/birthdays"
+                        android:text="@string/reminders_"
                         android:textAppearance="?textAppearanceTitleLarge"
-                        android:textColor="?colorOnSurfaceVariant" />
+                        android:textColor="?colorOnSurface" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/addBirthdayButton"
+                        android:id="@+id/addReminderButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/add_birthday"
+                        android:contentDescription="@string/acc_add_reminder"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_add_circle_24px"
-                        app:tint="?colorOnSurfaceVariant" />
+                        app:tint="?colorOnSurface" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/emptyBirthdaysState"
+                android:id="@+id/emptyRemindersState"
                 style="@style/UiComponentListCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
                 app:contentPadding="0dp">
 
                 <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
@@ -450,17 +356,17 @@
                     android:orientation="vertical"
                     app:gradientLinearLayout_animate="true"
                     app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
-                    app:gradientLinearLayout_endColor="?colorTertiary"
+                    app:gradientLinearLayout_endColor="?colorSecondary"
                     app:gradientLinearLayout_orientation="TL_BR"
-                    app:gradientLinearLayout_startColor="?colorSecondary">
+                    app:gradientLinearLayout_startColor="?colorPrimary">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="32dp"
-                        app:srcCompat="@drawable/ic_empty_state_cake"
-                        app:tint="?colorOnSecondary" />
+                        app:srcCompat="@drawable/ic_empty_state_calendar"
+                        app:tint="?colorOnTertiary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -471,31 +377,160 @@
                         android:layout_marginEnd="32dp"
                         android:layout_marginBottom="32dp"
                         android:gravity="center"
-                        android:text="@string/no_upcoming_birthdays"
+                        android:text="@string/you_re_all_done"
                         android:textAppearance="?textAppearanceTitleLarge"
-                        android:textColor="?colorOnSecondary" />
+                        android:textColor="?colorOnTertiary" />
 
                 </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/birthdaysList"
+                android:id="@+id/remindersList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 android:scrollbars="none"
                 android:visibility="gone"
                 tools:itemCount="3"
-                tools:listitem="@layout/list_item_birthday" />
+                tools:listitem="@layout/list_item_reminder" />
+
+            <LinearLayout
+                android:id="@+id/birthdaysBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/birthdaysHeader"
+                    style="@style/UiComponentListCard.Birthdays"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/birthdays"
+                            android:textAppearance="?textAppearanceTitleLarge"
+                            android:textColor="?colorOnSurfaceVariant" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/addBirthdayButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/add_birthday"
+                            android:scaleType="centerInside"
+                            app:srcCompat="@drawable/ic_twotone_add_circle_24px"
+                            app:tint="?colorOnSurfaceVariant" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/emptyBirthdaysState"
+                    style="@style/UiComponentListCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    app:contentPadding="0dp">
+
+                    <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:gradientLinearLayout_animate="true"
+                        app:gradientLinearLayout_animationExitDuration="@integer/banner_anim_duration"
+                        app:gradientLinearLayout_endColor="?colorTertiary"
+                        app:gradientLinearLayout_orientation="TL_BR"
+                        app:gradientLinearLayout_startColor="?colorSecondary">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="32dp"
+                            app:srcCompat="@drawable/ic_empty_state_cake"
+                            app:tint="?colorOnSecondary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginBottom="32dp"
+                            android:gravity="center"
+                            android:text="@string/no_upcoming_birthdays"
+                            android:textAppearance="?textAppearanceTitleLarge"
+                            android:textColor="?colorOnSecondary" />
+
+                    </com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/birthdaysList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    android:visibility="gone"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/list_item_birthday" />
+
+            </LinearLayout>
+
+            <Space
+                android:id="@+id/footerView"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/footerView"
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/search_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="wrap_content"
+            android:hint="@string/search_everywhere" />
 
-    </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.search.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/search_everywhere"
+        app:layout_anchor="@id/search_bar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_results_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </com.google.android.material.search.SearchView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

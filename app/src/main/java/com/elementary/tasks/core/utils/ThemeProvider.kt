@@ -291,6 +291,11 @@ class ThemeProvider(
     }
 
     @ColorInt
+    fun getSecondaryContainerColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_secondaryContainer)
+    }
+
+    @ColorInt
     fun colorsForSlider(context: Context): IntArray {
       return intArrayOf(
         ContextCompat.getColor(context, R.color.redAccentOld),

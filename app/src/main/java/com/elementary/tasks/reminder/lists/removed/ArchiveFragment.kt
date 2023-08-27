@@ -17,13 +17,13 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentTrashBinding
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>() {
+class ArchiveFragment : BaseAnimatedFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -55,6 +55,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>() {
           viewModel.deleteAll()
           true
         }
+
         else -> false
       }
     }) {
