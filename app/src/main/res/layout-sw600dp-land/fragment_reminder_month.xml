@@ -103,7 +103,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/day_view"
-            style="?attr/materialCardViewFilledStyle"
+            style="@style/UiComponentCustomViewCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -139,7 +139,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            style="?attr/materialCardViewFilledStyle"
+            style="@style/UiComponentCustomViewCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

@@ -58,6 +58,8 @@
         android:id="@+id/presetListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
         tools:itemCount="10"
         tools:listitem="@layout/list_item_recur_preset" />
 

@@ -47,33 +47,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/attackDelay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/delay_tracking"
-                android:textAppearance="?textAppearanceBody1" />
-
-            <LinearLayout
-                android:id="@+id/delayLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp">
-
-                <com.elementary.tasks.core.views.DateTimeView
-                    android:id="@+id/dateView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,6 +66,50 @@
                     app:icon="@drawable/ic_twotone_map_24px" />
 
             </LinearLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/enableDelayCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/delay_tracking"
+                android:textColor="?colorOnBackground" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/delayLayout"
+                style="@style/UiComponentCustomViewCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_date"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
+
+                    <com.elementary.tasks.core.views.DateTimeView
+                        android:id="@+id/dateView"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.elementary.tasks.core.views.RadiusPickerView
                 android:id="@+id/radiusView"

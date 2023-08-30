@@ -103,7 +103,13 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     }
     val reminder = super.prepare() ?: return null
     val map = mAdvancedMapFragment ?: return null
-    var type = if (binding.enterCheck.isChecked) Reminder.BY_LOCATION else Reminder.BY_OUT
+
+    var type = if (!isLeaving()) {
+      Reminder.BY_LOCATION
+    } else {
+      Reminder.BY_OUT
+    }
+
     val pos = lastPos
     if (pos == null) {
       iFace.showSnackbar(getString(R.string.you_dont_select_place))
@@ -123,9 +129,17 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
         return null
       }
       type = if (binding.actionView.actionState == ActionView.ActionState.CALL) {
-        if (binding.enterCheck.isChecked) Reminder.BY_LOCATION_CALL else Reminder.BY_OUT_CALL
+        if (!isLeaving()) {
+          Reminder.BY_LOCATION_CALL
+        } else {
+          Reminder.BY_OUT_CALL
+        }
       } else {
-        if (binding.enterCheck.isChecked) Reminder.BY_LOCATION_SMS else Reminder.BY_OUT_SMS
+        if (!isLeaving()) {
+          Reminder.BY_LOCATION_SMS
+        } else {
+          Reminder.BY_OUT_SMS
+        }
       }
     }
     val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
@@ -143,14 +157,14 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     reminder.type = type
     reminder.exportToCalendar = false
     reminder.exportToTasks = false
-    reminder.hasReminder = binding.attackDelay.isChecked
+    reminder.hasReminder = binding.enableDelayCheck.isChecked
     reminder.after = 0L
     reminder.delay = 0
     reminder.eventCount = 0
     reminder.repeatInterval = 0
     reminder.recurDataObject = null
 
-    if (binding.attackDelay.isChecked) {
+    if (binding.enableDelayCheck.isChecked) {
       val startTime = binding.dateView.selectedDateTime
       reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
@@ -235,14 +249,14 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     binding.tuneExtraView.hasAutoExtra = false
 
     binding.delayLayout.gone()
-    binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
+    binding.enableDelayCheck.setOnCheckedChangeListener { _, isChecked ->
       iFace.state.isDelayAdded = isChecked
       binding.delayLayout.visibleGone(isChecked)
     }
-    binding.attackDelay.isChecked = iFace.state.isDelayAdded
+    binding.enableDelayCheck.isChecked = iFace.state.isDelayAdded
 
-    binding.leaveCheck.setOnCheckedChangeListener { _, isChecked ->
-      iFace.state.isLeave = isChecked
+    binding.triggerOptionGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+      iFace.state.isLeave = isChecked && checkedId == R.id.leaveCheck
     }
 
     binding.clearButton.setOnClickListener { binding.addressField.setText("") }
@@ -265,6 +279,18 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     binding.radiusView.useMetric = prefs.useMetric
 
     editReminder()
+  }
+
+  private fun isLeaving(): Boolean {
+    return binding.triggerOptionGroup.checkedButtonId == R.id.leaveCheck
+  }
+
+  private fun checkLeaving() {
+    binding.triggerOptionGroup.check(R.id.leaveCheck)
+  }
+
+  private fun checkArriving() {
+    binding.triggerOptionGroup.check(R.id.enterCheck)
   }
 
   override fun updateActions() {
@@ -301,12 +327,13 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     Timber.d("editReminder: %s", reminder)
     if (reminder.eventTime != "" && reminder.hasReminder) {
       binding.dateView.setDateTime(reminder.eventTime)
-      binding.attackDelay.isChecked = true
+      binding.enableDelayCheck.isChecked = true
     }
-    if (iFace.state.isLeave && Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
-      binding.leaveCheck.isChecked = true
+    iFace.state.isLeave = Reminder.isBase(reminder.type, Reminder.BY_OUT)
+    if (Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
+      checkLeaving()
     } else {
-      binding.enterCheck.isChecked = true
+      checkArriving()
     }
   }
 }

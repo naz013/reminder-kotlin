@@ -97,61 +97,76 @@
 
             </LinearLayout>
 
-            <RadioGroup
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/triggerOptionGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <Button
                     android:id="@+id/leaveCheck"
-                    android:layout_width="wrap_content"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/leaving_place"
-                    android:textAppearance="?textAppearanceCaption" />
+                    android:layout_weight="1"
+                    android:text="@string/leaving_place" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <Button
                     android:id="@+id/enterCheck"
-                    android:layout_width="wrap_content"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/entering_place"
-                    android:textAppearance="?textAppearanceCaption" />
+                    android:layout_weight="1"
+                    android:text="@string/entering_place" />
 
-            </RadioGroup>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/attackDelay"
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/enableDelayCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
                 android:text="@string/delay_tracking"
-                android:textAppearance="?textAppearanceBody1" />
+                android:textColor="?colorOnBackground" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/delayLayout"
+                style="@style/UiComponentCustomViewCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:contentPadding="@dimen/default_content_padding">
 
-                <com.elementary.tasks.core.views.DateTimeView
-                    android:id="@+id/dateView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_date"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorPrimary" />
+
+                    <com.elementary.tasks.core.views.DateTimeView
+                        android:id="@+id/dateView"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.elementary.tasks.core.views.RadiusPickerView
                 android:id="@+id/radiusView"

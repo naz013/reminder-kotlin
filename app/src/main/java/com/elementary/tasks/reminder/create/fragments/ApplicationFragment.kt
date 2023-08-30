@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -28,7 +28,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
   }
 
   private val type: Int
-    get() = if (binding.application.isChecked) {
+    get() = if (isApplication()) {
       Reminder.BY_DATE_APP
     } else {
       Reminder.BY_DATE_LINK
@@ -129,33 +129,42 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       iFace.state.link = it
       iFace.state.isAppSaved = true
     }
-    binding.browser.setOnCheckedChangeListener { _, b ->
-      iFace.state.isLink = b
-      if (b) {
-        binding.applicationLayout.gone()
-        binding.urlLayout.visible()
-      } else {
-        binding.urlLayout.gone()
-        binding.applicationLayout.visible()
-      }
+
+    binding.actionTypeOptionsGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+      iFace.state.isLink = isChecked && checkedId == R.id.browserCheck
+      binding.applicationLayout.visibleGone(!iFace.state.isLink)
+      binding.urlLayout.visibleGone(iFace.state.isLink)
     }
+
     if (Module.is12) {
-      binding.browser.isChecked = true
-      binding.switchGroup.gone()
+      checkBrowser()
+      binding.actionTypeOptionsGroup.gone()
     }
     editReminder()
+  }
+
+  private fun isApplication(): Boolean {
+    return binding.actionTypeOptionsGroup.checkedButtonId == R.id.applicationCheck
+  }
+
+  private fun checkApp() {
+    binding.actionTypeOptionsGroup.check(R.id.applicationCheck)
+  }
+
+  private fun checkBrowser() {
+    binding.actionTypeOptionsGroup.check(R.id.browserCheck)
   }
 
   private fun editReminder() {
     val reminder = iFace.state.reminder
     if (reminder.target != "") {
       if (!iFace.state.isLink && Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
-        binding.application.isChecked = true
+        checkApp()
         iFace.state.app = reminder.target
         iFace.state.isLink = false
         binding.applicationName.text = appName
       } else {
-        binding.browser.isChecked = true
+        checkBrowser()
         iFace.state.link = reminder.target
         iFace.state.isLink = true
         binding.urlField.setText(reminder.target)
@@ -163,10 +172,10 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     }
     if (iFace.state.isAppSaved) {
       if (!iFace.state.isLink) {
-        binding.application.isChecked = true
+        checkApp()
         binding.applicationName.text = appName
       } else {
-        binding.browser.isChecked = true
+        checkBrowser()
         binding.urlField.setText(iFace.state.link)
       }
     }
