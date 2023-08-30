@@ -26,12 +26,11 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/privacyBanner"
-                style="?attr/materialCardViewElevatedStyle"
+                style="@style/UiComponentBannerCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:visibility="gone"
-                app:cardCornerRadius="0dp"
-                app:contentPadding="8dp"
                 tools:visibility="gone">
 
                 <LinearLayout
@@ -83,12 +82,11 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/loginBanner"
-                style="?attr/materialCardViewElevatedStyle"
+                style="@style/UiComponentBannerCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:visibility="gone"
-                app:cardCornerRadius="0dp"
-                app:contentPadding="8dp"
                 tools:visibility="gone">
 
                 <LinearLayout
@@ -140,12 +138,11 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/whatsNewBanner"
-                style="?attr/materialCardViewElevatedStyle"
+                style="@style/UiComponentBannerCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:visibility="gone"
-                app:cardCornerRadius="0dp"
-                app:contentPadding="8dp"
                 tools:visibility="visible">
 
                 <LinearLayout
@@ -214,7 +211,7 @@
                         android:id="@+id/remindersButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/material_margin"
                         android:background="@drawable/gradient_button_birthdays_selector"
                         android:contentDescription="@string/notes"
                         android:scaleType="centerInside"
@@ -305,12 +302,13 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/remindersHeader"
-                style="@style/UiComponentListCard.Reminders"
+                style="@style/UiComponentListCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="@dimen/material_margin"
+                app:cardUseCompatPadding="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -345,9 +343,9 @@
                 style="@style/UiComponentListCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/material_margin"
                 app:contentPadding="0dp">
 
                 <com.elementary.tasks.core.views.gradient.UiGradientLinearLayout
@@ -393,6 +391,7 @@
                 android:scrollbars="none"
                 android:visibility="gone"
                 tools:itemCount="3"
+                tools:visibility="visible"
                 tools:listitem="@layout/list_item_reminder" />
 
             <LinearLayout
@@ -403,12 +402,12 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/birthdaysHeader"
-                    style="@style/UiComponentListCard.Birthdays"
+                    style="@style/UiComponentListCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/material_margin"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp">
+                    android:layout_marginEnd="@dimen/material_margin">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -443,9 +442,9 @@
                     style="@style/UiComponentListCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/material_margin"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="@dimen/material_margin"
                     android:layout_marginBottom="16dp"
                     app:contentPadding="0dp">
 
@@ -492,6 +491,7 @@
                     android:scrollbars="none"
                     android:visibility="gone"
                     tools:itemCount="3"
+                    tools:visibility="visible"
                     tools:listitem="@layout/list_item_birthday" />
 
             </LinearLayout>

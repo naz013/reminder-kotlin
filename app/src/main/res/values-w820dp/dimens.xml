@@ -10,6 +10,8 @@
 
     <dimen name="list_margin">128dp</dimen>
     <dimen name="material_margin">128dp</dimen>
+    <dimen name="fab_margin">32dp</dimen>
+
     <dimen name="image_height">512dp</dimen>
     <bool name="is_tablet">true</bool>
     <integer name="num_of_cols">4</integer>

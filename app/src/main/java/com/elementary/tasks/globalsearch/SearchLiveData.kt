@@ -139,20 +139,16 @@ class SearchLiveData(
     transformJob = scope.launch(dispatcherProvider.default()) {
       val results = mutableListOf<SearchResult>()
 
-      val recentObjectQueryMap = recentQueries.filter { it.targetId != null }
-        .associateBy { it.targetId }
-      val predicate: (String) -> Boolean = { recentObjectQueryMap.containsKey(it).not() }
-
       recentQueries.mapNotNull { it.toSearchResult(query) }.also { results.addAll(it) }
 
       if (query.isNotBlank()) {
         mutableListOf<ObjectSearchResult>().apply {
-          addAll(reminders.filter { predicate(it.uuId) }.map { it.toSearchResult(query) })
-          addAll(birthdays.filter { predicate(it.uuId) }.map { it.toSearchResult(query) })
-          addAll(notes.filter { predicate(it.key) }.map { it.toSearchResult(query) })
-          addAll(googleTasks.filter { predicate(it.taskId) }.map { it.toSearchResult(query) })
-          addAll(places.filter { predicate(it.id) }.map { it.toSearchResult(query) })
-          addAll(groups.filter { predicate(it.groupUuId) }.map { it.toSearchResult(query) })
+          addAll(reminders.map { it.toSearchResult(query) })
+          addAll(birthdays.map { it.toSearchResult(query) })
+          addAll(notes.map { it.toSearchResult(query) })
+          addAll(googleTasks.map { it.toSearchResult(query) })
+          addAll(places.map { it.toSearchResult(query) })
+          addAll(groups.map { it.toSearchResult(query) })
         }
           .sortedBy { it.text.indexOf(query) }
           .also { results.addAll(it) }
