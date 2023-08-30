@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,6 +13,15 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 
 @Dao
 interface NotesDao {
+
+  @Transaction
+  @Query(
+    """
+        SELECT *
+        FROM Note
+        WHERE LOWER(summary) LIKE '%' || :query || '%'"""
+  )
+  fun search(query: String): LiveData<List<Note>>
 
   @Transaction
   @Query("SELECT * FROM Note WHERE archived=:isArchived")

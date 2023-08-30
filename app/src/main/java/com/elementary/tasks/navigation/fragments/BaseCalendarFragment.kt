@@ -27,7 +27,7 @@ import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDate
 import timber.log.Timber
 
-abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>() {
+abstract class BaseCalendarFragment<B : ViewBinding> : BaseAnimatedFragment<B>() {
 
   protected val dateTimeManager by inject<DateTimeManager>()
 

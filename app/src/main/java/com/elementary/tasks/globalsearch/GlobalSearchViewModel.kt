@@ -1,0 +1,132 @@
+package com.elementary.tasks.globalsearch
+
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.dao.RecentQueryDao
+import com.elementary.tasks.core.data.livedata.toSingleEvent
+import com.elementary.tasks.core.data.models.RecentQuery
+import com.elementary.tasks.core.data.models.RecentQueryTarget
+import com.elementary.tasks.core.data.models.RecentQueryType
+import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.toLiveData
+import com.elementary.tasks.googletasks.task.GoogleTaskActivity
+import com.elementary.tasks.groups.create.CreateGroupActivity
+import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.places.create.CreatePlaceActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
+import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDateTime
+
+class GlobalSearchViewModel(
+  dispatcherProvider: DispatcherProvider,
+  private val searchLiveData: SearchLiveData,
+  private val recentQueryDao: RecentQueryDao,
+  private val dateTimeManager: DateTimeManager
+) : BaseProgressViewModel(dispatcherProvider) {
+
+  val searchResults = searchLiveData.toLiveData()
+  private val _navigateLiveData = mutableLiveDataOf<NavigationAction>()
+  val navigateLiveData = _navigateLiveData.toSingleEvent()
+
+  fun onQueryChanged(query: String) {
+    searchLiveData.onNewQuery(query.lowercase())
+  }
+
+  fun onSearchHistoryUpdate(searchResult: SearchResult) {
+    updateRecentQueries(searchResult)
+  }
+
+  fun onSearchResultClicked(searchResult: SearchResult) {
+    createAction(searchResult)?.also {
+      _navigateLiveData.postValue(it)
+    }
+    updateRecentQueries(searchResult)
+  }
+
+  private fun createAction(searchResult: SearchResult): NavigationAction? {
+    return when (searchResult) {
+      is ObjectSearchResult -> {
+        ActivityNavigation(
+          clazz = searchResult.objectType.toTargetClass(),
+          objectId = searchResult.objectId
+        )
+      }
+      is RecentObjectSearchResult -> {
+        ActivityNavigation(
+          clazz = searchResult.objectType.toTargetClass(),
+          objectId = searchResult.objectId
+        )
+      }
+      is RecentSearchResult -> null
+    }
+  }
+
+  private fun updateRecentQueries(searchResult: SearchResult) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val recentQuery = searchResult.toRecentQuery(dateTimeManager.getCurrentDateTime())
+      val similarQuery = recentQueryDao.getByQuery(recentQuery.queryText)
+      if (similarQuery != null) {
+        recentQueryDao.insert(recentQuery.copy(id = similarQuery.id))
+      } else {
+        recentQueryDao.insert(recentQuery)
+      }
+    }
+  }
+
+  private fun SearchResult.toRecentQuery(dateTime: LocalDateTime): RecentQuery {
+    return when (this) {
+      is RecentSearchResult -> {
+        RecentQuery(
+          queryType = RecentQueryType.TEXT,
+          queryText = text,
+          lastUsedAt = dateTime,
+          id = id
+        )
+      }
+      is RecentObjectSearchResult -> {
+        RecentQuery(
+          queryType = RecentQueryType.OBJECT,
+          queryText = text,
+          lastUsedAt = dateTime,
+          id = id,
+          targetId = objectId,
+          targetType = objectType.toTargetType()
+        )
+      }
+      is ObjectSearchResult -> {
+        RecentQuery(
+          queryType = RecentQueryType.OBJECT,
+          queryText = text,
+          lastUsedAt = dateTime,
+          targetId = objectId,
+          targetType = objectType.toTargetType()
+        )
+      }
+    }
+  }
+
+  private fun ObjectType.toTargetType(): RecentQueryTarget {
+    return when (this) {
+      ObjectType.GROUP -> RecentQueryTarget.GROUP
+      ObjectType.PLACE -> RecentQueryTarget.PLACE
+      ObjectType.GOOGLE_TASK -> RecentQueryTarget.GOOGLE_TASK
+      ObjectType.NOTE -> RecentQueryTarget.NOTE
+      ObjectType.BIRTHDAY -> RecentQueryTarget.BIRTHDAY
+      ObjectType.REMINDER -> RecentQueryTarget.REMINDER
+    }
+  }
+
+  private fun ObjectType.toTargetClass(): Class<*> {
+    return when (this) {
+      ObjectType.GROUP -> CreateGroupActivity::class.java
+      ObjectType.PLACE -> CreatePlaceActivity::class.java
+      ObjectType.GOOGLE_TASK -> GoogleTaskActivity::class.java
+      ObjectType.NOTE -> CreateNoteActivity::class.java
+      ObjectType.BIRTHDAY -> AddBirthdayActivity::class.java
+      ObjectType.REMINDER -> CreateReminderActivity::class.java
+    }
+  }
+}

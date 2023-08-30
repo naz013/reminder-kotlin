@@ -13,86 +13,86 @@
         <action
             android:id="@+id/action_actionHome_to_remindersFragment"
             app:destination="@id/remindersFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_birthdaysFragment"
             app:destination="@id/birthdaysFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_groupsFragment"
             app:destination="@id/groupsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_mapFragment"
             app:destination="@id/mapFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_createReminderActivity"
             app:destination="@id/createReminderActivity" />
         <action
             android:id="@+id/action_actionHome_to_settingsFragment"
             app:destination="@id/settingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_addBirthdayActivity"
             app:destination="@id/addBirthdayActivity" />
         <action
             android:id="@+id/action_actionHome_to_actionNotes"
             app:destination="@id/actionNotes"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_actionCalendar"
             app:destination="@id/actionCalendar"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_actionGoogle"
             app:destination="@id/actionGoogle"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_archiveFragment"
             app:destination="@id/archiveFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_cloudDrives"
             app:destination="@+id/fragmentCloudDrives"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
             android:id="@+id/action_actionHome_to_changesFragment"
             app:destination="@id/changesFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
     </fragment>
 
     <fragment

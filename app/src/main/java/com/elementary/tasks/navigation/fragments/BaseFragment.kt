@@ -58,6 +58,10 @@ abstract class BaseFragment<B : ViewBinding> : BindingFragment<B>() {
 
   abstract fun getTitle(): String
 
+  open fun hasToolbar(): Boolean {
+    return true
+  }
+
   protected fun safeNavigation(navDirections: NavDirections) {
     safeNavigation { navDirections }
   }

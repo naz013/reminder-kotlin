@@ -10,11 +10,13 @@ import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.PlacesDao
+import com.elementary.tasks.core.data.dao.RecentQueryDao
 import com.elementary.tasks.core.data.dao.RecurPresetDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.dao.UsedTimeDao
 import com.elementary.tasks.core.data.migrations.MIGRATION_10_11
+import com.elementary.tasks.core.data.migrations.MIGRATION_11_12
 import com.elementary.tasks.core.data.migrations.MIGRATION_1_2
 import com.elementary.tasks.core.data.migrations.MIGRATION_2_3
 import com.elementary.tasks.core.data.migrations.MIGRATION_3_4
@@ -31,6 +33,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.data.models.RecentQuery
 import com.elementary.tasks.core.data.models.RecurPreset
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -48,9 +51,10 @@ import com.elementary.tasks.core.data.models.UsedTime
     UsedTime::class,
     Birthday::class,
     ImageFile::class,
-    RecurPreset::class
+    RecurPreset::class,
+    RecentQuery::class
   ],
-  version = 11,
+  version = 12,
   exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {
@@ -65,6 +69,7 @@ abstract class AppDb : RoomDatabase() {
   abstract fun googleTasksDao(): GoogleTasksDao
   abstract fun usedTimeDao(): UsedTimeDao
   abstract fun recurPresetDao(): RecurPresetDao
+  abstract fun recentQueryDao(): RecentQueryDao
 
   companion object {
 
@@ -84,7 +89,8 @@ abstract class AppDb : RoomDatabase() {
             MIGRATION_7_8,
             MIGRATION_8_9,
             MIGRATION_9_10,
-            MIGRATION_10_11
+            MIGRATION_10_11,
+            MIGRATION_11_12
           )
           .allowMainThreadQueries()
           .build()

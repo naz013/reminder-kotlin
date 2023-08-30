@@ -11,6 +11,9 @@ import com.elementary.tasks.core.data.models.Birthday
 @Dao
 interface BirthdaysDao {
 
+  @Query("SELECT * FROM Birthday WHERE LOWER(name) LIKE '%' || :query || '%'")
+  fun search(query: String): LiveData<List<Birthday>>
+
   @Query("SELECT * FROM Birthday")
   fun getAll(): List<Birthday>
 

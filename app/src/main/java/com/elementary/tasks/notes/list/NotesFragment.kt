@@ -32,7 +32,7 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentNotesBinding
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -43,7 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
-class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
+class NotesFragment : BaseAnimatedFragment<FragmentNotesBinding>() {
 
   private val viewModel by viewModel<NotesViewModel>()
   private val imagesSingleton by inject<ImagesSingleton>()

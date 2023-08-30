@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
@@ -17,10 +18,12 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
 import com.elementary.tasks.core.utils.startActivity
@@ -29,6 +32,10 @@ import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.HomeFragmentBinding
+import com.elementary.tasks.globalsearch.ActivityNavigation
+import com.elementary.tasks.globalsearch.GlobalSearchViewModel
+import com.elementary.tasks.globalsearch.NavigationAction
+import com.elementary.tasks.globalsearch.adapter.SearchAdapter
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
@@ -46,6 +53,7 @@ class HomeFragment :
   private val featureManager by inject<FeatureManager>()
   private val whatsNewManager by inject<WhatsNewManager>()
   private val viewModel by viewModel<HomeViewModel>()
+  private val searchViewModel by viewModel<GlobalSearchViewModel>()
   private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
   private val birthdaysAdapter = BirthdaysRecyclerAdapter()
   private var mPosition: Int = 0
@@ -73,6 +81,15 @@ class HomeFragment :
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
   )
 
+  private val searchAdapter = SearchAdapter(
+    onSuggestionClick = { result, text ->
+      binding.searchView.editText.setText(text)
+      binding.searchView.editText.setSelection(text.length)
+      searchViewModel.onSearchHistoryUpdate(result)
+    },
+    onObjectClick = { searchViewModel.onSearchResultClicked(it) }
+  )
+
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -81,7 +98,8 @@ class HomeFragment :
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_home, { menuItem ->
+    binding.searchBar.inflateMenu(R.menu.fragment_home)
+    binding.searchBar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {
         R.id.action_voice -> {
           buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
@@ -95,8 +113,13 @@ class HomeFragment :
 
         else -> false
       }
-    }) {
-      it.getItem(0)?.isVisible = Module.hasMicrophone(requireContext())
+    }
+    binding.searchBar.menu.also { menu ->
+      menu.getItem(0)?.isVisible = Module.hasMicrophone(requireContext())
+    }
+    binding.searchResultsList.adapter = searchAdapter
+    binding.searchView.editText.doOnTextChanged { text, _, _, _ ->
+      searchViewModel.onQueryChanged(text?.toString() ?: "")
     }
 
     binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
@@ -189,6 +212,10 @@ class HomeFragment :
     super.onPause()
     prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
+    if (binding.searchView.isShowing) {
+      binding.searchView.clearText()
+      binding.searchView.hide()
+    }
   }
 
   override fun onDestroy() {
@@ -286,6 +313,21 @@ class HomeFragment :
         }
       }
     }
+
+    searchViewModel.searchResults.nonNullObserve(viewLifecycleOwner) {
+      searchAdapter.submitList(it)
+    }
+    searchViewModel.navigateLiveData.nonNullObserve(viewLifecycleOwner) { onNavigationAction(it) }
+  }
+
+  private fun onNavigationAction(navigationAction: NavigationAction) {
+    when (navigationAction) {
+      is ActivityNavigation -> {
+        startActivity(navigationAction.clazz) {
+          putExtra(Constants.INTENT_ID, navigationAction.objectId)
+        }
+      }
+    }
   }
 
   private fun showBirthdays(list: List<UiBirthdayList>) {
@@ -325,5 +367,9 @@ class HomeFragment :
 
   override fun whatsNewVisible(isVisible: Boolean) {
     binding.whatsNewBanner.visibleGone(isVisible)
+  }
+
+  override fun hasToolbar(): Boolean {
+    return false
   }
 }

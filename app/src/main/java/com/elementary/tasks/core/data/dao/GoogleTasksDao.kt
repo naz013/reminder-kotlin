@@ -6,10 +6,22 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.elementary.tasks.core.data.models.GoogleTask
 
 @Dao
 interface GoogleTasksDao {
+
+  @Transaction
+  @Query(
+    """
+        SELECT *
+        FROM GoogleTask
+        WHERE LOWER(title) LIKE '%' || :query || '%'
+        OR LOWER(notes) LIKE '%' || :query || '%'
+        """
+  )
+  fun search(query: String): LiveData<List<GoogleTask>>
 
   @Query("SELECT * FROM GoogleTask ORDER BY status DESC, title ASC")
   fun all(): List<GoogleTask>

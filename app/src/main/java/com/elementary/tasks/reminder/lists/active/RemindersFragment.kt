@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentRemindersBinding
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -31,7 +31,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>() {
+class RemindersFragment : BaseAnimatedFragment<FragmentRemindersBinding>() {
 
   private val systemServiceProvider by inject<SystemServiceProvider>()
   private val viewModel by viewModel<ActiveRemindersViewModel>()

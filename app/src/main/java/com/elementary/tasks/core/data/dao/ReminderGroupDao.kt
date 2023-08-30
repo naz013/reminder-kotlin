@@ -12,6 +12,9 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 @Dao
 interface ReminderGroupDao {
 
+  @Query("SELECT * FROM ReminderGroup WHERE LOWER(groupTitle) LIKE '%' || :query || '%'")
+  fun search(query: String): LiveData<List<ReminderGroup>>
+
   @Query("SELECT * FROM ReminderGroup WHERE isDefaultGroup=:isDef LIMIT 1")
   fun defaultGroup(isDef: Boolean = true): ReminderGroup?
 

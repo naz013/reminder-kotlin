@@ -24,6 +24,16 @@ private const val byNoteIdQuery = """
 @Dao
 interface ReminderDao {
 
+  @Transaction
+  @Query(
+    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE LOWER(Reminder.summary) LIKE '%' || :query || '%'
+        ORDER BY reminder.isActive DESC, reminder.eventTime ASC"""
+  )
+  fun search(query: String): LiveData<List<Reminder>>
+
   @Query("SELECT * FROM Reminder")
   fun getAll(): List<Reminder>
 

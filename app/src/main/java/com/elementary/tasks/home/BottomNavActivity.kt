@@ -15,11 +15,11 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
-import com.elementary.tasks.settings.BaseSettingsFragment
 import com.elementary.tasks.voice.ConversationViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -46,7 +46,7 @@ class BottomNavActivity :
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
     val navController = navHostFragment.navController
     this.navController = navController
-    binding.collapsingToolbar.setupWithNavController(binding.toolbar, navController)
+    binding.toolbar.setupWithNavController(navController)
 
     if (intent.action == Intent.ACTION_VIEW) {
       when (intent.getIntExtra(ARG_DEST, Dest.DAY_VIEW)) {
@@ -58,6 +58,7 @@ class BottomNavActivity :
             .createTaskStackBuilder()
             .startActivities()
         }
+
         Dest.SETTINGS -> {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
@@ -84,13 +85,22 @@ class BottomNavActivity :
   override fun setCurrentFragment(fragment: BaseFragment<*>) {
     Timber.d("setCurrentFragment: $fragment")
     mFragment = fragment
+    updateToolbarVisibility(fragment.hasToolbar())
+  }
 
-    binding.appBar.setExpanded(fragment is BaseSettingsFragment, true)
+  private fun updateToolbarVisibility(isVisible: Boolean) {
+//    val transition: Transition = Slide(Gravity.TOP)
+//    transition.setDuration(300)
+//    transition.addTarget(R.id.appBar)
+//    transition.setInterpolator(AccelerateDecelerateInterpolator())
+//    TransitionManager.beginDelayedTransition(binding.containerLl, transition)
+//    binding.appBar.setVisibility(if (isVisible) View.VISIBLE else View.GONE)
+    binding.appBar.visibleGone(isVisible)
   }
 
   override fun onTitleChange(title: String) {
     Timber.d("onTitleChange: $title")
-    binding.collapsingToolbar.title = title
+    binding.toolbar.title = title
   }
 
   override fun hideKeyboard() {

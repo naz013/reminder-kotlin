@@ -15,26 +15,14 @@
         <item name="cardElevation">1dp</item>
         <item name="cardCornerRadius">5dp</item>
         <item name="contentPadding">8dp</item>
-        <item name="cardUseCompatPadding">true</item>
+        <item name="cardUseCompatPadding">false</item>
         <item name="android:stateListAnimator">@animator/card_animator_1dp_3dp</item>
     </style>
 
-    <style name="UiComponentListCard.Reminders" parent="@style/Widget.Material3.CardView.Elevated">
-        <item name="cardElevation">1dp</item>
-        <item name="cardCornerRadius">5dp</item>
+    <style name="UiComponentBannerCard" parent="@style/Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">0dp</item>
         <item name="contentPadding">8dp</item>
-        <item name="cardUseCompatPadding">true</item>
-        <item name="cardBackgroundColor">?colorSurface</item>
-        <item name="android:stateListAnimator">@animator/card_animator_1dp_3dp</item>
-    </style>
-
-    <style name="UiComponentListCard.Birthdays" parent="@style/Widget.Material3.CardView.Elevated">
-        <item name="cardElevation">1dp</item>
-        <item name="cardCornerRadius">5dp</item>
-        <item name="contentPadding">8dp</item>
-        <item name="cardUseCompatPadding">true</item>
-        <item name="cardBackgroundColor">?colorSurfaceVariant</item>
-        <item name="android:stateListAnimator">@animator/card_animator_1dp_3dp</item>
+        <item name="cardUseCompatPadding">false</item>
     </style>
 
     <!--Components-->

@@ -14,5 +14,6 @@
         android:icon="@drawable/ic_twotone_settings_24px"
         android:title="@string/action_settings"
         app:iconTint="?colorOnSurface"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
 </menu>
