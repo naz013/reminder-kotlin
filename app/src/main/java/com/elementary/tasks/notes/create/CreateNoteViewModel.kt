@@ -11,6 +11,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
@@ -372,6 +373,7 @@ class CreateNoteViewModel(
     }
     noteWithImages.note?.archived = false
     analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
+    Traces.logEvent("Note saved")
     saveNote(noteWithImages, reminder)
   }
 

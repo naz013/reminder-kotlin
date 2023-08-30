@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.birthdays.birthdaysModule
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.data.factory.dataFactory
@@ -48,6 +49,7 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
   override fun onCreate() {
     super.onCreate()
     if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+    Traces.setUpKeys(this)
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     val logger = object : Logger(level = Level.DEBUG) {
       override fun display(level: Level, msg: MESSAGE) {

@@ -3,6 +3,7 @@ package com.elementary.tasks.places.create
 import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
@@ -78,6 +79,7 @@ class PlaceViewModel(
       }
       placesDao.insert(place)
       workerLauncher.startWork(PlaceSingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
+      Traces.logEvent("Place saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

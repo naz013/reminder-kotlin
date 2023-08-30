@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
@@ -141,6 +142,7 @@ class CreateGroupViewModel(
         Constants.INTENT_ID,
         group.groupUuId
       )
+      Traces.logEvent("Group saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -153,6 +155,7 @@ class CreateGroupViewModel(
       reminderGroupDao.delete(reminderGroup)
       postInProgress(false)
       postCommand(Commands.DELETED)
+      Traces.logEvent("Group deleted")
       workerLauncher.startWork(
         GroupDeleteBackupWorker::class.java,
         Constants.INTENT_ID,

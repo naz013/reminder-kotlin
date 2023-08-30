@@ -2,6 +2,7 @@ package com.elementary.tasks.globalsearch
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.dao.RecentQueryDao
 import com.elementary.tasks.core.data.livedata.toSingleEvent
@@ -40,6 +41,7 @@ class GlobalSearchViewModel(
   }
 
   fun onSearchResultClicked(searchResult: SearchResult) {
+    Traces.logEvent("Search result clicked")
     createAction(searchResult)?.also {
       _navigateLiveData.postValue(it)
     }
