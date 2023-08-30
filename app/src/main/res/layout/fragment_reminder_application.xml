@@ -52,35 +52,33 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp" />
 
-            <RadioGroup
-                android:id="@+id/switchGroup"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/actionTypeOptionsGroup"
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:orientation="horizontal">
+                android:layout_marginEnd="16dp"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/application"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/applicationCheck"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/application"
-                    android:textAppearance="?textAppearanceCaption" />
+                    android:layout_weight="1"
+                    android:text="@string/application" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/browser"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/browserCheck"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/open_link"
-                    android:textAppearance="?textAppearanceCaption" />
-            </RadioGroup>
+                    android:layout_weight="1"
+                    android:text="@string/open_link" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <LinearLayout
                 android:id="@+id/applicationLayout"

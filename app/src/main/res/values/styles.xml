@@ -25,6 +25,12 @@
         <item name="cardUseCompatPadding">false</item>
     </style>
 
+    <style name="UiComponentCustomViewCard" parent="@style/Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">5dp</item>
+        <item name="contentPadding">8dp</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
     <!--Components-->
 
     <style name="FilledBoxStyle" parent="@style/Widget.Material3.TextInputLayout.FilledBox">

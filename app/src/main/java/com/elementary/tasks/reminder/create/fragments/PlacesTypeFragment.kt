@@ -11,6 +11,7 @@ import com.elementary.tasks.core.fragments.PlacesMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
@@ -44,7 +45,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
           map.isFullscreen = false
           iFace.setFullScreenMode(false)
         }
-        if (binding.mapContainer.visibility == View.VISIBLE) {
+        if (binding.mapContainer.isVisible()) {
           binding.mapContainer.fadeOutAnimation()
           binding.scrollView.fadeInAnimation()
         }
@@ -110,14 +111,14 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     reminder.type = type
     reminder.exportToCalendar = false
     reminder.exportToTasks = false
-    reminder.hasReminder = binding.attackDelay.isChecked
+    reminder.hasReminder = binding.enableDelayCheck.isChecked
     reminder.after = 0L
     reminder.delay = 0
     reminder.eventCount = 0
     reminder.repeatInterval = 0
     reminder.recurDataObject = null
 
-    if (binding.attackDelay.isChecked) {
+    if (binding.enableDelayCheck.isChecked) {
       val startTime = binding.dateView.selectedDateTime
       reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
@@ -187,16 +188,12 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
     binding.tuneExtraView.hasAutoExtra = false
 
-    binding.delayLayout.visibility = View.GONE
-    binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
+    binding.delayLayout.gone()
+    binding.enableDelayCheck.setOnCheckedChangeListener { _, isChecked ->
       iFace.state.isDelayAdded = isChecked
-      if (isChecked) {
-        binding.delayLayout.visibility = View.VISIBLE
-      } else {
-        binding.delayLayout.visibility = View.GONE
-      }
+      binding.delayLayout.visibleGone(isChecked)
     }
-    binding.attackDelay.isChecked = iFace.state.isDelayAdded
+    binding.enableDelayCheck.isChecked = iFace.state.isDelayAdded
     binding.mapButton.setOnClickListener { toggleMap() }
 
     binding.radiusView.onRadiusChangeListener = {
@@ -243,7 +240,7 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     Timber.d("editReminder: %s", reminder)
     if (reminder.eventTime != "" && reminder.hasReminder) {
       binding.dateView.setDateTime(reminder.eventTime)
-      binding.attackDelay.isChecked = true
+      binding.enableDelayCheck.isChecked = true
     }
   }
 }
