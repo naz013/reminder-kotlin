@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.ui.GlobalAction
@@ -86,6 +87,7 @@ class BottomNavActivity :
     Timber.d("setCurrentFragment: $fragment")
     mFragment = fragment
     updateToolbarVisibility(fragment.hasToolbar())
+    Traces.logEvent("Fragment opened = ${fragment.javaClass.name}")
   }
 
   private fun updateToolbarVisibility(isVisible: Boolean) {

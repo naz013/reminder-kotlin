@@ -7,6 +7,7 @@ import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
@@ -64,12 +65,14 @@ class AddBirthdayViewModel(
   fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val birthday = birthdaysDao.getById(id) ?: return@launch
+      Traces.logEvent("Birthday loaded from DB")
       onBirthdayLoaded(birthday)
     }
   }
 
   fun onIntent() {
     intentDataHolder.get(Constants.INTENT_ITEM, Birthday::class.java)?.run {
+      Traces.logEvent("Birthday loaded from intent")
       onBirthdayLoaded(this)
       isFromFile = true
       findSame(uuId)
@@ -80,6 +83,7 @@ class AddBirthdayViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       runCatching {
         uriReader.readBirthdayObject(uri)?.also {
+          Traces.logEvent("Birthday loaded from file")
           onBirthdayLoaded(it)
           isFromFile = true
           findSame(it.uuId)
@@ -129,6 +133,7 @@ class AddBirthdayViewModel(
         updatedAt = dateTimeManager.getNowGmtDateTime(),
         ignoreYear = ignoreYear
       )
+      Traces.logEvent("Birthday saved")
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
       saveBirthday(birthday)
     }
@@ -142,6 +147,7 @@ class AddBirthdayViewModel(
       updatesHelper.updateTasksWidget()
       updatesHelper.updateBirthdaysWidget()
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      Traces.logEvent("Birthday deleted")
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

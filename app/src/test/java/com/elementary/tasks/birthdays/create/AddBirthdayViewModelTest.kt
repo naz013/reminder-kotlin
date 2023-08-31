@@ -3,6 +3,7 @@ package com.elementary.tasks.birthdays.create
 import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
@@ -17,6 +18,7 @@ import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -42,6 +44,8 @@ class AddBirthdayViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
 
+    mockkObject(Traces)
+    every { Traces.logEvent(any()) }.returns(Unit)
     every { dateTimeManager.getCurrentDate() }.returns(LocalDate.now())
 
     viewModel = AddBirthdayViewModel(

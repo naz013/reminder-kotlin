@@ -8,6 +8,7 @@ import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -96,6 +97,7 @@ class EditReminderViewModel(
         Timber.d("saveAndStartReminder: save DONE")
         analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
         reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type))
+        Traces.logEvent("Reminder saved, type = ${reminder.type}")
       }
       backupReminder(reminder.uuId)
       postInProgress(false)
