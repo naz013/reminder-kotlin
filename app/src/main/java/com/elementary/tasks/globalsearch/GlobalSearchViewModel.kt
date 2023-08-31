@@ -1,7 +1,7 @@
 package com.elementary.tasks.globalsearch
 
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.dao.RecentQueryDao
@@ -13,11 +13,11 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
+import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 
@@ -125,10 +125,10 @@ class GlobalSearchViewModel(
     return when (this) {
       ObjectType.GROUP -> CreateGroupActivity::class.java
       ObjectType.PLACE -> CreatePlaceActivity::class.java
-      ObjectType.GOOGLE_TASK -> GoogleTaskActivity::class.java
-      ObjectType.NOTE -> CreateNoteActivity::class.java
-      ObjectType.BIRTHDAY -> AddBirthdayActivity::class.java
-      ObjectType.REMINDER -> CreateReminderActivity::class.java
+      ObjectType.GOOGLE_TASK -> GoogleTaskPreviewActivity::class.java
+      ObjectType.NOTE -> NotePreviewActivity::class.java
+      ObjectType.BIRTHDAY -> BirthdayPreviewActivity::class.java
+      ObjectType.REMINDER -> ReminderPreviewActivity::class.java
     }
   }
 }
