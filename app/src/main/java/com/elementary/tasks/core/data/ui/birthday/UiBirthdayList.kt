@@ -5,6 +5,7 @@ data class UiBirthdayList(
   val name: String = "",
   val number: String = "",
   val birthdayDate: String = "",
+  val birthdayDateFormatted: String = "",
   val ageFormatted: String = "",
   val remainingTimeFormatted: String = "",
   val nextBirthdayDateFormatted: String = "",
