@@ -1,4 +1,4 @@
-package com.elementary.tasks.dayview.day
+package com.elementary.tasks.calendar.dayview.day
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,18 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
+import com.elementary.tasks.calendar.BirthdayEventModel
+import com.elementary.tasks.calendar.EventModel
+import com.elementary.tasks.calendar.ReminderEventModel
+import com.elementary.tasks.calendar.dayview.DayPagerItem
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
-import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentEventsListBinding
-import com.elementary.tasks.dayview.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -27,7 +26,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
   private val themeProvider by inject<ThemeProvider>()
 
-  private val mAdapter = CalendarEventsAdapter(isDark = themeProvider.isDark)
+  private val calendarEventsAdapter = CalendarEventsAdapter(isDark = themeProvider.isDark)
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
     deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday.uuId) }
@@ -38,14 +37,14 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
     deleteAction = { reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
     skipAction = { reminder -> callback?.getViewModel()?.skip(reminder) }
   )
-  private var mItem: EventsPagerItem? = null
+  private var dayPagerItem: DayPagerItem? = null
   private var callback: DayCallback? = null
 
-  fun getModel(): EventsPagerItem? = mItem
+  fun getModel(): DayPagerItem? = dayPagerItem
 
-  fun setModel(eventsPagerItem: EventsPagerItem) {
-    mAdapter.setData(listOf())
-    this.mItem = eventsPagerItem
+  fun setModel(dayPagerItem: DayPagerItem) {
+    calendarEventsAdapter.setData(listOf())
+    this.dayPagerItem = dayPagerItem
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +54,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
       callback = fragment as DayCallback?
     }
     if (arguments != null) {
-      mItem = arguments?.getParcelable(ARGUMENT_PAGE_NUMBER) as EventsPagerItem?
+      dayPagerItem = arguments?.getParcelable(ARGUMENT_PAGE_NUMBER) as DayPagerItem?
     }
   }
 
@@ -67,14 +66,16 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    mAdapter.setEventListener(object : ActionsListener<EventModel> {
+    calendarEventsAdapter.setEventListener(object : ActionsListener<EventModel> {
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t == null) return
-        val item = t.model
-        if (item is UiBirthdayList) {
-          birthdayResolver.resolveAction(view, item, actions)
-        } else if (item is UiReminderListData) {
-          reminderResolver.resolveAction(view, item, actions)
+        when (t) {
+          is BirthdayEventModel -> {
+            birthdayResolver.resolveAction(view, t.model, actions)
+          }
+          is ReminderEventModel -> {
+            reminderResolver.resolveAction(view, t.model, actions)
+          }
         }
       }
     })
@@ -86,40 +87,31 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    binding.recyclerView.adapter = mAdapter
+    binding.recyclerView.adapter = calendarEventsAdapter
 
     reloadView()
+    requestData()
   }
 
   private fun reloadView() {
-    if (mAdapter.itemCount > 0) {
-      binding.recyclerView.visibility = View.VISIBLE
-      binding.emptyItem.visibility = View.GONE
-    } else {
-      binding.recyclerView.visibility = View.GONE
-      binding.emptyItem.visibility = View.VISIBLE
-    }
+    binding.recyclerView.visibleGone(calendarEventsAdapter.itemCount > 0)
+    binding.emptyItem.visibleGone(calendarEventsAdapter.itemCount <= 0)
   }
 
   fun requestData() {
-    val item = mItem
-    if (item != null) {
-      launchDefault {
-        delay(250)
-        withUIContext {
-          callback?.find(item) { eventsPagerItem, list ->
-            Timber.d("setModel: $eventsPagerItem, ${list.size}")
-            mAdapter.setData(list)
-            reloadView()
-          }
-        }
+    Timber.d("requestData: $dayPagerItem, $callback")
+    dayPagerItem?.also { dayPagerItem ->
+      callback?.getViewModel()?.findEvents(dayPagerItem) { events ->
+        Timber.d("requestData: $dayPagerItem, ${events.size}")
+        calendarEventsAdapter.setData(events)
+        reloadView()
       }
     }
   }
 
   companion object {
     private const val ARGUMENT_PAGE_NUMBER = "arg_page"
-    fun newInstance(item: EventsPagerItem): EventsListFragment {
+    fun newInstance(item: DayPagerItem): EventsListFragment {
       val pageFragment = EventsListFragment()
       val bundle = Bundle()
       bundle.putParcelable(ARGUMENT_PAGE_NUMBER, item)

@@ -21,6 +21,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 import timber.log.Timber
 import java.util.Locale
+import kotlin.math.abs
 
 class DateTimeManager(
   private val prefs: Prefs,
@@ -255,17 +256,6 @@ class DateTimeManager(
     return fromGmtToLocal(dateTime)?.let { logDateTime(it) } ?: ""
   }
 
-  fun getNextDateTime(dateTime: LocalDateTime?): Array<String> {
-    return if (dateTime == null) {
-      arrayOf("", "")
-    } else {
-      arrayOf(
-        dateTime.toLocalDate().format(dateFormatter()),
-        getTime(dateTime.toLocalTime())
-      )
-    }
-  }
-
   fun getRemaining(dateTime: String?, delay: Int): String {
     if (dateTime.isNullOrEmpty()) {
       return getRemaining(null)
@@ -273,18 +263,27 @@ class DateTimeManager(
     return getRemaining(fromGmtToLocal(dateTime)?.plusMinutes(delay.toLong()))
   }
 
-  fun getBirthdayRemaining(eventTime: LocalDateTime?, birthDate: LocalDate): String {
-    return if (nowDateTimeProvider.nowDate().isBefore(birthDate)) {
-      textProvider.getText(R.string.not_born)
-    } else {
-      getRemaining(eventTime)
+  fun getBirthdayRemaining(
+    futureBirthdayDateTime: LocalDateTime,
+    ignoreYear: Boolean,
+    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
+  ): String? {
+    return when {
+      ignoreYear -> null
+      futureBirthdayDateTime == nowDateTime -> null
+      futureBirthdayDateTime.isBefore(nowDateTime) -> {
+        textProvider.getText(R.string.not_born)
+      }
+      else -> getRemaining(futureBirthdayDateTime, nowDateTime)
     }
   }
 
-  fun getRemaining(eventTime: LocalDateTime?): String {
+  fun getRemaining(
+    eventTime: LocalDateTime?,
+    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
+  ): String {
     if (eventTime == null) return textProvider.getText(R.string.overdue)
 
-    val nowDateTime = getCurrentDateTime()
     val days = ChronoUnit.DAYS.between(nowDateTime, eventTime)
     val hours = ChronoUnit.HOURS.between(nowDateTime, eventTime)
     val minutes = ChronoUnit.MINUTES.between(nowDateTime, eventTime)
@@ -379,29 +378,31 @@ class DateTimeManager(
     return birthDate.dayOfMonth == current.dayOfMonth && birthDate.monthValue == current.monthValue
   }
 
-  fun getFutureBirthdayDate(birthdayTime: LocalTime, fullDate: String): BirthDate {
-    return (parseBirthdayDate(fullDate) ?: nowDateTimeProvider.nowDate()).let { date ->
-      var dateTime = LocalDateTime.of(nowDateTimeProvider.nowDate(), birthdayTime)
-        .withMonth(date.monthValue)
-        .withDayOfMonth(date.dayOfMonth)
-      if (dateTime.isBefore(getCurrentDateTime())) {
-        dateTime = dateTime.plusYears(1)
-      }
-      BirthDate(dateTime, date.year)
+  fun getFutureBirthdayDate(
+    birthdayTime: LocalTime,
+    birthdayDate: LocalDate,
+    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
+  ): LocalDateTime {
+    var dateTime = LocalDateTime.of(nowDateTime.toLocalDate(), birthdayTime)
+      .withMonth(birthdayDate.monthValue)
+      .withDayOfMonth(birthdayDate.dayOfMonth)
+    if (dateTime.isBefore(nowDateTime)) {
+      dateTime = dateTime.plusYears(1)
     }
+    return dateTime
   }
 
-  fun getReadableBirthDate(dateOfBirth: String?, ignoreYear: Boolean): String {
-    if (dateOfBirth.isNullOrEmpty()) return ""
+  fun getReadableBirthDate(dateOfBirth: LocalDate?, ignoreYear: Boolean): String {
+    if (dateOfBirth == null) return ""
     val formatter = if (ignoreYear) {
       dayMonthBirthdayUiFormatter()
     } else {
       headerDateFormatter()
     }
     return try {
-      parseBirthdayDate(dateOfBirth)?.format(formatter) ?: dateOfBirth
+      dateOfBirth.format(formatter)
     } catch (e: Throwable) {
-      dateOfBirth
+      ""
     }
   }
 
@@ -426,14 +427,12 @@ class DateTimeManager(
     return getBirthdayLocalTime()?.let { getTime(it) } ?: ""
   }
 
-  fun getAgeFormatted(date: String?): String {
-    val years = getAge(date)
+  fun getAgeFormatted(
+    date: String?,
+    nowDate: LocalDate = nowDateTimeProvider.nowDate()
+  ): String {
+    val years = getAge(date, nowDate)
     val language = Language.getScreenLanguage(prefs.appLanguage).language.lowercase()
-    return buildYearString(language, years)
-  }
-
-  fun getAgeFormatted(years: Int): String {
-    val language = Language.getScreenLanguage(prefs.appLanguage).toString().lowercase()
     return buildYearString(language, years)
   }
 
@@ -504,10 +503,10 @@ class DateTimeManager(
     return time.format(TIME_24_FORMATTER)
   }
 
-  fun getAge(dateOfBirth: String?): Int {
+  private fun getAge(dateOfBirth: String?, nowDate: LocalDate): Int {
     if (dateOfBirth.isNullOrEmpty()) return 0
     val birthDate = parseBirthdayDate(dateOfBirth) ?: return 0
-    return nowDateTimeProvider.nowDate().year - birthDate.year
+    return abs(ChronoUnit.YEARS.between(birthDate, nowDate).toInt())
   }
 
   fun getRepeatString(repCode: List<Int>): String {
@@ -593,7 +592,7 @@ class DateTimeManager(
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
 
-    Timber.d("getNextMonthDayTime: $dayOfMonth, before -> $beforeValue")
+    Timber.d("getNextMonthDayTime: dayOfMonth=$dayOfMonth, before=$beforeValue, from=$fromTime")
 
     if (dayOfMonth == 0) {
       return getLastMonthDayTime(fromTime, reminder)

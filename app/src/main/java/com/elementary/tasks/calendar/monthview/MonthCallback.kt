@@ -1,4 +1,4 @@
-package com.elementary.tasks.monthview
+package com.elementary.tasks.calendar.monthview
 
 import org.threeten.bp.LocalDate
 

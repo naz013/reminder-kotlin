@@ -1,9 +1,9 @@
-package com.elementary.tasks.dayview.pager
+package com.elementary.tasks.calendar.dayview.pager
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.elementary.tasks.dayview.day.EventsListFragment
+import com.elementary.tasks.calendar.dayview.day.EventsListFragment
 
 class DayPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 

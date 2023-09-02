@@ -1,4 +1,4 @@
-package com.elementary.tasks.dayview.weekheader
+package com.elementary.tasks.calendar.dayview.weekheader
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

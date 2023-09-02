@@ -1,9 +1,11 @@
-package com.elementary.tasks.dayview.day
+package com.elementary.tasks.calendar.dayview.day
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
+import com.elementary.tasks.calendar.BirthdayEventModel
+import com.elementary.tasks.calendar.EventModel
+import com.elementary.tasks.calendar.ReminderEventModel
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -55,15 +57,15 @@ class CalendarEventsAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder) {
       is BirthdayHolder -> {
-        holder.setData(data[position].model as UiBirthdayList)
+        holder.setData((data[position] as BirthdayEventModel).model)
       }
 
       is ReminderViewHolder -> {
-        holder.setData(data[position].model as UiReminderListActive)
+        holder.setData((data[position] as ReminderEventModel).model as UiReminderListActive)
       }
 
       is ShoppingViewHolder -> {
-        holder.setData(data[position].model as UiReminderListActiveShop)
+        holder.setData((data[position] as ReminderEventModel).model as UiReminderListActiveShop)
       }
     }
   }

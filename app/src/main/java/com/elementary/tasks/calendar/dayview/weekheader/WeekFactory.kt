@@ -1,4 +1,4 @@
-package com.elementary.tasks.dayview.weekheader
+package com.elementary.tasks.calendar.dayview.weekheader
 
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.datetime.DateTimeManager

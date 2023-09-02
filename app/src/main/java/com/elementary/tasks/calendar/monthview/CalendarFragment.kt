@@ -1,4 +1,4 @@
-package com.elementary.tasks.monthview
+package com.elementary.tasks.calendar.monthview
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,14 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.elementary.tasks.R
+import com.elementary.tasks.calendar.BaseCalendarFragment
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
-import com.elementary.tasks.dayview.day.EventModel
-import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -95,13 +94,18 @@ class CalendarFragment :
     analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR))
   }
 
+  override fun onBackStackResume() {
+    super.onBackStackResume()
+    infinitePagerAdapter.selectPosition(1)
+    binding.infiniteViewPager.setCurrentItem(1, false)
+  }
+
   private fun isSunday(): Boolean {
     return prefs.startDay == 0
   }
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.events.nonNullObserve(viewLifecycleOwner) { showSheet(it) }
     viewModel.map.nonNullObserve(viewLifecycleOwner) { infinitePagerAdapter.updateMapData(it) }
   }
 
@@ -183,7 +187,7 @@ class CalendarFragment :
   }
 
   private fun fromDate(date: LocalDate): MonthPagerItem {
-    return MonthPagerItem(date.monthValue, date.year)
+    return MonthPagerItem(date.monthValue, date.year, date)
   }
 
   override fun onDateClick(date: LocalDate) {
@@ -196,22 +200,16 @@ class CalendarFragment :
 
   override fun onDateLongClick(date: LocalDate) {
     this.date = date
-    viewModel.onDateLongClicked(date)
+    showSheet()
   }
 
-  private fun showSheet(list: List<EventModel> = listOf()) {
-    Timber.d("showSheet: ${list.size}")
-    val label = dateTimeManager.formatCalendarDate(date)
-    withContext {
+  private fun showSheet() {
+    safeContext {
       DayBottomSheetDialog(
-        context = it,
-        label = label,
-        list = list,
+        context = this,
+        label = dateTimeManager.formatCalendarDate(date),
         addReminderCallback = { addReminder() },
-        addBirthdayCallback = { addBirthday() },
-        loadCallback = { listView, loadingView, emptyView, list ->
-          loadEvents(listView, loadingView, emptyView, list)
-        }
+        addBirthdayCallback = { addBirthday() }
       ).show()
     }
   }

@@ -3,25 +3,33 @@ package com.elementary.tasks.core.data.adapter.birthday
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayWidgetList
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 class UiBirthdayWidgetListAdapter(private val dateTimeManager: DateTimeManager) {
 
   fun convert(birthday: Birthday): UiBirthdayWidgetList {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
-    val birthDate = dateTimeManager.getReadableBirthDate(birthday.date, birthday.ignoreYear)
-    val dateItem = dateTimeManager.getFutureBirthdayDate(birthTime, birthday.date)
-    val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
-    val remainingTime = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
-      dateTimeManager.getBirthdayRemaining(dateItem.nextBirthdayDateTime, it)
-    } ?: dateTimeManager.getRemaining(dateItem.nextBirthdayDateTime)
+    val birthdayDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now()
+    val birthDate = dateTimeManager.getReadableBirthDate(birthdayDate, birthday.ignoreYear)
+    val futureBirthday = dateTimeManager.getFutureBirthdayDate(birthTime, birthdayDate)
+    val remainingTime = dateTimeManager.getBirthdayRemaining(
+      futureBirthdayDateTime = futureBirthday,
+      ignoreYear = birthday.ignoreYear
+    )
+    val ageAndBirthdayDate = if (birthday.ignoreYear) {
+      birthDate
+    } else {
+      val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
+      "$ageFormatted ($birthDate)"
+    }
 
     return UiBirthdayWidgetList(
       uuId = birthday.uuId,
       name = birthday.name,
       remainingTimeFormatted = remainingTime,
-      millis = dateTimeManager.toMillis(dateItem.nextBirthdayDateTime),
-      ageFormattedAndBirthdayDate = "$ageFormatted ($birthDate)"
+      millis = dateTimeManager.toMillis(futureBirthday),
+      ageFormattedAndBirthdayDate = ageAndBirthdayDate
     )
   }
 }

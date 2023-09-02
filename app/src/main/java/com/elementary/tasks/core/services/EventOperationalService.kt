@@ -256,9 +256,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     builder.priority = priority(prefs.birthdayPriority)
     builder.setContentTitle(birthday.name)
     if (!birthday.ignoreYear) {
-      builder.setContentText(
-        dateTimeManager.getAgeFormatted(dateTimeManager.getAge(birthday.date))
-      )
+      builder.setContentText(dateTimeManager.getAgeFormatted(birthday.date))
     }
     builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
     builder.setAutoCancel(false)
