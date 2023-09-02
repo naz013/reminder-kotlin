@@ -1,4 +1,4 @@
-package com.elementary.tasks.monthview
+package com.elementary.tasks.calendar.monthview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -83,7 +83,7 @@ class InfinitePagerAdapter2(
   ) {
 
     fun bind(monthPagerItem: MonthPagerItem, data: Map<LocalDate, EventsCursor>?) {
-      Timber.d("bind: $bindingAdapterPosition, $monthPagerItem, $data")
+      Timber.d("bind: $bindingAdapterPosition, $monthPagerItem, ${data?.size}")
 
       binding.monthView.setTodayColor(dataAccessor.getTodayColor())
       binding.monthView.setStartDayOfWeek(dataAccessor.getStartDay())

@@ -46,8 +46,7 @@ class BirthdayHolder(
       "\n",
       item.birthdayDateFormatted,
       ", ${item.ageFormatted}".takeIf { item.ageFormatted.isNotEmpty() },
-      "\n",
-      item.remainingTimeFormatted
+      "\n ${item.remainingTimeFormatted}".takeIf { item.remainingTimeFormatted != null }
     ).append()
   }
 }

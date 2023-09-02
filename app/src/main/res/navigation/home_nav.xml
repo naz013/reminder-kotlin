@@ -107,7 +107,7 @@
 
     <fragment
         android:id="@+id/actionCalendar"
-        android:name="com.elementary.tasks.monthview.CalendarFragment"
+        android:name="com.elementary.tasks.calendar.monthview.CalendarFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_flext_cal">
         <action
@@ -221,7 +221,7 @@
     </activity>
     <fragment
         android:id="@+id/dayViewFragment"
-        android:name="com.elementary.tasks.dayview.DayViewFragment"
+        android:name="com.elementary.tasks.calendar.dayview.DayViewFragment"
         android:label="@string/day_of_month"
         tools:layout="@layout/fragment_day_view">
         <argument

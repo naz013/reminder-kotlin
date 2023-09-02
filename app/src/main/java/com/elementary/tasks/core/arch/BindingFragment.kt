@@ -59,4 +59,8 @@ abstract class BindingFragment<B : ViewBinding> : Fragment() {
       action.invoke(it)
     }
   }
+
+  protected fun safeContext(action: Context.() -> Unit) {
+    context?.run { action.invoke(this) }
+  }
 }

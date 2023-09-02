@@ -33,7 +33,7 @@ class BirthdaysViewModel(
     birthdaysDao
   )
   val birthdays = birthdaysData.map { list ->
-    list.map { uiBirthdayListAdapter.convert(it) }.sortedBy { it.nextBirthdayDate }
+    list.map { uiBirthdayListAdapter.convert(it) }.sortedBy { it.nextBirthdayDateMillis }
   }
 
   fun onSearchUpdate(query: String) {

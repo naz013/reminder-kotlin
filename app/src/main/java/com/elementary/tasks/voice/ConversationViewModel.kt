@@ -321,8 +321,8 @@ class ConversationViewModel(
       val list = birthdaysDao.getAll()
         .map { uiBirthdayListAdapter.convert(it) }
         .filter {
-          it.nextBirthdayDate >= System.currentTimeMillis() &&
-            it.nextBirthdayDate < dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime)
+          it.nextBirthdayDateMillis >= System.currentTimeMillis() &&
+            it.nextBirthdayDateMillis < dateTimeManager.getMillisFromGmtVoiceEngine(gmtDateTime)
         }
       postInProgress(false)
       _birthdays.postValue(list)

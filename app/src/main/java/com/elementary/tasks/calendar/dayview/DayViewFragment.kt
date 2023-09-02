@@ -1,4 +1,4 @@
-package com.elementary.tasks.dayview
+package com.elementary.tasks.calendar.dayview
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,16 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
+import com.elementary.tasks.calendar.BaseCalendarFragment
+import com.elementary.tasks.calendar.dayview.day.DayCallback
+import com.elementary.tasks.calendar.dayview.pager.DayPagerAdapter
+import com.elementary.tasks.calendar.dayview.weekheader.WeekAdapter
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentDayViewBinding
-import com.elementary.tasks.dayview.day.DayCallback
-import com.elementary.tasks.dayview.day.EventModel
-import com.elementary.tasks.dayview.pager.DayPagerAdapter
-import com.elementary.tasks.dayview.weekheader.WeekAdapter
-import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -27,8 +26,6 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   lateinit var dayPagerAdapter: DayPagerAdapter
   private val datePageChangeListener = DatePageChangeListener()
   private val dayViewViewModel by viewModel<DayViewViewModel>()
-  private var eventsPagerItem: EventsPagerItem? = null
-  private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
 
   private val weekAdapter = WeekAdapter { scrollPositions(it.localDate) }
 
@@ -66,31 +63,11 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   }
 
   private fun tryToShowActionDialog() {
-    val item = eventsPagerItem
-    val events = dayViewViewModel.events.value
-    var list = emptyList<EventModel>()
-    if (events != null && item != null) {
-      val foundItem = events.first
-      val foundList = events.second
-      if (foundItem == item) {
-        list = foundList
-      }
-    }
-    showActionDialog(list)
+    showActionDialog()
   }
 
   private fun initViewModel() {
     dayViewViewModel.week.nonNullObserve(viewLifecycleOwner) { weekAdapter.submitList(it) }
-    dayViewViewModel.events.observe(viewLifecycleOwner) {
-      val item = eventsPagerItem
-      if (it != null && item != null) {
-        val foundItem = it.first
-        val foundList = it.second
-        if (foundItem == item) {
-          listener?.invoke(foundItem, foundList)
-        }
-      }
-    }
   }
 
   private fun initPager() {
@@ -110,8 +87,8 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     showEvents(date)
   }
 
-  private fun fromDate(date: LocalDate): EventsPagerItem {
-    return EventsPagerItem(date.dayOfMonth, date.monthValue, date.year)
+  private fun fromDate(date: LocalDate): DayPagerItem {
+    return DayPagerItem(date)
   }
 
   private fun scrollPositions(date: LocalDate) {
@@ -131,15 +108,6 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
   override fun getViewModel(): DayViewViewModel {
     return dayViewViewModel
-  }
-
-  override fun find(
-    eventsPagerItem: EventsPagerItem,
-    listener: ((EventsPagerItem, List<EventModel>) -> Unit)?
-  ) {
-    this.eventsPagerItem = eventsPagerItem
-    this.listener = listener
-    dayViewViewModel.findEvents(eventsPagerItem)
   }
 
   private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {
@@ -207,7 +175,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
       dayPagerAdapter.fragments[getCurrent(position)].requestData()
       val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
       Timber.d("onPageSelected: item=$item")
-      date = LocalDate.of(item.year, item.month, item.day)
+      date = item.date
       updateMenuTitles()
       dayViewViewModel.onDateSelected(date)
     }

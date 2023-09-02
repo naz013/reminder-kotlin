@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.birthdays.birthdaysModule
+import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
@@ -24,9 +25,7 @@ import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.elementary.tasks.dayview.dayViewModule
 import com.elementary.tasks.globalsearch.searchModule
-import com.elementary.tasks.monthview.monthViewModule
 import com.elementary.tasks.reminder.reminderModule
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
@@ -79,8 +78,7 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           osModule,
           newUtilsModule,
           birthdaysModule,
-          dayViewModule,
-          monthViewModule,
+          calendarModule,
           searchModule
         )
       )

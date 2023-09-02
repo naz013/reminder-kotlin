@@ -58,9 +58,7 @@ class BirthdayHandlerSilent(
     builder.priority = NotificationCompat.PRIORITY_LOW
     builder.setContentTitle(birthday.name)
     if (!birthday.ignoreYear) {
-      builder.setContentText(
-        dateTimeManager.getAgeFormatted(dateTimeManager.getAge(birthday.date))
-      )
+      builder.setContentText(dateTimeManager.getAgeFormatted(birthday.date))
     }
 
     birthdayDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }

@@ -116,7 +116,13 @@ class EventsFactory(
 
         rv.setTextViewText(R.id.nameView, item.name)
         rv.setTextViewText(R.id.ageBirthDateView, item.ageFormattedAndBirthdayDate)
-        rv.setTextViewText(R.id.leftTimeView, item.remainingTimeFormatted)
+
+        if (item.remainingTimeFormatted == null) {
+          rv.setViewVisibility(R.id.leftTimeView, View.GONE)
+        } else {
+          rv.setTextViewText(R.id.leftTimeView, item.remainingTimeFormatted)
+          rv.setViewVisibility(R.id.leftTimeView, View.VISIBLE)
+        }
 
         val data = WidgetIntentProtocol(
           mapOf<String, Any?>(
