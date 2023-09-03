@@ -191,7 +191,7 @@ data class Reminder(
     this.isNotificationShown = item.isNotificationShown
     this.isLocked = item.isLocked
     this.places = item.places
-    this.shoppings = item.shoppings
+    this.shoppings = item.shoppings.toList()
     this.duration = item.duration
     this.monthOfYear = item.monthOfYear
     this.remindBefore = item.remindBefore
