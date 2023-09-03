@@ -91,13 +91,13 @@ class ReminderPreviewViewModel(
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderDao.getById(reminderId)?.also {
-        saveReminder(it.copy(shoppings = shopList))
+        saveReminder(it.copy(shoppings = shopList.toList()))
         loadReminder()
       }
     }
   }
 
-  fun saveReminder(reminder: Reminder) {
+  private fun saveReminder(reminder: Reminder) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
