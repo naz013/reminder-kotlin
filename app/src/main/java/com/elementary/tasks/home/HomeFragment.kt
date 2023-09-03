@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.params.PrefsConstants
@@ -171,7 +172,8 @@ class HomeFragment :
     }
 
     binding.googleButton.visibleGone(
-      featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
+      featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+        SuperUtil.isGooglePlayServicesAvailable(requireContext())
     )
     binding.googleButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
