@@ -68,6 +68,10 @@ class CalendarWeekdayFactory(
     }
 
     val rv = RemoteViews(context.packageName, R.layout.list_item_weekday_grid)
+    if (i >= weekdaysList.size) {
+      return rv
+    }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       rv.setViewLayoutHeight(
         R.id.textView1,
