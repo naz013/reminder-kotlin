@@ -26,6 +26,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 
 class CalendarDataProvider(
   birthdaysDao: BirthdaysDao,
@@ -43,19 +44,20 @@ class CalendarDataProvider(
   private val birthdayObserver: Observer<in List<Birthday>> = Observer { mapBirthdays(it) }
   private val reminderObserver: Observer<in List<Reminder>> = Observer { mapReminders(it) }
 
-  private val monthBirthdayMap = ConcurrentHashMap<LocalDate, MutableList<BirthdayEventModel>>()
-  private val dayBirthdayMap = ConcurrentHashMap<LocalDate, MutableList<BirthdayEventModel>>()
+  private val monthBirthdayMap = mutableMapOf<LocalDate, MutableList<BirthdayEventModel>>()
+  private val dayBirthdayMap = mutableMapOf<LocalDate, MutableList<BirthdayEventModel>>()
 
-  private val monthReminderMap = ConcurrentHashMap<LocalDate, MutableList<ReminderEventModel>>()
-  private val monthFutureReminderMap =
-    ConcurrentHashMap<LocalDate, MutableList<ReminderEventModel>>()
-  private val dayReminderMap = ConcurrentHashMap<LocalDate, MutableList<ReminderEventModel>>()
-  private val dayFutureReminderMap = ConcurrentHashMap<LocalDate, MutableList<ReminderEventModel>>()
+  private val monthReminderMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
+  private val monthFutureReminderMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
+  private val dayReminderMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
+  private val dayFutureReminderMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
 
   private val observersMap = ConcurrentHashMap<Class<*>, DataChangeObserver>()
 
   private var reminderMappingJob: Job? = null
   private var birthdayMappingJob: Job? = null
+  private val atomicReminder = AtomicBoolean(false)
+  private val atomicBirthday = AtomicBoolean(false)
 
   init {
     birthdaysLiveData.observeForever(birthdayObserver)
@@ -75,7 +77,16 @@ class CalendarDataProvider(
     reminderMode: ReminderMode
   ): List<EventModel> {
     val monthKey = createMonthKey(localDate)
-    val birthdays = getNonNullList(monthBirthdayMap, monthKey)
+    val birthdays = if (atomicBirthday.get()) {
+      emptyList()
+    } else {
+      getNonNullList(monthBirthdayMap, monthKey)
+    }
+
+    if (atomicReminder.get()) {
+      return birthdays
+    }
+
     val reminders: List<EventModel> = when (reminderMode) {
       ReminderMode.DO_NOT_INCLUDE -> {
         emptyList()
@@ -100,9 +111,12 @@ class CalendarDataProvider(
     dateEnd: LocalDate,
     reminderMode: ReminderMode
   ): List<EventModel> {
+    if (atomicReminder.get() || atomicBirthday.get()) {
+      return emptyList()
+    }
+
     val resultList = mutableListOf<EventModel>()
     var date = dateStart
-
     while (date <= dateEnd) {
       resultList.addAll(getNonNullList(dayBirthdayMap, date))
       val reminders: List<EventModel> = when (reminderMode) {
@@ -156,52 +170,105 @@ class CalendarDataProvider(
   private fun mapReminders(reminders: List<Reminder>) {
     reminderMappingJob?.cancel()
     reminderMappingJob = scope.launch(dispatcherProvider.default()) {
-      val millis = System.currentTimeMillis()
+      atomicReminder.set(true)
 
-      clearReminderMaps()
+      var millis = System.currentTimeMillis()
+
       val filtered = reminders.filterNot { UiReminderType(it.type).isGpsType() }
 
-      filtered.forEach { mapReminder(it) }
+      val monthMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
+      val dayMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
+
+      filtered.forEach { mapReminder(it, monthMap, dayMap) }
+
+      monthReminderMap.clear()
+      monthReminderMap.putAll(monthMap)
+
+      dayReminderMap.clear()
+      dayReminderMap.putAll(dayMap)
 
       Timber.d("calculate end, took ${System.currentTimeMillis() - millis} millis")
 
+      atomicReminder.set(false)
+
       withContext(dispatcherProvider.main()) {
         notifyObservers()
       }
 
-      filtered.forEach { mapFutureReminder(it) }
+      atomicReminder.set(true)
+
+      millis = System.currentTimeMillis()
+      monthMap.clear()
+      dayMap.clear()
+
+      filtered.forEach { mapFutureReminder(it, monthMap, dayMap) }
+
+      monthFutureReminderMap.clear()
+      monthFutureReminderMap.putAll(monthMap)
+
+      dayFutureReminderMap.clear()
+      dayFutureReminderMap.putAll(dayMap)
+
+      monthMap.clear()
+      dayMap.clear()
 
       Timber.d("calculate future end, took ${System.currentTimeMillis() - millis} millis")
 
+      atomicReminder.set(false)
+
       withContext(dispatcherProvider.main()) {
         notifyObservers()
       }
     }
   }
 
-  private fun mapReminder(reminder: Reminder) {
-    addReminderToMaps(uiReminderListAdapter.create(reminder))
+  private fun mapReminder(
+    reminder: Reminder,
+    monthReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
+    addReminderToMaps(
+      uiReminderList = uiReminderListAdapter.create(reminder),
+      monthReminderMap = monthReminderMap,
+      dayReminderMap = dayReminderMap
+    )
   }
 
-  private fun mapFutureReminder(reminder: Reminder) {
+  private fun mapFutureReminder(
+    reminder: Reminder,
+    monthFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val type = reminder.type
     if (Reminder.isBase(type, Reminder.BY_WEEK)) {
-      calculateFutureRemindersForWeekType(reminder)
+      calculateFutureRemindersForWeekType(reminder, monthFutureReminderMap, dayFutureReminderMap)
     } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-      calculateFutureRemindersForMonthType(reminder)
+      calculateFutureRemindersForMonthType(reminder, monthFutureReminderMap, dayFutureReminderMap)
     } else if (Reminder.isBase(type, Reminder.BY_RECUR)) {
-      calculateFutureRemindersForRecurType(reminder)
+      calculateFutureRemindersForRecurType(reminder, monthFutureReminderMap, dayFutureReminderMap)
     } else {
-      calculateFutureRemindersForOtherTypes(reminder)
+      calculateFutureRemindersForOtherTypes(reminder, monthFutureReminderMap, dayFutureReminderMap)
     }
   }
 
-  private fun calculateFutureRemindersForOtherTypes(reminder: Reminder) {
+  private fun maxDateTime(): LocalDateTime {
+    return dateTimeManager.getCurrentDateTime()
+      .plusYears(5)
+      .withDayOfMonth(1)
+      .withMonth(1)
+  }
+
+  private fun calculateFutureRemindersForOtherTypes(
+    reminder: Reminder,
+    monthFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return
     var dateTime = dateTimeManager.fromGmtToLocal(reminder.startTime) ?: return
     val repeatTime = reminder.repeatInterval
     val limit = reminder.repeatLimit.toLong()
     val count = reminder.eventCount
+    val maxDateTime = maxDateTime()
 
     if (repeatTime == 0L) {
       return
@@ -213,6 +280,9 @@ class CalendarDataProvider(
     }
     do {
       dateTime = dateTime.plusMillis(repeatTime)
+      if (dateTime > maxDateTime) {
+        break
+      }
       if (eventTime == dateTime) {
         continue
       }
@@ -220,11 +290,19 @@ class CalendarDataProvider(
       val localItem = Reminder(reminder, true).apply {
         this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
       }
-      addFutureReminderToMaps(uiReminderListAdapter.create(localItem))
+      addFutureReminderToMaps(
+        uiReminderList = uiReminderListAdapter.create(localItem),
+        monthFutureReminderMap = monthFutureReminderMap,
+        dayFutureReminderMap = dayFutureReminderMap
+      )
     } while (days < max)
   }
 
-  private fun calculateFutureRemindersForRecurType(reminder: Reminder) {
+  private fun calculateFutureRemindersForRecurType(
+    reminder: Reminder,
+    monthFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val dates = runCatching {
       recurrenceManager.parseObject(reminder.recurDataObject)
     }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
@@ -238,17 +316,27 @@ class CalendarDataProvider(
           localItem = Reminder(localItem, true).apply {
             this.eventTime = dateTimeManager.getGmtFromDateTime(localDateTime)
           }
-          addFutureReminderToMaps(uiReminderListAdapter.create(localItem))
+          addFutureReminderToMaps(
+            uiReminderList = uiReminderListAdapter.create(localItem),
+            monthFutureReminderMap = monthFutureReminderMap,
+            dayFutureReminderMap = dayFutureReminderMap
+          )
         }
       }
   }
 
-  private fun calculateFutureRemindersForMonthType(reminder: Reminder) {
+  private fun calculateFutureRemindersForMonthType(
+    reminder: Reminder,
+    monthFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return
     var dateTime: LocalDateTime
 
     val limit = reminder.repeatLimit.toLong()
     val count = reminder.eventCount
+
+    val maxDateTime = maxDateTime()
 
     var days: Long = 0
     var max = Configs.MAX_DAYS_COUNT
@@ -264,6 +352,9 @@ class CalendarDataProvider(
         fromTime = fromTime
       )
       fromTime = dateTime
+      if (dateTime > maxDateTime) {
+        break
+      }
       if (dateTime == baseTime) {
         continue
       }
@@ -271,16 +362,26 @@ class CalendarDataProvider(
       localItem = Reminder(localItem, true).apply {
         this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
       }
-      addFutureReminderToMaps(uiReminderListAdapter.create(localItem))
+      addFutureReminderToMaps(
+        uiReminderList = uiReminderListAdapter.create(localItem),
+        monthFutureReminderMap = monthFutureReminderMap,
+        dayFutureReminderMap = dayFutureReminderMap
+      )
     } while (days < max)
   }
 
-  private fun calculateFutureRemindersForWeekType(reminder: Reminder) {
+  private fun calculateFutureRemindersForWeekType(
+    reminder: Reminder,
+    monthFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return
     var dateTime = dateTimeManager.fromGmtToLocal(reminder.startTime) ?: return
 
     val limit = reminder.repeatLimit.toLong()
     val count = reminder.eventCount
+
+    val maxDateTime = maxDateTime()
 
     var days: Long = 0
     var max = Configs.MAX_DAYS_COUNT
@@ -291,6 +392,9 @@ class CalendarDataProvider(
     val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return
     do {
       dateTime = dateTime.plusDays(1)
+      if (dateTime > maxDateTime) {
+        break
+      }
       if (dateTime == baseTime) {
         continue
       }
@@ -300,7 +404,11 @@ class CalendarDataProvider(
         val localItem = Reminder(reminder, true).apply {
           this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
         }
-        addFutureReminderToMaps(uiReminderListAdapter.create(localItem))
+        addFutureReminderToMaps(
+          uiReminderList = uiReminderListAdapter.create(localItem),
+          monthFutureReminderMap = monthFutureReminderMap,
+          dayFutureReminderMap = dayFutureReminderMap
+        )
       }
     } while (days < max)
   }
@@ -325,13 +433,6 @@ class CalendarDataProvider(
   private fun clearBirthdayMaps() {
     monthBirthdayMap.clear()
     dayBirthdayMap.clear()
-  }
-
-  private fun clearReminderMaps() {
-    monthReminderMap.clear()
-    monthFutureReminderMap.clear()
-    dayReminderMap.clear()
-    dayFutureReminderMap.clear()
   }
 
   private fun mapBirthday(birthday: Birthday) {
@@ -372,7 +473,11 @@ class CalendarDataProvider(
     mutableMap[key] = list
   }
 
-  private fun addReminderToMaps(uiReminderList: UiReminderListData) {
+  private fun addReminderToMaps(
+    uiReminderList: UiReminderListData,
+    monthReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val futureReminderDateTime = uiReminderList.due?.localDateTime ?: return
     val model = uiReminderList.toEventModel(futureReminderDateTime)
     val dayKey = futureReminderDateTime.toLocalDate()
@@ -381,7 +486,11 @@ class CalendarDataProvider(
     addReminderToMap(dayKey, model, dayReminderMap)
   }
 
-  private fun addFutureReminderToMaps(uiReminderList: UiReminderListData) {
+  private fun addFutureReminderToMaps(
+    uiReminderList: UiReminderListData,
+    monthFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>,
+    dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
+  ) {
     val futureReminderDateTime = uiReminderList.due?.localDateTime ?: return
     val model = uiReminderList.toEventModel(futureReminderDateTime)
     val dayKey = futureReminderDateTime.toLocalDate()
