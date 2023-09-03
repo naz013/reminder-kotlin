@@ -2,10 +2,9 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
-        ✅ Add possibility to create Birthday without a year;\n
-        🐞 Fix several UI bugs;\n
-        ⭐ Update Day View screen design;\n
-        ⭐ Update Reminder Preview screen design;\n
+        ✅ New global search on Home screen;\n
+        ⭐ Update Google Tasks screen design;\n
+        ⭐ Update overall design;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
