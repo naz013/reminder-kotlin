@@ -4,7 +4,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
     compileSdk 34
@@ -125,7 +126,10 @@ android {
     }
 
     testOptions {
-        unitTests.returnDefaultValues = true
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
     }
 
     configurations.configureEach {
@@ -167,9 +171,9 @@ dependencies {
     }
     implementation project(':voice-engine-ktx')
 
-    implementation 'io.insert-koin:koin-android:3.4.3'
+    implementation 'io.insert-koin:koin-android:3.5.0'
     implementation 'io.insert-koin:koin-android-ext:3.0.2'
-    implementation 'io.insert-koin:koin-androidx-workmanager:3.4.3'
+    implementation 'io.insert-koin:koin-androidx-workmanager:3.5.0'
 
     implementation 'androidx.recyclerview:recyclerview:1.3.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -180,7 +184,7 @@ dependencies {
     implementation "androidx.biometric:biometric:1.1.0"
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
     implementation "androidx.activity:activity-ktx:1.7.2"
     implementation "androidx.collection:collection-ktx:1.2.0"
@@ -198,20 +202,19 @@ dependencies {
     }
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.6.1'
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.6.2'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
     implementation 'androidx.room:room-runtime:2.5.2'
     implementation 'androidx.room:room-ktx:2.5.2'
-    //noinspection KaptUsageInsteadOfKsp
-    kapt 'androidx.room:room-compiler:2.5.2'
+    ksp 'androidx.room:room-compiler:2.5.2'
 
-    implementation "androidx.navigation:navigation-fragment-ktx:2.7.1"
-    implementation "androidx.navigation:navigation-ui-ktx:2.7.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.7.3"
+    implementation "androidx.navigation:navigation-ui-ktx:2.7.3"
 
     implementation "com.google.android.play:core-ktx:1.8.1"
 
-    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+    implementation platform('com.google.firebase:firebase-bom:32.3.1')
 
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -222,7 +225,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
-    freeImplementation 'com.google.android.gms:play-services-ads:22.3.0'
+    freeImplementation 'com.google.android.gms:play-services-ads:22.4.0'
     freeImplementation 'com.google.android.ump:user-messaging-platform:2.1.0'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
@@ -232,7 +235,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
-    implementation 'com.dropbox.core:dropbox-core-sdk:5.4.4'
+    implementation 'com.dropbox.core:dropbox-core-sdk:5.4.5'
     implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'org.dmfs:lib-recur:0.15.0'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
@@ -250,14 +253,15 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test:core:1.5.0'
-    testImplementation 'org.mockito:mockito-core:5.4.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation 'io.mockk:mockk:1.13.7'
+    testImplementation 'io.mockk:mockk:1.13.8'
     testImplementation "androidx.arch.core:core-testing:2.2.0"
-    testImplementation "androidx.lifecycle:lifecycle-runtime-testing:2.6.1"
+    testImplementation "androidx.lifecycle:lifecycle-runtime-testing:2.6.2"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
+    testImplementation 'org.robolectric:robolectric:4.10.3'
 
-    androidTestImplementation 'io.mockk:mockk-android:1.13.7'
+    androidTestImplementation 'io.mockk:mockk-android:1.13.8'
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
