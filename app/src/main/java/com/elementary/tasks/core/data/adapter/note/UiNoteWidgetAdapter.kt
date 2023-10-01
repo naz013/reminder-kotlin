@@ -95,7 +95,11 @@ class UiNoteWidgetAdapter(
       radius = radius.toFloat()
     )
 
-    val bitmap = NoteTextDrawable(params).toBitmap(width = size, height = size)
+    val bitmap = if (size != 0) {
+      NoteTextDrawable(params).toBitmap(width = size, height = size)
+    } else {
+      null
+    }
 
     Timber.d("convert: full drawable -> ${System.currentTimeMillis() - startMillis}")
 
