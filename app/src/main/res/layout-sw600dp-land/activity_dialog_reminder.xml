@@ -284,11 +284,10 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <com.tuyenmonkey.mkloader.MKLoader
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                app:mk_color="?colorSecondary"
-                app:mk_type="Whirlpool" />
+                app:indicatorColor="?colorSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
