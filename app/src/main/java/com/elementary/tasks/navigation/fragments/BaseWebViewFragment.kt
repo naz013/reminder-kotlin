@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
 
 abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 

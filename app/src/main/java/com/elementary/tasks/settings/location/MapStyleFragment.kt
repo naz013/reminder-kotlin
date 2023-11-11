@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatRadioButton
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsMapStyleBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>() {
 

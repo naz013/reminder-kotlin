@@ -102,7 +102,8 @@ class UiReminderCommonAdapter(
       remaining = getRemaining(data),
       millis = dueMillis,
       localDateTime = dateTime,
-      recurRule = getRecurRules(data, type)
+      recurRule = getRecurRules(data, type),
+      formattedTime = dateTime?.let { dateTimeManager.getTime(it.toLocalTime()) }
     )
   }
 

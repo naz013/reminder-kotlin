@@ -4,6 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.calendar.data.CalendarDataEngine
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.os.PackageManagerWrapper
@@ -28,7 +29,8 @@ class SplashViewModel(
   private val packageManagerWrapper: PackageManagerWrapper,
   private val groupsUtil: GroupsUtil,
   private val noteImageMigration: NoteImageMigration,
-  private val presetInitProcessor: PresetInitProcessor
+  private val presetInitProcessor: PresetInitProcessor,
+  private val calendarDataEngine: CalendarDataEngine
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
@@ -37,6 +39,7 @@ class SplashViewModel(
 
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
+    calendarDataEngine.initEngine()
     viewModelScope.launch(dispatcherProvider.default()) {
       presetInitProcessor.run()
     }

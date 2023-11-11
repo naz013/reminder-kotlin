@@ -9,7 +9,7 @@ import com.elementary.tasks.core.os.BiometricProvider
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
 

@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -14,7 +14,7 @@ import com.google.api.services.tasks.TasksScopes
 import timber.log.Timber
 
 class GoogleLogin(
-  private val fragment: BaseFragment<*>,
+  private val fragment: BaseNavigationFragment<*>,
   private val prefs: Prefs,
   private val drive: GDrive,
   private val tasks: GTasks,

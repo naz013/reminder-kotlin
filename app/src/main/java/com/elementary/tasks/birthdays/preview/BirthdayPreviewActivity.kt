@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays.preview
 
 import android.os.Bundle
 import android.widget.TextView
-import androidx.core.view.updatePadding
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -25,31 +24,19 @@ import org.koin.core.parameter.parametersOf
 class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>() {
 
   private val viewModel by viewModel<BirthdayPreviewViewModel> { parametersOf(idFromIntent()) }
-
   private val adsProvider = AdsProvider()
-  private var initPaddingTop: Int? = null
 
   override fun inflateBinding() = ActivityBirthdayPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    if (initPaddingTop == null) {
-      initPaddingTop = binding.rootView.paddingTop
-    }
-
-    drawBehindSystemBars(binding.rootView) { insets ->
-      binding.rootView.updatePadding(
-        top = (initPaddingTop ?: 0) + insets.top
-      )
-    }
-
     initTopAppBar()
 
     binding.buttonCall.setOnClickListener { tryToMakeCall() }
     binding.buttonSms.setOnClickListener { tryToSendSms() }
     binding.buttonsView.gone()
     binding.contactPhoto.gone()
-    binding.contactNameNumberView.gone()
+    binding.contactNumberBlockView.gone()
 
     loadAds()
 
@@ -98,17 +85,27 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
     binding.toolbar.setNavigationOnClickListener { finish() }
   }
 
-  private fun showTextIfNotNull(textView: TextView, value: String?) {
-    textView.visibleGone(value != null)
+  private fun showTextIfNotNull(
+    textView: TextView,
+    value: String?,
+    visibilityFunc: (Boolean) -> Unit
+  ) {
+    visibilityFunc(value != null)
     textView.text = value
   }
 
   private fun showBirthday(birthday: UiBirthdayPreview) {
-    binding.nameView.text = birthday.name
+    binding.nameBlockTextView.text = birthday.name
 
-    showTextIfNotNull(binding.ageView, birthday.ageFormatted)
-    showTextIfNotNull(binding.dateOfBirthView, birthday.dateOfBirth)
-    showTextIfNotNull(binding.nextBirthdayDateView, birthday.nextBirthdayDate)
+    showTextIfNotNull(binding.ageBlockTextView, birthday.ageFormatted) {
+      binding.ageBlockView.visibleGone(it)
+    }
+    showTextIfNotNull(binding.dateOfBirthBlockTextView, birthday.dateOfBirth) {
+      binding.dateOfBirthBlockView.visibleGone(it)
+    }
+    showTextIfNotNull(binding.nextBirthdayDateBlockTextView, birthday.nextBirthdayDate) {
+      binding.nextBirthdayDateBlockView.visibleGone(it)
+    }
 
     if (birthday.number != null) {
       val displayName = if (birthday.contactName != null) {
@@ -116,7 +113,9 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
       } else {
         birthday.number
       }
-      showTextIfNotNull(binding.contactNameNumberView, displayName)
+      showTextIfNotNull(binding.contactNumberBlockTextView, displayName) {
+        binding.contactNumberBlockView.visibleGone(it)
+      }
 
       if (birthday.photo != null) {
         binding.contactPhoto.visible()
@@ -127,7 +126,7 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
     } else {
       binding.buttonsView.gone()
       binding.contactPhoto.gone()
-      binding.contactNameNumberView.gone()
+      binding.contactNumberBlockView.gone()
     }
 
     if (birthday.hasBirthdayToday) {

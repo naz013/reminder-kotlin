@@ -4,8 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.dao.ReminderDao
@@ -13,15 +15,15 @@ import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.deeplink.DeepLinkData
+import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.normalizeSummary
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
@@ -44,17 +46,11 @@ class GoogleTaskViewModel(
   private val analyticsEventSender: AnalyticsEventSender
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val _formattedDate = mutableLiveDataOf<String>()
-  val formattedDate = _formattedDate.toLiveData()
+  private val _dateState = mutableLiveDataOf<DateState>()
+  val dateState = _dateState.toLiveData()
 
-  private val _formattedTime = mutableLiveDataOf<String>()
-  val formattedTime = _formattedTime.toLiveData()
-
-  private val _isReminder = mutableLiveDataOf<Boolean>()
-  val isReminder = _isReminder.toLiveData()
-
-  private val _isDateEnabled = mutableLiveDataOf<Boolean>()
-  val isDateEnabled = _isDateEnabled.toLiveData()
+  private val _timeState = mutableLiveDataOf<TimeState>()
+  val timeState = _timeState.toLiveData()
 
   private val _taskList = mutableLiveDataOf<GoogleTaskList>()
   val taskList = _taskList.toLiveData()
@@ -79,16 +75,16 @@ class GoogleTaskViewModel(
 
   fun onDateSet(localDate: LocalDate) {
     date = localDate
-    _formattedDate.postValue(dateTimeManager.toGoogleTaskDate(date))
+    _dateState.postValue(DateState.SelectedDate(dateTimeManager.toGoogleTaskDate(date)))
   }
 
   fun onTimeSet(localTime: LocalTime) {
     time = localTime
-    _formattedTime.postValue(dateTimeManager.getTime(time))
+    _timeState.postValue(TimeState.SelectedTime(dateTimeManager.getTime(time)))
   }
 
   fun save(summary: String, note: String) {
-    val reminder = createReminder(summary).takeIf { isReminder.value == true }
+    val reminder = createReminder(summary).takeIf { isTimeSelected() }
     val item = editedTask
     if (action == TasksConstants.EDIT && item != null) {
       val initListId = item.listId
@@ -110,8 +106,9 @@ class GoogleTaskViewModel(
     if (!isEdited) {
       googleTask.dueDate
         .takeIf { it != 0L }
+        ?.let { dateTimeManager.fromMillis(it) }
         ?.also {
-          date = dateTimeManager.fromMillis(it).toLocalDate()
+          date = it.toLocalDate()
           onDateStateChanged(true)
         }
       isEdited = true
@@ -124,22 +121,36 @@ class GoogleTaskViewModel(
     loadReminder(googleTask.uuId)
   }
 
+  fun initFromDeepLink(deepLinkData: DeepLinkData?) {
+    if (deepLinkData is GoogleTaskDateTimeDeepLinkData) {
+      onDateStateChanged(true)
+      onDateSet(deepLinkData.date)
+      deepLinkData.time?.also {
+        onTimeStateChanged(true)
+        onTimeSet(it)
+      }
+    }
+  }
+
   fun initDefaults() {
     onDateSet(LocalDate.now())
     onTimeSet(LocalTime.now())
   }
 
   fun onDateStateChanged(enabled: Boolean) {
-    _isDateEnabled.postValue(enabled)
     if (enabled) {
       onDateSet(date)
+    } else {
+      _dateState.postValue(DateState.NoDate)
+      onTimeStateChanged(false)
     }
   }
 
-  fun onReminderStateChanged(enabled: Boolean) {
-    _isReminder.postValue(enabled)
+  fun onTimeStateChanged(enabled: Boolean) {
     if (enabled) {
       onTimeSet(time)
+    } else {
+      _timeState.postValue(TimeState.NoTime)
     }
   }
 
@@ -187,8 +198,8 @@ class GoogleTaskViewModel(
       if (!isReminderEdited) {
         editedReminder = reminder
         time = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime() ?: LocalTime.now()
+        onTimeStateChanged(true)
         isReminderEdited = true
-        onReminderStateChanged(true)
       }
       postInProgress(false)
     }
@@ -299,14 +310,37 @@ class GoogleTaskViewModel(
     note: String,
     reminder: Reminder?
   ): GoogleTask {
+    Timber.d("update: date=$date, time=$time")
     return googleTask.copy(
       listId = listId,
       status = GTasks.TASKS_NEED_ACTION,
       title = summary,
       notes = note,
-      dueDate = date.takeIf { isDateEnabled.value == true }
-        ?.let { dateTimeManager.toMillis(LocalDateTime.of(date, time)) } ?: 0L,
+      dueDate = date.takeIf { isDateSelected() }
+        ?.let { dateTimeManager.toMillis(LocalDateTime.of(it, time)) } ?: 0L,
       uuId = reminder?.uuId ?: ""
     )
+  }
+
+  fun isDateSelected(): Boolean {
+    return dateState.value is DateState.SelectedDate
+  }
+
+  fun isTimeSelected(): Boolean {
+    return timeState.value is TimeState.SelectedTime
+  }
+
+  sealed class DateState {
+    data class SelectedDate(
+      val formattedDate: String
+    ) : DateState()
+    data object NoDate : DateState()
+  }
+
+  sealed class TimeState {
+    data class SelectedTime(
+      val formattedTime: String
+    ) : TimeState()
+    data object NoTime : TimeState()
   }
 }

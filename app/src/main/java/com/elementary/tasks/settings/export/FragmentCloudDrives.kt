@@ -20,7 +20,7 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

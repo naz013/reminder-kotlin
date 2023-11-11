@@ -8,6 +8,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
+import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
+import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -130,15 +132,24 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       }
 
       intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent()
-      intent.hasExtra(Constants.INTENT_DATE) -> viewModel.onDateChanged(dateFromIntent())
+      intent.getBooleanExtra(Constants.INTENT_DEEP_LINK, false) -> {
+        runCatching {
+          val parser = DeepLinkDataParser()
+          when (val deepLinkData = parser.readDeepLinkData(intent)) {
+            is BirthdayDateDeepLinkData -> {
+              viewModel.onDateChanged(deepLinkData.date)
+            }
+            else -> {
+              viewModel.onDateChanged(LocalDate.now())
+            }
+          }
+        }
+      }
       idFromIntent().isEmpty() -> viewModel.onDateChanged(LocalDate.now())
     }
   }
 
   private fun idFromIntent(): String = intentString(Constants.INTENT_ID)
-
-  private fun dateFromIntent(): LocalDate =
-    intentSerializable(Constants.INTENT_DATE, LocalDate::class.java) ?: LocalDate.now()
 
   private fun initViewModel() {
     viewModel.birthday.nonNullObserve(this) { showBirthday(it) }

@@ -83,8 +83,7 @@ import com.elementary.tasks.groups.create.CreateGroupViewModel
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
-import com.elementary.tasks.home.HomeViewModel
-import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.list.NotesViewModel
@@ -101,9 +100,6 @@ import com.elementary.tasks.reminder.create.EditReminderViewModel
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
 import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
 import com.elementary.tasks.reminder.dialog.ReminderViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
-import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
@@ -302,9 +298,7 @@ val viewModelModule = module {
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get(), get()) }
-  viewModel { ActiveGpsRemindersViewModel(get(), get()) }
-  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
+
   viewModel {
     NotesViewModel(
       get(),
@@ -336,7 +330,6 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { CloudViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
@@ -367,6 +360,7 @@ val viewModelModule = module {
   viewModel { LoginStateViewModel() }
   viewModel {
     SplashViewModel(
+      get(),
       get(),
       get(),
       get(),
@@ -515,7 +509,7 @@ val utilModule = module {
   single { DateTimePickerProvider(get()) }
   single { DoNotDisturbManager(get(), get()) }
 
-  factory { (fragment: BaseFragment<*>, callback: GoogleLogin.LoginCallback) ->
+  factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
     GoogleLogin(fragment, get(), get(), get(), callback)
   }
   factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->

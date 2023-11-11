@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
@@ -74,7 +73,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
   private val adsProvider = AdsProvider()
-  private var initPaddingTop: Int? = null
 
   private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
     openFullMap()
@@ -85,16 +83,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    if (initPaddingTop == null) {
-      initPaddingTop = binding.rootView.paddingTop
-    }
-
-    drawBehindSystemBars(binding.rootView) { insets ->
-      binding.rootView.updatePadding(
-        top = (initPaddingTop ?: 0) + insets.top
-      )
-    }
-
     initTopAppBar()
 
     binding.dataContainer.removeAllViewsInLayout()
@@ -293,10 +281,10 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
 
     if (reminder.shopList.isNotEmpty()) {
-      binding.todoList.visible()
+      binding.todoListCard.visible()
       loadData(reminder.shopList)
     } else {
-      binding.todoList.gone()
+      binding.todoListCard.gone()
     }
 
     if (reminder.status.canMakeAction) {

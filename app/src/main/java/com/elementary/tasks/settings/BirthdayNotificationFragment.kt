@@ -21,6 +21,7 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import java.io.File
 

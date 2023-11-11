@@ -46,4 +46,6 @@
     <dimen name="collapse_toolbar_margin_top">24dp</dimen>
     <dimen name="week_grid_height">64dp</dimen>
 
+    <dimen name="list_more_button_size">24dp</dimen>
+
 </resources>

@@ -31,7 +31,7 @@ val adapterModule = module {
   single { UiReminderListsAdapter(get(), get(), get()) }
   single { UiReminderWidgetListAdapter(get(), get()) }
 
-  single { UiBirthdayListAdapter(get()) }
+  single { UiBirthdayListAdapter(get(), get()) }
   single { UiBirthdayShowAdapter(get(), get()) }
   single { UiBirthdayEditAdapter() }
   single { UiBirthdayPreviewAdapter(get(), get()) }

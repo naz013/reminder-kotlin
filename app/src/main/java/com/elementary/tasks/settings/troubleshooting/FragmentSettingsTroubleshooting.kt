@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsTroubleshootingBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentSettingsTroubleshooting :

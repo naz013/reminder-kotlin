@@ -26,7 +26,9 @@ class UiGoogleTaskListAdapter(
       text = googleTask.title,
       notes = googleTask.notes,
       dueDate = getDue(googleTask.dueDate),
-      statusIcon = createIcon(googleTask.status == GTasks.TASKS_COMPLETE, getColor(googleTaskList))
+      statusIcon = createIcon(googleTask.status == GTasks.TASKS_COMPLETE, getColor(googleTaskList)),
+      taskListColor = getColor(googleTaskList),
+      reminderId = googleTask.uuId
     )
   }
 

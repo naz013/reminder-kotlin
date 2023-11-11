@@ -92,7 +92,7 @@ class FeedbackFragment : BaseWebViewFragment() {
         isDark = isDark
       )
     }
-    activity?.invalidateOptionsMenu()
+    invalidateOptionsMenu()
   }
 
   private fun sendEmail() {

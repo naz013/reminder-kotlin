@@ -7,10 +7,15 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
 object Traces {
 
-  var reportingEnabled: Boolean = true
+  private var reportingEnabled: Boolean = true
+
+  fun d(tag: String, message: String) {
+    Timber.tag(tag).d(message)
+  }
 
   fun setUpKeys(context: Context) {
     Firebase.crashlytics.setCustomKeys {

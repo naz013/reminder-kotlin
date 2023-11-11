@@ -13,28 +13,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/color_indicator_view"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            app:srcCompat="@drawable/group_color_indicator"
+            tools:tint="@color/amberAccent" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:layout_weight="1"
             android:textAppearance="?textAppearanceTitleLarge"
-            android:textColor="@color/pureBlack"
+            android:textColor="?colorOnSurface"
             tools:text="Name" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/button_more"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="@dimen/list_more_button_size"
+            android:layout_height="@dimen/list_more_button_size"
+            android:layout_marginEnd="6dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-            app:tint="@color/pureBlack" />
+            app:tint="?colorOnSurface" />
 
     </LinearLayout>
 

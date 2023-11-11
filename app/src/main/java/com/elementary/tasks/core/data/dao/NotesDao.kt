@@ -15,6 +15,10 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 interface NotesDao {
 
   @Transaction
+  @Query("SELECT * FROM Note WHERE `key` IN (:ids)")
+  fun loadByIds(ids: List<String>): LiveData<List<NoteWithImages>>
+
+  @Transaction
   @Query(
     """
         SELECT *

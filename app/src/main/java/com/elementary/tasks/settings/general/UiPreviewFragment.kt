@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.elementary.tasks.databinding.FragmentSettingsThemePreviewBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class UiPreviewFragment : BaseSettingsFragment<FragmentSettingsThemePreviewBinding>() {
 

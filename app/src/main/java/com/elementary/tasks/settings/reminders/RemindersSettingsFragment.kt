@@ -8,7 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalTime
 
@@ -33,18 +33,6 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     initTimesPrefs()
     initActionPrefs()
     initIgnorePrefs()
-    initPermanentPrefs()
-  }
-
-  private fun initPermanentPrefs() {
-    binding.permanentPrefs.setOnClickListener { changePermanent() }
-    binding.permanentPrefs.isChecked = prefs.showPermanentOnHome
-  }
-
-  private fun changePermanent() {
-    val isChecked = binding.permanentPrefs.isChecked
-    binding.permanentPrefs.isChecked = !isChecked
-    prefs.showPermanentOnHome = !isChecked
   }
 
   private fun initIgnorePrefs() {

@@ -17,13 +17,13 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentTrashBinding
-import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ArchiveFragment : BaseAnimatedFragment<FragmentTrashBinding>() {
+class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -49,7 +49,7 @@ class ArchiveFragment : BaseAnimatedFragment<FragmentTrashBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_archived_reminders, { menuItem ->
+    addMenu(R.menu.fragment_reminders_archive, { menuItem ->
       return@addMenu when (menuItem.itemId) {
         R.id.action_delete_all -> {
           viewModel.deleteAll()
@@ -89,7 +89,7 @@ class ArchiveFragment : BaseAnimatedFragment<FragmentTrashBinding>() {
     binding.recyclerView.smoothScrollToPosition(0)
     reloadView(result.size)
     if (result.isEmpty()) {
-      activity?.invalidateOptionsMenu()
+      invalidateOptionsMenu()
     }
   }
 

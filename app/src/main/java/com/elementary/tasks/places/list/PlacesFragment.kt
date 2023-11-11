@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentPlacesBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -55,7 +55,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_archived_reminders, { false }) {
+    addMenu(R.menu.fragment_reminders_archive, { false }) {
       it.findItem(R.id.action_delete_all)?.isVisible = false
       ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_twotone_search_24px, isDark)
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)

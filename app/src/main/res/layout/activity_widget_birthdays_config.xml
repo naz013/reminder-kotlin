@@ -10,8 +10,8 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:liftOnScroll="false"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -110,8 +110,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textColor="@color/pureBlack"
-                            android:text="User Name" />
+                            android:text="User Name"
+                            android:textColor="@color/pureBlack" />
 
                         <TextView
                             android:id="@+id/ageBirthDateView"
@@ -119,8 +119,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:singleLine="true"
-                            android:textColor="@color/pureBlack"
-                            android:text="25 years" />
+                            android:text="25 years"
+                            android:textColor="@color/pureBlack" />
 
                         <TextView
                             android:id="@+id/leftTimeView"
@@ -128,8 +128,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:singleLine="true"
-                            android:textColor="@color/pureBlack"
-                            android:text="5 days" />
+                            android:text="5 days"
+                            android:textColor="@color/pureBlack" />
 
                     </LinearLayout>
 
@@ -204,6 +204,7 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabSave"
+        style="@style/UiComponentExtendedFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

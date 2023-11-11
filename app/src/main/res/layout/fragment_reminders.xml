@@ -11,45 +11,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/groupsButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="@dimen/material_margin"
-                    android:background="@drawable/gradient_button_groups_selector"
-                    android:contentDescription="@string/groups"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/archiveButton"
-                    android:layout_width="@dimen/home_action_button_size"
-                    android:layout_height="@dimen/home_action_button_size"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/gradient_button_birthdays_selector"
-                    android:contentDescription="@string/trash"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_dns_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
-
         <LinearLayout
             android:id="@+id/emptyItem"
             android:layout_width="match_parent"
@@ -86,6 +47,8 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/list_margin"
             android:layout_marginEnd="@dimen/list_margin"
+            android:clipToPadding="false"
+            android:paddingBottom="96dp"
             android:visibility="visible"
             tools:itemCount="5"
             tools:listitem="@layout/list_item_reminder" />
@@ -94,11 +57,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        style="?attr/floatingActionButtonSecondaryStyle"
+        style="@style/UiComponentFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="96dp"
         android:contentDescription="@string/add_reminder"
         app:srcCompat="@drawable/ic_twotone_add_24px" />
 

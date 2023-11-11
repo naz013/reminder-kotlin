@@ -2,7 +2,6 @@ package com.elementary.tasks.core.arch
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,15 +27,6 @@ abstract class BindingActivity<B : ViewBinding> : ThemedActivity() {
         top = view.paddingTop + insets.top,
         bottom = view.paddingBottom + insets.bottom
       )
-      WindowInsetsCompat.CONSUMED
-    }
-  }
-
-  protected fun drawBehindSystemBars(rootView: View, insetsCallback: (Insets) -> Unit) {
-    WindowCompat.setDecorFitsSystemWindows(window, false)
-    ViewCompat.setOnApplyWindowInsetsListener(rootView) { _, windowInsets ->
-      val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-      insetsCallback.invoke(insets)
       WindowInsetsCompat.CONSUMED
     }
   }

@@ -22,7 +22,8 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentRemindersBinding
-import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
+import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
+import com.elementary.tasks.home.eventsview.HomeEventsFragmentDirections
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
@@ -31,7 +32,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class RemindersFragment : BaseAnimatedFragment<FragmentRemindersBinding>() {
+class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
 
   private val systemServiceProvider by inject<SystemServiceProvider>()
   private val viewModel by viewModel<ActiveRemindersViewModel>()
@@ -57,7 +58,7 @@ class RemindersFragment : BaseAnimatedFragment<FragmentRemindersBinding>() {
     skipAction = { reminder -> viewModel.skip(reminder) }
   )
 
-  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
+  private val remindersAdapter = UiReminderListRecyclerAdapter(true, isEditable = true)
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
     R.string.search
@@ -73,7 +74,25 @@ class RemindersFragment : BaseAnimatedFragment<FragmentRemindersBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_active_menu, { true }) {
+    addMenu(R.menu.fragment_reminders, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_map -> {
+          safeNavigation { HomeEventsFragmentDirections.actionActionEventsToMapFragment() }
+        }
+        R.id.action_groups -> {
+          safeNavigation { HomeEventsFragmentDirections.actionActionEventsToGroupsFragment() }
+        }
+        R.id.action_archive -> {
+          safeNavigation { HomeEventsFragmentDirections.actionActionEventsToArchiveFragment() }
+        }
+        R.id.action_settings -> {
+          safeNavigation {
+            HomeEventsFragmentDirections.actionActionEventsToRemindersSettingsFragment()
+          }
+        }
+      }
+      true
+    }) {
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
     }
 
@@ -82,12 +101,6 @@ class RemindersFragment : BaseAnimatedFragment<FragmentRemindersBinding>() {
         requireContext(),
         CreateReminderActivity::class.java
       )
-    }
-    binding.archiveButton.setOnClickListener {
-      safeNavigation(RemindersFragmentDirections.actionRemindersFragmentToArchiveFragment())
-    }
-    binding.groupsButton.setOnClickListener {
-      safeNavigation(RemindersFragmentDirections.actionRemindersFragmentToGroupsFragment())
     }
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
@@ -145,8 +158,6 @@ class RemindersFragment : BaseAnimatedFragment<FragmentRemindersBinding>() {
     }
     reloadEmptyView(0)
   }
-
-  override fun getTitle(): String = getString(R.string.reminders)
 
   private fun reloadEmptyView(count: Int) {
     binding.emptyItem.visibleGone(count == 0)

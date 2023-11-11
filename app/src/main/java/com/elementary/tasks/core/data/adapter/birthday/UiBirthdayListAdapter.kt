@@ -1,13 +1,19 @@
 package com.elementary.tasks.core.data.adapter.birthday
 
+import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.isColorDark
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
+class UiBirthdayListAdapter(
+  private val dateTimeManager: DateTimeManager,
+  private val themeProvider: ThemeProvider
+) {
 
   fun convert(
     birthday: Birthday,
@@ -22,7 +28,8 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
     val futureBirthdayDateTime = dateTimeManager.getFutureBirthdayDate(
       birthdayTime = birthTime,
       birthdayDate = birthdayDate,
-      nowDateTime = nowDateTime
+      nowDateTime = nowDateTime,
+      birthday = birthday
     )
     val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date, nowDateTime.toLocalDate())
       .takeIf { !birthday.ignoreYear } ?: ""
@@ -33,6 +40,7 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
       nowDateTime = nowDateTime
     )
 
+    val color = themeProvider.colorBirthdayCalendar()
     return UiBirthdayList(
       uuId = birthday.uuId,
       name = birthday.name,
@@ -43,7 +51,18 @@ class UiBirthdayListAdapter(private val dateTimeManager: DateTimeManager) {
       remainingTimeFormatted = remainingTime,
       nextBirthdayDateFormatted = nextBirthdayDateTime,
       nextBirthdayDateMillis = dateTimeManager.toMillis(futureBirthdayDateTime),
-      nextBirthdayDate = futureBirthdayDateTime
+      nextBirthdayDate = futureBirthdayDateTime,
+      nextBirthdayTimeFormatted = dateTimeManager.getTime(futureBirthdayDateTime.toLocalTime()),
+      color = color,
+      contrastColor = getContrastColor(color)
     )
+  }
+
+  private fun getContrastColor(color: Int): Int {
+    return if (color.isColorDark()) {
+      themeProvider.getColor(R.color.whitePrimary)
+    } else {
+      themeProvider.getColor(R.color.pureBlack)
+    }
   }
 }

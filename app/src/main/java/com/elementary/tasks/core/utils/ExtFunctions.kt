@@ -57,6 +57,14 @@ import java.io.InputStream
 import java.io.Serializable
 import java.util.Calendar
 
+fun <T> LiveData<List<T>>.getNonNullList(): List<T> {
+  return value ?: emptyList()
+}
+
+fun <K, V> LiveData<Map<K, V>>.getNonNullMap(): Map<K, V> {
+  return value ?: emptyMap()
+}
+
 fun Fragment.intentForClass(clazz: Class<*>): Intent {
   return requireContext().intentForClass(clazz)
 }
@@ -150,7 +158,6 @@ fun Int.isColorDark(): Boolean {
       0.587 * android.graphics.Color.green(this) +
       0.114 * android.graphics.Color.blue(this)
     ) / 255
-  Timber.d("isColorDark: $darkness")
   return darkness >= 0.5
 }
 

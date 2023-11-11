@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.settings.export.backups.InfoAdapter
 import com.elementary.tasks.settings.export.backups.UserItem
 import kotlinx.coroutines.Job

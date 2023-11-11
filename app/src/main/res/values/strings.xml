@@ -791,5 +791,14 @@
     <string name="reminder_title_all_day">All Day</string>
     <string name="estimated_next_reminder">Estimated next reminder</string>
     <string name="search_everywhere">Search everywhere…</string>
+    <string name="schedule">Schedule</string>
+    <string name="schedule_noon">Noon</string>
+    <string name="schedule_you_have_done_everything_for_today">You have done everything for today. Press \"+\" to add new Reminders</string>
+    <string name="schedule_good_morning">Good Morning</string>
+    <string name="schedule_good_afternoon">Good Afternoon</string>
+    <string name="schedule_good_evening">Good Evening</string>
+    <string name="also_add_a_reminder">Also, add a reminder</string>
+    <string name="no_time">No time</string>
+    <string name="shopping_lists">Shopping lists</string>
 
 </resources>

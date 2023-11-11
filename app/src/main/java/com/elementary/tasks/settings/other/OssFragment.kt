@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class OssFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 

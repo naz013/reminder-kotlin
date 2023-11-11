@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.FragmentSettingsDeletePinBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding>() {
 

@@ -275,6 +275,16 @@ class ThemeProvider(
   fun pickColorRes(@ColorRes colorForLight: Int, @ColorRes colorForDark: Int) =
     if (isDark) colorForDark else colorForLight
 
+  @ColorInt
+  fun colorBirthdayCalendar(): Int {
+    return themedColor(context, prefs.birthdayColor)
+  }
+
+  @ColorInt
+  fun getColor(@ColorRes colorRes: Int): Int {
+    return ContextCompat.getColor(context, colorRes)
+  }
+
   data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
 
   companion object {
@@ -376,6 +386,11 @@ class ThemeProvider(
       val outValue = TypedValue()
       context.theme.resolveAttribute(android.R.attr.colorSecondary, outValue, true)
       return outValue.data
+    }
+
+    @ColorInt
+    fun getThemeOnSurfaceColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_onSurface)
     }
 
     @ColorInt

@@ -14,7 +14,7 @@ import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.google.android.material.color.DynamicColors
 

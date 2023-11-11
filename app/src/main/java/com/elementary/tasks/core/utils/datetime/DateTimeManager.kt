@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils.datetime
 
 import android.app.AlarmManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
@@ -41,8 +42,12 @@ class DateTimeManager(
 
   fun fromRfc3339Format(date: String?): Long {
     if (date == null) return 0L
-    val dateTime = ZonedDateTime.parse(date)
-    return toMillis(dateTime.toLocalDateTime())
+    val dateTime = try {
+      ZonedDateTime.parse(date, RFC3339_DATE_FORMATTER)
+    } catch (e: Exception) {
+      ZonedDateTime.parse(date)
+    }
+    return toMillis(dateTime)
   }
 
   fun fromRfc3339ToLocal(date: String?): LocalDateTime? {
@@ -381,12 +386,17 @@ class DateTimeManager(
   fun getFutureBirthdayDate(
     birthdayTime: LocalTime,
     birthdayDate: LocalDate,
+    birthday: Birthday,
     nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
   ): LocalDateTime {
     var dateTime = LocalDateTime.of(nowDateTime.toLocalDate(), birthdayTime)
       .withMonth(birthdayDate.monthValue)
       .withDayOfMonth(birthdayDate.dayOfMonth)
-    if (dateTime.isBefore(nowDateTime)) {
+    if (dateTime.isBefore(nowDateTime) && !birthday.ignoreYear) {
+      dateTime = dateTime.plusYears(1)
+    } else if (dateTime.isBefore(nowDateTime) && birthday.ignoreYear &&
+      birthday.showedYear >= dateTime.year
+    ) {
       dateTime = dateTime.plusYears(1)
     }
     return dateTime
@@ -467,6 +477,12 @@ class DateTimeManager(
 
   fun getDayEnd(dateTime: LocalDateTime = getCurrentDateTime()): String {
     return getDayStart(dateTime.plusDays(1))
+  }
+
+  fun getBirthdayDayMonth(
+    dateTime: LocalDateTime = getCurrentDateTime()
+  ): String {
+    return "${dateTime.dayOfMonth}|${dateTime.monthValue - 1}"
   }
 
   fun getBirthdayDayMonthList(

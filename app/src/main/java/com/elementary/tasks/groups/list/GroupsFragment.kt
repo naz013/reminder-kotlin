@@ -19,11 +19,11 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class GroupsFragment : BaseAnimatedFragment<FragmentGroupsBinding>() {
+class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
 
   private val viewModel by viewModel<GroupsViewModel>()
   private var groupsRecyclerAdapter = GroupsRecyclerAdapter()
