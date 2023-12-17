@@ -19,9 +19,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/action"
-                android:textStyle="bold"
                 android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="?colorOnSurface" />
+                android:textColor="?colorOnSurface"
+                android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/actionGroup"
@@ -91,10 +91,11 @@
 
                 <Button
                     android:id="@+id/selectNumber"
-                    style="?attr/materialIconButtonFilledTonalStyle"
+                    style="?attr/materialIconButtonOutlinedStyle"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@string/acc_select_number_from_contacts"
                     app:icon="@drawable/ic_twotone_contacts_24px" />
 

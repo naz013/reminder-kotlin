@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="UiComponentFab" parent="@style/Widget.Material3.FloatingActionButton.Tertiary">
-    </style>
+    <style name="UiComponentFab" parent="@style/Widget.Material3.FloatingActionButton.Tertiary"></style>
 
-    <style name="UiComponentExtendedFab" parent="@style/Widget.Material3.ExtendedFloatingActionButton.Tertiary">
-    </style>
+    <style name="UiComponentExtendedFab" parent="@style/Widget.Material3.ExtendedFloatingActionButton.Tertiary"></style>
 
     <style name="UiComponentBadge" parent="@style/MyTheme.DayNight">
         <item name="android:background">@drawable/badge_secondary_rounded</item>
@@ -37,10 +35,11 @@
         <item name="cardUseCompatPadding">false</item>
     </style>
 
-    <style name="UiComponentCustomViewCard" parent="@style/Widget.Material3.CardView.Filled">
+    <style name="UiComponentCustomViewCard" parent="@style/Widget.Material3.CardView.Outlined">
         <item name="cardCornerRadius">5dp</item>
         <item name="contentPadding">8dp</item>
         <item name="cardUseCompatPadding">false</item>
+        <item name="cardElevation">0dp</item>
     </style>
 
     <style name="UiComponentDetailsCard" parent="@style/Widget.Material3.CardView.Outlined">
@@ -57,17 +56,13 @@
         <item name="cardUseCompatPadding">false</item>
     </style>
 
-    <style name="UiComponentActionCard.ButtonPositive" parent="@style/Widget.Material3.Button.TonalButton">
-    </style>
+    <style name="UiComponentActionCard.ButtonPositive" parent="@style/Widget.Material3.Button.TonalButton"></style>
 
-    <style name="UiComponentActionCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton">
-    </style>
+    <style name="UiComponentActionCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton"></style>
 
-    <style name="UiComponentBannerCard.ButtonPositive" parent="@style/Widget.Material3.Button">
-    </style>
+    <style name="UiComponentBannerCard.ButtonPositive" parent="@style/Widget.Material3.Button"></style>
 
-    <style name="UiComponentBannerCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton">
-    </style>
+    <style name="UiComponentBannerCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton"></style>
 
     <!--Components-->
 
@@ -99,7 +94,6 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/MyTheme.DayNight</item>
     </style>
-
 
 
     <style name="BottomSheet.Base.Light" parent="Theme.Material3.Light.BottomSheetDialog">
