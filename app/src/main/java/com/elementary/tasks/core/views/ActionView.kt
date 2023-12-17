@@ -26,6 +26,7 @@ class ActionView : LinearLayout, TextWatcher {
     get() = internalState
     set(value) {
       selectButton(value)
+      setState(value)
     }
 
   var number: String
