@@ -42,7 +42,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
         iFace.showSnackbar(string(R.string.you_dont_insert_number))
         return null
       }
-      type = if (binding.actionView.actionState == ActionView.ActionState.SMS) {
+      type = if (binding.actionView.actionState == ActionView.ActionState.CALL) {
         Reminder.BY_DATE_CALL
       } else {
         Reminder.BY_DATE_SMS
