@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils.datetime
 
+import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.TextProvider
@@ -31,6 +32,7 @@ class DateTimeManagerTest {
   private val textProvider = mock<TextProvider>()
   private val language = mockk<Language>()
   private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
+  private val birthday = mockk<Birthday>()
   private val dateTimeManager = DateTimeManager(prefs, textProvider, language, nowDateTimeProvider)
   private val oldTimeUtil = OldTimeUtil()
 
@@ -44,6 +46,9 @@ class DateTimeManagerTest {
     every { nowDateTimeProvider.nowDate() } returns LocalDate.now()
     every { nowDateTimeProvider.nowDateTime() } returns LocalDateTime.now()
     every { nowDateTimeProvider.nowTime() } returns LocalTime.now()
+
+    every { birthday.ignoreYear } returns false
+    every { birthday.showedYear } returns 0
   }
 
   @Test
@@ -62,7 +67,8 @@ class DateTimeManagerTest {
     val result = dateTimeManager.getFutureBirthdayDate(
       birthdayTime = time,
       birthdayDate = date,
-      nowDateTime = nowDateTime
+      nowDateTime = nowDateTime,
+      birthday = birthday
     )
 
     val expected = LocalDateTime.of(LocalDate.of(2023, 6, 17), time)
@@ -85,7 +91,8 @@ class DateTimeManagerTest {
     val result = dateTimeManager.getFutureBirthdayDate(
       birthdayTime = time,
       birthdayDate = date,
-      nowDateTime = nowDateTime
+      nowDateTime = nowDateTime,
+      birthday = birthday
     )
 
     val expected = LocalDateTime.of(LocalDate.of(2020, 6, 17), time)
@@ -108,7 +115,8 @@ class DateTimeManagerTest {
     val result = dateTimeManager.getFutureBirthdayDate(
       birthdayTime = time,
       birthdayDate = date,
-      nowDateTime = nowDateTime
+      nowDateTime = nowDateTime,
+      birthday = birthday
     )
 
     val expected = LocalDateTime.of(LocalDate.of(2023, 7, 17), time)
@@ -177,6 +185,27 @@ class DateTimeManagerTest {
     assertEquals(
       calendar.timeInMillis,
       dateTimeManager.toMillis(dateTime)
+    )
+  }
+
+  @Test
+  fun givenMillis_thenConvertItToLocalDateTime() {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = System.currentTimeMillis()
+    calendar.set(2022, 11, 25, 15, 15, 15)
+    calendar.set(Calendar.MILLISECOND, 0)
+
+    val dateTime = LocalDateTime.of(2022, 12, 25, 15, 15, 15)
+    val millis = dateTimeManager.toMillis(dateTime)
+
+    assertEquals(
+      calendar.timeInMillis,
+      millis
+    )
+
+    assertEquals(
+      dateTime,
+      dateTimeManager.fromMillis(millis)
     )
   }
 

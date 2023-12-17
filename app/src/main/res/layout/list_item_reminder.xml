@@ -97,6 +97,7 @@
                 android:id="@+id/todoList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:divider="@android:color/transparent"
                 android:fastScrollEnabled="false"
                 android:focusable="false"
@@ -115,27 +116,23 @@
 
                 <TextView
                     android:id="@+id/repeatBadge"
+                    style="@style/UiComponentBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/badge_tertiary_rounded"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:textAppearance="?textAppearanceTitleSmall"
-                    android:textColor="?colorOnTertiaryContainer"
                     android:visibility="gone"
                     tools:text="1D"
                     tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/timeToBadge"
+                    style="@style/UiComponentBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/badge_tertiary_rounded"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:textAppearance="?textAppearanceTitleSmall"
-                    android:textColor="?colorOnTertiaryContainer"
                     android:visibility="gone"
                     tools:text="less than 1 hour"
                     tools:visibility="visible" />
@@ -146,8 +143,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/button_more"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="@dimen/list_more_button_size"
+            android:layout_height="@dimen/list_more_button_size"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             app:layout_constraintRight_toRightOf="parent"

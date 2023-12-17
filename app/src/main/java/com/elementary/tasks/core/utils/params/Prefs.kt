@@ -81,13 +81,6 @@ class Prefs(
     get() = getLongArray(PrefsConstants.CALENDAR_IDS)
     set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
 
-  var showPermanentOnHome: Boolean
-    get() = getBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS, def = true)
-    set(value) {
-      putBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS, value)
-      notifyKey(PrefsConstants.SHOW_PERMANENT_REMINDERS)
-    }
-
   var analyticsEnabled: Boolean
     get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, def = true)
     set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)
@@ -306,14 +299,6 @@ class Prefs(
   var isSbNotificationEnabled: Boolean
     get() = getBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION)
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)
-
-  var isNoteReminderEnabled: Boolean
-    get() = getBoolean(PrefsConstants.QUICK_NOTE_REMINDER)
-    set(value) = putBoolean(PrefsConstants.QUICK_NOTE_REMINDER, value)
-
-  var noteReminderTime: Int
-    get() = getInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME)
-    set(value) = putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, value)
 
   var radius: Int
     get() = getInt(PrefsConstants.LOCATION_RADIUS, def = DefaultValues.RADIUS)
@@ -688,7 +673,6 @@ class Prefs(
       editor.putInt(PrefsConstants.LOCATION_RADIUS, DefaultValues.RADIUS)
       editor.putInt(PrefsConstants.MARKER_STYLE, 5)
       editor.putInt(PrefsConstants.TRACK_TIME, 1)
-      editor.putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
       editor.putInt(PrefsConstants.VOLUME, 25)
       val localeCheck = Locale.getDefault().toString().lowercase()
       val locale = when {
@@ -724,23 +708,17 @@ class Prefs(
         DefaultValues.LOCATION_TRACK_NOTIFICATION
       )
       editor.putBoolean(PrefsConstants.RATE_SHOW, false)
-      editor.putBoolean(PrefsConstants.IS_CREATE_SHOWN, false)
-      editor.putBoolean(PrefsConstants.IS_CALENDAR_SHOWN, false)
-      editor.putBoolean(PrefsConstants.IS_LIST_SHOWN, false)
       editor.putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
-      editor.putBoolean(PrefsConstants.BIRTHDAY_REMINDER, false)
-      editor.putBoolean(PrefsConstants.CALENDAR_IMAGE, false)
+      editor.putBoolean(PrefsConstants.BIRTHDAY_REMINDER, true)
       editor.putBoolean(PrefsConstants.EXPORT_TO_CALENDAR, false)
       editor.putBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, false)
       editor.putBoolean(PrefsConstants.INFINITE_VIBRATION, false)
       editor.putBoolean(PrefsConstants.NOTIFICATION_REPEAT, false)
       editor.putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, false)
-      editor.putBoolean(PrefsConstants.QUICK_NOTE_REMINDER, false)
       editor.putBoolean(PrefsConstants.EXPORT_TO_STOCK, false)
       editor.putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, true)
       editor.putInt(PrefsConstants.TIME_FORMAT, 0)
       editor.putBoolean(PrefsConstants.UNLOCK_DEVICE, false)
-      editor.putBoolean(PrefsConstants.WAKE_STATUS, false)
       editor.putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
       editor.putBoolean(PrefsConstants.TTS, false)
       editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
@@ -813,9 +791,6 @@ class Prefs(
     if (!hasKey(PrefsConstants.DAYS_TO_BIRTHDAY)) {
       putInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
     }
-    if (!hasKey(PrefsConstants.QUICK_NOTE_REMINDER_TIME)) {
-      putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
-    }
     if (!hasKey(PrefsConstants.START_DAY)) {
       putInt(PrefsConstants.START_DAY, 1)
     }
@@ -867,9 +842,6 @@ class Prefs(
     if (!hasKey(PrefsConstants.RATE_SHOW)) {
       putBoolean(PrefsConstants.RATE_SHOW, false)
     }
-    if (!hasKey(PrefsConstants.QUICK_NOTE_REMINDER)) {
-      putBoolean(PrefsConstants.QUICK_NOTE_REMINDER, false)
-    }
     if (!hasKey(PrefsConstants.REMINDERS_IN_CALENDAR)) {
       putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, false)
     }
@@ -881,12 +853,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER)) {
       putBoolean(PrefsConstants.BIRTHDAY_REMINDER, true)
-    }
-    if (!hasKey(PrefsConstants.CALENDAR_IMAGE)) {
-      putBoolean(PrefsConstants.CALENDAR_IMAGE, false)
-    }
-    if (!hasKey(PrefsConstants.ITEM_PREVIEW)) {
-      putBoolean(PrefsConstants.ITEM_PREVIEW, true)
     }
     if (!hasKey(PrefsConstants.WIDGET_BIRTHDAYS)) {
       putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, false)
@@ -929,9 +895,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.INCREASING_VOLUME)) {
       putBoolean(PrefsConstants.INCREASING_VOLUME, false)
-    }
-    if (!hasKey(PrefsConstants.WAKE_STATUS)) {
-      putBoolean(PrefsConstants.WAKE_STATUS, false)
     }
     if (!hasKey(PrefsConstants.LIVE_CONVERSATION)) {
       putBoolean(PrefsConstants.LIVE_CONVERSATION, true)

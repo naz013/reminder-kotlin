@@ -1,9 +1,9 @@
 package com.elementary.tasks.navigation
 
-import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
 interface FragmentCallback {
-  fun onTitleChange(title: String)
   fun hideKeyboard()
-  fun setCurrentFragment(fragment: BaseFragment<*>)
+  fun setCurrentFragment(fragment: BaseNavigationFragment<*>)
+  fun onCreateFragment(fragment: BaseNavigationFragment<*>)
 }

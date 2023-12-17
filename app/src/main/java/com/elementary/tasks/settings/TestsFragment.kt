@@ -9,6 +9,7 @@ import com.elementary.tasks.birthdays.dialog.ShowBirthdayActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 

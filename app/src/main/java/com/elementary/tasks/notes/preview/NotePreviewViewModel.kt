@@ -56,7 +56,10 @@ class NotePreviewViewModel(
   private val _note = mutableLiveDataOf<UiNotePreview>()
   val note = _note.toLiveData()
 
-  val reminder = reminderDao.loadByNoteKey(if (key == "") "1" else key)
+  val reminder = reminderDao.loadByNoteKey(
+    key = if (key == "") "1" else key,
+    removed = false
+  )
 
   var hasSameInDb: Boolean = false
 

@@ -17,6 +17,7 @@ import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 

@@ -31,7 +31,7 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentNotesBinding
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.NoteSortProcessor
 import com.elementary.tasks.notes.list.NotesRecyclerAdapter
@@ -44,7 +44,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
-class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
+class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
 
   private val viewModel by viewModel<ArchivedNotesViewModel>()
   private val imagesSingleton by inject<ImagesSingleton>()
@@ -115,7 +115,7 @@ class ArchivedNotesFragment : BaseNavigationFragment<FragmentNotesBinding>() {
         enableGrid = !enableGrid
         prefs.isNotesGridEnabled = enableGrid
         binding.recyclerView.layoutManager = layoutManager()
-        activity?.invalidateOptionsMenu()
+        invalidateOptionsMenu()
         true
       }
 

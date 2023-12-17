@@ -20,12 +20,12 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
+class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -47,7 +47,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    addMenu(R.menu.fragment_active_menu, { false }) {
+    addMenu(R.menu.fragment_birthdays, { false }) {
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
     }
     binding.fab.setOnClickListener { addNew() }
@@ -68,8 +68,6 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>() {
       binding.emptyItem.visibleGone(it.isEmpty())
     }
   }
-
-  override fun getTitle(): String = getString(R.string.birthdays)
 
   private fun initList() {
     if (resources.getBoolean(R.bool.is_tablet)) {

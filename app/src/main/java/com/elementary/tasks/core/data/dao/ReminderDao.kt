@@ -15,12 +15,6 @@ private const val byIdQuery = """
     JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
     WHERE reminder.uuId=:id"""
 
-private const val byNoteIdQuery = """
-    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-    FROM Reminder AS reminder
-    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-    WHERE reminder.noteId=:key"""
-
 @Dao
 interface ReminderDao {
 
@@ -46,11 +40,23 @@ interface ReminderDao {
   fun getById(id: String): Reminder?
 
   @Transaction
-  @Query(byNoteIdQuery)
-  fun loadByNoteKey(key: String): LiveData<Reminder>
+  @Query(
+    """
+    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+    FROM Reminder AS reminder
+    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+    WHERE reminder.noteId=:key AND reminder.isRemoved=:removed"""
+  )
+  fun loadByNoteKey(key: String, removed: Boolean): LiveData<Reminder>
 
   @Transaction
-  @Query(byNoteIdQuery)
+  @Query(
+    """
+    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+    FROM Reminder AS reminder
+    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+    WHERE reminder.noteId=:key"""
+  )
   fun getByNoteKey(key: String): Reminder?
 
   @Transaction
@@ -134,6 +140,24 @@ interface ReminderDao {
         AND reminder.type IN (:types)"""
   )
   fun getAllTypes(active: Boolean, removed: Boolean, types: IntArray): List<Reminder>
+
+  @Transaction
+  @Query(
+    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
+        FROM Reminder AS reminder
+        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
+        WHERE reminder.isRemoved=:removed
+        AND reminder.isActive=:active
+        AND reminder.type IN (:types)
+        AND LOWER(Reminder.summary) LIKE '%' || :query || '%'
+        ORDER BY reminder.isActive DESC, reminder.eventTime ASC"""
+  )
+  fun searchBySummaryAllTypes(
+    query: String,
+    active: Boolean,
+    removed: Boolean,
+    types: IntArray
+  ): List<Reminder>
 
   @Transaction
   @Query(

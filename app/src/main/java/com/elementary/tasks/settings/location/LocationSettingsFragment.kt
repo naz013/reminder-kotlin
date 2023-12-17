@@ -12,7 +12,7 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.google.android.gms.maps.GoogleMap
 import org.koin.android.ext.android.inject
 import java.util.Locale

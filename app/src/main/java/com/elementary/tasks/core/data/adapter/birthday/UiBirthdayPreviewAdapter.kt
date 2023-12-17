@@ -17,7 +17,13 @@ class UiBirthdayPreviewAdapter(
     val dateOfBirthFormatted = dateOfBirth?.let {
       dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
     }
-    val futureBirthday = dateOfBirth?.let { dateTimeManager.getFutureBirthdayDate(birthTime, it) }
+    val futureBirthday = dateOfBirth?.let {
+      dateTimeManager.getFutureBirthdayDate(
+        birthdayTime = birthTime,
+        birthdayDate = it,
+        birthday = birthday
+      )
+    }
     val nextBirthdayDate = futureBirthday?.let { dateTimeManager.getFullDateTime(it) }
     val contactId = if (birthday.number.isNotEmpty()) {
       contactsReader.getIdFromNumber(birthday.number)

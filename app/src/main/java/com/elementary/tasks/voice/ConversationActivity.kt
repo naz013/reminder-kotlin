@@ -530,43 +530,13 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     addResponse(getLocalized(R.string.voice_would_you_like_to_save_it))
     mAskAction = object : AskAction {
       override fun onYes() {
-        viewModel.saveNote(note, showToast = false, addQuickNote = false)
+        viewModel.saveNote(note, showToast = false)
         addResponse(getLocalized(R.string.voice_note_saved))
-        if (prefs.isNoteReminderEnabled) {
-          delayAction({ askQuickReminder(note) }, 1000)
-        } else {
-          mAskAction = null
-        }
+        mAskAction = null
       }
 
       override fun onNo() {
         addResponse(getLocalized(R.string.voice_note_canceled))
-        mAskAction = null
-      }
-    }
-    addAskReply()
-    delayMicClickIfNeeded(1000)
-  }
-
-  private fun askQuickReminder(note: Note) {
-    addResponse(getLocalized(R.string.voice_would_you_like_to_add_reminder))
-    mAskAction = object : AskAction {
-      override fun onYes() {
-        val model = viewModel.findSuggestion(note.summary)
-        addResponse(getLocalized(R.string.voice_reminder_saved))
-        if (model != null && model.type == ActionType.REMINDER) {
-          val reminder = viewModel.createReminder(model) ?: return
-          viewModel.saveAndStartReminder(reminder)
-          addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
-        } else {
-          val reminder = viewModel.saveQuickReminder(note.key, note.summary)
-          addObjectResponse(Reply(Reply.REMINDER, viewModel.toReminderListItem(reminder)))
-        }
-        mAskAction = null
-      }
-
-      override fun onNo() {
-        addResponse(getLocalized(R.string.voice_note_saved_without_reminder))
         mAskAction = null
       }
     }

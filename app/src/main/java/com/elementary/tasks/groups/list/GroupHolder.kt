@@ -1,5 +1,6 @@
 package com.elementary.tasks.groups.list
 
+import android.content.res.ColorStateList
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
@@ -26,6 +27,6 @@ class GroupHolder(
 
   fun setData(item: UiGroupList) {
     binding.textView.text = item.title
-    binding.clickView.setCardBackgroundColor(item.color)
+    binding.colorIndicatorView.imageTintList = ColorStateList.valueOf(item.color)
   }
 }

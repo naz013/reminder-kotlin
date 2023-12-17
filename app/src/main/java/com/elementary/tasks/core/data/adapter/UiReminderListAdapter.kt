@@ -2,7 +2,6 @@ package com.elementary.tasks.core.data.adapter
 
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
@@ -20,7 +19,7 @@ class UiReminderListAdapter(
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val dateTimeManager: DateTimeManager,
   private val recurEventManager: RecurEventManager
-) : UiAdapter<Reminder, UiReminderList> {
+) : UiAdapter<Reminder, UiReminderListData> {
 
   override fun create(data: Reminder): UiReminderListData {
     val type = UiReminderType(data.type)
@@ -88,7 +87,8 @@ class UiReminderListAdapter(
             due = uiReminderCommonAdapter.getDue(data, type),
             isRunning = data.isActive && !data.isRemoved,
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
-            shopList = data.shoppings
+            shopList = data.shoppings,
+            noteId = data.noteId
           )
         }
         type.isGpsType() -> {
@@ -118,7 +118,8 @@ class UiReminderListAdapter(
             status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved),
             actionTarget = uiReminderCommonAdapter.getTarget(data, type),
             isRepeating = isRepeating,
-            canSkip = canSkip
+            canSkip = canSkip,
+            noteId = data.noteId
           )
         }
       }

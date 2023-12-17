@@ -20,17 +20,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/week_grid_height"
+        android:layout_marginBottom="80dp"
         android:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        style="?attr/floatingActionButtonSecondaryStyle"
+        style="@style/UiComponentFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="96dp"
         android:contentDescription="@string/acc_add_reminder"
-        android:tint="?colorOnSecondary"
         app:srcCompat="@drawable/ic_twotone_add_24px" />
 
 </FrameLayout>

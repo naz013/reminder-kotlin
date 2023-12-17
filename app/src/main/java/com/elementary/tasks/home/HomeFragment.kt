@@ -4,31 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
+import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.ui.UiReminderList
-import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
-import com.elementary.tasks.core.data.ui.UiReminderListData
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
-import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
+import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
+import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
 import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
@@ -37,55 +30,67 @@ import com.elementary.tasks.globalsearch.ActivityNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
 import com.elementary.tasks.globalsearch.NavigationAction
 import com.elementary.tasks.globalsearch.adapter.SearchAdapter
-import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.googletasks.TasksConstants
+import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
+import com.elementary.tasks.googletasks.task.GoogleTaskActivity
+import com.elementary.tasks.home.scheduleview.HeaderTimeType
+import com.elementary.tasks.home.scheduleview.ScheduleAdapter
+import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
+import com.elementary.tasks.home.scheduleview.ScheduleModel
+import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
+import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
-import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
+import com.elementary.tasks.pin.PinLoginActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class HomeFragment :
-  BaseFragment<HomeFragmentBinding>(),
+  BaseSearchableFragment<HomeFragmentBinding>(),
   PrefsObserver,
   WhatsNewManager.Listener {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
   private val featureManager by inject<FeatureManager>()
   private val whatsNewManager by inject<WhatsNewManager>()
-  private val viewModel by viewModel<HomeViewModel>()
   private val searchViewModel by viewModel<GlobalSearchViewModel>()
-  private val remindersAdapter = UiReminderListRecyclerAdapter(isDark, isEditable = true)
-  private val birthdaysAdapter = BirthdaysRecyclerAdapter()
-  private var mPosition: Int = 0
 
-  private val reminderResolver = ReminderResolver(
-    dialogAction = { return@ReminderResolver dialogues },
-    toggleAction = { reminder ->
-      when (reminder) {
-        is UiReminderListActiveGps -> {
-          permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
-            viewModel.toggleReminder(reminder)
-          }
-        }
-
-        else -> {
-          viewModel.toggleReminder(reminder)
-        }
+  private val viewModel by viewModel<ScheduleHomeViewModel>()
+  private val scheduleAdapter = ScheduleAdapter(
+    isDark = isDark,
+    onReminderClickListener = { _, id ->
+      PinLoginActivity.openLogged(requireContext(), ReminderPreviewActivity::class.java) {
+        putExtra(Constants.INTENT_ID, id)
       }
     },
-    deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
-    skipAction = { reminder -> viewModel.skip(reminder) }
-  )
-  private val birthdayResolver = BirthdayResolver(
-    dialogAction = { dialogues },
-    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
+    onHeaderClickListener = { _, time ->
+      showEventTypeSelectionDialog(time)
+    },
+    onNoteClickListener = { _, id ->
+      PinLoginActivity.openLogged(requireContext(), NotePreviewActivity::class.java) {
+        putExtra(Constants.INTENT_ID, id)
+      }
+    },
+    onGoogleTaskClickListener = { _, id ->
+      PinLoginActivity.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
+        putExtra(Constants.INTENT_ID, id)
+      }
+    },
+    onBirthdayClickListener = { _, id ->
+      PinLoginActivity.openLogged(requireContext(), BirthdayPreviewActivity::class.java) {
+        putExtra(Constants.INTENT_ID, id)
+      }
+    }
   )
 
   private val searchAdapter = SearchAdapter(
     onSuggestionClick = { result, text ->
-      binding.searchView.editText.setText(text)
-      binding.searchView.editText.setSelection(text.length)
+      searchableFragmentCallback?.setQuery(text)
       searchViewModel.onSearchHistoryUpdate(result)
     },
     onObjectClick = { searchViewModel.onSearchResultClicked(it) }
@@ -118,78 +123,124 @@ class HomeFragment :
     binding.searchBar.menu.also { menu ->
       menu.getItem(0)?.isVisible = Module.hasMicrophone(requireContext())
     }
-    binding.searchResultsList.adapter = searchAdapter
-    binding.searchView.editText.doOnTextChanged { text, _, _, _ ->
-      searchViewModel.onQueryChanged(text?.toString() ?: "")
-    }
-
-    binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-      viewModel.topScrollX = scrollX
-    }
-
-    binding.addReminderButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToCreateReminderActivity("", true))
-    }
-    binding.addBirthdayButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity("", true))
-    }
-
-    binding.remindersHeader.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
-    }
-    binding.emptyRemindersState.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
-    }
-    binding.remindersButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
-    }
-
-    binding.archiveButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToArchiveFragment())
-    }
-
-    binding.birthdaysHeader.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
-    }
-    binding.emptyBirthdaysState.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
-    }
-    binding.birthdaysButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
-    }
-
-    binding.groupsButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToGroupsFragment())
-    }
-    binding.mapButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToMapFragment())
-    }
-    binding.notesButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToActionNotes())
-    }
-    binding.calendarButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
-    }
-
-    binding.googleButton.visibleGone(
-      featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
-        SuperUtil.isGooglePlayServicesAvailable(requireContext())
+    searchableFragmentCallback?.setSearchViewParams(
+      binding.searchBar.id,
+      getString(R.string.search_everywhere),
+      searchAdapter,
+      this
     )
-    binding.googleButton.setOnClickListener {
-      safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
-    }
+
+    binding.globalAddButton.setOnClickListener { showEventTypeSelectionDialog(null) }
+
+//    binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+//      viewModel.topScrollX = scrollX
+//    }
+//
+//    binding.remindersButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
+//    }
+//
+//    binding.archiveButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToArchiveFragment())
+//    }
+//
+//    binding.birthdaysButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
+//    }
+//
+//    binding.groupsButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToGroupsFragment())
+//    }
+//    binding.mapButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToMapFragment())
+//    }
+//    binding.notesButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToActionNotes())
+//    }
+//    binding.calendarButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
+//    }
+//
+//    binding.googleButton.visibleGone(
+//      featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+//        SuperUtil.isGooglePlayServicesAvailable(requireContext())
+//    )
+//    binding.googleButton.setOnClickListener {
+//      safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
+//    }
 
     updatePrivacyBanner()
     updateLoginBanner()
+    initViewModel()
+    setUpWhatsNewBanner()
 
     initRemindersList()
-    initBirthdaysList()
-    initViewModel()
-
-    setUpWhatsNewBanner()
 
     whatsNewManager.addListener(this)
     lifecycle.addObserver(whatsNewManager)
+  }
+
+  private fun showEventTypeSelectionDialog(headerTimeType: HeaderTimeType?) {
+    val items = if (viewModel.hasGoogleTasks()) {
+      arrayOf(
+        getString(R.string.add_reminder_menu),
+        getString(R.string.add_birthday),
+        getString(R.string.add_google_task)
+      )
+    } else {
+      arrayOf(
+        getString(R.string.add_reminder_menu),
+        getString(R.string.add_birthday)
+      )
+    }
+    dialogues.getMaterialDialog(requireContext())
+      .setItems(
+        items
+      ) { dialogInterface, i ->
+        dialogInterface.dismiss()
+        when (i) {
+          0 -> openReminderCreateScreen(viewModel.getDateTime(headerTimeType))
+          1 -> openBirthdayCreateScreen()
+          2 -> openGoogleTaskCreateScreen(viewModel.getTime(headerTimeType))
+        }
+      }
+      .show()
+  }
+
+  private fun openReminderCreateScreen(
+    dateTime: LocalDateTime
+  ) {
+    val deepLinkData = ReminderDatetimeTypeDeepLinkData(
+      type = Reminder.BY_DATE,
+      dateTime = dateTime
+    )
+    withActivity {
+      PinLoginActivity.openLogged(it, CreateReminderActivity::class.java, deepLinkData) { }
+    }
+  }
+
+  private fun openGoogleTaskCreateScreen(time: LocalTime?) {
+    val deepLinkData = GoogleTaskDateTimeDeepLinkData(
+      date = LocalDate.now(),
+      time = time
+    )
+    withActivity {
+      PinLoginActivity.openLogged(it, GoogleTaskActivity::class.java, deepLinkData) {
+        putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
+      }
+    }
+  }
+
+  private fun openBirthdayCreateScreen() {
+    val deepLinkData = BirthdayDateDeepLinkData(LocalDate.now())
+    withActivity {
+      PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java, deepLinkData) { }
+    }
+  }
+
+  private fun initRemindersList() {
+    binding.scheduleListView.layoutManager = LinearLayoutManager(context)
+    binding.scheduleListView.adapter = scheduleAdapter
   }
 
   private fun setUpWhatsNewBanner() {
@@ -203,21 +254,20 @@ class HomeFragment :
     }
   }
 
+  override fun onQueryChanged(text: String) {
+    searchViewModel.onQueryChanged(text)
+  }
+
   override fun onResume() {
     super.onResume()
     prefs.addObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.addObserver(PrefsConstants.USER_LOGGED, this)
-    binding.horizontalSelector.scrollTo(viewModel.topScrollX, 0)
   }
 
   override fun onPause() {
     super.onPause()
     prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
-    if (binding.searchView.isShowing) {
-      binding.searchView.clearText()
-      binding.searchView.hide()
-    }
   }
 
   override fun onDestroy() {
@@ -256,70 +306,20 @@ class HomeFragment :
     }
   }
 
-  private fun initRemindersList() {
-    remindersAdapter.actionsListener = object : ActionsListener<UiReminderListData> {
-      override fun onAction(
-        view: View,
-        position: Int,
-        t: UiReminderListData?,
-        actions: ListActions
-      ) {
-        if (t != null) {
-          mPosition = position
-          reminderResolver.resolveAction(view, t, actions)
-        }
-      }
-    }
-    binding.remindersList.layoutManager = LinearLayoutManager(context)
-    binding.remindersList.adapter = remindersAdapter
-  }
-
-  private fun initBirthdaysList() {
-    birthdaysAdapter.actionsListener = object : ActionsListener<UiBirthdayList> {
-      override fun onAction(view: View, position: Int, t: UiBirthdayList?, actions: ListActions) {
-        if (t != null) {
-          birthdayResolver.resolveAction(view, t, actions)
-        }
-      }
-    }
-    binding.birthdaysList.layoutManager = LinearLayoutManager(context)
-    binding.birthdaysList.adapter = birthdaysAdapter
-
-    if (prefs.isBirthdayReminderEnabled) {
-      binding.birthdaysBlock.visible()
-    } else {
-      binding.birthdaysBlock.gone()
-    }
-  }
-
   private fun initViewModel() {
-    viewModel.reminders.observe(viewLifecycleOwner) {
-      if (it != null) {
-        showReminders(it)
-      } else {
-        showReminders(listOf())
-      }
-    }
-    viewModel.birthdays.observe(viewLifecycleOwner) {
-      if (it != null) {
-        showBirthdays(it)
-      } else {
-        showBirthdays(listOf())
-      }
-    }
-    viewModel.result.observe(viewLifecycleOwner) {
-      if (it != null) {
-        if (it == Commands.OUTDATED) {
-          remindersAdapter.notifyItemChanged(mPosition)
-          toast(R.string.reminder_is_outdated)
-        }
-      }
-    }
+    lifecycle.addObserver(viewModel)
+    viewModel.scheduleData.nonNullObserve(viewLifecycleOwner) { updateList(it) }
 
     searchViewModel.searchResults.nonNullObserve(viewLifecycleOwner) {
       searchAdapter.submitList(it)
     }
     searchViewModel.navigateLiveData.nonNullObserve(viewLifecycleOwner) { onNavigationAction(it) }
+  }
+
+  private fun updateList(list: List<ScheduleModel>) {
+    scheduleAdapter.submitList(list)
+    binding.emptyScheduleView.visibleGone(list.isEmpty())
+    binding.scheduleListView.visibleGone(list.isNotEmpty())
   }
 
   private fun onNavigationAction(navigationAction: NavigationAction) {
@@ -331,28 +331,6 @@ class HomeFragment :
       }
     }
   }
-
-  private fun showBirthdays(list: List<UiBirthdayList>) {
-    birthdaysAdapter.submitList(list)
-    updateBirthdaysEmpty(list.size)
-  }
-
-  private fun showReminders(list: List<UiReminderList>) {
-    remindersAdapter.submitList(list)
-    updateRemindersEmpty(list.size)
-  }
-
-  private fun updateBirthdaysEmpty(size: Int) {
-    binding.emptyBirthdaysState.visibleGone(size == 0)
-    binding.birthdaysList.visibleGone(size != 0)
-  }
-
-  private fun updateRemindersEmpty(size: Int) {
-    binding.emptyRemindersState.visibleGone(size == 0)
-    binding.remindersList.visibleGone(size != 0)
-  }
-
-  override fun getTitle(): String = getString(R.string.events)
 
   override fun invoke(p1: String) {
     when (p1) {
@@ -369,9 +347,5 @@ class HomeFragment :
 
   override fun whatsNewVisible(isVisible: Boolean) {
     binding.whatsNewBanner.visibleGone(isVisible)
-  }
-
-  override fun hasToolbar(): Boolean {
-    return false
   }
 }

@@ -14,6 +14,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.dp2px
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.google.android.gms.maps.GoogleMap
@@ -22,7 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MapFragment : BaseAnimatedFragment<FragmentEventsMapBinding>() {
+class MapFragment : BaseToolbarFragment<FragmentEventsMapBinding>() {
 
   private val viewModel by viewModel<ActiveGpsRemindersViewModel>()
   private val mAdapter = LocationPlacesAdapter(get())

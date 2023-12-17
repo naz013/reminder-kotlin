@@ -16,6 +16,7 @@ import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
 import com.elementary.tasks.core.data.ui.reminder.UiReminderViewType
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
 
 class UiReminderListRecyclerAdapter(
   private val isDark: Boolean,
@@ -23,6 +24,8 @@ class UiReminderListRecyclerAdapter(
 ) : ListAdapter<UiReminderList, BaseUiReminderListViewHolder<*, *>>(
   UiReminderListDiffCallback()
 ) {
+
+  private val reminderCommon = ScheduleReminderViewHolderCommon()
 
   var actionsListener: ActionsListener<UiReminderListData>? = null
   var data = listOf<UiReminderList>()
@@ -84,24 +87,38 @@ class UiReminderListRecyclerAdapter(
       UiReminderViewType.GPS_ACTIVE.value -> {
         GpsViewHolder(parent, isEditable, showMore = true, listener)
       }
+
       UiReminderViewType.ACTIVE.value -> {
         ReminderViewHolder(parent, isEditable, showMore = true, listener)
       }
+
       UiReminderViewType.SHOPPING_ACTIVE.value -> {
-        ShoppingViewHolder(parent, isEditable, showMore = true, isDark = isDark, listener)
+        ShoppingViewHolder(
+          parent = parent,
+          editable = isEditable,
+          showMore = true,
+          isDark = isDark,
+          scheduleReminderViewHolderCommon = reminderCommon,
+          listener = listener
+        )
       }
+
       UiReminderViewType.GPS_REMOVED.value -> {
         ArchivedGpsViewHolder(parent, showMore = true, listener)
       }
+
       UiReminderViewType.SHOPPING_REMOVED.value -> {
         ArchivedShoppingViewHolder(parent, showMore = true, isDark = isDark, listener)
       }
+
       UiReminderViewType.REMOVED.value -> {
         ArchivedReminderViewHolder(parent, showMore = true, listener)
       }
+
       UiReminderViewType.HEADER.value -> {
         DateHeaderViewHolder(parent)
       }
+
       else -> {
         ReminderViewHolder(parent, isEditable, showMore = true, listener)
       }
@@ -128,24 +145,31 @@ class UiReminderListRecyclerAdapter(
       is GpsViewHolder -> {
         holder.setData(item as UiReminderListActiveGps)
       }
+
       is ArchivedGpsViewHolder -> {
         holder.setData(item as UiReminderListRemovedGps)
       }
+
       is ShoppingViewHolder -> {
         holder.setData(item as UiReminderListActiveShop)
       }
+
       is ArchivedShoppingViewHolder -> {
         holder.setData(item as UiReminderListRemovedShop)
       }
+
       is ReminderViewHolder -> {
         holder.setData(item as UiReminderListActive)
       }
+
       is ArchivedReminderViewHolder -> {
         holder.setData(item as UiReminderListRemoved)
       }
+
       is DateHeaderViewHolder -> {
         holder.setData(item as UiReminderListHeader)
       }
+
       else -> {
       }
     }

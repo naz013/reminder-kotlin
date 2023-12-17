@@ -11,7 +11,10 @@ data class UiBirthdayList(
   val birthdayDateFormatted: String = "",
   val ageFormatted: String = "",
   val remainingTimeFormatted: String? = null,
+  val color: Int,
+  val contrastColor: Int,
   val nextBirthdayDateFormatted: String = "",
+  val nextBirthdayTimeFormatted: String = "",
   val nextBirthdayDate: LocalDateTime,
   val nextBirthdayDateMillis: Long = 0L // Milliseconds
 )

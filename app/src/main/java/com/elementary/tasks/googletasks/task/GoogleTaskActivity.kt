@@ -7,6 +7,7 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.toast
@@ -18,6 +19,7 @@ import com.elementary.tasks.googletasks.TasksConstants
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
 class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
@@ -52,8 +54,18 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         getId()
       }
       initViewModel(tmp)
+      checkDeepLink()
     } else {
       initViewModel("")
+    }
+  }
+
+  private fun checkDeepLink() {
+    if (intent.getBooleanExtra(Constants.INTENT_DEEP_LINK, false)) {
+      runCatching {
+        val parser = DeepLinkDataParser()
+        viewModel.initFromDeepLink(parser.readDeepLinkData(intent))
+      }
     }
   }
 
@@ -82,10 +94,8 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
       }
     }
 
-    viewModel.formattedTime.nonNullObserve(this) { showTime(it) }
-    viewModel.formattedDate.nonNullObserve(this) { showDate(it) }
-    viewModel.isDateEnabled.nonNullObserve(this) { switchDate(isDate = it) }
-    viewModel.isReminder.nonNullObserve(this) { switchTime(isReminder = it) }
+    viewModel.timeState.nonNullObserve(this) { showTimeState(it) }
+    viewModel.dateState.nonNullObserve(this) { showDateState(it) }
     viewModel.taskList.nonNullObserve(this) { showTaskList(it) }
 
     lifecycle.addObserver(viewModel)
@@ -161,7 +171,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   private fun selectDateAction(type: Int) {
     val builder = dialogues.getMaterialDialog(this)
     val types = if (type == 2) {
-      arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
+      arrayOf(getString(R.string.no_time), getString(R.string.select_time))
     } else {
       arrayOf(getString(R.string.no_date), getString(R.string.select_date))
     }
@@ -171,10 +181,10 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
       types
     )
     var selection = 0
-    if (type == 1 && isDate()) {
+    if (type == 1 && viewModel.isDateSelected()) {
       selection = 1
     }
-    if (type == 2 && isReminder()) {
+    if (type == 2 && viewModel.isTimeSelected()) {
       selection = 1
     }
     builder.setSingleChoiceItems(adapter, selection) { dialog, which ->
@@ -191,9 +201,9 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         }
         if (type == 2) {
           when (which) {
-            0 -> viewModel.onReminderStateChanged(false)
+            0 -> viewModel.onTimeStateChanged(false)
             1 -> {
-              viewModel.onReminderStateChanged(true)
+              viewModel.onTimeStateChanged(true)
               timeDialog()
             }
           }
@@ -203,35 +213,30 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     builder.create().show()
   }
 
-  private fun isDate(): Boolean = viewModel.isDateEnabled.value ?: false
+  private fun showDateState(dateState: GoogleTaskViewModel.DateState) {
+    Timber.d("showDateState: $dateState")
+    when (dateState) {
+      is GoogleTaskViewModel.DateState.SelectedDate -> {
+        binding.dateField.text = dateState.formattedDate
+      }
 
-  private fun isReminder(): Boolean = viewModel.isReminder.value ?: false
-
-  private fun switchDate(isDate: Boolean) {
-    if (!isDate) {
-      binding.dateField.text = getString(R.string.no_date)
+      is GoogleTaskViewModel.DateState.NoDate -> {
+        binding.dateField.text = getString(R.string.no_date)
+      }
     }
+    binding.timeContainer.visibleGone(dateState is GoogleTaskViewModel.DateState.SelectedDate)
   }
 
-  private fun switchTime(isReminder: Boolean) {
-    if (!isReminder) {
-      binding.timeField.text = getString(R.string.no_reminder)
-    }
-  }
+  private fun showTimeState(timeState: GoogleTaskViewModel.TimeState) {
+    Timber.d("showTimeState: $timeState")
+    when (timeState) {
+      is GoogleTaskViewModel.TimeState.SelectedTime -> {
+        binding.timeField.text = timeState.formattedTime
+      }
 
-  private fun showDate(dateFormatted: String? = null) {
-    if (isDate()) {
-      binding.dateField.text = dateFormatted
-    } else {
-      binding.dateField.text = getString(R.string.no_date)
-    }
-  }
-
-  private fun showTime(timeFormatted: String? = null) {
-    if (isReminder()) {
-      binding.timeField.text = timeFormatted
-    } else {
-      binding.timeField.text = getString(R.string.no_reminder)
+      is GoogleTaskViewModel.TimeState.NoTime -> {
+        binding.timeField.text = getString(R.string.no_time)
+      }
     }
   }
 
@@ -278,7 +283,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
       return
     }
     val note = binding.detailsField.trimmedText()
-    viewModel.save(summary, note)
+    viewModel.save(summary = summary, note = note)
   }
 
   private fun deleteDialog() {

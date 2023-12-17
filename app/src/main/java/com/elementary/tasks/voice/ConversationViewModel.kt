@@ -414,7 +414,7 @@ class ConversationViewModel(
             }
           }
         } else if (types == ActionType.NOTE) {
-          saveNote(createNote(model.summary), showToast = true, addQuickNote = true)
+          saveNote(createNote(model.summary), showToast = true)
         } else if (types == ActionType.REMINDER) {
           saveReminder(model, isWidget)
         } else if (types == ActionType.GROUP) {
@@ -580,10 +580,7 @@ class ConversationViewModel(
     return item
   }
 
-  fun saveNote(note: Note, showToast: Boolean, addQuickNote: Boolean) {
-    if (addQuickNote && prefs.getBoolean(PrefsConstants.QUICK_NOTE_REMINDER)) {
-      saveQuickReminder(note.key, note.summary)
-    }
+  fun saveNote(note: Note, showToast: Boolean) {
     viewModelScope.launch(dispatcherProvider.default()) {
       note.updatedAt = dateTimeManager.getNowGmtDateTime()
       notesDao.insert(note)
@@ -592,28 +589,6 @@ class ConversationViewModel(
     if (showToast) {
       Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()
     }
-  }
-
-  fun saveQuickReminder(key: String, summary: String): Reminder {
-    val after = (prefs.getInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME) * 1000 * 60).toLong()
-    val due = System.currentTimeMillis() + after
-    val mReminder = Reminder()
-    mReminder.type = Reminder.BY_DATE
-    mReminder.delay = 0
-    mReminder.eventCount = 0
-    mReminder.useGlobal = true
-    mReminder.noteId = key
-    mReminder.summary = summary
-    val group = defaultGroup
-    if (group != null) {
-      mReminder.groupColor = group.colorPosition
-      mReminder.groupTitle = group.title
-      mReminder.groupUuId = group.id
-    }
-    mReminder.startTime = dateTimeManager.getGmtDateTimeFromMillis(due)
-    mReminder.eventTime = dateTimeManager.getGmtDateTimeFromMillis(due)
-    saveAndStartReminder(mReminder)
-    return mReminder
   }
 
   fun createGroup(model: Model): ReminderGroup {

@@ -22,6 +22,8 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.deeplink.DeepLinkDataParser
+import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.UriPicker
@@ -54,7 +56,6 @@ import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import org.threeten.bp.LocalDate
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -162,7 +163,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun loadReminder() {
     val id = getId()
-    val date = intentSerializable(Constants.INTENT_DATE, LocalDate::class.java)
     initViewModel()
     when {
       intent?.action == Intent.ACTION_SEND -> {
@@ -175,12 +175,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         isEditing = true
       }
 
-      date != null -> {
-        stateViewModel.reminder.type = Reminder.BY_DATE
-        stateViewModel.reminder.eventTime = dateTimeManager.getGmtFromDateTime(date)
-        editReminder(stateViewModel.reminder, false)
-      }
-
       intent.data != null -> {
         readFromIntent()
       }
@@ -189,6 +183,23 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         runCatching {
           val reminder = intentParcelable(Constants.INTENT_ITEM, Reminder::class.java) ?: Reminder()
           editReminder(reminder, false, fromFile = true)
+        }
+      }
+
+      intent.getBooleanExtra(Constants.INTENT_DEEP_LINK, false) -> {
+        runCatching {
+          val parser = DeepLinkDataParser()
+          when (val deepLinkData = parser.readDeepLinkData(intent)) {
+            is ReminderDatetimeTypeDeepLinkData -> {
+              stateViewModel.reminder.type = deepLinkData.type
+              stateViewModel.reminder.eventTime = dateTimeManager.getGmtFromDateTime(
+                dateTime = deepLinkData.dateTime
+              )
+              editReminder(stateViewModel.reminder, false)
+            }
+            else -> {
+            }
+          }
         }
       }
 

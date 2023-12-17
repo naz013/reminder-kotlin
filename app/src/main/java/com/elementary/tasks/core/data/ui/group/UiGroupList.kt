@@ -7,5 +7,6 @@ data class UiGroupList(
   val title: String,
   @ColorInt
   val color: Int,
-  val colorPosition: Int
+  val colorPosition: Int,
+  val contrastColor: Int
 )

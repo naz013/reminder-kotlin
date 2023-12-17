@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsProPageBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class FragmentProVersion : BaseSettingsFragment<FragmentSettingsProPageBinding>() {
 

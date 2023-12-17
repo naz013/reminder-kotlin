@@ -70,7 +70,7 @@
     <!-- Background Color (white) -->
     <item>
         <shape android:shape="oval">
-            <solid android:color="?colorSecondary50" />
+            <solid android:color="?colorSecondaryContainer" />
 
             <corners android:radius="3dp" />
         </shape>

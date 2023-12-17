@@ -13,6 +13,8 @@
         android:layout_marginStart="@dimen/list_margin"
         android:layout_marginEnd="@dimen/list_margin"
         android:visibility="visible"
+        android:clipToPadding="false"
+        android:paddingBottom="96dp"
         tools:itemCount="5"
         tools:listitem="@layout/list_item_birthday" />
 
@@ -48,13 +50,13 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        style="?attr/floatingActionButtonSecondaryStyle"
+        style="@style/UiComponentFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="96dp"
         android:contentDescription="@string/add_birthday"
-        android:tint="?colorOnSecondary"
         app:srcCompat="@drawable/ic_twotone_add_24px" />
 
 </FrameLayout>

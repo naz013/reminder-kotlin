@@ -26,8 +26,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/removeButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/list_more_button_size"
+            android:layout_height="@dimen/list_more_button_size"
             android:layout_gravity="end|center_vertical"
             android:layout_marginStart="16dp"
             android:background="?selectableItemBackgroundBorderless"

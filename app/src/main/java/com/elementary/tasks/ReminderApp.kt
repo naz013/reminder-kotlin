@@ -26,6 +26,7 @@ import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
 import com.elementary.tasks.globalsearch.searchModule
+import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.reminder.reminderModule
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
@@ -79,7 +80,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           newUtilsModule,
           birthdaysModule,
           calendarModule,
-          searchModule
+          searchModule,
+          homeModule
         )
       )
     }

@@ -17,6 +17,17 @@ interface GoogleTasksDao {
     """
         SELECT *
         FROM GoogleTask
+        WHERE uuId IS NOT NULL
+        AND uuId != ""
+        """
+  )
+  fun loadAttachedToReminder(): LiveData<List<GoogleTask>>
+
+  @Transaction
+  @Query(
+    """
+        SELECT *
+        FROM GoogleTask
         WHERE LOWER(title) LIKE '%' || :query || '%'
         OR LOWER(notes) LIKE '%' || :query || '%'
         """

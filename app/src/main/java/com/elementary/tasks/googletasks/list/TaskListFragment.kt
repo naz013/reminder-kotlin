@@ -29,12 +29,12 @@ import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
+class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private val adapter = TasksRecyclerAdapter()
   private val viewModel by viewModel<TaskListViewModel> { parametersOf(getListId()) }
@@ -204,7 +204,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun showGoogleTaskList(googleTaskList: GoogleTaskList) {
-    callback?.onTitleChange(googleTaskList.title)
+    setTitle(googleTaskList.title)
     val color = ThemeProvider.themedColor(requireContext(), googleTaskList.color)
     binding.fab.backgroundTintList = ColorStateList.valueOf(color)
     val textColor = if (color.isColorDark()) {
@@ -214,7 +214,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     }
     binding.fab.setTextColor(textColor)
     binding.fab.iconTint = ColorStateList.valueOf(textColor)
-    activity?.invalidateOptionsMenu()
+    invalidateOptionsMenu()
   }
 
   override fun getTitle(): String {

@@ -12,10 +12,8 @@ import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
-import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import org.apache.commons.lang3.StringUtils
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -25,8 +23,6 @@ class CalendarFragment :
   BaseCalendarFragment<FragmentFlextCalBinding>(),
   MonthCallback,
   InfinitePagerAdapter2.DataAccessor {
-
-  private val viewModel by viewModel<CalendarViewModel>()
 
   private val infinitePagerAdapter = InfinitePagerAdapter2(
     dataAccessor = this,
@@ -75,7 +71,6 @@ class CalendarFragment :
       isDark = isDark
     )
 
-    initViewModel()
     showCalendar()
 
     addMenu(R.menu.fragment_calendar, { menuItem ->
@@ -104,14 +99,9 @@ class CalendarFragment :
     return prefs.startDay == 0
   }
 
-  private fun initViewModel() {
-    lifecycle.addObserver(viewModel)
-    viewModel.map.nonNullObserve(viewLifecycleOwner) { infinitePagerAdapter.updateMapData(it) }
-  }
-
   private fun updateMenuTitles(date: LocalDate): String {
     val monthTitle = StringUtils.capitalize(dateTimeManager.formatCalendarMonthYear(date))
-    callback?.onTitleChange(monthTitle)
+    setTitle(monthTitle)
     return monthTitle
   }
 
@@ -166,7 +156,6 @@ class CalendarFragment :
           if (position == 1 || position == 4) {
             updateMenuTitles(currentDate)
             infinitePagerAdapter.selectPosition(position)
-            viewModel.find(fromDate(currentDate))
           }
         }
       }

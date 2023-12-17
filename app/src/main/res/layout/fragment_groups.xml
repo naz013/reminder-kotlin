@@ -47,13 +47,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        style="?attr/floatingActionButtonSecondaryStyle"
+        style="@style/UiComponentFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:contentDescription="@string/create_group"
-        android:tint="?colorOnSecondary"
         app:srcCompat="@drawable/ic_twotone_add_24px" />
 
 </FrameLayout>

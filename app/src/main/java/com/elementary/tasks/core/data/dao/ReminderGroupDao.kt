@@ -22,7 +22,7 @@ interface ReminderGroupDao {
   fun all(): List<ReminderGroup>
 
   @Transaction
-  @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
+  @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC, groupTitle ASC")
   fun loadAll(): LiveData<List<ReminderGroup>>
 
   @Transaction

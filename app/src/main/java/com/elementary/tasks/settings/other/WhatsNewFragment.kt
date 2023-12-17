@@ -8,7 +8,7 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.databinding.FragmentSettingsWhatsNewBinding
-import com.elementary.tasks.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 

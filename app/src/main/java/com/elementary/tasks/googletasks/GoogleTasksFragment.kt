@@ -34,14 +34,14 @@ import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
-import com.elementary.tasks.navigation.fragments.BaseAnimatedFragment
+import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class GoogleTasksFragment : BaseAnimatedFragment<FragmentGoogleTasksBinding>() {
+class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>() {
 
   private val viewModel by viewModel<GoogleTasksViewModel>()
   private val googleLogin: GoogleLogin by inject {
@@ -176,7 +176,7 @@ class GoogleTasksFragment : BaseAnimatedFragment<FragmentGoogleTasksBinding>() {
     }
     binding.fab.setTextColor(textColor)
     binding.fab.iconTint = ColorStateList.valueOf(textColor)
-    activity?.invalidateOptionsMenu()
+    invalidateOptionsMenu()
   }
 
   private fun showTasks(list: List<UiGoogleTaskList>) {

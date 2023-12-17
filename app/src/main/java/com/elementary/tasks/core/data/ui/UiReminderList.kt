@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 sealed class UiReminderList {
   abstract val id: String
+  abstract val noteId: String?
 }
 
 sealed class UiReminderListData : UiReminderList() {
@@ -24,7 +25,9 @@ sealed class UiReminderListData : UiReminderList() {
 data class UiReminderListHeader(
   override val id: String,
   val date: String
-) : UiReminderList()
+) : UiReminderList() {
+  override val noteId: String? = null
+}
 
 data class UiReminderListActive(
   override val id: String,
@@ -38,7 +41,8 @@ data class UiReminderListActive(
   override val status: UiReminderStatus,
   val actionTarget: UiReminderTarget?,
   override val isRepeating: Boolean,
-  override val canSkip: Boolean
+  override val canSkip: Boolean,
+  override val noteId: String?
 ) : UiReminderListData()
 
 data class UiReminderListActiveGps(
@@ -56,6 +60,7 @@ data class UiReminderListActiveGps(
   override val isRepeating: Boolean = false
   override val due: UiReminderDueData? = null
   override val canSkip: Boolean = false
+  override val noteId: String? = null
 }
 
 data class UiReminderListActiveShop(
@@ -68,7 +73,8 @@ data class UiReminderListActiveShop(
   override val due: UiReminderDueData,
   val isRunning: Boolean,
   override val status: UiReminderStatus,
-  val shopList: List<ShopItem>
+  val shopList: List<ShopItem>,
+  override val noteId: String?
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val canSkip: Boolean = false
@@ -87,6 +93,7 @@ data class UiReminderListRemoved(
   override val isRepeating: Boolean
 ) : UiReminderListData() {
   override val canSkip: Boolean = false
+  override val noteId: String? = null
 }
 
 data class UiReminderListRemovedGps(
@@ -103,6 +110,7 @@ data class UiReminderListRemovedGps(
   override val isRepeating: Boolean = false
   override val due: UiReminderDueData? = null
   override val canSkip: Boolean = false
+  override val noteId: String? = null
 }
 
 data class UiReminderListRemovedShop(
@@ -118,4 +126,5 @@ data class UiReminderListRemovedShop(
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val canSkip: Boolean = false
+  override val noteId: String? = null
 }

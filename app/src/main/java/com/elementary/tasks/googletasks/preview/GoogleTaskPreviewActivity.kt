@@ -1,9 +1,8 @@
 package com.elementary.tasks.googletasks.preview
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.view.updatePadding
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -12,9 +11,7 @@ import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.databinding.ActivityGoogleTaskPreviewBinding
@@ -23,36 +20,19 @@ import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBinding>() {
 
   private val viewModel by viewModel<GoogleTaskPreviewViewModel> { parametersOf(idFromIntent()) }
-
-  private var initPaddingTop: Int? = null
   private val adsProvider = AdsProvider()
 
   override fun inflateBinding() = ActivityGoogleTaskPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    if (initPaddingTop == null) {
-      initPaddingTop = binding.rootView.paddingTop
-    }
-
-    drawBehindSystemBars(binding.rootView) { insets ->
-      binding.rootView.updatePadding(
-        top = (initPaddingTop ?: 0) + insets.top
-      )
-    }
-
     initTopAppBar()
-
     binding.buttonComplete.setOnClickListener { viewModel.onComplete() }
-
     loadAds()
-
     initViewModel()
   }
 
@@ -93,9 +73,9 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     }
   }
 
-  private fun showTextIfNotNull(textView: TextView, value: String?) {
-    textView.visibleGone(value != null)
+  private fun showTextIfNotNull(textView: TextView, value: String?, func: (Boolean) -> Unit) {
     textView.text = value
+    func(value != null)
   }
 
   private fun idFromIntent() = intentString(Constants.INTENT_ID)
@@ -122,15 +102,28 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   }
 
   private fun showGoogleTask(googleTask: UiGoogleTaskPreview) {
-    showTextIfNotNull(binding.completedDateView, googleTask.completedDate)
-    showTextIfNotNull(binding.createdDateView, googleTask.createdDate)
-    showTextIfNotNull(binding.dueDateView, googleTask.dueDate)
-    showTextIfNotNull(binding.taskNotesView, googleTask.notes)
-    showTextIfNotNull(binding.taskTitleView, googleTask.text)
-    showTextIfNotNull(binding.listNameView, googleTask.taskListName)
+    showTextIfNotNull(binding.completedDateView, googleTask.completedDate) {
+      binding.completedDateViewBlock.visibleGone(it)
+    }
+    showTextIfNotNull(binding.createdDateView, googleTask.createdDate) {
+      binding.createdDateViewBlock.visibleGone(it)
+    }
+    showTextIfNotNull(binding.dueDateView, googleTask.dueDate) {
+      binding.dueDateViewBlock.visibleGone(it)
+    }
+    showTextIfNotNull(binding.taskNotesView, googleTask.notes) {
+      binding.taskNotesViewBlock.visibleGone(it)
+    }
+    showTextIfNotNull(binding.taskTitleView, googleTask.text) {
+      binding.taskTitleViewBlock.visibleGone(it)
+    }
+    showTextIfNotNull(binding.listNameView, googleTask.taskListName) {
+      binding.listNameViewBlock.visibleGone(it)
+    }
 
-    if (googleTask.taskListColor != 0) {
-      binding.rootView.setBackgroundColor(googleTask.taskListColor)
+    googleTask.taskListColor.also { color ->
+      binding.listNameView.setTextColor(color)
+      binding.listNameIconView.imageTintList = ColorStateList.valueOf(color)
     }
 
     binding.buttonComplete.visibleGone(!googleTask.isCompleted)
@@ -141,49 +134,6 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     } else {
       binding.statusView.text = getString(R.string.completed)
     }
-
-    val isColorDark = googleTask.taskListColor.isColorDark()
-
-    Timber.d("showGoogleTask: isDark=$isColorDark")
-
-    updateStatusBar(binding.rootView, !isColorDark)
-
-    updateMenu(isColorDark)
-    updateIcons(isColorDark)
-  }
-
-  private fun updateMenu(isDarkColor: Boolean) {
-    binding.toolbar.menu.also { menu ->
-      Timber.d("updateMenu: ${menu.size()}")
-      ViewUtils.tintMenuIconId(
-        this,
-        menu,
-        R.id.action_edit,
-        R.drawable.ic_twotone_edit_24px,
-        isDarkColor
-      )
-      ViewUtils.tintMenuIconId(
-        this,
-        menu,
-        R.id.action_delete,
-        R.drawable.ic_twotone_delete_24px,
-        isDarkColor
-      )
-      binding.toolbar.invalidateMenu()
-    }
-  }
-
-  private fun updateIcons(isDarkColor: Boolean) {
-    binding.toolbar.setNavigationIconTint(
-      ContextCompat.getColor(
-        this,
-        if (isDarkColor) {
-          R.color.pureWhite
-        } else {
-          R.color.pureBlack
-        }
-      )
-    )
   }
 
   override fun requireLogin() = true

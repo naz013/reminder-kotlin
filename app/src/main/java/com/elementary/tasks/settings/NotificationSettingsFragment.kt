@@ -28,6 +28,7 @@ import com.elementary.tasks.core.utils.ui.SelectionList
 import com.elementary.tasks.core.utils.visible
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File

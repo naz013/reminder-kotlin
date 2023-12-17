@@ -20,6 +20,7 @@ import com.elementary.tasks.databinding.ListItemShowReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleResponseBinding
 import com.elementary.tasks.groups.list.GroupHolder
+import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
 import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingViewHolder
@@ -28,6 +29,8 @@ import timber.log.Timber
 class ConversationAdapter(
   private val currentStateHolder: CurrentStateHolder
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private val reminderCommon = ScheduleReminderViewHolderCommon()
 
   private val data = mutableListOf<Reply>()
   var showMore: ((Int) -> Unit)? = null
@@ -78,7 +81,8 @@ class ConversationAdapter(
         parent,
         editable = false,
         showMore = false,
-        isDark = currentStateHolder.theme.isDark
+        isDark = currentStateHolder.theme.isDark,
+        scheduleReminderViewHolderCommon = reminderCommon
       )
 
       else -> AskHolder(parent)

@@ -12,7 +12,11 @@ class UiBirthdayWidgetListAdapter(private val dateTimeManager: DateTimeManager) 
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val birthdayDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now()
     val birthDate = dateTimeManager.getReadableBirthDate(birthdayDate, birthday.ignoreYear)
-    val futureBirthday = dateTimeManager.getFutureBirthdayDate(birthTime, birthdayDate)
+    val futureBirthday = dateTimeManager.getFutureBirthdayDate(
+      birthdayTime = birthTime,
+      birthdayDate = birthdayDate,
+      birthday = birthday
+    )
     val remainingTime = dateTimeManager.getBirthdayRemaining(
       futureBirthdayDateTime = futureBirthday,
       ignoreYear = birthday.ignoreYear

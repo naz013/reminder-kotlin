@@ -2,10 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorPrimaryContainer"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,165 +14,272 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:elevation="0dp"
-            app:liftOnScroll="false">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:menu="@menu/activity_google_task_preview"
-                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px" />
+                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+                app:navigationIconTint="?colorOnSurface"
+                app:title="@string/details" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardView"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardBackgroundColor="?colorBackgroundFloating"
-            app:cardElevation="4dp"
-            app:shapeAppearance="@style/ShapeAppearance.PreviewCard">
+            android:overScrollMode="ifContentScrolls">
 
-            <androidx.core.widget.NestedScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="ifContentScrolls">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/UiComponentDetailsCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/material_margin"
-                    android:layout_marginEnd="@dimen/material_margin"
-                    android:orientation="vertical">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/taskTitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceHeadlineSmall"
-                        android:textColor="?colorOnBackground"
-                        app:drawableStartCompat="@drawable/ic_twotone_title_24px"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="Title" />
-
-                    <TextView
-                        android:id="@+id/taskNotesView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceTitleLarge"
-                        android:textColor="?colorOnBackground"
-                        android:visibility="gone"
-                        app:drawableStartCompat="@drawable/ic_twotone_text_snippet_24"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="1234567890"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/listNameView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        app:drawableStartCompat="@drawable/ic_twotone_list_24"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="25 years" />
-
-                    <TextView
-                        android:id="@+id/dueDateView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        android:visibility="gone"
-                        app:drawableStartCompat="@drawable/ic_twotone_alarm_24px"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="25 years"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/createdDateView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        app:drawableStartCompat="@drawable/ic_twotone_add_alarm_24"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="25 years" />
-
-                    <TextView
-                        android:id="@+id/completedDateView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        android:visibility="gone"
-                        app:drawableStartCompat="@drawable/ic_twotone_alarm_on_24"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="25 May, 2000"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/statusView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawablePadding="8dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        android:visibility="visible"
-                        app:drawableStartCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:drawableTint="?colorOnBackground"
-                        tools:text="@string/completed"
-                        tools:visibility="visible" />
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="24dp">
 
                     <LinearLayout
-                        android:id="@+id/ads_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="64dp"
-                        android:layout_marginEnd="16dp"
-                        android:orientation="vertical" />
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/taskTitleViewBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-            </androidx.core.widget.NestedScrollView>
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_text_fields_24px"
+                                app:tint="?colorPrimary" />
 
-        </com.google.android.material.card.MaterialCardView>
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/taskTitleView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:textAppearance="?textAppearanceTitleLarge"
+                                android:textColor="?colorPrimary"
+                                android:textStyle="bold"
+                                tools:text="Test" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/taskNotesViewBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_text_snippet_24"
+                                app:tint="?colorOnBackground" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/taskNotesView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="5dp"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnBackground"
+                                tools:text="Some note" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/listNameViewBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/listNameIconView"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_list_24"
+                                app:tint="?colorOnBackground" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/listNameView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnBackground"
+                                tools:text="Work tasks" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/dueDateViewBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_alarm_24px"
+                                app:tint="?colorOnBackground" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/dueDateView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnBackground"
+                                tools:text="25 December 2023" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/createdDateViewBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_add_alarm_24"
+                                app:tint="?colorOnBackground" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/createdDateView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnBackground"
+                                tools:text="25 December 2023" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/completedDateViewBlock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_alarm_on_24"
+                                app:tint="?colorOnBackground" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/completedDateView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnBackground"
+                                tools:text="25 December 2023" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                app:srcCompat="@drawable/ic_twotone_local_offer_24px"
+                                app:tint="?colorOnBackground" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/statusView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnBackground"
+                                tools:text="@string/completed" />
+
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/ads_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:orientation="vertical" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/buttonComplete"
+        style="@style/UiComponentExtendedFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
