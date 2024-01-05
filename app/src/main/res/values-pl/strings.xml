@@ -4,7 +4,7 @@
     <string name="app_name">"Przypomnienia"</string>
     <string name="app_name_pro">"Przypomnienia PRO"</string>
     <string name="action_settings">"Ustawienia"</string>
-    <string name="copyright">2023 ©️ Nazar Sukhovych</string>
+    <string name="copyright">2024 ©️ Nazar Sukhovych</string>
     <string name="cant_access_location_services">Nie mogę uzyskać dostępu do usług lokalizacyjnych!</string>
     <string name="normal">Normalna</string>
     <string name="satellite">Satelita</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Szybko twórz wydarzenia z ekranu głównego</string>
     <string name="widget_notes_description">Uzyskaj dostęp do swoich notatek</string>
     <string name="widget_calendar_description">Zobacz swoje wydarzenia w kalendarzu miesięcznym</string>
+    <string name="widget_single_note_description">Zobacz swoją notatkę na ekranie głównym</string>
     <string name="widget_events_description">Pokaż aktywne przypomnienia i urodziny</string>
     <string name="widget_google_tasks_description">Pokaż aktywne Zadania Google</string>
     <string name="add_to_google_tasks">Dodaj do Listy zadań Google</string>
@@ -733,7 +734,7 @@
     <string name="recur_every_day_in_may">Codziennie w maju</string>
     <string name="recur_weekly_for_10_occurrences">Tygodniowo dla 10 zdarzeń</string>
     <string name="recur_monthly_on_the_first_friday_for_10_occurrences">Miesięcznie w pierwszy piątek dla 10 zdarzeń</string>
-    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Co drugi miesiąc w pierwszą i ostatnią niedzielę miesiąca za 10 zdarzeń</string>
+    <string name="recur_every_other_month_on_the_first_and_last_sun_for_10_occurrences">Every other month on the first and last Sunday of the month for 10 occurrences</string>
     <string name="recur_monthly_on_the_second_to_last_monday_of_the_month_for_6_months">Miesięcznie w drugi do ostatniego poniedziałku miesiąca przez 6 miesięcy</string>
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Miesięcznie w trzecim do ostatniego dniu miesiąca</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">Miesięcznie w 2. i 15. dniu miesiąca, 10 zdarzeń</string>
@@ -749,7 +750,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Pierwsza sobota, która następuje po pierwszej niedzielze miesiąca</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Co 15 minut dla 6 zdarzeń</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Co godzinę i pół dla 4 zdarzeń</string>
-    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Trzecia instancja w miesiąc 1 wtorek, środa lub czwartek przez następne 3 miesiące</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">The third instance into the month of one of Tuesday, Wednesday, or Thursday, for the next 3 months</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Drugi do ostatniego dnia tygodnia miesiąca</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Tygodniowy we wtorek i czwartek przez pięć tygodni</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Co drugi tydzień we wtorek i czwartek, 8 zdarzeń</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 Aplikacja została zaktualizowana 😻. Kliknij \"Szczegóły\", aby przeczytać więcej.</string>
     <string name="whats_new_details">Szczegóły</string>
     <string name="whats_new">Co nowego</string>
+    <string name="notes_archive">Archiwum</string>
+    <string name="notes_move_to_archive">Przenieś do archiwum</string>
+    <string name="notes_unarchive">Przywróć z archiwum</string>
+    <string name="notes_failed_to_update">Nie udało się zaktualizować</string>
+    <string name="notes_archive_is_empty">Archiwum jest pusty</string>
+    <string name="widget_note_note_not_selected">Notatka nie wybrana</string>
+    <string name="widget_note_horizontal_alignment">Wyrównanie w poziomie</string>
+    <string name="widget_note_vertical_alignment">Wyrównanie w pionie</string>
+    <string name="widget_note_center">Wyśrodkowany</string>
+    <string name="widget_note_bottom">Dół</string>
+    <string name="widget_note_top">Góra</string>
+    <string name="widget_note_right">Po prawej</string>
+    <string name="widget_note_left">Po lewej</string>
+    <string name="i_don_t_know_the_year">Nie znam roku urodzenia</string>
+    <string name="reminder_title_all_day">Cały dzień</string>
+    <string name="estimated_next_reminder">Szacowane następne przypomnienie</string>
+    <string name="search_everywhere">Szukaj wszędzie…</string>
+    <string name="schedule">Harmonogram</string>
+    <string name="schedule_noon">Południe</string>
+    <string name="schedule_you_have_done_everything_for_today">Zrobiłeś wszystko na dzisiaj. Naciśnij \"+\", aby dodać nowe przypomnienie</string>
+    <string name="schedule_good_morning">Dzień dobry</string>
+    <string name="schedule_good_afternoon">Miłego popołudnia</string>
+    <string name="schedule_good_evening">Dobry wieczór</string>
+    <string name="also_add_a_reminder">Dodaj również przypomnienie</string>
+    <string name="no_time">Bez czasu</string>
+    <string name="shopping_lists">Listy zakupów</string>
 </resources>

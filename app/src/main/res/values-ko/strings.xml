@@ -4,7 +4,7 @@
     <string name="app_name">"조언"</string>
     <string name="app_name_pro">"조언 PRO"</string>
     <string name="action_settings">"설정"</string>
-    <string name="copyright">2023 © Nazar Sukhovych</string>
+    <string name="copyright">2024 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">위치 서비스에 액세스 할 수 없습니다.</string>
     <string name="normal">표준</string>
     <string name="satellite">위성</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">홈 화면에서 빠르게 이벤트 만들기</string>
     <string name="widget_notes_description">메모에 액세스</string>
     <string name="widget_calendar_description">월별 캘린더에서 이벤트 보기</string>
+    <string name="widget_single_note_description">홈 화면에서 메모 보기</string>
     <string name="widget_events_description">활성 미리 알림 및 생일 표시</string>
     <string name="widget_google_tasks_description">활성 Google 작업 표시</string>
     <string name="add_to_google_tasks">Google 작업에 추가</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 애플리케이션이 업데이트되었습니다 😻. 자세한 내용을 보려면 \"세부 정보\"를 클릭하십시오.</string>
     <string name="whats_new_details">세부</string>
     <string name="whats_new">새로운 소식</string>
+    <string name="notes_archive">아카이브</string>
+    <string name="notes_move_to_archive">보관함으로 이동</string>
+    <string name="notes_unarchive">보관하지 않음</string>
+    <string name="notes_failed_to_update">업데이트 실패</string>
+    <string name="notes_archive_is_empty">아무것도 보관되지 않았습니다.</string>
+    <string name="widget_note_note_not_selected">메모가 선택되지 않았습니다.</string>
+    <string name="widget_note_horizontal_alignment">가로 정렬</string>
+    <string name="widget_note_vertical_alignment">수직 정렬</string>
+    <string name="widget_note_center">중앙</string>
+    <string name="widget_note_bottom">하단</string>
+    <string name="widget_note_top">위</string>
+    <string name="widget_note_right">우측</string>
+    <string name="widget_note_left">왼쪽</string>
+    <string name="i_don_t_know_the_year">1년은 모르겠는데</string>
+    <string name="reminder_title_all_day">종일</string>
+    <string name="estimated_next_reminder">예상되는 다음 알림</string>
+    <string name="search_everywhere">여기저기 검색해 보세요…</string>
+    <string name="schedule">예약</string>
+    <string name="schedule_noon">낮</string>
+    <string name="schedule_you_have_done_everything_for_today">오늘 할 일을 다 하셨습니다. 새 알림을 추가하려면 \"+\"를 누르세요.</string>
+    <string name="schedule_good_morning">좋은 아침이에요</string>
+    <string name="schedule_good_afternoon">안녕하세요</string>
+    <string name="schedule_good_evening">좋은 저녁이에요</string>
+    <string name="also_add_a_reminder">또한 알림을 추가하세요</string>
+    <string name="no_time">시간 없어</string>
+    <string name="shopping_lists">쇼핑 목록</string>
 </resources>

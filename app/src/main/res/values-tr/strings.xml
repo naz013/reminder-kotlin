@@ -4,7 +4,7 @@
     <string name="app_name">"Anımsatıcı"</string>
     <string name="app_name_pro">"Anımsatıcı PRO"</string>
     <string name="action_settings">"Ayarlar"</string>
-    <string name="copyright">2023 © Nazar Sukhovych</string>
+    <string name="copyright">2024 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Konumu hizmetlerine erişim alınamıyor!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Uydu</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Ana ekrandan hızlı bir şekilde etkinlik oluşturun</string>
     <string name="widget_notes_description">Notlarınıza erişin</string>
     <string name="widget_calendar_description">Etkinliklerinizi Aylık Takvim\'de görün</string>
+    <string name="widget_single_note_description">Notunuzu Ana Ekranda görün</string>
     <string name="widget_events_description">Aktif Hatırlatıcıları ve Doğum Günlerini Göster</string>
     <string name="widget_google_tasks_description">Etkin Google Görevlerini göster</string>
     <string name="add_to_google_tasks">Google Görevlerine Ekle</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 Uygulama güncellendi 😻. Daha fazlasını okumak için \"Detaylar\"a tıklayın.</string>
     <string name="whats_new_details">Detaylar</string>
     <string name="whats_new">Neler yeni</string>
+    <string name="notes_archive">Arşiv</string>
+    <string name="notes_move_to_archive">Arşive taşı</string>
+    <string name="notes_unarchive">Arşivden çıkar</string>
+    <string name="notes_failed_to_update">Güncelleme başarısız oldu</string>
+    <string name="notes_archive_is_empty">Arşiv boş</string>
+    <string name="widget_note_note_not_selected">Not seçilmedi</string>
+    <string name="widget_note_horizontal_alignment">Yatay hizalama</string>
+    <string name="widget_note_vertical_alignment">Dikey hizalama</string>
+    <string name="widget_note_center">Orta</string>
+    <string name="widget_note_bottom">Altta</string>
+    <string name="widget_note_top">Üst</string>
+    <string name="widget_note_right">Sağ</string>
+    <string name="widget_note_left">Sol</string>
+    <string name="i_don_t_know_the_year">Bir yıl bilmiyorum</string>
+    <string name="reminder_title_all_day">Tüm Gün</string>
+    <string name="estimated_next_reminder">Tahmini sonraki hatırlatıcı</string>
+    <string name="search_everywhere">Her yerde ara…</string>
+    <string name="schedule">Zamanlama</string>
+    <string name="schedule_noon">Öğlen</string>
+    <string name="schedule_you_have_done_everything_for_today">Bugün için her şeyi yaptın. Yeni Hatırlatıcılar eklemek için \"+\" tuşuna basın</string>
+    <string name="schedule_good_morning">Günaydın</string>
+    <string name="schedule_good_afternoon">Tünaydın</string>
+    <string name="schedule_good_evening">İyi akşamlar</string>
+    <string name="also_add_a_reminder">Ayrıca bir hatırlatıcı ekleyin</string>
+    <string name="no_time">Zaman yok</string>
+    <string name="shopping_lists">Alışveriş listeleri</string>
 </resources>

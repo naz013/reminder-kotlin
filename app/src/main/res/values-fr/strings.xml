@@ -4,7 +4,7 @@
     <string name="app_name">"Rappel"</string>
     <string name="app_name_pro">"Rappel PRO"</string>
     <string name="action_settings">"Paramètres"</string>
-    <string name="copyright">2023 ©️ Nazar Sukhovych</string>
+    <string name="copyright">2024 ©️ Nazar Sukhovych</string>
     <string name="cant_access_location_services">Je ne peux pas avoir accès aux services de localisation!</string>
     <string name="normal">Ordinaire</string>
     <string name="satellite">Satellite</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Créez rapidement des événements depuis l\'écran d\'accueil</string>
     <string name="widget_notes_description">Accéder à vos notes</string>
     <string name="widget_calendar_description">Voir vos événements dans le calendrier mensuel</string>
+    <string name="widget_single_note_description">Voir votre note sur l\'écran d\'accueil</string>
     <string name="widget_events_description">Afficher les rappels actifs et les anniversaires</string>
     <string name="widget_google_tasks_description">Afficher les tâches Google actives</string>
     <string name="add_to_google_tasks">Ajouter aux tâches Google</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 Application a été mise à jour 😻. Cliquez sur \"Détails\" pour en savoir plus.</string>
     <string name="whats_new_details">Détails</string>
     <string name="whats_new">Quoi de neuf</string>
+    <string name="notes_archive">Archive</string>
+    <string name="notes_move_to_archive">Déplacer vers les archives</string>
+    <string name="notes_unarchive">Désarchiver</string>
+    <string name="notes_failed_to_update">Échec de la mise à jour</string>
+    <string name="notes_archive_is_empty">L\'archive est vide</string>
+    <string name="widget_note_note_not_selected">Note non sélectionnée</string>
+    <string name="widget_note_horizontal_alignment">Alignement horizontal</string>
+    <string name="widget_note_vertical_alignment">Alignement vertical</string>
+    <string name="widget_note_center">Alignement au centre</string>
+    <string name="widget_note_bottom">Bottom</string>
+    <string name="widget_note_top">Meilleur</string>
+    <string name="widget_note_right">Droite</string>
+    <string name="widget_note_left">À gauche</string>
+    <string name="i_don_t_know_the_year">Je ne connais pas une année</string>
+    <string name="reminder_title_all_day">Tous les jours</string>
+    <string name="estimated_next_reminder">Prochain rappel estimé</string>
+    <string name="search_everywhere">Rechercher partout…</string>
+    <string name="schedule">Emploi de temps</string>
+    <string name="schedule_noon">Midi</string>
+    <string name="schedule_you_have_done_everything_for_today">Vous avez tout fait pour aujourd\'hui. Appuyez sur \"+\" pour ajouter de nouveaux rappels</string>
+    <string name="schedule_good_morning">Bonjour</string>
+    <string name="schedule_good_afternoon">Bonjour</string>
+    <string name="schedule_good_evening">Bonsoir</string>
+    <string name="also_add_a_reminder">Ajoute également un rappel</string>
+    <string name="no_time">Pas d\'heure</string>
+    <string name="shopping_lists">Listes de courses</string>
 </resources>
