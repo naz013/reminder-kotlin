@@ -4,7 +4,7 @@
     <string name="app_name">"Promemoria"</string>
     <string name="app_name_pro">"Promemoria PRO"</string>
     <string name="action_settings">"Impostazioni"</string>
-    <string name="copyright">2023 ©️ Nazar Sukhovych</string>
+    <string name="copyright">2024 ©️ Nazar Sukhovych</string>
     <string name="cant_access_location_services">Non posso accedere ai servizi di localizzazione!</string>
     <string name="normal">Normale</string>
     <string name="satellite">Satellitare</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Crea rapidamente eventi dalla schermata iniziale</string>
     <string name="widget_notes_description">Accedi alle tue note</string>
     <string name="widget_calendar_description">Visualizza i tuoi eventi nel calendario mensile</string>
+    <string name="widget_single_note_description">Vedi la tua nota sulla schermata Home</string>
     <string name="widget_events_description">Mostra promemoria e compleanni attivi</string>
     <string name="widget_google_tasks_description">Mostra attività Google attive</string>
     <string name="add_to_google_tasks">Aggiungi a Google Task</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 L\'applicazione è stata aggiornata 😻. Clicca su \"Dettagli\" per saperne di più.</string>
     <string name="whats_new_details">Dettagli</string>
     <string name="whats_new">Novità</string>
+    <string name="notes_archive">Archivo</string>
+    <string name="notes_move_to_archive">Sposta all\'archivio</string>
+    <string name="notes_unarchive">Rimuovi dall\'Archivio</string>
+    <string name="notes_failed_to_update">Errore durante l\'aggiornamento</string>
+    <string name="notes_archive_is_empty">L\'archivio è vuoto</string>
+    <string name="widget_note_note_not_selected">Nota non selezionata</string>
+    <string name="widget_note_horizontal_alignment">Allineamento orizzontale</string>
+    <string name="widget_note_vertical_alignment">Allineamento verticale</string>
+    <string name="widget_note_center">Centro</string>
+    <string name="widget_note_bottom">Basso</string>
+    <string name="widget_note_top">Cima</string>
+    <string name="widget_note_right">Destra</string>
+    <string name="widget_note_left">Sinistra</string>
+    <string name="i_don_t_know_the_year">Non so un anno</string>
+    <string name="reminder_title_all_day">Tutto il giorno</string>
+    <string name="estimated_next_reminder">Promemoria successivo stimato</string>
+    <string name="search_everywhere">Cerca ovunque…</string>
+    <string name="schedule">Controlla cestino</string>
+    <string name="schedule_noon">Mezzogiorno</string>
+    <string name="schedule_you_have_done_everything_for_today">Hai fatto tutto per oggi. Premi \"+\" per aggiungere nuovi Promemoria</string>
+    <string name="schedule_good_morning">Buongiorno</string>
+    <string name="schedule_good_afternoon">Buon pomeriggio</string>
+    <string name="schedule_good_evening">Buona sera</string>
+    <string name="also_add_a_reminder">Inoltre, aggiungere un promemoria</string>
+    <string name="no_time">Nessun tempo</string>
+    <string name="shopping_lists">Liste della spesa</string>
 </resources>

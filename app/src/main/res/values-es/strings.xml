@@ -4,7 +4,7 @@
     <string name="app_name">"Recordatorio"</string>
     <string name="app_name_pro">"Recordatorio PRO"</string>
     <string name="action_settings">"Ajustes"</string>
-    <string name="copyright">2023 ©️ Nazar Sukhovych</string>
+    <string name="copyright">2024 ©️ Nazar Sukhovych</string>
     <string name="cant_access_location_services">No puedo conseguir el acceso a los servicios de localización!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Satélite</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Crea eventos rápidamente desde la pantalla de inicio</string>
     <string name="widget_notes_description">Accede a tus notas</string>
     <string name="widget_calendar_description">Ver tus eventos en Calendario Mensual</string>
+    <string name="widget_single_note_description">Ver tu nota en la pantalla de inicio</string>
     <string name="widget_events_description">Mostrar recordatorios y cumpleaños activos</string>
     <string name="widget_google_tasks_description">Mostrar tareas de Google activas</string>
     <string name="add_to_google_tasks">Añadir a Tareas de Google</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 Aplicación actualizada 😻. Haga clic en \"Detalles\" para leer más.</string>
     <string name="whats_new_details">Detalles</string>
     <string name="whats_new">Novedades</string>
+    <string name="notes_archive">Archivo</string>
+    <string name="notes_move_to_archive">Mover al archivo</string>
+    <string name="notes_unarchive">Desarchivar</string>
+    <string name="notes_failed_to_update">Error al actualizar</string>
+    <string name="notes_archive_is_empty">Archivo está vacío</string>
+    <string name="widget_note_note_not_selected">Nota no seleccionada</string>
+    <string name="widget_note_horizontal_alignment">Alineamiento horizontal</string>
+    <string name="widget_note_vertical_alignment">Alineamiento vertical</string>
+    <string name="widget_note_center">Centro</string>
+    <string name="widget_note_bottom">Abajo</string>
+    <string name="widget_note_top">Subir</string>
+    <string name="widget_note_right">Derecha</string>
+    <string name="widget_note_left">Izquierda</string>
+    <string name="i_don_t_know_the_year">No conozco un año</string>
+    <string name="reminder_title_all_day">Todo el día</string>
+    <string name="estimated_next_reminder">Próximo recordatorio estimado</string>
+    <string name="search_everywhere">Buscar en todas partes…</string>
+    <string name="schedule">Agenda</string>
+    <string name="schedule_noon">Mediodía</string>
+    <string name="schedule_you_have_done_everything_for_today">Has hecho todo para hoy. Pulsa \"+\" para añadir nuevos recordatorios</string>
+    <string name="schedule_good_morning">Buenas Días</string>
+    <string name="schedule_good_afternoon">Buenas Tardes</string>
+    <string name="schedule_good_evening">Buenas Noches</string>
+    <string name="also_add_a_reminder">Además, añadir un recordatorio</string>
+    <string name="no_time">Sin tiempo</string>
+    <string name="shopping_lists">Listas de compra</string>
 </resources>

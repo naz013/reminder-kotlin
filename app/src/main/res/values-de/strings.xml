@@ -4,7 +4,7 @@
     <string name="app_name">"Erinnerung"</string>
     <string name="app_name_pro">"Erinnerung PRO"</string>
     <string name="action_settings">"Einstellungen"</string>
-    <string name="copyright">2023 © Nazar Sukhovych</string>
+    <string name="copyright">2024 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Ich kann keinen Zugriff auf die Ortungsdienste erhalten!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Satellit</string>
@@ -84,7 +84,7 @@
     <string name="delete">Löschen</string>
     <string name="no_notes">Keine Anmerkungen</string>
     <string name="next_event">nächste Veranstaltung</string>
-    <string name="remind_me">Erinnere mich...</string>
+    <string name="remind_me">Erinnere mich…</string>
     <string name="repeat">Wiederholen</string>
     <string name="days">Tage</string>
     <string name="send">Senden</string>
@@ -93,7 +93,7 @@
     <string name="rate">Preis</string>
     <string name="later">Später</string>
     <string name="never">Nie</string>
-    <string name="url">URL ...</string>
+    <string name="url">URL …</string>
     <string name="application">Anwendung</string>
     <string name="open_link">Verbindung öffnen</string>
     <string name="select_day">Wählen Sie den Tag</string>
@@ -177,12 +177,12 @@
     <string name="active_reminders">Aktive Erinnerungen</string>
     <string name="events">Ereignisse</string>
     <string name="must_be_not_empty">Darf nicht leer sein!</string>
-    <string name="other_version_detected">Weitere Anwendungs ​​erkannt!</string>
+    <string name="other_version_detected">Weitere Anwendungs Perkannt!</string>
     <string name="open">Öffnen</string>
-    <string name="syncing_groups">Synchronisieren von Gruppen ...</string>
-    <string name="syncing_reminders">Synchronisieren Erinnerungen ...</string>
-    <string name="syncing_notes">Synchronisieren von Notizen ...</string>
-    <string name="syncing_birthdays">Synchronisieren Geburtstage ...</string>
+    <string name="syncing_groups">Synchronisieren von Gruppen…</string>
+    <string name="syncing_reminders">Synchronisieren Erinnerungen…</string>
+    <string name="syncing_notes">Synchronisieren von Notizen…</string>
+    <string name="syncing_birthdays">Synchronisieren Geburtstage…</string>
     <string name="error_sending">Fehler beim Senden!</string>
     <string name="delete_this_note">Löschen Sie diese Notiz?</string>
     <string name="gallery">Galerie</string>
@@ -252,7 +252,7 @@
     <string name="move_to_another_list">Zu einem anderen Liste</string>
     <string name="edit_birthday">Bearbeiten Geburtstag</string>
     <string name="you_dont_select_any_calendar">Sie wählen nicht einen Kalender!</string>
-    <string name="please_wait">Warten Sie mal...</string>
+    <string name="please_wait">Warten Sie mal…</string>
     <string name="no_events_found">Keine Termine gefunden!</string>
     <string name="events_found">Event (s) gefunden</string>
     <string name="x_minutes">"%s Minuten"</string>
@@ -328,7 +328,7 @@
     <string name="you_dont_insert_any_message">Sie legen Sie nicht eine Nachricht!</string>
     <string name="xM">%sM</string>
     <string name="overdue">Überfällig</string>
-    <string name="search_place">Suche nach Ort ...</string>
+    <string name="search_place">Suche nach Ort…</string>
     <string name="add_all">Alle hinzufügen</string>
     <string name="no_places_found">Legen Sie nicht gefunden!</string>
     <string name="add_reminder_menu">In Erinnerung</string>
@@ -354,7 +354,7 @@
     <string name="remove_exclusion">Ausschluss entfernen</string>
     <string name="dark">Dunkel</string>
     <string name="x_out_of_x" formatted="false">%d von %d</string>
-    <string name="syncing_places">Orte synchronisieren ...</string>
+    <string name="syncing_places">Orte synchronisieren…</string>
     <string name="work">Arbeit</string>
     <string name="personal">Persönlich</string>
     <string name="auto_call">Automatischer Anruf</string>
@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Erstellen Sie Ereignisse schnell vom Startbildschirm aus</string>
     <string name="widget_notes_description">Greifen Sie auf Ihre Notizen zu</string>
     <string name="widget_calendar_description">Sehen Sie Ihre Ereignisse im Monatskalender</string>
+    <string name="widget_single_note_description">Notiz auf Startbildschirm anzeigen</string>
     <string name="widget_events_description">Aktive Erinnerungen und Geburtstage anzeigen</string>
     <string name="widget_google_tasks_description">Aktive Google-Aufgaben anzeigen</string>
     <string name="add_to_google_tasks">Zu Google Tasks hinzufügen</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 Anwendung wurde aktualisiert 😻. Klicken Sie auf \"Details\" um mehr zu erfahren.</string>
     <string name="whats_new_details">Details</string>
     <string name="whats_new">Was ist neu</string>
+    <string name="notes_archive">Archiv</string>
+    <string name="notes_move_to_archive">Ins Archiv verschieben</string>
+    <string name="notes_unarchive">Aus Archiv zurückholen</string>
+    <string name="notes_failed_to_update">Update fehlgeschlagen</string>
+    <string name="notes_archive_is_empty">Archiv ist leer</string>
+    <string name="widget_note_note_not_selected">Notiz nicht ausgewählt</string>
+    <string name="widget_note_horizontal_alignment">Horizontale Ausrichtung</string>
+    <string name="widget_note_vertical_alignment">Vertikale Ausrichtung</string>
+    <string name="widget_note_center">Zentrieren</string>
+    <string name="widget_note_bottom">Unten</string>
+    <string name="widget_note_top">Top</string>
+    <string name="widget_note_right">Rechts</string>
+    <string name="widget_note_left">Links</string>
+    <string name="i_don_t_know_the_year">Ich kenne kein Jahr</string>
+    <string name="reminder_title_all_day">Ganztägig</string>
+    <string name="estimated_next_reminder">Geschätzte nächste Erinnerung</string>
+    <string name="search_everywhere">Suche überall…</string>
+    <string name="schedule">Zeitplan</string>
+    <string name="schedule_noon">Mittag</string>
+    <string name="schedule_you_have_done_everything_for_today">Du hast für heute alles erledigt. Drücke \"+\" um neue Erinnerungen hinzuzufügen</string>
+    <string name="schedule_good_morning">Guten Morgen</string>
+    <string name="schedule_good_afternoon">Guten Tag</string>
+    <string name="schedule_good_evening">Guten Abend</string>
+    <string name="also_add_a_reminder">Auch eine Erinnerung hinzufügen</string>
+    <string name="no_time">Keine Zeit</string>
+    <string name="shopping_lists">Einkaufslisten</string>
 </resources>

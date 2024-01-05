@@ -619,6 +619,7 @@
     <string name="widget_combined_description">Швидко створюйте події з головного екрана</string>
     <string name="widget_notes_description">Доступ до ваших нотаток</string>
     <string name="widget_calendar_description">Перегляньте свої події в місячному календарі</string>
+    <string name="widget_single_note_description">Переглянути свою нотатку на головному екрані</string>
     <string name="widget_events_description">Показати активні нагадування та дні народження</string>
     <string name="widget_google_tasks_description">Показати активні Google Tasks</string>
     <string name="add_to_google_tasks">Додати до Google Tasks</string>
@@ -749,7 +750,7 @@
     <string name="recur_the_first_saturday_that_follows_the_first_sunday_of_the_month">Перша субота, що слідує за першою неділею місяця</string>
     <string name="recur_every_15_minutes_for_6_occurrences">Кожні 15 хвилин, 6 повторень</string>
     <string name="recur_every_hour_and_a_half_for_4_occurrences">Щогодини з половиною, 4 повторення</string>
-    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">Третій екземпляр на місяць у вівторок, середу, або четвер, протягом наступних 3 місяців</string>
+    <string name="recur_the_third_instance_into_the_month_for_the_next_3_months">The third instance into the month of one of Tuesday, Wednesday, or Thursday, for the next 3 months</string>
     <string name="recur_the_second_to_last_weekday_of_the_month">Другий день місяця в будні</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Щотижня у вівторок і четвер протягом п\'яти тижнів</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Кожного другого тижня у вівторок і четвер, 8 повторень</string>
@@ -760,4 +761,30 @@
     <string name="whats_new_banner_text">🚀 Додаток оновлено 😻. Натисніть \"Детальніше\", щоб прочитати більше.</string>
     <string name="whats_new_details">Детальніше</string>
     <string name="whats_new">Що нового</string>
+    <string name="notes_archive">Архів</string>
+    <string name="notes_move_to_archive">Перемістити до архіву</string>
+    <string name="notes_unarchive">Розархівувати</string>
+    <string name="notes_failed_to_update">Не вдалося оновити</string>
+    <string name="notes_archive_is_empty">Архів порожній</string>
+    <string name="widget_note_note_not_selected">Нотатку не вибрано</string>
+    <string name="widget_note_horizontal_alignment">Вирівнювання по горизонталі</string>
+    <string name="widget_note_vertical_alignment">Вирівнювання по вертикалі</string>
+    <string name="widget_note_center">По центру</string>
+    <string name="widget_note_bottom">Внизу</string>
+    <string name="widget_note_top">Вгорі</string>
+    <string name="widget_note_right">По правому краю</string>
+    <string name="widget_note_left">По лівому краю</string>
+    <string name="i_don_t_know_the_year">Я не знаю рік народження</string>
+    <string name="reminder_title_all_day">Весь день</string>
+    <string name="estimated_next_reminder">Орієнтовне наступне нагадування</string>
+    <string name="search_everywhere">Шукати всюди…</string>
+    <string name="schedule">Розклад</string>
+    <string name="schedule_noon">Полудень</string>
+    <string name="schedule_you_have_done_everything_for_today">Ви зробили все на сьогодні. Натисніть \"+\", щоб додати нові нагадування</string>
+    <string name="schedule_good_morning">Доброго ранку</string>
+    <string name="schedule_good_afternoon">Доброго дня</string>
+    <string name="schedule_good_evening">Доброго вечора</string>
+    <string name="also_add_a_reminder">Також додати нагадування</string>
+    <string name="no_time">Без часу</string>
+    <string name="shopping_lists">Списки покупок</string>
 </resources>
