@@ -46,7 +46,7 @@ jobs:
       run: |
         git config user.email "github-actions@github.com"
         git config user.name "Github Actions"
-        git commit -am "Bump version code and change version name"
+        git commit -am "Bump version code to ${{ env.VERSION_CODE }} and change version name to ${{ env.VERSION_NAME }}"
         git push origin HEAD
 
     - name: Grant execute permission for gradlew
