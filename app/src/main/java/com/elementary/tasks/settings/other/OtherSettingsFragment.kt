@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment

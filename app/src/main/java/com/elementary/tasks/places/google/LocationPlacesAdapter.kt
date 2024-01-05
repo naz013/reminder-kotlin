@@ -9,8 +9,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.ui.DrawableHelper
+import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.databinding.ListItemLocationBinding
 
 class LocationPlacesAdapter(
@@ -54,7 +54,7 @@ class LocationPlacesAdapter(
 
   fun loadMarker(view: ImageView, color: Int) {
     DrawableHelper.withContext(view.context)
-      .withDrawable(R.drawable.ic_twotone_place_24px)
+      .withDrawable(R.drawable.ic_fluent_place)
       .withColor(themeUtil.getMarkerLightColor(color))
       .tint()
       .applyTo(view)

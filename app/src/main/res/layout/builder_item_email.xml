@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/email_layout"
+        style="@style/OutlinedBoxStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <com.elementary.tasks.core.views.EmailAutoCompleteView
+            android:id="@+id/email_input_field"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:hint="@string/e_mail"
+            android:imeOptions="actionDone"
+            android:inputType="textEmailAddress"
+            android:maxLength="72"
+            android:maxLines="1"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            android:textAppearance="?textAppearanceSubtitle2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</FrameLayout>

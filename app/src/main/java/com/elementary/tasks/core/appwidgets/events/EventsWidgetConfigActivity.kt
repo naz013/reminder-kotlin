@@ -8,7 +8,7 @@ import com.elementary.tasks.core.analytics.Widget
 import com.elementary.tasks.core.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
@@ -78,7 +78,7 @@ class EventsWidgetConfigActivity :
       binding.statusIcon.setImageBitmap(
         ViewUtils.createIcon(
           context = this,
-          res = R.drawable.ic_twotone_alarm_24px,
+          res = R.drawable.ic_fluent_clock_alarm,
           color = colorOf(R.color.pureWhite)
         )
       )
@@ -91,7 +91,7 @@ class EventsWidgetConfigActivity :
       binding.statusIcon.setImageBitmap(
         ViewUtils.createIcon(
           context = this,
-          res = R.drawable.ic_twotone_alarm_24px,
+          res = R.drawable.ic_fluent_clock_alarm,
           color = colorOf(R.color.pureBlack)
         )
       )
@@ -108,21 +108,21 @@ class EventsWidgetConfigActivity :
     binding.btnSettings.setImageDrawable(
       ViewUtils.tintIcon(
         context = this,
-        resource = R.drawable.ic_twotone_settings_24px,
+        resource = R.drawable.ic_fluent_settings,
         isDark = isDark
       )
     )
     binding.btnAddTask.setImageDrawable(
       ViewUtils.tintIcon(
         context = this,
-        resource = R.drawable.ic_twotone_add_24px,
+        resource = R.drawable.ic_fluent_add,
         isDark = isDark
       )
     )
     binding.btnVoice.setImageDrawable(
       ViewUtils.tintIcon(
         context = this,
-        resource = R.drawable.ic_twotone_mic_24px,
+        resource = R.drawable.ic_builder_mic_on,
         isDark = isDark
       )
     )

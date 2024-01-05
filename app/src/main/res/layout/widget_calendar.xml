@@ -18,7 +18,7 @@
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_keyboard_arrow_left_24px" />
+            tools:srcCompat="@drawable/ic_fluent_chevron_left" />
 
         <TextView
             android:id="@+id/widgetTitle"
@@ -37,28 +37,28 @@
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_keyboard_arrow_right_24px" />
+            tools:srcCompat="@drawable/ic_fluent_chevron_right" />
 
         <ImageView
             android:id="@+id/btn_settings"
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_settings_24px" />
+            tools:srcCompat="@drawable/ic_fluent_settings" />
 
         <ImageView
             android:id="@+id/btn_voice"
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_mic_24px" />
+            tools:srcCompat="@drawable/ic_builder_mic_on" />
 
         <ImageView
             android:id="@+id/btn_add_task"
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_add_24px" />
+            tools:srcCompat="@drawable/ic_fluent_add" />
 
     </LinearLayout>
 

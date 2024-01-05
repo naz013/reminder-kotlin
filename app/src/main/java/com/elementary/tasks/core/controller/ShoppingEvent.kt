@@ -40,7 +40,23 @@ class ShoppingEvent(
   override val isActive: Boolean
     get() = reminder.isActive
 
-  override fun start(): Boolean {
+  override fun justStart() {
+    if (
+      reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime) &&
+      dateTimeManager.isCurrent(reminder.eventTime)
+    ) {
+      reminder.isActive = true
+      reminder.isRemoved = false
+      super.save()
+      super.enableReminder()
+    } else {
+      reminder.isActive = true
+      reminder.isRemoved = false
+      super.save()
+    }
+  }
+
+  override fun enable(): Boolean {
     return if (reminder.hasReminder) {
       if (!TextUtils.isEmpty(reminder.eventTime) && dateTimeManager.isCurrent(reminder.eventTime)) {
         reminder.isActive = true
@@ -67,21 +83,21 @@ class ShoppingEvent(
         dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: LocalDateTime.now()
       )
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
-      start()
+      enable()
       return true
     }
     return false
   }
 
   override fun next(): Boolean {
-    return stop()
+    return disable()
   }
 
   override fun onOff(): Boolean {
     return if (isActive) {
-      stop()
+      disable()
     } else {
-      start()
+      enable()
     }
   }
 

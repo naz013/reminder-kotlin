@@ -2,7 +2,7 @@ package com.elementary.tasks.home.scheduleview.viewholder
 
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.databinding.ListItemScheduleHeaderBinding
 import com.elementary.tasks.home.scheduleview.HeaderScheduleModel
 

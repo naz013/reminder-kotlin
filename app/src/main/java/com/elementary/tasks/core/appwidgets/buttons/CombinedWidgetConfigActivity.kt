@@ -53,28 +53,28 @@ class CombinedWidgetConfigActivity :
     binding.btnAddReminder.setImageDrawable(
       ViewUtils.tintIcon(
         this,
-        R.drawable.ic_twotone_alarm_24px,
+        R.drawable.ic_fluent_clock_alarm,
         isDark
       )
     )
     binding.btnAddNote.setImageDrawable(
       ViewUtils.tintIcon(
         this,
-        R.drawable.ic_twotone_note_24px,
+        R.drawable.ic_fluent_note,
         isDark
       )
     )
     binding.btnAddBirthday.setImageDrawable(
       ViewUtils.tintIcon(
         this,
-        R.drawable.ic_twotone_cake_24px,
+        R.drawable.ic_fluent_food_cake,
         isDark
       )
     )
     binding.btnVoice.setImageDrawable(
       ViewUtils.tintIcon(
         this,
-        R.drawable.ic_twotone_mic_black_24px,
+        R.drawable.ic_builder_mic_on,
         isDark
       )
     )

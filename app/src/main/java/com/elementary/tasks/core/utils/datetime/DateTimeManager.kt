@@ -593,6 +593,11 @@ class DateTimeManager(
     return dateTime.isAfter(getCurrentDateTime())
   }
 
+  fun validBefore(dateTime: LocalDateTime, reminder: Reminder): Boolean {
+    val millis = toMillis(dateTime) - reminder.remindBefore - 100
+    return millis >= System.currentTimeMillis()
+  }
+
   fun getDateTime(dateTime: LocalDateTime): String {
     return if (prefs.is24HourFormat) {
       dateTime.format(dateTime24Formatter())
@@ -919,6 +924,22 @@ class DateTimeManager(
     return date.format(headerDateFormatter())
   }
 
+  fun parseBeforeTime(millis: Long): BeforeTime {
+    return DateTimeManager.parseBeforeTime(millis)
+  }
+
+  fun parseRepeatTime(millis: Long): RepeatTime {
+    return DateTimeManager.parseRepeatTime(millis)
+  }
+
+  fun formatMonth(date: LocalDate): String {
+    return date.format(monthFormatter())
+  }
+
+  fun formatDayMonth(date: LocalDate): String {
+    return date.format(dayMonthFormatter())
+  }
+
   private fun dateTime24Formatter(): DateTimeFormatter =
     localizedDateFormatter("dd MMM yyyy, HH:mm")
 
@@ -939,6 +960,8 @@ class DateTimeManager(
 
   fun simpleDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM")
 
+  private fun dayMonthFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMMM")
+
   private fun headerDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM yyyy")
 
   private fun dayMonthBirthdayUiFormatter(): DateTimeFormatter =
@@ -955,6 +978,8 @@ class DateTimeManager(
   private fun shortWeekDay(): DateTimeFormatter = localizedDateFormatter("EEE")
 
   private fun shortDay(): DateTimeFormatter = localizedDateFormatter("dd")
+
+  private fun monthFormatter(): DateTimeFormatter = localizedDateFormatter("MMMM")
 
   companion object {
     const val SECOND: Long = 1000
@@ -1024,9 +1049,100 @@ class DateTimeManager(
       }
       return "$hourStr$divider$minuteStr$divider$secondStr"
     }
+
+    fun parseBeforeTime(millis: Long): BeforeTime {
+      if (millis == 0L) {
+        return BeforeTime(0, MultiplierType.SECOND)
+      }
+      return when {
+        millis % (DAY * 30) == 0L -> {
+          val progress = millis / (DAY * 30)
+          BeforeTime(progress, MultiplierType.MONTH)
+        }
+
+        millis % (DAY * 7) == 0L -> {
+          val progress = millis / (DAY * 7)
+          BeforeTime(progress, MultiplierType.WEEK)
+        }
+
+        millis % DAY == 0L -> {
+          val progress = millis / DAY
+          BeforeTime(progress, MultiplierType.DAY)
+        }
+
+        millis % HOUR == 0L -> {
+          val progress = millis / HOUR
+          BeforeTime(progress, MultiplierType.HOUR)
+        }
+
+        millis % MINUTE == 0L -> {
+          val progress = millis / MINUTE
+          BeforeTime(progress, MultiplierType.MINUTE)
+        }
+
+        millis % SECOND == 0L -> {
+          val progress = millis / SECOND
+          BeforeTime(progress, MultiplierType.SECOND)
+        }
+
+        else -> {
+          BeforeTime(0, MultiplierType.SECOND)
+        }
+      }
+    }
+
+    fun parseRepeatTime(millis: Long): RepeatTime {
+      if (millis == 0L) {
+        return RepeatTime(0, MultiplierType.SECOND)
+      }
+      return when {
+        millis % (DAY * 30) == 0L -> {
+          val progress = millis / (DAY * 30)
+          RepeatTime(progress, MultiplierType.MONTH)
+        }
+
+        millis % (DAY * 7) == 0L -> {
+          val progress = millis / (DAY * 7)
+          RepeatTime(progress, MultiplierType.WEEK)
+        }
+
+        millis % DAY == 0L -> {
+          val progress = millis / DAY
+          RepeatTime(progress, MultiplierType.DAY)
+        }
+
+        millis % HOUR == 0L -> {
+          val progress = millis / HOUR
+          RepeatTime(progress, MultiplierType.HOUR)
+        }
+
+        millis % MINUTE == 0L -> {
+          val progress = millis / MINUTE
+          RepeatTime(progress, MultiplierType.MINUTE)
+        }
+
+        millis % SECOND == 0L -> {
+          val progress = millis / SECOND
+          RepeatTime(progress, MultiplierType.SECOND)
+        }
+
+        else -> {
+          RepeatTime(0, MultiplierType.SECOND)
+        }
+      }
+    }
   }
 
   data class Date(val year: Int, val month: Int, val day: Int)
   data class Time(val hour: Int, val minute: Int, val second: Int)
-  data class BirthDate(val nextBirthdayDateTime: LocalDateTime, val year: Int)
+  data class BeforeTime(val value: Long, val type: MultiplierType)
+  data class RepeatTime(val value: Long, val type: MultiplierType)
+  enum class MultiplierType(val index: Int) {
+    SECOND(0),
+    MINUTE(1),
+    HOUR(2),
+    DAY(3),
+    WEEK(4),
+    MONTH(5)
+  }
 }

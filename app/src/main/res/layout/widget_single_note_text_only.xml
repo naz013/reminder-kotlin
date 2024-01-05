@@ -21,6 +21,6 @@
         android:layout_gravity="end"
         android:scaleType="centerInside"
         android:visibility="gone"
-        tools:srcCompat="@drawable/ic_twotone_settings_24px" />
+        tools:srcCompat="@drawable/ic_fluent_settings" />
 
 </FrameLayout>

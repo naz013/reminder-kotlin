@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/action_edit"
-        android:icon="@drawable/ic_twotone_edit_24px"
+        android:icon="@drawable/ic_fluent_edit"
         android:title="@string/edit"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_status"
-        android:icon="@drawable/ic_twotone_favorite_24px"
+        android:icon="@drawable/ic_fluent_heart"
         android:title="@string/show_in_status_bar"
         app:showAsAction="ifRoom" />
 

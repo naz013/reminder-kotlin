@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_today_24px"
+            app:prefs_icon="@drawable/ic_builder_google_calendar_add"
             app:prefs_primary_text="@string/export_to_google_calendar"
             app:prefs_type="check_switch" />
 
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_view_timeline_24"
+            app:prefs_icon="@drawable/ic_builder_by_minute"
             app:prefs_primary_text="@string/event_duration"
             app:prefs_type="none" />
 
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_cloud_24px"
+            app:prefs_icon="@drawable/ic_fluent_cloud"
             app:prefs_primary_text="@string/cloud_services"
             app:prefs_type="none" />
 
@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_backup_24px"
+            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
             app:prefs_primary_text="@string/backup_my_data"
             app:prefs_type="check_switch" />
 
@@ -94,7 +94,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_sd_storage_24px"
             app:prefs_primary_text="@string/save_backup_on_sd_card"
             app:prefs_type="check_switch" />
 
@@ -119,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_backup_24px"
+            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
             app:prefs_primary_text="@string/automatically_backup"
             app:prefs_type="none" />
 
@@ -136,7 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_sync_24px"
+            app:prefs_icon="@drawable/ic_fluent_arrow_sync"
             app:prefs_primary_text="@string/automatically_sync"
             app:prefs_type="none" />
 

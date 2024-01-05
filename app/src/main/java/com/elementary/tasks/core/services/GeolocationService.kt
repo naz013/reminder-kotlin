@@ -173,7 +173,7 @@ class GeolocationService : Service() {
     builder.setContentTitle(reminder.summary)
     builder.setContentText(distanceFormatter.format(roundedDistance))
     builder.priority = NotificationCompat.PRIORITY_MIN
-    builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
+    builder.setSmallIcon(R.drawable.ic_builder_map_my_location)
     builder.setCategory(NotificationCompat.CATEGORY_NAVIGATION)
     notifier.notify(reminder.uniqueId, builder.build())
   }
@@ -186,7 +186,7 @@ class GeolocationService : Service() {
       builder.setContentText(getString(R.string.app_name))
     }
     builder.setContentTitle(getString(R.string.location_tracking_service_running))
-    builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
+    builder.setSmallIcon(R.drawable.ic_builder_map_my_location)
     startForeground(NOTIFICATION_ID, builder.build())
   }
 

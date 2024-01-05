@@ -156,7 +156,8 @@ enum class Event(val value: String) {
 enum class PresetAction(val value: String) {
   CREATE("create"),
   USE("use"),
-  DELETE("delete")
+  DELETE("delete"),
+  USE_BUILDER("use_builder")
 }
 
 object Parameter {

@@ -27,7 +27,7 @@
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
+                app:srcCompat="@drawable/ic_fluent_more_vertical"
                 app:tint="?colorOnSurface" />
 
             <TextView

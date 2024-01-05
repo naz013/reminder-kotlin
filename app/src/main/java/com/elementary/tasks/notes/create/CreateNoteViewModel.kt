@@ -315,7 +315,7 @@ class CreateNoteViewModel(
     val reminder = localReminder ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      eventControlFactory.getController(reminder).stop()
+      eventControlFactory.getController(reminder).disable()
       reminderDao.delete(reminder)
       googleCalendarUtils.deleteEvents(reminder.uuId)
       workerLauncher.startWork(
@@ -464,7 +464,7 @@ class CreateNoteViewModel(
         reminderDao.insert(reminder)
       }
       if (reminder.groupUuId != "") {
-        eventControlFactory.getController(reminder).start()
+        eventControlFactory.getController(reminder).enable()
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
           Constants.INTENT_ID,

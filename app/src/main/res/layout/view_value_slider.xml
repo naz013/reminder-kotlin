@@ -18,7 +18,7 @@
             android:layout_height="30dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_remove_24"
+            app:srcCompat="@drawable/ic_fluent_remove"
             app:tint="?colorOnBackground" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_height="30dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_add_24px"
+            app:srcCompat="@drawable/ic_fluent_add"
             app:tint="?colorOnBackground" />
 
     </LinearLayout>

@@ -4,16 +4,17 @@ import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.UnitConverter
+import com.elementary.tasks.core.utils.ui.ValueFormatter
 
 open class DefaultRadiusFormatter(
   context: Context,
   var useMetric: Boolean,
   private val unitConverter: UnitConverter = UnitConverter()
-) {
+) : ValueFormatter<Int> {
 
   private val textProvider = TextProvider(context)
 
-  open fun format(meters: Int): String {
+  override fun format(meters: Int): String {
     return if (meters > 5000) {
       if (useMetric) {
         metersToKm(meters)

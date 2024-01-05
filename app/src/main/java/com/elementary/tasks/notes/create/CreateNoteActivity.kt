@@ -28,7 +28,10 @@ import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
+import com.elementary.tasks.core.os.startActivity
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
@@ -37,21 +40,18 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.adjustAlpha
-import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
 import com.elementary.tasks.notes.create.images.ImagesGridAdapter
@@ -592,10 +592,10 @@ class CreateNoteActivity :
 
   private fun updateMenu() {
     binding.toolbar.menu.also { menu ->
-      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isBgDark)
-      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_fluent_checkmark, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_fluent_share_android, isBgDark)
       menu.getItem(2).isVisible = viewModel.isNoteEdited && !viewModel.isFromFile
-      ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_delete_24px, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_fluent_delete, isBgDark)
     }
   }
 
@@ -603,22 +603,22 @@ class CreateNoteActivity :
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
     binding.micButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_builder_mic_on, isBgDark)
     )
     binding.colorButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_palette_24px, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_color_background, isBgDark)
     )
     binding.imageButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_image_24px, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_image, isBgDark)
     )
     binding.reminderButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_alarm_24px, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_clock_alarm, isBgDark)
     )
     binding.fontButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_text_fields_24px, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_text, isBgDark)
     )
     binding.paletteButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_settings, isBgDark)
     )
   }
 

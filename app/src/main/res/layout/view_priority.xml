@@ -34,7 +34,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_priority_high_24px"
+                    app:srcCompat="@drawable/ic_fluent_star"
                     app:tint="?colorOnSurface" />
 
                 <com.google.android.material.chip.ChipGroup

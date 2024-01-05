@@ -6,7 +6,7 @@ import com.elementary.tasks.calendar.data.MonthLiveData
 import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
-import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.databinding.FragmentMonthViewBinding
 import org.koin.core.component.KoinComponent

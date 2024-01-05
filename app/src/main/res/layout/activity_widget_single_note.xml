@@ -22,7 +22,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_clear_black_24dp"
+                app:navigationIcon="@drawable/ic_fluent_dismiss"
                 app:navigationIconTint="?colorOnSurface"
                 app:title="@string/note"
                 app:titleCentered="true" />
@@ -188,6 +188,6 @@
         android:text="@string/save"
         android:textAllCaps="true"
         android:visibility="visible"
-        app:icon="@drawable/ic_twotone_done_24px" />
+        app:icon="@drawable/ic_fluent_checkmark" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

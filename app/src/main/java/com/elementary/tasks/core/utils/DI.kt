@@ -96,12 +96,8 @@ import com.elementary.tasks.places.create.PlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
-import com.elementary.tasks.reminder.create.EditReminderViewModel
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
 import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
-import com.elementary.tasks.reminder.dialog.ReminderViewModel
-import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
-import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -110,8 +106,6 @@ import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
-import com.elementary.tasks.voice.ConversationViewModel
-import com.elementary.tasks.voice.VoiceResultDialogViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
@@ -139,46 +133,7 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
-  viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
-  viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
-  viewModel { (id: String) ->
-    EditReminderViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { (id: String) ->
-    ReminderPreviewViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
-  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
     NotePreviewViewModel(
       id,
@@ -268,33 +223,6 @@ val viewModelModule = module {
   }
   viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  viewModel {
-    ConversationViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get(), get()) }
@@ -434,7 +362,7 @@ fun dbModule(context: Context): Module {
 
 val utilModule = module {
   single { Prefs(get()) }
-  single { PresetInitProcessor(get(), get(), get()) }
+  factory { PresetInitProcessor(get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { SoundStackHolder(get()) }

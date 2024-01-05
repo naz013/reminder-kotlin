@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/click_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    android:orientation="vertical">
+
+    <com.elementary.tasks.core.views.square.UiSquareFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elementary.tasks.core.views.square.UiSquareImageView
+            android:id="@+id/icon_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            app:tint="?colorOnSurface"
+            tools:srcCompat="@drawable/ic_fluent_clock_alarm" />
+
+        <com.elementary.tasks.core.views.square.UiSquareImageView
+            android:id="@+id/preview_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/remove_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/drawable_tertiary"
+            android:padding="2dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_fluent_dismiss"
+            app:tint="?colorOnTertiary" />
+
+    </com.elementary.tasks.core.views.square.UiSquareFrameLayout>
+
+    <TextView
+        android:id="@+id/name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="2dp"
+        android:maxLines="1"
+        android:textAppearance="?textAppearanceBodyMedium"
+        android:textColor="?colorOnSurface"
+        tools:text="Application" />
+
+</LinearLayout>

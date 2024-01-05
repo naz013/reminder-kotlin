@@ -17,7 +17,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_twotone_alarm_24px" />
+        android:src="@drawable/ic_fluent_clock_alarm" />
 
     <ImageView
         android:id="@+id/btn_add_note"
@@ -26,7 +26,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_twotone_note_24px" />
+        android:src="@drawable/ic_fluent_note" />
 
     <ImageView
         android:id="@+id/btn_add_birthday"
@@ -35,7 +35,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_twotone_cake_24px" />
+        android:src="@drawable/ic_fluent_food_cake" />
 
     <ImageView
         android:id="@+id/btn_voice"
@@ -44,6 +44,6 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_twotone_mic_black_24px" />
+        android:src="@drawable/ic_builder_mic_on" />
 
 </LinearLayout>

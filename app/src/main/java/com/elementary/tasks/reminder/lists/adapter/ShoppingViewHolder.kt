@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.inflater
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.inflater
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
 

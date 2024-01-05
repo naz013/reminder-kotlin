@@ -15,17 +15,16 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
-import com.elementary.tasks.pin.PinLoginActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,11 +34,13 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
 
   private val systemServiceProvider by inject<SystemServiceProvider>()
   private val viewModel by viewModel<ActiveTodoRemindersViewModel>()
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private var mPosition: Int = 0
 
   private val reminderResolver = ReminderResolver(
     dialogAction = { return@ReminderResolver dialogues },
+    reminderBuilderLauncher = reminderBuilderLauncher,
     toggleAction = { reminder ->
       when (reminder) {
         is UiReminderListActiveGps -> {
@@ -78,10 +79,7 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     }
 
     binding.fab.setOnClickListener {
-      PinLoginActivity.openLogged(
-        requireContext(),
-        CreateReminderActivity::class.java
-      )
+      reminderBuilderLauncher.openLogged(requireContext()) { }
     }
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))

@@ -11,9 +11,6 @@
         android:label="@string/events"
         tools:layout="@layout/home_fragment">
         <action
-            android:id="@+id/action_actionHome_to_createReminderActivity"
-            app:destination="@id/createReminderActivity" />
-        <action
             android:id="@+id/action_actionHome_to_settingsFragment"
             app:destination="@id/settingsFragment"
             app:enterAnim="@anim/fragment_slide_top"
@@ -46,10 +43,18 @@
         tools:layout="@layout/fragment_notes">
         <action
             android:id="@+id/action_actionNotes_to_archivedNotesFragment"
-            app:destination="@id/archivedNotesFragment" />
+            app:destination="@id/archivedNotesFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionNotes_to_noteSettingsFragment"
-            app:destination="@id/noteSettingsFragment" />
+            app:destination="@id/noteSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment
@@ -97,9 +102,6 @@
         android:label="@string/map"
         tools:layout="@layout/fragment_events_map">
         <action
-            android:id="@+id/action_mapFragment_to_createReminderActivity"
-            app:destination="@id/createReminderActivity" />
-        <action
             android:id="@+id/action_mapFragment_to_mapStyleFragment"
             app:destination="@id/mapStyleFragment" />
     </fragment>
@@ -107,24 +109,7 @@
         android:id="@+id/archiveFragment"
         android:name="com.elementary.tasks.reminder.lists.removed.ArchiveFragment"
         android:label="@string/trash"
-        tools:layout="@layout/fragment_trash">
-        <action
-            android:id="@+id/action_archiveFragment_to_createReminderActivity"
-            app:destination="@id/createReminderActivity" />
-    </fragment>
-    <activity
-        android:id="@+id/createReminderActivity"
-        android:name="com.elementary.tasks.reminder.create.CreateReminderActivity"
-        android:label="@string/new_reminder"
-        tools:layout="@layout/activity_create_reminder">
-        <argument
-            android:name="item_id"
-            app:argType="string" />
-        <argument
-            android:name="arg_logged"
-            android:defaultValue="false"
-            app:argType="boolean" />
-    </activity>
+        tools:layout="@layout/fragment_trash" />
     <activity
         android:id="@+id/addBirthdayActivity"
         android:name="com.elementary.tasks.birthdays.create.AddBirthdayActivity"
@@ -280,7 +265,15 @@
         android:id="@+id/remindersSettingsFragment"
         android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
         android:label="@string/reminders_"
-        tools:layout="@layout/fragment_settings_reminders" />
+        tools:layout="@layout/fragment_settings_reminders">
+        <action
+            android:id="@+id/action_remindersSettingsFragment_to_managePresetsFragment"
+            app:destination="@id/managePresetsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/exportSettingsFragment"
         android:name="com.elementary.tasks.settings.export.ExportSettingsFragment"
@@ -608,13 +601,15 @@
             android:id="@+id/action_actionEvents_to_addBirthdayActivity"
             app:destination="@id/addBirthdayActivity" />
         <action
-            android:id="@+id/action_actionEvents_to_createReminderActivity"
-            app:destination="@id/createReminderActivity" />
-        <action
             android:id="@+id/action_actionEvents_to_remindersSettingsFragment"
             app:destination="@id/remindersSettingsFragment" />
         <action
             android:id="@+id/action_actionEvents_to_birthdaySettingsFragment"
             app:destination="@id/birthdaySettingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/managePresetsFragment"
+        android:name="com.elementary.tasks.settings.reminders.ManagePresetsFragment"
+        android:label="@string/recur_presets"
+        tools:layout="@layout/fragment_manage_presets" />
 </navigation>

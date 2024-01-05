@@ -56,7 +56,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="2dp"
                     android:contentDescription="@string/acc_select_number_from_contacts"
-                    app:icon="@drawable/ic_twotone_contacts_24px" />
+                    app:icon="@drawable/ic_fluent_contacts" />
 
             </LinearLayout>
 
@@ -78,7 +78,7 @@
                     android:scaleType="centerInside"
                     android:visibility="gone"
                     app:civ_border_width="0dp"
-                    app:srcCompat="@drawable/ic_twotone_person_24px"
+                    app:srcCompat="@drawable/ic_fluent_person"
                     app:tint="?colorOnSurface" />
 
                 <de.hdodenhof.circleimageview.CircleImageView

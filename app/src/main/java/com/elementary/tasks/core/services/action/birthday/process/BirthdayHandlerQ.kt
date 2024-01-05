@@ -58,7 +58,7 @@ class BirthdayHandlerQ(
     if (!birthday.ignoreYear) {
       builder.setContentText(dateTimeManager.getAgeFormatted(birthday.date))
     }
-    builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_food_cake)
     builder.setAutoCancel(false)
     builder.setOngoing(true)
     if (Module.isPro && birthdayDataProvider.isBirthdayLed()) {
@@ -88,7 +88,7 @@ class BirthdayHandlerQ(
         PendingIntent.FLAG_CANCEL_CURRENT
       )
     }.also {
-      builder.addAction(R.drawable.ic_twotone_done_white, textProvider.getText(R.string.ok), it)
+      builder.addAction(R.drawable.ic_fluent_checkmark, textProvider.getText(R.string.ok), it)
     }
 
     if (birthday.number.isNotEmpty()) {
@@ -101,7 +101,7 @@ class BirthdayHandlerQ(
         )
       }.also {
         builder.addAction(
-          R.drawable.ic_twotone_call_white,
+          R.drawable.ic_fluent_phone,
           textProvider.getText(R.string.make_call),
           it
         )
@@ -116,7 +116,7 @@ class BirthdayHandlerQ(
         )
       }.also {
         builder.addAction(
-          R.drawable.ic_twotone_message_white,
+          R.drawable.ic_fluent_chat,
           textProvider.getText(R.string.send_sms),
           it
         )

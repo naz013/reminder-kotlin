@@ -8,6 +8,6 @@ class ReminderDeleteCompletable(
 ) : Completable<Reminder> {
 
   override suspend fun action(t: Reminder) {
-    eventControlFactory.getController(t).stop()
+    eventControlFactory.getController(t).disable()
   }
 }

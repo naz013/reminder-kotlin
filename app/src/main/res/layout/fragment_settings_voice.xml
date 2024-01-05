@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_language_24px"
+            app:prefs_icon="@drawable/ic_fluent_local_language"
             app:prefs_primary_text="@string/language"
             app:prefs_type="none" />
 
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+            app:prefs_icon="@drawable/ic_builder_time"
             app:prefs_primary_text="@string/time"
             app:prefs_type="none" />
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_help_24px"
+            app:prefs_icon="@drawable/ic_fluent_question_circle"
             app:prefs_primary_text="@string/help"
             app:prefs_type="none" />
 
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_mic_24px"
+            app:prefs_icon="@drawable/ic_builder_mic_on"
             app:prefs_primary_text="@string/live_conversation"
             app:prefs_secondary_text_off="@string/show_simple_voice_popup"
             app:prefs_secondary_text_on="@string/show_voice_control_screen"

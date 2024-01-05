@@ -27,6 +27,14 @@
                 android:layout_marginEnd="16dp"
                 app:text="@string/reminder_by_location_explanations" />
 
+            <com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+                android:id="@+id/legacyBuilderWarningView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskLayout"
                 style="@style/FilledBoxStyle"
@@ -85,7 +93,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_marginStart="8dp"
-                    app:icon="@drawable/ic_twotone_backspace_24px" />
+                    app:icon="@drawable/ic_fluent_dismiss" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/mapButton"
@@ -93,7 +101,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_marginStart="8dp"
-                    app:icon="@drawable/ic_twotone_map_24px" />
+                    app:icon="@drawable/ic_fluent_map" />
 
             </LinearLayout>
 
@@ -160,9 +168,9 @@
 
                     <com.elementary.tasks.core.views.DateTimeView
                         android:id="@+id/dateView"
-                        android:layout_marginTop="8dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 

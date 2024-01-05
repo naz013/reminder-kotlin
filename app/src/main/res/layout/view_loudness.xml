@@ -34,7 +34,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_volume_up_24px"
+                    app:srcCompat="@drawable/ic_fluent_speaker"
                     app:tint="?colorOnSurface" />
 
                 <LinearLayout

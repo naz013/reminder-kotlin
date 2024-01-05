@@ -20,7 +20,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.EventsCursor
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.utils.ui.colorOf
 import com.elementary.tasks.core.utils.ui.dp2px
 import org.threeten.bp.LocalDate
 import java.lang.ref.WeakReference

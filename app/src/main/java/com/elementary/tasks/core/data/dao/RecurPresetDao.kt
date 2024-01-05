@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.data.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,14 +10,14 @@ import com.elementary.tasks.core.data.models.RecurPreset
 @Dao
 interface RecurPresetDao {
 
-  @Query("SELECT * FROM RecurPreset ORDER BY name")
+  @Query("SELECT * FROM RecurPreset ORDER BY name ASC, createdAt DESC")
   fun getAll(): List<RecurPreset>
+
+  @Query("SELECT * FROM RecurPreset WHERE type=:presetType ORDER BY name ASC, createdAt DESC")
+  fun getAllByType(presetType: Int): List<RecurPreset>
 
   @Query("SELECT * FROM RecurPreset WHERE id=:id")
   fun getById(id: String): RecurPreset?
-
-  @Query("SELECT * FROM RecurPreset")
-  fun loadAll(): LiveData<List<RecurPreset>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(recurPreset: RecurPreset)

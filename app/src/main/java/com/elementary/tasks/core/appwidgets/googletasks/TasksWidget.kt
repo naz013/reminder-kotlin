@@ -44,7 +44,7 @@ class TasksWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_settings_24px,
+          iconId = R.drawable.ic_fluent_settings,
           color = R.color.pureWhite,
           viewId = R.id.btn_settings,
           cls = TasksWidgetConfigActivity::class.java
@@ -55,7 +55,7 @@ class TasksWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_add_24px,
+          iconId = R.drawable.ic_fluent_add,
           color = R.color.pureWhite,
           viewId = R.id.btn_add_task,
           cls = GoogleTaskActivity::class.java
@@ -68,7 +68,7 @@ class TasksWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_settings_24px,
+          iconId = R.drawable.ic_fluent_settings,
           color = R.color.pureBlack,
           viewId = R.id.btn_settings,
           cls = TasksWidgetConfigActivity::class.java
@@ -79,7 +79,7 @@ class TasksWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_add_24px,
+          iconId = R.drawable.ic_fluent_add,
           color = R.color.pureBlack,
           viewId = R.id.btn_add_task,
           cls = GoogleTaskActivity::class.java

@@ -39,7 +39,7 @@
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_clear_black_24dp"
+        app:srcCompat="@drawable/ic_fluent_dismiss"
         app:tint="?colorOnBackground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

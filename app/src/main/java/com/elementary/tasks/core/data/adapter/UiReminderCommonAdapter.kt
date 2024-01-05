@@ -103,7 +103,8 @@ class UiReminderCommonAdapter(
       millis = dueMillis,
       localDateTime = dateTime,
       recurRule = getRecurRules(data, type),
-      formattedTime = dateTime?.let { dateTimeManager.getTime(it.toLocalTime()) }
+      formattedTime = dateTime?.let { dateTimeManager.getTime(it.toLocalTime()) },
+      formattedDateTime = dateTime?.let { dateTimeManager.getFullDateTime(it) }
     )
   }
 
@@ -128,7 +129,7 @@ class UiReminderCommonAdapter(
       type.isSms() -> textProvider.getText(R.string.message)
       type.isApp() -> textProvider.getText(R.string.application)
       type.isLink() -> textProvider.getText(R.string.open_link)
-      type.isShopping() -> textProvider.getText(R.string.shopping_list)
+      type.isSubTasks() -> textProvider.getText(R.string.builder_sub_tasks)
       type.isEmail() -> textProvider.getText(R.string.e_mail)
       else -> getType(type)
     }

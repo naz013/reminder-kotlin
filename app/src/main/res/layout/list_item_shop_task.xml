@@ -31,7 +31,7 @@
         android:layout_gravity="center_vertical"
         android:scaleType="centerInside"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_clear_white_24dp"
+        app:srcCompat="@drawable/ic_fluent_dismiss"
         app:tint="?android:textColorPrimary" />
 
 </LinearLayout>

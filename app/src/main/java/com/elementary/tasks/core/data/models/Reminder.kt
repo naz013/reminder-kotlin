@@ -7,6 +7,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.elementary.tasks.core.data.converters.BuilderSchemeItemsTypeConverter
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
@@ -15,14 +16,16 @@ import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.util.Random
+import java.util.UUID
 
 @Entity
 @TypeConverters(
   PlacesTypeConverter::class,
   ShopItemsTypeConverter::class,
   ListStringTypeConverter::class,
-  ListIntTypeConverter::class
+  ListIntTypeConverter::class,
+  BuilderSchemeItemsTypeConverter::class
 )
 @Keep
 @Parcelize
@@ -118,8 +121,10 @@ data class Reminder(
   var isNotificationShown: Boolean = false,
   @SerializedName("isLocked")
   var isLocked: Boolean = false,
+  // Used for Delayed events, such as Location
   @SerializedName("hasReminder")
   var hasReminder: Boolean = false,
+  // Used, when add event to calendar
   @SerializedName("duration")
   var duration: Long = 0,
   @SerializedName("calendarId")
@@ -136,8 +141,16 @@ data class Reminder(
   var taskListId: String? = null,
   @SerializedName("recurDataObject")
   var recurDataObject: String? = null,
+  // Used, when add event to calendar
   @SerializedName("allDay")
   var allDay: Boolean = false,
+  @SerializedName("description")
+  var description: String? = null,
+  @SerializedName("builderScheme")
+  var builderScheme: List<BuilderSchemeItem>? = null,
+  @SerializedName("version")
+  var version: String? = DEFAULT_VERSION,
+
   @ColumnInfo(name = "groupTitle")
   @Transient
   var groupTitle: String? = "",
@@ -238,7 +251,23 @@ data class Reminder(
     const val CALL = 1
   }
 
+  object Action {
+    const val NONE = 0
+    const val CALL = 1
+    const val SMS = 2
+    const val APP = 3
+    const val LINK = 4
+    const val SHOP = 5
+    const val EMAIL = 6
+  }
+
+  object Version {
+    const val V2 = "v2.0"
+    const val V3 = "v3.0"
+  }
+
   companion object {
+    const val DEFAULT_VERSION = Version.V2
 
     const val REMINDER = 0
     const val SHOPPING = 1

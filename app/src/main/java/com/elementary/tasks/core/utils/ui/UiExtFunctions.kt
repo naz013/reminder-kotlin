@@ -1,60 +1,85 @@
 package com.elementary.tasks.core.utils.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.util.DisplayMetrics
-import android.util.TypedValue
-import android.view.Display
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
 import android.widget.AutoCompleteTextView
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.annotation.Px
+import androidx.annotation.ColorRes
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.os.colorOf
+import com.elementary.tasks.core.os.dp2px
+import com.elementary.tasks.core.utils.lazyUnSynchronized
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.TextInputLayout
 
-fun Context.dp2px(dp: Int): Int {
-  val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager?
-  var display: Display? = null
-  if (wm != null) {
-    display = wm.defaultDisplay
-  }
-  val displaymetrics = DisplayMetrics()
-  display?.getMetrics(displaymetrics)
-  return (dp * displaymetrics.density + 0.5f).toInt()
+fun View.isVisible(): Boolean = visibility == View.VISIBLE
+
+fun View.isGone(): Boolean = visibility == View.GONE
+
+fun View.isTransparent(): Boolean = visibility == View.INVISIBLE
+
+fun View.transparent() {
+  visibility = View.INVISIBLE
 }
+
+fun View.gone() {
+  visibility = View.GONE
+}
+
+fun View.visible() {
+  visibility = View.VISIBLE
+}
+
+fun View.visibleGone(value: Boolean) {
+  if (value && !isVisible()) {
+    visible()
+  } else if (!value && !isGone()) {
+    gone()
+  }
+}
+
+fun View.visibleInvisible(value: Boolean) {
+  if (value && !isVisible()) {
+    visible()
+  } else if (!value && !isTransparent()) {
+    transparent()
+  }
+}
+
+fun <ViewT : View> View.bindView(@IdRes idRes: Int): Lazy<ViewT> {
+  return lazyUnSynchronized {
+    findViewById(idRes)
+  }
+}
+
+fun View.colorOf(@ColorRes color: Int) = ContextCompat.getColor(context, color)
+
+fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
+  doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
+}
+
+fun View.inflater(): LayoutInflater = LayoutInflater.from(context)
 
 fun View.dp2px(dp: Int) = context.dp2px(dp)
-
-fun Fragment.dp2px(dp: Int) = requireContext().dp2px(dp)
-
-@Px
-fun Context.getActionBarSize(): Int {
-  val value = TypedValue()
-  theme.resolveAttribute(android.R.attr.actionBarSize, value, true)
-  return TypedValue.complexToDimensionPixelSize(value.data, resources.displayMetrics)
-}
-
-fun Context.isHorizontal() =
-  resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
 fun View.fadeInAnimation() {
   val fadeIn = AlphaAnimation(0f, 1f)
@@ -139,4 +164,18 @@ fun AppCompatTextView.text() = text.toString()
 fun TextView.setTextOrHide(text: String?) {
   visibleGone(!text.isNullOrEmpty())
   this.text = text
+}
+
+fun TabLayout.onTabSelected(function: (TabLayout.Tab) -> Unit) {
+  addOnTabSelectedListener(object : OnTabSelectedListener {
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+      if (tab != null) {
+        function(tab)
+      }
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) { }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) { }
+  })
 }

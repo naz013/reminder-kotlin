@@ -14,8 +14,8 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.dp2px
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

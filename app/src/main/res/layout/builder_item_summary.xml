@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_layout"
+        style="@style/OutlinedBoxStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elementary.tasks.core.views.FixedTextInputEditText
+            android:id="@+id/input_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:maxLength="300"
+            android:maxLines="6"
+            android:textAppearance="?textAppearanceSubtitle1"
+            tools:hint="@string/remind_me" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</FrameLayout>

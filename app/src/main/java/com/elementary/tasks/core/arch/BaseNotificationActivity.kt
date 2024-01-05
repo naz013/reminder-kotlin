@@ -11,13 +11,13 @@ import android.view.MotionEvent
 import androidx.core.app.NotificationCompat
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -167,7 +167,7 @@ abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() 
   protected fun showWearNotification(secondaryText: String) {
     Timber.d("showWearNotification: $secondaryText")
     val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
     wearableNotificationBuilder.color = colorOf(R.color.secondaryBlue)

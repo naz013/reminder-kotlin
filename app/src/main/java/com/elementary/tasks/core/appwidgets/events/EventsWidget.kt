@@ -12,7 +12,7 @@ import com.elementary.tasks.core.appwidgets.AppWidgetActionActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import java.text.SimpleDateFormat
 import java.util.GregorianCalendar
 import java.util.Locale
@@ -53,7 +53,7 @@ class EventsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_settings_24px,
+          iconId = R.drawable.ic_fluent_settings,
           color = R.color.pureWhite,
           viewId = R.id.btn_settings,
           cls = EventsWidgetConfigActivity::class.java
@@ -64,15 +64,15 @@ class EventsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_add_24px,
+          iconId = R.drawable.ic_fluent_add,
           color = R.color.pureWhite,
           viewId = R.id.btn_add_task,
-          cls = CreateReminderActivity::class.java
+          cls = ReminderBuilderLauncher.PENDING_INTENT_CLASS
         )
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_mic_24px,
+          iconId = R.drawable.ic_builder_mic_on,
           color = R.color.pureWhite,
           viewId = R.id.btn_voice,
           cls = VoiceWidgetDialog::class.java
@@ -82,7 +82,7 @@ class EventsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_settings_24px,
+          iconId = R.drawable.ic_fluent_settings,
           color = R.color.pureBlack,
           viewId = R.id.btn_settings,
           cls = EventsWidgetConfigActivity::class.java
@@ -93,15 +93,15 @@ class EventsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_add_24px,
+          iconId = R.drawable.ic_fluent_add,
           color = R.color.pureBlack,
           viewId = R.id.btn_add_task,
-          cls = CreateReminderActivity::class.java
+          cls = ReminderBuilderLauncher.PENDING_INTENT_CLASS
         )
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_mic_24px,
+          iconId = R.drawable.ic_builder_mic_on,
           color = R.color.pureBlack,
           viewId = R.id.btn_voice,
           cls = VoiceWidgetDialog::class.java

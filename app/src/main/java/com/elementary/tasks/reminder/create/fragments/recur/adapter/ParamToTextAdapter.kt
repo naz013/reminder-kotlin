@@ -23,7 +23,7 @@ class ParamToTextAdapter(
     return getTypeText(param.recurParamType)
   }
 
-  private fun getTypeText(recurParamType: RecurParamType): String {
+  fun getTypeText(recurParamType: RecurParamType): String {
     return when (recurParamType) {
       RecurParamType.COUNT -> textProvider.getText(R.string.recur_count)
       RecurParamType.INTERVAL -> textProvider.getText(R.string.recur_interval)

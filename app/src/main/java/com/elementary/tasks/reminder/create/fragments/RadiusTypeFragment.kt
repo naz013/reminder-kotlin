@@ -6,8 +6,6 @@ import com.elementary.tasks.core.utils.SuperUtil
 
 abstract class RadiusTypeFragment<B : ViewBinding> : TypeFragment<B>() {
 
-  protected abstract fun recreateMarker()
-
   override fun prepare(): Reminder? {
     if (!SuperUtil.checkLocationEnable(requireContext())) {
       SuperUtil.showLocationAlert(requireContext(), iFace)

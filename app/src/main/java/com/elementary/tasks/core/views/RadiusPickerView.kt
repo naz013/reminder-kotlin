@@ -15,12 +15,16 @@ class RadiusPickerView : LinearLayout {
   private lateinit var binding: ViewRadiusPickerBinding
   private lateinit var behaviour: RadiusSliderBehaviour
 
+  private var shouldNotify = true
+
   var onRadiusChangeListener: ((radius: Int) -> Unit)? = null
   var radiusInM: Int
     get() = behaviour.getRadius()
     set(value) {
       binding.labelView.text = radiusFormatter.format(value)
+      shouldNotify = false
       binding.sliderView.value = value.toFloat()
+      shouldNotify = true
     }
   var useMetric: Boolean = true
     set(value) {
@@ -53,7 +57,9 @@ class RadiusPickerView : LinearLayout {
     radiusFormatter = DefaultRadiusFormatter(context, useMetric)
     behaviour = RadiusSliderBehaviour(binding.sliderView, 0) {
       binding.labelView.text = radiusFormatter.format(it)
-      onRadiusChangeListener?.invoke(it)
+      if (shouldNotify) {
+        onRadiusChangeListener?.invoke(it)
+      }
     }
   }
 }

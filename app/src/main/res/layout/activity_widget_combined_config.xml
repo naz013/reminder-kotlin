@@ -9,14 +9,14 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:liftOnScroll="false"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/ic_clear_black_24dp"
+            app:navigationIcon="@drawable/ic_fluent_dismiss"
             app:navigationIconTint="?colorOnSurface"
             app:title="@string/quick_buttons"
             app:titleCentered="true" />
@@ -49,7 +49,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_alarm_24px" />
+                app:srcCompat="@drawable/ic_fluent_clock_alarm" />
 
             <ImageView
                 android:id="@+id/btn_add_note"
@@ -58,7 +58,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_note_24px" />
+                app:srcCompat="@drawable/ic_fluent_note" />
 
             <ImageView
                 android:id="@+id/btn_add_birthday"
@@ -67,7 +67,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_cake_24px" />
+                app:srcCompat="@drawable/ic_fluent_food_cake" />
 
             <ImageView
                 android:id="@+id/btn_voice"
@@ -76,7 +76,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_mic_black_24px" />
+                app:srcCompat="@drawable/ic_builder_mic_on" />
 
         </LinearLayout>
 
@@ -125,6 +125,6 @@
         android:text="@string/save"
         android:textAllCaps="true"
         android:visibility="visible"
-        app:icon="@drawable/ic_twotone_done_24px" />
+        app:icon="@drawable/ic_fluent_checkmark" />
 
 </LinearLayout>

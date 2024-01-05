@@ -4,6 +4,7 @@ import android.view.View
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
 
+@Deprecated("Replaced by new Builder")
 interface ReminderInterface {
   val defGroup: ReminderGroup?
   var canExportToTasks: Boolean

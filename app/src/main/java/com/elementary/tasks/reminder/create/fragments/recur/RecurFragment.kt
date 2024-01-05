@@ -14,21 +14,22 @@ import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.onTextChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.utils.startActivity
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.isVisible
+import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.ActionView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.common.ValueSliderView
 import com.elementary.tasks.databinding.DialogRecurDayAdvancedBinding
@@ -164,6 +165,10 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
       binding.actionView,
       binding.dateView
     )
+  }
+
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

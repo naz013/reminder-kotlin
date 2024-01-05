@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
+import com.elementary.tasks.core.os.buildIntent
 import com.elementary.tasks.core.os.datapicker.ActivityLauncherCreator
 import com.elementary.tasks.core.os.datapicker.FragmentLauncherCreator
 import com.elementary.tasks.core.os.datapicker.IntentPicker
 import com.elementary.tasks.core.os.datapicker.LauncherCreator
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.buildIntent
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityRecurPresetListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

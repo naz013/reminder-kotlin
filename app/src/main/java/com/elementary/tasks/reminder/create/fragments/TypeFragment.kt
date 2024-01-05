@@ -21,16 +21,17 @@ import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.copyExtra
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.ExportToCalendarView
 import com.elementary.tasks.core.views.ExportToGoogleTasksView
@@ -43,13 +44,16 @@ import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
 import com.elementary.tasks.core.views.WindowTypeView
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
+@Deprecated("Replaced by new Builder")
 abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   protected val dateTimeManager by inject<DateTimeManager>()
   protected val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private val contactPicker = ContactPicker(this) { actionView?.number = it.phone }
@@ -84,8 +88,20 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     getExplanationView().visibleGone(
       explanationVisibility.shouldShowExplanation(getExplanationVisibilityType())
     )
+    getLegacyMessageView().run {
+      visibleGone(prefs.showLegacyBuilderWarning)
+      onTryClicked = {
+        reminderBuilderLauncher.toggleBuilder(requireActivity())
+      }
+      onCloseClicked = {
+        prefs.showLegacyBuilderWarning = false
+        gone()
+      }
+    }
     setCloseListenerToExplanationView(getExplanationVisibilityHideClickListener())
   }
+
+  protected abstract fun getLegacyMessageView(): ClosableLegacyBuilderWarningView
 
   protected abstract fun getDynamicViews(): List<View>
 

@@ -6,28 +6,23 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
-import com.elementary.tasks.core.fragments.AdvancedMapFragment
-import com.elementary.tasks.core.interfaces.MapCallback
-import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.elementary.tasks.pin.PinLoginActivity
+import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class CreatePlaceActivity :
-  BindingActivity<ActivityCreatePlaceBinding>(),
-  MapListener,
-  MapCallback {
+class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
 
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
-  private var googleMap: AdvancedMapFragment? = null
+  private var googleMap: SimpleMapFragment? = null
   private val loginLauncher = LoginLauncher(this) {
     if (!it) {
       finish()
@@ -41,22 +36,43 @@ class CreatePlaceActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     initActionBar()
-    googleMap = AdvancedMapFragment.newInstance(
-      isPlaces = false,
-      isStyles = true,
-      isBack = false,
-      isZoom = false,
-      markerStyle = prefs.markerStyle,
-      isDark = isDarkMode,
-      isRadius = false
+    googleMap = SimpleMapFragment.newInstance(
+      SimpleMapFragment.MapParams(
+        isPlaces = false,
+        isStyles = true,
+        isRadius = true,
+        rememberMarkerRadius = false,
+        rememberMarkerStyle = false
+      )
     )
-    googleMap?.setListener(this)
-    googleMap?.setCallback(this)
+
+    googleMap?.mapCallback = object : SimpleMapFragment.MapCallback {
+      override fun onMapReady() {
+        if (viewModel.canDelete) {
+          viewModel.getPlace()?.also {
+            showPlaceOnMap(it)
+          }
+        }
+      }
+
+      override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
+        viewModel.lat = markerState.latLng.latitude
+        viewModel.lng = markerState.latLng.longitude
+        viewModel.address = markerState.address
+        viewModel.markerStyle = markerState.style
+        viewModel.markerRadius = markerState.radius
+
+        if (binding.placeName.trimmedText().isEmpty()) {
+          binding.placeName.setText(viewModel.address)
+        }
+      }
+    }
 
     supportFragmentManager.beginTransaction()
       .replace(R.id.fragment_container, googleMap!!)
       .addToBackStack(null)
       .commit()
+
     loadPlace()
 
     if (savedInstanceState == null) {
@@ -144,13 +160,10 @@ class CreatePlaceActivity :
       binding.placeLayout.isErrorEnabled = true
       return
     }
-    val marker = googleMap?.markerStyle ?: prefs.markerStyle
     viewModel.savePlace(
       PlaceViewModel.SavePlaceData(
         name = name,
-        newId = newId,
-        radius = prefs.radius,
-        marker = marker
+        newId = newId
       )
     )
   }
@@ -182,41 +195,15 @@ class CreatePlaceActivity :
   }
 
   private fun showPlaceOnMap(place: UiPlaceEdit) {
-    googleMap?.also {
-      it.setStyle(place.marker)
-      it.addMarker(
-        LatLng(place.lat, place.lng),
-        place.name,
+    googleMap?.run {
+      addMarker(
+        latLng = LatLng(place.lat, place.lng),
+        title = place.name,
+        markerStyle = place.marker,
+        radius = place.radius,
         clear = true,
-        animate = true,
-        radius = -1
+        animate = true
       )
     }
-  }
-
-  override fun placeChanged(place: LatLng, address: String) {
-    viewModel.lat = place.latitude
-    viewModel.lng = place.longitude
-    viewModel.address = address
-    if (binding.placeName.trimmedText().isEmpty()) {
-      binding.placeName.setText(address)
-    }
-  }
-
-  override fun onBackClick() {
-  }
-
-  override fun onZoomClick(isFull: Boolean) {
-  }
-
-  override fun onMapReady() {
-    if (viewModel.canDelete) {
-      viewModel.getPlace()?.also {
-        showPlaceOnMap(it)
-      }
-    }
-  }
-
-  override fun onRadiusChanged(radiusInM: Int) {
   }
 }

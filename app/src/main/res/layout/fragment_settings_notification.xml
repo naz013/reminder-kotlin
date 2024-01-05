@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -32,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+            app:prefs_icon="@drawable/ic_fluent_alert"
             app:prefs_primary_text="@string/notification_type"
             app:prefs_type="none" />
 
@@ -61,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_watch_24px"
+            app:prefs_icon="@drawable/ic_fluent_watch"
             app:prefs_primary_text="@string/android_wear_notification"
             app:prefs_secondary_text_off="@string/do_no_show_notifications_on_wear_devices"
             app:prefs_secondary_text_on="@string/show_notifications_on_wear_devices"
@@ -120,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_vibration_24px"
+            app:prefs_icon="@drawable/ic_fluent_phone_vibrate"
             app:prefs_primary_text="@string/vibrate"
             app:prefs_type="check_switch" />
 
@@ -147,7 +146,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_repeat_24px"
+            app:prefs_icon="@drawable/ic_fluent_arrow_repeat_all"
             app:prefs_primary_text="@string/infinite_sound"
             app:prefs_secondary_text_off="@string/do_not_repeat_melody"
             app:prefs_secondary_text_on="@string/repeat_melody_when_it_ends"
@@ -158,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_music_note_24px"
+            app:prefs_icon="@drawable/ic_builder_melody"
             app:prefs_primary_text="@string/melody"
             app:prefs_type="view" />
 
@@ -167,7 +166,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_music_note_24px"
+            app:prefs_icon="@drawable/ic_builder_time_picker"
             app:prefs_primary_text="@string/melody_playback_duration"
             app:prefs_type="none" />
 
@@ -194,7 +193,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_volume_up_24px"
+            app:prefs_icon="@drawable/ic_fluent_speaker"
             app:prefs_primary_text="@string/loudness"
             app:prefs_type="none" />
 
@@ -203,7 +202,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_show_chart_24px"
             app:prefs_primary_text="@string/increasing_loudness"
             app:prefs_secondary_text_off="@string/use_selected_loudness_level"
             app:prefs_secondary_text_on="@string/slowly_increase_loudness_level"
@@ -214,7 +212,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_record_voice_over_24px"
+            app:prefs_icon="@drawable/ic_fluent_person_voice"
             app:prefs_primary_text="@string/voice_notification"
             app:prefs_secondary_text_off="@string/play_melody"
             app:prefs_secondary_text_on="@string/spell_event_summary"
@@ -225,7 +223,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_language_24px"
+            app:prefs_icon="@drawable/ic_fluent_local_language"
             app:prefs_primary_text="@string/language"
             app:prefs_type="none" />
 
@@ -243,7 +241,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_lock_open_24px"
+            app:prefs_icon="@drawable/ic_fluent_unlock"
             app:prefs_primary_text="@string/unlock_screen"
             app:prefs_type="check_switch" />
 
@@ -260,7 +258,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_call_24px"
+            app:prefs_icon="@drawable/ic_fluent_phone"
             app:prefs_primary_text="@string/auto_call"
             app:prefs_secondary_text_off="@string/make_call_manually"
             app:prefs_secondary_text_on="@string/make_call_auto"
@@ -271,7 +269,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_launch_24px"
+            app:prefs_icon="@drawable/ic_fluent_open"
             app:prefs_primary_text="@string/launch_application"
             app:prefs_secondary_text_off="@string/open_applications_manually"
             app:prefs_secondary_text_on="@string/open_applications_auto"
@@ -282,7 +280,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_snooze_24px"
+            app:prefs_icon="@drawable/ic_fluent_alert_snooze"
             app:prefs_primary_text="@string/snooze_time"
             app:prefs_type="none" />
 
@@ -291,7 +289,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_highlight_24px"
+            app:prefs_icon="@drawable/ic_builder_led_color"
             app:prefs_primary_text="@string/led_notification"
             app:prefs_pro="true"
             app:prefs_secondary_text_off="@string/do_not_show_led_indication"
@@ -303,6 +301,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_color"
             app:prefs_primary_text="@string/led_color"
             app:prefs_pro="true"
             app:prefs_type="none" />

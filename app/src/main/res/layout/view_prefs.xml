@@ -21,17 +21,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:padding="16dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iconView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="6dp"
                 android:layout_marginEnd="20dp"
                 android:scaleType="centerInside"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_twotone_track_changes_24px"
+                app:srcCompat="@drawable/ic_builder_map_radius"
                 app:tint="?colorOnBackground" />
 
             <LinearLayout
@@ -88,7 +88,7 @@
                     android:gravity="center"
                     android:saveEnabled="false"
                     android:visibility="gone"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
 
                 <TextView
                     android:id="@+id/prefsValue"

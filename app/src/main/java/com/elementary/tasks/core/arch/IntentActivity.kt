@@ -12,14 +12,14 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.os.IntentDataHolder
+import com.elementary.tasks.core.os.intentForClass
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -27,6 +27,7 @@ class IntentActivity : ThemedActivity() {
 
   private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
   private val intentDataHolder by inject<IntentDataHolder>()
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -78,10 +79,9 @@ class IntentActivity : ThemedActivity() {
 
           is Reminder -> {
             if (any.isValid()) {
-              startActivity(
-                intentForClass(CreateReminderActivity::class.java)
-                  .putExtra(Constants.INTENT_ITEM, any)
-              )
+              reminderBuilderLauncher.openNotLogged(this) {
+                putExtra(Constants.INTENT_ITEM, any)
+              }
             } else {
               toast(getString(R.string.unsupported_file_format))
             }

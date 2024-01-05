@@ -9,7 +9,7 @@ import com.elementary.tasks.core.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetPrefsHolder
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
 import org.koin.android.ext.android.inject
@@ -86,35 +86,35 @@ class CalendarWidgetConfigActivity :
     binding.btnSettings.setImageBitmap(
       ViewUtils.createIcon(
         context = this,
-        res = R.drawable.ic_twotone_settings_24px,
+        res = R.drawable.ic_fluent_settings,
         color = color
       )
     )
     binding.btnAddTask.setImageBitmap(
       ViewUtils.createIcon(
         context = this,
-        res = R.drawable.ic_twotone_add_24px,
+        res = R.drawable.ic_fluent_add,
         color = color
       )
     )
     binding.btnVoice.setImageBitmap(
       ViewUtils.createIcon(
         context = this,
-        res = R.drawable.ic_twotone_mic_24px,
+        res = R.drawable.ic_builder_mic_on,
         color = color
       )
     )
     binding.btnNext.setImageBitmap(
       ViewUtils.createIcon(
         context = this,
-        res = R.drawable.ic_twotone_keyboard_arrow_right_24px,
+        res = R.drawable.ic_fluent_chevron_right,
         color = color
       )
     )
     binding.btnPrev.setImageBitmap(
       ViewUtils.createIcon(
         context = this,
-        res = R.drawable.ic_twotone_keyboard_arrow_left_24px,
+        res = R.drawable.ic_fluent_chevron_left,
         color = color
       )
     )

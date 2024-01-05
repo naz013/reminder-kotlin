@@ -10,7 +10,6 @@ import com.backdoor.engine.Model
 import com.backdoor.engine.Recognizer
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
-import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.analytics.Status
@@ -43,7 +42,7 @@ import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.ContextProvider
-import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -53,13 +52,12 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
-import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.pin.PinLoginActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.other.SendFeedbackActivity
@@ -91,9 +89,10 @@ class ConversationViewModel(
   private val prefs: Prefs,
   private val language: Language,
   private val contextProvider: ContextProvider,
-  private val contactsReader: ContactsReader,
+  private val contactsHelper: ContactsHelper,
   private val voiceAnalyticsTracker: VoiceAnalyticsTracker,
-  private val noteRepository: NoteRepository
+  private val noteRepository: NoteRepository,
+  private val reminderBuilderLauncher: ReminderBuilderLauncher
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _shoppingLists = MutableLiveData<List<UiReminderList>>()
@@ -331,7 +330,7 @@ class ConversationViewModel(
 
   fun findSuggestion(suggestion: String): Model? {
     return runCatching {
-      recognizer.setContactHelper(ContactHelper())
+      recognizer.setContactHelper(contactsHelper)
       val model = try {
         recognizer.recognize(suggestion)
       } catch (throwable: Throwable) {
@@ -347,7 +346,7 @@ class ConversationViewModel(
   }
 
   fun findResults(matches: List<*>): Reminder? {
-    recognizer.setContactHelper(ContactHelper())
+    recognizer.setContactHelper(contactsHelper)
     for (i in matches.indices) {
       val key = matches[i]
       val keyStr = key.toString()
@@ -386,7 +385,7 @@ class ConversationViewModel(
             }
 
             Action.REMINDER -> {
-              PinLoginActivity.openLogged(context, CreateReminderActivity::class.java)
+              reminderBuilderLauncher.openLogged(context) { }
             }
 
             Action.VOLUME -> {
@@ -466,7 +465,7 @@ class ConversationViewModel(
         removed = true
       )
       for (reminder in archived) {
-        eventControlFactory.getController(reminder).stop()
+        eventControlFactory.getController(reminder).disable()
         reminderDao.delete(reminder)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
@@ -558,7 +557,7 @@ class ConversationViewModel(
             }
           }
         }
-        eventControlFactory.getController(reminder).start()
+        eventControlFactory.getController(reminder).enable()
         Timber.d("saveAndStartReminder: save DONE")
       }
       workerLauncher.startWork(
@@ -619,19 +618,8 @@ class ConversationViewModel(
   private fun stopReminder(reminder: Reminder) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      eventControlFactory.getController(reminder).stop()
+      eventControlFactory.getController(reminder).disable()
       postInProgress(false)
-    }
-  }
-
-  inner class ContactHelper : ContactsInterface {
-
-    override fun findEmail(input: String?): String? {
-      return contactsReader.findEmail(input)
-    }
-
-    override fun findNumber(input: String?): String? {
-      return contactsReader.findNumber(input)
     }
   }
 }

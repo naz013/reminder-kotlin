@@ -12,13 +12,13 @@ import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject

@@ -10,11 +10,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.gone
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment

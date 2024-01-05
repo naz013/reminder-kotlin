@@ -6,25 +6,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/emptyButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp" />
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/deleteButton"
-            android:layout_toEndOf="@+id/emptyButton"
+            android:layout_weight="1"
             android:gravity="center">
 
             <com.google.android.material.textview.MaterialTextView
@@ -33,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@+id/hours"
                 android:gravity="center|bottom"
-                android:textAppearance="?textAppearanceHeadline3"
+                android:textAppearance="?textAppearanceHeadlineLarge"
                 tools:text="42" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -45,7 +43,7 @@
                 android:layout_toStartOf="@+id/minutesView"
                 android:gravity="center|top"
                 android:text="@string/h"
-                android:textAppearance="?textAppearanceBody1" />
+                android:textAppearance="?textAppearanceTitleMedium" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/minutesView"
@@ -53,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@+id/minutes"
                 android:gravity="center|bottom"
-                android:textAppearance="?textAppearanceHeadline3"
+                android:textAppearance="?textAppearanceHeadlineLarge"
                 tools:text="42" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -65,7 +63,7 @@
                 android:layout_toStartOf="@+id/secondsView"
                 android:gravity="center|bottom"
                 android:text="@string/m"
-                android:textAppearance="?textAppearanceBody1" />
+                android:textAppearance="?textAppearanceTitleMedium" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/secondsView"
@@ -73,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@+id/seconds"
                 android:gravity="center|bottom"
-                android:textAppearance="?textAppearanceHeadline3"
+                android:textAppearance="?textAppearanceHeadlineLarge"
                 tools:text="55" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -84,7 +82,7 @@
                 android:layout_alignParentEnd="true"
                 android:gravity="center|bottom"
                 android:text="@string/c"
-                android:textAppearance="?textAppearanceBody1" />
+                android:textAppearance="?textAppearanceTitleMedium" />
 
         </RelativeLayout>
 
@@ -92,16 +90,14 @@
             android:id="@+id/deleteButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_backspace_24px"
+            app:srcCompat="@drawable/ic_fluent_backspace"
             app:tint="?android:textColorPrimary" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -111,8 +107,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginTop="8dp"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <View
@@ -310,8 +306,8 @@
             android:gravity="center"
             android:text=""
             android:textAppearance="?textAppearanceHeadlineSmall"
-            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             android:visibility="invisible"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
         <View
@@ -342,8 +338,8 @@
             android:gravity="center"
             android:text=""
             android:textAppearance="?textAppearanceHeadlineSmall"
-            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             android:visibility="invisible"
+            app:shapeAppearance="@style/ShapeAppearance.TimerButton"
             tools:ignore="HardcodedText" />
 
         <View

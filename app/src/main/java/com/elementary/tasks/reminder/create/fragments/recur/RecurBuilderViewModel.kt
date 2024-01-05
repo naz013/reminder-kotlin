@@ -7,6 +7,7 @@ import com.elementary.tasks.core.analytics.PresetAction
 import com.elementary.tasks.core.analytics.PresetUsed
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.livedata.toSingleEvent
+import com.elementary.tasks.core.data.models.PresetType
 import com.elementary.tasks.core.data.models.RecurPreset
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.RecurPresetRepository
@@ -91,7 +92,7 @@ class RecurBuilderViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      builderParamLogic.setAllParams(RecurParamType.values().map { it.toBuilderParam() })
+      builderParamLogic.setAllParams(RecurParamType.entries.map { it.toBuilderParam() })
 
       _availableParams.postValue(createAvailableDataList(builderParamLogic.getAvailable()))
       _supportedFreq.postValue(getSupportedFreq())
@@ -142,7 +143,10 @@ class RecurBuilderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val preset = RecurPreset(
         recurObject = recurObject,
-        name = name
+        name = name,
+        type = PresetType.RECUR,
+        createdAt = dateTimeManager.getCurrentDateTime(),
+        useCount = 1
       )
       recurPresetRepository.save(preset)
       analyticsEventSender.send(PresetUsed(PresetAction.CREATE))
@@ -467,7 +471,7 @@ class RecurBuilderViewModel(
   }
 
   private fun getSupportedFreq(): List<UiFreqParam> {
-    return FreqType.values().map {
+    return FreqType.entries.map {
       UiFreqParam(
         text = paramToTextAdapter.getFreqText(it),
         freqType = it
@@ -476,7 +480,7 @@ class RecurBuilderViewModel(
   }
 
   private fun getSupportedDays(): List<UiDayParam> {
-    return Day.values().map { DayValue(it) }.map {
+    return Day.entries.map { DayValue(it) }.map {
       UiDayParam(
         text = paramToTextAdapter.getDayFullText(it),
         dayValue = it

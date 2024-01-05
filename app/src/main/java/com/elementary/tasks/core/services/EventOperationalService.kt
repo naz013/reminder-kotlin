@@ -86,7 +86,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
   private fun showForegroundNotification() {
     val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
     builder.color = ThemeProvider.getPrimaryColor(applicationContext)
-    builder.setSmallIcon(R.drawable.ic_twotone_music_note_24px)
+    builder.setSmallIcon(R.drawable.ic_builder_melody)
     builder.setContentTitle(getString(R.string.reminder_ongoing_service))
     builder.setContentText(getString(R.string.app_title))
 
@@ -98,7 +98,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       PendingIntent.FLAG_CANCEL_CURRENT
     )
 
-    builder.addAction(R.drawable.ic_twotone_block_24px, getString(R.string.acc_stop), piDismiss)
+    builder.addAction(R.drawable.ic_fluent_dismiss, getString(R.string.acc_stop), piDismiss)
     startForeground(3214, builder.build())
   }
 
@@ -258,7 +258,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     if (!birthday.ignoreYear) {
       builder.setContentText(dateTimeManager.getAgeFormatted(birthday.date))
     }
-    builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_food_cake)
     builder.setAutoCancel(false)
     if (prefs.isManualRemoveEnabled) {
       builder.setOngoing(false)
@@ -289,7 +289,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       PendingIntent.FLAG_CANCEL_CURRENT
     )
     builder.addAction(
-      R.drawable.ic_twotone_done_white,
+      R.drawable.ic_fluent_checkmark,
       applicationContext.getString(R.string.ok),
       piDismiss
     )
@@ -384,7 +384,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       builder.setLights(ledColor(reminder.color), 500, 1000)
     }
     builder.setContentText(appName())
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_alert)
     builder.color = ThemeProvider.getPrimaryColor(applicationContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
@@ -421,7 +421,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
       PendingIntent.FLAG_CANCEL_CURRENT
     )
     builder.addAction(
-      R.drawable.ic_twotone_done_white,
+      R.drawable.ic_fluent_checkmark,
       applicationContext.getString(R.string.ok),
       piDismiss
     )
@@ -437,7 +437,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         PendingIntent.FLAG_CANCEL_CURRENT
       )
       builder.addAction(
-        R.drawable.ic_twotone_snooze_24px,
+        R.drawable.ic_fluent_snooze,
         applicationContext.getString(R.string.acc_button_snooze),
         piSnooze
       )
@@ -518,7 +518,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
   ) {
     Timber.d("showWearNotification: $secondaryText")
     val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
     wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.secondaryBlue)

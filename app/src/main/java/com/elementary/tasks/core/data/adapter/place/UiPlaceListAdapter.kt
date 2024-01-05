@@ -17,17 +17,20 @@ class UiPlaceListAdapter(
 
   fun convert(data: Place): UiPlaceList {
     val marker = DrawableHelper.withContext(contextProvider.context)
-      .withDrawable(R.drawable.ic_twotone_place_24px)
+      .withDrawable(R.drawable.ic_fluent_place)
       .withColor(themeProvider.getMarkerLightColor(data.marker))
       .tint()
       .get()
+
     return UiPlaceList(
       marker = marker,
       id = data.id,
       name = data.name,
       latLng = LatLng(data.latitude, data.longitude),
       markerStyle = data.marker,
-      date = dateTimeManager.getPlaceDateTimeFromGmt(data.dateTime)
+      formattedDate = dateTimeManager.getPlaceDateTimeFromGmt(data.dateTime)?.let {
+        dateTimeManager.getDate(it)
+      }
     )
   }
 }

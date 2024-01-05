@@ -21,7 +21,7 @@ class WearNotification(
     Timber.d("showWearNotification: $secondaryText")
     val wearableNotificationBuilder =
       NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
-    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
     wearableNotificationBuilder.color =

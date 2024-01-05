@@ -81,7 +81,7 @@
                             android:layout_height="24dp"
                             android:layout_marginTop="4dp"
                             android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_twotone_notifications_24px"
+                            app:srcCompat="@drawable/ic_fluent_alert"
                             app:tint="?colorOnSurface" />
 
                         <LinearLayout
@@ -159,7 +159,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
             app:menu="@menu/activity_preview_note"
-            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px" />
+            app:navigationIcon="@drawable/ic_builder_arrow_left" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

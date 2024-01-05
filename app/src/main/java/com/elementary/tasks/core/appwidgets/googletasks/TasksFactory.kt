@@ -94,9 +94,9 @@ class TasksFactory(
     }
 
     val icon = if (task.status == GTasks.TASKS_COMPLETE) {
-      ViewUtils.createIcon(context, R.drawable.ic_check, listColor)
+      ViewUtils.createIcon(context, R.drawable.ic_builder_google_task_list, listColor)
     } else {
-      ViewUtils.createIcon(context, R.drawable.ic_empty_circle, listColor)
+      ViewUtils.createIcon(context, R.drawable.ic_fluent_radio_button, listColor)
     }
     rv.setImageViewBitmap(R.id.statusIcon, icon)
 

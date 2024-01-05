@@ -11,6 +11,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
+@Deprecated("Replaced by new Builder")
 class ReminderStateViewModel(
   private val gTasks: GTasks,
   private val featureManager: FeatureManager

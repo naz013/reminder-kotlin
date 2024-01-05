@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="x_attachments" >
+        <item quantity="one">@string/builder_x_attachment</item>
+        <item quantity="other">@string/builder_x_attachments</item>
+    </plurals>
+
+    <plurals name="x_errors" >
+        <item quantity="one">@string/builder_found_x_error</item>
+        <item quantity="other">@string/builder_found_x_errors</item>
+    </plurals>
+
+    <plurals name="x_items_deleted" >
+        <item quantity="one">@string/builder_and_x_item_is_deleted</item>
+        <item quantity="other">@string/builder_and_x_items_are_deleted</item>
+    </plurals>
+</resources>

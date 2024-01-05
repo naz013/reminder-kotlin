@@ -20,15 +20,19 @@ object IntervalUtil {
     sat: Boolean,
     sun: Boolean
   ): List<Int> {
-    val sb = ArrayList<Int>(7)
-    sb.add(0, if (sun) 1 else 0)
-    sb.add(1, if (mon) 1 else 0)
-    sb.add(2, if (tue) 1 else 0)
-    sb.add(3, if (wed) 1 else 0)
-    sb.add(4, if (thu) 1 else 0)
-    sb.add(5, if (fri) 1 else 0)
-    sb.add(6, if (sat) 1 else 0)
-    return sb
+    return listOf(
+      sun.toBit(),
+      mon.toBit(),
+      tue.toBit(),
+      wed.toBit(),
+      thu.toBit(),
+      fri.toBit(),
+      sat.toBit()
+    )
+  }
+
+  private fun Boolean.toBit(): Int {
+    return if (this) 1 else 0
   }
 
   fun isWeekday(weekday: List<Int>?): Boolean {

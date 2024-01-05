@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.io.readInt
 import com.elementary.tasks.core.utils.io.readLong
 import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.params.Prefs
+import com.google.gson.annotations.SerializedName
 import timber.log.Timber
 import java.util.TimeZone
 
@@ -43,13 +44,21 @@ class GoogleCalendarUtils(
         dateTimeManager.toMillis(it)
       } ?: return
       values.put(CalendarContract.Events.DTSTART, startTime)
-      values.put(CalendarContract.Events.DTEND, startTime + 60 * 1000 * prefs.calendarEventDuration)
+      if (reminder.duration > 0L || reminder.allDay) {
+        values.put(CalendarContract.Events.ALL_DAY, if (reminder.allDay) 1 else 0)
+        values.put(CalendarContract.Events.DTEND, startTime + reminder.duration)
+      } else {
+        values.put(CalendarContract.Events.ALL_DAY, 0)
+        values.put(
+          CalendarContract.Events.DTEND,
+          startTime + 60 * 1000 * prefs.calendarEventDuration
+        )
+      }
       if (!TextUtils.isEmpty(reminder.summary)) {
         values.put(CalendarContract.Events.TITLE, reminder.summary)
       }
       values.put(CalendarContract.Events.CALENDAR_ID, mId)
       values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone)
-      values.put(CalendarContract.Events.ALL_DAY, 0)
       values.put(CalendarContract.Events.STATUS, CalendarContract.Events.STATUS_CONFIRMED)
       values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder))
       val lEventUri = Uri.parse("content://com.android.calendar/events")
@@ -103,7 +112,7 @@ class GoogleCalendarUtils(
   }
 
   fun loadEvents(reminderId: String): List<EventItem> {
-    if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
+    if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
       return listOf()
     }
     val list = mutableListOf<EventItem>()
@@ -118,7 +127,7 @@ class GoogleCalendarUtils(
   }
 
   @RequiresPermission(Permissions.READ_CALENDAR)
-  fun getEvent(id: Long, uuId: String): EventItem? {
+  private fun getEvent(id: Long, uuId: String): EventItem? {
     if (id == 0L) {
       return null
     }
@@ -306,7 +315,9 @@ class GoogleCalendarUtils(
   )
 
   data class CalendarItem(
+    @SerializedName("name")
     val name: String,
+    @SerializedName("id")
     val id: Long
   )
 }

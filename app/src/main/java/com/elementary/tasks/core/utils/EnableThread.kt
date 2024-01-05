@@ -14,7 +14,7 @@ class EnableThread(
         appDb.reminderDao().getAll(active = true, removed = false)
       } catch (e: Exception) {
         listOf()
-      }.forEach { eventControlFactory.getController(it).start() }
+      }.forEach { eventControlFactory.getController(it).enable() }
     }
   }
 }

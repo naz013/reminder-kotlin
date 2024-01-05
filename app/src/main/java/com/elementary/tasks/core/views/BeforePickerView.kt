@@ -16,26 +16,22 @@ import timber.log.Timber
 class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedListener {
 
   private lateinit var binding: ViewRemindBeforeBinding
-  private val seconds = 0
-  private val minutes = 1
-  private val hours = 2
-  private val days = 3
-  private val weeks = 4
 
   private var mImm: InputMethodManager? = null
   var onBeforeChangedListener: OnBeforeChangedListener? = null
 
-  private var mState = minutes
+  private var mState = DateTimeManager.MultiplierType.MINUTE.index
   private var mRepeatValue: Int = 0
 
   private val multiplier: Long
     get() {
       return when (mState) {
-        seconds -> DateTimeManager.SECOND
-        minutes -> DateTimeManager.MINUTE
-        hours -> DateTimeManager.HOUR
-        days -> DateTimeManager.DAY
-        weeks -> DateTimeManager.DAY * 7
+        DateTimeManager.MultiplierType.SECOND.index -> DateTimeManager.SECOND
+        DateTimeManager.MultiplierType.MINUTE.index -> DateTimeManager.MINUTE
+        DateTimeManager.MultiplierType.HOUR.index -> DateTimeManager.HOUR
+        DateTimeManager.MultiplierType.DAY.index -> DateTimeManager.DAY
+        DateTimeManager.MultiplierType.WEEK.index -> DateTimeManager.DAY * 7
+        DateTimeManager.MultiplierType.MONTH.index -> DateTimeManager.DAY * 30
         else -> DateTimeManager.DAY
       }
     }
@@ -91,7 +87,10 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
     if (attrs != null) {
       val a = context.theme.obtainStyledAttributes(attrs, R.styleable.BeforePickerView, 0, 0)
       try {
-        mState = a.getInt(R.styleable.BeforePickerView_before_type, minutes)
+        mState = a.getInt(
+          /* index = */ R.styleable.BeforePickerView_before_type,
+          /* defValue = */ DateTimeManager.MultiplierType.MINUTE.index
+        )
       } catch (e: Exception) {
         Timber.d("init: ${e.message}")
       } finally {
@@ -115,37 +114,9 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
       setProgress(0)
       return
     }
-    when {
-      mills % (DateTimeManager.DAY * 7) == 0L -> {
-        val progress = mills / (DateTimeManager.DAY * 7)
-        setProgress(progress.toInt())
-        binding.beforeTypeView.setSelection(weeks)
-      }
-
-      mills % DateTimeManager.DAY == 0L -> {
-        val progress = mills / DateTimeManager.DAY
-        setProgress(progress.toInt())
-        binding.beforeTypeView.setSelection(days)
-      }
-
-      mills % DateTimeManager.HOUR == 0L -> {
-        val progress = mills / DateTimeManager.HOUR
-        setProgress(progress.toInt())
-        binding.beforeTypeView.setSelection(hours)
-      }
-
-      mills % DateTimeManager.MINUTE == 0L -> {
-        val progress = mills / DateTimeManager.MINUTE
-        setProgress(progress.toInt())
-        binding.beforeTypeView.setSelection(minutes)
-      }
-
-      mills % DateTimeManager.SECOND == 0L -> {
-        val progress = mills / DateTimeManager.SECOND
-        setProgress(progress.toInt())
-        binding.beforeTypeView.setSelection(seconds)
-      }
-    }
+    val beforeTime = DateTimeManager.parseBeforeTime(mills)
+    setProgress(beforeTime.value.toInt())
+    binding.beforeTypeView.setSelection(beforeTime.type.index)
   }
 
   private fun setProgress(i: Int) {

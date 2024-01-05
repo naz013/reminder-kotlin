@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/ic_twotone_playlist_add_24"
+        android:icon="@drawable/ic_fluent_task_list_add"
         android:title="@string/new_tasks_list"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />

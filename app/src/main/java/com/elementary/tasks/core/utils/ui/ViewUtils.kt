@@ -79,7 +79,7 @@ object ViewUtils {
   }
 
   fun backIcon(context: Context, isDark: Boolean): Drawable? {
-    return tintIcon(context, R.drawable.ic_twotone_arrow_back_24px, isDark)
+    return tintIcon(context, R.drawable.ic_builder_arrow_left, isDark)
   }
 
   fun createIcon(context: Context, @DrawableRes res: Int, @ColorInt color: Int): Bitmap? {

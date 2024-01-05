@@ -2,13 +2,12 @@ package com.elementary.tasks.reminder.preview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.adapter.UiReminderPreviewAdapter
-import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
-import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.dao.CalendarEventsDao
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
@@ -16,19 +15,23 @@ import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.data.ui.UiReminderPreview
 import com.elementary.tasks.core.data.ui.UiShareData
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
+import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData
+import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
+import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDetails
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
@@ -45,7 +48,7 @@ class ReminderPreviewViewModel(
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val uiReminderPreviewAdapter: UiReminderPreviewAdapter,
+  private val uiReminderPreviewDataAdapter: UiReminderPreviewDataAdapter,
   private val backupTool: BackupTool,
   private val updatesHelper: UpdatesHelper,
   private val notesDao: NotesDao,
@@ -54,8 +57,10 @@ class ReminderPreviewViewModel(
   private val calendarEventsDao: CalendarEventsDao,
   private val reminderGroupDao: ReminderGroupDao,
   private val dateTimeManager: DateTimeManager,
-  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
-  private val uiNoteListAdapter: UiNoteListAdapter
+  private val googleTaskToUiReminderPreviewGoogleTask: GoogleTaskToUiReminderPreviewGoogleTask,
+  private val noteToUiReminderPreviewNote: NoteToUiReminderPreviewNote,
+  private val textProvider: TextProvider,
+  private val eventToUiReminderPreview: EventToUiReminderPreview
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _note = mutableLiveDataOf<UiNoteList>()
@@ -64,36 +69,92 @@ class ReminderPreviewViewModel(
   private val _googleTask = mutableLiveDataOf<UiGoogleTaskList>()
   val googleTask = _googleTask.toLiveData()
 
-  private val _calendarEvent = mutableLiveDataOf<List<GoogleCalendarUtils.EventItem>>()
-  val calendarEvent = _calendarEvent.toLiveData()
-
   private val _sharedFile = mutableLiveDataOf<UiShareData>()
   val sharedFile = _sharedFile.toLiveData()
 
-  val clearExtraData = mutableLiveDataOf<Boolean>()
-
-  private val _reminder = mutableLiveDataOf<UiReminderPreview>()
+  private val _reminder = mutableLiveDataOf<UiReminderPreviewDetails>()
   val reminder = _reminder.toLiveData()
+
+  private val _reminderData = mutableLiveDataOf<List<UiReminderPreviewData>>()
+  val reminderData = _reminderData.toLiveData()
+
+  var canCopy = false
+    private set
+  var canDelete = false
+    private set
 
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
     loadReminder()
   }
 
-  private fun loadReminder() {
+  fun onSubTaskRemoved(subTaskId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderDao.getById(id) ?: return@launch
-      _reminder.postValue(uiReminderPreviewAdapter.create(reminder))
+      val subTasks = reminder.shoppings.toMutableList()
+      val index = subTasks.indexOfFirst { it.uuId == subTaskId }
+
+      Traces.d("ReminderPreviewViewModel", "onSubTaskRemoved: id=$subTaskId, subTasks=$subTasks")
+
+      if (index != -1) {
+        subTasks.removeAt(index)
+
+        Traces.d("ReminderPreviewViewModel", "onSubTaskRemoved: save subTasks=$subTasks")
+
+        saveReminder(reminder.copy(shoppings = subTasks.toList()))
+        loadReminder()
+      }
     }
   }
 
-  fun saveNewShopList(shopList: List<ShopItem>) {
-    val reminderId = reminder.value?.id ?: return
+  fun onSubTaskChecked(subTaskId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderDao.getById(reminderId)?.also {
-        saveReminder(it.copy(shoppings = shopList.toList()))
+      val reminder = reminderDao.getById(id) ?: return@launch
+      val subTasks = reminder.shoppings
+      val index = subTasks.indexOfFirst { it.uuId == subTaskId }
+
+      if (index != -1) {
+        subTasks[index].isChecked = !subTasks[index].isChecked
+        saveReminder(reminder.copy(shoppings = subTasks.toList()))
         loadReminder()
       }
+    }
+  }
+
+  fun switchClick() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val reminder = reminderDao.getById(id) ?: return@launch
+
+      if (reminder.isRemoved) return@launch
+
+      toggleReminder(reminder)
+    }
+  }
+
+  private fun loadReminder() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val reminder = reminderDao.getById(id) ?: return@launch
+
+      val type = UiReminderType(reminder.type)
+
+      canCopy = type.isBase(UiReminderType.Base.DATE)
+      canDelete = reminder.isRemoved
+
+      val data = uiReminderPreviewDataAdapter.create(reminder).toMutableList()
+      _reminderData.postValue(data)
+
+      notesDao.getById(reminder.noteId)?.let { noteToUiReminderPreviewNote(it) }
+        ?.also { data.addAll(it) }
+
+      googleTasksDao.getByReminderId(reminder.uuId)?.let {
+        googleTaskToUiReminderPreviewGoogleTask(it, googleTaskListsDao.getById(it.listId))
+      }?.also { data.addAll(it) }
+
+      googleCalendarUtils.loadEvents(reminder.uuId).takeIf { it.isNotEmpty() }?.let {
+        eventToUiReminderPreview(it, googleCalendarUtils.getCalendarsList())
+      }?.also { data.addAll(it) }
+
+      _reminderData.postValue(data)
     }
   }
 
@@ -115,67 +176,34 @@ class ReminderPreviewViewModel(
     }
   }
 
-  fun loadExtra() {
-    val reminder = reminder.value ?: return
-    viewModelScope.launch(dispatcherProvider.default()) {
-      clearExtraData.postValue(true)
-      notesDao.getById(reminder.noteId)?.also {
-        _note.postValue(uiNoteListAdapter.convert(it))
-      }
-      val googleTask = googleTasksDao.getByReminderId(reminder.id)
-      if (googleTask != null) {
-        _googleTask.postValue(
-          uiGoogleTaskListAdapter.convert(googleTask, googleTaskListsDao.getById(googleTask.listId))
-        )
-      }
-      val events = googleCalendarUtils.loadEvents(reminder.id)
-      if (events.isNotEmpty()) {
-        val calendars = googleCalendarUtils.getCalendarsList()
-        for (c in calendars) {
-          for (e in events) {
-            if (e.calendarId == c.id) {
-              e.calendarName = c.name
-            }
-          }
-        }
-        _calendarEvent.postValue(events)
-      }
-    }
-  }
-
-  fun deleteEvent(eventItem: GoogleCalendarUtils.EventItem) {
+  fun deleteEvent(eventItem: UiCalendarEventList) {
     viewModelScope.launch(dispatcherProvider.default()) {
       if (eventItem.localId.isNotBlank()) {
         calendarEventsDao.deleteById(eventItem.localId)
       }
       googleCalendarUtils.deleteEvent(eventItem.id)
-      loadExtra()
+      loadReminder()
     }
   }
 
-  fun toggleReminder() {
-    val reminderId = reminder.value?.id ?: return
-    viewModelScope.launch(dispatcherProvider.default()) {
-      reminderDao.getById(reminderId)?.also { reminder ->
-        postInProgress(true)
-        if (!eventControlFactory.getController(reminder).onOff()) {
-          postInProgress(false)
-          postCommand(Commands.OUTDATED)
-        } else {
-          workerLauncher.startWork(
-            ReminderSingleBackupWorker::class.java,
-            Constants.INTENT_ID,
-            reminder.uuId
-          )
-          postInProgress(false)
-          postCommand(Commands.SAVED)
-        }
-        loadReminder()
-      }
+  private suspend fun toggleReminder(reminder: Reminder) {
+    postInProgress(true)
+    if (!eventControlFactory.getController(reminder).onOff()) {
+      postInProgress(false)
+      postCommand(Commands.OUTDATED)
+    } else {
+      workerLauncher.startWork(
+        ReminderSingleBackupWorker::class.java,
+        Constants.INTENT_ID,
+        reminder.uuId
+      )
+      postInProgress(false)
+      postCommand(Commands.SAVED)
     }
+    loadReminder()
   }
 
-  fun copyReminder(time: LocalTime, name: String) {
+  fun copyReminder(time: LocalTime) {
     val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderDao.getById(reminderId)?.also { reminder ->
@@ -190,7 +218,7 @@ class ReminderPreviewViewModel(
             }
           }
           val newItem = reminder.copy()
-          newItem.summary = name
+          newItem.summary = reminder.summary + " - " + textProvider.getText(R.string.copy)
 
           val date = dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
             ?: LocalDate.now()
@@ -202,7 +230,7 @@ class ReminderPreviewViewModel(
           newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
           newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
           reminderDao.insert(newItem)
-          eventControlFactory.getController(newItem).start()
+          eventControlFactory.getController(newItem).enable()
         }
         postCommand(Commands.SAVED)
       }
@@ -215,7 +243,7 @@ class ReminderPreviewViewModel(
       reminderDao.getById(reminderId)?.also { reminder ->
         if (showMessage) {
           withResult {
-            eventControlFactory.getController(reminder).stop()
+            eventControlFactory.getController(reminder).disable()
             reminderDao.delete(reminder)
             googleCalendarUtils.deleteEvents(reminder.uuId)
             workerLauncher.startWork(
@@ -227,7 +255,7 @@ class ReminderPreviewViewModel(
           }
         } else {
           withProgress {
-            eventControlFactory.getController(reminder).stop()
+            eventControlFactory.getController(reminder).disable()
             reminderDao.delete(reminder)
             googleCalendarUtils.deleteEvents(reminder.uuId)
             workerLauncher.startWork(
@@ -246,7 +274,7 @@ class ReminderPreviewViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderDao.getById(reminderId)?.also {
         it.isRemoved = true
-        eventControlFactory.getController(it).stop()
+        eventControlFactory.getController(it).disable()
         reminderDao.insert(it)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,

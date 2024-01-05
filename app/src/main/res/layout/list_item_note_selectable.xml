@@ -74,7 +74,7 @@
             android:layout_margin="8dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_check_circle_48px" />
+            app:srcCompat="@drawable/ic_builder_google_task_list" />
 
     </LinearLayout>
 

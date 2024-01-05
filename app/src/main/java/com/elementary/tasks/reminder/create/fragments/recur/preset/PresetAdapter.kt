@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
+import com.elementary.tasks.core.utils.ui.visibleInvisible
 import com.elementary.tasks.databinding.ListItemRecurPresetBinding
 
 class PresetAdapter(
+  private val canDelete: Boolean = true,
   private val onItemClickListener: (UiPresetList) -> Unit,
   private val onItemDeleteListener: (UiPresetList) -> Unit
 ) : ListAdapter<UiPresetList, PresetAdapter.ViewHolder>(PresetDiffCallback()) {
@@ -19,6 +21,7 @@ class PresetAdapter(
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(
       parent = parent,
+      canDelete = canDelete,
       clickListener = { onItemClickListener.invoke(getItem(it)) },
       onDeleteListener = { onItemDeleteListener.invoke(getItem(it)) }
     )
@@ -26,6 +29,7 @@ class PresetAdapter(
 
   class ViewHolder(
     parent: ViewGroup,
+    private val canDelete: Boolean,
     private val clickListener: (Int) -> Unit,
     private val onDeleteListener: (Int) -> Unit,
     private val binding: ListItemRecurPresetBinding = ListItemRecurPresetBinding.inflate(
@@ -38,6 +42,7 @@ class PresetAdapter(
     init {
       binding.clickView.setOnClickListener { clickListener.invoke(bindingAdapterPosition) }
       binding.buttonDelete.setOnClickListener { onDeleteListener.invoke(bindingAdapterPosition) }
+      binding.buttonDelete.visibleInvisible(canDelete)
     }
 
     fun bind(presetList: UiPresetList) {

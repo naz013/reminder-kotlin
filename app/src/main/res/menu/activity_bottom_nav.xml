@@ -3,26 +3,26 @@
     <item
         android:id="@+id/actionHome"
         android:enabled="true"
-        android:icon="@drawable/ic_twotone_home_24"
+        android:icon="@drawable/ic_fluent_home"
         android:title="@string/schedule" />
     <item
         android:id="@+id/actionEvents"
         android:enabled="true"
-        android:icon="@drawable/ic_twotone_calendar_view_day_24"
+        android:icon="@drawable/ic_fluent_timeline"
         android:title="@string/events" />
     <item
         android:id="@+id/actionCalendar"
         android:enabled="true"
-        android:icon="@drawable/ic_twotone_today_24px"
+        android:icon="@drawable/ic_fluent_calendar"
         android:title="@string/calendar" />
     <item
         android:id="@+id/actionNotes"
         android:enabled="true"
-        android:icon="@drawable/ic_twotone_note_24px"
+        android:icon="@drawable/ic_fluent_note"
         android:title="@string/notes" />
     <item
         android:id="@+id/actionGoogle"
         android:enabled="true"
-        android:icon="@drawable/ic_new_g_tasks"
+        android:icon="@drawable/ic_builder_google_task_list"
         android:title="@string/google_tasks" />
 </menu>

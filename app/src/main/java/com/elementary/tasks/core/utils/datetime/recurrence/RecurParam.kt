@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.utils.datetime.recurrence
 
+import com.google.gson.annotations.SerializedName
+
 sealed class RecurParam(
   val recurParamType: RecurParamType
 ) : Buildable {
@@ -137,7 +139,10 @@ data class BySetPosRecurParam(
   }
 }
 
-data class DayValue(val value: String) : Buildable {
+data class DayValue(
+  @SerializedName("value")
+  val value: String
+) : Buildable {
 
   var isDefault: Boolean = false
     private set
@@ -148,7 +153,7 @@ data class DayValue(val value: String) : Buildable {
 
   init {
     validateDay()
-    Day.values().firstOrNull { it.value == value }?.also {
+    Day.entries.firstOrNull { it.value == value }?.also {
       isDefault = true
       day = it
     }
@@ -168,11 +173,11 @@ data class DayValue(val value: String) : Buildable {
   }
 
   private fun containsDay(value: String): Boolean {
-    return Day.values().map { it.value }.any { value.contains(it) }
+    return Day.entries.map { it.value }.any { value.contains(it) }
   }
 
   private fun hasPrefix(value: String): Boolean {
-    return Day.values().map { it.value }.firstOrNull { value.contains(it) }?.let { day ->
+    return Day.entries.map { it.value }.firstOrNull { value.contains(it) }?.let { day ->
       val withoutDay = value.replace(day, "")
       if (withoutDay.isEmpty()) {
         false

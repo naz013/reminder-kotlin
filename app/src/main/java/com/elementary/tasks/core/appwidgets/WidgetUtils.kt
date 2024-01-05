@@ -10,7 +10,7 @@ import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.utils.intentForClass
+import com.elementary.tasks.core.os.intentForClass
 import com.elementary.tasks.core.utils.ui.ViewUtils
 
 object WidgetUtils {

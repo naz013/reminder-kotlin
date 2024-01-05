@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.pin.PinLoginActivity

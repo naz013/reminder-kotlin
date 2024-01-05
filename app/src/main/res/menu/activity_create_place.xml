@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/ic_twotone_done_24px"
+        android:icon="@drawable/ic_fluent_checkmark"
         app:iconTint="?colorTertiary"
         android:title="@string/save"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_delete"
-        android:icon="@drawable/ic_twotone_delete_24px"
+        android:icon="@drawable/ic_fluent_delete"
         app:iconTint="?colorOnSurface"
         android:title="@string/delete"
         app:showAsAction="ifRoom" />

@@ -11,8 +11,8 @@ import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.pin.PinLoginActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDate
@@ -22,6 +22,7 @@ import org.threeten.bp.LocalTime
 abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>() {
 
   protected val dateTimeManager by inject<DateTimeManager>()
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   protected var date: LocalDate = LocalDate.now()
   private var mDialog: AlertDialog? = null
@@ -32,6 +33,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
+    reminderBuilderLauncher = reminderBuilderLauncher,
     toggleAction = { },
     deleteAction = { },
     skipAction = { }
@@ -55,7 +57,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
         dateTime = LocalDateTime.of(date, LocalTime.now())
       )
       withActivity {
-        PinLoginActivity.openLogged(it, CreateReminderActivity::class.java, deepLinkData) { }
+        reminderBuilderLauncher.openDeepLink(it, deepLinkData) { }
       }
     }
   }

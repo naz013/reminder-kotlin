@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/ic_clear_black_24dp"
+            app:navigationIcon="@drawable/ic_fluent_dismiss"
             app:navigationIconTint="?colorOnSurface"
             app:title="@string/events"
             app:titleCentered="true" />
@@ -65,21 +65,21 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="centerInside"
-                    tools:srcCompat="@drawable/ic_twotone_settings_24px" />
+                    tools:srcCompat="@drawable/ic_fluent_settings" />
 
                 <ImageView
                     android:id="@+id/btn_voice"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="centerInside"
-                    tools:srcCompat="@drawable/ic_twotone_mic_24px" />
+                    tools:srcCompat="@drawable/ic_builder_mic_on" />
 
                 <ImageView
                     android:id="@+id/btn_add_task"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="centerInside"
-                    tools:srcCompat="@drawable/ic_twotone_add_24px" />
+                    tools:srcCompat="@drawable/ic_fluent_add" />
 
             </LinearLayout>
 
@@ -261,5 +261,5 @@
         android:text="@string/save"
         android:textAllCaps="true"
         android:visibility="visible"
-        app:icon="@drawable/ic_twotone_done_24px" />
+        app:icon="@drawable/ic_fluent_checkmark" />
 </LinearLayout>

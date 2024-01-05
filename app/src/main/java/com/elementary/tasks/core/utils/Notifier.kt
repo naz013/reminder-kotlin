@@ -28,7 +28,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.splash.SplashScreenActivity
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
@@ -128,7 +128,7 @@ class Notifier(
     val builder = NotificationCompat.Builder(context, CHANNEL_NOTES)
     builder.setContentText(context.getString(R.string.note))
     builder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
-    builder.setSmallIcon(R.drawable.ic_twotone_note_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_note)
     builder.setContentTitle(uiNoteNotification.text)
     val isWear = prefs.getBoolean(WEAR_NOTIFICATION)
     if (isWear) {
@@ -147,7 +147,7 @@ class Notifier(
     notify(uiNoteNotification.uniqueId, builder.build())
     if (isWear) {
       val wearableNotificationBuilder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
-      wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_note_white)
+      wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_note)
       wearableNotificationBuilder.setContentTitle(uiNoteNotification.text)
       wearableNotificationBuilder.setContentText(context.getString(R.string.note))
       wearableNotificationBuilder.setOngoing(false)
@@ -173,7 +173,7 @@ class Notifier(
     val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
     val builder = NotificationCompat.Builder(context, CHANNEL_SILENT)
     builder.setAutoCancel(false)
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_alert)
     builder.setContent(remoteViews)
     builder.setOngoing(true)
     if (prefs.isSbIconEnabled) {
@@ -181,10 +181,10 @@ class Notifier(
     } else {
       builder.priority = NotificationCompat.PRIORITY_MIN
     }
-    val resultIntent =
-      Intent(context, CreateReminderActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    val resultIntent = Intent(context, ReminderBuilderLauncher.PENDING_INTENT_CLASS)
+      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     val stackBuilder = TaskStackBuilder.create(context)
-    stackBuilder.addParentStack(CreateReminderActivity::class.java)
+    stackBuilder.addParentStack(ReminderBuilderLauncher.PENDING_INTENT_CLASS)
     stackBuilder.addNextIntentWithParentStack(resultIntent)
     val resultPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
@@ -253,9 +253,9 @@ class Notifier(
       remoteViews.setTextViewText(R.id.text, context.getString(R.string.no_events))
       remoteViews.setViewVisibility(R.id.featured, View.GONE)
     }
-    WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_alarm_24px, R.id.notificationAdd)
-    WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
-    WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
+    WidgetUtils.setIcon(remoteViews, R.drawable.ic_fluent_clock_alarm, R.id.notificationAdd)
+    WidgetUtils.setIcon(remoteViews, R.drawable.ic_fluent_note, R.id.noteAdd)
+    WidgetUtils.setIcon(remoteViews, R.drawable.ic_fluent_alert, R.id.bellIcon)
 
     remoteViews.setInt(
       R.id.notificationBg,
@@ -285,7 +285,7 @@ class Notifier(
         PendingIntentWrapper.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_IMMUTABLE)
 
       val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
-      builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+      builder.setSmallIcon(R.drawable.ic_fluent_food_cake)
       builder.setAutoCancel(false)
       builder.setOngoing(true)
       builder.priority = NotificationCompat.PRIORITY_HIGH
@@ -300,7 +300,7 @@ class Notifier(
         }
         builder.setStyle(NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()))
       }
-      builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss)
+      builder.addAction(R.drawable.ic_fluent_dismiss, context.getString(R.string.ok), piDismiss)
       notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
     }
   }

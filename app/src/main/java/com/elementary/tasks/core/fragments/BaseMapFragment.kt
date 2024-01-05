@@ -3,27 +3,34 @@ package com.elementary.tasks.core.fragments
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.params.Prefs
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
 import org.koin.android.ext.android.inject
 
 abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
 
-  protected val currentStateHolder by inject<CurrentStateHolder>()
-  protected val themeUtil = currentStateHolder.theme
-  protected val prefs = currentStateHolder.preferences
+  protected val themeUtil by inject<ThemeProvider>()
+  protected val prefs by inject<Prefs>()
 
-  private var mMapType = GoogleMap.MAP_TYPE_TERRAIN
+  private var internalMapType = GoogleMap.MAP_TYPE_TERRAIN
+  private var internalMapStyle = 0
 
-  protected fun setStyle(map: GoogleMap, mapType: Int = mMapType) {
-    mMapType = mapType
+  protected fun setStyle(
+    map: GoogleMap,
+    mapType: Int = internalMapType,
+    mapStyle: Int = prefs.mapStyle
+  ) {
+    internalMapType = mapType
     if (mapType == GoogleMap.MAP_TYPE_NORMAL) {
       if (map.mapType == GoogleMap.MAP_TYPE_SATELLITE || map.mapType == GoogleMap.MAP_TYPE_HYBRID) {
         map.mapType = GoogleMap.MAP_TYPE_NONE
       }
       val ctx = context ?: return
-      map.setMapStyle(MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.mapStyleJson))
+      map.setMapStyle(
+        MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.getMapStyleJson(mapStyle))
+      )
       map.mapType = mapType
     } else {
       map.mapType = mapType
@@ -42,6 +49,6 @@ abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    mMapType = prefs.mapType
+    internalMapType = prefs.mapType
   }
 }

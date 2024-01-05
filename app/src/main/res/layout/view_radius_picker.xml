@@ -34,7 +34,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_track_changes_24px"
+                    app:srcCompat="@drawable/ic_builder_map_radius"
                     app:tint="?colorOnSurface" />
 
                 <LinearLayout

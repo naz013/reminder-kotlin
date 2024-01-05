@@ -21,7 +21,7 @@ abstract class BaseToolbarFragment<B : ViewBinding> : BaseNavigationFragment<B>(
 
   @DrawableRes
   open fun getNavigationIcon(): Int {
-    return R.drawable.ic_twotone_arrow_back_24px
+    return R.drawable.ic_builder_arrow_left
   }
 
   override fun onCreateView(

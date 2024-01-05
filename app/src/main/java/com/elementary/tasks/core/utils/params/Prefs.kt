@@ -53,6 +53,18 @@ class Prefs(
     }
   }
 
+  var showLegacyBuilderWarning: Boolean
+    get() = getBoolean(PrefsConstants.SHOW_LEGACY_BUILDER_WARNING, def = true)
+    set(value) = putBoolean(PrefsConstants.SHOW_LEGACY_BUILDER_WARNING, value)
+
+  var useLegacyBuilder: Boolean
+    get() = getBoolean(PrefsConstants.USE_LEGACY_BUILDER, def = false)
+    set(value) = putBoolean(PrefsConstants.USE_LEGACY_BUILDER, value)
+
+  var canChangeBuilder: Boolean
+    get() = getBoolean(PrefsConstants.CAN_CHANGE_BUILDER, def = false)
+    set(value) = putBoolean(PrefsConstants.CAN_CHANGE_BUILDER, value)
+
   var lastVersionCode: Long
     get() = getLong(PrefsConstants.LAST_VERSION_CODE, def = Long.MAX_VALUE)
     set(value) = putLong(PrefsConstants.LAST_VERSION_CODE, value)

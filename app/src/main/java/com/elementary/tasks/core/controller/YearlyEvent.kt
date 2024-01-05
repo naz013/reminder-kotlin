@@ -40,7 +40,15 @@ class YearlyEvent(
   override val isActive: Boolean
     get() = reminder.isActive
 
-  override fun start(): Boolean {
+  override fun justStart() {
+    reminder.isActive = true
+    reminder.isRemoved = false
+    super.save()
+    super.enableReminder()
+    super.export()
+  }
+
+  override fun enable(): Boolean {
     if (dateTimeManager.isCurrent(reminder.eventTime)) {
       reminder.isActive = true
       reminder.isRemoved = false
@@ -59,7 +67,7 @@ class YearlyEvent(
           ?: LocalDateTime.now()
       )
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
-      start()
+      enable()
       return true
     }
     return false
@@ -71,15 +79,15 @@ class YearlyEvent(
       val time = calculateTime(false)
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       reminder.eventCount = reminder.eventCount + 1
-      start()
+      enable()
     } else {
-      stop()
+      disable()
     }
   }
 
   override fun onOff(): Boolean {
     return if (isActive) {
-      stop()
+      disable()
     } else {
       if (!dateTimeManager.isCurrent(reminder.eventTime)) {
         val time = dateTimeManager.getNextYearDayTime(
@@ -90,7 +98,7 @@ class YearlyEvent(
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       }
       reminder.eventCount = 0
-      start()
+      enable()
     }
   }
 

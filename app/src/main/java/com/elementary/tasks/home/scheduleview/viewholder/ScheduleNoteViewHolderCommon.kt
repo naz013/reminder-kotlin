@@ -6,9 +6,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import coil.load
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.ui.dp2px
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
 
 class ScheduleNoteViewHolderCommon {
 

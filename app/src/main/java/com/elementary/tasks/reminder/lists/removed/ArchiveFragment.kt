@@ -15,9 +15,10 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.UiReminderListRecyclerAdapter
 import org.koin.android.ext.android.inject
@@ -27,9 +28,11 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val reminderResolver = ReminderResolver(
     dialogAction = { return@ReminderResolver dialogues },
+    reminderBuilderLauncher = reminderBuilderLauncher,
     toggleAction = { },
     deleteAction = { reminder -> viewModel.deleteReminder(reminder) },
     skipAction = { }

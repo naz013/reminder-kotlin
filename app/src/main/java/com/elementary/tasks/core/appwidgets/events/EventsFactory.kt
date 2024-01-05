@@ -102,7 +102,7 @@ class EventsFactory(
 
     when (val item = data[i]) {
       is UiBirthdayWidgetList -> {
-        val icon = ViewUtils.createIcon(context, R.drawable.ic_twotone_cake_24px, textColor)
+        val icon = ViewUtils.createIcon(context, R.drawable.ic_fluent_food_cake, textColor)
 
         rv = RemoteViews(context.packageName, R.layout.list_item_widget_birthday)
 
@@ -138,7 +138,7 @@ class EventsFactory(
 
       is UiReminderWidgetShopList -> {
         val icon =
-          ViewUtils.createIcon(context, R.drawable.ic_twotone_shopping_cart_24px, textColor)
+          ViewUtils.createIcon(context, R.drawable.ic_fluent_cart, textColor)
 
         rv = RemoteViews(context.packageName, R.layout.list_item_widget_shop_list)
         rv.setInt(R.id.itemBackgroundView, "setBackgroundResource", itemBg)
@@ -196,7 +196,7 @@ class EventsFactory(
       }
 
       is UiReminderWidgetList -> {
-        val icon = ViewUtils.createIcon(context, R.drawable.ic_twotone_alarm_24px, textColor)
+        val icon = ViewUtils.createIcon(context, R.drawable.ic_fluent_clock_alarm, textColor)
 
         rv = RemoteViews(context.packageName, R.layout.list_item_widget_events)
 

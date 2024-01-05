@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.interfaces.SimpleListener
-import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.databinding.ListItemGooglePlaceBinding
 
 class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>() {
@@ -79,30 +79,15 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
 
   private fun getIcon(tags: List<String>?): Int {
     if (tags == null) {
-      return R.drawable.ic_twotone_place_24px
+      return R.drawable.ic_fluent_place
     }
     val sb = StringBuilder()
     for (t in tags) sb.append(t).append(",")
     val tag = sb.toString()
     return if (tag.contains("florist")) {
       R.drawable.ic_twotone_local_florist_24px
-    } else if (tag.contains("school")) {
-      R.drawable.ic_twotone_school_24px
     } else if (tag.contains("cafe")) {
       R.drawable.ic_twotone_local_cafe_24px
-    } else if (tag.contains("restaurant")) {
-      R.drawable.ic_twotone_restaurant_24px
-    } else if (tag.contains("bus_station")) {
-      R.drawable.ic_twotone_directions_bus_24px
-    } else if (tag.contains("subway_station") || tag.contains("train_station")) {
-      R.drawable.ic_twotone_directions_subway_24px
-    } else if (tag.contains("bicycle_store")) {
-      R.drawable.ic_twotone_directions_bike_24px
-    } else if (
-      tag.contains("car_repair") || tag.contains("car_rental") ||
-      tag.contains("car_dealer")
-    ) {
-      R.drawable.ic_twotone_directions_car_24px
     } else if (tag.contains("taxi") || tag.contains("taxi_stand")) {
       R.drawable.ic_twotone_local_taxi_24px
     } else if (tag.contains("atm")) {
@@ -151,10 +136,8 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
       tag.contains("shopping_mall") || tag.contains("shoe_store")
     ) {
       R.drawable.ic_twotone_local_mall_24px
-    } else if (tag.contains("food")) {
-      R.drawable.ic_twotone_restaurant_24px
     } else {
-      R.drawable.ic_twotone_place_24px
+      R.drawable.ic_fluent_place
     }
   }
 

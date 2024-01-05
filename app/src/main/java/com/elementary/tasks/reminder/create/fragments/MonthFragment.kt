@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderMonthBinding
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -108,6 +109,10 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
       binding.windowTypeView,
       binding.actionView
     )
+  }
+
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

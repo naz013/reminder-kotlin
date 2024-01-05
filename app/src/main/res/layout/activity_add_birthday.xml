@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/activity_create_birthday"
-            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIcon="@drawable/ic_builder_arrow_left"
             app:navigationIconTint="?colorOnSurface"
             app:title="@string/add_birthday" />
 

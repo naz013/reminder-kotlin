@@ -10,11 +10,11 @@ import coil.load
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteListSelectable
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.dp2px
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.inflater
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ListItemNoteSelectableBinding
 
 class SelectableNoteViewHolder(
@@ -40,9 +40,9 @@ class SelectableNoteViewHolder(
     binding.bgView.setBackgroundColor(uiNoteListSelectable.backgroundColor)
 
     val icon = if (uiNoteListSelectable.isSelected) {
-      R.drawable.ic_check_circle_48px
+      R.drawable.ic_builder_google_task_list
     } else {
-      R.drawable.ic_radio_button_unchecked_48px
+      R.drawable.ic_fluent_radio_button
     }
     binding.buttonCheck.setImageDrawable(
       ViewUtils.tintIcon(binding.buttonCheck.context, icon, uiNoteListSelectable.dartIcon)

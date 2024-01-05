@@ -11,8 +11,8 @@ import com.elementary.tasks.core.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.dao.NotesDao
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.databinding.ActivityWidgetSingleNoteBinding
 import org.koin.android.ext.android.inject

@@ -21,16 +21,16 @@ class UiReminderWidgetListAdapter(
   fun create(data: Reminder, @ColorInt textColor: Int): DateSorted {
     val type = UiReminderType(data.type)
     return when {
-      type.isShopping() -> {
+      type.isSubTasks() -> {
         val due = uiReminderCommonAdapter.getDue(data, type)
         val checkedIcon = ViewUtils.createIcon(
           contextProvider.context,
-          R.drawable.ic_twotone_check_box_24px,
+          R.drawable.ic_fluent_checkbox_checked,
           textColor
         )
         val unCheckedIcon = ViewUtils.createIcon(
           contextProvider.context,
-          R.drawable.ic_twotone_check_box_outline_blank_24px,
+          R.drawable.ic_fluent_checkbox_unchecked,
           textColor
         )
         UiReminderWidgetShopList(

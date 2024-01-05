@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_twotone_settings_24px"
+        android:icon="@drawable/ic_fluent_settings"
         android:title="@string/action_settings"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />

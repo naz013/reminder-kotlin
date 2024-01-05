@@ -51,7 +51,7 @@ abstract class RepeatableEventManager(
           dateTimeManager.toMillis(reminder.eventTime)
         )
       }
-      if (prefs.isCalendarEnabled) {
+      if (prefs.isCalendarEnabled || reminder.version == Reminder.Version.V3) {
         googleCalendarUtils.addEvent(reminder)
       }
     }
@@ -81,7 +81,7 @@ abstract class RepeatableEventManager(
     return true
   }
 
-  override fun stop(): Boolean {
+  override fun disable(): Boolean {
     reminder.isActive = false
     if (prefs.moveCompleted) {
       reminder.isRemoved = true

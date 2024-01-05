@@ -16,26 +16,26 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.colorOf
+import com.elementary.tasks.core.os.startActivity
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
 import com.elementary.tasks.pin.PinLoginActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.google.android.material.carousel.CarouselLayoutManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -49,6 +49,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private val adapter = ImagesCarouselAdapter()
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
   private val dateTimeManager by inject<DateTimeManager>()
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val uiHandler = Handler(Looper.getMainLooper())
 
@@ -108,7 +109,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editReminder() {
     val reminder = viewModel.reminder.value ?: return
-    PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+    reminderBuilderLauncher.openLogged(this) {
       putExtra(Constants.INTENT_ID, reminder.uuId)
     }
   }
@@ -192,8 +193,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
       getString(R.string.notes_move_to_archive)
     }
     binding.toolbar.menu.also { menu ->
-      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isBgDark)
-      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_fluent_edit, isBgDark)
+      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_fluent_heart, isBgDark)
       menu[3].setTitle(archiveActionTitle)
       menu[1].isVisible = !isArchived
       menu[2].isVisible = !isArchived

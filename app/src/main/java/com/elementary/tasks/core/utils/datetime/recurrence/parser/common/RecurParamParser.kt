@@ -37,7 +37,7 @@ class RecurParamParser {
   }
 
   private fun parseType(input: String): RecurParamType {
-    return RecurParamType.values().first { it.value == input }
+    return RecurParamType.entries.first { it.value == input }
   }
 
   private fun parseValue(input: String, type: RecurParamType): RecurParam? {
@@ -45,7 +45,7 @@ class RecurParamParser {
       RecurParamType.COUNT -> CountRecurParam(input.toInt())
       RecurParamType.INTERVAL -> IntervalRecurParam(input.toInt())
       RecurParamType.FREQ -> FreqRecurParam(
-        FreqType.values().first { it.value == input }
+        FreqType.entries.first { it.value == input }
       )
       RecurParamType.UNTIL -> utcDateTimeParser.parse(input)?.let { UntilRecurParam(it) }
       RecurParamType.BYDAY -> ByDayRecurParam(parseArray(input) { DayValue(it) })
@@ -57,7 +57,7 @@ class RecurParamParser {
       RecurParamType.BYWEEKNO -> ByWeekNumberRecurParam(parseIntArray(input))
       RecurParamType.WEEKSTART -> WeekStartRecurParam(
         DayValue(
-          Day.values().first { it.value == input }
+          Day.entries.first { it.value == input }
         )
       )
       RecurParamType.BYSETPOS -> BySetPosRecurParam(parseIntArray(input))

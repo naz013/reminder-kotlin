@@ -14,7 +14,7 @@ import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
