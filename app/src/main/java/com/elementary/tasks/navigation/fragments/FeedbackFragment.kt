@@ -81,7 +81,7 @@ class FeedbackFragment : BaseWebViewFragment() {
         context = requireContext(),
         menu = it,
         index = 0,
-        resource = R.drawable.ic_twotone_refresh_24px,
+        resource = R.drawable.ic_fluent_arrow_clockwise,
         isDark = isDark
       )
       ViewUtils.tintMenuIcon(

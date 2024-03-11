@@ -8,12 +8,12 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.googletasks.TasksConstants
 import org.koin.android.ext.android.inject

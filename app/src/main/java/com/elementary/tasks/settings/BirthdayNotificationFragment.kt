@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.RingtonePicker
 import com.elementary.tasks.core.utils.Constants
@@ -16,10 +17,9 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
-import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
@@ -197,16 +197,16 @@ class BirthdayNotificationFragment :
     soundStackHolder.onlyPlay = true
     soundStackHolder.playbackCallback = object : Sound.PlaybackCallback {
       override fun onFinish() {
-        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_builder_play_melody)
         binding.chooseSoundPrefs.setLoading(false)
       }
 
       override fun onStart() {
-        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_stop_24px)
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_builder_stop_melody)
         binding.chooseSoundPrefs.setLoading(true)
       }
     }
-    binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+    binding.chooseSoundPrefs.setViewResource(R.drawable.ic_builder_play_melody)
     binding.chooseSoundPrefs.setCustomViewClickListener {
       if (soundStackHolder.sound?.isPlaying == true) {
         soundStackHolder.sound?.stop(true)

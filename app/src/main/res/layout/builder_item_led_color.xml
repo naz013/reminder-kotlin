@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RadioGroup
+        android:id="@+id/ledGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/ledRed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            android:checked="true"
+            app:buttonTint="@color/led_red_button_tint"
+            app:useMaterialThemeColors="false" />
+
+        <RadioButton
+            android:id="@+id/ledGreen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            app:buttonTint="@color/led_green_button_tint"
+            app:useMaterialThemeColors="false" />
+
+        <RadioButton
+            android:id="@+id/ledBlue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            app:buttonTint="@color/led_blue_button_tint"
+            app:useMaterialThemeColors="false" />
+
+        <RadioButton
+            android:id="@+id/ledYellow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            app:buttonTint="@color/led_yellow_button_tint"
+            app:useMaterialThemeColors="false" />
+
+        <RadioButton
+            android:id="@+id/ledPink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            app:buttonTint="@color/led_pink_button_tint"
+            app:useMaterialThemeColors="false" />
+
+        <RadioButton
+            android:id="@+id/ledOrange"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            app:buttonTint="@color/led_orange_button_tint"
+            app:useMaterialThemeColors="false" />
+
+        <RadioButton
+            android:id="@+id/ledTeal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/led_selector"
+            app:buttonTint="@color/led_teal_button_tint"
+            app:useMaterialThemeColors="false" />
+
+    </RadioGroup>
+
+</FrameLayout>

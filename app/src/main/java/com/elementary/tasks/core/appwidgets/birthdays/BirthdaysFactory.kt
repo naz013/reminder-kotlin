@@ -55,7 +55,7 @@ class BirthdaysFactory(
       ContextCompat.getColor(context, R.color.pureBlack)
     }
 
-    icon = ViewUtils.createIcon(context, R.drawable.ic_twotone_cake_24px, textColor)
+    icon = ViewUtils.createIcon(context, R.drawable.ic_fluent_food_cake, textColor)
 
     list.clear()
 

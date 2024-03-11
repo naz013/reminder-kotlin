@@ -14,4 +14,10 @@ val osModule = module {
   single { PackageManagerWrapper(get()) }
 
   single { IntentDataHolder() }
+
+  single { UnitsConverter(get()) }
+
+  single { ColorProvider(get()) }
+
+  factory { ContextSwitcher(get()) }
 }

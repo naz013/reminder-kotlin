@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+            app:prefs_icon="@drawable/ic_fluent_alert"
             app:prefs_primary_text="@string/distance_notification"
             app:prefs_secondary_text_off="@string/do_not_show_notification"
             app:prefs_secondary_text_on="@string/show_notification_about_left_distance"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_track_changes_24px"
+            app:prefs_icon="@drawable/ic_builder_map_radius"
             app:prefs_primary_text="@string/radius"
             app:prefs_type="none" />
 
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_map_24px"
+            app:prefs_icon="@drawable/ic_fluent_map"
             app:prefs_primary_text="@string/map_type"
             app:prefs_type="none" />
 
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_style_24px"
+            app:prefs_icon="@drawable/ic_fluent_style_guide"
             app:prefs_primary_text="@string/map_style"
             app:prefs_type="view"
             app:prefs_view_resource="@drawable/preview_map_dark" />
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_style_24px"
+            app:prefs_icon="@drawable/ic_fluent_color"
             app:prefs_primary_text="@string/style_of_marker"
             app:prefs_pro="true"
             app:prefs_type="view" />
@@ -73,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_location_live"
             app:prefs_primary_text="@string/tracking_settings"
             app:prefs_type="none" />
 
@@ -81,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_place_24px"
+            app:prefs_icon="@drawable/ic_fluent_place"
             app:prefs_primary_text="@string/places"
             app:prefs_type="none" />
 

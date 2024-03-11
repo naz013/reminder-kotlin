@@ -13,12 +13,12 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.WidgetDataProvider
 import com.elementary.tasks.core.appwidgets.WidgetPrefsHolder
 import com.elementary.tasks.core.appwidgets.WidgetUtils
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.ui.dp2px
 import com.elementary.tasks.home.BottomNavActivity
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime

@@ -9,6 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding
 import timber.log.Timber
 
@@ -88,6 +89,10 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
       binding.repeatView,
       binding.windowTypeView
     )
+  }
+
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

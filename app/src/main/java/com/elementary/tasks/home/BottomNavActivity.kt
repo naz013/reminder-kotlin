@@ -21,7 +21,7 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback

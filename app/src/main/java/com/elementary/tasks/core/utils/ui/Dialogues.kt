@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
 import com.elementary.tasks.databinding.DialogBottomColorSliderBinding

@@ -31,14 +31,14 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_settings_24px" />
+            tools:srcCompat="@drawable/ic_fluent_settings" />
 
         <ImageView
             android:id="@+id/btn_add"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
-            tools:srcCompat="@drawable/ic_twotone_add_24px" />
+            tools:srcCompat="@drawable/ic_fluent_add" />
 
     </LinearLayout>
 

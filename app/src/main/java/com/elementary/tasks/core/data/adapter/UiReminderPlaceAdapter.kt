@@ -10,7 +10,8 @@ class UiReminderPlaceAdapter : UiAdapter<Place, UiReminderPlace> {
       marker = data.marker,
       latitude = data.latitude,
       longitude = data.longitude,
-      radius = data.radius
+      radius = data.radius,
+      address = data.address
     )
   }
 }

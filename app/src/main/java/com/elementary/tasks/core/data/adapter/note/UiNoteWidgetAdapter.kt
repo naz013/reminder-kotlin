@@ -9,14 +9,14 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
 import com.elementary.tasks.core.os.ContextProvider
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.dp2px
-import com.elementary.tasks.core.views.drawable.NoteTextDrawable
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
+import com.elementary.tasks.core.views.drawable.NoteTextDrawable
 import timber.log.Timber
 
 class UiNoteWidgetAdapter(
@@ -109,7 +109,7 @@ class UiNoteWidgetAdapter(
       bitmap = bitmap,
       settingsIcon = ViewUtils.tintIcon(
         contextProvider.context,
-        R.drawable.ic_twotone_settings_24px,
+        R.drawable.ic_fluent_settings,
         isDarkIcon
       )?.toBitmap()
     )

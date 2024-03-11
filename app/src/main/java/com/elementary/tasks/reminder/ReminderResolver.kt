@@ -3,16 +3,15 @@ package com.elementary.tasks.reminder
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.pin.PinLoginActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 
 class ReminderResolver(
   private val dialogAction: () -> Dialogues,
+  private val reminderBuilderLauncher: ReminderBuilderLauncher,
   private val deleteAction: (reminder: UiReminderListData) -> Unit,
   private val toggleAction: (reminder: UiReminderListData) -> Unit,
   private val skipAction: (reminder: UiReminderListData) -> Unit
@@ -90,7 +89,7 @@ class ReminderResolver(
 
   private fun editReminder(view: View, reminder: UiReminderListData) {
     view.context.run {
-      PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+      reminderBuilderLauncher.openLogged(this) {
         putExtra(Constants.INTENT_ID, reminder.id)
       }
     }

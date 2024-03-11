@@ -28,7 +28,18 @@ class LocationEvent(
   override val isActive: Boolean
     get() = reminder.isActive
 
-  override fun start(): Boolean {
+  override fun justStart() {
+    if (Module.hasLocation(context)) {
+      reminder.isActive = true
+      reminder.isRemoved = false
+      super.save()
+      if (!jobScheduler.scheduleGpsDelay(reminder)) {
+        SuperUtil.startGpsTracking(context)
+      }
+    }
+  }
+
+  override fun enable(): Boolean {
     return if (Module.hasLocation(context)) {
       reminder.isActive = true
       reminder.isRemoved = false
@@ -40,13 +51,13 @@ class LocationEvent(
         true
       }
     } else {
-      stop()
+      disable()
       remove()
       false
     }
   }
 
-  override fun stop(): Boolean {
+  override fun disable(): Boolean {
     jobScheduler.cancelReminder(reminder.uniqueId)
     reminder.isActive = false
     if (prefs.moveCompleted) {
@@ -116,17 +127,17 @@ class LocationEvent(
   }
 
   override fun next(): Boolean {
-    return stop()
+    return disable()
   }
 
   override fun onOff(): Boolean {
     return if (isActive) {
-      stop()
+      disable()
     } else {
       reminder.isLocked = false
       reminder.isNotificationShown = false
       super.save()
-      start()
+      enable()
     }
   }
 

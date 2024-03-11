@@ -7,12 +7,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.apps.SelectApplicationActivity
+import com.elementary.tasks.core.os.intentForClass
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.intentForClass
 
 class ApplicationPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (String) -> Unit
+  private var resultCallback: (String) -> Unit
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
@@ -30,6 +30,11 @@ class ApplicationPicker private constructor(
 
   fun pickApplication() {
     launch(getIntent())
+  }
+
+  fun pickApplication(resultCallback: (String) -> Unit) {
+    this.resultCallback = resultCallback
+    pickApplication()
   }
 
   override fun dispatchResult(result: ActivityResult) {

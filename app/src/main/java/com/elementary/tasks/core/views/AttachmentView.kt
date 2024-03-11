@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ViewAttachmentBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

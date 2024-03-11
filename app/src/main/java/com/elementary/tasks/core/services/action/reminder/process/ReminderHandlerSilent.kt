@@ -36,7 +36,7 @@ class ReminderHandlerSilent(
   private fun showNotificationWithoutSound(reminder: Reminder) {
     Timber.d("showNotificationWithoutSound: ")
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_alert)
 
     val notificationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       ReminderDialog29Activity.getLaunchIntent(contextProvider.context, reminder.uuId)
@@ -67,7 +67,7 @@ class ReminderHandlerSilent(
       PendingIntent.FLAG_CANCEL_CURRENT
     )
     builder.addAction(
-      R.drawable.ic_twotone_done_white,
+      R.drawable.ic_fluent_checkmark,
       textProvider.getText(R.string.ok),
       piDismiss
     )
@@ -82,7 +82,7 @@ class ReminderHandlerSilent(
         PendingIntent.FLAG_CANCEL_CURRENT
       )
       builder.addAction(
-        R.drawable.ic_twotone_snooze_24px,
+        R.drawable.ic_fluent_snooze,
         textProvider.getText(R.string.acc_button_snooze),
         piSnooze
       )

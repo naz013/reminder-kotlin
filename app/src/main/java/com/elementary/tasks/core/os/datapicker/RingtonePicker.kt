@@ -9,7 +9,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.readParcelable
+import com.elementary.tasks.core.os.readParcelable
 
 class RingtonePicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,

@@ -10,10 +10,10 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityGoogleTaskPreviewBinding
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity

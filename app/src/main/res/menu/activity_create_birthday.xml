@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/ic_twotone_done_24px"
-        app:iconTint="?colorTertiary"
+        android:icon="@drawable/ic_fluent_checkmark"
         android:title="@string/save"
+        app:iconTint="?colorTertiary"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_delete"
-        android:icon="@drawable/ic_twotone_delete_24px"
-        app:iconTint="?colorOnSurface"
+        android:icon="@drawable/ic_fluent_delete"
         android:title="@string/delete"
+        app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 </menu>

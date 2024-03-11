@@ -3,8 +3,6 @@ package com.elementary.tasks.home.scheduleview
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.switchMap
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Birthday
@@ -18,6 +16,8 @@ import com.elementary.tasks.core.utils.datetime.ScheduleTimes
 import com.elementary.tasks.core.utils.getNonNullList
 import com.elementary.tasks.core.utils.getNonNullMap
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.home.scheduleview.data.UiBirthdayScheduleListAdapter
+import com.elementary.tasks.home.scheduleview.data.UiReminderScheduleListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -34,10 +34,10 @@ class ScheduleLiveData(
   private val dateTimeManager: DateTimeManager,
   private val reminderDao: ReminderDao,
   private val birthdaysDao: BirthdaysDao,
-  private val uiReminderListAdapter: UiReminderListAdapter,
-  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
+  private val uiBirthdayScheduleListAdapter: UiBirthdayScheduleListAdapter,
   private val textProvider: TextProvider,
-  private val reminderGoogleTaskLiveData: ReminderGoogleTaskLiveData
+  private val reminderGoogleTaskLiveData: ReminderGoogleTaskLiveData,
+  private val uiReminderScheduleListAdapter: UiReminderScheduleListAdapter
 ) : MediatorLiveData<List<ScheduleModel>>(), KoinComponent {
 
   private var selectedDateTime: LocalDateTime = LocalDateTime.now()
@@ -179,7 +179,7 @@ class ScheduleLiveData(
     dateTime: LocalDateTime = dateTimeManager.getCurrentDateTime()
   ): BirthdayScheduleModel {
     return BirthdayScheduleModel(
-      data = uiBirthdayListAdapter.convert(this, dateTime)
+      data = uiBirthdayScheduleListAdapter.create(this, dateTime)
     )
   }
 
@@ -187,7 +187,7 @@ class ScheduleLiveData(
     googleTasksMap: Map<String, UiGoogleTaskList>,
     notesMap: Map<String, UiNoteList>
   ): ScheduleModel {
-    val reminder = uiReminderListAdapter.create(this)
+    val reminder = uiReminderScheduleListAdapter.create(this)
     return when {
       googleTasksMap.containsKey(reminder.id) -> {
         googleTasksMap[reminder.id]?.let {
@@ -198,7 +198,7 @@ class ScheduleLiveData(
         } ?: ReminderScheduleModel(reminder)
       }
       reminder.noteId != null && notesMap.containsKey(reminder.noteId) -> {
-        reminder.noteId?.let { notesMap[it] }
+        reminder.noteId.let { notesMap[it] }
           ?.let {
             ReminderAndNoteScheduleModel(
               reminder = reminder,

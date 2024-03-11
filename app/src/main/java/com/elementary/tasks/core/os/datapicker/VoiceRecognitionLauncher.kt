@@ -9,10 +9,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
+import com.elementary.tasks.core.os.intentForClass
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.intentForClass
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.voice.ConversationActivity
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

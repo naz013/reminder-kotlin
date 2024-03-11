@@ -8,76 +8,48 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.fragments.AdvancedMapFragment
-import com.elementary.tasks.core.interfaces.MapCallback
-import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
 import com.elementary.tasks.core.utils.ui.fadeOutAnimation
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.isVisible
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.ActionView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
+import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
 class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
 
-  private var mAdvancedMapFragment: AdvancedMapFragment? = null
+  private var simpleMapFragment: SimpleMapFragment? = null
   private var lastPos: LatLng? = null
-
-  private val mListener = object : MapListener {
-    override fun onRadiusChanged(radiusInM: Int) {
-      iFace.state.radius = radiusInM
-      binding.radiusView.radiusInM = radiusInM
-    }
-
-    override fun placeChanged(place: LatLng, address: String) {
-      lastPos = place
-    }
-
-    override fun onZoomClick(isFull: Boolean) {
-      iFace.setFullScreenMode(isFull)
-    }
-
-    override fun onBackClick() {
-      if (!isTablet()) {
-        val map = mAdvancedMapFragment ?: return
-        if (map.isFullscreen) {
-          map.isFullscreen = false
-          iFace.setFullScreenMode(false)
-        }
-        if (binding.mapContainer.visibility == View.VISIBLE) {
-          binding.mapContainer.fadeOutAnimation()
-          binding.scrollView.fadeInAnimation()
-        }
-      }
-    }
-  }
+  private var mapState = MapState.WINDOWED
 
   private fun showPlaceOnMap() {
     val reminder = iFace.state.reminder
     if (!Reminder.isGpsType(reminder.type)) return
     val text = reminder.summary
     if (reminder.places.isNotEmpty()) {
-      val jPlace = reminder.places[0]
-      val latitude = jPlace.latitude
-      val longitude = jPlace.longitude
-      iFace.state.radius = jPlace.radius
-      if (mAdvancedMapFragment != null) {
-        mAdvancedMapFragment?.markerRadius = jPlace.radius
-        lastPos = LatLng(latitude, longitude)
-        mAdvancedMapFragment?.addMarker(lastPos, text, true, animate = true)
+      val place = reminder.places[0]
+      val latitude = place.latitude
+      val longitude = place.longitude
+      iFace.state.radius = place.radius
+      lastPos = LatLng(latitude, longitude)
+      simpleMapFragment?.run {
+        changeRadius(place.radius)
+        addMarker(
+          latLng = LatLng(latitude, longitude),
+          title = text,
+          clear = true,
+          animate = true
+        )
         toggleMap()
       }
     }
-  }
-
-  override fun recreateMarker() {
-    mAdvancedMapFragment?.recreateMarker()
   }
 
   override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
@@ -102,7 +74,6 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       return null
     }
     val reminder = super.prepare() ?: return null
-    val map = mAdvancedMapFragment ?: return null
 
     var type = if (!isLeaving()) {
       Reminder.BY_LOCATION
@@ -118,7 +89,9 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     if (TextUtils.isEmpty(reminder.summary)) {
       binding.taskLayout.error = getString(R.string.task_summary_is_empty)
       binding.taskLayout.isErrorEnabled = true
-      map.invokeBack()
+      if (mapState == MapState.FULLSCREEN) {
+        showWindowedState()
+      }
       return null
     }
     var number = ""
@@ -142,11 +115,11 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
         }
       }
     }
-    val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
+
     reminder.places = listOf(
       Place(
-        radius = radius,
-        marker = map.markerStyle,
+        radius = iFace.state.radius,
+        marker = iFace.state.markerStyle,
         latitude = pos.latitude,
         longitude = pos.longitude,
         name = reminder.summary,
@@ -212,6 +185,10 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     )
   }
 
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
+  }
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     if (!isTablet()) {
@@ -224,27 +201,68 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       binding.searchBlock.gone()
     }
 
-    val advancedMapFragment = AdvancedMapFragment.newInstance(
-      isPlaces = true,
-      isStyles = true,
-      isBack = true,
-      isZoom = true,
-      markerStyle = iFace.state.markerStyle,
-      isDark = themeUtil.isDark
+    val simpleMapFragment = SimpleMapFragment.newInstance(
+      SimpleMapFragment.MapParams(
+        isRadius = true,
+        isStyles = true,
+        isPlaces = true,
+        rememberMarkerStyle = false,
+        rememberMarkerRadius = false,
+        rememberMapStyle = true,
+        customButtons = listOf(
+          SimpleMapFragment.MapCustomButton(
+            icon = R.drawable.ic_fluent_chevron_left,
+            id = MAP_EXIT_BUTTON
+          ),
+          SimpleMapFragment.MapCustomButton(
+            icon = R.drawable.ic_builder_map_full_screen,
+            id = MAP_FULLSCREEN_BUTTON
+          )
+        ),
+        radiusParams = SimpleMapFragment.RadiusParams(
+          radius = iFace.state.radius
+        ),
+        markerStyle = iFace.state.markerStyle
+      )
     )
-    advancedMapFragment.setListener(mListener)
-    advancedMapFragment.setCallback(object : MapCallback {
+
+    simpleMapFragment.mapCallback = object : SimpleMapFragment.MapCallback {
       override fun onMapReady() {
         showPlaceOnMap()
       }
-    })
-    advancedMapFragment.markerRadius = iFace.state.radius
-    advancedMapFragment.setStyle(iFace.state.markerStyle)
+
+      override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
+        lastPos = markerState.latLng
+        iFace.state.radius = markerState.radius
+        binding.radiusView.radiusInM = markerState.radius
+      }
+    }
+    simpleMapFragment.radiusChangeListener = object : SimpleMapFragment.RadiusChangeListener {
+      override fun onRadiusChanged(radius: Int) {
+        iFace.state.radius = radius
+        binding.radiusView.radiusInM = radius
+      }
+    }
+    simpleMapFragment.customButtonCallback = object : SimpleMapFragment.CustomButtonCallback {
+      override fun onButtonClicked(buttonId: Int) {
+        if (buttonId == MAP_FULLSCREEN_BUTTON) {
+          if (mapState == MapState.WINDOWED) {
+            showFullScreenState()
+          } else {
+            showWindowedState()
+          }
+        } else {
+          toggleMap()
+        }
+      }
+    }
+
     fragmentManager?.beginTransaction()
-      ?.replace(binding.mapFrame.id, advancedMapFragment)
+      ?.replace(binding.mapFrame.id, simpleMapFragment)
       ?.addToBackStack(null)
       ?.commit()
-    this.mAdvancedMapFragment = advancedMapFragment
+
+    this.simpleMapFragment = simpleMapFragment
 
     binding.tuneExtraView.hasAutoExtra = false
 
@@ -268,12 +286,17 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       val pos = LatLng(lat, lon)
       var title: String? = binding.taskSummary.text.toString().trim()
       if (title != null && title.matches("".toRegex())) title = pos.toString()
-      mAdvancedMapFragment?.addMarker(pos, title, true, animate = true)
+      simpleMapFragment.addMarker(
+        latLng = pos,
+        title = title,
+        clear = true,
+        animate = true
+      )
     }
 
     binding.radiusView.onRadiusChangeListener = {
       iFace.state.radius = it
-      mAdvancedMapFragment?.markerRadius = it
+      simpleMapFragment.changeRadius(it)
     }
     binding.radiusView.radiusInM = iFace.state.radius
     binding.radiusView.useMetric = prefs.useMetric
@@ -318,8 +341,36 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     }
   }
 
+  private fun showWindowedState() {
+    if (!isTablet()) {
+      val map = simpleMapFragment ?: return
+      mapState = MapState.WINDOWED
+      iFace.setFullScreenMode(false)
+      map.changeCustomButton(
+        SimpleMapFragment.MapCustomButton(
+          icon = R.drawable.ic_builder_map_full_screen,
+          id = MAP_FULLSCREEN_BUTTON
+        )
+      )
+    }
+  }
+
+  private fun showFullScreenState() {
+    if (!isTablet()) {
+      val map = simpleMapFragment ?: return
+      mapState = MapState.FULLSCREEN
+      iFace.setFullScreenMode(true)
+      map.changeCustomButton(
+        SimpleMapFragment.MapCustomButton(
+          icon = R.drawable.ic_fluent_chevron_left,
+          id = MAP_FULLSCREEN_BUTTON
+        )
+      )
+    }
+  }
+
   override fun onBackPressed(): Boolean {
-    return mAdvancedMapFragment == null || mAdvancedMapFragment?.onBackPressed() == true
+    return simpleMapFragment == null || simpleMapFragment?.onBackPressed() == true
   }
 
   private fun editReminder() {
@@ -335,5 +386,14 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     } else {
       checkArriving()
     }
+  }
+
+  private enum class MapState {
+    WINDOWED, FULLSCREEN
+  }
+
+  companion object {
+    private const val MAP_EXIT_BUTTON = 0
+    private const val MAP_FULLSCREEN_BUTTON = 1
   }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -23,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_language_24px"
+            app:prefs_icon="@drawable/ic_fluent_local_language"
             app:prefs_primary_text="@string/application_language"
             app:prefs_type="none" />
 
@@ -32,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_style_24px"
+            app:prefs_icon="@drawable/ic_fluent_dark_theme"
             app:prefs_primary_text="@string/theme"
             app:prefs_secondary_text="@string/auto"
             app:prefs_type="none" />
@@ -42,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_palette_24px"
+            app:prefs_icon="@drawable/ic_fluent_style_guide"
             app:prefs_primary_text="@string/dynamic_colors"
             app:prefs_secondary_text_off="@string/use_built_in_theme_color"
             app:prefs_secondary_text_on="@string/use_theme_colors_from_wallpaper"
@@ -53,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+            app:prefs_icon="@drawable/ic_builder_time"
             app:prefs_primary_text="@string/_24_hour_time_format"
             app:prefs_type="none" />
 
@@ -62,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_analytics_24"
+            app:prefs_icon="@drawable/ic_fluent_math_formula"
             app:prefs_primary_text="@string/metric_units"
             app:prefs_secondary_text_off="@string/use_imperial_system"
             app:prefs_secondary_text_on="@string/use_metric_system"
@@ -73,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_analytics_24"
+            app:prefs_icon="@drawable/ic_fluent_data_area"
             app:prefs_primary_text="@string/analytics"
             app:prefs_secondary_text_off="@string/collecting_of_app_analytics_is_disabled"
             app:prefs_secondary_text_on="@string/collecting_of_app_analytics_is_enabled"

@@ -114,7 +114,7 @@ class EventImportProcessor(
       this.allDay = allDay
     }
     appDb.reminderDao().insert(reminder)
-    eventControlFactory.getController(reminder).start()
+    eventControlFactory.getController(reminder).enable()
     appDb.calendarEventsDao().insert(
       CalendarEvent(
         reminderId = reminder.uuId,

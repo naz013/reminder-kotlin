@@ -40,7 +40,7 @@ class ReminderCompletable(
       if (control.canSkip()) {
         control.next()
       } else {
-        control.start()
+        control.enable()
       }
     }
   }

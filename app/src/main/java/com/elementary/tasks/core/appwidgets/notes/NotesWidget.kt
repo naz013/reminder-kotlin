@@ -47,7 +47,7 @@ class NotesWidget : AppWidgetProvider() {
       WidgetUtils.initButton(
         context = context,
         rv = rv,
-        iconId = R.drawable.ic_twotone_settings_24px,
+        iconId = R.drawable.ic_fluent_settings,
         color = tintColor,
         viewId = R.id.btn_settings,
         cls = NotesWidgetConfigActivity::class.java
@@ -58,7 +58,7 @@ class NotesWidget : AppWidgetProvider() {
       WidgetUtils.initButton(
         context = context,
         rv = rv,
-        iconId = R.drawable.ic_twotone_add_24px,
+        iconId = R.drawable.ic_builder_google_task_list,
         color = tintColor,
         viewId = R.id.btn_add_note,
         cls = CreateNoteActivity::class.java

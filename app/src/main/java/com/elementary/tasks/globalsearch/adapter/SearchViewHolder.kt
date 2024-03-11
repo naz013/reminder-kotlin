@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ListItemSearchResultBinding
 import com.elementary.tasks.globalsearch.ObjectSearchResult
 import com.elementary.tasks.globalsearch.ObjectType
@@ -64,8 +64,8 @@ class RecentSearchViewHolder(
 
   override fun bind(result: RecentSearchResult) {
     binding.textView.text = result.text
-    binding.startIconView.setImageResource(R.drawable.ic_twotone_history_24)
-    binding.endIconView.setImageResource(R.drawable.ic_twotone_north_west_24)
+    binding.startIconView.setImageResource(R.drawable.ic_fluent_history)
+    binding.endIconView.setImageResource(R.drawable.ic_fluent_arrow_reply)
   }
 
   companion object {
@@ -84,8 +84,8 @@ class RecentObjectSearchViewHolder(
 
   override fun bind(result: RecentObjectSearchResult) {
     binding.textView.text = result.text
-    binding.startIconView.setImageResource(R.drawable.ic_twotone_history_24)
-    binding.endIconView.setImageResource(R.drawable.ic_twotone_north_west_24)
+    binding.startIconView.setImageResource(R.drawable.ic_fluent_history)
+    binding.endIconView.setImageResource(R.drawable.ic_fluent_arrow_reply)
   }
 
   companion object {
@@ -110,12 +110,12 @@ class ObjectSearchViewHolder(
 
   private fun getStartIcon(objectType: ObjectType): Int {
     return when (objectType) {
-      ObjectType.REMINDER -> R.drawable.ic_twotone_notifications_24px
-      ObjectType.BIRTHDAY -> R.drawable.ic_twotone_cake_24px
-      ObjectType.GOOGLE_TASK -> R.drawable.ic_new_g_tasks
-      ObjectType.GROUP -> R.drawable.ic_twotone_local_offer_24px
-      ObjectType.NOTE -> R.drawable.ic_twotone_note_24px
-      ObjectType.PLACE -> R.drawable.ic_twotone_place_24px
+      ObjectType.REMINDER -> R.drawable.ic_fluent_alert
+      ObjectType.BIRTHDAY -> R.drawable.ic_fluent_food_cake
+      ObjectType.GOOGLE_TASK -> R.drawable.ic_builder_google_task_list
+      ObjectType.GROUP -> R.drawable.ic_builder_group
+      ObjectType.NOTE -> R.drawable.ic_fluent_note
+      ObjectType.PLACE -> R.drawable.ic_fluent_place
     }
   }
 

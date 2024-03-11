@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_divider_top="true"
-            app:prefs_icon="@drawable/ic_twotone_looks_24px"
+            app:prefs_icon="@drawable/ic_fluent_system"
             app:prefs_primary_text="@string/general"
             app:prefs_type="none" />
 
@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_alarm_24px"
+            app:prefs_icon="@drawable/ic_fluent_clock_alarm"
             app:prefs_primary_text="@string/reminders_"
             app:prefs_type="none" />
 
@@ -123,7 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_backup_24px"
+            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
             app:prefs_primary_text="@string/export_and_sync"
             app:prefs_type="none" />
 
@@ -132,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_today_24px"
+            app:prefs_icon="@drawable/ic_builder_by_monthday"
             app:prefs_primary_text="@string/calendar"
             app:prefs_type="none" />
 
@@ -141,7 +141,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_cake_24px"
+            app:prefs_icon="@drawable/ic_fluent_food_cake"
             app:prefs_primary_text="@string/birthdays"
             app:prefs_type="none" />
 
@@ -150,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+            app:prefs_icon="@drawable/ic_fluent_alert"
             app:prefs_primary_text="@string/notification"
             app:prefs_type="none" />
 
@@ -159,7 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_troubleshoot_24"
+            app:prefs_icon="@drawable/ic_fluent_send_logging"
             app:prefs_primary_text="@string/troubleshooting"
             app:prefs_type="none" />
 
@@ -168,7 +168,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_lock_24px"
+            app:prefs_icon="@drawable/ic_fluent_lock"
             app:prefs_primary_text="@string/security"
             app:prefs_type="none" />
 
@@ -177,7 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_navigation_24px"
+            app:prefs_icon="@drawable/ic_builder_map_my_location"
             app:prefs_primary_text="@string/location"
             app:prefs_type="none" />
 
@@ -186,7 +186,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_note_24px"
+            app:prefs_icon="@drawable/ic_fluent_note"
             app:prefs_primary_text="@string/notes"
             app:prefs_type="none" />
 
@@ -195,7 +195,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_mic_24px"
+            app:prefs_icon="@drawable/ic_builder_mic_on"
             app:prefs_primary_text="@string/voice_control"
             app:prefs_type="none" />
 
@@ -204,6 +204,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_launcher_settings"
             app:prefs_primary_text="@string/other"
             app:prefs_type="none" />
 

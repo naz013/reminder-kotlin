@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_import_export_24px"
+            app:prefs_icon="@drawable/ic_fluent_cloud_download"
             app:prefs_primary_text="@string/import_events"
             app:prefs_type="none" />
 
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_palette_24px"
+            app:prefs_icon="@drawable/ic_fluent_color"
             app:prefs_primary_text="@string/today_color"
             app:prefs_type="view" />
 
@@ -49,7 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_palette_24px"
             app:prefs_primary_text="@string/birthdays_color"
             app:prefs_type="view" />
 
@@ -58,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+            app:prefs_icon="@drawable/ic_fluent_alert"
             app:prefs_primary_text="@string/show_reminders"
             app:prefs_type="check_switch" />
 
@@ -67,7 +66,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_palette_24px"
             app:prefs_primary_text="@string/reminders_color"
             app:prefs_type="view" />
 

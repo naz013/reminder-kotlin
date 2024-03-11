@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
+@Deprecated("Replaced by new Builder")
 class EditReminderViewModel(
   id: String,
   private val googleCalendarUtils: GoogleCalendarUtils,
@@ -93,7 +94,7 @@ class EditReminderViewModel(
             }
           }
         }
-        eventControlFactory.getController(reminder).start()
+        eventControlFactory.getController(reminder).enable()
         Timber.d("saveAndStartReminder: save DONE")
         analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
         reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type))
@@ -131,7 +132,7 @@ class EditReminderViewModel(
   fun moveToTrash(reminder: Reminder) {
     withResult {
       reminder.isRemoved = true
-      eventControlFactory.getController(reminder).stop()
+      eventControlFactory.getController(reminder).disable()
       reminderDao.insert(reminder)
       backupReminder(reminder.uuId)
       Commands.DELETED
@@ -141,7 +142,7 @@ class EditReminderViewModel(
   fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
     if (showMessage) {
       withResult {
-        eventControlFactory.getController(reminder).stop()
+        eventControlFactory.getController(reminder).disable()
         reminderDao.delete(reminder)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
@@ -153,7 +154,7 @@ class EditReminderViewModel(
       }
     } else {
       withProgress {
-        eventControlFactory.getController(reminder).stop()
+        eventControlFactory.getController(reminder).disable()
         reminderDao.delete(reminder)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(

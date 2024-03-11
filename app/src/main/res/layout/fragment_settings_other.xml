@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_policy_24"
+            app:prefs_icon="@drawable/ic_fluent_tab_tracking_prevention"
             app:prefs_primary_text="@string/privacy_policy"
             app:prefs_type="none" />
 
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_text_snippet_24"
+            app:prefs_icon="@drawable/ic_fluent_document_one_page"
             app:prefs_primary_text="@string/terms_and_conditions"
             app:prefs_type="none" />
 
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_feedback_24"
+            app:prefs_icon="@drawable/ic_fluent_person_feedback"
             app:prefs_primary_text="@string/feedback"
             app:prefs_type="none" />
 
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_star_rate_18px"
+            app:prefs_icon="@drawable/ic_fluent_star"
             app:prefs_primary_text="@string/rate"
             app:prefs_type="none" />
 
@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_people_24px"
+            app:prefs_icon="@drawable/ic_fluent_share"
             app:prefs_primary_text="@string/tell_friends"
             app:prefs_type="none" />
 
@@ -92,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_code"
             app:prefs_primary_text="@string/open_source_licenses"
             app:prefs_type="none" />
 
@@ -100,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_info_24px"
+            app:prefs_icon="@drawable/ic_fluent_info"
             app:prefs_primary_text="@string/about"
             app:prefs_type="none" />
 

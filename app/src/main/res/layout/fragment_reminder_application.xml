@@ -23,6 +23,14 @@
                 android:layout_marginRight="16dp"
                 app:text="@string/reminder_link_explanations" />
 
+            <com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+                android:id="@+id/legacyBuilderWarningView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskLayout"
                 style="@style/FilledBoxStyle"
@@ -97,7 +105,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/acc_select_application"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_launch_24px"
+                    app:srcCompat="@drawable/ic_builder_add_app"
                     app:tint="?android:textColorPrimary" />
 
                 <androidx.appcompat.widget.AppCompatTextView

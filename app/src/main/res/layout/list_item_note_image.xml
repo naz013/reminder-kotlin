@@ -35,7 +35,7 @@
             android:alpha="100"
             android:background="@drawable/drawable_tertiary"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_cancel_24px"
+            app:srcCompat="@drawable/ic_fluent_dismiss"
             app:tint="?colorOnSecondary" />
 
     </RelativeLayout>

@@ -10,9 +10,9 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest

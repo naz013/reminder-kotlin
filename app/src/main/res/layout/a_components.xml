@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/activity_create_task"
-            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIcon="@drawable/ic_builder_arrow_left"
             app:navigationIconTint="?colorOnSurface"
             app:title="Components page" />
 
@@ -193,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:contentDescription="@string/acc_select_number_from_contacts"
-                        app:icon="@drawable/ic_twotone_contacts_24px" />
+                        app:icon="@drawable/ic_fluent_contacts" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -306,7 +306,7 @@
                 android:text="@string/send"
                 android:textAllCaps="true"
                 android:visibility="visible"
-                app:icon="@drawable/ic_twotone_done_24px" />
+                app:icon="@drawable/ic_fluent_checkmark" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
@@ -316,7 +316,7 @@
                 android:layout_gravity="bottom|end"
                 android:contentDescription="@string/create_group"
                 android:tint="?colorOnSecondary"
-                app:srcCompat="@drawable/ic_twotone_add_24px" />
+                app:srcCompat="@drawable/ic_fluent_add" />
 
             <LinearLayout
                 android:id="@+id/emptyItem"

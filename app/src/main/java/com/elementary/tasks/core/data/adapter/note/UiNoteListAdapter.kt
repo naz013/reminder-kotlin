@@ -52,7 +52,7 @@ class UiNoteListAdapter(
       backgroundColor = backgroundColor,
       moreIcon = ViewUtils.tintIcon(
         contextProvider.context,
-        R.drawable.ic_twotone_more_vert_24px,
+        R.drawable.ic_fluent_more_vertical,
         isDarkIcon
       ),
       textColor = textColor,

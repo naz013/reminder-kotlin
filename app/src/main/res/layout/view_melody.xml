@@ -35,7 +35,7 @@
                     android:layout_width="24dp"
                     android:layout_height="48dp"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_music_note_24px"
+                    app:srcCompat="@drawable/ic_builder_melody"
                     app:tint="?colorOnSurface" />
 
                 <TextView
@@ -56,7 +56,7 @@
                     android:layout_height="48dp"
                     android:contentDescription="@string/acc_select_number_from_contacts"
                     android:visibility="gone"
-                    app:icon="@drawable/ic_clear_white_24dp"
+                    app:icon="@drawable/ic_fluent_dismiss"
                     tools:visibility="visible" />
 
                 <Button

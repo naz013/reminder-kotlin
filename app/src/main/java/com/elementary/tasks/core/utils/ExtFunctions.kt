@@ -1,28 +1,13 @@
 package com.elementary.tasks.core.utils
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.IdRes
 import androidx.annotation.IntRange
 import androidx.annotation.MainThread
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
-import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -54,7 +39,6 @@ import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 import java.io.File
 import java.io.InputStream
-import java.io.Serializable
 import java.util.Calendar
 
 fun <T> LiveData<List<T>>.getNonNullList(): List<T> {
@@ -65,61 +49,12 @@ fun <K, V> LiveData<Map<K, V>>.getNonNullMap(): Map<K, V> {
   return value ?: emptyMap()
 }
 
-fun Fragment.intentForClass(clazz: Class<*>): Intent {
-  return requireContext().intentForClass(clazz)
-}
-
-fun Context.intentForClass(clazz: Class<*>): Intent {
-  return Intent(this, clazz)
-    .setPackage(this.packageName)
-    .setClassName(packageName, clazz.name)
-}
-
-fun Context.buildIntent(clazz: Class<*>, builder: Intent.() -> Unit = { }): Intent {
-  return intentForClass(clazz)
-    .apply { builder(this) }
-}
-
-fun Context.startActivity(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
-  buildIntent(clazz, builder)
-    .run { startActivity(this) }
-}
-
-fun Fragment.startActivity(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
-  requireActivity().startActivity(clazz, builder)
-}
-
-fun Activity.finishWith(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
-  startActivity(clazz, builder)
-  finish()
-}
-
 fun LocalDateTime.minusMillis(millis: Long): LocalDateTime {
   return minusSeconds(millis / 1000L)
 }
 
 fun LocalDateTime.plusMillis(millis: Long): LocalDateTime {
   return plusSeconds(millis / 1000L)
-}
-
-fun <T : Serializable> Intent.readSerializable(key: String, clazz: Class<T>): T? {
-  return runCatching {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      getSerializableExtra(key, clazz)
-    } else {
-      getSerializableExtra(key) as? T
-    }
-  }.getOrNull()
-}
-
-fun <T : Parcelable> Intent.readParcelable(key: String, clazz: Class<T>): T? {
-  return runCatching {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      getParcelableExtra(key, clazz)
-    } else {
-      getParcelableExtra(key) as? T
-    }
-  }.getOrNull()
 }
 
 fun List<String>.append(): String {
@@ -166,36 +101,6 @@ fun Int.isAlmostTransparent(): Boolean {
   return this < 25
 }
 
-fun Fragment.colorOf(@ColorRes color: Int) = ContextCompat.getColor(requireContext(), color)
-
-fun AppCompatActivity.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
-
-fun Context.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
-
-fun View.colorOf(@ColorRes color: Int) = ContextCompat.getColor(context, color)
-
-fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
-  doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
-}
-
-fun View.inflater(): LayoutInflater = LayoutInflater.from(context)
-
-fun Activity.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-  Toast.makeText(this, message, duration).show()
-}
-
-fun Activity.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
-  Toast.makeText(this, message, duration).show()
-}
-
-fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-  Toast.makeText(requireContext(), message, duration).show()
-}
-
-fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
-  Toast.makeText(requireContext(), message, duration).show()
-}
-
 fun <T> mutableLiveDataOf() = MutableLiveData<T>()
 
 fun <T> MutableLiveData<T>.toLiveData(): LiveData<T> = this
@@ -205,52 +110,6 @@ fun File.copyInputStreamToFile(inputStream: InputStream) {
     this.outputStream().use { fileOut ->
       input.copyTo(fileOut)
     }
-  }
-}
-
-fun <ViewT : View> View.bindView(@IdRes idRes: Int): Lazy<ViewT> {
-  return lazyUnSynchronized {
-    findViewById(idRes)
-  }
-}
-
-fun <ViewT : View> Activity.bindView(@IdRes idRes: Int): Lazy<ViewT> {
-  return lazyUnSynchronized {
-    findViewById(idRes)
-  }
-}
-
-fun View.isVisible(): Boolean = visibility == View.VISIBLE
-
-fun View.isGone(): Boolean = visibility == View.GONE
-
-fun View.isTransparent(): Boolean = visibility == View.INVISIBLE
-
-fun View.transparent() {
-  visibility = View.INVISIBLE
-}
-
-fun View.gone() {
-  visibility = View.GONE
-}
-
-fun View.visible() {
-  visibility = View.VISIBLE
-}
-
-fun View.visibleGone(value: Boolean) {
-  if (value && !isVisible()) {
-    visible()
-  } else if (!value && !isGone()) {
-    gone()
-  }
-}
-
-fun View.visibleInvisible(value: Boolean) {
-  if (value && !isVisible()) {
-    visible()
-  } else if (!value && !isTransparent()) {
-    transparent()
   }
 }
 

@@ -13,6 +13,10 @@ import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.buildIntent
+import com.elementary.tasks.core.os.colorOf
+import com.elementary.tasks.core.os.startActivity
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
@@ -20,15 +24,11 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.buildIntent
-import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.setTextOrHide
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ActivityDialogBirthdayBinding
 import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import com.elementary.tasks.tests.TestObjects
@@ -261,7 +261,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(birthday.name)
     birthday.ageFormatted?.also { builder.setContentText(it) }
-    builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_food_cake)
     builder.color = colorOf(R.color.secondaryBlue)
     if (!isScreenResumed &&
       (
@@ -301,7 +301,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityDialogBirthdayBind
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(birthday.name)
     birthday.ageFormatted?.also { builder.setContentText(it) }
-    builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_food_cake)
     builder.color = colorOf(R.color.secondaryBlue)
     if (isScreenResumed) {
       builder.priority = NotificationCompat.PRIORITY_LOW

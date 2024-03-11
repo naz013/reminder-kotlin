@@ -9,10 +9,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.inflater
-import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.inflater
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.databinding.ListItemShopItemBinding
 
@@ -80,18 +80,10 @@ class ArchivedShoppingViewHolder(
       val checkView = bind.checkView
       val textView = bind.shopText
       if (list.isChecked) {
-        if (isDark) {
-          checkView.setImageResource(R.drawable.ic_check_box_white_24dp)
-        } else {
-          checkView.setImageResource(R.drawable.ic_check_box_black_24dp)
-        }
+        checkView.setImageResource(R.drawable.ic_fluent_checkbox_checked)
         textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
       } else {
-        if (isDark) {
-          checkView.setImageResource(R.drawable.ic_check_box_outline_blank_white_24dp)
-        } else {
-          checkView.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp)
-        }
+        checkView.setImageResource(R.drawable.ic_fluent_checkbox_unchecked)
         textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
       }
       count++

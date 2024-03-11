@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.MaterialColors
 
 class ThemeProvider(
   private val context: Context,
@@ -47,6 +48,25 @@ class ThemeProvider(
       }
       return R.string.auto
     }
+
+  @RawRes
+  fun getMapStyleJson(mapStyle: Int): Int {
+    return when (mapStyle) {
+      0 -> R.raw.map_terrain_day
+      1 -> R.raw.map_terrain_retro
+      2 -> R.raw.map_terrain_silver
+      3 -> R.raw.map_terrain_night
+      4 -> R.raw.map_terrain_dark
+      5 -> R.raw.map_terrain_aubergine
+      else -> {
+        if (isDark) {
+          R.raw.map_terrain_night
+        } else {
+          R.raw.map_terrain_day
+        }
+      }
+    }
+  }
 
   val mapStyleJson: Int
     @RawRes
@@ -301,8 +321,55 @@ class ThemeProvider(
     }
 
     @ColorInt
+    fun getTertiaryContainerColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_tertiaryContainer)
+    }
+
+    @ColorInt
     fun getSecondaryContainerColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_secondaryContainer)
+    }
+
+    @ColorInt
+    fun getPrimaryContainerColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_primaryContainer)
+    }
+
+    @ColorInt
+    fun getBackgroundColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_background)
+    }
+
+    @ColorInt
+    fun getSurfaceColor(context: Context): Int {
+      return MaterialColors.getColor(context, R.attr.colorSurface, "getSurfaceColor()")
+    }
+
+    @ColorInt
+    fun getSurfaceVariantColor(context: Context): Int {
+      return MaterialColors.getColor(
+        context,
+        R.attr.colorSurfaceContainer,
+        "getSurfaceVariantColor()"
+      )
+    }
+
+    @ColorInt
+    fun getHintTextColor(context: Context): Int {
+      return MaterialColors.getColor(
+        context,
+        android.R.attr.textColorHint,
+        "getHintTextColor()"
+      )
+    }
+
+    @ColorInt
+    fun getTitleTextColor(context: Context): Int {
+      return MaterialColors.getColor(
+        context,
+        android.R.attr.textColorPrimary,
+        "getTitleTextColor()"
+      )
     }
 
     @ColorInt
@@ -391,6 +458,21 @@ class ThemeProvider(
     @ColorInt
     fun getThemeOnSurfaceColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_onSurface)
+    }
+
+    @ColorInt
+    fun getThemeOnSecondaryColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_onSecondary)
+    }
+
+    @ColorInt
+    fun getThemeOnSecondaryContainerColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_onSecondaryContainer)
+    }
+
+    @ColorInt
+    fun getThemeOnBackgroundColor(context: Context): Int {
+      return ContextCompat.getColor(context, R.color.md_theme_onBackground)
     }
 
     @ColorInt

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/default_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/default_string"
+        android:textColor="?colorOnBackground" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/vibrate_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/vibrate"
+        android:textColor="?colorOnBackground" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/unlock_screen_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/unlock_screen"
+        android:textColor="?colorOnBackground" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/repeat_notification_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/repeat_notification"
+        android:textColor="?colorOnBackground" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/tts_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/voice_notification"
+        android:textColor="?colorOnBackground" />
+
+</LinearLayout>

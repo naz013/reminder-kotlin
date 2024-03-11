@@ -87,7 +87,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
   private fun showMarkerStyle() {
     withContext {
       val pointer = DrawableHelper.withContext(it)
-        .withDrawable(R.drawable.ic_twotone_place_24px)
+        .withDrawable(R.drawable.ic_fluent_place)
         .withColor(themeUtil.getMarkerLightColor(prefs.markerStyle))
         .tint()
         .get()

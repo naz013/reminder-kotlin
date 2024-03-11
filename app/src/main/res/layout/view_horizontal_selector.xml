@@ -13,7 +13,7 @@
         android:layout_height="40dp"
         android:background="?selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/ic_twotone_keyboard_arrow_left_24px"
+        app:srcCompat="@drawable/ic_fluent_chevron_left"
         app:tint="?android:textColorPrimary" />
 
     <TextView
@@ -33,6 +33,6 @@
         android:layout_height="40dp"
         android:background="?selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/ic_twotone_keyboard_arrow_right_24px"
+        app:srcCompat="@drawable/ic_fluent_chevron_right"
         app:tint="?android:textColorPrimary" />
 </LinearLayout>

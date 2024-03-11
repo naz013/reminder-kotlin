@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_twotone_search_24px"
+        android:icon="@drawable/ic_fluent_search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:iconTint="?colorOnSurface"
@@ -12,28 +12,28 @@
 
     <item
         android:id="@+id/action_map"
-        android:icon="@drawable/ic_twotone_map_24px"
+        android:icon="@drawable/ic_fluent_map"
         android:title="@string/map"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_archive"
-        android:icon="@drawable/ic_twotone_dns_24px"
+        android:icon="@drawable/ic_fluent_archive"
         android:title="@string/trash"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_groups"
-        android:icon="@drawable/ic_twotone_local_offer_24px"
+        android:icon="@drawable/ic_builder_group"
         android:title="@string/groups"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_twotone_settings_24px"
+        android:icon="@drawable/ic_fluent_settings"
         android:title="@string/action_settings"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />

@@ -31,21 +31,24 @@ import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
+import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.pin.PinLoginActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.Locale
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
+
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private var speech: SpeechRecognizer? = null
   private val conversationAdapter = ConversationAdapter(currentStateHolder)
@@ -259,7 +262,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
           Action.REMINDER -> {
             stopView()
-            PinLoginActivity.openLogged(this, CreateReminderActivity::class.java)
+            reminderBuilderLauncher.openLogged(this) { }
           }
 
           Action.VOLUME -> {

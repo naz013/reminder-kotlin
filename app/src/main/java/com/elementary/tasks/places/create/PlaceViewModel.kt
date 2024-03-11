@@ -17,6 +17,7 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
@@ -32,7 +33,8 @@ class PlaceViewModel(
   private val placesDao: PlacesDao,
   private val dateTimeManager: DateTimeManager,
   private val uiPlaceEditAdapter: UiPlaceEditAdapter,
-  private val contextProvider: ContextProvider
+  private val contextProvider: ContextProvider,
+  private val prefs: Prefs
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _place = mutableLiveDataOf<UiPlaceEdit>()
@@ -41,6 +43,8 @@ class PlaceViewModel(
   var lat: Double = 0.0
   var lng: Double = 0.0
   var address: String = ""
+  var markerStyle: Int = prefs.markerStyle
+  var markerRadius: Int = prefs.radius
 
   var canDelete: Boolean = false
     private set
@@ -69,10 +73,10 @@ class PlaceViewModel(
       val place = (placesDao.getByKey(id) ?: Place()).apply {
         this.name = data.name
         this.dateTime = dateTimeManager.getNowGmtDateTime()
-        this.radius = data.radius
+        this.radius = markerRadius
         this.latitude = lat
         this.longitude = lng
-        this.marker = data.marker
+        this.marker = markerStyle
       }
       if (data.newId) {
         place.id = UUID.randomUUID().toString()
@@ -135,6 +139,13 @@ class PlaceViewModel(
   private suspend fun onPlaceLoaded(place: Place) {
     if (isEdited) return
     isEdited = true
+
+    lat = place.latitude
+    lng = place.longitude
+    markerStyle = place.marker
+    markerRadius = place.radius
+    address = place.address
+
     withContext(dispatcherProvider.default()) {
       _place.postValue(uiPlaceEditAdapter.convert(place))
     }
@@ -149,8 +160,6 @@ class PlaceViewModel(
 
   data class SavePlaceData(
     val name: String,
-    val marker: Int,
-    val radius: Int,
     val newId: Boolean
   )
 }

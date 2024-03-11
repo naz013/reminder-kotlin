@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils.params
 
+@Deprecated("Replaced by new Builder")
 class ReminderExplanationVisibility(
   private val prefs: Prefs
 ) {
@@ -16,6 +17,7 @@ class ReminderExplanationVisibility(
     return PREFS_KEY + type.name
   }
 
+  @Deprecated("Replaced by new Builder")
   enum class Type {
     BY_DATE,
     BY_WEEKDAY,

@@ -24,6 +24,14 @@
                 android:layout_marginRight="16dp"
                 app:text="@string/reminder_recur_explanations" />
 
+            <com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+                android:id="@+id/legacyBuilderWarningView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskLayout"
                 style="@style/FilledBoxStyle"
@@ -95,7 +103,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/recur_need_help"
-                    app:icon="@drawable/ic_twotone_help_24px" />
+                    app:icon="@drawable/ic_fluent_question_circle" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

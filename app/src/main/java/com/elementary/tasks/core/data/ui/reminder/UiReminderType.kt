@@ -16,7 +16,7 @@ data class UiReminderType(
 
   fun isLink(): Boolean = isKind(Kind.LINK)
 
-  fun isShopping(): Boolean = isKind(Kind.SHOPPING)
+  fun isSubTasks(): Boolean = isKind(Kind.SHOPPING)
 
   fun isEmail(): Boolean = isKind(Kind.EMAIL)
 
@@ -36,8 +36,8 @@ data class UiReminderType(
     return value % Base.DATE.value == kind.value
   }
 
-  fun isSame(base: Int): Boolean {
-    return value == base
+  fun isSame(type: Int): Boolean {
+    return value == type
   }
 
   fun isBase(base: Base): Boolean {

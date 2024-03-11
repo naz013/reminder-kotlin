@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/working_days_button"
+        style="@style/UiComponentTextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/builder_working_days" />
+
+    <TextView
+        android:id="@+id/all_days_button"
+        style="@style/UiComponentTextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/builder_all_days" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/mondayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/mon"
+                android:textOn="@string/mon" />
+
+            <ToggleButton
+                android:id="@+id/tuesdayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/tue"
+                android:textOn="@string/tue" />
+
+            <ToggleButton
+                android:id="@+id/wednesdayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/wed"
+                android:textOn="@string/wed" />
+
+            <ToggleButton
+                android:id="@+id/thursdayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/thu"
+                android:textOn="@string/thu" />
+
+            <ToggleButton
+                android:id="@+id/fridayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/fri"
+                android:textOn="@string/fri" />
+
+            <ToggleButton
+                android:id="@+id/saturdayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/sat"
+                android:textOn="@string/sat" />
+
+            <ToggleButton
+                android:id="@+id/sundayCheck"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/toggle_weekday_tertiary"
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceOverline"
+                android:textColor="@color/weekday_text_selector"
+                android:textOff="@string/sun"
+                android:textOn="@string/sun" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</LinearLayout>

@@ -59,7 +59,7 @@
             android:layout_alignParentEnd="true"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_more_vert_24px"
+            app:srcCompat="@drawable/ic_fluent_more_vertical"
             app:tint="?colorOnSurface" />
 
     </RelativeLayout>

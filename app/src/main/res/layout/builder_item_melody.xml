@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_builder_melody"
+            app:tint="?colorOnSurface" />
+
+        <TextView
+            android:id="@+id/melody_title_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:maxLines="2"
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:textColor="?colorOnSurface"
+            tools:text="File Name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/play_pause_button"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/acc_select_number_from_contacts"
+            android:visibility="gone"
+            app:icon="@drawable/ic_builder_play_melody"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/remove_button"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/acc_select_number_from_contacts"
+            android:visibility="gone"
+            app:icon="@drawable/ic_builder_clear"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/select_button"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/select" />
+
+    </LinearLayout>
+
+</LinearLayout>

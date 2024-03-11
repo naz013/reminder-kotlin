@@ -10,6 +10,10 @@ class UriReader(
   private val contextProvider: ContextProvider
 ) {
 
+  fun readObject(uri: Uri, source: String = ""): Any? {
+    return MemoryUtil.readFromUri(contextProvider.context, uri, source)
+  }
+
   fun readBirthdayObject(uri: Uri): Birthday? {
     return if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
       val any = MemoryUtil.readFromUri(contextProvider.context, uri, FileConfig.FILE_NAME_BIRTHDAY)

@@ -49,7 +49,7 @@ class DayViewModel(
       val fromDb = reminderDao.getById(reminder.id)
       if (fromDb != null) {
         fromDb.isRemoved = true
-        eventControlFactory.getController(fromDb).stop()
+        eventControlFactory.getController(fromDb).disable()
         reminderDao.insert(fromDb)
         postInProgress(false)
         postCommand(Commands.DELETED)

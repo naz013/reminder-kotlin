@@ -9,7 +9,7 @@ import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.util.UUID
 
 @Entity
 @TypeConverters(ListStringTypeConverter::class)
@@ -38,6 +38,4 @@ data class Place(
 ) : Parcelable {
 
   fun latLng(): LatLng = LatLng(latitude, longitude)
-
-  fun hasLatLng(): Boolean = latitude != 0.0 && longitude != 0.0
 }

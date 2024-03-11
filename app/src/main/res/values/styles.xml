@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="UiComponentFab" parent="@style/Widget.Material3.FloatingActionButton.Tertiary"></style>
+    <style name="UiComponentValueTypePicker.InputBox" parent="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="hintEnabled">false</item>
+    </style>
 
-    <style name="UiComponentExtendedFab" parent="@style/Widget.Material3.ExtendedFloatingActionButton.Tertiary"></style>
+    <style name="UiComponentValueTypePicker.Button" parent="@style/Widget.Material3.Button.TonalButton" >
+        <item name="cornerRadius">1dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textAppearance">?textAppearanceTitleMedium</item>
+    </style>
+
+    <style name="UiComponentTextButton" parent="@style/Widget.MaterialComponents.TextView" >
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:textColor">?colorSecondary</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="UiComponentFab" parent="@style/Widget.Material3.FloatingActionButton.Tertiary" />
+
+    <style name="UiComponentExtendedFab" parent="@style/Widget.Material3.ExtendedFloatingActionButton.Tertiary" />
 
     <style name="UiComponentBadge" parent="@style/MyTheme.DayNight">
         <item name="android:background">@drawable/badge_secondary_rounded</item>
@@ -56,19 +74,40 @@
         <item name="cardUseCompatPadding">false</item>
     </style>
 
-    <style name="UiComponentActionCard.ButtonPositive" parent="@style/Widget.Material3.Button.TonalButton"></style>
+    <style name="UiComponentBuilderListCard" parent="@style/Widget.Material3.CardView.Elevated">
+        <item name="cardElevation">0dp</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="contentPadding">8dp</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
 
-    <style name="UiComponentActionCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton"></style>
+    <style name="UiComponentActionCard.ButtonPositive" parent="@style/Widget.Material3.Button.TonalButton" />
 
-    <style name="UiComponentBannerCard.ButtonPositive" parent="@style/Widget.Material3.Button"></style>
+    <style name="UiComponentActionCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton" />
 
-    <style name="UiComponentBannerCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton"></style>
+    <style name="UiComponentBannerCard.ButtonPositive" parent="@style/Widget.Material3.Button" />
+
+    <style name="UiComponentBannerCard.ButtonNeutral" parent="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <style name="UiComponentMapCard" parent="@style/Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">5dp</item>
+        <item name="android:stateListAnimator">@animator/card_animator</item>
+    </style>
 
     <!--Components-->
 
     <style name="FilledBoxStyle" parent="@style/Widget.Material3.TextInputLayout.FilledBox">
         <item name="boxCornerRadiusTopEnd">5dp</item>
         <item name="boxCornerRadiusTopStart">5dp</item>
+    </style>
+
+    <style name="FilledBoxTransparentStyle" parent="@style/Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxCornerRadiusTopEnd">5dp</item>
+        <item name="boxCornerRadiusTopStart">5dp</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+    </style>
+
+    <style name="OutlinedBoxStyle" parent="@style/Widget.Material3.TextInputLayout.OutlinedBox">
     </style>
 
     <!--Bottom Sheets-->

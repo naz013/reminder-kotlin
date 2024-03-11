@@ -22,6 +22,6 @@
         android:text="@string/move_to_place"
         android:textAllCaps="true"
         android:visibility="visible"
-        app:icon="@drawable/ic_twotone_place_24px" />
+        app:icon="@drawable/ic_fluent_place" />
 
 </RelativeLayout>

@@ -9,9 +9,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.deeplink.DeepLinkData
 import com.elementary.tasks.core.os.BiometricProvider
+import com.elementary.tasks.core.os.intentForClass
+import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.intentForClass
-import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.home.BottomNavActivity
 

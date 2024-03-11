@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_fullscreen_24px"
+                app:srcCompat="@drawable/ic_builder_map_full_screen"
                 app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_arrow_back_ios_24px"
+                app:srcCompat="@drawable/ic_fluent_chevron_left"
                 app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_layers_24px"
+                app:srcCompat="@drawable/ic_builder_map_layers"
                 app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_style_24px"
+                app:srcCompat="@drawable/ic_fluent_style_guide"
                 app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -116,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_track_changes_24px"
+                app:srcCompat="@drawable/ic_builder_map_radius"
                 app:tint="?colorOnPrimaryContainer" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -167,7 +167,7 @@
                     android:layout_height="match_parent"
                     android:background="?colorSecondary"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_search_24px"
+                    app:srcCompat="@drawable/ic_fluent_search"
                     app:tint="?colorOnSecondary" />
 
             </LinearLayout>

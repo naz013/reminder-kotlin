@@ -19,18 +19,18 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.os.startActivity
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -86,20 +86,20 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
     menu.getItem(1)?.title =
       if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
 
-    ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_twotone_search_24px, isDark)
+    ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_fluent_search, isDark)
     ViewUtils.tintMenuIcon(
       context = requireContext(),
       menu = menu,
       index = 1,
       resource = if (enableGrid) {
-        R.drawable.ic_twotone_view_quilt_24px
+        R.drawable.ic_fluent_grid
       } else {
-        R.drawable.ic_twotone_view_list_24px
+        R.drawable.ic_fluent_list
       },
       isDark = isDark
     )
-    ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_twotone_storage_24, isDark)
-    ViewUtils.tintMenuIcon(requireContext(), menu, 3, R.drawable.ic_twotone_sort_24px, isDark)
+    ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_fluent_archive, isDark)
+    ViewUtils.tintMenuIcon(requireContext(), menu, 3, R.drawable.ic_fluent_arrow_sort, isDark)
     searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
   }
 

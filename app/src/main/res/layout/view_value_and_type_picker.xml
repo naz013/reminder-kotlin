@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.elementary.tasks.core.views.common.NumberValuePickerView
+            android:id="@+id/number_picker_view"
+            android:layout_width="142dp"
+            android:layout_height="match_parent"
+            app:valuePicker_bottomButtonText="-"
+            app:valuePicker_defaultValue="0"
+            app:valuePicker_maxValue="999"
+            app:valuePicker_minValue="0"
+            app:valuePicker_topButtonText="+" />
+
+        <com.elementary.tasks.core.views.common.VerticalWheelSelector
+            android:id="@+id/selector_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            app:wheel_defaultTextAppearance="?textAppearanceTitleMedium"
+            app:wheel_defaultTextColor="?colorOnBackground"
+            app:wheel_selectedTextAppearance="?textAppearanceTitleMedium"
+            app:wheel_selectedTextColor="?colorPrimary"
+            app:wheel_selectedTextStyle="bold"
+            app:wheel_visibleRowsCount="5"
+            tools:wheel_items="@array/before_times" />
+
+    </LinearLayout>
+
+</merge>

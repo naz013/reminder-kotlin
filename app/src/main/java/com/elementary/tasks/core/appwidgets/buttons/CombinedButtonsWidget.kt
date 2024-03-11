@@ -8,7 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 
 class CombinedButtonsWidget : AppWidgetProvider() {
 
@@ -39,15 +39,15 @@ class CombinedButtonsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_alarm_24px,
+          iconId = R.drawable.ic_fluent_clock_alarm,
           color = R.color.pureWhite,
           viewId = R.id.btn_add_reminder,
-          cls = CreateReminderActivity::class.java
+          cls = ReminderBuilderLauncher.PENDING_INTENT_CLASS
         )
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_note_24px,
+          iconId = R.drawable.ic_fluent_note,
           color = R.color.pureWhite,
           viewId = R.id.btn_add_note,
           cls = CreateNoteActivity::class.java
@@ -55,7 +55,7 @@ class CombinedButtonsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_cake_24px,
+          iconId = R.drawable.ic_fluent_food_cake,
           color = R.color.pureWhite,
           viewId = R.id.btn_add_birthday,
           cls = AddBirthdayActivity::class.java
@@ -63,7 +63,7 @@ class CombinedButtonsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_mic_black_24px,
+          iconId = R.drawable.ic_builder_mic_on,
           color = R.color.pureWhite,
           viewId = R.id.btn_voice,
           cls = VoiceWidgetDialog::class.java
@@ -72,15 +72,15 @@ class CombinedButtonsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_alarm_24px,
+          iconId = R.drawable.ic_fluent_clock_alarm,
           color = R.color.pureBlack,
           viewId = R.id.btn_add_reminder,
-          cls = CreateReminderActivity::class.java
+          cls = ReminderBuilderLauncher.PENDING_INTENT_CLASS
         )
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_note_24px,
+          iconId = R.drawable.ic_fluent_note,
           color = R.color.pureBlack,
           viewId = R.id.btn_add_note,
           cls = CreateNoteActivity::class.java
@@ -88,7 +88,7 @@ class CombinedButtonsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_cake_24px,
+          iconId = R.drawable.ic_fluent_food_cake,
           color = R.color.pureBlack,
           viewId = R.id.btn_add_birthday,
           cls = AddBirthdayActivity::class.java
@@ -96,7 +96,7 @@ class CombinedButtonsWidget : AppWidgetProvider() {
         WidgetUtils.initButton(
           context = context,
           rv = rv,
-          iconId = R.drawable.ic_twotone_mic_black_24px,
+          iconId = R.drawable.ic_builder_mic_on,
           color = R.color.pureBlack,
           viewId = R.id.btn_voice,
           cls = VoiceWidgetDialog::class.java

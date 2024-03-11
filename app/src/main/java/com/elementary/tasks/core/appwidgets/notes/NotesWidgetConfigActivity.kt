@@ -8,7 +8,7 @@ import com.elementary.tasks.core.analytics.Widget
 import com.elementary.tasks.core.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
@@ -54,14 +54,14 @@ class NotesWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetNoteCon
     binding.btnSettings.setImageDrawable(
       ViewUtils.tintIcon(
         context = this,
-        resource = R.drawable.ic_twotone_settings_24px,
+        resource = R.drawable.ic_fluent_settings,
         isDark = isDark
       )
     )
     binding.btnAddNote.setImageDrawable(
       ViewUtils.tintIcon(
         context = this,
-        resource = R.drawable.ic_twotone_add_24px,
+        resource = R.drawable.ic_builder_google_task_list,
         isDark = isDark
       )
     )

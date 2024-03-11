@@ -48,7 +48,7 @@ class BirthdaysWidget : AppWidgetProvider() {
       WidgetUtils.initButton(
         context,
         rv,
-        R.drawable.ic_twotone_settings_24px,
+        R.drawable.ic_fluent_settings,
         colorRes,
         R.id.btn_settings,
         BirthdaysWidgetConfigActivity::class.java
@@ -59,7 +59,7 @@ class BirthdaysWidget : AppWidgetProvider() {
       WidgetUtils.initButton(
         context,
         rv,
-        R.drawable.ic_twotone_add_24px,
+        R.drawable.ic_fluent_add,
         colorRes,
         R.id.btn_add,
         AddBirthdayActivity::class.java

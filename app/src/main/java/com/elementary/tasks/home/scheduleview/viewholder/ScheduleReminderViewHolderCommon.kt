@@ -1,26 +1,44 @@
 package com.elementary.tasks.home.scheduleview.viewholder
 
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
-import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
-import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
-import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
-import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
-import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.transparent
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.data.ui.UiTextElement
+import com.elementary.tasks.core.text.applyStyles
+import com.elementary.tasks.core.utils.ui.inflater
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ListItemShopItemBinding
+import com.elementary.tasks.databinding.ViewListItemBadgeBinding
 
 class ScheduleReminderViewHolderCommon {
+
+  fun addChips(
+    container: LinearLayout,
+    tags: List<UiTextElement>
+  ) {
+    if (tags.isEmpty()) {
+      return
+    }
+
+    container.visible()
+    container.isFocusableInTouchMode = false
+    container.isFocusable = false
+    container.removeAllViewsInLayout()
+
+    for (tag in tags) {
+      val binding = ViewListItemBadgeBinding.inflate(container.inflater(), container, false)
+
+      binding.root.text = tag.text
+      binding.root.applyStyles(tag.textFormat)
+
+      container.addView(binding.root)
+    }
+  }
 
   fun loadItems(
     reminder: UiReminderListActiveShop,
@@ -42,18 +60,12 @@ class ScheduleReminderViewHolderCommon {
       val checkView = bind.checkView
       val textView = bind.shopText
       if (list.isChecked) {
-        if (isDark) {
-          checkView.setImageResource(R.drawable.ic_check_box_white_24dp)
-        } else {
-          checkView.setImageResource(R.drawable.ic_check_box_black_24dp)
-        }
+        checkView.setImageResource(R.drawable.ic_fluent_checkbox_checked)
+        checkView.imageTintList = ColorStateList.valueOf(textColor)
         textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
       } else {
-        if (isDark) {
-          checkView.setImageResource(R.drawable.ic_check_box_outline_blank_white_24dp)
-        } else {
-          checkView.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp)
-        }
+        checkView.setImageResource(R.drawable.ic_fluent_checkbox_unchecked)
+        checkView.imageTintList = ColorStateList.valueOf(textColor)
         textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
       }
       textView.setTextColor(textColor)
@@ -68,50 +80,6 @@ class ScheduleReminderViewHolderCommon {
         checkView.visible()
         textView.text = list.summary
         todoListView.addView(bind.root)
-      }
-    }
-  }
-
-  @SuppressLint("SetTextI18n")
-  fun loadContact(
-    reminder: UiReminderListActive,
-    textView: TextView
-  ) {
-    when (val target = reminder.actionTarget) {
-      is UiSmsTarget -> {
-        textView.visible()
-        if (target.name == null) {
-          textView.text = target.target
-        } else {
-          textView.text = "${target.name}(${target.target})"
-        }
-      }
-      is UiCallTarget -> {
-        textView.visible()
-        if (target.name == null) {
-          textView.text = target.target
-        } else {
-          textView.text = "${target.name}(${target.target})"
-        }
-      }
-      is UiAppTarget -> {
-        textView.visible()
-        textView.text = "${target.name}/${target.target}"
-      }
-      is UiEmailTarget -> {
-        textView.visible()
-        if (target.name == null) {
-          textView.text = target.target
-        } else {
-          textView.text = "${target.name}(${target.target})"
-        }
-      }
-      is UiLinkTarget -> {
-        textView.visible()
-        textView.text = target.target
-      }
-      else -> {
-        textView.gone()
       }
     }
   }

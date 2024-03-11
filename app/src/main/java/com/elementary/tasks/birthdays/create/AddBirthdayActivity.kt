@@ -14,14 +14,14 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleInvisible
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleInvisible
 import com.elementary.tasks.core.views.ContactPickerView
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import org.koin.android.ext.android.inject

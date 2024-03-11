@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:clipChildren="false"
-        app:contentPadding="1dp"
+        app:cardElevation="1dp"
+        app:contentPadding="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,61 +21,48 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/reminderIconView"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:scaleType="centerInside"
-                android:layout_marginStart="8dp"
-                app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                app:tint="?android:textColorPrimary" />
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/reminderTextView"
+                    android:id="@+id/main_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:textAppearance="?textAppearanceTitleMedium"
-                    android:textColor="?android:textColorPrimary"
+                    android:textColor="?colorOnSurface"
                     tools:text="Hello" />
 
                 <TextView
-                    android:id="@+id/reminderPhoneView"
+                    android:id="@+id/secondary_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:maxLines="1"
-                    android:singleLine="true"
+                    android:layout_marginTop="4dp"
                     android:textAppearance="?textAppearanceTitleSmall"
-                    android:textColor="?android:textColorPrimary"
+                    android:textColor="?colorOnSurface"
                     android:visibility="visible"
                     tools:text="1256356549k" />
 
                 <LinearLayout
-                    android:id="@+id/todoListView"
+                    android:id="@+id/chipGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:divider="@android:color/transparent"
-                    android:fastScrollEnabled="false"
-                    android:focusable="false"
-                    android:orientation="vertical"
-                    android:overScrollMode="never"
-                    android:scrollbars="none"
-                    android:visibility="visible" />
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -82,7 +70,6 @@
                 android:id="@+id/reminderTimeView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceTitleLarge"
                 android:textColor="?colorOnSurface"
@@ -100,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:clipChildren="false"
+        app:cardElevation="1dp"
         app:contentPadding="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +148,7 @@
             android:layout_height="match_parent"
             android:rotation="90"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_link_24"
+            app:srcCompat="@drawable/ic_fluent_link"
             app:tint="?colorOnTertiaryContainer" />
 
     </com.google.android.material.card.MaterialCardView>

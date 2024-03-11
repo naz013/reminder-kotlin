@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.elementary.tasks.core.views.square.UiSquareTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:maxLines="2"
+    android:padding="1dp"
+    android:textAppearance="?textAppearanceTitleSmall"
+    android:textColor="@color/weekday_text_selector"
+    tools:text="@string/last_day" />

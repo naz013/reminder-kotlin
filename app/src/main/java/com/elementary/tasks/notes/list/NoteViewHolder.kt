@@ -11,11 +11,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.inflater
-import com.elementary.tasks.core.utils.transparent
 import com.elementary.tasks.core.utils.ui.dp2px
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.inflater
+import com.elementary.tasks.core.utils.ui.transparent
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ListItemNoteBinding
 
 class NoteViewHolder(

@@ -33,7 +33,7 @@ class UiReminderListAdapter(
       )
     return if (data.isRemoved) {
       when {
-        type.isShopping() -> {
+        type.isSubTasks() -> {
           UiReminderListRemovedShop(
             id = data.uuId,
             type = type,
@@ -76,7 +76,7 @@ class UiReminderListAdapter(
       }
     } else {
       when {
-        type.isShopping() -> {
+        type.isSubTasks() -> {
           UiReminderListActiveShop(
             id = data.uuId,
             type = type,

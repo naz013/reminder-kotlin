@@ -8,16 +8,14 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.interfaces.MapCallback
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.dp2px
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
-import com.google.android.gms.maps.GoogleMap
+import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get
@@ -28,23 +26,12 @@ class MapFragment : BaseToolbarFragment<FragmentEventsMapBinding>() {
   private val viewModel by viewModel<ActiveGpsRemindersViewModel>()
   private val mAdapter = LocationPlacesAdapter(get())
 
-  private var mGoogleMap: AdvancedMapFragment? = null
+  private var simpleMapFragment: SimpleMapFragment? = null
   private var behaviour: BottomSheetBehavior<LinearLayout>? = null
 
   private var clickedPosition: Int = 0
   private var pointer: Int = 0
   private var isDataShowed: Boolean = false
-
-  private val mReadyCallback = object : MapCallback {
-    override fun onMapReady() {
-      mGoogleMap?.setSearchEnabled(false)
-      viewModel.events.value?.also { showData(it) }
-    }
-  }
-  private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
-    mGoogleMap?.moveCamera(marker.position, 0, 0, 0, dp2px(192))
-    false
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -62,29 +49,51 @@ class MapFragment : BaseToolbarFragment<FragmentEventsMapBinding>() {
 
   private fun initViewModel() {
     viewModel.events.observe(viewLifecycleOwner) { reminders ->
-      if (reminders != null && mGoogleMap != null) {
+      if (reminders != null && simpleMapFragment != null) {
         showData(reminders)
       }
     }
   }
 
   private fun initMap() {
-    val map = AdvancedMapFragment.newInstance(
-      isTouch = false,
-      isPlaces = false,
-      isSearch = false,
-      isStyles = false,
-      isBack = false,
-      isZoom = false,
-      isDark = isDark
+    val map = SimpleMapFragment.newInstance(
+      SimpleMapFragment.MapParams(
+        isTouch = false,
+        isPlaces = false,
+        isSearch = false,
+        isStyles = false,
+        isLayers = true,
+        isRadius = false,
+        mapStyleParams = SimpleMapFragment.MapStyleParams(
+          mapType = prefs.mapType,
+          mapStyle = prefs.mapStyle
+        )
+      )
     )
-    map.setCallback(mReadyCallback)
-    map.setOnMarkerClick(mOnMarkerClick)
+
+    map.mapCallback = object : SimpleMapFragment.DefaultMapCallback() {
+      override fun onMapReady() {
+        super.onMapReady()
+        viewModel.events.value?.also { showData(it) }
+      }
+    }
+    map.setOnMarkerClick { marker ->
+      simpleMapFragment?.moveCamera(
+        pos = marker.position,
+        paddingLeft = 0,
+        paddingTop = 0,
+        paddingRight = 0,
+        paddingBottom = dp2px(192)
+      )
+      false
+    }
+
     childFragmentManager.beginTransaction()
       .replace(R.id.fragment_container, map)
       .addToBackStack(null)
       .commit()
-    mGoogleMap = map
+
+    simpleMapFragment = map
   }
 
   private fun initViews() {
@@ -116,7 +125,7 @@ class MapFragment : BaseToolbarFragment<FragmentEventsMapBinding>() {
     }
     clickedPosition = position
     val place = reminder.places[pointer]
-    mGoogleMap?.moveCamera(
+    simpleMapFragment?.moveCamera(
       LatLng(place.latitude, place.longitude),
       0,
       0,
@@ -128,36 +137,32 @@ class MapFragment : BaseToolbarFragment<FragmentEventsMapBinding>() {
   override fun getTitle(): String = getString(R.string.map)
 
   private fun showData(data: List<Reminder>) {
-    val map = mGoogleMap
+    val map = simpleMapFragment
     if (isDataShowed || map == null) {
       return
     }
     mAdapter.setData(data)
-    var mapReady = false
-    for (reminder in data) {
-      for (place in reminder.places) {
-        mapReady = map.addMarker(
-          pos = LatLng(place.latitude, place.longitude),
-          title = place.name,
-          clear = false,
-          markerStyle = place.marker,
-          animate = false,
-          radius = place.radius
-        )
-        if (!mapReady) {
-          break
+    if (simpleMapFragment?.isMapReady == true) {
+      for (reminder in data) {
+        for (place in reminder.places) {
+          map.addMarker(
+            latLng = LatLng(place.latitude, place.longitude),
+            title = place.name,
+            markerStyle = place.marker,
+            radius = place.radius,
+            clear = false,
+            animate = false
+          )
         }
       }
-      if (!mapReady) {
-        break
-      }
+      isDataShowed = true
     }
-    isDataShowed = mapReady
+
     reloadView()
   }
 
   override fun canGoBack(): Boolean {
-    return mGoogleMap?.onBackPressed() == true
+    return simpleMapFragment?.onBackPressed() == true
   }
 
   private fun reloadView() {

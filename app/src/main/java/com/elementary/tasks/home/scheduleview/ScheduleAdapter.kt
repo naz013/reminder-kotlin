@@ -3,8 +3,6 @@ package com.elementary.tasks.home.scheduleview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.elementary.tasks.core.data.ui.UiReminderListActive
-import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleBirthdayHolder
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleGoogleViewHolderCommon
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleHeaderViewHolder
@@ -13,12 +11,8 @@ import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderAndGTas
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderAndNoteViewHolder
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolder
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
-import com.elementary.tasks.home.scheduleview.viewholder.ScheduleShoppingAndGTaskViewHolder
-import com.elementary.tasks.home.scheduleview.viewholder.ScheduleShoppingAndNoteViewHolder
-import com.elementary.tasks.home.scheduleview.viewholder.ScheduleShoppingViewHolder
 
 class ScheduleAdapter(
-  private val isDark: Boolean,
   private val onReminderClickListener: (position: Int, id: String) -> Unit,
   private val onBirthdayClickListener: (position: Int, id: String) -> Unit,
   private val onHeaderClickListener: (position: Int, time: HeaderTimeType) -> Unit,
@@ -65,44 +59,9 @@ class ScheduleAdapter(
         }
       )
 
-      ScheduleModelViewType.REMINDER_SHOPPING.value -> ScheduleShoppingViewHolder(
-        parent = parent,
-        isDark = isDark,
-        common = reminderCommon
-      ) { position -> onReminderClickListener(position, getItem(position).id) }
-
-      ScheduleModelViewType.REMINDER_SHOPPING_NOTE.value -> ScheduleShoppingAndNoteViewHolder(
-        parent = parent,
-        isDark = isDark,
-        common = reminderCommon,
-        noteCommon = noteCommon,
-        reminderClickListener = { position ->
-          onReminderClickListener(position, getItem(position).id)
-        },
-        noteClickListener = { position ->
-          getItemAs(position, ReminderAndNoteScheduleModel::class.java)?.also {
-            onNoteClickListener(position, it.note.id)
-          }
-        }
-      )
-
-      ScheduleModelViewType.REMINDER_SHOPPING_GTASK.value -> ScheduleShoppingAndGTaskViewHolder(
-        parent = parent,
-        isDark = isDark,
-        common = reminderCommon,
-        googleCommon = googleCommon,
-        reminderClickListener = { position ->
-          onReminderClickListener(position, getItem(position).id)
-        },
-        taskClickListener = { position ->
-          getItemAs(position, ReminderAndGoogleTaskScheduleModel::class.java)?.also {
-            onGoogleTaskClickListener(position, it.googleTask.id)
-          }
-        }
-      )
-
       ScheduleModelViewType.BIRTHDAY.value -> ScheduleBirthdayHolder(
-        parent = parent
+        parent = parent,
+        common = reminderCommon
       ) { position -> onBirthdayClickListener(position, getItem(position).id) }
 
       else -> ScheduleHeaderViewHolder(
@@ -125,7 +84,7 @@ class ScheduleAdapter(
 
       is ScheduleReminderViewHolder -> {
         getItemAs(position, ReminderScheduleModel::class.java)?.also {
-          holder.setData(it.data as UiReminderListActive)
+          holder.setData(it.data)
         }
       }
 
@@ -136,22 +95,6 @@ class ScheduleAdapter(
       }
 
       is ScheduleReminderAndGTaskViewHolder -> {
-        getItemAs(position, ReminderAndGoogleTaskScheduleModel::class.java)?.also {
-          holder.setData(it)
-        }
-      }
-
-      is ScheduleShoppingViewHolder -> {
-        getItemAs(position, ReminderScheduleModel::class.java)?.also {
-          holder.setData(it.data as UiReminderListActiveShop)
-        }
-      }
-
-      is ScheduleShoppingAndNoteViewHolder -> {
-        getItemAs(position, ReminderAndNoteScheduleModel::class.java)?.also { holder.setData(it) }
-      }
-
-      is ScheduleShoppingAndGTaskViewHolder -> {
         getItemAs(position, ReminderAndGoogleTaskScheduleModel::class.java)?.also {
           holder.setData(it)
         }

@@ -39,7 +39,7 @@ class BirthdayHandlerSilent(
   private fun showNotificationWithoutSound(birthday: Birthday) {
     Timber.d("showNotificationWithoutSound: ")
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_alert)
 
     val notificationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       ShowBirthday29Activity.getLaunchIntent(contextProvider.context, birthday.uuId)
@@ -74,7 +74,7 @@ class BirthdayHandlerSilent(
         PendingIntent.FLAG_CANCEL_CURRENT
       )
     }.also {
-      builder.addAction(R.drawable.ic_twotone_done_white, textProvider.getText(R.string.ok), it)
+      builder.addAction(R.drawable.ic_fluent_checkmark, textProvider.getText(R.string.ok), it)
     }
 
     if (birthday.number.isNotEmpty()) {
@@ -87,7 +87,7 @@ class BirthdayHandlerSilent(
         )
       }.also {
         builder.addAction(
-          R.drawable.ic_twotone_call_white,
+          R.drawable.ic_fluent_phone,
           textProvider.getText(R.string.make_call),
           it
         )
@@ -102,7 +102,7 @@ class BirthdayHandlerSilent(
         )
       }.also {
         builder.addAction(
-          R.drawable.ic_twotone_message_white,
+          R.drawable.ic_fluent_chat,
           textProvider.getText(R.string.send_sms),
           it
         )

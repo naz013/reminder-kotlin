@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_voice"
-        android:icon="@drawable/ic_twotone_mic_24px"
+        android:icon="@drawable/ic_builder_mic_on"
         android:title="@string/voice_control"
         android:visible="false"
         app:iconTint="?colorOnSurface"

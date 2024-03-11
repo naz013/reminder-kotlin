@@ -19,11 +19,29 @@
             android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/defaultBuilderPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_prefs_reminder_builder"
+            app:prefs_primary_text="@string/reminder_builder"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/presetsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_builder_preset"
+            app:prefs_primary_text="@string/recur_presets"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/defaultPriorityPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_priority_high_24px"
+            app:prefs_icon="@drawable/ic_fluent_star"
             app:prefs_primary_text="@string/default_priority"
             app:prefs_type="none" />
 
@@ -32,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_fiber_pin_24px"
+            app:prefs_icon="@drawable/ic_builder_google_task_list"
             app:prefs_primary_text="@string/completed_reminders"
             app:prefs_secondary_text_off="@string/do_not_move"
             app:prefs_secondary_text_on="@string/move_to_trash"
@@ -43,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_block_24px"
+            app:prefs_icon="@drawable/ic_fluent_sleep"
             app:prefs_primary_text="@string/do_not_disturb"
             app:prefs_type="check_switch" />
 
@@ -52,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+            app:prefs_icon="@drawable/ic_builder_timer"
             app:prefs_primary_text="@string/from"
             app:prefs_type="text" />
 
@@ -61,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+            app:prefs_icon="@drawable/ic_builder_timer_exclusion"
             app:prefs_primary_text="@string/to"
             app:prefs_type="text" />
 

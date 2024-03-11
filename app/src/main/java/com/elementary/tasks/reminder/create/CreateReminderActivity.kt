@@ -28,13 +28,13 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
+import com.elementary.tasks.core.os.startActivity
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.startActivity
-import com.elementary.tasks.core.utils.toast
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
@@ -58,8 +58,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.UUID
 
+@Deprecated("Replaced by new Builder")
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
   private val dateTimeManager by inject<DateTimeManager>()
@@ -667,20 +668,5 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       cView.txtTitle.text = items[position].title
       return cView.root
     }
-  }
-
-  companion object {
-
-    private const val DATE = 0
-    private const val TIMER = 1
-    private const val WEEK = 2
-    private const val EMAIL = 3
-    private const val APP = 4
-    private const val MONTH = 5
-    private const val YEAR = 6
-    private const val SHOP = 7
-    private const val GPS = 8
-    private const val GPS_PLACE = 9
-    private const val RECUR = 10
   }
 }

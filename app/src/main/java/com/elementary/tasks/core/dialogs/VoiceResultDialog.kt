@@ -7,16 +7,17 @@ import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.pin.PinLoginActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import com.elementary.tasks.voice.VoiceResultDialogViewModel
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class VoiceResultDialog : BaseDialog() {
 
   private val viewModel by viewModel<VoiceResultDialogViewModel> { parametersOf(getId()) }
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -46,7 +47,7 @@ class VoiceResultDialog : BaseDialog() {
     alert.setCancelable(true)
     alert.setNegativeButton(R.string.edit) { dialogInterface, _ ->
       dialogInterface.dismiss()
-      PinLoginActivity.openLogged(this, CreateReminderActivity::class.java) {
+      reminderBuilderLauncher.openLogged(this) {
         putExtra(Constants.INTENT_ID, reminder.id)
       }
       finish()

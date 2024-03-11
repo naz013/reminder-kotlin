@@ -9,11 +9,11 @@ open class DefaultDistanceFormatter(
   context: Context,
   private val useMetric: Boolean,
   private val unitConverter: UnitConverter = UnitConverter()
-) {
+) : ValueFormatter<Int> {
 
   private val textProvider = TextProvider(context)
 
-  open fun format(meters: Int): String {
+  override fun format(meters: Int): String {
     return if (meters > 5000) {
       if (useMetric) {
         metersToKm(meters)

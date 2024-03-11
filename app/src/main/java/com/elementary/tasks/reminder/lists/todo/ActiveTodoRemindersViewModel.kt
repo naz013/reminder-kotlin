@@ -78,7 +78,7 @@ class ActiveTodoRemindersViewModel(
     withResult {
       reminderDao.getById(reminder.id)?.let {
         it.isRemoved = true
-        eventControlFactory.getController(it).stop()
+        eventControlFactory.getController(it).disable()
         reminderDao.insert(it)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,

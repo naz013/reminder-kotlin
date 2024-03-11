@@ -12,14 +12,14 @@ import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
@@ -57,7 +57,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     super.onViewCreated(view, savedInstanceState)
     addMenu(R.menu.fragment_reminders_archive, { false }) {
       it.findItem(R.id.action_delete_all)?.isVisible = false
-      ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_twotone_search_24px, isDark)
+      ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_fluent_search, isDark)
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
     }
     binding.fab.setOnClickListener { addPlace() }

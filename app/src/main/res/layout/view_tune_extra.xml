@@ -34,7 +34,7 @@
                     android:layout_width="24dp"
                     android:layout_height="48dp"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_tune_24px"
+                    app:srcCompat="@drawable/ic_builder_more_options"
                     app:tint="?colorOnSurface" />
 
                 <TextView

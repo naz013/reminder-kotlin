@@ -4,8 +4,8 @@ import org.threeten.bp.LocalDateTime
 
 interface EventControl {
   val isActive: Boolean
-  fun start(): Boolean
-  fun stop(): Boolean
+  fun enable(): Boolean
+  fun disable(): Boolean
   fun pause(): Boolean
   fun skip(): Boolean
   fun resume(): Boolean
@@ -14,4 +14,5 @@ interface EventControl {
   fun canSkip(): Boolean
   fun setDelay(delay: Int)
   fun calculateTime(isNew: Boolean): LocalDateTime
+  fun justStart()
 }

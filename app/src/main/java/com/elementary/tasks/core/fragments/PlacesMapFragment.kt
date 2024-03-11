@@ -20,17 +20,17 @@ import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.os.colorOf
+import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.colorOf
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.BitmapUtils
-import com.elementary.tasks.core.utils.isVisible
-import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.utils.ui.DrawableHelper
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.isVisible
 import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -47,7 +47,6 @@ import org.koin.core.parameter.parametersOf
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
@@ -331,7 +330,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   private fun createStyleDrawable() {
     mMarkerStyle = DrawableHelper.withContext(requireContext())
-      .withDrawable(R.drawable.ic_twotone_place_24px)
+      .withDrawable(R.drawable.ic_fluent_place)
       .withColor(themeUtil.getMarkerLightColor(markerStyle))
       .tint()
       .get()
@@ -535,14 +534,14 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     isFullscreen = !isFullscreen
     mMapListener?.onZoomClick(isFullscreen)
     if (isFullscreen) {
-      binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
+      binding.zoomIcon.setImageResource(R.drawable.ic_fluent_small)
     } else {
       restoreScaleButton()
     }
   }
 
   private fun restoreScaleButton() {
-    binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
+    binding.zoomIcon.setImageResource(R.drawable.ic_builder_map_full_screen)
   }
 
   override fun onResume() {

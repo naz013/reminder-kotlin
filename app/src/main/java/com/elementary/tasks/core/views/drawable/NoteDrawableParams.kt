@@ -7,7 +7,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.drawable.shapes.RoundRectShape
-import com.elementary.tasks.core.utils.ui.dp2px
+import com.elementary.tasks.core.os.dp2px
 
 data class NoteDrawableParams(
   val context: Context,

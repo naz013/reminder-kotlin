@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.finishWith
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Module.is10
-import com.elementary.tasks.core.utils.finishWith
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.splash.SplashScreenActivity

@@ -11,13 +11,14 @@ import com.elementary.tasks.core.fragments.PlacesMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
 import com.elementary.tasks.core.utils.ui.fadeOutAnimation
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.isVisible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.ActionView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderPlaceBinding
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
@@ -51,10 +52,6 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
         }
       }
     }
-  }
-
-  override fun recreateMarker() {
-    mPlacesMap?.recreateMarker()
   }
 
   override fun getExplanationVisibilityType(): ReminderExplanationVisibility.Type {
@@ -164,6 +161,10 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
       binding.windowTypeView,
       binding.actionView
     )
+  }
+
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

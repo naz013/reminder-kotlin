@@ -8,9 +8,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import org.koin.core.component.inject
 
 class MelodyPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (String) -> Unit
+  private var resultCallback: (String) -> Unit
 ) : IntentPicker<Intent, ActivityResult>(
   ActivityResultContracts.StartActivityForResult(),
   launcherCreator
@@ -42,6 +42,11 @@ class MelodyPicker private constructor(
 
   fun pickMelody() {
     launch(getIntent())
+  }
+
+  fun pickMelody(resultCallback: (String) -> Unit) {
+    this.resultCallback = resultCallback
+    pickMelody()
   }
 
   override fun dispatchResult(result: ActivityResult) {

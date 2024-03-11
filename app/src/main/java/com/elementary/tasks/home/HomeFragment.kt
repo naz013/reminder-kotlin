@@ -14,17 +14,17 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
-import com.elementary.tasks.core.utils.startActivity
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.elementary.tasks.core.utils.visible
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.globalsearch.ActivityNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
@@ -41,7 +41,7 @@ import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.pin.PinLoginActivity
-import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import org.koin.android.ext.android.inject
@@ -59,10 +59,10 @@ class HomeFragment :
   private val featureManager by inject<FeatureManager>()
   private val whatsNewManager by inject<WhatsNewManager>()
   private val searchViewModel by viewModel<GlobalSearchViewModel>()
+  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val viewModel by viewModel<ScheduleHomeViewModel>()
   private val scheduleAdapter = ScheduleAdapter(
-    isDark = isDark,
     onReminderClickListener = { _, id ->
       PinLoginActivity.openLogged(requireContext(), ReminderPreviewActivity::class.java) {
         putExtra(Constants.INTENT_ID, id)
@@ -132,43 +132,6 @@ class HomeFragment :
 
     binding.globalAddButton.setOnClickListener { showEventTypeSelectionDialog(null) }
 
-//    binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-//      viewModel.topScrollX = scrollX
-//    }
-//
-//    binding.remindersButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
-//    }
-//
-//    binding.archiveButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToArchiveFragment())
-//    }
-//
-//    binding.birthdaysButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
-//    }
-//
-//    binding.groupsButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToGroupsFragment())
-//    }
-//    binding.mapButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToMapFragment())
-//    }
-//    binding.notesButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToActionNotes())
-//    }
-//    binding.calendarButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
-//    }
-//
-//    binding.googleButton.visibleGone(
-//      featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
-//        SuperUtil.isGooglePlayServicesAvailable(requireContext())
-//    )
-//    binding.googleButton.setOnClickListener {
-//      safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
-//    }
-
     updatePrivacyBanner()
     updateLoginBanner()
     initViewModel()
@@ -214,9 +177,7 @@ class HomeFragment :
       type = Reminder.BY_DATE,
       dateTime = dateTime
     )
-    withActivity {
-      PinLoginActivity.openLogged(it, CreateReminderActivity::class.java, deepLinkData) { }
-    }
+    reminderBuilderLauncher.openDeepLink(requireContext(), deepLinkData) { }
   }
 
   private fun openGoogleTaskCreateScreen(time: LocalTime?) {

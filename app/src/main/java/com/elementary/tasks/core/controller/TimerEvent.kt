@@ -40,7 +40,15 @@ class TimerEvent(
   override val isActive: Boolean
     get() = reminder.isActive
 
-  override fun start(): Boolean {
+  override fun justStart() {
+    reminder.isActive = true
+    reminder.isRemoved = false
+    super.save()
+    super.enableReminder()
+    super.export()
+  }
+
+  override fun enable(): Boolean {
     if (dateTimeManager.isCurrent(reminder.eventTime)) {
       reminder.isActive = true
       reminder.isRemoved = false
@@ -56,7 +64,7 @@ class TimerEvent(
     if (canSkip()) {
       val time = calculateTime(false)
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
-      start()
+      enable()
       return true
     }
     return false
@@ -73,15 +81,15 @@ class TimerEvent(
       Timber.d("next: ${dateTimeManager.logDateTime(time)}")
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       reminder.eventCount = reminder.eventCount + 1
-      start()
+      enable()
     } else {
-      stop()
+      disable()
     }
   }
 
   override fun onOff(): Boolean {
     return if (isActive) {
-      stop()
+      disable()
     } else {
       var time = calculateTime(true)
       while (!dateTimeManager.isCurrent(time)) {
@@ -90,7 +98,7 @@ class TimerEvent(
       }
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
       reminder.eventCount = 0
-      start()
+      enable()
     }
   }
 

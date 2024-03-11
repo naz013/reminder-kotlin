@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visibleGone
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import timber.log.Timber
@@ -103,6 +104,10 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
       binding.priorityView,
       binding.windowTypeView
     )
+  }
+
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

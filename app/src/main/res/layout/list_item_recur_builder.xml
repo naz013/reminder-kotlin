@@ -32,7 +32,7 @@
             android:layout_marginStart="16dp"
             android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_clear_black_24dp"
+            app:srcCompat="@drawable/ic_fluent_dismiss"
             app:tint="?colorOnSurface" />
 
     </LinearLayout>

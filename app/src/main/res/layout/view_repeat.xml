@@ -35,7 +35,7 @@
                     android:layout_width="24dp"
                     android:layout_height="32dp"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_repeat_24px"
+                    app:srcCompat="@drawable/ic_fluent_arrow_repeat_all"
                     app:tint="?colorOnSurface" />
 
                 <LinearLayout

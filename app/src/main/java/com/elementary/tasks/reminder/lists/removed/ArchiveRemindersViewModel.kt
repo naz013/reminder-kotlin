@@ -44,7 +44,7 @@ class ArchiveRemindersViewModel(
   fun deleteReminder(reminder: UiReminderListData) {
     withResult {
       reminderDao.getById(reminder.id)?.let {
-        eventControlFactory.getController(it).stop()
+        eventControlFactory.getController(it).disable()
         reminderDao.delete(it)
         googleCalendarUtils.deleteEvents(it.uuId)
         workerLauncher.startWork(
@@ -65,7 +65,7 @@ class ArchiveRemindersViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       reminders.forEach {
-        eventControlFactory.getController(it).stop()
+        eventControlFactory.getController(it).disable()
       }
       reminderDao.deleteAll(reminders)
       reminders.forEach {

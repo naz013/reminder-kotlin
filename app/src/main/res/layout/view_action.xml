@@ -97,7 +97,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="2dp"
                     android:contentDescription="@string/acc_select_number_from_contacts"
-                    app:icon="@drawable/ic_twotone_contacts_24px" />
+                    app:icon="@drawable/ic_fluent_contacts" />
 
             </LinearLayout>
 

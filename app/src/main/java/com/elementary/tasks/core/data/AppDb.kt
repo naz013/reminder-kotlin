@@ -17,6 +17,7 @@ import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.dao.UsedTimeDao
 import com.elementary.tasks.core.data.migrations.MIGRATION_10_11
 import com.elementary.tasks.core.data.migrations.MIGRATION_11_12
+import com.elementary.tasks.core.data.migrations.MIGRATION_12_13
 import com.elementary.tasks.core.data.migrations.MIGRATION_1_2
 import com.elementary.tasks.core.data.migrations.MIGRATION_2_3
 import com.elementary.tasks.core.data.migrations.MIGRATION_3_4
@@ -54,7 +55,7 @@ import com.elementary.tasks.core.data.models.UsedTime
     RecurPreset::class,
     RecentQuery::class
   ],
-  version = 12,
+  version = 13,
   exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {
@@ -90,7 +91,8 @@ abstract class AppDb : RoomDatabase() {
             MIGRATION_8_9,
             MIGRATION_9_10,
             MIGRATION_10_11,
-            MIGRATION_11_12
+            MIGRATION_11_12,
+            MIGRATION_12_13
           )
           .allowMainThreadQueries()
           .build()

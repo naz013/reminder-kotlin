@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.NotificationPolicyLauncher
 import com.elementary.tasks.core.os.datapicker.RingtonePicker
@@ -20,12 +21,11 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.colorOf
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SelectionList
-import com.elementary.tasks.core.utils.visible
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
@@ -590,16 +590,16 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     soundStackHolder.onlyPlay = true
     soundStackHolder.playbackCallback = object : Sound.PlaybackCallback {
       override fun onFinish() {
-        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_builder_play_melody)
         binding.chooseSoundPrefs.setLoading(false)
       }
 
       override fun onStart() {
-        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_stop_24px)
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_builder_stop_melody)
         binding.chooseSoundPrefs.setLoading(true)
       }
     }
-    binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+    binding.chooseSoundPrefs.setViewResource(R.drawable.ic_builder_play_melody)
     binding.chooseSoundPrefs.setCustomViewClickListener {
       Timber.d("Play Click: ${soundStackHolder.sound?.isPlaying}")
       if (soundStackHolder.sound?.isPlaying == true) {

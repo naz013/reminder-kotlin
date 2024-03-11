@@ -5,6 +5,7 @@ import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
@@ -29,8 +30,9 @@ class EventControlFactory(
 ) {
 
   fun getController(reminder: Reminder): EventControl {
+    val type = UiReminderType(reminder.type)
     return when {
-      Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) -> {
+      type.isSame(Reminder.BY_DATE_SHOP) && !reminder.hasReminder -> {
         ShoppingEvent(
           reminder,
           reminderDao,
@@ -44,7 +46,8 @@ class EventControlFactory(
           googleTasksDao
         )
       }
-      Reminder.isBase(reminder.type, Reminder.BY_DATE) -> {
+
+      type.isBase(UiReminderType.Base.DATE) -> {
         DateEvent(
           reminder,
           reminderDao,
@@ -59,9 +62,7 @@ class EventControlFactory(
         )
       }
 
-      Reminder.isBase(reminder.type, Reminder.BY_LOCATION) ||
-        Reminder.isBase(reminder.type, Reminder.BY_OUT) ||
-        Reminder.isBase(reminder.type, Reminder.BY_PLACES) -> {
+      type.isGpsType() -> {
         LocationEvent(
           reminder,
           reminderDao,
@@ -73,7 +74,8 @@ class EventControlFactory(
           dateTimeManager
         )
       }
-      Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> {
+
+      type.isBase(UiReminderType.Base.MONTHLY) -> {
         MonthlyEvent(
           reminder,
           reminderDao,
@@ -87,7 +89,8 @@ class EventControlFactory(
           googleTasksDao
         )
       }
-      Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> {
+
+      type.isBase(UiReminderType.Base.WEEKDAY) -> {
         WeeklyEvent(
           reminder,
           reminderDao,
@@ -101,7 +104,8 @@ class EventControlFactory(
           googleTasksDao
         )
       }
-      Reminder.isSame(reminder.type, Reminder.BY_TIME) -> {
+
+      type.isBase(UiReminderType.Base.TIMER) -> {
         TimerEvent(
           reminder,
           reminderDao,
@@ -115,7 +119,8 @@ class EventControlFactory(
           googleTasksDao
         )
       }
-      Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) ->
+
+      type.isBase(UiReminderType.Base.YEARLY) ->
         YearlyEvent(
           reminder,
           reminderDao,
@@ -128,7 +133,8 @@ class EventControlFactory(
           dateTimeManager,
           googleTasksDao
         )
-      Reminder.isBase(reminder.type, Reminder.BY_RECUR) ->
+
+      type.isBase(UiReminderType.Base.RECUR) ->
         RecurEvent(
           reminder,
           reminderDao,

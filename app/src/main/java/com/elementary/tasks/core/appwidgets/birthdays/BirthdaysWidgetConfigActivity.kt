@@ -9,7 +9,7 @@ import com.elementary.tasks.core.analytics.Widget
 import com.elementary.tasks.core.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.utils.colorOf
+import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetBirthdaysConfigBinding
 
@@ -64,7 +64,7 @@ class BirthdaysWidgetConfigActivity :
       binding.statusIconView.setImageBitmap(
         ViewUtils.createIcon(
           context = this,
-          res = R.drawable.ic_twotone_cake_24px,
+          res = R.drawable.ic_fluent_food_cake,
           color = colorOf(R.color.pureWhite)
         )
       )
@@ -75,7 +75,7 @@ class BirthdaysWidgetConfigActivity :
       binding.statusIconView.setImageBitmap(
         ViewUtils.createIcon(
           context = this,
-          res = R.drawable.ic_twotone_cake_24px,
+          res = R.drawable.ic_fluent_food_cake,
           color = colorOf(R.color.pureBlack)
         )
       )
@@ -123,14 +123,14 @@ class BirthdaysWidgetConfigActivity :
     binding.btnSettings.setImageDrawable(
       ViewUtils.tintIcon(
         this,
-        R.drawable.ic_twotone_settings_24px,
+        R.drawable.ic_fluent_settings,
         isDark
       )
     )
     binding.btnAddTask.setImageDrawable(
       ViewUtils.tintIcon(
         this,
-        R.drawable.ic_twotone_add_24px,
+        R.drawable.ic_fluent_add,
         isDark
       )
     )

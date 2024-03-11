@@ -217,7 +217,7 @@ class GoogleTaskViewModel(
           reminderDao.insert(reminder)
         }
         if (reminder.groupUuId != "") {
-          eventControlFactory.getController(reminder).start()
+          eventControlFactory.getController(reminder).enable()
           workerLauncher.startWork(
             ReminderSingleBackupWorker::class.java,
             Constants.INTENT_ID,

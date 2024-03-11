@@ -1,0 +1,56 @@
+package com.elementary.tasks.reminder
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import com.elementary.tasks.core.deeplink.DeepLinkData
+import com.elementary.tasks.core.os.intentForClass
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.pin.PinLoginActivity
+import com.elementary.tasks.reminder.build.BuildReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
+
+class ReminderBuilderLauncher(private val prefs: Prefs) {
+
+  init {
+    PENDING_INTENT_CLASS = getActivityClass()
+  }
+
+  fun openNotLogged(context: Context, builder: Intent.() -> Unit) {
+    val intent = context.intentForClass(getActivityClass()).apply {
+      builder(this)
+    }
+    context.startActivity(intent)
+  }
+
+  fun openLogged(context: Context, builder: Intent.() -> Unit) {
+    PinLoginActivity.openLogged(context, getActivityClass(), builder)
+  }
+
+  fun toggleBuilder(activity: Activity) {
+    prefs.useLegacyBuilder = !prefs.useLegacyBuilder
+    PENDING_INTENT_CLASS = getActivityClass()
+    PinLoginActivity.openLogged(activity, getActivityClass()) { }
+    activity.finish()
+  }
+
+  fun openDeepLink(
+    context: Context,
+    deepLinkData: DeepLinkData,
+    builder: Intent.() -> Unit
+  ) {
+    PinLoginActivity.openLogged(context, getActivityClass(), deepLinkData, builder)
+  }
+
+  fun getActivityClass(): Class<*> {
+    return if (prefs.useLegacyBuilder) {
+      CreateReminderActivity::class.java
+    } else {
+      BuildReminderActivity::class.java
+    }
+  }
+
+  companion object {
+    var PENDING_INTENT_CLASS: Class<*> = BuildReminderActivity::class.java
+  }
+}

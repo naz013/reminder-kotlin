@@ -24,7 +24,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/pin_digit_icon_size"
                 android:layout_height="@dimen/pin_digit_icon_size"
-                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:srcCompat="@drawable/ic_fluent_text_asterisk"
                 android:scaleType="centerInside"
                 app:tint="?colorOnBackground" />
 
@@ -33,7 +33,7 @@
                 android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:srcCompat="@drawable/ic_fluent_text_asterisk"
                 app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -41,7 +41,7 @@
                 android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:srcCompat="@drawable/ic_fluent_text_asterisk"
                 app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -49,7 +49,7 @@
                 android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="16dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:srcCompat="@drawable/ic_fluent_text_asterisk"
                 app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -57,7 +57,7 @@
                 android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:srcCompat="@drawable/ic_fluent_text_asterisk"
                 app:tint="?colorOnBackground" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -65,7 +65,7 @@
                 android:layout_height="@dimen/pin_digit_icon_size"
                 android:layout_marginStart="4dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_pin_asterisk"
+                app:srcCompat="@drawable/ic_fluent_text_asterisk"
                 app:tint="?colorOnBackground" />
 
         </LinearLayout>
@@ -273,7 +273,7 @@
             android:gravity="center"
             android:scaleType="centerInside"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_twotone_fingerprint_24px"
+            app:srcCompat="@drawable/ic_fluent_fingerprint"
             app:tint="?android:textColorPrimary" />
 
         <FrameLayout
@@ -303,7 +303,7 @@
             android:gravity="center"
             android:scaleType="centerInside"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_clear_white_24dp"
+            app:srcCompat="@drawable/ic_fluent_dismiss"
             app:tint="?android:textColorPrimary" />
     </LinearLayout>
 </LinearLayout>

@@ -10,10 +10,11 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visibleGone
+import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -115,6 +116,10 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       binding.repeatView,
       binding.windowTypeView
     )
+  }
+
+  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+    return binding.legacyBuilderWarningView
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

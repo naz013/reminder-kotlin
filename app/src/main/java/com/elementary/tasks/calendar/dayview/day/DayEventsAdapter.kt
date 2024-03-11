@@ -75,7 +75,19 @@ class DayEventsAdapter(
 
   override fun getItemCount() = data.size
 
-  override fun getItemViewType(position: Int) = data[position].viewType
+  override fun getItemViewType(position: Int): Int {
+    val viewType = data[position].viewType
+    return if (viewType == 0) {
+      val item = getItem(position)
+      if (item is ReminderEventModel && item.model is UiReminderListActiveShop) {
+        1
+      } else {
+        viewType
+      }
+    } else {
+      viewType
+    }
+  }
 
   fun getItem(position: Int) = data[position]
 }

@@ -5,13 +5,14 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.gone
-import com.elementary.tasks.core.utils.visibleGone
+import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+@Deprecated("Replaced by new Builder")
 class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBinding>() {
 
   private val gTasks by inject<GTasks>()

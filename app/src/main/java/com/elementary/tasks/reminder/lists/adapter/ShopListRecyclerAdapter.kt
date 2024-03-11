@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.inflater
+import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.databinding.ListItemShopTaskBinding
 
 class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {

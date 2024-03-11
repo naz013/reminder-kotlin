@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.data.repository
 
 import com.elementary.tasks.core.data.dao.RecurPresetDao
+import com.elementary.tasks.core.data.models.PresetType
 import com.elementary.tasks.core.data.models.RecurPreset
 
 class RecurPresetRepository(private val recurPresetDao: RecurPresetDao) {
@@ -9,8 +10,12 @@ class RecurPresetRepository(private val recurPresetDao: RecurPresetDao) {
     recurPresetDao.insert(recurPreset)
   }
 
-  fun getAll(): List<RecurPreset> {
-    return recurPresetDao.getAll()
+  fun getAll(presetType: PresetType? = null): List<RecurPreset> {
+    return if (presetType == null) {
+      recurPresetDao.getAll()
+    } else {
+      recurPresetDao.getAllByType(presetType.ordinal)
+    }
   }
 
   fun getById(id: String): RecurPreset? {

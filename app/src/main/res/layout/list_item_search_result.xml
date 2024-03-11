@@ -14,7 +14,7 @@
         android:layout_height="40dp"
         android:layout_margin="8dp"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/ic_twotone_notifications_24px"
+        app:srcCompat="@drawable/ic_fluent_alert"
         app:tint="?colorOnSurface" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_height="@dimen/list_more_button_size"
         android:layout_margin="8dp"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/ic_twotone_north_west_24"
+        app:srcCompat="@drawable/ic_fluent_arrow_reply"
         app:tint="?colorOnSurface" />
 
 </LinearLayout>

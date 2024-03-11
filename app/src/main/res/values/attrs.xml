@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
+    <declare-styleable name="NumberValuePickerView">
+        <attr name="valuePicker_minValue" format="integer" />
+        <attr name="valuePicker_maxValue" format="integer" />
+        <attr name="valuePicker_topButtonText" format="string" />
+        <attr name="valuePicker_bottomButtonText" format="string" />
+        <attr name="valuePicker_defaultValue" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="VerticalWheelSelector">
+        <attr name="wheel_defaultTextAppearance" format="reference" />
+        <attr name="wheel_defaultTextColor" format="reference|color" />
+        <attr name="wheel_defaultTextSize" format="dimension" />
+        <attr name="wheel_selectedTextAppearance" format="reference" />
+        <attr name="wheel_selectedTextColor" format="reference|color" />
+        <attr name="wheel_selectedTextSize" format="dimension" />
+        <attr name="wheel_items" format="reference" />
+        <attr name="wheel_visibleRowsCount" format="integer" />
+        <attr name="wheel_selectedTextStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="wheel_defaultTextStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+    </declare-styleable>
+
     <attr name="alphaEmphasisHigh" format="float"/>
     <attr name="alphaEmphasisMedium" format="float"/>
     <attr name="alphaEmphasisDisabled" format="float"/>

@@ -55,7 +55,7 @@ class ReminderHandlerQ(
     builder.setOngoing(true)
 
     builder.setContentText(reminderDataProvider.getAppName())
-    builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+    builder.setSmallIcon(R.drawable.ic_fluent_alert)
     builder.color = ThemeProvider.getPrimaryColor(contextProvider.context)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
@@ -84,7 +84,7 @@ class ReminderHandlerQ(
       PendingIntent.FLAG_CANCEL_CURRENT
     )
     builder.addAction(
-      R.drawable.ic_twotone_done_white,
+      R.drawable.ic_fluent_checkmark,
       textProvider.getText(R.string.ok),
       piDismiss
     )
@@ -99,7 +99,7 @@ class ReminderHandlerQ(
         PendingIntent.FLAG_CANCEL_CURRENT
       )
       builder.addAction(
-        R.drawable.ic_twotone_snooze_24px,
+        R.drawable.ic_fluent_snooze,
         textProvider.getText(R.string.acc_button_snooze),
         piSnooze
       )

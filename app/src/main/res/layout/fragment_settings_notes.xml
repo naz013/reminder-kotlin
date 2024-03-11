@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_opacity_24px"
+            app:prefs_icon="@drawable/ic_fluent_circle_half_fill"
             app:prefs_primary_text="@string/color_saturation"
             app:prefs_type="none" />
 
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_text_fields_24px"
+            app:prefs_icon="@drawable/ic_fluent_text"
             app:prefs_primary_text="@string/text_size"
             app:prefs_secondary_text_off="@string/use_default_text_size"
             app:prefs_secondary_text_on="@string/remember_last_set_text_size"

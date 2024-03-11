@@ -53,9 +53,9 @@ class UiGoogleTaskListAdapter(
 
   private fun createIcon(isChecked: Boolean, color: Int): Bitmap? {
     return if (isChecked) {
-      ViewUtils.createIcon(contextProvider.context, R.drawable.ic_check, color)
+      ViewUtils.createIcon(contextProvider.context, R.drawable.ic_builder_google_task_list, color)
     } else {
-      ViewUtils.createIcon(contextProvider.context, R.drawable.ic_empty_circle, color)
+      ViewUtils.createIcon(contextProvider.context, R.drawable.ic_fluent_radio_button, color)
     }
   }
 }

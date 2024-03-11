@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             app:navigationIconTint="?android:textColorPrimary"
-            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            app:navigationIcon="@drawable/ic_builder_arrow_left"
             tools:title="Text" />
 
     </com.google.android.material.appbar.AppBarLayout>

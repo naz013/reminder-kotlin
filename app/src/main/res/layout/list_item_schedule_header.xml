@@ -28,7 +28,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_twotone_add_24px"
+        app:srcCompat="@drawable/ic_fluent_add"
         app:tint="?android:textColorPrimary" />
 
 </LinearLayout>

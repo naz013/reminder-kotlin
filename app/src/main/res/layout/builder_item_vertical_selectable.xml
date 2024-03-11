@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.elementary.tasks.core.views.common.VerticalWheelSelector
+        android:id="@+id/selector_view"
+        android:layout_width="256dp"
+        android:layout_height="112dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="8dp"
+        app:wheel_defaultTextAppearance="?textAppearanceTitleMedium"
+        app:wheel_defaultTextColor="?colorOnBackground"
+        app:wheel_selectedTextAppearance="?textAppearanceTitleMedium"
+        app:wheel_selectedTextColor="?colorPrimary"
+        app:wheel_selectedTextStyle="bold"
+        app:wheel_visibleRowsCount="5"
+        tools:wheel_items="@array/priorities" />
+
+</FrameLayout>

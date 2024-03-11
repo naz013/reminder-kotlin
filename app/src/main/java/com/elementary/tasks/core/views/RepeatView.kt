@@ -20,18 +20,19 @@ class RepeatView : LinearLayout, TextWatcher {
   var onRepeatChangeListener: OnRepeatChangeListener? = null
   private var mImm: InputMethodManager? = null
 
-  private var mState = DAYS
+  private var mState = DateTimeManager.MultiplierType.DAY.index
   private var mRepeatValue: Int = 0
   private var mIsLocked = false
 
   private val multiplier: Long
     get() {
       return when (mState) {
-        SECONDS -> DateTimeManager.SECOND
-        MINUTES -> DateTimeManager.MINUTE
-        HOURS -> DateTimeManager.HOUR
-        DAYS -> DateTimeManager.DAY
-        WEEKS -> DateTimeManager.DAY * 7
+        DateTimeManager.MultiplierType.SECOND.index -> DateTimeManager.SECOND
+        DateTimeManager.MultiplierType.MINUTE.index -> DateTimeManager.MINUTE
+        DateTimeManager.MultiplierType.HOUR.index -> DateTimeManager.HOUR
+        DateTimeManager.MultiplierType.DAY.index -> DateTimeManager.DAY
+        DateTimeManager.MultiplierType.WEEK.index -> DateTimeManager.DAY * 7
+        DateTimeManager.MultiplierType.MONTH.index -> DateTimeManager.DAY * 30
         else -> DateTimeManager.DAY
       }
     }
@@ -54,52 +55,15 @@ class RepeatView : LinearLayout, TextWatcher {
         setProgress(0)
         return
       }
-      when {
-        fitInterval(mills, DateTimeManager.DAY * 7) -> {
-          val progress = mills / (DateTimeManager.DAY * 7)
-          setProgress(progress.toInt())
-          selectState(WEEKS)
-        }
-
-        fitInterval(mills, DateTimeManager.DAY) -> {
-          val progress = mills / DateTimeManager.DAY
-          setProgress(progress.toInt())
-          selectState(DAYS)
-        }
-
-        fitInterval(mills, DateTimeManager.HOUR) -> {
-          val progress = mills / DateTimeManager.HOUR
-          setProgress(progress.toInt())
-          selectState(HOURS)
-        }
-
-        fitInterval(mills, DateTimeManager.MINUTE) -> {
-          val progress = mills / DateTimeManager.MINUTE
-          setProgress(progress.toInt())
-          selectState(MINUTES)
-        }
-
-        fitInterval(mills, DateTimeManager.SECOND) -> {
-          val progress = mills / DateTimeManager.SECOND
-          setProgress(progress.toInt())
-          selectState(SECONDS)
-        }
-
-        else -> {
-          setProgress(mills.toInt())
-          selectState(0)
-        }
-      }
+      val repeatTime = DateTimeManager.parseRepeatTime(mills)
+      setProgress(repeatTime.value.toInt())
+      selectState(repeatTime.type.index)
     }
 
   private fun selectState(state: Int) {
     if (state < binding.repeatType.adapter.count) {
       binding.repeatType.setSelection(state)
     }
-  }
-
-  private fun fitInterval(interval: Long, matcher: Long): Boolean {
-    return interval > matcher && (interval % matcher == 0L)
   }
 
   constructor(context: Context) : super(context) {
@@ -153,7 +117,10 @@ class RepeatView : LinearLayout, TextWatcher {
     if (attrs != null) {
       val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RepeatView, 0, 0)
       try {
-        mState = a.getInt(R.styleable.RepeatView_repeatType, DAYS)
+        mState = a.getInt(
+          /* index = */ R.styleable.RepeatView_repeatType,
+          /* defValue = */ DateTimeManager.MultiplierType.DAY.index
+        )
         mIsLocked = a.getBoolean(R.styleable.RepeatView_isLocked, false)
       } catch (e: Exception) {
         Timber.d("init: ${e.message}")
@@ -242,11 +209,6 @@ class RepeatView : LinearLayout, TextWatcher {
   }
 
   companion object {
-    private const val SECONDS = 0
-    private const val MINUTES = 1
-    private const val HOURS = 2
-    private const val DAYS = 3
-    private const val WEEKS = 4
     private const val MONTHS = 5
   }
 }

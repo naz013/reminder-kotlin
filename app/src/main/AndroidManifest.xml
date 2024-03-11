@@ -209,7 +209,14 @@
             android:configChanges="keyboardHidden"
             android:exported="true"
             android:label="@string/new_reminder"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="stateUnchanged" />
+
+        <activity
+            android:name=".reminder.build.BuildReminderActivity"
+            android:configChanges="keyboardHidden"
+            android:exported="true"
+            android:label="@string/new_reminder"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -422,9 +429,6 @@
             android:name=".reminder.create.fragments.recur.preset.PresetSelectionActivity"
             android:exported="false" />
         <activity
-            android:name=".reminder.preview.AttachmentPreviewActivity"
-            android:exported="false" />
-        <activity
             android:name=".core.dialogs.VoiceHelpActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
@@ -441,6 +445,10 @@
             android:exported="false" />
         <activity
             android:name=".reminder.create.ConfigureActivity"
+            android:excludeFromRecents="true"
+            android:exported="false" />
+        <activity
+            android:name=".reminder.build.BuilderConfigureActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
 

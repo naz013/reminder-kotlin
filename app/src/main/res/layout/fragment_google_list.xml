@@ -92,6 +92,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:contentDescription="@string/new_task"
         android:text="@string/new_task"
-        app:icon="@drawable/ic_twotone_add_24px" />
+        app:icon="@drawable/ic_fluent_add" />
 
 </FrameLayout>

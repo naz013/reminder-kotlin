@@ -170,7 +170,7 @@ class NotePreviewViewModel(
   fun deleteReminder(reminder: Reminder) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      eventControlFactory.getController(reminder).stop()
+      eventControlFactory.getController(reminder).disable()
       reminderDao.delete(reminder)
       googleCalendarUtils.deleteEvents(reminder.uuId)
       workerLauncher.startWork(

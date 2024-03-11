@@ -10,8 +10,8 @@ import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.fromReminder
-import com.elementary.tasks.core.utils.gone
 import com.elementary.tasks.core.utils.ui.Dialogues
+import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.databinding.ViewTuneExtraBinding
 
 class TuneExtraView : LinearLayout {
