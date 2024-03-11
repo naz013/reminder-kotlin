@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
         android:clipChildren="false"
         app:cardElevation="1dp"
         app:contentPadding="0dp"
@@ -95,50 +96,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
             android:padding="8dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/googleTaskIconView"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_builder_google_task_list"
-                app:tint="?android:textColorPrimary" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/googleTaskTitleView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="?textAppearanceTitleMedium"
+                android:textColor="?android:textColorPrimary"
+                tools:text="Hello" />
 
-                <TextView
-                    android:id="@+id/googleTaskTitleView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textAppearance="?textAppearanceTitleMedium"
-                    android:textColor="?android:textColorPrimary"
-                    tools:text="Hello" />
-
-                <TextView
-                    android:id="@+id/googleTaskNoteView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="3"
-                    android:textAppearance="?textAppearanceTitleSmall"
-                    android:textColor="?android:textColorPrimary"
-                    android:visibility="visible"
-                    tools:text="1256356549k" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/googleTaskNoteView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?android:textColorPrimary"
+                android:visibility="visible"
+                tools:text="1256356549k" />
 
         </LinearLayout>
 
