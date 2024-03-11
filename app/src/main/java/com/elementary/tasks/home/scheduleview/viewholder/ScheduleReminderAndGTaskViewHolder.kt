@@ -49,6 +49,5 @@ class ScheduleReminderAndGTaskViewHolder(
 
     googleCommon.loadTitle(data.googleTask, binding.googleTaskTitleView)
     googleCommon.loadNotes(data.googleTask, binding.googleTaskNoteView)
-    googleCommon.tintIcon(data.googleTask, binding.googleTaskIconView)
   }
 }
