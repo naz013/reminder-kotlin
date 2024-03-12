@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils.params
 
 import com.elementary.tasks.R
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Language
@@ -207,10 +208,10 @@ class RemotePrefs(
   }
 
   private fun readFeatureFlags() {
-    FeatureManager.Feature.values().map {
-      it to (readBool(it.value) ?: true)
+    FeatureManager.Feature.entries.map {
+      it to (readBool(it.value) ?: it.defaultValue)
     }.forEach {
-      Timber.d("Feature ${it.first} isEnabled=${it.second}")
+      Traces.d("Feature ${it.first} isEnabled=${it.second}")
       prefs.putBoolean(it.first.value, it.second)
     }
   }

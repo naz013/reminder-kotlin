@@ -3,7 +3,6 @@ package com.elementary.tasks.calendar.data
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.Observer
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao
@@ -31,6 +30,7 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import timber.log.Timber
 
 class CalendarDataEngine(
   birthdaysDao: BirthdaysDao,
@@ -166,7 +166,7 @@ class CalendarDataEngine(
         async { mapBirthdays(birthdays) }
       )
       val duration = System.currentTimeMillis() - millis
-      Traces.d(TAG, "processData: duration=$duration millis")
+      Timber.d("processData: duration=$duration millis")
       state = EngineState.READY
       withContext(dispatcherProvider.main()) {
         calendarDataEngineBroadcast.sendEvent()
@@ -192,14 +192,14 @@ class CalendarDataEngine(
     val dayMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
     filtered.forEach { mapReminder(it, monthMap, dayMap) }
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -209,7 +209,7 @@ class CalendarDataEngine(
     }
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -218,10 +218,10 @@ class CalendarDataEngine(
       dayReminderMap.putAll(dayMap)
     }
 
-    Traces.d(TAG, "mapReminders: took ${System.currentTimeMillis() - millis} millis")
+    Timber.d("mapReminders: took ${System.currentTimeMillis() - millis} millis")
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -230,14 +230,14 @@ class CalendarDataEngine(
     dayMap.clear()
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
     filtered.forEach { mapFutureReminder(it, monthMap, dayMap) }
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -247,7 +247,7 @@ class CalendarDataEngine(
     }
 
     if (!isActive) {
-      Traces.d(TAG, "mapReminders: cancelled, return")
+      Timber.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -259,7 +259,7 @@ class CalendarDataEngine(
     monthMap.clear()
     dayMap.clear()
 
-    Traces.d(TAG, "mapReminders: future: took ${System.currentTimeMillis() - millis} millis")
+    Timber.d("mapReminders: future: took ${System.currentTimeMillis() - millis} millis")
   }
 
   private fun mapReminder(
@@ -464,7 +464,7 @@ class CalendarDataEngine(
     list.forEach { mapBirthday(it, monthBirthdaysMap, dayBirthdaysMap) }
 
     if (!isActive) {
-      Traces.d(TAG, "mapBirthdays: cancelled, return")
+      Timber.d("mapBirthdays: cancelled, return")
       return@withContext
     }
 
@@ -474,7 +474,7 @@ class CalendarDataEngine(
     }
 
     if (!isActive) {
-      Traces.d(TAG, "mapBirthdays: cancelled, return")
+      Timber.d("mapBirthdays: cancelled, return")
       return@withContext
     }
 
@@ -483,7 +483,7 @@ class CalendarDataEngine(
       dayBirthdayMap.putAll(dayBirthdaysMap)
     }
 
-    Traces.d(TAG, "mapBirthdays: took ${System.currentTimeMillis() - millis} millis")
+    Timber.d("mapBirthdays: took ${System.currentTimeMillis() - millis} millis")
   }
 
   private fun mapBirthday(
@@ -590,10 +590,6 @@ class CalendarDataEngine(
 
   private fun createMonthKey(localDate: LocalDate): LocalDate {
     return localDate.withDayOfMonth(1)
-  }
-
-  companion object {
-    private const val TAG = "CalendarDataEngine"
   }
 
   enum class ReminderMode {

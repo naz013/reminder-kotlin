@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueController
+import timber.log.Timber
 
 class ValueDialogLifecycleDispatcher(
   private val controller: ValueController
@@ -14,7 +14,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.NONE) {
       return
     }
-    Traces.d("ValueDialogLifecycleDispatcher", "dispatchOnCreate to $controller")
+    Timber.d("dispatchOnCreate to $controller")
     state = ValueDialogState.CREATED
   }
 
@@ -22,7 +22,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.CREATED) {
       return
     }
-    Traces.d("ValueDialogLifecycleDispatcher", "dispatchOnResume to $controller")
+    Timber.d("dispatchOnResume to $controller")
     state = ValueDialogState.RESUMED
   }
 
@@ -30,7 +30,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.RESUMED) {
       return
     }
-    Traces.d("ValueDialogLifecycleDispatcher", "dispatchOnStop to $controller")
+    Timber.d("dispatchOnStop to $controller")
     controller.onStop()
     state = ValueDialogState.STOPPED
   }
@@ -39,7 +39,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.STOPPED) {
       return
     }
-    Traces.d("ValueDialogLifecycleDispatcher", "dispatchOnDestroy to $controller")
+    Timber.d("dispatchOnDestroy to $controller")
     controller.onDestroy()
     state = ValueDialogState.DESTROYED
   }

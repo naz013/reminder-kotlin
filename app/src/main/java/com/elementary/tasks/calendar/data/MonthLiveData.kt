@@ -1,7 +1,6 @@
 package com.elementary.tasks.calendar.data
 
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.calendar.EventsCursor
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -11,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import timber.log.Timber
 
 class MonthLiveData(
   private val context: ContextProvider,
@@ -57,7 +57,7 @@ class MonthLiveData(
       ).let { mapData(it) }
         .also { postValue(it) }
         .also {
-          Traces.d(TAG, "loadData: ${it.size}, date=$date")
+          Timber.d("loadData: ${it.size}, date=$date")
         }
     }
   }
@@ -116,9 +116,5 @@ class MonthLiveData(
 
   private fun reminderColor(): Int {
     return ThemeProvider.colorReminderCalendar(context.context, prefs)
-  }
-
-  companion object {
-    private const val TAG = "MonthLiveData"
   }
 }

@@ -108,6 +108,31 @@ object TelephonyUtil {
     }
   }
 
+  fun sendMail(
+    context: Context,
+    email: String,
+    subject: String,
+    message: String,
+    file: File?
+  ) {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "text/plain"
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+    intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+    intent.putExtra(Intent.EXTRA_TEXT, message)
+    if (file != null) {
+      val uri = UriUtil.getUri(context, file)
+      intent.putExtra(Intent.EXTRA_STREAM, uri)
+      intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+    }
+    try {
+      context.startActivity(Intent.createChooser(intent, "Send email..."))
+    } catch (e: Exception) {
+      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+    }
+  }
+
   fun sendSms(number: String, context: Context) {
     if (TextUtils.isEmpty(number)) {
       return

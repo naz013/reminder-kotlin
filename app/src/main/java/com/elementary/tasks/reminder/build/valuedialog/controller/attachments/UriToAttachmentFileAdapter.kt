@@ -3,23 +3,23 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.attachments
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.utils.io.UriHelper
+import timber.log.Timber
 
 class UriToAttachmentFileAdapter(
   private val uriHelper: UriHelper
 ) {
 
   operator fun invoke(uri: Uri): AttachmentFile {
-    Traces.d("UriToAttachmentFileAdapter", "invoke: $uri")
+    Timber.d("invoke: $uri")
     val type = getAttachmentType(uriHelper.getMimeType(uri) ?: "")
     val fileName = try {
       uriHelper.getFileName(uri) ?: "NA"
     } catch (e: Throwable) {
-      Traces.d("UriToAttachmentFileAdapter", "get fileName: $e")
+      Timber.d("get fileName: $e")
       uri.toString()
     }
-    Traces.d("UriToAttachmentFileAdapter", "fileName: $fileName")
+    Timber.d("fileName: $fileName")
     return AttachmentFile(
       uri = uri,
       name = fileName,
@@ -29,7 +29,7 @@ class UriToAttachmentFileAdapter(
   }
 
   private fun getAttachmentType(type: String): AttachmentType {
-    Traces.d("UriToAttachmentFileAdapter", "getAttachmentType: $type")
+    Timber.d("getAttachmentType: $type")
     return when {
       type.contains("gif") -> AttachmentType.GIF
       type.contains("image") -> AttachmentType.IMAGE

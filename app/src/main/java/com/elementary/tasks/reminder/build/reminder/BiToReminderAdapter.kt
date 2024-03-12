@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.data.models.BuilderSchemeItem
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.reminder.build.BuilderItem
@@ -12,6 +11,7 @@ import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
 import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
+import timber.log.Timber
 import java.util.UUID
 
 class BiToReminderAdapter(
@@ -31,10 +31,10 @@ class BiToReminderAdapter(
     val itemsMap = processedBuilderItems.typeMap
 
     val type = typeCalculator(processedBuilderItems)
-    Traces.d(TAG, "invoke: type=$type")
+    Timber.d("invoke: type=$type")
 
     val builderState = builderStateCalculator(type, itemsMap)
-    Traces.d(TAG, "invoke: builderState=$builderState")
+    Timber.d("invoke: builderState=$builderState")
 
     if (builderState is EmptyState || builderState is ErrorState) {
       return BuildResult.Error("State is not valid")
@@ -51,7 +51,7 @@ class BiToReminderAdapter(
 
     when (val validationResult = reminderValidator(reminder)) {
       is ReminderValidator.ValidationResult.Failed -> {
-        Traces.d(TAG, "invoke: reminder not valid cause = ${validationResult.error}")
+        Timber.d("invoke: reminder not valid cause = ${validationResult.error}")
         return BuildResult.Error("Reminder is not valid")
       }
       else -> {
@@ -67,17 +67,12 @@ class BiToReminderAdapter(
     }
     reminder.version = Reminder.Version.V3
 
-    Traces.d(TAG, "invoke: new reminder=$reminder")
-
+    Timber.d("invoke: new reminder=$reminder")
     return BuildResult.Success(reminder)
   }
 
   sealed class BuildResult {
     data class Success(val reminder: Reminder) : BuildResult()
     data class Error(val error: String) : BuildResult()
-  }
-
-  companion object {
-    private const val TAG = "BiToReminderAdapter"
   }
 }

@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -94,12 +93,12 @@ class ReminderPreviewViewModel(
       val subTasks = reminder.shoppings.toMutableList()
       val index = subTasks.indexOfFirst { it.uuId == subTaskId }
 
-      Traces.d("ReminderPreviewViewModel", "onSubTaskRemoved: id=$subTaskId, subTasks=$subTasks")
+      Timber.d("onSubTaskRemoved: id=$subTaskId, subTasks=$subTasks")
 
       if (index != -1) {
         subTasks.removeAt(index)
 
-        Traces.d("ReminderPreviewViewModel", "onSubTaskRemoved: save subTasks=$subTasks")
+        Timber.d("onSubTaskRemoved: save subTasks=$subTasks")
 
         saveReminder(reminder.copy(shoppings = subTasks.toList()))
         loadReminder()

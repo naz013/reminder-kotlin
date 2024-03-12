@@ -303,7 +303,7 @@ val viewModelModule = module {
   }
   viewModel { VoiceHelpViewModel(get(), get()) }
 
-  viewModel { TroubleshootingViewModel(get(), get(), get()) }
+  viewModel { TroubleshootingViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { EventsImportViewModel(get(), get(), get(), get(), get()) }
 }
 
@@ -374,7 +374,7 @@ val utilModule = module {
   single { Language(get(), get(), get()) }
   single { GoogleCalendarUtils(get(), get(), get(), get()) }
   factory { providesRecognizer(get(), get()) }
-  single { CacheUtil(get()) }
+  single { CacheUtil(get(), get()) }
   single { GlobalButtonObservable() }
   single { ImagesSingleton(get()) }
   single { SyncManagers(get(), get(), get(), get()) }

@@ -108,6 +108,18 @@ class MemoryUtil(
     }
   }
 
+  fun toStream(inputStream: InputStream, outputStream: OutputStream): Boolean {
+    try {
+      inputStream.copyTo(outputStream)
+      return true
+    } catch (e: Exception) {
+      e.printStackTrace()
+      return false
+    } finally {
+      inputStream.close()
+    }
+  }
+
   companion object {
     private const val DIR_SD = "backup"
     private const val DIR_PREFS = "preferences"
