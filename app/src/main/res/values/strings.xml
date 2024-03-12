@@ -936,5 +936,6 @@
     <string name="builder_error_cannot_parse_date_time">Invalid date/time format. Please try again!</string>
     <string name="builder_error_no_places">No location selected. Choose a place for your reminder!</string>
     <string name="builder_error_create_reminder">Oops! Couldn\'t create your reminder. Check errors!</string>
+    <string name="send_logs">Send logs</string>
 
 </resources>

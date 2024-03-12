@@ -1,10 +1,10 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
+import timber.log.Timber
 
 class TypeCalculator(
   private val actionCalculator: ActionCalculator
@@ -54,7 +54,7 @@ class TypeCalculator(
       0
     }
 
-    Traces.d("TypeCalculator", "mainType: $mainType")
+    Timber.d("mainType: $mainType")
 
     return mainType
   }

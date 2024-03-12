@@ -15,6 +15,15 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/send_logs_prefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_send_logging"
+            app:prefs_primary_text="@string/send_logs"
+            app:prefs_type="none" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/batterSaverOption"
             style="@style/UiComponentActionCard"

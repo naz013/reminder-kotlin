@@ -3,7 +3,6 @@ package com.elementary.tasks.calendar.monthview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.calendar.data.MonthLiveData
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.ui.inflater
@@ -81,7 +80,7 @@ class InfinitePagerAdapter2(
 
     init {
       monthLiveData.observeForever {
-        Traces.d("ViewHolderDynamic", "onChanged: map=${it.size}")
+        Timber.d("onChanged: map=${it.size}")
         binding.monthView.setEventsMap(it)
       }
     }

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.BottomSheetValueSelectorBinding
@@ -17,6 +16,7 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControlle
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueControllerParent {
 
@@ -83,7 +83,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     }
     binding.buttonsHolder.gone()
 
-    Traces.d(TAG, "onViewCreated: position=${getPosition()}")
+    Timber.d("onViewCreated: position=${getPosition()}")
     dataHolder.data?.also { builderItem ->
       binding.titleView.text = builderItem.title
       binding.descriptionView.text = builderItem.description

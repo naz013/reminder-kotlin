@@ -58,4 +58,20 @@
         <key>internal_message_v1</key>
         <value>{   "message": "",   "startAt": "2021-05-15T06:18:56+0000",   "endAt": "2021-05-19T06:18:56+0000" }</value>
     </entry>
+    <entry>
+        <key>allow_log_send</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>feature_builder_v1</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>feature_builder_v2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>feature_geocoding</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

@@ -10,11 +10,44 @@ import android.provider.OpenableColumns
 import com.elementary.tasks.core.utils.copyInputStreamToFile
 import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.io.FileOutputStream
 
-class CacheUtil(val context: Context) {
+class CacheUtil(
+  val context: Context,
+  private val memoryUtil: MemoryUtil
+) {
 
   private val sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+  fun cacheFile(f: File): File? {
+    val cacheDir = context.externalCacheDir ?: context.cacheDir
+    val file = File(cacheDir, f.name)
+    if (!file.createNewFile()) {
+      try {
+        file.delete()
+        file.createNewFile()
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
+    }
+    return try {
+      val outputStream = FileOutputStream(file)
+      return if (memoryUtil.toStream(FileInputStream(f), outputStream)) {
+        outputStream.flush()
+        outputStream.close()
+        file
+      } else {
+        outputStream.flush()
+        outputStream.close()
+        null
+      }
+    } catch (e: Exception) {
+      e.printStackTrace()
+      null
+    }
+  }
 
   fun removeFromCache(path: String) {
     val file = File(path)

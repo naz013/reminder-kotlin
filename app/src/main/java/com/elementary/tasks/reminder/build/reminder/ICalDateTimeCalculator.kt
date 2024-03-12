@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
@@ -22,6 +21,7 @@ import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.create.fragments.recur.EventData
 import org.threeten.bp.LocalDateTime
+import timber.log.Timber
 
 class ICalDateTimeCalculator(
   private val recurrenceManager: RecurrenceManager,
@@ -29,14 +29,14 @@ class ICalDateTimeCalculator(
 ) {
 
   operator fun invoke(processedBuilderItems: ProcessedBuilderItems): EventData? {
-    Traces.d(TAG, "invoke: $processedBuilderItems")
+    Timber.d("invoke: $processedBuilderItems")
 
     val iCalParams = processedBuilderItems.groupMap[BiGroup.ICAL]
       ?.takeIf { it.isNotEmpty() }
       ?.associateBy { it.biType }
       ?: return null
 
-    Traces.d(TAG, "invoke: iCalParams = $iCalParams")
+    Timber.d("invoke: iCalParams = $iCalParams")
 
     val startDate = iCalParams.readValue(
       BiType.ICAL_START_DATE,
@@ -49,25 +49,25 @@ class ICalDateTimeCalculator(
 
     val startDateTime = LocalDateTime.of(startDate, startTime)
 
-    Traces.d(TAG, "invoke: startDateTime = $startDateTime")
+    Timber.d("invoke: startDateTime = $startDateTime")
 
     val ruleMap = createRuleMap(startDateTime, iCalParams)
 
-    Traces.d(TAG, "invoke: ruleMap = $ruleMap")
+    Timber.d("invoke: ruleMap = $ruleMap")
 
     val recurObject = runCatching {
       recurrenceManager.createObject(ruleMap)
     }.getOrNull() ?: return null
 
-    Traces.d(TAG, "invoke: recurObject = $recurObject")
+    Timber.d("invoke: recurObject = $recurObject")
 
     val dates = runCatching { recurrenceManager.generate(ruleMap) }.getOrNull() ?: emptyList()
 
-    Traces.d(TAG, "invoke: dates = $dates")
+    Timber.d("invoke: dates = $dates")
 
     val position = findPosition(dates)
 
-    Traces.d(TAG, "invoke: position = $position")
+    Timber.d("invoke: position = $position")
 
     return dates[position].dateTime?.let {
       EventData(
@@ -114,7 +114,7 @@ class ICalDateTimeCalculator(
       null
     }
 
-    Traces.d(TAG, "invoke: untilDateTime = $untilDateTime")
+    Timber.d("invoke: untilDateTime = $untilDateTime")
 
     untilDateTime?.also {
       recurParams.add(UntilRecurParam(UtcDateTime(untilDateTime)))
@@ -163,9 +163,5 @@ class ICalDateTimeCalculator(
       ?.let { it as? B }
       ?.modifier
       ?.getValue()
-  }
-
-  companion object {
-    private const val TAG = "ICalDateTimeCalculator"
   }
 }

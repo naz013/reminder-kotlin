@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
@@ -69,6 +68,7 @@ import com.elementary.tasks.reminder.build.formatter.datetime.RepeatTimeFormatte
 import com.elementary.tasks.reminder.build.formatter.datetime.TimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.TimerFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormatter
+import timber.log.Timber
 
 class BiFactory(
   private val contextProvider: ContextProvider,
@@ -92,7 +92,7 @@ class BiFactory(
 
   private fun <T : BuilderItem<*>> createTyped(biType: BiType, clazz: Class<T>): T? {
     val created = create(biType)
-    Traces.d("BiFactory", "createTyped: created=$created, wanted=$clazz")
+    Timber.d("createTyped: created=$created, wanted=$clazz")
     return created.takeIf { it::class.java == clazz } as? T
   }
 

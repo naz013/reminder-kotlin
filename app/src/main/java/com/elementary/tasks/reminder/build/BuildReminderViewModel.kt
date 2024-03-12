@@ -191,7 +191,7 @@ class BuildReminderViewModel(
   }
 
   fun processVoiceResult(matches: List<String>) {
-    Traces.d(TAG, "processVoiceResult: $matches")
+    Timber.d("processVoiceResult: $matches")
     viewModelScope.launch(dispatcherProvider.default()) {
       when (val result = voiceCommandProcessor(matches)) {
         is VoiceCommandProcessor.ProcessResult.ReminderSuccess -> {
@@ -218,10 +218,10 @@ class BuildReminderViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val builderItems = builderItemsLogic.getUsed().toMutableList()
-      Traces.d(TAG, "saveReminder: builderItems=$builderItems")
+      Timber.d("saveReminder: builderItems=$builderItems")
 
       val allValid = builderItems.all { it.modifier.isCorrect() }
-      Traces.d(TAG, "saveReminder: allValid=$allValid")
+      Timber.d("saveReminder: allValid=$allValid")
 
       if (!allValid) {
         postInProgress(false)
@@ -255,7 +255,7 @@ class BuildReminderViewModel(
         }
 
         is BiToReminderAdapter.BuildResult.Error -> {
-          Traces.d(TAG, "saveReminder: build failed ${buildResult.error}")
+          Timber.d("saveReminder: build failed ${buildResult.error}")
         }
       }
       postInProgress(false)
@@ -263,7 +263,7 @@ class BuildReminderViewModel(
   }
 
   fun handleDeepLink(intent: Intent?) {
-    Traces.d(TAG, "handleDeepLink: $intent")
+    Timber.d("handleDeepLink: $intent")
     if (intent == null) {
       return
     }
@@ -295,7 +295,7 @@ class BuildReminderViewModel(
   }
 
   fun onPresetSelected(presetList: UiPresetList) {
-    Traces.d(TAG, "onPresetSelected: $presetList")
+    Timber.d("onPresetSelected: $presetList")
     viewModelScope.launch(dispatcherProvider.default()) {
       val preset = recurPresetRepository.getById(presetList.id) ?: return@launch
 
@@ -361,7 +361,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun readDeepLink(intent: Intent) {
-    Traces.d(TAG, "readDeepLink: ")
+    Timber.d("readDeepLink: ")
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
@@ -383,7 +383,7 @@ class BuildReminderViewModel(
 
   private fun addDateItemToBuilder(date: LocalDate) {
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.DATE }
-    Traces.d(TAG, "addDateItemToBuilder: itemIndex=$itemIndex")
+    Timber.d("addDateItemToBuilder: itemIndex=$itemIndex")
     if (itemIndex == -1) {
       builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.DATE }
         ?.let { it as DateBuilderItem }
@@ -398,7 +398,7 @@ class BuildReminderViewModel(
 
   private fun addTimeItemToBuilder(time: LocalTime) {
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.TIME }
-    Traces.d(TAG, "addTimeItemToBuilder: itemIndex=$itemIndex")
+    Timber.d("addTimeItemToBuilder: itemIndex=$itemIndex")
     if (itemIndex == -1) {
       builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.TIME }
         ?.let { it as TimeBuilderItem }
@@ -454,7 +454,7 @@ class BuildReminderViewModel(
 
   private fun addSummaryItemToBuilder(text: String) {
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUMMARY }
-    Traces.d(TAG, "addTimeItemToBuilder: itemIndex=$itemIndex, text=$text")
+    Timber.d("addTimeItemToBuilder: itemIndex=$itemIndex, text=$text")
     if (itemIndex == -1) {
       builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUMMARY }
         ?.let { it as SummaryBuilderItem }
@@ -470,7 +470,7 @@ class BuildReminderViewModel(
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderDao.getById(id) ?: return@launch
-      Traces.d(TAG, "editReminderIfNeeded: reminder=$reminder")
+      Timber.d("editReminderIfNeeded: reminder=$reminder")
       editReminder(reminder)
       pauseReminder(reminder)
     }
@@ -485,7 +485,7 @@ class BuildReminderViewModel(
     }
 
     val builderItems = reminderToBiDecomposer(reminder)
-    Traces.d(TAG, "editReminder: builderItems=$builderItems")
+    Timber.d("editReminder: builderItems=$builderItems")
 
     if (builderItems.isNotEmpty()) {
       builderItemsLogic.setAll(builderItems)
@@ -558,7 +558,7 @@ class BuildReminderViewModel(
       .flatten()
       .toSet()
 
-    Traces.d(TAG, "updateSelector: errors=${errors.toList()}")
+    Timber.d("updateSelector: errors=${errors.toList()}")
 
     val uiSelectorItems = uiSelectorItemsAdapter.calculateStates(
       builderItemsLogic.getUsed(),
@@ -584,10 +584,10 @@ class BuildReminderViewModel(
 
   private suspend fun updateBuilderState() {
     val builderItems = builderItemsLogic.getUsed().toMutableList()
-    Traces.d(TAG, "updateBuilderState: builderItems=$builderItems")
+    Timber.d("updateBuilderState: builderItems=$builderItems")
 
     val allValid = builderItems.all { it.modifier.isCorrect() }
-    Traces.d(TAG, "updateBuilderState: allValid=$allValid")
+    Timber.d("updateBuilderState: allValid=$allValid")
 
     if (!allValid) {
       return
@@ -615,7 +615,7 @@ class BuildReminderViewModel(
         )
         _canSaveAsPreset.postValue(false)
         _canSave.postValue(false)
-        Traces.d(TAG, "updateBuilderState: build failed ${buildResult.error}")
+        Timber.d("updateBuilderState: build failed ${buildResult.error}")
       }
     }
   }
@@ -740,9 +740,5 @@ class BuildReminderViewModel(
   private fun backupReminder(uuId: String) {
     Timber.d("backupReminder: start backup")
     workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
-  }
-
-  companion object {
-    private const val TAG = "BuildReminderViewModel"
   }
 }

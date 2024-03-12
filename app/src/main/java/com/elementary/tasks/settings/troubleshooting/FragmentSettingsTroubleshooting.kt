@@ -17,13 +17,13 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.Screen
 import com.elementary.tasks.core.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.isVisible
-import com.elementary.tasks.core.utils.ui.visible
+import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsTroubleshootingBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 class FragmentSettingsTroubleshooting :
   BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
@@ -38,27 +38,29 @@ class FragmentSettingsTroubleshooting :
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
     binding.disableOptimizationButton.setOnClickListener { openBatteryOptimizationSettings() }
+    binding.sendLogsPrefs.setOnClickListener { viewModel.sendLogs() }
 
     lifecycle.addObserver(viewModel)
-    viewModel.hideBatteryOptimizationCard.observe(viewLifecycleOwner) {
+    viewModel.hideBatteryOptimizationCard.nonNullObserve(viewLifecycleOwner) {
       binding.batterSaverOption.visibleGone(!it)
-      checkIfNeedToShowEmptyState()
     }
+    viewModel.showEmptyView.nonNullObserve(viewLifecycleOwner) {
+      binding.emptyStateView.visibleGone(it)
+    }
+    viewModel.showSendLogs.nonNullObserve(viewLifecycleOwner) {
+      binding.sendLogsPrefs.visibleGone(it)
+    }
+    viewModel.sendLogFile.nonNullObserve(viewLifecycleOwner) { sendLogs(it) }
   }
 
-  private fun checkIfNeedToShowEmptyState() {
-    if (cards().all { !it.isVisible() }) {
-      binding.emptyStateView.visible()
-    } else {
-      binding.emptyStateView.gone()
-    }
-  }
-
-  private fun cards(): List<View> {
-    return listOf(
-      binding.batterSaverOption
+  private fun sendLogs(file: File) {
+    TelephonyUtil.sendMail(
+      context = requireContext(),
+      email = "feedback.cray@gmail.com",
+      subject = "Issue Logs",
+      message = "Hi,\n\nHere is logs for my issue.\n\nIssue description: \n\nBest regards\n",
+      file = file
     )
   }
 
