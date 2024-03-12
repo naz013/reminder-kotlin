@@ -7,4 +7,6 @@ val newUtilsModule = module {
   single { ImageLoader(get()) }
   single { UriHelper(get()) }
   factory { EventImportProcessor(get(), get(), get(), get()) }
+
+  factory { GeocoderTask(get(), get()) }
 }

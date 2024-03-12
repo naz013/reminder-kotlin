@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views
 
 import android.content.Context
 import android.location.Address
-import android.os.Build
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -12,20 +11,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.GeocoderTask
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
-import java.util.Locale
 
-class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
+class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
 
   private var listener: AdapterView.OnItemClickListener? = null
-  private val textWatcher: TextWatcher? = object : TextWatcher {
+  private val geocoderTask by inject<GeocoderTask>()
+  private val textWatcher: TextWatcher = object : TextWatcher {
     override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
     override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -100,7 +100,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
   }
 
   private fun performTypeValue(s: String) {
-    GeocoderTask.findAddresses(context, s) {
+    geocoderTask.findAddresses(s) {
       Timber.d("onAddressReceived: $it")
       foundPlaces.clear()
       foundPlaces.addAll(it)
@@ -120,36 +120,6 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
       }
       listener?.onItemClick(adapterView, view, i, l1)
       hideKb()
-    }
-  }
-
-  override fun getHint(): CharSequence? {
-    return if (isMeizu()) {
-      getSuperHintHack()
-    } else {
-      super.getHint()
-    }
-  }
-
-  private fun isMeizu(): Boolean {
-    val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
-    if (manufacturer.contains("meizu")) {
-      return true
-    }
-    return false
-  }
-
-  private fun getSuperHintHack(): CharSequence? {
-    val f = TextView::class.java.getDeclaredField("mHint")
-    f.isAccessible = true
-    return f.get(this) as? CharSequence
-  }
-
-  override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
-    return if (isMeizu()) {
-      null
-    } else {
-      super.onCreateInputConnection(outAttrs)
     }
   }
 
