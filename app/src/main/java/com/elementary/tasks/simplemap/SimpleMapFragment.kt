@@ -56,6 +56,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
   private val viewModel by viewModel<PlacesViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
+  private val geocoderTask by inject<GeocoderTask>()
 
   private var internalMap: GoogleMap? = null
   private var delayedMarkerAction: DelayedMarkerAction? = null
@@ -229,7 +230,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   }
 
   private fun geocodeAddress(latLng: LatLng): String {
-    return GeocoderTask.getAddressForLocation(requireContext(), latLng) ?: latLng.toString()
+    return geocoderTask.getAddressForLocation(latLng) ?: latLng.toString()
   }
 
   private fun animate(latLng: LatLng) {

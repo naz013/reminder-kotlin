@@ -9,18 +9,25 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
-object GeocoderTask {
+class GeocoderTask(
+  private val context: Context,
+  private val featureManager: FeatureManager
+) {
 
   private var mJob: Job? = null
 
-  fun findAddresses(context: Context, address: String, listener: ((List<Address>) -> Unit)?) {
+  fun findAddresses(address: String, listener: ((List<Address>) -> Unit)?) {
+    if (!featureManager.isFeatureEnabled(FeatureManager.Feature.GEOCODING)) {
+      listener?.invoke(emptyList())
+      return
+    }
     cancelJob()
     val geocoder = Geocoder(context)
     mJob = launchDefault {
       val addresses: MutableList<Address> = mutableListOf()
       try {
         addresses.addAll(geocoder.getFromLocationName(address, 5) ?: emptyList())
-      } catch (e: IOException) {
+      } catch (_: IOException) {
       }
       withUIContext {
         listener?.invoke(addresses)
@@ -29,11 +36,14 @@ object GeocoderTask {
     }
   }
 
-  fun cancelJob() {
+  private fun cancelJob() {
     mJob?.cancel()
   }
 
-  fun getAddressForLocation(context: Context, latLng: LatLng): String? {
+  fun getAddressForLocation(latLng: LatLng): String? {
+    if (!featureManager.isFeatureEnabled(FeatureManager.Feature.GEOCODING)) {
+      return null
+    }
     val geocoder = Geocoder(context)
     return runBlocking(Dispatchers.IO) {
       val addresses = runCatching {
