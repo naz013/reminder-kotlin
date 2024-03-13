@@ -23,18 +23,18 @@
 
     <style name="UiComponentExtendedFab" parent="@style/Widget.Material3.ExtendedFloatingActionButton.Tertiary" />
 
-    <style name="UiComponentBadge" parent="@style/MyTheme.DayNight">
+    <style name="UiComponentBadge" parent="@style/AppTheme">
         <item name="android:background">@drawable/badge_secondary_rounded</item>
         <item name="android:textAppearance">?textAppearanceTitleSmall</item>
         <item name="android:textColor">?colorOnSecondaryContainer</item>
     </style>
 
-    <style name="UiComponentSectionLabel" parent="@style/MyTheme.DayNight">
+    <style name="UiComponentSectionLabel" parent="@style/AppTheme">
         <item name="android:textAppearance">?textAppearanceLabelLarge</item>
         <item name="android:textColor">?colorTertiary</item>
     </style>
 
-    <style name="UiComponentSectionLarge" parent="@style/MyTheme.DayNight">
+    <style name="UiComponentSectionLarge" parent="@style/AppTheme">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -131,7 +131,7 @@
 
     <style name="SplashScreenTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/MyTheme.DayNight</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
 
