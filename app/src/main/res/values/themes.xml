@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="MyTheme.DayNight" parent="Base.MaterialThemeBuilder">
-
-    </style>
-
-    <style name="Base.MaterialThemeBuilder" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
@@ -20,8 +15,8 @@
         <item name="colorTertiaryContainer">@color/md_theme_tertiaryContainer</item>
         <item name="colorOnTertiaryContainer">@color/md_theme_onTertiaryContainer</item>
         <item name="colorError">@color/md_theme_error</item>
-        <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
         <item name="colorOnError">@color/md_theme_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
         <item name="colorOnErrorContainer">@color/md_theme_onErrorContainer</item>
         <item name="android:colorBackground">@color/md_theme_background</item>
         <item name="colorOnBackground">@color/md_theme_onBackground</item>
@@ -30,23 +25,34 @@
         <item name="colorSurfaceVariant">@color/md_theme_surfaceVariant</item>
         <item name="colorOnSurfaceVariant">@color/md_theme_onSurfaceVariant</item>
         <item name="colorOutline">@color/md_theme_outline</item>
-        <item name="colorOnSurfaceInverse">@color/md_theme_inverseOnSurface</item>
+        <item name="colorOutlineVariant">@color/md_theme_outlineVariant</item>
         <item name="colorSurfaceInverse">@color/md_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_inverseOnSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/md_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/md_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/md_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/md_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/md_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/md_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/md_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/md_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/md_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/md_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/md_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/md_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/md_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/md_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/md_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/md_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
 
         <item name="android:statusBarColor">?colorSurface</item>
-        <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-
-        <!--Material type attributes-->
-        <item name="textAppearanceDisplayLarge">@style/TextAppearance.MyTheme.DisplayLarge</item>
-        <item name="textAppearanceDisplayMedium">@style/TextAppearance.MyTheme.DisplayMedium</item>
-        <item name="textAppearanceDisplaySmall">@style/TextAppearance.MyTheme.DisplaySmall</item>
-
-        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MyTheme.HeadlineLarge</item>
-        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MyTheme.HeadlineMedium</item>
-        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.MyTheme.HeadlineSmall</item>
 
         <item name="textAppearanceTitleLarge">@style/TextAppearance.MyTheme.TitleLarge</item>
         <item name="textAppearanceTitleMedium">@style/TextAppearance.MyTheme.TitleMedium</item>
@@ -59,19 +65,5 @@
         <item name="textAppearanceLabelLarge">@style/TextAppearance.MyTheme.LabelLarge</item>
         <item name="textAppearanceLabelMedium">@style/TextAppearance.MyTheme.LabelMedium</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.MyTheme.LabelSmall</item>
-
-        <!--Material shape attributes-->
-<!--        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyTheme.SmallComponent</item>-->
-<!--        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyTheme.MediumComponent</item>-->
-<!--        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyTheme.LargeComponent</item>-->
-
-        <!--Component styles-->
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MyTheme.BottomSheetDialog</item>
-<!--        <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>-->
-<!--        <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>-->
-
-<!--        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>-->
-<!--        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>-->
     </style>
 </resources>
