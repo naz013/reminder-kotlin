@@ -274,10 +274,6 @@ class BuildReminderActivity :
     viewModel.saveReminder(newId)
   }
 
-  override fun handleBackPress(): Boolean {
-    return super.handleBackPress()
-  }
-
   override fun onBuilderItemAdd(builderItem: BuilderItem<*>) {
     viewModel.addItem(builderItem)
   }
