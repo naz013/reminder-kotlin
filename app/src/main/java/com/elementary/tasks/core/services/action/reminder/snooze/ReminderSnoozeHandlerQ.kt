@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.services.action.reminder.snooze
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class ReminderSnoozeHandlerQ(
   private val notifier: Notifier,
   private val eventControlFactory: EventControlFactory,
