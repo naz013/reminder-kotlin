@@ -4,9 +4,7 @@ import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ui.font.FontParams
@@ -101,11 +99,6 @@ class Prefs(
     get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
     set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)
 
-  @Deprecated(message = "Not used in 29 and above")
-  var localBackup: Boolean
-    get() = getBoolean(PrefsConstants.LOCAL_BACKUP)
-    set(value) = putBoolean(PrefsConstants.LOCAL_BACKUP, value)
-
   var nightMode: Int
     get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
     set(value) = putInt(PrefsConstants.NIGHT_MODE, value)
@@ -125,16 +118,6 @@ class Prefs(
   var autoBackupFlags: Array<String>
     get() = getStringArray(PrefsConstants.AUTO_BACKUP_FLAGS)
     set(value) = putStringArray(PrefsConstants.AUTO_BACKUP_FLAGS, value)
-
-  @Deprecated("After Q")
-  var playbackDuration: Int
-    get() = getInt(PrefsConstants.PLAYBACK_DURATION)
-    set(value) = putInt(PrefsConstants.PLAYBACK_DURATION, value)
-
-  @Deprecated("After Q")
-  var birthdayPlaybackDuration: Int
-    get() = getInt(PrefsConstants.BIRTHDAY_PLAYBACK_DURATION)
-    set(value) = putInt(PrefsConstants.BIRTHDAY_PLAYBACK_DURATION, value)
 
   var notePalette: Int
     get() = getInt(PrefsConstants.NOTE_PALETTE)
@@ -195,11 +178,6 @@ class Prefs(
     get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
 
-  @Deprecated("After Q")
-  var unlockPriority: Int
-    get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
-    set(value) = putInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY, value)
-
   val isTelephonyAllowed: Boolean
     get() = Module.hasTelephony(context) && isTelephonyEnabled
 
@@ -259,24 +237,6 @@ class Prefs(
     get() = getInt(PrefsConstants.CONVERSATION_LOCALE)
     set(value) = putInt(PrefsConstants.CONVERSATION_LOCALE, value)
 
-  @Deprecated("After Q")
-  var ttsLocale: String
-    get() = getString(PrefsConstants.TTS_LOCALE)
-    set(value) = putString(PrefsConstants.TTS_LOCALE, value)
-
-  @Deprecated("After Q")
-  var birthdayTtsLocale: String
-    get() = getString(PrefsConstants.BIRTHDAY_TTS_LOCALE)
-    set(value) = putString(PrefsConstants.BIRTHDAY_TTS_LOCALE, value)
-
-  var isSystemLoudnessEnabled: Boolean
-    get() = getBoolean(PrefsConstants.SYSTEM_VOLUME)
-    set(value) = putBoolean(PrefsConstants.SYSTEM_VOLUME, value)
-
-  var soundStream: Int
-    get() = getInt(PrefsConstants.SOUND_STREAM)
-    set(value) = putInt(PrefsConstants.SOUND_STREAM, value)
-
   val is24HourFormat: Boolean
     get() {
       val hourFormat = hourFormat
@@ -298,11 +258,6 @@ class Prefs(
   var isStockCalendarEnabled: Boolean
     get() = getBoolean(PrefsConstants.EXPORT_TO_STOCK)
     set(value) = putBoolean(PrefsConstants.EXPORT_TO_STOCK, value)
-
-  @Deprecated("After Q")
-  var isFoldingEnabled: Boolean
-    get() = getBoolean(PrefsConstants.SMART_FOLD)
-    set(value) = putBoolean(PrefsConstants.SMART_FOLD, value)
 
   var isWearEnabled: Boolean
     get() = getBoolean(PrefsConstants.WEAR_NOTIFICATION)
@@ -343,11 +298,6 @@ class Prefs(
     get() = SuperUtil.decrypt(getString(PrefsConstants.TASKS_USER))
     set(value) = putString(PrefsConstants.TASKS_USER, SuperUtil.encrypt(value))
 
-  @Deprecated("After Q")
-  var isManualRemoveEnabled: Boolean
-    get() = getBoolean(PrefsConstants.NOTIFICATION_REMOVE)
-    set(value) = putBoolean(PrefsConstants.NOTIFICATION_REMOVE, value)
-
   var isSbIconEnabled: Boolean
     get() = getBoolean(PrefsConstants.STATUS_BAR_ICON)
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_ICON, value)
@@ -359,49 +309,6 @@ class Prefs(
   var isInfiniteVibrateEnabled: Boolean
     get() = getBoolean(PrefsConstants.INFINITE_VIBRATION)
     set(value) = putBoolean(PrefsConstants.INFINITE_VIBRATION, value)
-
-  @Deprecated("After Q")
-  var isSoundInSilentModeEnabled: Boolean
-    get() = getBoolean(PrefsConstants.SILENT_SOUND)
-    set(value) = putBoolean(PrefsConstants.SILENT_SOUND, value)
-
-  @Deprecated("After Q")
-  var isInfiniteSoundEnabled: Boolean
-    get() = getBoolean(PrefsConstants.INFINITE_SOUND)
-    set(value) = putBoolean(PrefsConstants.INFINITE_SOUND, value)
-
-  var melodyFile: String
-    get() = getString(PrefsConstants.CUSTOM_SOUND)
-    set(value) = putString(PrefsConstants.CUSTOM_SOUND, value)
-
-  var loudness: Int
-    get() = getInt(PrefsConstants.VOLUME)
-    set(value) = putInt(PrefsConstants.VOLUME, value)
-
-  @Deprecated("After Q")
-  var isIncreasingLoudnessEnabled: Boolean
-    get() = getBoolean(PrefsConstants.INCREASING_VOLUME)
-    set(value) = putBoolean(PrefsConstants.INCREASING_VOLUME, value)
-
-  @Deprecated("After Q")
-  var isTtsEnabled: Boolean
-    get() = getBoolean(PrefsConstants.TTS)
-    set(value) = putBoolean(PrefsConstants.TTS, value)
-
-  @Deprecated("After Q")
-  var isDeviceUnlockEnabled: Boolean
-    get() = getBoolean(PrefsConstants.UNLOCK_DEVICE)
-    set(value) = putBoolean(PrefsConstants.UNLOCK_DEVICE, value)
-
-  @Deprecated("After Q")
-  var isAutoLaunchEnabled: Boolean
-    get() = getBoolean(PrefsConstants.APPLICATION_AUTO_LAUNCH)
-    set(value) = putBoolean(PrefsConstants.APPLICATION_AUTO_LAUNCH, value)
-
-  @Deprecated("After Q")
-  var isAutoCallEnabled: Boolean
-    get() = getBoolean(PrefsConstants.AUTO_CALL)
-    set(value) = putBoolean(PrefsConstants.AUTO_CALL, value)
 
   var snoozeTime: Int
     get() = getInt(PrefsConstants.DELAY_TIME)
@@ -516,37 +423,13 @@ class Prefs(
     get() = getBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, value)
 
-  @Deprecated("After Q")
-  var isBirthdaySilentEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_SILENT_STATUS)
-    set(value) = putBoolean(PrefsConstants.BIRTHDAY_SILENT_STATUS, value)
-
-  @Deprecated("After Q")
-  var isBirthdayInfiniteSoundEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_INFINITE_SOUND)
-    set(value) = putBoolean(PrefsConstants.BIRTHDAY_INFINITE_SOUND, value)
-
-  @Deprecated("After Q")
-  var isBirthdayWakeEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_WAKE_STATUS)
-    set(value) = putBoolean(PrefsConstants.BIRTHDAY_WAKE_STATUS, value)
-
   var isBirthdayLedEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, value)
 
-  @Deprecated("After Q")
-  var isBirthdayTtsEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_TTS)
-    set(value) = putBoolean(PrefsConstants.BIRTHDAY_TTS, value)
-
   var birthdayLedColor: Int
     get() = getInt(PrefsConstants.BIRTHDAY_LED_COLOR)
     set(value) = putInt(PrefsConstants.BIRTHDAY_LED_COLOR, value)
-
-  var birthdayMelody: String
-    get() = getString(PrefsConstants.BIRTHDAY_SOUND_FILE)
-    set(value) = putString(PrefsConstants.BIRTHDAY_SOUND_FILE, value)
 
   var noteOrder: String
     get() = getString(PrefsConstants.NOTES_ORDER)
@@ -555,10 +438,6 @@ class Prefs(
   var isNotesGridEnabled: Boolean
     get() = getBoolean(PrefsConstants.NOTES_LIST_STYLE)
     set(value) = putBoolean(PrefsConstants.NOTES_LIST_STYLE, value)
-
-  var lastGoogleList: Int
-    get() = getInt(PrefsConstants.LAST_LIST)
-    set(value) = putInt(PrefsConstants.LAST_LIST, value)
 
   var rateCount: Int
     get() = getInt(PrefsConstants.RATE_COUNT)
@@ -610,11 +489,6 @@ class Prefs(
     get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY)
     set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
-  @Deprecated("After Q")
-  var reminderType: Int
-    get() = getInt(PrefsConstants.REMINDER_TYPE)
-    set(reminderType) = putInt(PrefsConstants.REMINDER_TYPE, reminderType)
-
   var dropboxUid: String
     get() = getString(PrefsConstants.DROPBOX_UID)
     set(uid) = putString(PrefsConstants.DROPBOX_UID, uid)
@@ -622,11 +496,6 @@ class Prefs(
   var dropboxToken: String
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
-
-  @Deprecated("After Q")
-  var isIgnoreWindowType: Boolean
-    get() = getBoolean(PrefsConstants.IGNORE_WINDOW_TYPE)
-    set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)
 
   var privacyUrl: String
     get() = getString(
@@ -679,13 +548,11 @@ class Prefs(
       editor.putInt(PrefsConstants.REMINDER_COLOR, 4)
       editor.putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
       editor.putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
-      editor.putString(PrefsConstants.REMINDER_IMAGE, Constants.DEFAULT)
       editor.putInt(PrefsConstants.LED_COLOR, LED.BLUE)
       editor.putInt(PrefsConstants.BIRTHDAY_LED_COLOR, LED.BLUE)
       editor.putInt(PrefsConstants.LOCATION_RADIUS, DefaultValues.RADIUS)
       editor.putInt(PrefsConstants.MARKER_STYLE, 5)
       editor.putInt(PrefsConstants.TRACK_TIME, 1)
-      editor.putInt(PrefsConstants.VOLUME, 25)
       val localeCheck = Locale.getDefault().toString().lowercase()
       val locale = when {
         localeCheck.startsWith("uk") -> 2
@@ -698,8 +565,6 @@ class Prefs(
       editor.putString(PrefsConstants.TIME_NIGHT, "23:0")
       editor.putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
       editor.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
-      editor.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
-      editor.putString(PrefsConstants.CUSTOM_SOUND, Constants.SOUND_NOTIFICATION)
       editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
       editor.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
       editor.putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
@@ -711,7 +576,6 @@ class Prefs(
       editor.putInt(PrefsConstants.DELAY_TIME, 5)
       editor.putInt(PrefsConstants.EVENT_DURATION, 30)
       editor.putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
-      editor.putInt(PrefsConstants.SOUND_STREAM, 5)
       editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
       editor.putInt(PrefsConstants.MAP_STYLE, 6)
       editor.putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -730,15 +594,10 @@ class Prefs(
       editor.putBoolean(PrefsConstants.EXPORT_TO_STOCK, false)
       editor.putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, true)
       editor.putInt(PrefsConstants.TIME_FORMAT, 0)
-      editor.putBoolean(PrefsConstants.UNLOCK_DEVICE, false)
       editor.putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
-      editor.putBoolean(PrefsConstants.TTS, false)
       editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
       editor.putBoolean(PrefsConstants.REMINDER_CHANGED, false)
-      editor.putBoolean(PrefsConstants.SYSTEM_VOLUME, false)
-      editor.putBoolean(PrefsConstants.INCREASING_VOLUME, false)
       editor.putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
-      editor.putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, true)
       if (Module.isPro) {
         editor.putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
         editor.putBoolean(PrefsConstants.LED_STATUS, true)
@@ -747,7 +606,6 @@ class Prefs(
         editor.putBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, true)
         editor.putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, false)
         editor.putBoolean(PrefsConstants.BIRTHDAY_VIBRATION_STATUS, false)
-        editor.putBoolean(PrefsConstants.BIRTHDAY_WAKE_STATUS, false)
       }
       editor.apply()
     }
@@ -777,12 +635,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.DRIVE_USER)) {
       putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
-    }
-    if (!hasKey(PrefsConstants.TTS_LOCALE)) {
-      putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
-    }
-    if (!hasKey(PrefsConstants.REMINDER_IMAGE)) {
-      putString(PrefsConstants.REMINDER_IMAGE, Constants.DEFAULT)
     }
 
     if (!hasKey(PrefsConstants.CONVERSATION_LOCALE)) {
@@ -842,23 +694,14 @@ class Prefs(
     if (!hasKey(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL)) {
       putInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, 15)
     }
-    if (!hasKey(PrefsConstants.VOLUME)) {
-      putInt(PrefsConstants.VOLUME, 25)
-    }
     if (!hasKey(PrefsConstants.MAP_TYPE)) {
       putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
-    }
-    if (!hasKey(PrefsConstants.SOUND_STREAM)) {
-      putInt(PrefsConstants.SOUND_STREAM, 5)
     }
     if (!hasKey(PrefsConstants.RATE_SHOW)) {
       putBoolean(PrefsConstants.RATE_SHOW, false)
     }
     if (!hasKey(PrefsConstants.REMINDERS_IN_CALENDAR)) {
       putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, false)
-    }
-    if (!hasKey(PrefsConstants.TTS)) {
-      putBoolean(PrefsConstants.TTS, false)
     }
     if (!hasKey(PrefsConstants.CONTACT_BIRTHDAYS)) {
       putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
@@ -890,9 +733,6 @@ class Prefs(
     if (!hasKey(PrefsConstants.TIME_FORMAT)) {
       putInt(PrefsConstants.TIME_FORMAT, 0)
     }
-    if (!hasKey(PrefsConstants.UNLOCK_DEVICE)) {
-      putBoolean(PrefsConstants.UNLOCK_DEVICE, false)
-    }
     if (!hasKey(PrefsConstants.CALENDAR_FEATURE_TASKS)) {
       putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, false)
     }
@@ -902,23 +742,11 @@ class Prefs(
     if (!hasKey(PrefsConstants.REMINDER_CHANGED)) {
       putBoolean(PrefsConstants.REMINDER_CHANGED, false)
     }
-    if (!hasKey(PrefsConstants.SYSTEM_VOLUME)) {
-      putBoolean(PrefsConstants.SYSTEM_VOLUME, false)
-    }
-    if (!hasKey(PrefsConstants.INCREASING_VOLUME)) {
-      putBoolean(PrefsConstants.INCREASING_VOLUME, false)
-    }
     if (!hasKey(PrefsConstants.LIVE_CONVERSATION)) {
       putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
     }
-    if (!hasKey(PrefsConstants.IGNORE_WINDOW_TYPE)) {
-      putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, true)
-    }
     if (!hasKey(PrefsConstants.NOTE_COLOR_OPACITY)) {
       putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
-    }
-    if (!hasKey(PrefsConstants.CUSTOM_SOUND)) {
-      putString(PrefsConstants.CUSTOM_SOUND, Constants.SOUND_NOTIFICATION)
     }
     if (!hasKey(PrefsConstants.APP_LANGUAGE)) {
       putInt(PrefsConstants.APP_LANGUAGE, 0)
@@ -944,15 +772,6 @@ class Prefs(
       }
       if (!hasKey(PrefsConstants.BIRTHDAY_VIBRATION_STATUS)) {
         putBoolean(PrefsConstants.BIRTHDAY_VIBRATION_STATUS, false)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_SILENT_STATUS)) {
-        putBoolean(PrefsConstants.BIRTHDAY_SILENT_STATUS, false)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_WAKE_STATUS)) {
-        putBoolean(PrefsConstants.BIRTHDAY_WAKE_STATUS, false)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_INFINITE_SOUND)) {
-        putBoolean(PrefsConstants.BIRTHDAY_INFINITE_SOUND, false)
       }
       if (!hasKey(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION)) {
         putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, false)

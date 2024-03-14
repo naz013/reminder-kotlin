@@ -19,38 +19,6 @@ class Language(
     return locale.language
   }
 
-  /**
-   * Holder locale for tts.
-   *
-   * @param isBirth flag for birthdays.
-   * @return Locale
-   */
-  fun getLocale(isBirth: Boolean): Locale? {
-    var res: Locale? = null
-    when (
-      (
-        if (isBirth) {
-          prefs.birthdayTtsLocale
-        } else {
-          prefs.ttsLocale
-        }
-        )
-    ) {
-      ENGLISH -> res = Locale.ENGLISH
-      FRENCH -> res = Locale.FRENCH
-      GERMAN -> res = Locale.GERMAN
-      JAPANESE -> res = Locale.JAPANESE
-      ITALIAN -> res = Locale.ITALIAN
-      KOREAN -> res = Locale.KOREAN
-      POLISH -> res = Locale("pl", "")
-      RUSSIAN -> res = Locale("ru", "")
-      SPANISH -> res = Locale("es", "")
-      UKRAINIAN -> res = Locale("uk", "")
-      PORTUGUESE -> res = Locale("pt", "")
-    }
-    return res
-  }
-
   fun onAttach(context: Context): Context {
     return setLocale(context, getScreenLanguage(prefs.appLanguage)).also {
       textProvider.updateContext(it)
@@ -130,56 +98,8 @@ class Language(
     else -> com.backdoor.engine.misc.Locale.EN
   }
 
-  fun getLocaleByPosition(position: Int) = when (position) {
-    0 -> ENGLISH
-    1 -> FRENCH
-    2 -> GERMAN
-    3 -> ITALIAN
-    4 -> JAPANESE
-    5 -> KOREAN
-    6 -> POLISH
-    7 -> RUSSIAN
-    8 -> SPANISH
-    9 -> PORTUGUESE
-    10 -> UKRAINIAN
-    else -> ENGLISH
-  }
-
-  fun getLocalePosition(locale: String?) = when {
-    locale == null -> 0
-    locale.matches(ENGLISH.toRegex()) -> 0
-    locale.matches(FRENCH.toRegex()) -> 1
-    locale.matches(GERMAN.toRegex()) -> 2
-    locale.matches(ITALIAN.toRegex()) -> 3
-    locale.matches(JAPANESE.toRegex()) -> 4
-    locale.matches(KOREAN.toRegex()) -> 5
-    locale.matches(POLISH.toRegex()) -> 6
-    locale.matches(RUSSIAN.toRegex()) -> 7
-    locale.matches(SPANISH.toRegex()) -> 8
-    locale.matches(PORTUGUESE.toRegex()) -> 9
-    locale.matches(UKRAINIAN.toRegex()) -> 10
-    else -> 0
-  }
-
   fun getScreenLocaleName(context: Context): String =
     context.resources.getStringArray(R.array.app_languages)[prefs.appLanguage]
-
-  fun getLocaleNames(context: Context?) =
-    context?.let {
-      listOf(
-        context.getString(R.string.english),
-        context.getString(R.string.french),
-        context.getString(R.string.german),
-        context.getString(R.string.italian),
-        context.getString(R.string.japanese),
-        context.getString(R.string.korean),
-        context.getString(R.string.polish),
-        context.getString(R.string.russian),
-        context.getString(R.string.spanish),
-        context.getString(R.string.portuguese),
-        context.getString(R.string.ukrainian)
-      )
-    } ?: listOf()
 
   companion object {
     const val ENGLISH = "en"

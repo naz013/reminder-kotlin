@@ -2,8 +2,6 @@ package com.elementary.tasks.core.services.action.reminder.process
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -15,14 +13,12 @@ import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import timber.log.Timber
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class ReminderHandlerQ(
   private val reminderDataProvider: ReminderDataProvider,
   private val contextProvider: ContextProvider,
@@ -40,11 +36,6 @@ class ReminderHandlerQ(
     Timber.d("showReminderNotification: $reminder")
     val context = contextProvider.context
     val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-    val playMelody = !SuperUtil.isDoNotDisturbEnabled(context) ||
-      (SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled)
-    if (playMelody) {
-      builder.setSound(reminderDataProvider.getSound(reminder.melodyPath), prefs.soundStream)
-    }
 
     reminderDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }
     reminderDataProvider.getLedColor(reminder.color)?.also { builder.setLights(it, 500, 1000) }

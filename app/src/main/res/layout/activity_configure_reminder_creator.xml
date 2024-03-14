@@ -77,24 +77,6 @@
                 app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/melodyParam"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_builder_melody"
-                app:prefs_primary_text="@string/melody"
-                app:prefs_type="check_switch" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/loudnessParam"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_builder_loudness"
-                app:prefs_primary_text="@string/loudness"
-                app:prefs_type="check_switch" />
-
-            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/attachmentParam"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,15 +119,6 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_icon="@drawable/ic_builder_led_color"
                 app:prefs_primary_text="@string/led_color"
-                app:prefs_type="check_switch" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/windowTypeParam"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_builder_window_type"
-                app:prefs_primary_text="@string/notification_type"
                 app:prefs_type="check_switch" />
 
             <LinearLayout

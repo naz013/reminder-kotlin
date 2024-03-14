@@ -138,3 +138,17 @@
 -dontwarn com.oracle.svm.core.annotate.TargetClass
 -dontwarn org.graalvm.nativeimage.hosted.Feature
 -dontwarn org.koin.core.parameter.DefinitionParameters
+
+-dontwarn javax.mail.Address
+-dontwarn javax.mail.Authenticator
+-dontwarn javax.mail.BodyPart
+-dontwarn javax.mail.Message$RecipientType
+-dontwarn javax.mail.Message
+-dontwarn javax.mail.Multipart
+-dontwarn javax.mail.Session
+-dontwarn javax.mail.Transport
+-dontwarn javax.mail.internet.AddressException
+-dontwarn javax.mail.internet.InternetAddress
+-dontwarn javax.mail.internet.MimeBodyPart
+-dontwarn javax.mail.internet.MimeMessage
+-dontwarn javax.mail.internet.MimeMultipart

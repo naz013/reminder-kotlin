@@ -13,12 +13,10 @@ import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
-import com.elementary.tasks.reminder.build.MelodyBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.SummaryBuilderItem
-import com.elementary.tasks.reminder.build.WindowTypeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
@@ -100,10 +98,6 @@ class ExtrasDecomposer(
         )
       }
 
-    val windowType = reminder.windowType.let {
-      biFactory.createWithValue(BiType.WINDOW_TYPE, it, WindowTypeBuilderItem::class.java)
-    }
-
     val otherParams = reminder.takeIf {
       it.vibrate || it.notifyByVoice || it.repeatNotification || it.unlock
     }?.let {
@@ -111,8 +105,7 @@ class ExtrasDecomposer(
         useGlobal = false,
         notifyByVoice = it.notifyByVoice,
         vibrate = it.vibrate,
-        repeatNotification = it.repeatNotification,
-        unlockScreen = it.unlock
+        repeatNotification = it.repeatNotification
       )
     }?.let {
       biFactory.createWithValue(
@@ -120,10 +113,6 @@ class ExtrasDecomposer(
         it,
         OtherParamsBuilderItem::class.java
       )
-    }
-
-    val melody = reminder.melodyPath.takeIf { it.isNotEmpty() }?.let {
-      biFactory.createWithValue(BiType.MELODY, it, MelodyBuilderItem::class.java)
     }
 
     return listOfNotNull(
@@ -138,9 +127,7 @@ class ExtrasDecomposer(
       googleCalendar,
       googleCalendarDuration,
       emailSubject,
-      windowType,
-      otherParams,
-      melody
+      otherParams
     )
   }
 }

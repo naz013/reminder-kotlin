@@ -58,11 +58,13 @@ data class Reminder(
   @SerializedName("repeatNotification")
   var repeatNotification: Boolean = false,
   @SerializedName("notifyByVoice")
+  @Deprecated("Not supported in newer OS versions")
   var notifyByVoice: Boolean = false,
   @SerializedName("awake")
   @Deprecated("Not supported in newer OS versions")
   var awake: Boolean = false,
   @SerializedName("unlock")
+  @Deprecated("Not supported in newer OS versions")
   var unlock: Boolean = false,
   @SerializedName("exportToTasks")
   var exportToTasks: Boolean = false,
@@ -77,8 +79,10 @@ data class Reminder(
   @SerializedName("hours")
   var hours: List<Int> = ArrayList(),
   @SerializedName("fileName")
+  @Deprecated("Not supported in newer OS versions")
   var fileName: String = "",
   @SerializedName("melodyPath")
+  @Deprecated("Not supported in newer OS versions")
   var melodyPath: String = "",
   @SerializedName("volume")
   var volume: Int = -1,
@@ -106,6 +110,7 @@ data class Reminder(
   @SerializedName("attachmentFiles")
   var attachmentFiles: List<String> = ArrayList(),
   @SerializedName("auto")
+  @Deprecated("Not supported in newer OS versions")
   var auto: Boolean = false,
   @SerializedName("places")
   var places: List<Place> = ArrayList(),
@@ -132,6 +137,7 @@ data class Reminder(
   @SerializedName("remindBefore")
   var remindBefore: Long = 0,
   @SerializedName("windowType")
+  @Deprecated("Not supported in newer OS versions")
   var windowType: Int = 0,
   @SerializedName("priority")
   var priority: Int = 2,
@@ -176,17 +182,12 @@ data class Reminder(
     this.delay = 0
     this.vibrate = item.vibrate
     this.repeatNotification = item.repeatNotification
-    this.notifyByVoice = item.notifyByVoice
-    this.awake = item.awake
-    this.unlock = item.unlock
     this.exportToTasks = item.exportToTasks
     this.exportToCalendar = item.exportToCalendar
     this.useGlobal = item.useGlobal
     this.from = item.from
     this.to = item.to
     this.hours = item.hours
-    this.fileName = item.fileName
-    this.melodyPath = item.melodyPath
     this.volume = item.volume
     this.dayOfMonth = item.dayOfMonth
     this.repeatInterval = item.repeatInterval
@@ -198,7 +199,6 @@ data class Reminder(
     this.subject = item.subject
     this.attachmentFile = item.attachmentFile
     this.attachmentFiles = item.attachmentFiles
-    this.auto = item.auto
     this.isActive = item.isActive
     this.isRemoved = item.isRemoved
     this.isNotificationShown = item.isNotificationShown
@@ -208,7 +208,6 @@ data class Reminder(
     this.duration = item.duration
     this.monthOfYear = item.monthOfYear
     this.remindBefore = item.remindBefore
-    this.windowType = item.windowType
     this.priority = item.priority
     this.hasReminder = item.hasReminder
     this.groupTitle = item.groupTitle

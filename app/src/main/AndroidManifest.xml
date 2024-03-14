@@ -84,7 +84,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <uses-permission android:name="com.nsystudio.permission.UPDATE_CALENDAR" />
 
@@ -379,10 +378,6 @@
             android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".reminder.dialog.ReminderDialogActivity"
-            android:excludeFromRecents="true"
-            android:exported="false" />
-        <activity
             android:name=".reminder.dialog.ReminderDialog29Activity"
             android:excludeFromRecents="true"
             android:exported="false" />
@@ -402,10 +397,6 @@
             android:exported="false" />
         <activity
             android:name=".reminder.preview.FullscreenMapActivity"
-            android:excludeFromRecents="true"
-            android:exported="false" />
-        <activity
-            android:name=".birthdays.dialog.ShowBirthdayActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
@@ -434,10 +425,6 @@
             android:exported="false" />
         <activity
             android:name=".core.dialogs.VoiceResultDialog"
-            android:excludeFromRecents="true"
-            android:exported="false" />
-        <activity
-            android:name=".core.dialogs.VolumeDialog"
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
@@ -474,13 +461,6 @@
             android:enabled="true"
             android:foregroundServiceType="location"
             android:permission="android.permission.FOREGROUND_SERVICE_LOCATION"
-            tools:targetApi="q" />
-
-        <service
-            android:name=".core.services.EventOperationalService"
-            android:enabled="true"
-            android:foregroundServiceType="mediaPlayback"
-            android:permission="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
             tools:targetApi="q" />
 
         <receiver

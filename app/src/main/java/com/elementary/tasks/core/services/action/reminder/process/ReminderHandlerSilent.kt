@@ -2,7 +2,6 @@ package com.elementary.tasks.core.services.action.reminder.process
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -17,7 +16,6 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
-import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 import timber.log.Timber
 
 class ReminderHandlerSilent(
@@ -38,11 +36,10 @@ class ReminderHandlerSilent(
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
 
-    val notificationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ReminderDialog29Activity.getLaunchIntent(contextProvider.context, reminder.uuId)
-    } else {
-      ReminderDialogActivity.getLaunchIntent(contextProvider.context, reminder.uuId)
-    }
+    val notificationIntent = ReminderDialog29Activity.getLaunchIntent(
+      contextProvider.context,
+      reminder.uuId
+    )
     val intent = PendingIntentWrapper.getActivity(
       contextProvider.context,
       reminder.uniqueId,

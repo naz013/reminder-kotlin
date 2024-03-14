@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.preview.data
 
-import android.media.RingtoneManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
@@ -22,16 +21,12 @@ import com.elementary.tasks.core.text.UiTextDecoration
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.Icons
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
-import java.io.File
 import java.util.Locale
 
 class UiReminderPreviewDataAdapter(
-  private val prefs: Prefs,
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,
   private val uiGroupListAdapter: UiGroupListAdapter,
@@ -307,11 +302,6 @@ class UiReminderPreviewDataAdapter(
         text = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle).title,
         icon = Icons.GROUP
       ),
-      getNormalTextElement(
-        uiReminderCommonAdapter.getWindowType(data.windowType),
-        Icons.WINDOW_TYPE
-      ),
-      getMelodyName(data.melodyPath)?.let { getNormalTextElement(it, Icons.MELODY) },
       getNormalTextElement(uiReminderCommonAdapter.getPriorityTitle(data.priority), Icons.PRIORITY),
       getNormalTextElement(data.uuId, Icons.ID)
     )
@@ -500,23 +490,5 @@ class UiReminderPreviewDataAdapter(
         )
       )
     )
-  }
-
-  private fun getMelodyName(melodyPath: String): String? {
-    var file: File? = null
-    if (melodyPath.isNotEmpty()) {
-      file = File(melodyPath)
-    } else {
-      val path = prefs.melodyFile
-      if (path != "" && !Sound.isDefaultMelody(path)) {
-        file = File(path)
-      } else {
-        val soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)?.path
-        if (soundPath != null) {
-          file = File(soundPath)
-        }
-      }
-    }
-    return file?.name
   }
 }

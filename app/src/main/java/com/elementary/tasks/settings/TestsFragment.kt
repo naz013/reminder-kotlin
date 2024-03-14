@@ -5,13 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.elementary.tasks.birthdays.dialog.ShowBirthdayActivity
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
-import com.elementary.tasks.reminder.dialog.ReminderDialogActivity
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
@@ -36,20 +33,12 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       this.type = Reminder.BY_DATE_CALL
       this.useGlobal = true
     }.also {
-      if (Module.is10) {
-        ReminderDialog29Activity.mockTest(requireContext(), it)
-      } else {
-        ReminderDialogActivity.mockTest(requireContext(), it)
-      }
+      ReminderDialog29Activity.mockTest(requireContext(), it)
     }
   }
 
   private fun openBirthdayScreen(hasNumber: Boolean = false) {
-    if (Module.is10) {
-      ShowBirthday29Activity.mockTest(requireContext(), hasNumber)
-    } else {
-      ShowBirthdayActivity.mockTest(requireContext(), hasNumber)
-    }
+    ShowBirthday29Activity.mockTest(requireContext(), hasNumber)
   }
 
   override fun getTitle(): String = "Tests"

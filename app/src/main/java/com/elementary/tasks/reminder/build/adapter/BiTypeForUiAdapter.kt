@@ -40,9 +40,7 @@ class BiTypeForUiAdapter(
       BiType.LINK -> context.getString(R.string.builder_web_address)
       BiType.EMAIL_SUBJECT -> context.getString(R.string.subject)
       BiType.APPLICATION -> context.getString(R.string.application)
-      BiType.WINDOW_TYPE -> context.getString(R.string.notification_type)
       BiType.OTHER_PARAMS -> context.getString(R.string.builder_additional_parameters)
-      BiType.MELODY -> context.getString(R.string.melody)
       BiType.SUB_TASKS -> context.getString(R.string.builder_sub_tasks)
       BiType.ARRIVING_COORDINATES -> {
         context.getString(R.string.builder_arriving_destination)

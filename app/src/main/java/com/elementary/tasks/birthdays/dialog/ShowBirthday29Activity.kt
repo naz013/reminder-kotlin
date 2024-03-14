@@ -115,11 +115,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
   }
 
   override fun handleBackPress(): Boolean {
-    if (prefs.isFoldingEnabled) {
-      finish()
-    } else {
-      toast(R.string.select_one_of_item)
-    }
+    toast(R.string.select_one_of_item)
     return true
   }
 

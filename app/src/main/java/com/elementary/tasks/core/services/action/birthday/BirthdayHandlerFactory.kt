@@ -1,15 +1,12 @@
 package com.elementary.tasks.core.services.action.birthday
 
-import android.os.Build
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
-import com.elementary.tasks.core.services.action.birthday.cancel.BirthdayCancelHandler
 import com.elementary.tasks.core.services.action.birthday.cancel.BirthdayCancelHandlerQ
-import com.elementary.tasks.core.services.action.birthday.process.BirthdayHandler
 import com.elementary.tasks.core.services.action.birthday.process.BirthdayHandlerQ
 import com.elementary.tasks.core.services.action.birthday.process.BirthdayHandlerSilent
 import com.elementary.tasks.core.utils.Notifier
@@ -33,19 +30,15 @@ class BirthdayHandlerFactory(
 
   fun createAction(canPlaySound: Boolean): ActionHandler<Birthday> {
     return if (canPlaySound) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        BirthdayHandlerQ(
-          birthdayDataProvider,
-          contextProvider,
-          textProvider,
-          notifier,
-          prefs,
-          dateTimeManager,
-          wearNotification
-        )
-      } else {
-        BirthdayHandler(contextProvider, notifier)
-      }
+      BirthdayHandlerQ(
+        birthdayDataProvider,
+        contextProvider,
+        textProvider,
+        notifier,
+        prefs,
+        dateTimeManager,
+        wearNotification
+      )
     } else {
       BirthdayHandlerSilent(
         birthdayDataProvider,
@@ -60,23 +53,12 @@ class BirthdayHandlerFactory(
   }
 
   fun createCancel(): ActionHandler<Birthday> {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      BirthdayCancelHandlerQ(
-        notifier,
-        birthdayRepository,
-        dateTimeManager,
-        workerLauncher,
-        updatesHelper
-      )
-    } else {
-      BirthdayCancelHandler(
-        notifier,
-        birthdayRepository,
-        dateTimeManager,
-        workerLauncher,
-        updatesHelper,
-        contextProvider
-      )
-    }
+    return BirthdayCancelHandlerQ(
+      notifier,
+      birthdayRepository,
+      dateTimeManager,
+      workerLauncher,
+      updatesHelper
+    )
   }
 }

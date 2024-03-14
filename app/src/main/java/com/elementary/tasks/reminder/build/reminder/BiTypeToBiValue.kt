@@ -49,8 +49,7 @@ class BiTypeToBiValue {
       BiType.ICAL_INTERVAL,
       BiType.ICAL_COUNT,
       BiType.PRIORITY,
-      BiType.LED_COLOR,
-      BiType.WINDOW_TYPE -> value.toInt() as? V
+      BiType.LED_COLOR -> value.toInt() as? V
 
       BiType.COUNTDOWN_TIMER,
       BiType.BEFORE_TIME,
@@ -67,8 +66,7 @@ class BiTypeToBiValue {
       BiType.LINK,
       BiType.APPLICATION,
       BiType.EMAIL,
-      BiType.EMAIL_SUBJECT,
-      BiType.MELODY -> value as? V
+      BiType.EMAIL_SUBJECT -> value as? V
 
       BiType.COUNTDOWN_TIMER_EXCLUSION -> parseTimerExclusion(value) as? V
       BiType.ICAL_FREQ -> parseFreqType(value) as? V

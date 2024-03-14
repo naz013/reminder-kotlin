@@ -2,8 +2,6 @@ package com.elementary.tasks.core.services.action.birthday.process
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
@@ -17,14 +15,12 @@ import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import timber.log.Timber
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class BirthdayHandlerQ(
   private val birthdayDataProvider: BirthdayDataProvider,
   private val contextProvider: ContextProvider,
@@ -35,21 +31,13 @@ class BirthdayHandlerQ(
   private val wearNotification: WearNotification
 ) : ActionHandler<Birthday> {
 
-  private val context = contextProvider.context
-
   override fun handle(data: Birthday) {
     showBirthdayNotification(data)
   }
 
   private fun showBirthdayNotification(birthday: Birthday) {
     Timber.d("showBirthdayNotification: $birthday")
-    val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-    val ignore = SuperUtil.checkNotificationPermission(context) &&
-      birthdayDataProvider.isBirthdaySilentEnabled()
-    val playMelody = !SuperUtil.isDoNotDisturbEnabled(context) || ignore
-    if (playMelody) {
-      builder.setSound(birthdayDataProvider.getSound(), prefs.soundStream)
-    }
+    val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
 
     birthdayDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }
 
@@ -64,7 +52,7 @@ class BirthdayHandlerQ(
     if (Module.isPro && birthdayDataProvider.isBirthdayLed()) {
       builder.setLights(birthdayDataProvider.getLedColor(), 500, 1000)
     }
-    builder.color = ThemeProvider.getPrimaryColor(context)
+    builder.color = ThemeProvider.getPrimaryColor(contextProvider.context)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
     val notificationIntent = ShowBirthday29Activity.getLaunchIntent(
@@ -82,7 +70,7 @@ class BirthdayHandlerQ(
 
     getActionReceiverIntent(BirthdayActionReceiver.ACTION_HIDE, birthday.uuId).let {
       PendingIntentWrapper.getBroadcast(
-        context,
+        contextProvider.context,
         birthday.uniqueId,
         it,
         PendingIntent.FLAG_CANCEL_CURRENT
@@ -94,7 +82,7 @@ class BirthdayHandlerQ(
     if (birthday.number.isNotEmpty()) {
       getActionReceiverIntent(BirthdayActionReceiver.ACTION_CALL, birthday.uuId).let {
         PendingIntentWrapper.getBroadcast(
-          context,
+          contextProvider.context,
           birthday.uniqueId,
           it,
           PendingIntent.FLAG_CANCEL_CURRENT
@@ -109,7 +97,7 @@ class BirthdayHandlerQ(
 
       getActionReceiverIntent(BirthdayActionReceiver.ACTION_SMS, birthday.uuId).let {
         PendingIntentWrapper.getBroadcast(
-          context,
+          contextProvider.context,
           birthday.uniqueId,
           it,
           PendingIntent.FLAG_CANCEL_CURRENT

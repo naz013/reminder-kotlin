@@ -21,14 +21,6 @@
         android:textColor="?colorOnBackground" />
 
     <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/unlock_screen_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/unlock_screen"
-        android:textColor="?colorOnBackground" />
-
-    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/repeat_notification_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

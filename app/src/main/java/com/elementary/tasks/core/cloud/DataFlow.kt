@@ -118,8 +118,7 @@ class DataFlow<T>(
     ): List<Storage> {
       return listOfNotNull(
         storageManager.gDrive.takeIf { storageManager.googleBackup },
-        storageManager.dropbox.takeIf { storageManager.dropboxBackup },
-        storageManager.localStorage.takeIf { storageManager.localBackup }
+        storageManager.dropbox.takeIf { storageManager.dropboxBackup }
       )
     }
   }

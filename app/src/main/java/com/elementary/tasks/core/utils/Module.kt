@@ -16,9 +16,6 @@ object Module {
   val is13: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
   val is12: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
   val is11: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-  val is10: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-  val isPie: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-  val isOreoMr1: Boolean = Build.VERSION.SDK_INT >= 27
 
   fun isChromeOs(context: Context) =
     context.packageManager.hasSystemFeature("org.chromium.arc.device_management")

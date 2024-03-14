@@ -34,7 +34,6 @@ class ReminderConverter(
         this.attachment = t.attachmentFile
         this.ext = FileConfig.FILE_NAME_REMINDER
         this.id = t.uuId
-        this.melody = t.melodyPath
         this.updatedAt = t.updatedAt ?: dateTimeManager.getNowGmtDateTime()
         this.type = IndexTypes.TYPE_REMINDER
         this.readyToBackup = true

@@ -31,7 +31,6 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
-import com.elementary.tasks.reminder.build.MelodyBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -45,20 +44,17 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
-import com.elementary.tasks.reminder.build.WindowTypeBuilderItem
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
 import com.elementary.tasks.reminder.build.formatter.ApplicationFormatter
 import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
-import com.elementary.tasks.reminder.build.formatter.MelodyFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
 import com.elementary.tasks.reminder.build.formatter.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
 import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
-import com.elementary.tasks.reminder.build.formatter.WindowTypeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DayOfMonthFormatter
@@ -310,14 +306,6 @@ class BiFactory(
         )
       }
 
-      BiType.WINDOW_TYPE -> {
-        WindowTypeBuilderItem(
-          title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_set_type_of_window_for_the_reminder),
-          windowTypeFormatter = WindowTypeFormatter(context)
-        )
-      }
-
       BiType.OTHER_PARAMS -> {
         OtherParamsBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
@@ -325,16 +313,6 @@ class BiFactory(
             R.string.builder_customize_additional_parameters_for_a_reminder
           ),
           otherParamsFormatter = OtherParamsFormatter(context)
-        )
-      }
-
-      BiType.MELODY -> {
-        MelodyBuilderItem(
-          title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_select_melody_for_the_reminder_notification
-          ),
-          melodyFormatter = MelodyFormatter()
         )
       }
 

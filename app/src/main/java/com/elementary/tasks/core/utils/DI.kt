@@ -36,7 +36,6 @@ import com.elementary.tasks.core.cloud.repositories.RepositoryManager
 import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -326,8 +325,7 @@ val completableModule = module {
 val storageModule = module {
   single { Dropbox(get(), get()) }
   single { GDrive(get(), get(), get(), get()) }
-  single { LocalStorage(get()) }
-  single { StorageManager(get(), get(), get(), get(), get()) }
+  single { StorageManager(get(), get(), get(), get()) }
 }
 
 val dataFlowRepositoryModule = module {
@@ -365,7 +363,6 @@ val utilModule = module {
   factory { PresetInitProcessor(get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
-  single { SoundStackHolder(get()) }
   single { ThemeProvider(get(), get()) }
   single { MemoryUtil(get()) }
   single { UriReader(get()) }

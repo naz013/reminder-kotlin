@@ -6,12 +6,9 @@
     <dimen name="settings_view_size">40dp</dimen>
 
     <dimen name="create_note_text_size">20sp</dimen>
-    <dimen name="create_note_image_button_size">40dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="dialog_toggle_size">35dp</dimen>
 
-    <dimen name="grid_item_spacing">2dp</dimen>
-    <dimen name="checkbox_padding">20dp</dimen>
     <dimen name="empty_image_size">128dp</dimen>
     <dimen name="empty_animation_size">188dp</dimen>
     <dimen name="confetti_animation_size">256dp</dimen>
@@ -33,7 +30,6 @@
     <integer name="num_of_cols">1</integer>
 
     <integer name="gradient_button_anim_duration">250</integer>
-    <integer name="banner_anim_duration">5000</integer>
 
     <dimen name="pin_digit_icon_size">32dp</dimen>
 

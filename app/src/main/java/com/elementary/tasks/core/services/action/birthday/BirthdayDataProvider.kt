@@ -1,19 +1,14 @@
 package com.elementary.tasks.core.services.action.birthday
 
-import android.content.Intent
-import android.net.Uri
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 
 class BirthdayDataProvider(
   private val textProvider: TextProvider,
-  private val contextProvider: ContextProvider,
   private val prefs: Prefs
 ) {
 
@@ -47,16 +42,6 @@ class BirthdayDataProvider(
     }
   }
 
-  fun getSound(): Uri {
-    return ReminderUtils.getSound(contextProvider.context, birthdayMelody(), "").uri.apply {
-      contextProvider.context.grantUriPermission(
-        "com.android.systemui",
-        this,
-        Intent.FLAG_GRANT_READ_URI_PERMISSION
-      )
-    }
-  }
-
   fun getAppName(): String {
     return if (Module.isPro) {
       textProvider.getText(R.string.app_name_pro)
@@ -81,27 +66,11 @@ class BirthdayDataProvider(
     }
   }
 
-  fun isBirthdaySilentEnabled(): Boolean {
-    return if (prefs.isBirthdayGlobalEnabled) {
-      prefs.isSoundInSilentModeEnabled
-    } else {
-      prefs.isBirthdaySilentEnabled
-    }
-  }
-
   fun isBirthdayLed(): Boolean {
     return if (prefs.isBirthdayGlobalEnabled) {
       prefs.isLedEnabled
     } else {
       prefs.isBirthdayLedEnabled
-    }
-  }
-
-  private fun birthdayMelody(): String {
-    return if (prefs.isBirthdayGlobalEnabled) {
-      prefs.melodyFile
-    } else {
-      prefs.birthdayMelody
     }
   }
 }

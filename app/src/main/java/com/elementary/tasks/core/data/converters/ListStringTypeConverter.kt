@@ -13,6 +13,11 @@ class ListStringTypeConverter {
 
   @TypeConverter
   fun toList(json: String): List<String> {
-    return Gson().fromJson(json, object : TypeToken<List<String>>() {}.type)
+    if (json.isEmpty()) {
+      return emptyList()
+    }
+    return runCatching {
+      Gson().fromJson<List<String>>(json, object : TypeToken<List<String>>() {}.type)
+    }.getOrNull() ?: emptyList()
   }
 }

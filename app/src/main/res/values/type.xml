@@ -1,34 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="TextAppearance.MyTheme.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
-        <item name="android:fontFamily">@font/roboto_light</item>
-        <item name="fontFamily">@font/roboto_light</item>
-    </style>
-
-    <style name="TextAppearance.MyTheme.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
-        <item name="android:fontFamily">@font/roboto_light</item>
-        <item name="fontFamily">@font/roboto_light</item>
-    </style>
-
-    <style name="TextAppearance.MyTheme.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
-        <item name="android:fontFamily">@font/roboto_light</item>
-        <item name="fontFamily">@font/roboto_light</item>
-    </style>
-
-    <style name="TextAppearance.MyTheme.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="android:fontFamily">@font/roboto_light</item>
-        <item name="fontFamily">@font/roboto_light</item>
-    </style>
-
-    <style name="TextAppearance.MyTheme.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
-    </style>
-
-    <style name="TextAppearance.MyTheme.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
-    </style>
 
     <style name="TextAppearance.MyTheme.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:fontFamily">@font/roboto_regular</item>

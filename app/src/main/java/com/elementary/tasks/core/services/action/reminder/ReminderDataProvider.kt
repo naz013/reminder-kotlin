@@ -1,19 +1,14 @@
 package com.elementary.tasks.core.services.action.reminder
 
-import android.content.Intent
-import android.net.Uri
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 
 class ReminderDataProvider(
   private val textProvider: TextProvider,
-  private val contextProvider: ContextProvider,
   private val prefs: Prefs
 ) {
 
@@ -38,16 +33,6 @@ class ReminderDataProvider(
       }
     } else {
       null
-    }
-  }
-
-  fun getSound(melodyPath: String?): Uri {
-    return ReminderUtils.getSoundUri(contextProvider.context, prefs, melodyPath).apply {
-      contextProvider.context.grantUriPermission(
-        "com.android.systemui",
-        this,
-        Intent.FLAG_GRANT_READ_URI_PERMISSION
-      )
     }
   }
 

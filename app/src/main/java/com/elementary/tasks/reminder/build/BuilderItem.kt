@@ -64,14 +64,12 @@ import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
-import com.elementary.tasks.reminder.build.formatter.MelodyFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
 import com.elementary.tasks.reminder.build.formatter.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
 import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
-import com.elementary.tasks.reminder.build.formatter.WindowTypeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DayOfMonthFormatter
@@ -771,6 +769,7 @@ data class ApplicationBuilderItem(
 ) : StringBuilderItem() {
   override val iconRes: Int = R.drawable.ic_builder_add_app
   override val isForPro: Boolean = false
+  override val maxSdk: Int = Build.VERSION_CODES.S
   override val modifier: BuilderModifier<String> = object : FormattedStringModifier(
     applicationFormatter
   ) {
@@ -804,23 +803,6 @@ data class ApplicationBuilderItem(
   }
 }
 
-data class WindowTypeBuilderItem(
-  override val title: String,
-  override val description: String?,
-  private val windowTypeFormatter: WindowTypeFormatter
-) : BuilderItem<Int>() {
-  override val iconRes: Int = R.drawable.ic_builder_window_type
-  override val isForPro: Boolean = true
-  override val modifier: BuilderModifier<Int> = object : IntModifier(windowTypeFormatter, 1) {
-    override fun putInto(reminder: Reminder) {
-      storage.value?.let { reminder.windowType = it }
-    }
-  }
-  override val biType: BiType = BiType.WINDOW_TYPE
-  override val biGroup: BiGroup = BiGroup.EXTRA
-  override val maxSdk: Int = Build.VERSION_CODES.Q
-}
-
 data class OtherParamsBuilderItem(
   override val title: String,
   override val description: String?,
@@ -831,30 +813,6 @@ data class OtherParamsBuilderItem(
   override val modifier: BuilderModifier<OtherParams> = OtherParamsModifier(otherParamsFormatter)
   override val biType: BiType = BiType.OTHER_PARAMS
   override val biGroup: BiGroup = BiGroup.EXTRA
-}
-
-data class MelodyBuilderItem(
-  override val title: String,
-  override val description: String?,
-  private val melodyFormatter: MelodyFormatter
-) : StringBuilderItem() {
-  override val iconRes: Int = R.drawable.ic_builder_melody
-  override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<String> = object : FormattedStringModifier(
-    melodyFormatter
-  ) {
-    override fun putInto(reminder: Reminder) {
-      super.putInto(reminder)
-      storage.value?.also {
-        reminder.melodyPath = it
-      }
-    }
-  }
-  override val biType: BiType = BiType.MELODY
-  override val biGroup: BiGroup = BiGroup.PARAMS
-  override val constraints: List<BiConstraint<*>> = constraints {
-    permission(Permissions.READ_EXTERNAL)
-  }
 }
 
 data class SubTasksBuilderItem(

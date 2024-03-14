@@ -12,8 +12,8 @@ import org.koin.dsl.module
 val actionModule = module {
   single { WearNotification(get(), get()) }
 
-  single { ReminderDataProvider(get(), get(), get()) }
-  single { BirthdayDataProvider(get(), get(), get()) }
+  single { ReminderDataProvider(get(), get()) }
+  single { BirthdayDataProvider(get(), get()) }
 
   single { ReminderHandlerFactory(get(), get(), get(), get(), get(), get(), get()) }
   single {

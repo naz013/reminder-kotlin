@@ -56,14 +56,6 @@ class ReminderActionProcessor(
     Timber.d("process: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
-
-      var windowType = prefs.reminderType
-      val ignore = prefs.isIgnoreWindowType
-
-      if (!ignore) {
-        windowType = reminder.windowType
-      }
-      Timber.d("process: ignore -> $ignore, event -> $reminder")
       if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
         if (prefs.doNotDisturbAction == 0) {
           val delayTime = dateTimeManager.millisToEndDnd(
@@ -76,7 +68,7 @@ class ReminderActionProcessor(
           }
         }
       } else {
-        val canShowWindow = windowType == 0 && !SuperUtil.isPhoneCallActive(contextProvider.context)
+        val canShowWindow = !SuperUtil.isPhoneCallActive(contextProvider.context)
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
         val handler = reminderHandlerFactory.createAction(canShowWindow)
         Timber.d("process: handler=$handler")

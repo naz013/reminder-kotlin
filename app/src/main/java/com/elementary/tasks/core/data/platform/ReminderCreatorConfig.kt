@@ -42,18 +42,22 @@ data class ReminderCreatorConfig(private val value: String) {
     updateBitAndByte(0, PRIORITY_PICKER_BIT, enabled)
   }
 
+  @Deprecated("Do not use it")
   fun isMelodyPickerEnabled(): Boolean {
     return bytes.isBitSet(0, MELODY_PICKER_BIT)
   }
 
+  @Deprecated("Do not use it")
   fun setMelodyPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, MELODY_PICKER_BIT, enabled)
   }
 
+  @Deprecated("Do not use it")
   fun isLoudnessPickerEnabled(): Boolean {
     return bytes.isBitSet(0, LOUDNESS_PICKER_BIT)
   }
 
+  @Deprecated("Do not use it")
   fun setLoudnessPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, LOUDNESS_PICKER_BIT, enabled)
   }
@@ -98,10 +102,12 @@ data class ReminderCreatorConfig(private val value: String) {
     updateBitAndByte(1, LED_PICKER_BIT, enabled)
   }
 
+  @Deprecated("Do not use it")
   fun isWindowTypePickerEnabled(): Boolean {
     return bytes.isBitSet(1, WINDOW_TYPE_PICKER_BIT)
   }
 
+  @Deprecated("Do not use it")
   fun setWindowTypePickerEnabled(enabled: Boolean) {
     updateBitAndByte(1, WINDOW_TYPE_PICKER_BIT, enabled)
   }
@@ -174,7 +180,11 @@ data class ReminderCreatorConfig(private val value: String) {
     private const val REPEAT_PICKER_BIT = 1
     private const val REPEAT_LIMIT_PICKER_BIT = 2
     private const val PRIORITY_PICKER_BIT = 3
+
+    @Deprecated("Do not use it")
     private const val MELODY_PICKER_BIT = 4
+
+    @Deprecated("Do not use it")
     private const val LOUDNESS_PICKER_BIT = 5
     private const val CALENDAR_PICKER_BIT = 6
     private const val TASKS_PICKER_BIT = 7
@@ -183,6 +193,8 @@ data class ReminderCreatorConfig(private val value: String) {
     private const val EXTRA_PICKER_BIT = 0
     private const val ATTACHMENT_PICKER_BIT = 1
     private const val LED_PICKER_BIT = 2
+
+    @Deprecated("Do not use it")
     private const val WINDOW_TYPE_PICKER_BIT = 3
     private const val ICALENDAR_BIT = 4
 
