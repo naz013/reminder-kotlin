@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.services.action.birthday.cancel
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.Birthday
@@ -13,7 +11,6 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import org.threeten.bp.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class BirthdayCancelHandlerQ(
   private val notifier: Notifier,
   private val birthdayRepository: BirthdayRepository,
