@@ -200,7 +200,6 @@ val reminderModule = module {
       get(),
       get(),
       get(),
-      get(),
       get()
     )
   }
@@ -266,5 +265,5 @@ val reminderModule = module {
   factory { EventToUiReminderPreview(get(), get(), get(), get()) }
   factory { AttachmentToUiReminderPreviewAttachment(get(), get(), get(), get()) }
 
-  factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get()) }
 }

@@ -12,7 +12,6 @@ import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
@@ -111,7 +110,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     initAutoBackupPrefs()
     initAutoSyncPrefs()
     initBackupFilesPrefs()
-    initLocalBackupPrefs()
 
     binding.backupsPrefs.setOnClickListener {
       safeNavigation {
@@ -169,37 +167,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   private fun pickFile() {
     permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       backupFilePicker.pickRbakFile()
-    }
-  }
-
-  private fun initLocalBackupPrefs() {
-    if (Module.is10) {
-      binding.localPrefs.gone()
-    } else {
-      binding.localPrefs.visible()
-      binding.localPrefs.isChecked = prefs.localBackup
-      binding.localPrefs.setOnClickListener { changeLocalBackupPrefs() }
-      binding.localPrefs.setDependentView(binding.backupDataPrefs)
-    }
-  }
-
-  private fun changeLocalBackupPrefs() {
-    val isChecked = binding.localPrefs.isChecked
-    if (!isChecked) {
-      permissionFlow.askPermissions(
-        listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL),
-        {
-          binding.localPrefs.isChecked = true
-          prefs.localBackup = true
-        },
-        {
-          binding.localPrefs.isChecked = false
-          prefs.localBackup = false
-        }
-      )
-    } else {
-      binding.localPrefs.isChecked = false
-      prefs.localBackup = false
     }
   }
 

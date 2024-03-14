@@ -13,7 +13,6 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
@@ -162,20 +161,6 @@ class UiReminderCommonAdapter(
       isRemoved -> textProvider.getText(R.string.deleted)
       isActive -> textProvider.getText(R.string.enabled4)
       else -> textProvider.getText(R.string.disabled)
-    }
-  }
-
-  fun getWindowType(reminderWindowType: Int): String {
-    if (Module.is10) return textProvider.getText(R.string.simple)
-    var windowType = prefs.reminderType
-    val ignore = prefs.isIgnoreWindowType
-    if (!ignore) {
-      windowType = reminderWindowType
-    }
-    return if (windowType == 0) {
-      textProvider.getText(R.string.full_screen)
-    } else {
-      textProvider.getText(R.string.simple)
     }
   }
 

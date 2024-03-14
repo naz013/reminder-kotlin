@@ -8,10 +8,8 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.fromReminder
 import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.databinding.ViewTuneExtraBinding
 
 class TuneExtraView : LinearLayout {
@@ -44,35 +42,18 @@ class TuneExtraView : LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.dialog_select_extra, null)
       )
       binding.extraSwitch.setOnCheckedChangeListener { _, isChecked ->
-        binding.autoCheck.isEnabled = !isChecked
         binding.repeatCheck.isEnabled = !isChecked
-        binding.unlockCheck.isEnabled = !isChecked
         binding.vibrationCheck.isEnabled = !isChecked
         binding.voiceCheck.isEnabled = !isChecked
       }
       binding.voiceCheck.isChecked = extra.notifyByVoice
       binding.vibrationCheck.isChecked = extra.vibrate
-      binding.unlockCheck.isChecked = extra.unlock
       binding.repeatCheck.isChecked = extra.repeatNotification
-      binding.autoCheck.isChecked = extra.auto
       binding.extraSwitch.isChecked = extra.useGlobal
 
-      binding.autoCheck.isEnabled = !extra.useGlobal
       binding.repeatCheck.isEnabled = !extra.useGlobal
-      binding.unlockCheck.isEnabled = !extra.useGlobal
       binding.vibrationCheck.isEnabled = !extra.useGlobal
       binding.voiceCheck.isEnabled = !extra.useGlobal
-      if (Module.is10) {
-        binding.autoCheck.gone()
-        binding.unlockCheck.gone()
-      } else {
-        if (hasAutoExtra && hint != "") {
-          binding.autoCheck.visibility = View.VISIBLE
-          binding.autoCheck.text = hint
-        } else {
-          binding.autoCheck.visibility = View.GONE
-        }
-      }
       return binding
     }
 
@@ -99,13 +80,7 @@ class TuneExtraView : LinearLayout {
     var res = ""
     res += toSign(extra.vibrate)
     res += toSign(extra.notifyByVoice)
-    if (!Module.is10) {
-      res += toSign(extra.unlock)
-    }
     res += toSign(extra.repeatNotification)
-    if (!Module.is10) {
-      if (hasAutoExtra) res += toSign(extra.auto)
-    }
     res = res.trim()
     if (res.endsWith(",")) res = res.substring(0, res.length - 1)
     return res
@@ -147,8 +122,6 @@ class TuneExtraView : LinearLayout {
   private fun saveExtraResults(b: DialogSelectExtraBinding) {
     val extra = extra
     extra.useGlobal = b.extraSwitch.isChecked
-    extra.auto = b.autoCheck.isChecked
-    extra.unlock = b.unlockCheck.isChecked
     extra.repeatNotification = b.repeatCheck.isChecked
     extra.notifyByVoice = b.voiceCheck.isChecked
     extra.vibrate = b.vibrationCheck.isChecked
@@ -159,8 +132,6 @@ class TuneExtraView : LinearLayout {
     var useGlobal: Boolean = false,
     var vibrate: Boolean = false,
     var repeatNotification: Boolean = false,
-    var notifyByVoice: Boolean = false,
-    var unlock: Boolean = false,
-    var auto: Boolean = false
+    var notifyByVoice: Boolean = false
   )
 }

@@ -38,7 +38,6 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
-import com.elementary.tasks.reminder.build.MelodyBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -52,7 +51,6 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
-import com.elementary.tasks.reminder.build.WindowTypeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiType.APPLICATION
 import com.elementary.tasks.reminder.build.bi.BiType.ARRIVING_COORDINATES
@@ -92,7 +90,6 @@ import com.elementary.tasks.reminder.build.bi.BiType.LED_COLOR
 import com.elementary.tasks.reminder.build.bi.BiType.LINK
 import com.elementary.tasks.reminder.build.bi.BiType.LOCATION_DELAY_DATE
 import com.elementary.tasks.reminder.build.bi.BiType.LOCATION_DELAY_TIME
-import com.elementary.tasks.reminder.build.bi.BiType.MELODY
 import com.elementary.tasks.reminder.build.bi.BiType.OTHER_PARAMS
 import com.elementary.tasks.reminder.build.bi.BiType.PHONE_CALL
 import com.elementary.tasks.reminder.build.bi.BiType.PRIORITY
@@ -103,7 +100,6 @@ import com.elementary.tasks.reminder.build.bi.BiType.SMS
 import com.elementary.tasks.reminder.build.bi.BiType.SUB_TASKS
 import com.elementary.tasks.reminder.build.bi.BiType.SUMMARY
 import com.elementary.tasks.reminder.build.bi.BiType.TIME
-import com.elementary.tasks.reminder.build.bi.BiType.WINDOW_TYPE
 import com.elementary.tasks.reminder.build.reminder.BiTypeToBiValue
 
 class BuilderPresetToBiAdapter(
@@ -166,9 +162,7 @@ class BuilderPresetToBiAdapter(
       PRIORITY -> create(scheme, PriorityBuilderItem::class.java)
       LED_COLOR -> create(scheme, LedColorBuilderItem::class.java)
       ATTACHMENTS -> create(scheme, AttachmentsBuilderItem::class.java)
-      WINDOW_TYPE -> create(scheme, WindowTypeBuilderItem::class.java)
       OTHER_PARAMS -> create(scheme, OtherParamsBuilderItem::class.java)
-      MELODY -> create(scheme, MelodyBuilderItem::class.java)
       GOOGLE_TASK_LIST -> create(scheme, GoogleTaskListBuilderItem::class.java)
       GOOGLE_CALENDAR -> create(scheme, GoogleCalendarBuilderItem::class.java)
       GOOGLE_CALENDAR_DURATION -> create(scheme, GoogleCalendarDurationBuilderItem::class.java)

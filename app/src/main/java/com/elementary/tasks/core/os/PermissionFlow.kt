@@ -52,14 +52,6 @@ class PermissionFlow private constructor(
       callback.invoke(permission)
       return
     }
-    if (permission == Permissions.FOREGROUND_SERVICE && !Module.isPie) {
-      callback.invoke(permission)
-      return
-    }
-    if (permission == Permissions.BACKGROUND_LOCATION && !Module.is10) {
-      callback.invoke(permission)
-      return
-    }
     if (
       (permission == Permissions.READ_EXTERNAL || permission == Permissions.WRITE_EXTERNAL) &&
       Module.is13
@@ -117,16 +109,6 @@ class PermissionFlow private constructor(
   private fun checkPermission(permission: String) {
     when (permission) {
       Permissions.POST_NOTIFICATION -> if (!Module.is13) {
-        permissionGranted(permission)
-        return
-      }
-
-      Permissions.BACKGROUND_LOCATION -> if (!Module.is10) {
-        permissionGranted(permission)
-        return
-      }
-
-      Permissions.FOREGROUND_SERVICE -> if (!Module.isPie) {
         permissionGranted(permission)
         return
       }
@@ -196,18 +178,8 @@ class PermissionFlow private constructor(
       Permissions.ACCESS_FINE_LOCATION -> UiPermissionDialogData.FINE_LOCATION
       Permissions.ACCESS_COARSE_LOCATION -> UiPermissionDialogData.COARSE_LOCATION
       Permissions.RECORD_AUDIO -> UiPermissionDialogData.RECORD_AUDIO
-      Permissions.BACKGROUND_LOCATION -> if (Module.is10) {
-        UiPermissionDialogData.BACKGROUND_LOCATION
-      } else {
-        null
-      }
-
-      Permissions.FOREGROUND_SERVICE -> if (Module.isPie) {
-        UiPermissionDialogData.FOREGROUND_SERVICE
-      } else {
-        null
-      }
-
+      Permissions.BACKGROUND_LOCATION -> UiPermissionDialogData.BACKGROUND_LOCATION
+      Permissions.FOREGROUND_SERVICE -> UiPermissionDialogData.FOREGROUND_SERVICE
       else -> null
     } ?: return
 

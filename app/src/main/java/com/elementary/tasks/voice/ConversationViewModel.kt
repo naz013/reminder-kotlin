@@ -40,7 +40,6 @@ import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
-import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
@@ -386,12 +385,6 @@ class ConversationViewModel(
 
             Action.REMINDER -> {
               reminderBuilderLauncher.openLogged(context) { }
-            }
-
-            Action.VOLUME -> {
-              context.startActivity(VolumeDialog::class.java) {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-              }
             }
 
             Action.TRASH -> emptyTrash(true)

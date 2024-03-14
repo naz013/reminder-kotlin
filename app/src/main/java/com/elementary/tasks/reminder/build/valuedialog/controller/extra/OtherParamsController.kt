@@ -3,8 +3,6 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.extra
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.BuilderItemOtherParamsBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.bi.OtherParams
@@ -23,8 +21,6 @@ class OtherParamsController(
 
   override fun onViewCreated() {
     super.onViewCreated()
-    binding.unlockScreenSwitch.visibleGone(!Module.is10)
-
     binding.defaultSwitch.setOnCheckedChangeListener { _, isChecked ->
       updateEnabledState(!isChecked)
       updateValue(createParams())
@@ -36,7 +32,6 @@ class OtherParamsController(
     binding.ttsSwitch.setOnCheckedChangeListener(onCheckedChangeListener)
     binding.vibrateSwitch.setOnCheckedChangeListener(onCheckedChangeListener)
     binding.repeatNotificationSwitch.setOnCheckedChangeListener(onCheckedChangeListener)
-    binding.unlockScreenSwitch.setOnCheckedChangeListener(onCheckedChangeListener)
   }
 
   override fun onDataChanged(data: OtherParams?) {
@@ -46,7 +41,6 @@ class OtherParamsController(
       binding.ttsSwitch.isChecked = it.notifyByVoice
       binding.vibrateSwitch.isChecked = it.vibrate
       binding.repeatNotificationSwitch.isChecked = it.repeatNotification
-      binding.unlockScreenSwitch.isChecked = it.unlockScreen
     }
   }
 
@@ -54,7 +48,6 @@ class OtherParamsController(
     binding.ttsSwitch.isEnabled = enabled
     binding.vibrateSwitch.isEnabled = enabled
     binding.repeatNotificationSwitch.isEnabled = enabled
-    binding.unlockScreenSwitch.isEnabled = enabled
   }
 
   private fun createParams(): OtherParams {
@@ -65,7 +58,6 @@ class OtherParamsController(
         useGlobal = false,
         vibrate = binding.vibrateSwitch.isChecked,
         notifyByVoice = binding.ttsSwitch.isChecked,
-        unlockScreen = binding.unlockScreenSwitch.isChecked,
         repeatNotification = binding.repeatNotificationSwitch.isChecked
       )
     }

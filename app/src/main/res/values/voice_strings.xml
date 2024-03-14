@@ -24,8 +24,6 @@
     <string name="voice_reminder_canceled">Reminder canceled</string>
     <string name="voice_note_saved">Note saved</string>
     <string name="voice_note_canceled">Note canceled</string>
-    <string name="voice_would_you_like_to_add_reminder">Would you like to add reminder?</string>
-    <string name="voice_note_saved_without_reminder">Note saved without reminder</string>
     <string name="voice_trash_was_cleared">Trash was cleared</string>
     <string name="voice_language">Language</string>
     <string name="voice_feedback">Feedback</string>

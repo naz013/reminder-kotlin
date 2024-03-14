@@ -5,7 +5,6 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
@@ -38,19 +37,6 @@ class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBindin
 
     initParam(binding.priorityParam, config.isPriorityPickerEnabled()) {
       config.setPriorityPickerEnabled(it)
-    }
-
-    if (!Module.is10) {
-      initParam(binding.melodyParam, config.isMelodyPickerEnabled()) {
-        config.setMelodyPickerEnabled(it)
-      }
-
-      initParam(binding.loudnessParam, config.isLoudnessPickerEnabled()) {
-        config.setLoudnessPickerEnabled(it)
-      }
-    } else {
-      binding.melodyParam.gone()
-      binding.loudnessParam.gone()
     }
 
     initParam(binding.attachmentParam, config.isAttachmentPickerEnabled()) {

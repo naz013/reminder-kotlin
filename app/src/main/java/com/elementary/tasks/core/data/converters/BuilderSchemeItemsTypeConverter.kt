@@ -18,9 +18,11 @@ class BuilderSchemeItemsTypeConverter {
   @TypeConverter
   fun toList(json: String?): List<BuilderSchemeItem>? {
     if (json == null) return null
-    return Gson().fromJson<List<BuilderSchemeItem>>(
-      json,
-      object : TypeToken<List<BuilderSchemeItem>>() {}.type
-    )
+    return runCatching {
+      Gson().fromJson<List<BuilderSchemeItem>>(
+        json,
+        object : TypeToken<List<BuilderSchemeItem>>() {}.type
+      )
+    }.getOrNull() ?: null
   }
 }

@@ -20,9 +20,11 @@ class PresetBuilderSchemeTypeConverter {
     if (json.isEmpty()) {
       return emptyList()
     }
-    return Gson().fromJson(
-      json,
-      object : TypeToken<List<PresetBuilderScheme>>() {}.type
-    )
+    return runCatching {
+      Gson().fromJson<List<PresetBuilderScheme>>(
+        json,
+        object : TypeToken<List<PresetBuilderScheme>>() {}.type
+      )
+    }.getOrNull() ?: emptyList()
   }
 }

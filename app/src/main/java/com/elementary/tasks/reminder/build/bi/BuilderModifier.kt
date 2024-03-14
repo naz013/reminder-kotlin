@@ -296,7 +296,6 @@ class OtherParamsModifier(
       reminder.repeatNotification = it.repeatNotification
       reminder.notifyByVoice = it.notifyByVoice
       reminder.vibrate = it.vibrate
-      reminder.unlock = it.unlockScreen
     }
   }
 }

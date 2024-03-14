@@ -29,8 +29,6 @@ data class OtherParams(
   var vibrate: Boolean = false,
   @SerializedName("notifyByVoice")
   var notifyByVoice: Boolean = false,
-  @SerializedName("unlockScreen")
-  var unlockScreen: Boolean = false,
   @SerializedName("repeatNotification")
   var repeatNotification: Boolean = false
 )

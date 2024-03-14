@@ -57,16 +57,9 @@ object SuperUtil {
   }
 
   @Suppress("DEPRECATION")
-  fun unlockOff(activity: Activity, window: Window) {
+  fun unlockOff(activity: Activity) {
     Timber.d("unlockOff: ")
-    if (Module.isOreoMr1) {
-      activity.setShowWhenLocked(false)
-    } else {
-      window.clearFlags(
-        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-          or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-      )
-    }
+    activity.setShowWhenLocked(false)
   }
 
   @Suppress("DEPRECATION")
@@ -82,40 +75,24 @@ object SuperUtil {
     if (wakeLock?.isHeld == true) {
       wakeLock.release()
     }
-    if (Module.isOreoMr1) {
-      activity.setShowWhenLocked(false)
-      activity.setTurnScreenOn(false)
-      window.clearFlags(
-        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-      )
-    } else {
-      window.clearFlags(
-        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-          or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-      )
-    }
-    unlockOff(activity, window)
+    activity.setShowWhenLocked(false)
+    activity.setTurnScreenOn(false)
+    window.clearFlags(
+      WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+    )
+    unlockOff(activity)
   }
 
   @Suppress("DEPRECATION")
   fun turnScreenOn(activity: Activity, window: Window) {
     Timber.d("turnScreenOn: ")
-    if (Module.isOreoMr1) {
-      activity.setTurnScreenOn(true)
-      activity.setShowWhenLocked(true)
-      window.addFlags(
-        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-      )
-    } else {
-      window.addFlags(
-        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-          or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-          or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-      )
-    }
+    activity.setTurnScreenOn(true)
+    activity.setShowWhenLocked(true)
+    window.addFlags(
+      WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+    )
     unlockOn(activity, window)
   }
 

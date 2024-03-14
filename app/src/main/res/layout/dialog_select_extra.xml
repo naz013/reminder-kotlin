@@ -41,24 +41,10 @@
             android:textAppearance="?textAppearanceBodyMedium" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/unlockCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/unlock_screen"
-            android:textAppearance="?textAppearanceBodyMedium" />
-
-        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/repeatCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/repeat_notification"
-            android:textAppearance="?textAppearanceBodyMedium" />
-
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/autoCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/enable_sending_sms_automatically"
             android:textAppearance="?textAppearanceBodyMedium" />
 
     </LinearLayout>

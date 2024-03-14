@@ -15,7 +15,11 @@ class PlacesTypeConverter {
 
   @TypeConverter
   fun toList(json: String): List<Place>? {
-    System.gc()
-    return Gson().fromJson<List<Place>>(json, object : TypeToken<List<Place>>() {}.type)
+    if (json.isEmpty()) {
+      return null
+    }
+    return runCatching {
+      Gson().fromJson<List<Place>>(json, object : TypeToken<List<Place>>() {}.type)
+    }.getOrNull()
   }
 }

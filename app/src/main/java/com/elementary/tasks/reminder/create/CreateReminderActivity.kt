@@ -25,7 +25,6 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.os.startActivity
@@ -57,7 +56,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
-import java.io.File
 import java.util.UUID
 
 @Deprecated("Replaced by new Builder")
@@ -69,10 +67,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val conversationViewModel by viewModel<ConversationViewModel>()
   private val stateViewModel by viewModel<ReminderStateViewModel>()
 
-  private val melodyPicker = MelodyPicker(this) {
-    fragment?.onMelodySelect(it)
-    showCurrentMelody()
-  }
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
     processVoiceResult(it)
   }
@@ -450,7 +444,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun selectMelody() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) { melodyPicker.pickMelody() }
   }
 
   override fun attachFile() {
@@ -550,18 +543,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       stateViewModel.reminder.summary = it
       editReminder(stateViewModel.reminder, false)
     }
-  }
-
-  private fun showCurrentMelody() {
-    val musicFile = File(stateViewModel.reminder.melodyPath)
-    showSnackbar(
-      String.format(getString(R.string.melody_x), musicFile.name),
-      getString(R.string.delete)
-    ) { removeMelody() }
-  }
-
-  private fun removeMelody() {
-    fragment?.onMelodySelect("")
   }
 
   private fun selectAnyFile() {

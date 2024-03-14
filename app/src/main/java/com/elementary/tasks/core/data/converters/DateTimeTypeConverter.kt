@@ -15,7 +15,7 @@ class DateTimeTypeConverter {
   @TypeConverter
   fun toDateTime(s: String?): LocalDateTime {
     if (s == null) return LocalDateTime.now()
-    return LocalDateTime.parse(s, FORMATTER)
+    return runCatching { LocalDateTime.parse(s, FORMATTER) }.getOrNull() ?: LocalDateTime.now()
   }
 
   companion object {

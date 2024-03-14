@@ -9,7 +9,6 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.finishWith
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Module.is10
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
@@ -192,34 +191,18 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
   }
 
   private fun themeNames(): Array<String> {
-    return if (is10) {
-      arrayOf(
-        getString(R.string.light),
-        getString(R.string.dark),
-        getString(R.string.system_default)
-      )
-    } else {
-      arrayOf(
-        getString(R.string.light),
-        getString(R.string.dark),
-        getString(R.string.set_by_battery_saver)
-      )
-    }
+    return arrayOf(
+      getString(R.string.light),
+      getString(R.string.dark),
+      getString(R.string.system_default)
+    )
   }
 
   private fun getTheme(index: Int): Int {
-    return if (is10) {
-      when (index) {
-        0 -> AppCompatDelegate.MODE_NIGHT_NO
-        1 -> AppCompatDelegate.MODE_NIGHT_YES
-        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-      }
-    } else {
-      when (index) {
-        0 -> AppCompatDelegate.MODE_NIGHT_NO
-        1 -> AppCompatDelegate.MODE_NIGHT_YES
-        else -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-      }
+    return when (index) {
+      0 -> AppCompatDelegate.MODE_NIGHT_NO
+      1 -> AppCompatDelegate.MODE_NIGHT_YES
+      else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
   }
 

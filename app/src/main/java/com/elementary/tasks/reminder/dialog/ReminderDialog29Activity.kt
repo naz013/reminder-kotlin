@@ -7,11 +7,9 @@ import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.PowerManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
@@ -69,7 +67,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   private var mReminder: Reminder? = null
   private var mControl: EventControl? = null
-  private var mWakeLock: PowerManager.WakeLock? = null
   private var isMockedTest = false
   private var isReminderShowed = false
   private val isAppType: Boolean
@@ -86,26 +83,12 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       prefs.rateCount = count
       return count == 10
     }
-  private val isGlobal: Boolean
-    get() = mReminder != null && mReminder?.useGlobal ?: false
-  private val isUnlockDevice: Boolean
-    get() {
-      val reminder = mReminder ?: return false
-      var has = prefs.isDeviceUnlockEnabled
-      if (!isGlobal) has = reminder.unlock
-      return has
-    }
   private val id: Int
     get() = mReminder?.uniqueId ?: 2121
   private val summary: String
     get() = mReminder?.summary ?: ""
   private val groupName: String
     get() = "reminder"
-  private val priority: Int
-    get() {
-      val reminder = mReminder ?: return 0
-      return reminder.priority
-    }
 
   private var mWasStopped = false
 
@@ -140,38 +123,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   }
 
   private fun getId() = intentString(Constants.INTENT_ID)
-
-  private fun init() {
-    setUpScreenOptions()
-  }
-
-  private fun canUnlockScreen(): Boolean {
-    return if (isGlobal) {
-      if (prefs.isDeviceUnlockEnabled) {
-        priority >= prefs.unlockPriority
-      } else {
-        false
-      }
-    } else {
-      isUnlockDevice
-    }
-  }
-
-  private fun setUpScreenOptions() {
-    Timber.d("setUpScreenOptions: ${canUnlockScreen()}")
-    if (canUnlockScreen()) {
-      SuperUtil.turnScreenOn(this, window)
-      SuperUtil.unlockOn(this, window)
-    }
-    mWakeLock = SuperUtil.wakeDevice(this)
-  }
-
-  private fun removeFlags() {
-    if (canUnlockScreen()) {
-      SuperUtil.unlockOff(this, window)
-      SuperUtil.turnScreenOff(this, window, mWakeLock)
-    }
-  }
 
   private fun initButtons() {
     binding.buttonOk.setOnClickListener { ok() }
@@ -441,8 +392,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     if (!Reminder.isGpsType(reminder.type)) {
       moreActionParams.canSnooze = true
     }
-
-    init()
   }
 
   private fun canSkip(): Boolean {
@@ -481,17 +430,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
     viewModel.reminder.removeObserver(mReminderObserver)
     lifecycle.removeObserver(viewModel)
-    removeFlags()
   }
 
   override fun handleBackPress(): Boolean {
-    if (prefs.isFoldingEnabled) {
-      jobScheduler.cancelReminder(mReminder?.uniqueId ?: 0)
-      removeFlags()
-      finish()
-    } else {
-      Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
-    }
+    Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     return true
   }
 
@@ -693,7 +635,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     viewModel.reminder.removeObserver(mReminderObserver)
     val reminder = mReminder
     if (reminder == null) {
-      removeFlags()
       cancelTasks()
       finish()
       return
@@ -705,7 +646,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
         onControl.invoke(control)
       }
       withUIContext {
-        removeFlags()
         cancelTasks()
         onEnd.invoke(reminder)
       }
@@ -718,7 +658,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     private const val ARG_TEST_ITEM = "arg_test_item"
     const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"
 
-    @RequiresApi(29)
     fun mockTest(context: Context, reminder: Reminder) {
       context.startActivity(ReminderDialog29Activity::class.java) {
         putExtra(ARG_TEST, true)
@@ -726,7 +665,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       }
     }
 
-    @RequiresApi(29)
     fun getLaunchIntent(context: Context, id: String): Intent {
       return context.buildIntent(ReminderDialog29Activity::class.java) {
         putExtra(Constants.INTENT_ID, id)

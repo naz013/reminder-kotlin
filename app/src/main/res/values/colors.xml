@@ -3,8 +3,6 @@
 
     <!--Material 3 -->
 
-    <color name="seed">#0C3B2E</color>
-
     <color name="md_theme_primary">#2C638B</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#CDE5FF</color>

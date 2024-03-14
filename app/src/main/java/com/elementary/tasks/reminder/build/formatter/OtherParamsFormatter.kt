@@ -19,7 +19,6 @@ class OtherParamsFormatter(
   private fun buildString(otherParams: OtherParams): String {
     return listOfNotNull(
       context.getString(R.string.vibrate).takeIf { otherParams.vibrate },
-      context.getString(R.string.unlock_screen).takeIf { otherParams.unlockScreen },
       context.getString(R.string.repeat_notification).takeIf { otherParams.repeatNotification },
       context.getString(R.string.voice_notification).takeIf { otherParams.notifyByVoice }
     ).joinToString(separator = "\n") { "• $it" }

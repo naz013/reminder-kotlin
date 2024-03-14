@@ -28,7 +28,6 @@ import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
-import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.os.startActivity
@@ -263,13 +262,6 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
           Action.REMINDER -> {
             stopView()
             reminderBuilderLauncher.openLogged(this) { }
-          }
-
-          Action.VOLUME -> {
-            stopView()
-            startActivity(VolumeDialog::class.java) {
-              addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-            }
           }
 
           Action.TRASH -> clearTrash()

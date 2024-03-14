@@ -16,7 +16,6 @@ import com.elementary.tasks.core.os.datapicker.FragmentLauncherCreator
 import com.elementary.tasks.core.os.datapicker.IntentPicker
 import com.elementary.tasks.core.os.datapicker.LauncherCreator
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
@@ -51,20 +50,6 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
       config.setPriorityPickerEnabled(it)
     }
 
-    if (!Module.is10) {
-      initParam(binding.melodyParam, config.isMelodyPickerEnabled()) {
-        config.setMelodyPickerEnabled(it)
-      }
-
-      binding.loudnessParam.gone()
-      initParam(binding.loudnessParam, config.isLoudnessPickerEnabled()) {
-        config.setLoudnessPickerEnabled(it)
-      }
-    } else {
-      binding.melodyParam.gone()
-      binding.loudnessParam.gone()
-    }
-
     initParam(binding.attachmentParam, config.isAttachmentPickerEnabled()) {
       config.setAttachmentPickerEnabled(it)
     }
@@ -85,11 +70,6 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
     binding.ledParam.visibleGone(Module.isPro)
     initParam(binding.ledParam, config.isLedPickerEnabled()) {
       config.setLedPickerEnabled(it)
-    }
-
-    binding.windowTypeParam.visibleGone(!Module.is10)
-    initParam(binding.windowTypeParam, config.isWindowTypePickerEnabled()) {
-      config.setWindowTypePickerEnabled(it)
     }
 
     binding.newBuilderSection.visible()

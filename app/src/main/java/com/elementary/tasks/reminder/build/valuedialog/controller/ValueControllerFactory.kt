@@ -7,10 +7,8 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.elementary.tasks.core.os.datapicker.MelodyPicker
 import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.SoundStackHolder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriHelper
 import com.elementary.tasks.core.utils.params.Prefs
@@ -43,7 +41,6 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
-import com.elementary.tasks.reminder.build.MelodyBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -57,7 +54,6 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
-import com.elementary.tasks.reminder.build.WindowTypeBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.action.ApplicationController
 import com.elementary.tasks.reminder.build.valuedialog.controller.action.EmailInputController
 import com.elementary.tasks.reminder.build.valuedialog.controller.action.PhoneInputController
@@ -76,11 +72,9 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.datetime.Repea
 import com.elementary.tasks.reminder.build.valuedialog.controller.datetime.TimeController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.GroupController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.LedColorController
-import com.elementary.tasks.reminder.build.valuedialog.controller.extra.MelodyController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.OtherParamsController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.PriorityController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.RepeatLimitController
-import com.elementary.tasks.reminder.build.valuedialog.controller.extra.WindowTypeController
 import com.elementary.tasks.reminder.build.valuedialog.controller.google.GoogleCalendarController
 import com.elementary.tasks.reminder.build.valuedialog.controller.google.GoogleCalendarDurationController
 import com.elementary.tasks.reminder.build.valuedialog.controller.google.GoogleTaskListController
@@ -107,7 +101,6 @@ class ValueControllerFactory(
   private val systemServiceProvider: SystemServiceProvider,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val soundStackHolder: SoundStackHolder,
   private val paramToTextAdapter: ParamToTextAdapter
 ) {
 
@@ -184,14 +177,7 @@ class ValueControllerFactory(
         packageManagerWrapper = packageManagerWrapper
       )
 
-      is WindowTypeBuilderItem -> WindowTypeController(builderItem)
       is OtherParamsBuilderItem -> OtherParamsController(builderItem)
-
-      is MelodyBuilderItem -> MelodyController(
-        builderItem = builderItem,
-        melodyPicker = MelodyPicker(fragment) { },
-        soundStackHolder = soundStackHolder
-      )
 
       is SubTasksBuilderItem -> SubTasksController(
         builderItem = builderItem,

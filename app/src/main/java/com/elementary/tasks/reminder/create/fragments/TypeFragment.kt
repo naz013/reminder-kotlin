@@ -232,27 +232,11 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
 
       is LoudnessPickerView -> {
-        if (!Module.is10) {
-          view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled())
-          view.bindProperty(iFace.state.reminder.volume) { loudness ->
-            iFace.state.reminder.volume = loudness
-          }
-        } else {
-          view.gone()
-        }
+        view.gone()
       }
 
       is MelodyView -> {
-        if (!Module.is10) {
-          view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled())
-          this.melodyView = view
-          view.onFileSelectListener = { iFace.selectMelody() }
-          view.bindProperty(iFace.state.reminder.melodyPath) { melody ->
-            iFace.state.reminder.melodyPath = melody
-          }
-        } else {
-          view.gone()
-        }
+        view.gone()
       }
 
       is PriorityPickerView -> {
@@ -294,10 +278,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
 
       is WindowTypeView -> {
-        view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
-        view.bindProperty(iFace.state.reminder.windowType) { type ->
-          iFace.state.reminder.windowType = type
-        }
+        view.gone()
       }
     }
   }
@@ -334,14 +315,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         }
       }
 
-      is LoudnessPickerView -> {
-        view.visibleGone(prefs.reminderCreatorParams.isLoudnessPickerEnabled() && !Module.is10)
-      }
-
-      is MelodyView -> {
-        view.visibleGone(prefs.reminderCreatorParams.isMelodyPickerEnabled() && !Module.is10)
-      }
-
       is PriorityPickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())
       }
@@ -356,10 +329,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
 
       is TuneExtraView -> {
         view.visibleGone(prefs.reminderCreatorParams.isTuneExtraPickerEnabled())
-      }
-
-      is WindowTypeView -> {
-        view.visibleGone(!Module.is10 && prefs.reminderCreatorParams.isWindowTypePickerEnabled())
       }
     }
   }
@@ -417,8 +386,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   }
 
   fun onMelodySelect(path: String) {
-    iFace.state.reminder.melodyPath = path
-    melodyView?.file = path
   }
 
   fun onAttachmentSelect(uri: Uri) {

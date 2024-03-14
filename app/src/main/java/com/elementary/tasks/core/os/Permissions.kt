@@ -42,23 +42,17 @@ object Permissions {
   }
 
   fun isBgLocationAllowed(context: Context): Boolean {
-    if (Module.is10) {
-      return ContextCompat.checkSelfPermission(
-        context,
-        BACKGROUND_LOCATION
-      ) == PackageManager.PERMISSION_GRANTED
-    }
-    return true
+    return ContextCompat.checkSelfPermission(
+      context,
+      BACKGROUND_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
   }
 
   fun checkForeground(context: Context): Boolean {
-    if (Module.isPie) {
-      return ContextCompat.checkSelfPermission(
-        context,
-        FOREGROUND_SERVICE
-      ) == PackageManager.PERMISSION_GRANTED
-    }
-    return true
+    return ContextCompat.checkSelfPermission(
+      context,
+      FOREGROUND_SERVICE
+    ) == PackageManager.PERMISSION_GRANTED
   }
 
   fun checkPermission(a: Context, vararg permissions: String): Boolean {

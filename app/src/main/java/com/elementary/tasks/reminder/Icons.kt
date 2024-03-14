@@ -4,11 +4,6 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 
 object Icons {
-  @DrawableRes
-  val MELODY: Int = R.drawable.ic_builder_melody
-
-  @DrawableRes
-  val WINDOW_TYPE: Int = R.drawable.ic_builder_window_type
 
   @DrawableRes
   val SUMMARY: Int = R.drawable.ic_fluent_text

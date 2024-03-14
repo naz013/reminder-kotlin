@@ -2,11 +2,9 @@ package com.elementary.tasks.core.services.action.birthday.process
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.elementary.tasks.birthdays.dialog.ShowBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PendingIntentWrapper
@@ -41,11 +39,10 @@ class BirthdayHandlerSilent(
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
 
-    val notificationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ShowBirthday29Activity.getLaunchIntent(contextProvider.context, birthday.uuId)
-    } else {
-      ShowBirthdayActivity.getLaunchIntent(contextProvider.context, birthday.uuId)
-    }
+    val notificationIntent = ShowBirthday29Activity.getLaunchIntent(
+      contextProvider.context,
+      birthday.uuId
+    )
     val intent = PendingIntentWrapper.getActivity(
       contextProvider.context,
       birthday.uniqueId,
