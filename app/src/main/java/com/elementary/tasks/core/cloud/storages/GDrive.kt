@@ -11,7 +11,6 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.settings.export.backups.UserItem
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -40,27 +39,6 @@ class GDrive(
   var statusCallback: StatusCallback? = null
   var isLogged: Boolean = false
     private set
-
-  val data: UserItem?
-    get() {
-      val service = driveService ?: return null
-      if (!isLogged) return null
-      try {
-        val about = service.about().get().setFields("user, storageQuota").execute()
-          ?: return null
-        val quota = about.storageQuota ?: return null
-        return UserItem(
-          name = about.user.displayName ?: "",
-          quota = quota.limit,
-          used = quota.usage,
-          count = countFiles(),
-          photo = about.user.photoLink ?: ""
-        )
-      } catch (e: Throwable) {
-        Timber.d(e, "Failed to get user data")
-      }
-      return null
-    }
 
   init {
     val user = prefs.driveUser
@@ -222,6 +200,9 @@ class GDrive(
   }
 
   fun clean() {
+    if (!isLogged) {
+      return
+    }
     catchError("Failed to clean") {
       val request = it.files().list()
         .setSpaces("appDataFolder")

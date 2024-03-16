@@ -53,7 +53,6 @@
     <string name="calendar">Calendar</string>
     <string name="title">Title</string>
     <string name="color">Color</string>
-    <string name="files">Files</string>
     <string name="delete_all">Delete all</string>
     <string name="search">Search</string>
     <string name="text_size">Text size</string>
@@ -72,7 +71,6 @@
     <string name="tasks">Tasks</string>
     <string name="groups">Groups</string>
     <string name="places">Places</string>
-    <string name="backup_files">Backup files</string>
     <string name="trash">Trash</string>
     <string name="feedback">Feedback</string>
     <string name="help">Help</string>
@@ -246,7 +244,6 @@
     <string name="permanent">Permanent</string>
     <string name="today">Today</string>
     <string name="less_than_minute">Less than minute</string>
-    <string name="birthday_notification">Notification</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="course_location">Approximate Location</string>
@@ -273,9 +270,6 @@
     <string name="no_recognizer_found">Speech recognition system not found!</string>
     <string name="change_group">Change group</string>
     <string name="move_to_trash">Move to trash</string>
-    <string name="all_files_removed">All files removed</string>
-    <string name="used_x">"Used %s"</string>
-    <string name="available_x">"Available %s"</string>
     <string name="change_color">Change color</string>
     <string name="list_view">List view</string>
     <string name="by_date_az">By date (A-Z)</string>
@@ -290,7 +284,6 @@
     <string name="reminder_is_outdated">Reminder is outdated, edit it first</string>
     <string name="everyday">Everyday</string>
     <string name="reminder">Reminder</string>
-    <string name="export_and_sync">Export &amp; sync</string>
     <string name="other">Other</string>
     <string name="general">General</string>
     <string name="xW">"%sW"</string>
@@ -859,5 +852,12 @@
     <string name="builder_error_no_places">No location selected. Choose a place for your reminder!</string>
     <string name="builder_error_create_reminder">Oops! Couldn\'t create your reminder. Check errors!</string>
     <string name="send_logs">Send logs</string>
+    <string name="import_">Import</string>
+    <string name="cloud_backup">Cloud Backup</string>
+    <string name="synchronization">Synchronization</string>
+    <string name="chooze_calendars">Chooze calendars</string>
+    <string name="days_to_birthday_explanation">How many days before the birthday should the notification appear</string>
+    <string name="birthday_notification_priority">Birthday notification priority</string>
+    <string name="birthday_remind_at_description">Select the time at which the notification should appear</string>
 
 </resources>

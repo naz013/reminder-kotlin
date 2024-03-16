@@ -355,11 +355,11 @@ class Prefs(
     set(value) = putLong(PrefsConstants.DEFAULT_CALENDAR_ID, value)
 
   var isFutureEventEnabled: Boolean
-    get() = getBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS)
+    get() = getBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
     set(value) = putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, value)
 
   var isRemindersInCalendarEnabled: Boolean
-    get() = getBoolean(PrefsConstants.REMINDERS_IN_CALENDAR)
+    get() = getBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, true)
     set(value) = putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, value)
 
   var startDay: Int
@@ -478,7 +478,7 @@ class Prefs(
     set(value) = putInt(PrefsConstants.LAST_NOTE_FONT_STYLE, value)
 
   var isNoteColorRememberingEnabled: Boolean
-    get() = getBoolean(PrefsConstants.REMEMBER_NOTE_COLOR)
+    get() = getBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, def = true)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, value)
 
   var lastNoteColor: Int

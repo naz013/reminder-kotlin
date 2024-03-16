@@ -14,12 +14,12 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
-import com.elementary.tasks.settings.BaseCalendarFragment
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentEventsImport :
-  BaseCalendarFragment<FragmentSettingsEventsImportBinding>(),
+  BaseSettingsFragment<FragmentSettingsEventsImportBinding>(),
   CompoundButton.OnCheckedChangeListener {
 
   private val viewModel by viewModel<EventsImportViewModel>()

@@ -2,6 +2,7 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
+        \n
         ✅ New Home screen design;\n
         ✅ New Reminder creation screen, more flexible;\n
         ⭐ Update Overall application design;\n

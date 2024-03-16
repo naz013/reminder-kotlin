@@ -17,15 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/appearance"
-            android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorTertiary" />
-
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/wearPrefs"
             android:layout_width="match_parent"

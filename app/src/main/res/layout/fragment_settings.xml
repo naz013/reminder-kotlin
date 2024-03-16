@@ -119,15 +119,6 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
-            app:prefs_primary_text="@string/export_and_sync"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/calendarSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -152,6 +143,15 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_alert"
             app:prefs_primary_text="@string/notification"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/exportSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
+            app:prefs_primary_text="@string/cloud_backup"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

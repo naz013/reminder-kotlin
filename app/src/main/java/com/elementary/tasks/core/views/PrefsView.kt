@@ -111,6 +111,7 @@ class PrefsView : RelativeLayout {
       if (iconId != 0 && SHOW_ICON) {
         binding.iconView.visible()
         binding.iconView.setImageResource(iconId)
+        binding.iconView.imageTintList = binding.prefsPrimaryText.textColors
       } else {
         binding.iconView.transparent()
       }
