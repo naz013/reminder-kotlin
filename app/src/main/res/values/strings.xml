@@ -38,8 +38,6 @@
     <string name="global_settings">Global settings</string>
     <string name="vibrate">Vibrate</string>
     <string name="infinite_vibrate">Infinite vibrate</string>
-    <string name="melody">Melody</string>
-    <string name="melody_x">"Melody %s"</string>
     <string name="voice_notification">Notify by voice (TTS)</string>
     <string name="language">Language</string>
     <string name="led_notification">LED notification</string>
@@ -134,7 +132,6 @@
     <string name="permanent_notification">Permanent notification</string>
     <string name="show_icon">Show icon</string>
     <string name="sound_and_vibration">Sound and vibration</string>
-    <string name="loudness">Loudness</string>
     <string name="notification">Notification</string>
     <string name="send_sms">Send SMS</string>
     <string name="launch_application">Launch application</string>
@@ -356,7 +353,6 @@
     <string name="grant">Grant</string>
     <string name="remember_last_used_note_color">Remember last used color of note</string>
     <string name="color_saturation">Color saturation</string>
-    <string name="notification_type">Notification type</string>
     <string name="simple">Simplified</string>
     <string name="full_screen">Full screen</string>
     <string name="acc_contact_photo">Photo of the contact</string>

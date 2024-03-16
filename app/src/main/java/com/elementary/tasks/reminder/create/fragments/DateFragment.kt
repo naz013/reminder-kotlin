@@ -88,17 +88,14 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
       binding.exportToCalendar,
       binding.exportToTasks,
       binding.tuneExtraView,
-      binding.melodyView,
       binding.attachmentView,
       binding.groupView,
       binding.taskSummary,
       binding.beforeView,
       binding.dateView,
-      binding.loudnessView,
       binding.priorityView,
       binding.repeatLimitView,
       binding.repeatView,
-      binding.windowTypeView,
       binding.actionView
     )
   }

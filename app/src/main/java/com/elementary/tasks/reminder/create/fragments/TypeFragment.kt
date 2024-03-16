@@ -37,13 +37,10 @@ import com.elementary.tasks.core.views.ExportToCalendarView
 import com.elementary.tasks.core.views.ExportToGoogleTasksView
 import com.elementary.tasks.core.views.GroupView
 import com.elementary.tasks.core.views.LedPickerView
-import com.elementary.tasks.core.views.LoudnessPickerView
-import com.elementary.tasks.core.views.MelodyView
 import com.elementary.tasks.core.views.PriorityPickerView
 import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
-import com.elementary.tasks.core.views.WindowTypeView
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
@@ -70,7 +67,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
     googleCalendarUtils.getCalendarsList()
   }
 
-  private var melodyView: MelodyView? = null
   private var attachmentView: AttachmentView? = null
   private var groupView: GroupView? = null
   private var actionView: ActionView? = null
@@ -231,14 +227,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         }
       }
 
-      is LoudnessPickerView -> {
-        view.gone()
-      }
-
-      is MelodyView -> {
-        view.gone()
-      }
-
       is PriorityPickerView -> {
         view.visibleGone(prefs.reminderCreatorParams.isPriorityPickerEnabled())
         view.bindProperty(iFace.state.reminder.priority) { priority ->
@@ -275,10 +263,6 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
         view.bindProperty(iFace.state.reminder) { reminder ->
           iFace.state.reminder.copyExtra(reminder)
         }
-      }
-
-      is WindowTypeView -> {
-        view.gone()
       }
     }
   }
