@@ -93,7 +93,6 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
       )
     }
 
-    binding.progressMessageView.text = getString(R.string.please_wait)
     binding.fab.setOnClickListener { addNewTask() }
     binding.connectButton.setOnClickListener { googleTasksButtonClick() }
 
@@ -135,17 +134,17 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
       binding.notLoggedView.visible()
       binding.notLoggedView.setOnClickListener { }
       binding.emptyItem.gone()
-      binding.listsScrollView.gone()
+      binding.listsView.gone()
       binding.fab.hide()
     } else {
-      binding.listsScrollView.visible()
+      binding.listsView.visible()
       binding.notLoggedView.gone()
       binding.fab.show()
     }
   }
 
   private fun updateProgress(b: Boolean) {
-    binding.progressView.visibleGone(b)
+    binding.swipeRefresh.isRefreshing = b
   }
 
   private fun addNewTask() {
@@ -190,7 +189,6 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
 
   private fun initList() {
     binding.swipeRefresh.setOnRefreshListener {
-      binding.swipeRefresh.isRefreshing = false
       viewModel.sync()
     }
 
@@ -252,7 +250,6 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
 
   private fun initEmpty() {
     binding.emptyItem.visible()
-    binding.emptyText.setText(R.string.no_google_tasks)
     reloadView(0)
   }
 

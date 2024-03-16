@@ -738,7 +738,7 @@
     <string name="builder_working_days">Working days</string>
     <string name="builder_all_days">All days</string>
     <string name="builder_countdown">Countdown</string>
-    <string name="builder_countdown_exclusion">Countdown exclusion</string>
+    <string name="builder_countdown_exclusion">Exclusion for Countdown</string>
     <string name="builder_set_countdown_time">Set countdown time</string>
     <string name="builder_add_exclusion_when_do_not_trigger_notification">Add exclusion, when do not trigger notification</string>
     <string name="builder_set_how_much_time_before_the_event_should_show_the_notification">Set how much time before the event should show the notification</string>

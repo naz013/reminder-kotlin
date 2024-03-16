@@ -4,33 +4,23 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.factory.GoogleTaskFactory
-import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
-import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.withUIContext
-import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.Random
 
 class GoogleTaskListViewModel(
   listId: String,
   private val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  private val updatesHelper: UpdatesHelper,
   private val googleTasksDao: GoogleTasksDao,
   private val googleTaskListsDao: GoogleTaskListsDao,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val googleTaskFactory: GoogleTaskFactory,
-  private val googleTaskListFactory: GoogleTaskListFactory
+  private val analyticsEventSender: AnalyticsEventSender
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   var googleTaskList = googleTaskListsDao.loadById(listId)
@@ -70,66 +60,6 @@ class GoogleTaskListViewModel(
       }
       postInProgress(false)
       postCommand(Commands.DELETED)
-    }
-  }
-
-  fun sync() {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
-    if (isSyncing) return
-    isSyncing = true
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      var lists: TaskLists? = null
-      try {
-        lists = gTasks.taskLists()
-      } catch (e: IOException) {
-        e.printStackTrace()
-      }
-
-      if (lists != null && lists.size > 0 && lists.items != null) {
-        for (item in lists.items) {
-          val listId = item.id
-          var taskList = googleTaskListsDao.getById(listId)
-          taskList = if (taskList != null) {
-            googleTaskListFactory.update(taskList, item)
-          } else {
-            val r = Random()
-            val color = r.nextInt(15)
-            googleTaskListFactory.create(item, color)
-          }
-          googleTaskListsDao.insert(taskList)
-          val tasks = gTasks.getTasks(listId)
-          if (tasks.isEmpty()) {
-            withUIContext {
-              postInProgress(false)
-              postCommand(Commands.UPDATED)
-              updatesHelper.updateTasksWidget()
-            }
-          } else {
-            val googleTasks = ArrayList<GoogleTask>()
-            for (task in tasks) {
-              var googleTask = googleTasksDao.getById(task.id)
-              if (googleTask != null) {
-                googleTask.listId = listId
-                googleTask = googleTaskFactory.update(googleTask, task)
-              } else {
-                googleTask = googleTaskFactory.create(task, listId)
-              }
-              googleTasks.add(googleTask)
-            }
-            googleTasksDao.insertAll(googleTasks)
-            withUIContext {
-              postInProgress(false)
-              postCommand(Commands.UPDATED)
-              updatesHelper.updateTasksWidget()
-            }
-          }
-        }
-      }
-      isSyncing = false
     }
   }
 

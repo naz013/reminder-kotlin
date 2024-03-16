@@ -69,6 +69,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
         else -> false
       }
     }) { menu ->
+      menu.clear()
       viewModel.currentTaskList?.also {
         menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
         if (it.def != 1) {
@@ -78,7 +79,6 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
       }
     }
 
-    binding.progressMessageView.text = getString(R.string.please_wait)
     binding.fab.setOnClickListener { addNewTask() }
     updateProgress(false)
     initEmpty()
@@ -139,7 +139,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   }
 
   private fun updateProgress(b: Boolean) {
-    binding.progressView.visibleGone(b)
+    binding.swipeRefresh.isRefreshing = b
   }
 
   private fun showTasks(googleTasks: List<UiGoogleTaskList>) {
@@ -149,7 +149,6 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private fun initList() {
     binding.swipeRefresh.setOnRefreshListener {
-      binding.swipeRefresh.isRefreshing = false
       viewModel.sync()
     }
 
@@ -190,7 +189,6 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private fun initEmpty() {
     binding.emptyItem.visible()
-    binding.emptyText.setText(R.string.no_google_tasks)
     reloadView(0)
   }
 

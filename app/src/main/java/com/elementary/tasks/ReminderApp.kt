@@ -9,7 +9,6 @@ import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
-import com.elementary.tasks.core.data.factory.dataFactory
 import com.elementary.tasks.core.data.repository.repositoryModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
@@ -26,6 +25,7 @@ import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
 import com.elementary.tasks.globalsearch.searchModule
+import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.voice.voiceModule
@@ -73,7 +73,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           adapterModule,
           actionModule,
           repositoryModule,
-          dataFactory,
           uiUtilsModule,
           reminderModule,
           widgetModule,
@@ -83,7 +82,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           calendarModule,
           searchModule,
           homeModule,
-          voiceModule
+          voiceModule,
+          googleTaskModule
         )
       )
     }
