@@ -28,7 +28,9 @@ data class GoogleTaskList(
   @SerializedName("color")
   var color: Int = 0,
   @SerializedName("systemDefault")
-  var systemDefault: Int = 0
+  var systemDefault: Int = 0,
+  @SerializedName("uploaded")
+  val uploaded: Boolean = false
 ) : Parcelable {
 
   @Ignore

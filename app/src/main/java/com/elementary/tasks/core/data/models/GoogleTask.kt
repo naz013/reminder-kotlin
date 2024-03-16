@@ -25,26 +25,28 @@ data class GoogleTask(
   var listId: String = "",
   var status: String = "",
   var uuId: String = "",
-  var hidden: Int = 0
+  var hidden: Int = 0,
+  val uploaded: Boolean = false
 ) : Parcelable {
 
   @Ignore
-  constructor(item: GoogleTask) : this() {
-    this.listId = item.listId
-    this.selfLink = item.selfLink
-    this.kind = item.kind
-    this.eTag = item.eTag
-    this.title = item.title
-    this.taskId = item.taskId
-    this.completeDate = item.completeDate
-    this.del = item.del
-    this.hidden = item.hidden
-    this.dueDate = item.dueDate
-    this.notes = item.notes
-    this.parent = item.parent
-    this.position = item.position
-    this.updateDate = item.updateDate
-    this.status = item.status
-    this.uuId = item.uuId
-  }
+  constructor(item: GoogleTask) : this(
+    listId = item.listId,
+    selfLink = item.selfLink,
+    kind = item.kind,
+    eTag = item.eTag,
+    title = item.title,
+    taskId = item.taskId,
+    completeDate = item.completeDate,
+    del = item.del,
+    hidden = item.hidden,
+    dueDate = item.dueDate,
+    notes = item.notes,
+    parent = item.parent,
+    position = item.position,
+    updateDate = item.updateDate,
+    status = item.status,
+    uuId = item.uuId,
+    uploaded = true
+  )
 }

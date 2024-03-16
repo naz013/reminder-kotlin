@@ -70,11 +70,6 @@ import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
-import com.elementary.tasks.googletasks.GoogleTasksViewModel
-import com.elementary.tasks.googletasks.list.TaskListViewModel
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewViewModel
-import com.elementary.tasks.googletasks.task.GoogleTaskViewModel
-import com.elementary.tasks.googletasks.tasklist.GoogleTaskListViewModel
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
@@ -167,61 +162,6 @@ val viewModelModule = module {
   }
   viewModel { GroupsViewModel(get(), get(), get(), get()) }
 
-  viewModel { (listId: String) ->
-    GoogleTaskListViewModel(
-      listId,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { (id: String) ->
-    GoogleTaskViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { (id: String) ->
-    GoogleTaskPreviewViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { (listId: String) ->
-    TaskListViewModel(
-      listId,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get(), get()) }
@@ -258,7 +198,7 @@ val viewModelModule = module {
     )
   }
 
-  viewModel { CloudViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
 
   viewModel {

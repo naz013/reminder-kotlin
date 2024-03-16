@@ -1,14 +1,15 @@
 package com.elementary.tasks.core.cloud
 
 import android.content.Context
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.factory.GoogleTaskFactory
-import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.googletasks.usecase.GoogleTaskFactory
+import com.elementary.tasks.googletasks.usecase.GoogleTaskListFactory
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
@@ -16,7 +17,6 @@ import com.google.api.services.tasks.Tasks
 import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
-import com.google.api.services.tasks.model.TaskLists
 import timber.log.Timber
 import java.util.Collections
 
@@ -34,10 +34,6 @@ class GTasks(
 
   var statusCallback: StatusCallback? = null
   var isLogged: Boolean = false
-    get() {
-      Timber.d("isLogged: $field")
-      return field
-    }
     private set
 
   init {
@@ -46,7 +42,7 @@ class GTasks(
   }
 
   fun login(user: String) {
-    Timber.d("login: ")
+    Traces.log("Login to Google Tasks")
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
       Timber.d("user -> $user")
       val credential = GoogleAccountCredential.usingOAuth2(
@@ -65,18 +61,29 @@ class GTasks(
   }
 
   fun logOut() {
-    Timber.d("logOut: ")
+    Traces.log("Log out from Google Tasks")
     prefs.tasksUser = Prefs.DRIVE_USER_NONE
     tasksService = null
     isLogged = false
     statusCallback?.onStatusChanged(false)
   }
 
-  fun taskLists(): TaskLists? {
+  fun getTaskLists(): List<TaskList> {
     return try {
-      withService { it.tasklists().list().execute() }
+      withService { it.tasklists().list().execute() }?.items
+        ?.filterNotNull()
+        ?: emptyList()
     } catch (e: Exception) {
       Timber.e(e, "Failed to get task lists")
+      emptyList()
+    }
+  }
+
+  fun getTaskList(listId: String): TaskList? {
+    return try {
+      withService { it.tasklists().get(listId).execute() }
+    } catch (e: Exception) {
+      Timber.e(e, "Failed to get task list")
       null
     }
   }
@@ -174,6 +181,17 @@ class GTasks(
       Timber.e(e, "Failed to get tasks listId=$listId")
     }
     return emptyList()
+  }
+
+  fun addTaskList(listTitle: String): TaskList? {
+    return try {
+      val taskList = TaskList()
+      taskList.title = listTitle
+      return withService { it.tasklists().insert(taskList).execute() }
+    } catch (e: Exception) {
+      Timber.e(e, "Failed to add task list $listTitle")
+      null
+    }
   }
 
   fun insertTasksList(listTitle: String, color: Int) {

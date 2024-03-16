@@ -9,19 +9,15 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.factory.GoogleTaskFactory
-import com.elementary.tasks.core.data.factory.GoogleTaskListFactory
-import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
-import com.google.api.services.tasks.model.TaskLists
+import com.elementary.tasks.googletasks.usecase.tasklist.SyncGoogleTaskList
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.Random
 
 class TaskListViewModel(
   private val listId: String,
@@ -31,8 +27,7 @@ class TaskListViewModel(
   private val googleTasksDao: GoogleTasksDao,
   private val googleTaskListsDao: GoogleTaskListsDao,
   private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
-  private val googleTaskFactory: GoogleTaskFactory,
-  private val googleTaskListFactory: GoogleTaskListFactory
+  private val syncGoogleTaskList: SyncGoogleTaskList
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _taskList = mutableLiveDataOf<GoogleTaskList>()
@@ -71,64 +66,26 @@ class TaskListViewModel(
     isSyncing = true
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      var lists: TaskLists? = null
-      try {
-        lists = gTasks.taskLists()
-      } catch (e: IOException) {
-        e.printStackTrace()
-      }
+      val taskList = googleTaskListsDao.getById(listId)
 
-      if (lists != null && lists.size > 0 && lists.items != null) {
-        for (item in lists.items) {
-          val listId = item.id
-          var taskList = googleTaskListsDao.getById(listId)
-          taskList = if (taskList != null) {
-            googleTaskListFactory.update(taskList, item)
-          } else {
-            val r = Random()
-            val color = r.nextInt(15)
-            googleTaskListFactory.create(item, color)
-          }
-          googleTaskListsDao.insert(taskList)
-          val tasks = gTasks.getTasks(listId)
-          if (tasks.isEmpty()) {
-            withUIContext {
-              postInProgress(false)
-              postCommand(Commands.UPDATED)
-              updatesHelper.updateTasksWidget()
-            }
-          } else {
-            val googleTasks = ArrayList<GoogleTask>()
-            for (task in tasks) {
-              var googleTask = googleTasksDao.getById(task.id)
-              if (googleTask != null) {
-                googleTask.listId = listId
-                googleTask = googleTaskFactory.update(googleTask, task)
-              } else {
-                googleTask = googleTaskFactory.create(task, listId)
-              }
-              googleTasks.add(googleTask)
-            }
-            googleTasksDao.insertAll(googleTasks)
-            withUIContext {
-              postInProgress(false)
-              postCommand(Commands.UPDATED)
-              updatesHelper.updateTasksWidget()
-            }
-          }
+      if (taskList == null) {
+        withUIContext {
+          postInProgress(false)
+          postCommand(Commands.FAILED)
         }
-
-        val local = googleTaskListsDao.all()
-        val hasDefault = local.firstOrNull { it.isDefault() }
-        if (hasDefault == null) {
-          val listItem = local[0].apply {
-            this.def = 1
-            this.systemDefault = 1
-          }
-          googleTaskListsDao.insert(listItem)
-        }
+        return@launch
       }
+      syncGoogleTaskList(taskList)
+
+      load()
+
       isSyncing = false
+
+      withUIContext {
+        postInProgress(false)
+        postCommand(Commands.UPDATED)
+        updatesHelper.updateTasksWidget()
+      }
     }
   }
 
