@@ -133,8 +133,8 @@ class GoogleTaskViewModel(
   }
 
   fun initDefaults() {
-    onDateSet(LocalDate.now())
-    onTimeSet(LocalTime.now())
+    _dateState.postValue(DateState.NoDate)
+    _timeState.postValue(TimeState.NoTime)
   }
 
   fun onDateStateChanged(enabled: Boolean) {
@@ -334,6 +334,7 @@ class GoogleTaskViewModel(
     data class SelectedDate(
       val formattedDate: String
     ) : DateState()
+
     data object NoDate : DateState()
   }
 
@@ -341,6 +342,7 @@ class GoogleTaskViewModel(
     data class SelectedTime(
       val formattedTime: String
     ) : TimeState()
+
     data object NoTime : TimeState()
   }
 }
