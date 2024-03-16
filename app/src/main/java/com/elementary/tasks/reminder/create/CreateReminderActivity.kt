@@ -41,7 +41,6 @@ import com.elementary.tasks.reminder.create.fragments.DateFragment
 import com.elementary.tasks.reminder.create.fragments.EmailFragment
 import com.elementary.tasks.reminder.create.fragments.LocationFragment
 import com.elementary.tasks.reminder.create.fragments.MonthFragment
-import com.elementary.tasks.reminder.create.fragments.PlacesTypeFragment
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface
 import com.elementary.tasks.reminder.create.fragments.ShopFragment
 import com.elementary.tasks.reminder.create.fragments.TimerFragment
@@ -125,7 +124,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       UiSelectorType.SHOP -> replaceFragment(ShopFragment())
       UiSelectorType.YEAR -> replaceFragment(YearFragment())
       UiSelectorType.GPS -> replaceFragment(LocationFragment())
-      UiSelectorType.GPS_PLACE -> replaceFragment(PlacesTypeFragment())
       UiSelectorType.RECUR -> replaceFragment(RecurFragment())
     }
   }
@@ -192,6 +190,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
               )
               editReminder(stateViewModel.reminder, false)
             }
+
             else -> {
             }
           }
@@ -293,28 +292,20 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       }
 
       else -> {
-        if (hasLocation) {
+        toSelect = if (hasLocation) {
           when (reminder.type) {
             Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
-            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> {
-              toSelect = UiSelectorType.GPS
+            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT, Reminder.BY_PLACES,
+            Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> {
+              UiSelectorType.GPS
             }
 
-            else -> if (Module.isPro) {
-              toSelect = when (reminder.type) {
-                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS,
-                Reminder.BY_PLACES_CALL -> {
-                  UiSelectorType.GPS_PLACE
-                }
-
-                else -> {
-                  UiSelectorType.DATE
-                }
-              }
+            else -> {
+              UiSelectorType.GPS
             }
           }
         } else {
-          toSelect = UiSelectorType.DATE
+          UiSelectorType.DATE
         }
       }
     }
@@ -344,9 +335,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     list.add(UiSelectorReminder(getString(R.string.shopping_list), UiSelectorType.SHOP))
     if (hasLocation) {
       list.add(UiSelectorReminder(getString(R.string.location), UiSelectorType.GPS))
-      if (Module.isPro) {
-        list.add(UiSelectorReminder(getString(R.string.places), UiSelectorType.GPS_PLACE))
-      }
     }
     if (Module.isPro) {
       list.add(UiSelectorReminder(getString(R.string.recur_custom), UiSelectorType.RECUR))
@@ -617,7 +605,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     YEAR,
     SHOP,
     GPS,
-    GPS_PLACE,
     RECUR
   }
 

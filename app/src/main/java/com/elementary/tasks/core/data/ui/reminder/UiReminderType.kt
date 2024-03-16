@@ -59,6 +59,8 @@ data class UiReminderType(
     SKYPE(50),
     MONTHLY(60),
     LOCATION_OUT(70),
+
+    @Deprecated("This type is removed from application")
     PLACE(80),
     YEARLY(90),
     RECUR(100)

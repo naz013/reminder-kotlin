@@ -23,6 +23,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     def propsFile = rootProject.file('keystore.properties')
