@@ -94,7 +94,6 @@ class GeolocationService : Service() {
     if (reminder.isNotificationShown) return
     when {
       Reminder.isBase(reminder.type, Reminder.BY_OUT) -> checkOut(locationA, reminder)
-      Reminder.isBase(reminder.type, Reminder.BY_PLACES) -> checkPlaces(locationA, reminder)
       else -> checkSimple(locationA, reminder)
     }
   }
@@ -110,20 +109,6 @@ class GeolocationService : Service() {
       showReminder(reminder)
     } else {
       showNotification(roundedDistance, reminder)
-    }
-  }
-
-  private suspend fun checkPlaces(locationA: Location, reminder: Reminder) {
-    for (place in reminder.places) {
-      val locationB = Location("point B")
-      locationB.latitude = place.latitude
-      locationB.longitude = place.longitude
-      val distance = locationA.distanceTo(locationB)
-      val roundedDistance = distance.roundToInt()
-      if (roundedDistance <= getRadius(place.radius)) {
-        showReminder(reminder)
-        break
-      }
     }
   }
 

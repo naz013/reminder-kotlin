@@ -88,7 +88,7 @@ class FeedbackFragment : BaseWebViewFragment() {
         context = requireContext(),
         menu = it,
         index = 1,
-        resource = R.drawable.ic_twotone_local_post_office_24px,
+        resource = R.drawable.ic_builder_send_message,
         isDark = isDark
       )
     }

@@ -293,8 +293,14 @@ data class Reminder(
     const val BY_OUT = 70
     const val BY_OUT_CALL = 71
     const val BY_OUT_SMS = 72
+
+    @Deprecated("Removed after 9.3.1")
     const val BY_PLACES = 80
+
+    @Deprecated("Removed after 9.3.1")
     const val BY_PLACES_CALL = 81
+
+    @Deprecated("Removed after 9.3.1")
     const val BY_PLACES_SMS = 82
     const val BY_DAY_OF_YEAR = 90
     const val BY_DAY_OF_YEAR_CALL = 91
@@ -331,7 +337,7 @@ data class Reminder(
     }
 
     fun isGpsType(type: Int): Boolean {
-      return isBase(type, BY_LOCATION) || isBase(type, BY_OUT) || isBase(type, BY_PLACES)
+      return isBase(type, BY_LOCATION) || isBase(type, BY_OUT)
     }
   }
 }
