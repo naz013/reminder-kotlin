@@ -64,7 +64,9 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="112dp" />
+
             </LinearLayout>
+
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.card.MaterialCardView
@@ -127,15 +129,33 @@
 
                         </FrameLayout>
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/colorButton"
+                        <FrameLayout
                             android:layout_width="56dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_select_color"
-                            android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_fluent_color_background" />
+                            android:layout_marginStart="8dp">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/colorButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/acc_select_color"
+                                android:scaleType="centerInside"
+                                app:srcCompat="@drawable/ic_fluent_color_background" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/colorSelectorView"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@drawable/note_tab_selector"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+
+                        </FrameLayout>
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/imageButton"
@@ -165,26 +185,57 @@
                                 android:id="@+id/reminderDotView"
                                 android:layout_width="6dp"
                                 android:layout_height="6dp"
-                                android:layout_gravity="bottom|end"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/note_reminder_dot"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/reminderSelectorView"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="8dp"
                                 android:layout_marginEnd="8dp"
                                 android:layout_marginBottom="8dp"
-                                android:background="@drawable/note_reminder_dot"
+                                android:background="@drawable/note_tab_selector"
                                 android:visibility="gone"
                                 tools:visibility="visible" />
 
                         </FrameLayout>
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/fontButton"
+                        <FrameLayout
                             android:layout_width="56dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_change_text_font_style"
-                            android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_fluent_text" />
+                            android:layout_marginStart="8dp">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/fontButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/acc_change_text_font_style"
+                                android:scaleType="centerInside"
+                                app:srcCompat="@drawable/ic_fluent_text" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/fontSelectorView"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@drawable/note_tab_selector"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+
+                        </FrameLayout>
 
                     </LinearLayout>
+
                 </HorizontalScrollView>
 
                 <LinearLayout

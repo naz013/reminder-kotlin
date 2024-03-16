@@ -137,44 +137,60 @@ class CreateNoteActivity :
     }
   }
 
-  private val tabController = TabController(
-    object : TabController.Listener {
-      override fun onTabSelected(tab: TabController.Tab) {
-        binding.colorLayout.gone()
-        binding.fontLayout.gone()
-        binding.reminderLayout.gone()
-        when (tab) {
-          TabController.Tab.FONT -> {
-            binding.fontLayout.visible()
-          }
-
-          TabController.Tab.COLOR -> {
-            binding.colorLayout.visible()
-          }
-
-          TabController.Tab.REMINDER -> {
-            binding.reminderLayout.visible()
-          }
-
-          TabController.Tab.NONE -> {
-          }
-        }
-      }
-
-      override fun onShow() {
-        binding.expandedLayout.visible()
-      }
-
-      override fun onHide() {
-        binding.expandedLayout.gone()
-      }
-    }
-  )
+  private lateinit var tabController: TabController
 
   override fun inflateBinding() = ActivityCreateNoteBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    tabController = TabController(
+      tabs = listOf(
+        TabController.TabView(
+          TabController.Tab.COLOR,
+          binding.colorSelectorView
+        ),
+        TabController.TabView(
+          TabController.Tab.REMINDER,
+          binding.reminderSelectorView
+        ),
+        TabController.TabView(
+          TabController.Tab.FONT,
+          binding.fontSelectorView
+        )
+      ),
+      listener = object : TabController.Listener {
+        override fun onTabSelected(tab: TabController.Tab) {
+          binding.colorLayout.gone()
+          binding.fontLayout.gone()
+          binding.reminderLayout.gone()
+          when (tab) {
+            TabController.Tab.FONT -> {
+              binding.fontLayout.visible()
+            }
+
+            TabController.Tab.COLOR -> {
+              binding.colorLayout.visible()
+            }
+
+            TabController.Tab.REMINDER -> {
+              binding.reminderLayout.visible()
+            }
+
+            TabController.Tab.NONE -> {
+            }
+          }
+        }
+
+        override fun onShow() {
+          binding.expandedLayout.visible()
+        }
+
+        override fun onHide() {
+          binding.expandedLayout.gone()
+        }
+      }
+    )
 
     lifecycle.addObserver(photoSelectionUtil)
 
