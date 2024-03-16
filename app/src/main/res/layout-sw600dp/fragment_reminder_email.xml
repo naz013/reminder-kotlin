@@ -150,30 +150,6 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp" />
 
-            <com.elementary.tasks.core.views.WindowTypeView
-                android:id="@+id/windowTypeView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="16dp" />
-
-            <com.elementary.tasks.core.views.MelodyView
-                android:id="@+id/melodyView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="16dp" />
-
-            <com.elementary.tasks.core.views.LoudnessPickerView
-                android:id="@+id/loudnessView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="16dp" />
-
             <com.elementary.tasks.core.views.AttachmentView
                 android:id="@+id/attachmentView"
                 android:layout_width="match_parent"

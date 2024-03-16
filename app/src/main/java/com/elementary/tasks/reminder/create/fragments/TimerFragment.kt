@@ -112,16 +112,13 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
       binding.exportToCalendar,
       binding.exportToTasks,
       binding.tuneExtraView,
-      binding.melodyView,
       binding.attachmentView,
       binding.groupView,
       binding.taskSummary,
       binding.beforeView,
-      binding.loudnessView,
       binding.priorityView,
       binding.repeatLimitView,
       binding.repeatView,
-      binding.windowTypeView,
       binding.actionView
     )
   }

@@ -21,13 +21,10 @@ import com.elementary.tasks.core.views.ExclusionPickerView
 import com.elementary.tasks.core.views.ExportToCalendarView
 import com.elementary.tasks.core.views.ExportToGoogleTasksView
 import com.elementary.tasks.core.views.LedPickerView
-import com.elementary.tasks.core.views.LoudnessPickerView
-import com.elementary.tasks.core.views.MelodyView
 import com.elementary.tasks.core.views.PriorityPickerView
 import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
-import com.elementary.tasks.core.views.WindowTypeView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -260,13 +257,6 @@ fun ActionView.bindProperty(value: String, listener: ((String) -> Unit)) {
   })
 }
 
-fun MelodyView.bindProperty(value: String, listener: ((String) -> Unit)) {
-  this.file = value
-  this.onFileUpdateListener = {
-    listener.invoke(it)
-  }
-}
-
 fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
   this.content = value
   this.onFileUpdateListener = {
@@ -274,23 +264,9 @@ fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
   }
 }
 
-fun LoudnessPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
-  this.setVolume(value)
-  this.onLevelUpdateListener = {
-    listener.invoke(it)
-  }
-}
-
 fun RepeatLimitView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   this.setLimit(value)
   this.onLevelUpdateListener = {
-    listener.invoke(it)
-  }
-}
-
-fun WindowTypeView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
-  this.windowType = value
-  this.onTypeChaneListener = {
     listener.invoke(it)
   }
 }

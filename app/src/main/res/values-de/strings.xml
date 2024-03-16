@@ -784,7 +784,6 @@
     <string name="schedule_good_morning">Guten Morgen</string>
     <string name="schedule_good_afternoon">Guten Tag</string>
     <string name="schedule_good_evening">Guten Abend</string>
-    <string name="also_add_a_reminder">Auch eine Erinnerung hinzufügen</string>
     <string name="no_time">Keine Zeit</string>
     <string name="shopping_lists">Einkaufslisten</string>
 </resources>

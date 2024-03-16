@@ -114,15 +114,12 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
       binding.exportToCalendar,
       binding.exportToTasks,
       binding.tuneExtraView,
-      binding.melodyView,
       binding.attachmentView,
       binding.groupView,
       binding.taskSummary,
       binding.beforeView,
-      binding.loudnessView,
       binding.priorityView,
       binding.repeatLimitView,
-      binding.windowTypeView,
       binding.actionView
     )
   }

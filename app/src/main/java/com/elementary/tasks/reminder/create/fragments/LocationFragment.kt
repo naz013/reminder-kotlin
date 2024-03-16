@@ -173,14 +173,11 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     return listOfNotNull(
       binding.ledView,
       binding.tuneExtraView,
-      binding.melodyView,
       binding.attachmentView,
       binding.groupView,
       binding.taskSummary,
       binding.dateView,
-      binding.loudnessView,
       binding.priorityView,
-      binding.windowTypeView,
       binding.actionView
     )
   }
