@@ -19,58 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/export"
-            android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorTertiary" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportToCalendarPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_builder_google_calendar_add"
-            app:prefs_primary_text="@string/export_to_google_calendar"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/eventDurationPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_builder_by_minute"
-            app:prefs_primary_text="@string/event_duration"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/selectCalendarPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/choose_calendar"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportToStockPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/export_to_stock_calendar"
-            app:prefs_type="check_switch" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/backup"
-            android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorTertiary" />
-
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/cloudsPrefs"
             android:layout_width="match_parent"
@@ -79,6 +27,16 @@
             app:prefs_icon="@drawable/ic_fluent_cloud"
             app:prefs_primary_text="@string/cloud_services"
             app:prefs_type="none" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/backup"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/backupDataPrefs"
@@ -94,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_builder_attach"
             app:prefs_primary_text="@string/backup_attached_files_and_melodies"
             app:prefs_type="check_switch" />
 
@@ -102,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_launcher_settings"
             app:prefs_primary_text="@string/backup_settings"
             app:prefs_type="check_switch" />
 
@@ -119,8 +79,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_flag"
             app:prefs_primary_text="@string/backup_flags"
             app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/cleanPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_broom"
+            app:prefs_primary_text="@string/clean"
+            app:prefs_type="none" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/synchronization"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/autoSyncPrefs"
@@ -136,23 +116,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_flag"
             app:prefs_primary_text="@string/sync_flags"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/backupsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/backup_files"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/cleanPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/clean"
             app:prefs_type="none" />
 
         <LinearLayout

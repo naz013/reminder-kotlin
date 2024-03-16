@@ -277,18 +277,11 @@
     <fragment
         android:id="@+id/exportSettingsFragment"
         android:name="com.elementary.tasks.settings.export.ExportSettingsFragment"
-        android:label="@string/export_and_sync"
+        android:label="@string/cloud_backup"
         tools:layout="@layout/fragment_settings_export">
         <action
             android:id="@+id/action_exportSettingsFragment_to_fragmentCloudDrives"
             app:destination="@id/fragmentCloudDrives"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_exportSettingsFragment_to_backupsFragment"
-            app:destination="@id/backupsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -299,11 +292,6 @@
         android:name="com.elementary.tasks.settings.export.FragmentCloudDrives"
         android:label="@string/cloud_services"
         tools:layout="@layout/fragment_settings_cloud_drives" />
-    <fragment
-        android:id="@+id/backupsFragment"
-        android:name="com.elementary.tasks.settings.export.BackupsFragment"
-        android:label="@string/backup_files"
-        tools:layout="@layout/fragment_settings_backups" />
     <fragment
         android:id="@+id/calendarSettingsFragment"
         android:name="com.elementary.tasks.settings.calendar.CalendarSettingsFragment"
@@ -331,20 +319,7 @@
         android:id="@+id/birthdaySettingsFragment"
         android:name="com.elementary.tasks.settings.BirthdaySettingsFragment"
         android:label="@string/birthdays"
-        tools:layout="@layout/fragment_settings_birthdays_settings">
-        <action
-            android:id="@+id/action_birthdaySettingsFragment_to_birthdayNotificationFragment"
-            app:destination="@id/birthdayNotificationFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
-    <fragment
-        android:id="@+id/birthdayNotificationFragment"
-        android:name="com.elementary.tasks.settings.BirthdayNotificationFragment"
-        android:label="@string/birthday_notification"
-        tools:layout="@layout/fragment_settings_birthday_notifications" />
+        tools:layout="@layout/fragment_settings_birthdays" />
     <fragment
         android:id="@+id/securitySettingsFragment"
         android:name="com.elementary.tasks.settings.security.SecuritySettingsFragment"

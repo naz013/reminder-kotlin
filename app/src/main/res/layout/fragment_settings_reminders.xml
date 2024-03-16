@@ -56,10 +56,20 @@
             app:prefs_secondary_text_on="@string/move_to_trash"
             app:prefs_type="check_switch" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/do_not_disturb"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
+
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/doNotDisturbPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_sleep"
             app:prefs_primary_text="@string/do_not_disturb"
@@ -95,9 +105,13 @@
             android:id="@+id/doNotDisturbIgnorePrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
+            app:prefs_divider_bottom="false"
             app:prefs_primary_text="@string/ignore_when_priority"
             app:prefs_type="none" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapse_toolbar_margin_top" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

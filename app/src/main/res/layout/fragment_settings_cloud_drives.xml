@@ -57,7 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -84,7 +84,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -118,8 +118,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/reminders"
+            android:layout_marginTop="32dp"
+            android:text="@string/google_tasks"
             android:textAppearance="?textAppearanceTitleSmall"
             android:textColor="?colorTertiary" />
 
