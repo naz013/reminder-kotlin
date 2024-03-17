@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.views
+package com.elementary.tasks.core.views.recyclerview
 
 import android.graphics.Rect
 import android.view.View

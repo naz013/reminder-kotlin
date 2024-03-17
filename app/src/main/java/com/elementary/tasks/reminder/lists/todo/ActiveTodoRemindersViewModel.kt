@@ -5,14 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.adapter.UiReminderListsAdapter
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -37,9 +36,9 @@ class ActiveTodoRemindersViewModel(
     reminderData.onNewQuery(query)
   }
 
-  fun skip(reminder: UiReminderList) {
+  fun skip(id: String) {
     withResult {
-      val fromDb = reminderDao.getById(reminder.id)
+      val fromDb = reminderDao.getById(id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
         workerLauncher.startWork(
@@ -54,10 +53,10 @@ class ActiveTodoRemindersViewModel(
     }
   }
 
-  fun toggleReminder(reminder: UiReminderList) {
+  fun toggleReminder(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val item = reminderDao.getById(reminder.id) ?: return@launch
+      val item = reminderDao.getById(id) ?: return@launch
       if (!eventControlFactory.getController(item).onOff()) {
         postInProgress(false)
         postCommand(Commands.OUTDATED)
@@ -74,9 +73,9 @@ class ActiveTodoRemindersViewModel(
     }
   }
 
-  fun moveToTrash(reminder: UiReminderList) {
+  fun moveToTrash(id: String) {
     withResult {
-      reminderDao.getById(reminder.id)?.let {
+      reminderDao.getById(id)?.let {
         it.isRemoved = true
         eventControlFactory.getController(it).disable()
         reminderDao.insert(it)

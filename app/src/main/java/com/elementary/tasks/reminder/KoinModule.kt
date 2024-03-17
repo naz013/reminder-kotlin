@@ -10,6 +10,8 @@ import com.elementary.tasks.reminder.build.bi.BiFilter
 import com.elementary.tasks.reminder.build.bi.CreatorConfigFilter
 import com.elementary.tasks.reminder.build.bi.LocationFilter
 import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
+import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
+import com.elementary.tasks.reminder.build.formatter.factory.RadiusFormatterFactory
 import com.elementary.tasks.reminder.build.logic.BuilderItemBlockedByConstraintCalculator
 import com.elementary.tasks.reminder.build.logic.BuilderItemMandatoryIfConstraintCalculator
 import com.elementary.tasks.reminder.build.logic.BuilderItemPermissionConstraintCalculator
@@ -65,6 +67,8 @@ import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetViewMod
 import com.elementary.tasks.reminder.dialog.ReminderViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
+import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
+import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.todo.ActiveTodoRemindersViewModel
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
@@ -260,10 +264,16 @@ val reminderModule = module {
 
   factory { ShopItemsFormatter(get()) }
 
+  single { RadiusFormatterFactory(get(), get()) }
+  single { PlaceFormatterFactory(get()) }
+
   factory { GoogleTaskToUiReminderPreviewGoogleTask(get(), get(), get(), get()) }
   factory { NoteToUiReminderPreviewNote(get(), get(), get(), get()) }
   factory { EventToUiReminderPreview(get(), get(), get(), get()) }
   factory { AttachmentToUiReminderPreviewAttachment(get(), get(), get(), get()) }
 
   factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get()) }
+
+  factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
+  factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 }

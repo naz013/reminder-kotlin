@@ -859,5 +859,8 @@
     <string name="days_to_birthday_explanation">How many days before the birthday should the notification appear</string>
     <string name="birthday_notification_priority">Birthday notification priority</string>
     <string name="birthday_remind_at_description">Select the time at which the notification should appear</string>
+    <string name="reminders_archive">Archive</string>
+    <string name="archive_is_empty">Archive is empty</string>
+    <string name="archive_was_emptied">Archive was emptied</string>
 
 </resources>

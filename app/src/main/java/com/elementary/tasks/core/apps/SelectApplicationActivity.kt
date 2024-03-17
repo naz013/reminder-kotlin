@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
-import com.elementary.tasks.core.views.SpaceItemDecoration
+import com.elementary.tasks.core.views.recyclerview.SpaceItemDecoration
 import com.elementary.tasks.databinding.ActivityApplicationListBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

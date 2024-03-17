@@ -14,7 +14,12 @@
         android:layout_marginStart="@dimen/list_margin"
         android:layout_marginEnd="@dimen/list_margin"
         tools:itemCount="5"
-        tools:listitem="@layout/list_item_reminder" />
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/list_item_reminder_new" />
 
     <LinearLayout
         android:id="@+id/emptyItem"
@@ -40,7 +45,7 @@
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:gravity="center|top"
-            android:text="@string/trash_is_empty"
+            android:text="@string/archive_is_empty"
             android:textAppearance="?textAppearanceHeadlineSmall" />
 
     </LinearLayout>
