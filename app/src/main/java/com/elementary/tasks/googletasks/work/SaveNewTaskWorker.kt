@@ -9,6 +9,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.google.gson.Gson
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class SaveNewTaskWorker(
   context: Context,
@@ -18,6 +19,7 @@ class SaveNewTaskWorker(
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
+    Timber.d("doWork: is logged = ${gTasks.isLogged}")
     val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
     if (json.isNotEmpty()) {
       withContext(dispatcherProvider.io()) {
