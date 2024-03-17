@@ -18,6 +18,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
@@ -30,6 +31,8 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
+import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
+import com.elementary.tasks.core.views.recyclerview.StaggeredSpaceItemDecoration
 import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -52,6 +55,7 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
 
   private val notesRecyclerAdapter = NotesRecyclerAdapter()
   private var enableGrid = false
+  private var oldItemDecoration: RecyclerView.ItemDecoration? = null
 
   private val searchMenuHandler = SearchMenuHandler(
     systemServiceProvider.provideSearchManager(),
@@ -114,7 +118,7 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
       R.id.action_list -> {
         enableGrid = !enableGrid
         prefs.isNotesGridEnabled = enableGrid
-        binding.recyclerView.layoutManager = layoutManager()
+        setListStyle()
         invalidateOptionsMenu()
         true
       }
@@ -169,6 +173,29 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
     toast(R.string.error_sending)
   }
 
+  private fun setListStyle() {
+    oldItemDecoration?.run {
+      binding.recyclerView.removeItemDecoration(this)
+    }
+    binding.recyclerView.layoutManager = layoutManager()
+    oldItemDecoration = getItemDecoration().also {
+      binding.recyclerView.addItemDecoration(it)
+    }
+  }
+
+  private fun getItemDecoration(): RecyclerView.ItemDecoration {
+    return if (enableGrid) {
+      SpaceBetweenItemDecoration(dp2px(8))
+    } else {
+      val spanCount = if (resources.getBoolean(R.bool.is_tablet)) {
+        resources.getInteger(R.integer.num_of_cols)
+      } else {
+        2
+      }
+      StaggeredSpaceItemDecoration(spanCount, dp2px(8), false)
+    }
+  }
+
   private fun layoutManager(): RecyclerView.LayoutManager {
     return if (enableGrid) {
       LinearLayoutManager(context)
@@ -186,7 +213,7 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
 
   private fun initList() {
     enableGrid = prefs.isNotesGridEnabled
-    binding.recyclerView.layoutManager = layoutManager()
+    setListStyle()
     notesRecyclerAdapter.actionsListener = object : ActionsListener<UiNoteList> {
       override fun onAction(view: View, position: Int, t: UiNoteList?, actions: ListActions) {
         when (actions) {
