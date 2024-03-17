@@ -17,6 +17,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
@@ -28,6 +29,7 @@ import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
+import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
@@ -211,6 +213,8 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
       }
     }
     binding.recyclerView.adapter = adapter
+    binding.recyclerView.addItemDecoration(SpaceBetweenItemDecoration(dp2px(8)))
+
     ViewUtils.listenScrollableView(binding.recyclerView) {
       if (it) {
         binding.fab.extend()

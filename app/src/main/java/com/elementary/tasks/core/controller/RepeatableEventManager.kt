@@ -40,7 +40,7 @@ abstract class RepeatableEventManager(
       googleTask.status = GTasks.TASKS_NEED_ACTION
       googleTask.title = reminder.summary
       googleTask.dueDate = due
-      googleTask.notes = textProvider.getText(R.string.from_reminder)
+      googleTask.notes = reminder.description ?: textProvider.getText(R.string.from_reminder)
       googleTask.uuId = reminder.uuId
       jobScheduler.scheduleSaveNewTask(googleTask, reminder.uuId)
     }

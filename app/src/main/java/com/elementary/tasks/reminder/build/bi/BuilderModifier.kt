@@ -234,8 +234,13 @@ class GoogleTaskListModifier(
   }
 
   override fun putInto(reminder: Reminder) {
-    reminder.taskListId = storage.value?.listId
-    reminder.exportToTasks = storage.value?.listId?.isNotEmpty() ?: false
+    storage.value?.run {
+      reminder.taskListId = this.listId
+      reminder.exportToTasks = true
+    } ?: run {
+      reminder.taskListId = null
+      reminder.exportToTasks = false
+    }
   }
 }
 
