@@ -6,9 +6,6 @@
     style="@style/UiComponentListCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/material_margin"
-    android:layout_marginTop="@dimen/list_item_top_margin"
-    android:layout_marginEnd="@dimen/material_margin"
     android:clipChildren="false"
     app:contentPadding="0dp">
 

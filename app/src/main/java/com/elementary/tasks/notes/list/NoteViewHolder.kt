@@ -26,7 +26,7 @@ class NoteViewHolder(
   ListItemNoteBinding.inflate(parent.inflater(), parent, false)
 ) {
 
-  var hasMore = true
+  private var hasMore = true
     set(value) {
       field = value
       updateMore()
