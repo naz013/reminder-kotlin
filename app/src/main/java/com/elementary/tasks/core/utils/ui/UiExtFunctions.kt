@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils.ui
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -73,8 +74,8 @@ fun <ViewT : View> View.bindView(@IdRes idRes: Int): Lazy<ViewT> {
 
 fun View.colorOf(@ColorRes color: Int) = ContextCompat.getColor(context, color)
 
-fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
-  doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
+fun AppCompatEditText.onTextChanged(f: (String?) -> Unit): TextWatcher {
+  return doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
 }
 
 fun View.inflater(): LayoutInflater = LayoutInflater.from(context)

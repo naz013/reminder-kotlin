@@ -29,6 +29,8 @@ class ShopItemViewHolder(
     )
 ) : RecyclerView.ViewHolder(binding.root) {
 
+  private var textWatcher: (String?) -> Unit = { }
+
   init {
     binding.itemCheckView.setOnClickListener {
       onCheckClicked(bindingAdapterPosition)
@@ -37,25 +39,29 @@ class ShopItemViewHolder(
       onRemoveClicked(bindingAdapterPosition)
     }
     binding.removeButton.transparent()
+
+    binding.textInputView.onTextChanged { text ->
+      textWatcher(text)
+    }
   }
 
   fun bind(item: ShopItem) {
     binding.textInputView.setText(item.summary)
 
-    binding.textInputView.onTextChanged { text ->
+    textWatcher = { text ->
       val nonNullText = text ?: ""
-      if (nonNullText == item.summary) {
-        return@onTextChanged
-      }
-      binding.removeButton.visibleInvisible(nonNullText.isNotEmpty())
-      if (nonNullText.endsWith("\n")) {
-        if (nonNullText.length == 1) {
-          onTextChanged(bindingAdapterPosition, "")
+      if (nonNullText != item.summary) {
+        binding.removeButton.visibleInvisible(nonNullText.isNotEmpty())
+        if (nonNullText.endsWith("\n")) {
+          if (nonNullText.length == 1) {
+            binding.textInputView.setText("")
+            binding.removeButton.transparent()
+          } else {
+            onEnterPressed(bindingAdapterPosition)
+          }
         } else {
-          onEnterPressed(bindingAdapterPosition)
+          onTextChanged(bindingAdapterPosition, nonNullText)
         }
-      } else {
-        onTextChanged(bindingAdapterPosition, nonNullText)
       }
     }
 
