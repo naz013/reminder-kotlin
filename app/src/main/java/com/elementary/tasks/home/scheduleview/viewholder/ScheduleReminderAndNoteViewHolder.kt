@@ -1,6 +1,7 @@
 package com.elementary.tasks.home.scheduleview.viewholder
 
 import android.view.ViewGroup
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.inflater
@@ -14,7 +15,7 @@ class ScheduleReminderAndNoteViewHolder(
   private val noteCommon: ScheduleNoteViewHolderCommon,
   private val reminderClickListener: (Int) -> Unit,
   private val noteClickListener: (Int) -> Unit
-) : BaseScheduleHolder<ListItemScheduleReminderAndNoteBinding>(
+) : HolderBinding<ListItemScheduleReminderAndNoteBinding>(
   ListItemScheduleReminderAndNoteBinding.inflate(parent.inflater(), parent, false)
 ) {
 

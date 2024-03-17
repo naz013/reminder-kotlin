@@ -1,6 +1,7 @@
 package com.elementary.tasks.home.scheduleview.viewholder
 
 import android.view.ViewGroup
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.inflater
@@ -12,7 +13,7 @@ class ScheduleBirthdayHolder(
   parent: ViewGroup,
   private val common: ScheduleReminderViewHolderCommon,
   private val listener: (Int) -> Unit
-) : BaseScheduleHolder<ListItemScheduleBirthdayBinding>(
+) : HolderBinding<ListItemScheduleBirthdayBinding>(
   ListItemScheduleBirthdayBinding.inflate(parent.inflater(), parent, false)
 ) {
 

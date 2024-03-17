@@ -48,10 +48,13 @@
             android:layout_marginStart="@dimen/list_margin"
             android:layout_marginEnd="@dimen/list_margin"
             android:clipToPadding="false"
-            android:paddingBottom="96dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="160dp"
             android:visibility="visible"
             tools:itemCount="5"
-            tools:listitem="@layout/list_item_reminder" />
+            tools:listitem="@layout/list_item_reminder_new" />
 
     </LinearLayout>
 

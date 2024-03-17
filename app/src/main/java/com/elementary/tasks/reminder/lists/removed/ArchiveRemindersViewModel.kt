@@ -5,15 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -41,9 +40,9 @@ class ArchiveRemindersViewModel(
     return events.value?.isNotEmpty() ?: false
   }
 
-  fun deleteReminder(reminder: UiReminderListData) {
+  fun deleteReminder(id: String) {
     withResult {
-      reminderDao.getById(reminder.id)?.let {
+      reminderDao.getById(id)?.let {
         eventControlFactory.getController(it).disable()
         reminderDao.delete(it)
         googleCalendarUtils.deleteEvents(it.uuId)

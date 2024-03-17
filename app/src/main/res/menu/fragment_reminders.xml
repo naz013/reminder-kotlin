@@ -20,7 +20,7 @@
     <item
         android:id="@+id/action_archive"
         android:icon="@drawable/ic_fluent_archive"
-        android:title="@string/trash"
+        android:title="@string/reminders_archive"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
