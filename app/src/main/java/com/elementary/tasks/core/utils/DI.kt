@@ -62,14 +62,6 @@ import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.work.BackupDataWorker
-import com.elementary.tasks.core.work.BackupSettingsWorker
-import com.elementary.tasks.core.work.BackupWorker
-import com.elementary.tasks.core.work.DeleteFileWorker
-import com.elementary.tasks.core.work.ExportAllDataWorker
-import com.elementary.tasks.core.work.LoadFileWorker
-import com.elementary.tasks.core.work.SyncDataWorker
-import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
@@ -108,11 +100,6 @@ import org.koin.dsl.module
 import org.threeten.bp.ZoneId
 
 val workerModule = module {
-  worker { BackupDataWorker(get(), get(), get(), get()) }
-  worker { LoadFileWorker(get(), get(), get(), get()) }
-  worker { DeleteFileWorker(get(), get(), get(), get()) }
-  worker { BackupSettingsWorker(get(), get(), get(), get()) }
-  worker { SyncDataWorker(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   worker { SaveNewTaskWorker(get(), get(), get(), get()) }
   worker { UpdateTaskWorker(get(), get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
@@ -247,35 +234,35 @@ val viewModelModule = module {
 }
 
 val converterModule = module {
-  single { BirthdayConverter(get(), get()) }
-  single { GroupConverter(get()) }
-  single { NoteConverter(get(), get()) }
-  single { PlaceConverter(get()) }
-  single { ReminderConverter(get(), get()) }
-  single { SettingsConverter(get()) }
-  single { ConverterManager(get(), get(), get(), get(), get(), get()) }
+  factory { BirthdayConverter(get()) }
+  factory { GroupConverter(get()) }
+  factory { NoteConverter(get(), get()) }
+  factory { PlaceConverter(get()) }
+  factory { ReminderConverter(get()) }
+  factory { SettingsConverter(get()) }
+  factory { ConverterManager(get(), get(), get(), get(), get(), get()) }
 }
 
 val completableModule = module {
-  single { ReminderCompletable(get(), get(), get(), get(), get()) }
-  single { ReminderDeleteCompletable(get()) }
-  single { CompletableManager(get(), get()) }
+  factory { ReminderCompletable(get(), get(), get(), get(), get()) }
+  factory { ReminderDeleteCompletable(get()) }
+  factory { CompletableManager(get(), get()) }
 }
 
 val storageModule = module {
-  single { Dropbox(get(), get()) }
-  single { GDrive(get(), get(), get(), get()) }
-  single { StorageManager(get(), get(), get(), get()) }
+  single { Dropbox(get()) }
+  single { GDrive(get(), get()) }
+  factory { StorageManager(get(), get()) }
 }
 
 val dataFlowRepositoryModule = module {
-  single { BirthdayDataFlowRepository(get()) }
-  single { GroupDataFlowRepository(get()) }
-  single { NoteDataFlowRepository(get(), get(), get()) }
-  single { PlaceDataFlowRepository(get()) }
-  single { ReminderDataFlowRepository(get()) }
-  single { SettingsDataFlowRepository(get()) }
-  single { RepositoryManager(get(), get(), get(), get(), get(), get()) }
+  factory { BirthdayDataFlowRepository(get()) }
+  factory { GroupDataFlowRepository(get()) }
+  factory { NoteDataFlowRepository(get(), get(), get()) }
+  factory { PlaceDataFlowRepository(get()) }
+  factory { ReminderDataFlowRepository(get()) }
+  factory { SettingsDataFlowRepository(get()) }
+  factory { RepositoryManager(get(), get(), get(), get(), get(), get()) }
 }
 
 fun dbModule(context: Context): Module {
@@ -304,8 +291,8 @@ val utilModule = module {
   single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { ThemeProvider(get(), get()) }
-  single { MemoryUtil(get()) }
-  single { UriReader(get()) }
+  single { MemoryUtil() }
+  factory { UriReader(get()) }
   single { BackupTool(get(), get(), get(), get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get(), get(), get()) }
@@ -314,7 +301,9 @@ val utilModule = module {
   single { CacheUtil(get(), get()) }
   single { GlobalButtonObservable() }
   single { ImagesSingleton(get()) }
-  single { SyncManagers(get(), get(), get(), get()) }
+
+  factory { SyncManagers(get(), get(), get(), get()) }
+
   single {
     EventControlFactory(
       get(),
@@ -331,8 +320,8 @@ val utilModule = module {
     )
   }
 
-  single { RuleBuilder() }
-  single { TagParser() }
+  factory { RuleBuilder() }
+  factory { TagParser() }
 
   single { RecurrenceManager(get(), get(), get()) }
   single { RecurEventManager(get()) }
@@ -345,16 +334,12 @@ val utilModule = module {
 
   factory { WidgetDataProvider(get(), get(), get(), get()) }
 
-  single { SyncWorker(get(), get(), get(), get(), get(), get()) }
-  single { BackupWorker(get(), get()) }
-  single { ExportAllDataWorker(get()) }
-
   factory { EnableThread(get(), get()) }
-  single { NoteImageMigration(get(), get()) }
+  factory { NoteImageMigration(get(), get()) }
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
 
-  single { DispatcherProvider() }
+  factory { DispatcherProvider() }
 
   single { WorkManagerProvider(get()) }
   single { WorkerLauncher(get(), get()) }

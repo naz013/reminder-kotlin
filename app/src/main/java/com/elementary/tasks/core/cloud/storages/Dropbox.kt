@@ -12,17 +12,17 @@ import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.Prefs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 class Dropbox(
-  private val prefs: Prefs,
-  private val dateTimeManager: DateTimeManager
+  private val prefs: Prefs
 ) : Storage() {
 
   private val rootFolder = "/"
@@ -38,8 +38,6 @@ class Dropbox(
 
   private var mDBApi: DbxClientV2? = null
 
-  private val indexDataFile = IndexDataFile()
-
   val isLinked: Boolean
     get() = mDBApi != null && prefs.dropboxToken != ""
 
@@ -47,43 +45,24 @@ class Dropbox(
     startSession()
   }
 
-  override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
-    if (!isLinked) {
-      return
-    }
-    val api = mDBApi ?: return
-    val stream = fileIndex.stream
-    if (stream == null) {
-      return
-    } else {
-      val folder = folderFromExt(metadata.fileExt)
-      Timber.d("backup: ${metadata.fileName}, $folder")
-      val fis = ByteArrayInputStream(stream.toByteArray())
-      try {
-        api.files().uploadBuilder(folder + metadata.fileName)
-          .withMode(WriteMode.OVERWRITE)
-          .uploadAndFinish(fis)
-        fis.close()
-        stream.close()
-      } catch (e: Throwable) {
-        Timber.d(e)
-      }
-    }
-  }
-
-  private fun backup(json: String, metadata: Metadata) {
+  override suspend fun backup(stream: CopyByteArrayStream, metadata: Metadata) {
     if (!isLinked) {
       return
     }
     val api = mDBApi ?: return
     val folder = folderFromExt(metadata.fileExt)
     Timber.d("backup: ${metadata.fileName}, $folder")
-    val fis = ByteArrayInputStream(json.toByteArray())
+    val fis = ByteArrayInputStream(stream.toByteArray())
     try {
       api.files().uploadBuilder(folder + metadata.fileName)
         .withMode(WriteMode.OVERWRITE)
         .uploadAndFinish(fis)
-      fis.close()
+      withContext(Dispatchers.IO) {
+        fis.close()
+      }
+      withContext(Dispatchers.IO) {
+        stream.close()
+      }
     } catch (e: Throwable) {
       Timber.d(e)
     }
@@ -150,53 +129,6 @@ class Dropbox(
     }
   }
 
-  override suspend fun hasIndex(id: String): Boolean {
-    return indexDataFile.hasIndex(id)
-  }
-
-  override fun needBackup(id: String, updatedAt: String): Boolean {
-    return indexDataFile.isFileChanged(id, updatedAt)
-  }
-
-  override suspend fun removeIndex(id: String) {
-    indexDataFile.removeIndex(id)
-    saveIndexFile()
-  }
-
-  override suspend fun saveIndex(fileIndex: FileIndex) {
-    indexDataFile.addIndex(fileIndex)
-    saveIndexFile()
-  }
-
-  override suspend fun loadIndex() {
-    loadIndexFile()
-  }
-
-  override suspend fun saveIndex() {
-    saveIndexFile()
-  }
-
-  private suspend fun loadIndexFile() {
-    val inputStream = restore(IndexDataFile.FILE_NAME)
-    indexDataFile.parse(inputStream)
-  }
-
-  private fun saveIndexFile() {
-    launchDefault {
-      val json = indexDataFile.toJson() ?: return@launchDefault
-      backup(
-        json = json,
-        metadata = Metadata(
-          id = "",
-          fileName = IndexDataFile.FILE_NAME,
-          fileExt = FileConfig.FILE_NAME_JSON,
-          updatedAt = dateTimeManager.getNowGmtDateTime(),
-          meta = "Index file"
-        )
-      )
-    }
-  }
-
   private fun folderFromFileName(fileName: String): String {
     if (fileName.isEmpty()) return reminderFolder
     val parts = fileName.split(".".toRegex())
@@ -233,10 +165,6 @@ class Dropbox(
       .build()
 
     mDBApi = DbxClientV2(requestConfig, token)
-
-    if (!indexDataFile.isLoaded) {
-      launchDefault { loadIndexFile() }
-    }
   }
 
   fun userName(): String {

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
@@ -25,22 +24,11 @@ class NoteConverter(
     )
   }
 
-  override fun convert(t: NoteWithImages): FileIndex? {
-    return try {
-      val stream = CopyByteArrayStream()
-      memoryUtil.toStream(t, stream)
-      FileIndex().apply {
-        this.stream = stream
-        this.ext = FileConfig.FILE_NAME_NOTE
-        this.id = t.getKey()
-        this.updatedAt = t.getGmtTime()
-        this.type = IndexTypes.TYPE_NOTE
-        this.readyToBackup = true
-      }
-    } catch (e: Exception) {
-      Timber.e(e)
-      null
-    }
+  override fun toOutputStream(t: NoteWithImages): CopyByteArrayStream? {
+    val oldNote = noteToOldNoteConverter.toOldNote(t) ?: return null
+    val stream = CopyByteArrayStream()
+    memoryUtil.toStream(oldNote, stream)
+    return stream
   }
 
   override fun convert(stream: InputStream): NoteWithImages? {

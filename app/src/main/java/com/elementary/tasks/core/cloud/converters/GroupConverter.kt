@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
@@ -22,22 +21,10 @@ class GroupConverter(
     )
   }
 
-  override fun convert(t: ReminderGroup): FileIndex? {
-    return try {
-      val stream = CopyByteArrayStream()
-      memoryUtil.toStream(t, stream)
-      FileIndex().apply {
-        this.stream = stream
-        this.ext = FileConfig.FILE_NAME_GROUP
-        this.id = t.groupUuId
-        this.updatedAt = t.groupDateTime
-        this.type = IndexTypes.TYPE_GROUP
-        this.readyToBackup = true
-      }
-    } catch (e: Exception) {
-      Timber.e(e)
-      null
-    }
+  override fun toOutputStream(t: ReminderGroup): CopyByteArrayStream {
+    val stream = CopyByteArrayStream()
+    memoryUtil.toStream(t, stream)
+    return stream
   }
 
   override fun convert(stream: InputStream): ReminderGroup? {

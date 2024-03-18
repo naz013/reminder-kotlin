@@ -24,6 +24,7 @@ import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
+import com.elementary.tasks.core.work.workModule
 import com.elementary.tasks.globalsearch.searchModule
 import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.home.homeModule
@@ -83,7 +84,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           searchModule,
           homeModule,
           voiceModule,
-          googleTaskModule
+          googleTaskModule,
+          workModule
         )
       )
     }

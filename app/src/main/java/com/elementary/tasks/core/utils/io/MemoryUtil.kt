@@ -9,9 +9,7 @@ import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
@@ -37,9 +35,7 @@ import java.util.*
 import kotlin.math.ln
 import kotlin.math.pow
 
-class MemoryUtil(
-  private val noteToOldNoteConverter: NoteToOldNoteConverter
-) {
+class MemoryUtil {
 
   @Throws(IOException::class)
   fun writeFileNoEncryption(file: File, data: String?): String? {
@@ -75,7 +71,6 @@ class MemoryUtil(
 
   fun toStream(any: Any, outputStream: OutputStream): Boolean {
     try {
-      System.gc()
       val output64 = Base64OutputStream(outputStream, Base64.DEFAULT)
       val bufferedWriter = BufferedWriter(OutputStreamWriter(output64, StandardCharsets.UTF_8))
       val writer = JsonWriter(bufferedWriter)
@@ -84,16 +79,12 @@ class MemoryUtil(
         is Place -> object : TypeToken<Place>() {}.type
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is NoteWithImages -> object : TypeToken<OldNote>() {}.type
+        is OldNote -> object : TypeToken<OldNote>() {}.type
         else -> null
       } ?: return false
       Timber.d("toStream: $type, $any")
       try {
-        Gson().toJson(
-          if (any is NoteWithImages) noteToOldNoteConverter.toOldNote(any) else any,
-          type,
-          writer
-        )
+        Gson().toJson(any, type, writer)
       } catch (e: Exception) {
         return false
       } catch (e: OutOfMemoryError) {

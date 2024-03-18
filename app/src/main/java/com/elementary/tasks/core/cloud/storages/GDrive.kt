@@ -6,10 +6,8 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.Prefs
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
@@ -18,6 +16,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.ByteArrayInputStream
@@ -27,14 +26,10 @@ import java.util.Collections
 
 class GDrive(
   private val context: Context,
-  private val prefs: Prefs,
-  private val dispatcherProvider: DispatcherProvider,
-  private val dateTimeManager: DateTimeManager
+  private val prefs: Prefs
 ) : Storage() {
 
   private var driveService: Drive? = null
-
-  private val indexDataFile = IndexDataFile()
 
   var statusCallback: StatusCallback? = null
   var isLogged: Boolean = false
@@ -58,9 +53,6 @@ class GDrive(
         .build()
       isLogged = true
       statusCallback?.onStatusChanged(true)
-      if (!indexDataFile.isLoaded) {
-        launchDefault { loadIndexFile() }
-      }
     } else {
       logOut()
     }
@@ -73,30 +65,25 @@ class GDrive(
     statusCallback?.onStatusChanged(false)
   }
 
-  override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
+  override suspend fun backup(stream: CopyByteArrayStream, metadata: Metadata) {
     val service = driveService ?: return
     if (!isLogged) return
     if (TextUtils.isEmpty(metadata.fileName)) return
-    val stream = fileIndex.stream
-    if (stream == null) {
-      return
-    } else {
-      try {
-        removeAllCopies(metadata.fileName)
-        val fileMetadata = File()
-        fileMetadata.name = metadata.fileName
-        fileMetadata.description = metadata.meta
-        fileMetadata.parents = PARENTS
-        val mediaContent = InputStreamContent("text/plain", stream.toInputStream())
-        val driveFile = service.files().create(fileMetadata, mediaContent)
-          .setFields("id")
-          .execute()
+    try {
+      removeAllCopies(metadata.fileName)
+      val fileMetadata = File()
+      fileMetadata.name = metadata.fileName
+      fileMetadata.description = metadata.meta
+      fileMetadata.parents = PARENTS
+      val mediaContent = InputStreamContent("text/plain", stream.toInputStream())
+      service.files().create(fileMetadata, mediaContent)
+        .setFields("id")
+        .execute()
+      withContext(Dispatchers.IO) {
         stream.close()
-        Timber.d("backup: STREAM ${driveFile.id}, ${metadata.fileName}")
-        if (BuildConfig.DEBUG) showContent(driveFile.id)
-      } catch (e: Throwable) {
-        Timber.d(e)
       }
+    } catch (e: Throwable) {
+      Timber.d(e)
     }
   }
 
@@ -173,32 +160,6 @@ class GDrive(
     removeAllCopies(fileName)
   }
 
-  override suspend fun hasIndex(id: String): Boolean {
-    return indexDataFile.hasIndex(id)
-  }
-
-  override suspend fun saveIndex(fileIndex: FileIndex) {
-    indexDataFile.addIndex(fileIndex)
-    saveIndexFile()
-  }
-
-  override suspend fun removeIndex(id: String) {
-    indexDataFile.removeIndex(id)
-    saveIndexFile()
-  }
-
-  override suspend fun saveIndex() {
-    saveIndexFile()
-  }
-
-  override fun needBackup(id: String, updatedAt: String): Boolean {
-    return indexDataFile.isFileChanged(id, updatedAt)
-  }
-
-  override suspend fun loadIndex() {
-    loadIndexFile()
-  }
-
   fun clean() {
     if (!isLogged) {
       return
@@ -235,27 +196,6 @@ class GDrive(
     }
   }
 
-  private suspend fun loadIndexFile() {
-    val inputStream = restore(IndexDataFile.FILE_NAME)
-    indexDataFile.parse(inputStream)
-  }
-
-  private suspend fun saveIndexFile() {
-    withContext(dispatcherProvider.default()) {
-      val json = indexDataFile.toJson() ?: return@withContext
-      backup(
-        json = json,
-        metadata = Metadata(
-          id = "",
-          fileName = IndexDataFile.FILE_NAME,
-          fileExt = FileConfig.FILE_NAME_JSON,
-          updatedAt = dateTimeManager.getNowGmtDateTime(),
-          meta = "Index file"
-        )
-      )
-    }
-  }
-
   private fun countFiles(): Int {
     return catchError("Failed to count files") {
       var count = 0
@@ -276,7 +216,6 @@ class GDrive(
             title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++
             title.endsWith(FileConfig.FILE_NAME_NOTE) -> count++
             title.endsWith(FileConfig.FILE_NAME_REMINDER) -> count++
-            title.contains(IndexDataFile.FILE_NAME) -> count++
           }
         }
         request.pageToken = files.nextPageToken
