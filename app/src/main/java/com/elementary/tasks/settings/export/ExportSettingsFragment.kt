@@ -60,9 +60,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     binding.exportButton.isEnabled = true
     binding.importButton.isEnabled = true
   }
-  private val onMessage: (String) -> Unit = {
-    binding.progressMessageView.text = it
-  }
   private val onProgress: (Boolean) -> Unit = {
     if (it) {
       binding.syncButton.isEnabled = false
@@ -206,7 +203,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       binding.syncButton.setOnClickListener { syncClick() }
       syncWorker.listener = onProgress
       syncWorker.onEnd = onSyncEnd
-      syncWorker.progress = onMessage
     } else {
       binding.syncButton.visibility = View.GONE
     }
@@ -249,7 +245,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       binding.backupButton.setOnClickListener { backupClick() }
       backupWorker.listener = onProgress
       backupWorker.onEnd = onSyncEnd
-      backupWorker.progress = onMessage
     } else {
       binding.backupButton.visibility = View.GONE
     }

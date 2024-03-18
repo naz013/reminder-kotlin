@@ -1,16 +1,13 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
 class BirthdayConverter(
-  private val dateTimeManager: DateTimeManager,
   private val memoryUtil: MemoryUtil
 ) : Convertible<Birthday> {
 
@@ -24,22 +21,10 @@ class BirthdayConverter(
     )
   }
 
-  override fun convert(t: Birthday): FileIndex? {
-    return try {
-      val stream = CopyByteArrayStream()
-      memoryUtil.toStream(t, stream)
-      FileIndex().apply {
-        this.stream = stream
-        this.ext = FileConfig.FILE_NAME_BIRTHDAY
-        this.id = t.uuId
-        this.updatedAt = t.updatedAt ?: dateTimeManager.getNowGmtDateTime()
-        this.type = IndexTypes.TYPE_BIRTHDAY
-        this.readyToBackup = true
-      }
-    } catch (e: Exception) {
-      Timber.e(e)
-      null
-    }
+  override fun toOutputStream(t: Birthday): CopyByteArrayStream {
+    val stream = CopyByteArrayStream()
+    memoryUtil.toStream(t, stream)
+    return stream
   }
 
   override fun convert(stream: InputStream): Birthday? {

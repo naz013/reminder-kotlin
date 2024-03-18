@@ -1,17 +1,14 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import timber.log.Timber
 import java.io.InputStream
 
 class ReminderConverter(
-  private val dateTimeManager: DateTimeManager,
   private val memoryUtil: MemoryUtil
 ) : Convertible<Reminder> {
 
@@ -25,23 +22,10 @@ class ReminderConverter(
     )
   }
 
-  override fun convert(t: Reminder): FileIndex? {
-    return try {
-      val stream = CopyByteArrayStream()
-      memoryUtil.toStream(t, stream)
-      FileIndex().apply {
-        this.stream = stream
-        this.attachment = t.attachmentFile
-        this.ext = FileConfig.FILE_NAME_REMINDER
-        this.id = t.uuId
-        this.updatedAt = t.updatedAt ?: dateTimeManager.getNowGmtDateTime()
-        this.type = IndexTypes.TYPE_REMINDER
-        this.readyToBackup = true
-      }
-    } catch (e: Throwable) {
-      Timber.e(e)
-      null
-    }
+  override fun toOutputStream(t: Reminder): CopyByteArrayStream {
+    val stream = CopyByteArrayStream()
+    memoryUtil.toStream(t, stream)
+    return stream
   }
 
   override fun convert(stream: InputStream): Reminder? {
@@ -56,6 +40,7 @@ class ReminderConverter(
   }
 
   private fun isDeprecatedType(type: Int): Boolean {
-    return UiReminderType(type).isBase(UiReminderType.Base.SKYPE)
+    val uiType = UiReminderType(type)
+    return uiType.isBase(UiReminderType.Base.SKYPE) || uiType.isBase(UiReminderType.Base.PLACE)
   }
 }

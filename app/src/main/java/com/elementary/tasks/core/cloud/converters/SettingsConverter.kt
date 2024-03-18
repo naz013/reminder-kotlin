@@ -3,7 +3,6 @@ package com.elementary.tasks.core.cloud.converters
 import android.util.Base64
 import android.util.Base64InputStream
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SettingsModel
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
@@ -28,7 +27,7 @@ class SettingsConverter(
     )
   }
 
-  override fun convert(t: SettingsModel): FileIndex? {
+  override fun toOutputStream(t: SettingsModel): CopyByteArrayStream? {
     return try {
       var output: ObjectOutputStream? = null
       val outputBytes = CopyByteArrayStream()
@@ -42,14 +41,7 @@ class SettingsConverter(
           list.remove(PrefsConstants.TASKS_USER)
         }
         output.writeObject(list)
-        FileIndex().apply {
-          this.stream = outputBytes
-          this.ext = FileConfig.FILE_NAME_SETTINGS_EXT
-          this.id = "app"
-          this.updatedAt = dateTimeManager.getNowGmtDateTime()
-          this.type = IndexTypes.TYPE_SETTINGS
-          this.readyToBackup = true
-        }
+        outputBytes
       } catch (e: IOException) {
         null
       } finally {
