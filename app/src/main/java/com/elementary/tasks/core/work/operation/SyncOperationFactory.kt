@@ -15,15 +15,16 @@ class SyncOperationFactory(
 
   fun create(
     indexTypes: IndexTypes,
-    storage: Storage
+    storage: Storage,
+    syncOperationType: SyncOperationType
   ): Operation {
     return when (indexTypes) {
-      IndexTypes.TYPE_GROUP -> groupOperationFactory(storage)
-      IndexTypes.TYPE_REMINDER -> reminderOperationFactory(storage)
-      IndexTypes.TYPE_NOTE -> noteOperationFactory(storage)
-      IndexTypes.TYPE_BIRTHDAY -> birthdayOperationFactory(storage)
-      IndexTypes.TYPE_PLACE -> placeOperationFactory(storage)
-      IndexTypes.TYPE_SETTINGS -> settingsOperationFactory(storage)
+      IndexTypes.TYPE_GROUP -> groupOperationFactory(storage, syncOperationType)
+      IndexTypes.TYPE_REMINDER -> reminderOperationFactory(storage, syncOperationType)
+      IndexTypes.TYPE_NOTE -> noteOperationFactory(storage, syncOperationType)
+      IndexTypes.TYPE_BIRTHDAY -> birthdayOperationFactory(storage, syncOperationType)
+      IndexTypes.TYPE_PLACE -> placeOperationFactory(storage, syncOperationType)
+      IndexTypes.TYPE_SETTINGS -> settingsOperationFactory(storage, syncOperationType)
     }
   }
 }

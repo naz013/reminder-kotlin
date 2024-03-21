@@ -11,11 +11,13 @@ import com.elementary.tasks.core.work.Operation
 class ReminderOperationFactory(
   private val repository: ReminderDataFlowRepository,
   private val converter: ReminderConverter,
-  private val completable: ReminderCompletable
+  private val completable: ReminderCompletable,
+  private val operationFactory: OperationFactory
 ) {
 
   operator fun invoke(
-    storage: Storage
+    storage: Storage,
+    syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(
       repository = repository,
@@ -23,6 +25,6 @@ class ReminderOperationFactory(
       storage = storage,
       completable = completable
     )
-    return SyncOperation(dataFlow, IndexTypes.TYPE_REMINDER)
+    return operationFactory(dataFlow, IndexTypes.TYPE_REMINDER, syncOperationType)
   }
 }

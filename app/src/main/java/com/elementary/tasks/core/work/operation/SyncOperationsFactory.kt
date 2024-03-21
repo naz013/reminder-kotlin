@@ -13,6 +13,7 @@ class SyncOperationsFactory(
 
   operator fun invoke(
     storage: Storage,
+    syncOperationType: SyncOperationType,
     ignoreFlags: Boolean = false
   ): List<Operation> {
     val syncFlags = prefs.autoSyncFlags
@@ -20,22 +21,22 @@ class SyncOperationsFactory(
       ignoreFlags || syncFlags.contains(it)
     }
     return listOfNotNull(
-      syncOperationFactory.create(IndexTypes.TYPE_GROUP, storage).takeIf {
+      syncOperationFactory.create(IndexTypes.TYPE_GROUP, storage, syncOperationType).takeIf {
         predicate(SyncDataWorker.FLAG_REMINDER)
       },
-      syncOperationFactory.create(IndexTypes.TYPE_REMINDER, storage).takeIf {
+      syncOperationFactory.create(IndexTypes.TYPE_REMINDER, storage, syncOperationType).takeIf {
         predicate(SyncDataWorker.FLAG_REMINDER)
       },
-      syncOperationFactory.create(IndexTypes.TYPE_NOTE, storage).takeIf {
+      syncOperationFactory.create(IndexTypes.TYPE_NOTE, storage, syncOperationType).takeIf {
         predicate(SyncDataWorker.FLAG_NOTE)
       },
-      syncOperationFactory.create(IndexTypes.TYPE_PLACE, storage).takeIf {
+      syncOperationFactory.create(IndexTypes.TYPE_PLACE, storage, syncOperationType).takeIf {
         predicate(SyncDataWorker.FLAG_PLACE)
       },
-      syncOperationFactory.create(IndexTypes.TYPE_BIRTHDAY, storage).takeIf {
+      syncOperationFactory.create(IndexTypes.TYPE_BIRTHDAY, storage, syncOperationType).takeIf {
         predicate(SyncDataWorker.FLAG_BIRTHDAY)
       },
-      syncOperationFactory.create(IndexTypes.TYPE_SETTINGS, storage).takeIf {
+      syncOperationFactory.create(IndexTypes.TYPE_SETTINGS, storage, syncOperationType).takeIf {
         predicate(SyncDataWorker.FLAG_SETTINGS)
       }
     )

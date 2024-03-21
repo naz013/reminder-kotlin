@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.work
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
 import kotlinx.coroutines.Job
 
@@ -16,16 +16,7 @@ class SyncWorker(
 ) {
 
   private var mJob: Job? = null
-  private var mLastMsg: String? = null
   var onEnd: (() -> Unit)? = null
-  var progress: ((String) -> Unit)? = null
-    set(value) {
-      field = value
-      val msg = mLastMsg ?: return
-      if (mJob != null) {
-        value?.invoke(msg)
-      }
-    }
   var listener: ((Boolean) -> Unit)? = null
     set(value) {
       field = value
@@ -40,18 +31,14 @@ class SyncWorker(
   fun unsubscribe() {
     onEnd = null
     listener = null
-    progress = null
   }
 
   private fun launchSync() {
     val storage = CompositeStorage(syncManagers.storageManager)
     mJob = launchIo {
-      notifyMsg("Syncing...")
-
-      val result = OperationProcessor(syncOperationsFactory(storage, true)).process()
-
-      Traces.log("Sync finished with result = $result")
-
+      OperationProcessor(
+        syncOperationsFactory(storage, SyncOperationType.FULL, true)
+      ).process()
       withUIContext {
         updatesHelper.updateWidgets()
         updatesHelper.updateNotesWidget()
@@ -59,10 +46,5 @@ class SyncWorker(
       }
       mJob = null
     }
-  }
-
-  private suspend fun notifyMsg(msg: String) {
-    mLastMsg = msg
-    withUIContext { progress?.invoke(msg) }
   }
 }

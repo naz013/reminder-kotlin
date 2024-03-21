@@ -14,6 +14,7 @@ import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
 import kotlinx.coroutines.withContext
 
@@ -34,7 +35,9 @@ class SyncDataWorker(
     val storage = CompositeStorage(syncManagers.storageManager)
 
     withContext(dispatcherProvider.default()) {
-      val result = OperationProcessor(syncOperationsFactory(storage)).process()
+      val result = OperationProcessor(
+        syncOperationsFactory(storage, SyncOperationType.FULL)
+      ).process()
 
       Traces.log("Sync finished with result = $result")
 
