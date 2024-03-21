@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_title">"Reminder"</string>
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Settings"</string>
     <string name="copyright">2024 © Nazar Sukhovych</string>
-
     <string name="cant_access_location_services">I can not get access to the location services!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Satellite</string>
@@ -316,7 +316,6 @@
     <string name="could_not_launch_market">Couldn\'t launch market</string>
     <string name="all_permissions_are_enabled">All permissions are enabled</string>
     <string name="delete_this_reminder">Delete this reminder?</string>
-
     <string name="google_play_services_not_installed">Google Play Services not installed</string>
     <string name="map">Map</string>
     <string name="no_groups">No groups</string>
@@ -537,7 +536,6 @@
     <string name="shuffle_digits">Shuffle digits</string>
     <string name="do_not_shuffle_digits_during_pin_login">Do not shuffle digits during PIN login</string>
     <string name="shuffle_digits_during_pin_login">Shuffle digits during PIN login</string>
-
     <string name="widget_combined_description">Create events quickly from home screen</string>
     <string name="widget_notes_description">Access your notes</string>
     <string name="widget_calendar_description">See your events in Monthly Calendar</string>
@@ -562,7 +560,6 @@
     <string name="application_data">Application Data</string>
     <string name="reminders">Reminders</string>
     <string name="logout">Logout</string>
-
     <string name="reminder_by_date_explanations">Set your reminder for exact date and time</string>
     <string name="reminder_by_timer_explanations">Set your reminder by countdown timer</string>
     <string name="reminder_by_weekday_explanations">Set your reminder for selected weekdays</string>
@@ -572,17 +569,13 @@
     <string name="reminder_shopping_explanations">Set your reminder for the exact date and time with a list of tasks to do or a shopping list</string>
     <string name="reminder_by_location_explanations">Set your reminder for the exact location with the constraint of entering or leaving the place</string>
     <string name="reminder_link_explanations">Set your reminder for the exact date and time with the link or application to open</string>
-
     <string name="analytics">Analytics</string>
     <string name="collecting_of_app_analytics_is_disabled">Collecting of app analytics is disabled</string>
     <string name="collecting_of_app_analytics_is_enabled">Collecting of app analytics is enabled</string>
-
     <string name="not_born">Not born</string>
-
     <string name="metric_units">Metric units</string>
     <string name="use_imperial_system">Use Imperial system</string>
     <string name="use_metric_system">Use Metric system</string>
-
     <string name="pro_version">PRO Version</string>
     <string name="pro_advantages">Advantages of PRO:</string>
     <string name="pro_buy">Buy PRO</string>
@@ -602,7 +595,6 @@
     <string name="widget_birthdays_description">Show all birthdays</string>
     <string name="new_sale_message">🔥 PRO version is on sale. Buy it with a %s discount. Offer available until %s</string>
     <string name="new_update_message">🎉 New version available: %s</string>
-
     <string name="reminder_recur_explanations">Set custom repeatable reminders. Use rules from RFC 5545 standard</string>
     <string name="recur_custom">Custom</string>
     <string name="recur_minutely">Minutely</string>
@@ -655,7 +647,6 @@
     <string name="recur_by_day_hint">Example: 1MO or TU,WE,FR or -2SU</string>
     <string name="recur_by_day_explanation">Write BYDAY value according to RFC 5545 specification.\nComma separated values: MO,TU,WE,TH,FR,SA,SU with optional +-(n) prefix</string>
     <string name="recur_by_day_wrong_format">Wrong format</string>
-
     <string name="recur_daily_10_occurrences">Daily, 10 occurrences</string>
     <string name="recur_every_other_day_10_occurrences">Every other day, 10 occurrences</string>
     <string name="recur_every_10_days_5_occurrences">Every 10 days, 5 occurrences</string>
@@ -682,22 +673,18 @@
     <string name="recur_the_second_to_last_weekday_of_the_month">The second-to-last weekday of the month</string>
     <string name="recur_weekly_on_tuesday_and_thursday_for_five_weeks">Weekly on Tuesday and Thursday for five weeks</string>
     <string name="recur_every_other_week_on_tuesday_and_thursday_for_8_occurrences">Every other week on Tuesday and Thursday, for 8 occurrences</string>
-
     <string name="troubleshooting">Troubleshooting</string>
     <string name="troubleshooting_disable_battery_optimization">Disable battery optimization</string>
     <string name="troubleshooting_battery_optimization_text">Battery optimization is enabled for the Application. You can disable it, to allow the application to work properly.</string>
     <string name="troubleshooting_no_issues_found">No issues found</string>
-
     <string name="whats_new_banner_text">🚀 Application has been updated 😻. Click \"Details\" to read more.</string>
     <string name="whats_new_details">Details</string>
     <string name="whats_new">What\'s new</string>
-
     <string name="notes_archive">Archive</string>
     <string name="notes_move_to_archive">Move to archive</string>
     <string name="notes_unarchive">Unarchive</string>
     <string name="notes_failed_to_update">Failed to update</string>
     <string name="notes_archive_is_empty">Archive is empty</string>
-
     <string name="widget_note_note_not_selected">Note not selected</string>
     <string name="widget_note_horizontal_alignment">Horizontal alignment</string>
     <string name="widget_note_vertical_alignment">Vertical alignment</string>
@@ -761,47 +748,41 @@
     <string name="builder_select_google_calendar_where_the_reminder_should_be_added">Select Google Calendar, where the reminder should be added</string>
     <string name="builder_set_duration_for_the_event_in_the_google_calendar">Set duration for the event in the Google Calendar</string>
     <string name="builder_web_address">Web address</string>
-    <string name="builder_set_email_action_to_the_reminder">Set email action to the reminder</string>
-    <string name="builder_set_open_link_action_to_the_reminder">Set open link action to the reminder</string>
+    <string name="builder_set_email_action_to_the_reminder">Set email as action to the reminder</string>
+    <string name="builder_set_open_link_action_to_the_reminder">Set open link as action to the reminder</string>
     <string name="builder_set_subject_for_the_email">Set subject for the email</string>
-
     <string name="builder_found_x_error">Found %s error</string>
     <string name="builder_found_x_errors">Found %s errors</string>
     <string name="coarse_location">Coarse location</string>
     <string name="access_location_in_background">Access location in background</string>
-
     <string name="builder_requires_x">Requires %s</string>
     <string name="builder_requires_any_of_x">Requires any of: %s</string>
     <string name="builder_requires_all_x">Requires all: %s</string>
     <string name="builder_blocked_by_x">Blocked by: %s</string>
     <string name="builder_mandatory_if_x">Mandatory if: %s</string>
     <string name="builder_requires_permissions_x">Requires permissions: %s</string>
-    <string name="builder_set_application_action_to_the_reminder">Set application action to the reminder</string>
+    <string name="builder_set_application_action_to_the_reminder">Set open the application as action to the reminder</string>
     <string name="builder_attachments">Attachments</string>
     <string name="builder_customize_additional_parameters_for_a_reminder">Customize additional parameters for a reminder</string>
     <string name="builder_additional_parameters">Additional parameters</string>
-
     <string name="builder_and_x_item_is_deleted">And %s item is deleted</string>
     <string name="builder_and_x_items_are_deleted">And %s items are deleted</string>
     <string name="builder_add_list_of_subtasks_to_the_reminder">Add list of subtasks to the reminder</string>
     <string name="builder_write_something">Write something</string>
     <string name="builder_search_address">Search address</string>
-    <string name="builder_arriving_destination">Arriving coordinates</string>
-    <string name="builder_arriving_destination_description">Set coordinates, where to trigger the reminder. On arrival to the destination, the reminder will be shown</string>
-    <string name="builder_leaving_place">Leaving coordinates</string>
-    <string name="builder_leaving_place_description">Set coordinates, where to trigger the reminder. The reminder will trigger when you leave the place within a radius</string>
+    <string name="builder_arriving_destination">Arriving location</string>
+    <string name="builder_arriving_destination_description">Set the location, where to trigger the reminder. On arrival to the destination, the reminder will be shown</string>
+    <string name="builder_leaving_place">Leaving location</string>
+    <string name="builder_leaving_place_description">Set the location, where to trigger the reminder. The reminder will trigger when you leave the place within a radius</string>
     <string name="builder_sub_tasks">Sub tasks (Shopping List)</string>
-
     <string name="builder_delay_date">Delay date</string>
     <string name="builder_delay_date_description">Set date of beginning of location tracking</string>
     <string name="builder_delay_time">Delay time</string>
     <string name="builder_delay_time_description">Set time of beginning of location tracking</string>
-
     <string name="builder_start_date">Start date</string>
     <string name="builder_start_date_description">The Start Date property specified within the iCalendar object defines the DATE of the first instance of the recurrence</string>
     <string name="builder_start_time">Start time</string>
     <string name="builder_start_time_description">The Start Time property specified within the iCalendar object defines the TIME of the first instance of the recurrence</string>
-
     <string name="builder_until_date">Until date</string>
     <string name="builder_until_date_description">If the value specified by UNTIL DATE is synchronized with the specified recurrence, this DATE becomes the last instance of the recurrence</string>
     <string name="builder_until_time">Until time</string>
@@ -819,11 +800,9 @@
     <string name="builder_interval_description">The INTERVAL rule part contains a positive integer representing at which intervals the recurrence rule repeats</string>
     <string name="builder_frequency_description">The Frequency rule part identifies the type of recurrence rule. This rule part MUST be specified in the recurrence rule</string>
     <string name="builder_empty_message">Start building your Reminder by adding elements to it</string>
-
     <string name="builder_selector_tab_parameters">Parameters</string>
     <string name="builder_selector_tab_presets">@string/recur_presets</string>
     <string name="builder_selector_tab_recur_presets">iCalendar presets</string>
-
     <string name="builder_selector_tab_search_parameters">Search parameters…</string>
     <string name="builder_selector_tab_search_presets">Search presets…</string>
     <string name="builder_scheduled_at">"Scheduled at: "</string>
@@ -841,7 +820,7 @@
     <string name="builder_preset_remind_at_exact_time_and_repeat_from_monday_till_friday">Remind at exact time and repeat from Monday till Friday</string>
     <string name="builder_preset_make_call_in_3_hours">Make Call in 3 hours</string>
     <string name="builder_preset_open_link_in_browser">Open Link in Browser at Location</string>
-    <string name="builder_preset_remind_at_exact_date_time_with_custom_repeat">Remind at exact date/time with custom repeat</string>
+    <string name="builder_preset_remind_at_exact_date_time_with_custom_repeat">Remind at the exact date and time with custom repeat</string>
     <string name="builder_preset_permanent_reminder_with_sub_tasks_shopping_list">Permanent reminder with Sub Tasks (Shopping list)</string>
     <string name="builder_will_trigger_immediately_because_before_the_now_time">Will trigger immediately because the date and time are before the current time</string>
     <string name="builder_icalendar">iCalendar</string>
@@ -862,5 +841,4 @@
     <string name="reminders_archive">Archive</string>
     <string name="archive_is_empty">Archive is empty</string>
     <string name="archive_was_emptied">Archive was emptied</string>
-
 </resources>
