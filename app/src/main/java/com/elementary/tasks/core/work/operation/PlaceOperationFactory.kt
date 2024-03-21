@@ -9,11 +9,13 @@ import com.elementary.tasks.core.work.Operation
 
 class PlaceOperationFactory(
   private val repository: PlaceDataFlowRepository,
-  private val converter: PlaceConverter
+  private val converter: PlaceConverter,
+  private val operationFactory: OperationFactory
 ) {
 
   operator fun invoke(
-    storage: Storage
+    storage: Storage,
+    syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(
       repository = repository,
@@ -21,6 +23,6 @@ class PlaceOperationFactory(
       storage = storage,
       completable = null
     )
-    return SyncOperation(dataFlow, IndexTypes.TYPE_PLACE)
+    return operationFactory(dataFlow, IndexTypes.TYPE_PLACE, syncOperationType)
   }
 }

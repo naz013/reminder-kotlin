@@ -9,11 +9,13 @@ import com.elementary.tasks.core.work.Operation
 
 class GroupOperationFactory(
   private val repository: GroupDataFlowRepository,
-  private val converter: GroupConverter
+  private val converter: GroupConverter,
+  private val operationFactory: OperationFactory
 ) {
 
   operator fun invoke(
-    storage: Storage
+    storage: Storage,
+    syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(
       repository = repository,
@@ -21,6 +23,6 @@ class GroupOperationFactory(
       storage = storage,
       completable = null
     )
-    return SyncOperation(dataFlow, IndexTypes.TYPE_GROUP)
+    return operationFactory(dataFlow, IndexTypes.TYPE_GROUP, syncOperationType)
   }
 }

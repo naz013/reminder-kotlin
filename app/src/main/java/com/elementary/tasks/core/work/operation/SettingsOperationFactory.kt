@@ -9,11 +9,13 @@ import com.elementary.tasks.core.work.Operation
 
 class SettingsOperationFactory(
   private val repository: SettingsDataFlowRepository,
-  private val converter: SettingsConverter
+  private val converter: SettingsConverter,
+  private val operationFactory: OperationFactory
 ) {
 
   operator fun invoke(
-    storage: Storage
+    storage: Storage,
+    syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(
       repository = repository,
@@ -21,6 +23,6 @@ class SettingsOperationFactory(
       storage = storage,
       completable = null
     )
-    return SyncOperation(dataFlow, IndexTypes.TYPE_SETTINGS)
+    return operationFactory(dataFlow, IndexTypes.TYPE_SETTINGS, syncOperationType)
   }
 }
