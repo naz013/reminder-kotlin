@@ -3,10 +3,9 @@
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
         \n
-        ✅ New Home screen design;\n
-        ✅ New Reminder creation screen, more flexible;\n
-        ⭐ Update Overall application design;\n
-        🚨 Drop support for Android 8 and 9;\n
+        🐞 Fix Google Tasks sync;\n
+        ⭐ Update settings;\n
+        ⭐ Update translations;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
