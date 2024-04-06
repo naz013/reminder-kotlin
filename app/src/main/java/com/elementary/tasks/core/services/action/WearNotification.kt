@@ -25,7 +25,7 @@ class WearNotification(
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
     wearableNotificationBuilder.color =
-      ContextCompat.getColor(contextProvider.context, R.color.secondaryBlue)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.secondaryBlue)
     wearableNotificationBuilder.setOngoing(false)
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)

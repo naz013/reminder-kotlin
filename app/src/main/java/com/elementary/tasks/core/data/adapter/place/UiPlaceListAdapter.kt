@@ -16,7 +16,7 @@ class UiPlaceListAdapter(
 ) {
 
   fun convert(data: Place): UiPlaceList {
-    val marker = DrawableHelper.withContext(contextProvider.context)
+    val marker = DrawableHelper.withContext(contextProvider.themedContext)
       .withDrawable(R.drawable.ic_fluent_place)
       .withColor(themeProvider.getMarkerLightColor(data.marker))
       .tint()

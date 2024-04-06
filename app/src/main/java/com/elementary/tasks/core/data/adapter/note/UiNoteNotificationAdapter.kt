@@ -25,9 +25,9 @@ class UiNoteNotificationAdapter(
     val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
       backgroundColor.isColorDark()
     val textColor = if (isDarkBg) {
-      ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureWhite)
     } else {
-      ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureBlack)
     }
 
     val image = noteWithImages.images.firstOrNull()?.let {

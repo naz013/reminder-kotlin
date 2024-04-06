@@ -3,13 +3,13 @@ package com.elementary.tasks.core.data.adapter.note
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
+import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.ContextProvider
-import com.elementary.tasks.core.os.dp2px
+import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
@@ -22,7 +22,9 @@ import timber.log.Timber
 class UiNoteWidgetAdapter(
   private val themeProvider: ThemeProvider,
   private val contextProvider: ContextProvider,
-  private val uiNoteImagesAdapter: UiNoteImagesAdapter
+  private val uiNoteImagesAdapter: UiNoteImagesAdapter,
+  private val colorProvider: ColorProvider,
+  private val unitsConverter: UnitsConverter
 ) {
 
   fun convert(
@@ -44,14 +46,17 @@ class UiNoteWidgetAdapter(
     val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
       backgroundColor.isColorDark()
     val textColor = if (isDarkBg) {
-      ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
+      colorProvider.getColor(R.color.pureWhite)
     } else {
-      ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
+      colorProvider.getColor(R.color.pureBlack)
     }
 
-    val typeface = AssetsUtil.getTypeface(contextProvider.context, noteWithImages.getStyle())!!
+    val typeface = AssetsUtil.getTypeface(
+      contextProvider.themedContext,
+      noteWithImages.getStyle()
+    )!!
 
-    val radius = contextProvider.context.dp2px(28)
+    val radius = unitsConverter.dp2px(28)
 
     val isDarkIcon = if (noteWithImages.getOpacity().isAlmostTransparent()) {
       themeProvider.isDark
@@ -79,7 +84,7 @@ class UiNoteWidgetAdapter(
     Timber.d("convert: image time -> ${System.currentTimeMillis() - startMillis}")
 
     val params = NoteDrawableParams.roundedRectParams(
-      context = contextProvider.context,
+      context = contextProvider.themedContext,
       height = size,
       width = size,
       fontSize = fontSize,
@@ -92,7 +97,7 @@ class UiNoteWidgetAdapter(
       backgroundImage = image,
       text = noteWithImages.getSummary(),
       color = backgroundColor,
-      radius = radius.toFloat()
+      radius = radius
     )
 
     val bitmap = if (size != 0) {
@@ -108,7 +113,7 @@ class UiNoteWidgetAdapter(
       uniqueId = noteWithImages.note?.uniqueId ?: 1111,
       bitmap = bitmap,
       settingsIcon = ViewUtils.tintIcon(
-        contextProvider.context,
+        contextProvider.themedContext,
         R.drawable.ic_fluent_settings,
         isDarkIcon
       )?.toBitmap()

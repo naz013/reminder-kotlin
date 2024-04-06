@@ -18,11 +18,9 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.elementary.tasks.core.utils.params.Prefs
 
 class UiReminderCommonAdapter(
   private val textProvider: TextProvider,
-  private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader,
   private val packageManagerWrapper: PackageManagerWrapper,

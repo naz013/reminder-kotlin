@@ -33,9 +33,9 @@ class UiNoteListSelectableAdapter(
     val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
       backgroundColor.isColorDark()
     val textColor = if (isDarkBg) {
-      ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureWhite)
     } else {
-      ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureBlack)
     }
 
     val textSize = if (noteWithImages.getFontSize() == -1) {
@@ -49,7 +49,7 @@ class UiNoteListSelectableAdapter(
       backgroundColor = backgroundColor,
       dartIcon = isDarkIcon,
       textColor = textColor,
-      typeface = AssetsUtil.getTypeface(contextProvider.context, noteWithImages.getStyle()),
+      typeface = AssetsUtil.getTypeface(contextProvider.themedContext, noteWithImages.getStyle()),
       fontSize = textSize.toFloat(),
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       text = noteWithImages.getSummary()

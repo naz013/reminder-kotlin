@@ -7,6 +7,6 @@ class ContextSwitcher(
 ) {
 
   fun switchContext(context: Context) {
-    contextProvider.switchContext(context.applicationContext)
+    contextProvider.switchContext(context)
   }
 }

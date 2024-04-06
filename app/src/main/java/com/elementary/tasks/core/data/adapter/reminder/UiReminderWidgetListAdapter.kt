@@ -24,12 +24,12 @@ class UiReminderWidgetListAdapter(
       type.isSubTasks() -> {
         val due = uiReminderCommonAdapter.getDue(data, type)
         val checkedIcon = ViewUtils.createIcon(
-          contextProvider.context,
+          contextProvider.themedContext,
           R.drawable.ic_fluent_checkbox_checked,
           textColor
         )
         val unCheckedIcon = ViewUtils.createIcon(
-          contextProvider.context,
+          contextProvider.themedContext,
           R.drawable.ic_fluent_checkbox_unchecked,
           textColor
         )

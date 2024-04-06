@@ -93,5 +93,7 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
     get<Notifier>().createChannels()
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
+
+    registerActivityLifecycleCallbacks(ActivityObserver(get()))
   }
 }

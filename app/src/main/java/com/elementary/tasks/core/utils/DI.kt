@@ -281,7 +281,7 @@ fun dbModule(context: Context): Module {
     single { appDb.recurPresetDao() }
     single { appDb.recentQueryDao() }
 
-    single { NoteToOldNoteConverter(get()) }
+    factory { NoteToOldNoteConverter(get()) }
   }
 }
 
@@ -296,7 +296,7 @@ val utilModule = module {
   single { BackupTool(get(), get(), get(), get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get(), get(), get()) }
-  single { GoogleCalendarUtils(get(), get(), get(), get()) }
+  factory { GoogleCalendarUtils(get(), get(), get(), get()) }
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get(), get()) }
   single { GlobalButtonObservable() }
@@ -323,14 +323,14 @@ val utilModule = module {
   factory { RuleBuilder() }
   factory { TagParser() }
 
-  single { RecurrenceManager(get(), get(), get()) }
-  single { RecurEventManager(get()) }
+  factory { RecurrenceManager(get(), get(), get()) }
+  factory { RecurEventManager(get()) }
 
   single { RemotePrefs(get(), get(), get(), get()) }
 
-  single { Notifier(get(), get(), get(), get(), get()) }
-  single { JobScheduler(get(), get(), get(), get()) }
-  single { UpdatesHelper(get()) }
+  factory { Notifier(get(), get(), get(), get(), get()) }
+  factory { JobScheduler(get(), get(), get(), get()) }
+  factory { UpdatesHelper(get()) }
 
   factory { WidgetDataProvider(get(), get(), get(), get()) }
 
@@ -341,23 +341,23 @@ val utilModule = module {
 
   factory { DispatcherProvider() }
 
-  single { WorkManagerProvider(get()) }
-  single { WorkerLauncher(get(), get()) }
+  factory { WorkManagerProvider(get()) }
+  factory { WorkerLauncher(get(), get()) }
 
   single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get()), get()) }
-  single { ReminderAnalyticsTracker(get()) }
-  single { VoiceAnalyticsTracker(get()) }
+  factory { ReminderAnalyticsTracker(get()) }
+  factory { VoiceAnalyticsTracker(get()) }
 
   single { TextProvider(get()) }
   single { FeatureManager(get()) }
-  single { GroupsUtil(get(), get(), get(), get()) }
-  single { ImageDecoder(get(), get(), get()) }
+  factory { GroupsUtil(get(), get(), get(), get()) }
+  factory { ImageDecoder(get(), get(), get()) }
 
-  single { IdProvider() }
+  factory { IdProvider() }
 
-  single { DateTimeManager(get(), get(), get(), NowDateTimeProvider()) }
-  single { DateTimePickerProvider(get()) }
-  single { DoNotDisturbManager(get(), get()) }
+  factory { DateTimeManager(get(), get(), get(), NowDateTimeProvider()) }
+  factory { DateTimePickerProvider(get()) }
+  factory { DoNotDisturbManager(get(), get()) }
 
   factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
     GoogleLogin(fragment, get(), get(), get(), callback)
