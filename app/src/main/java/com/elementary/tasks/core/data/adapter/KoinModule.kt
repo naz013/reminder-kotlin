@@ -24,38 +24,38 @@ import com.elementary.tasks.core.data.adapter.reminder.UiReminderWidgetListAdapt
 import org.koin.dsl.module
 
 val adapterModule = module {
-  single { UiReminderPlaceAdapter() }
-  single { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get()) }
-  single { UiReminderListAdapter(get(), get(), get(), get(), get()) }
-  single { UiReminderListsAdapter(get(), get(), get()) }
-  single { UiReminderWidgetListAdapter(get(), get()) }
+  factory { UiReminderPlaceAdapter() }
+  factory { UiReminderCommonAdapter(get(), get(), get(), get(), get()) }
+  factory { UiReminderListAdapter(get(), get(), get(), get(), get()) }
+  factory { UiReminderListsAdapter(get(), get(), get()) }
+  factory { UiReminderWidgetListAdapter(get(), get()) }
 
-  single { UiBirthdayListAdapter(get(), get()) }
-  single { UiBirthdayShowAdapter(get(), get()) }
-  single { UiBirthdayEditAdapter() }
-  single { UiBirthdayPreviewAdapter(get(), get()) }
-  single { UiBirthdayWidgetListAdapter(get()) }
+  factory { UiBirthdayListAdapter(get(), get()) }
+  factory { UiBirthdayShowAdapter(get(), get()) }
+  factory { UiBirthdayEditAdapter() }
+  factory { UiBirthdayPreviewAdapter(get(), get()) }
+  factory { UiBirthdayWidgetListAdapter(get()) }
 
-  single { UiGoogleTaskListAdapter(get()) }
-  single { UiGoogleTaskPreviewAdapter(get(), get()) }
+  factory { UiGoogleTaskListAdapter(get()) }
+  factory { UiGoogleTaskPreviewAdapter(get(), get()) }
 
-  single { UiGroupListAdapter(get()) }
-  single { UiGroupEditAdapter() }
+  factory { UiGroupListAdapter(get()) }
+  factory { UiGroupEditAdapter() }
 
-  single { UiUsedTimeListAdapter() }
+  factory { UiUsedTimeListAdapter() }
 
-  single { UiNoteImagesAdapter() }
-  single { UiNoteEditAdapter(get()) }
-  single { UiNoteListAdapter(get(), get(), get(), get()) }
-  single { UiNotePreviewAdapter(get(), get(), get()) }
-  single { UiNoteNotificationAdapter(get(), get()) }
+  factory { UiNoteImagesAdapter() }
+  factory { UiNoteEditAdapter(get()) }
+  factory { UiNoteListAdapter(get(), get(), get(), get()) }
+  factory { UiNotePreviewAdapter(get(), get(), get()) }
+  factory { UiNoteNotificationAdapter(get(), get()) }
 
-  single { UiNoteListSelectableAdapter(get(), get(), get()) }
-  single { UiNoteWidgetAdapter(get(), get(), get()) }
-  single { RecyclableUiNoteWidgetAdapter(get(), get(), get()) }
+  factory { UiNoteListSelectableAdapter(get(), get(), get()) }
+  factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
+  factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
 
-  single { UiPlaceListAdapter(get(), get(), get()) }
-  single { UiPlaceEditAdapter() }
+  factory { UiPlaceListAdapter(get(), get(), get()) }
+  factory { UiPlaceEditAdapter() }
 
-  single { UiPresetListAdapter(get()) }
+  factory { UiPresetListAdapter(get()) }
 }

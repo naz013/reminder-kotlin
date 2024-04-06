@@ -29,7 +29,7 @@ class UiNotePreviewAdapter(
     return UiNotePreview(
       id = noteWithImages.getKey(),
       backgroundColor = backgroundColor,
-      typeface = AssetsUtil.getTypeface(contextProvider.context, noteWithImages.getStyle()),
+      typeface = AssetsUtil.getTypeface(contextProvider.themedContext, noteWithImages.getStyle()),
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       text = noteWithImages.getSummary(),
       uniqueId = noteWithImages.note?.uniqueId ?: 1133,

@@ -33,9 +33,9 @@ class UiGoogleTaskPreviewAdapter(
   @ColorInt
   private fun getColor(googleTaskList: GoogleTaskList?): Int {
     return if (googleTaskList != null) {
-      ThemeProvider.themedColor(contextProvider.context, googleTaskList.color)
+      ThemeProvider.themedColor(contextProvider.themedContext, googleTaskList.color)
     } else {
-      ThemeProvider.themedColor(contextProvider.context, 0)
+      ThemeProvider.themedColor(contextProvider.themedContext, 0)
     }
   }
 }

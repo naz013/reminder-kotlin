@@ -116,10 +116,10 @@ class DayLiveData(
   }
 
   private fun birthdayColor(): Int {
-    return ThemeProvider.colorBirthdayCalendar(context.context, prefs)
+    return ThemeProvider.colorBirthdayCalendar(context.themedContext, prefs)
   }
 
   private fun reminderColor(): Int {
-    return ThemeProvider.colorReminderCalendar(context.context, prefs)
+    return ThemeProvider.colorReminderCalendar(context.themedContext, prefs)
   }
 }

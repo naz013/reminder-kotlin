@@ -4,17 +4,16 @@ import com.elementary.tasks.core.os.contacts.ContactsReader
 import org.koin.dsl.module
 
 val osModule = module {
-  single { ContactsReader(get()) }
+  factory { ContactsReader(get()) }
   single { ContextProvider(get()) }
-  single { SystemServiceProvider(get()) }
-  single { InputMethodManagerWrapper(get()) }
-  single { PackageManagerWrapper(get()) }
+  factory { SystemServiceProvider(get()) }
+  factory { PackageManagerWrapper(get()) }
 
   single { IntentDataHolder() }
 
-  single { UnitsConverter(get()) }
+  factory { UnitsConverter(get()) }
 
-  single { ColorProvider(get()) }
+  factory { ColorProvider(get()) }
 
   factory { ContextSwitcher(get()) }
 }

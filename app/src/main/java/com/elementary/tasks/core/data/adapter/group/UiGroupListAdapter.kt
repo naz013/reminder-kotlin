@@ -14,7 +14,10 @@ class UiGroupListAdapter(
 ) {
 
   fun convert(reminderGroup: ReminderGroup): UiGroupList {
-    val groupColor = ThemeProvider.themedColor(contextProvider.context, reminderGroup.groupColor)
+    val groupColor = ThemeProvider.themedColor(
+      contextProvider.themedContext,
+      reminderGroup.groupColor
+    )
     return UiGroupList(
       id = reminderGroup.groupUuId,
       color = groupColor,
@@ -25,7 +28,7 @@ class UiGroupListAdapter(
   }
 
   fun convert(id: String, colorPosition: Int, title: String?): UiGroupList {
-    val groupColor = ThemeProvider.themedColor(contextProvider.context, colorPosition)
+    val groupColor = ThemeProvider.themedColor(contextProvider.themedContext, colorPosition)
     return UiGroupList(
       id = id,
       color = groupColor,
@@ -38,9 +41,9 @@ class UiGroupListAdapter(
   @ColorInt
   private fun getContrastColor(@ColorInt color: Int): Int {
     return if (color.isColorDark()) {
-      ContextCompat.getColor(contextProvider.context, R.color.whitePrimary)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.whitePrimary)
     } else {
-      ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureBlack)
     }
   }
 }

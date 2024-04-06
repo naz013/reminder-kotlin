@@ -52,7 +52,7 @@ class BirthdayHandlerQ(
     if (Module.isPro && birthdayDataProvider.isBirthdayLed()) {
       builder.setLights(birthdayDataProvider.getLedColor(), 500, 1000)
     }
-    builder.color = ThemeProvider.getPrimaryColor(contextProvider.context)
+    builder.color = ThemeProvider.getPrimaryColor(contextProvider.themedContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
     val notificationIntent = ShowBirthday29Activity.getLaunchIntent(

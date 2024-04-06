@@ -45,17 +45,21 @@ class UiGoogleTaskListAdapter(
   @ColorInt
   private fun getColor(googleTaskList: GoogleTaskList?): Int {
     return if (googleTaskList != null) {
-      ThemeProvider.themedColor(contextProvider.context, googleTaskList.color)
+      ThemeProvider.themedColor(contextProvider.themedContext, googleTaskList.color)
     } else {
-      ThemeProvider.themedColor(contextProvider.context, 0)
+      ThemeProvider.themedColor(contextProvider.themedContext, 0)
     }
   }
 
   private fun createIcon(isChecked: Boolean, color: Int): Bitmap? {
     return if (isChecked) {
-      ViewUtils.createIcon(contextProvider.context, R.drawable.ic_builder_google_task_list, color)
+      ViewUtils.createIcon(
+        context = contextProvider.themedContext,
+        res = R.drawable.ic_builder_google_task_list,
+        color = color
+      )
     } else {
-      ViewUtils.createIcon(contextProvider.context, R.drawable.ic_fluent_radio_button, color)
+      ViewUtils.createIcon(contextProvider.themedContext, R.drawable.ic_fluent_radio_button, color)
     }
   }
 }

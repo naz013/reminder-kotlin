@@ -3,14 +3,14 @@ package com.elementary.tasks.core.appwidgets.singlenote
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
+import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.ContextProvider
-import com.elementary.tasks.core.os.dp2px
+import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
@@ -23,7 +23,9 @@ import timber.log.Timber
 class RecyclableUiNoteWidgetAdapter(
   private val themeProvider: ThemeProvider,
   private val contextProvider: ContextProvider,
-  private val uiNoteImagesAdapter: UiNoteImagesAdapter
+  private val uiNoteImagesAdapter: UiNoteImagesAdapter,
+  private val unitsConverter: UnitsConverter,
+  private val colorProvider: ColorProvider
 ) {
 
   private var cachedImage: Bitmap? = null
@@ -44,7 +46,7 @@ class RecyclableUiNoteWidgetAdapter(
       NoteDrawableParams.VerticalAlignment.CENTER,
     marginDp: Int
   ): UiNoteWidget {
-    val maxSize = contextProvider.context.dp2px(sizeDp)
+    val maxSize = unitsConverter.dp2px(sizeDp)
 
     val backgroundColor = themeProvider.getNoteLightColor(
       noteWithImages.getColor(),
@@ -55,14 +57,17 @@ class RecyclableUiNoteWidgetAdapter(
     val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
       backgroundColor.isColorDark()
     val textColor = if (isDarkBg) {
-      ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
+      colorProvider.getColor(R.color.pureWhite)
     } else {
-      ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
+      colorProvider.getColor(R.color.pureBlack)
     }
 
-    val typeface = AssetsUtil.getTypeface(contextProvider.context, noteWithImages.getStyle())!!
+    val typeface = AssetsUtil.getTypeface(
+      contextProvider.themedContext,
+      noteWithImages.getStyle()
+    )!!
 
-    val radius = contextProvider.context.dp2px(28)
+    val radius = unitsConverter.dp2px(28)
 
     val isDarkIcon = if (noteWithImages.getOpacity().isAlmostTransparent()) {
       themeProvider.isDark
@@ -80,7 +85,7 @@ class RecyclableUiNoteWidgetAdapter(
       }?.firstOrNull()?.let {
         BitmapFactory.decodeFile(it.filePath)
       }?.let { bitmap ->
-        val scale = maxSize.toFloat() / minOf(bitmap.width, bitmap.height)
+        val scale = maxSize / minOf(bitmap.width, bitmap.height)
 
         val matrix = Matrix()
         matrix.postScale(scale, scale)
@@ -97,23 +102,26 @@ class RecyclableUiNoteWidgetAdapter(
     Timber.d("convert: image time -> ${System.currentTimeMillis() - startMillis}")
 
     val params = NoteDrawableParams.roundedRectParams(
-      context = contextProvider.context,
-      height = maxSize,
-      width = maxSize,
+      context = contextProvider.themedContext,
+      height = maxSize.toInt(),
+      width = maxSize.toInt(),
       fontSize = fontSize,
       textColor = textColor,
       font = typeface,
       textAutoScale = false,
       horizontalAlignment = horizontalAlignment,
       verticalAlignment = verticalAlignment,
-      margin = contextProvider.context.dp2px(marginDp).toFloat(),
+      margin = unitsConverter.dp2px(marginDp),
       backgroundImage = image,
       text = noteWithImages.getSummary(),
       color = backgroundColor,
-      radius = radius.toFloat()
+      radius = radius
     )
 
-    val bitmap = NoteTextDrawable(params).toBitmap(width = maxSize, height = maxSize)
+    val bitmap = NoteTextDrawable(params).toBitmap(
+      width = maxSize.toInt(),
+      height = maxSize.toInt()
+    )
 
     Timber.d("convert: full drawable -> ${System.currentTimeMillis() - startMillis}")
 
@@ -122,7 +130,7 @@ class RecyclableUiNoteWidgetAdapter(
       uniqueId = noteWithImages.note?.uniqueId ?: 1111,
       bitmap = bitmap,
       settingsIcon = ViewUtils.tintIcon(
-        contextProvider.context,
+        contextProvider.themedContext,
         R.drawable.ic_fluent_settings,
         isDarkIcon
       )?.toBitmap()

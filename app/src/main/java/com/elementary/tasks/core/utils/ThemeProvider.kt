@@ -11,14 +11,18 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 
 class ThemeProvider(
-  private val context: Context,
+  private val contextProvider: ContextProvider,
   private val prefs: Prefs
 ) {
+
+  private val context: Context
+    get() = contextProvider.themedContext
 
   val isDark: Boolean
     get() {

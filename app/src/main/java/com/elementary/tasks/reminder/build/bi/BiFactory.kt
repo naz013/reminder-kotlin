@@ -79,7 +79,7 @@ class BiFactory(
   private val biFactoryICal: BiFactoryICal
 ) {
 
-  private val context: Context = contextProvider.context
+  private val context: Context = contextProvider.themedContext
 
   fun <V, T : BuilderItem<V>> createWithValue(biType: BiType, value: V?, clazz: Class<T>): T? {
     return createTyped(biType, clazz)

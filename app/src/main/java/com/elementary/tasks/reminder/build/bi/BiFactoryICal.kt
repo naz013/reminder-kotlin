@@ -39,7 +39,7 @@ class BiFactoryICal(
   private val paramToTextAdapter: ParamToTextAdapter
 ) {
 
-  private val context: Context = contextProvider.context
+  private val context: Context = contextProvider.themedContext
 
   fun create(biType: BiType): BuilderItem<*> {
     return when (biType) {

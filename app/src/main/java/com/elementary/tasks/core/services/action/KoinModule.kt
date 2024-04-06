@@ -10,13 +10,13 @@ import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcesso
 import org.koin.dsl.module
 
 val actionModule = module {
-  single { WearNotification(get(), get()) }
+  factory { WearNotification(get(), get()) }
 
-  single { ReminderDataProvider(get(), get()) }
-  single { BirthdayDataProvider(get(), get()) }
+  factory { ReminderDataProvider(get(), get()) }
+  factory { BirthdayDataProvider(get(), get()) }
 
-  single { ReminderHandlerFactory(get(), get(), get(), get(), get(), get(), get()) }
-  single {
+  factory { ReminderHandlerFactory(get(), get(), get(), get(), get(), get(), get()) }
+  factory {
     BirthdayHandlerFactory(
       get(),
       get(),
@@ -31,8 +31,8 @@ val actionModule = module {
     )
   }
 
-  single { ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-  single { BirthdayActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { BirthdayActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  single { ReminderRepeatProcessor(get(), get(), get(), get()) }
+  factory { ReminderRepeatProcessor(get(), get(), get(), get()) }
 }

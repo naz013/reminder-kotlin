@@ -36,9 +36,9 @@ class UiNoteListAdapter(
     val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
       backgroundColor.isColorDark()
     val textColor = if (isDarkBg) {
-      ContextCompat.getColor(contextProvider.context, R.color.pureWhite)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureWhite)
     } else {
-      ContextCompat.getColor(contextProvider.context, R.color.pureBlack)
+      ContextCompat.getColor(contextProvider.themedContext, R.color.pureBlack)
     }
 
     val textSize = if (noteWithImages.getFontSize() == -1) {
@@ -51,12 +51,12 @@ class UiNoteListAdapter(
       id = noteWithImages.getKey(),
       backgroundColor = backgroundColor,
       moreIcon = ViewUtils.tintIcon(
-        contextProvider.context,
+        contextProvider.themedContext,
         R.drawable.ic_fluent_more_vertical,
         isDarkIcon
       ),
       textColor = textColor,
-      typeface = AssetsUtil.getTypeface(contextProvider.context, noteWithImages.getStyle()),
+      typeface = AssetsUtil.getTypeface(contextProvider.themedContext, noteWithImages.getStyle()),
       fontSize = textSize.toFloat(),
       formattedDateTime = dateTimeManager.fromGmtToLocal(noteWithImages.getGmtTime())?.let {
         dateTimeManager.getFullDateTime(it)
