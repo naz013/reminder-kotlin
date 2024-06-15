@@ -8,6 +8,7 @@ import com.elementary.tasks.reminder.build.bi.BiFilter
 import com.elementary.tasks.reminder.build.reminder.decompose.ActionDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ExtrasDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.GroupDecomposer
+import com.elementary.tasks.reminder.build.reminder.decompose.NoteDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.TypeDecomposer
 
 class ReminderToBiDecomposer(
@@ -16,7 +17,8 @@ class ReminderToBiDecomposer(
   private val actionDecomposer: ActionDecomposer,
   private val extrasDecomposer: ExtrasDecomposer,
   private val groupDecomposer: GroupDecomposer,
-  private val biFilter: BiFilter
+  private val biFilter: BiFilter,
+  private val noteDecomposer: NoteDecomposer
 ) {
 
   operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
@@ -26,6 +28,7 @@ class ReminderToBiDecomposer(
     items.addAll(typeDecomposer(reminder))
     items.addAll(actionDecomposer(reminder))
     items.addAll(groupDecomposer(reminder))
+    items.addAll(noteDecomposer(reminder))
 
     val itemsMap = items.associateBy { it.biType }
     val builderScheme = reminder.builderScheme?.sortedBy { it.position }

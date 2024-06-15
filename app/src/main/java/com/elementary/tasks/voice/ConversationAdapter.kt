@@ -73,7 +73,7 @@ class ConversationAdapter(
       Reply.REPLY -> VoiceHolder(parent)
       Reply.RESPONSE -> VoiceResponseHolder(parent)
       Reply.REMINDER -> ReminderViewHolder(parent, editable = false, showMore = false)
-      Reply.NOTE -> NoteViewHolder(parent, null, null)
+      Reply.NOTE -> NoteViewHolder(parent, listener = null, imageClickListener = null)
       Reply.GROUP -> GroupHolder(parent, null)
       Reply.SHOW_MORE -> ShowMoreHolder(parent)
       Reply.BIRTHDAY -> BirthdayHolder(parent, showMore = false)

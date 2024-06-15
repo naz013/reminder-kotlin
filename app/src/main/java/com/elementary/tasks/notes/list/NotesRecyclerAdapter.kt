@@ -13,14 +13,15 @@ class NotesRecyclerAdapter : ListAdapter<UiNoteList, NoteViewHolder>(UiNoteListD
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
     return NoteViewHolder(
       parent,
-      { view, i, listActions ->
+      listener = { view, i, listActions ->
         actionsListener?.onAction(view, i, getItem(i), listActions)
+      },
+      imageClickListener = { _, position, imageId ->
+        val item = getItem(position)
+        val imagePosition = item.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
+        imageClickListener?.invoke(item, imagePosition)
       }
-    ) { view, position, imageId ->
-      val item = getItem(position)
-      val imagePosition = item.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
-      imageClickListener?.invoke(item, imagePosition)
-    }
+    )
   }
 
   override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {

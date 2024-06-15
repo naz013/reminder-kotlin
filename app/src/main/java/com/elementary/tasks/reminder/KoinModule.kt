@@ -9,7 +9,7 @@ import com.elementary.tasks.reminder.build.bi.BiFactoryICal
 import com.elementary.tasks.reminder.build.bi.BiFilter
 import com.elementary.tasks.reminder.build.bi.CreatorConfigFilter
 import com.elementary.tasks.reminder.build.bi.LocationFilter
-import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.elementary.tasks.reminder.build.formatter.factory.RadiusFormatterFactory
 import com.elementary.tasks.reminder.build.logic.BuilderItemBlockedByConstraintCalculator
@@ -49,6 +49,7 @@ import com.elementary.tasks.reminder.build.reminder.decompose.ByWeekdaysDecompos
 import com.elementary.tasks.reminder.build.reminder.decompose.ExtrasDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.GroupDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ICalDecomposer
+import com.elementary.tasks.reminder.build.reminder.decompose.NoteDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.TypeDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.EventTimeValidator
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
@@ -175,7 +176,22 @@ val reminderModule = module {
 
   factory { BuilderItemsHolder() }
   factory { BuilderItemsLogic(get()) }
-  factory { BiFactory(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory {
+    BiFactory(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   factory { BiFactoryICal(get(), get(), get(), get()) }
 
   single { SelectorDialogDataHolder() }
@@ -229,7 +245,7 @@ val reminderModule = module {
   factory { ICalDateTimeInjector(get(), get()) }
   factory { ReminderCleaner() }
 
-  factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get()) }
+  factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
 
   factory { TypeDecomposer(get(), get(), get(), get(), get(), get(), get()) }
   factory { ByDateDecomposer(get(), get()) }
@@ -245,6 +261,8 @@ val reminderModule = module {
   factory { ExtrasDecomposer(get(), get(), get()) }
 
   factory { GroupDecomposer(get(), get(), get()) }
+
+  factory { NoteDecomposer(get(), get(), get()) }
 
   factory { LocationFilter(get()) }
   factory { CreatorConfigFilter(get()) }

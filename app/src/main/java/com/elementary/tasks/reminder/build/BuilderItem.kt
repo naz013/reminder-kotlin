@@ -9,6 +9,7 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.LED
@@ -45,6 +46,7 @@ import com.elementary.tasks.reminder.build.bi.IntModifier
 import com.elementary.tasks.reminder.build.bi.ListIntModifier
 import com.elementary.tasks.reminder.build.bi.ListStringModifier
 import com.elementary.tasks.reminder.build.bi.LongModifier
+import com.elementary.tasks.reminder.build.bi.NoteModifier
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.bi.OtherParamsModifier
 import com.elementary.tasks.reminder.build.bi.PhoneNumberModifier
@@ -65,10 +67,8 @@ import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
-import com.elementary.tasks.reminder.build.formatter.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
-import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
@@ -82,6 +82,9 @@ import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormat
 import com.elementary.tasks.reminder.build.formatter.ical.ICalDayValueFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalFreqFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -947,6 +950,25 @@ data class LocationDelayTimeBuilderItem(
     )
     blockedBy(BiGroup.ICAL)
     mandatoryIf(BiType.LOCATION_DELAY_DATE)
+  }
+}
+
+data class NoteBuilderItem(
+  override val title: String,
+  override val description: String?,
+  val notes: List<UiNoteList>,
+  private val noteFormatter: NoteFormatter
+) : BuilderItem<UiNoteList>() {
+  override val iconRes: Int = R.drawable.ic_fluent_note
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<UiNoteList> = NoteModifier(noteFormatter)
+  override val biType: BiType = BiType.NOTE
+  override val biGroup: BiGroup = BiGroup.EXTRA
+  override val constraints: List<BiConstraint<*>> = constraints {
+    requiresAll(
+      BiType.DATE,
+      BiType.TIME
+    )
   }
 }
 

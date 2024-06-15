@@ -628,7 +628,7 @@ class CreateNoteActivity :
       ViewUtils.tintIcon(this, R.drawable.ic_fluent_image, isBgDark)
     )
     binding.reminderButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_clock_alarm, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_alert, isBgDark)
     )
     binding.fontButton.setImageDrawable(
       ViewUtils.tintIcon(this, R.drawable.ic_fluent_text, isBgDark)

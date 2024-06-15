@@ -6,6 +6,10 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 
 class NoteRepository(private val notesDao: NotesDao) {
 
+  fun getById(id: String): NoteWithImages? {
+    return notesDao.getById(id)
+  }
+
   fun getAll(isArchived: Boolean = false): List<NoteWithImages> {
     return notesDao.getAllNotes(isArchived = isArchived).map { addImagesToNote(it) }
   }

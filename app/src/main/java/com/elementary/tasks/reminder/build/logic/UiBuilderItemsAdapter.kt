@@ -1,7 +1,10 @@
 package com.elementary.tasks.reminder.build.logic
 
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.elementary.tasks.reminder.build.NoteBuilderItem
+import com.elementary.tasks.reminder.build.UiBuilderItem
 import com.elementary.tasks.reminder.build.UiListBuilderItem
+import com.elementary.tasks.reminder.build.UiListNoteBuilderItem
 import com.elementary.tasks.reminder.build.UiLitBuilderItemState
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiValueForUiAdapter
@@ -17,8 +20,7 @@ class UiBuilderItemsAdapter(
   private val biErrorForUiAdapter: BiErrorForUiAdapter
 ) {
 
-  fun calculateStates(items: List<BuilderItem<*>>): List<UiListBuilderItem> {
-    val typeValueMap = items.associateBy { it.biType }
+  fun calculateStates(items: List<BuilderItem<*>>): List<UiBuilderItem> {
     val processedBuilderItems = ProcessedBuilderItems(items)
 
     return items.map {
@@ -30,7 +32,8 @@ class UiBuilderItemsAdapter(
         it.modifier.isCorrect() -> UiLitBuilderItemState.DoneState
         else -> UiLitBuilderItemState.EmptyState
       }
-      it.toUi(
+      toUi(
+        builderItem = it,
         state = state,
         value = biValueForUiAdapter.getUiRepresentation(it),
         errorText = biErrorForUiAdapter.getUiString(errors)
@@ -59,16 +62,38 @@ class UiBuilderItemsAdapter(
     )
   }
 
-  private fun <T> BuilderItem<T>.toUi(
+  private fun toUi(
+    builderItem: BuilderItem<*>,
     state: UiLitBuilderItemState,
     value: String,
     errorText: String
-  ): UiListBuilderItem {
-    return UiListBuilderItem(
-      builderItem = this,
-      state = state,
-      value = value,
-      errorText = errorText
-    )
+  ): UiBuilderItem {
+    return when {
+      builderItem is NoteBuilderItem -> {
+        builderItem.modifier.getValue()?.let {
+          UiListNoteBuilderItem(
+            builderItem = builderItem,
+            state = state,
+            value = value,
+            errorText = errorText,
+            noteData = it
+          )
+        } ?: UiListBuilderItem(
+          builderItem = builderItem,
+          state = state,
+          value = value,
+          errorText = errorText
+        )
+      }
+
+      else -> {
+        UiListBuilderItem(
+          builderItem = builderItem,
+          state = state,
+          value = value,
+          errorText = errorText
+        )
+      }
+    }
   }
 }

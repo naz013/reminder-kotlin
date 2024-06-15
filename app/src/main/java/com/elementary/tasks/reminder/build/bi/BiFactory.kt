@@ -4,8 +4,10 @@ import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
+import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -31,6 +33,7 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -50,10 +53,10 @@ import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
-import com.elementary.tasks.reminder.build.formatter.PlaceFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
-import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
@@ -64,6 +67,7 @@ import com.elementary.tasks.reminder.build.formatter.datetime.RepeatTimeFormatte
 import com.elementary.tasks.reminder.build.formatter.datetime.TimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.TimerFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import timber.log.Timber
 
 class BiFactory(
@@ -76,7 +80,9 @@ class BiFactory(
   private val gTasks: GTasks,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val prefs: Prefs,
-  private val biFactoryICal: BiFactoryICal
+  private val biFactoryICal: BiFactoryICal,
+  private val noteRepository: NoteRepository,
+  private val uiNoteListAdapter: UiNoteListAdapter
 ) {
 
   private val context: Context = contextProvider.themedContext
@@ -363,6 +369,17 @@ class BiFactory(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_delay_time_description),
           timeFormatter = TimeFormatter(dateTimeManager)
+        )
+      }
+
+      BiType.NOTE -> {
+        NoteBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description = context.getString(R.string.builder_attach_note_to_the_reminder),
+          noteFormatter = NoteFormatter(),
+          notes = noteRepository.getAll(isArchived = false).map {
+            uiNoteListAdapter.convert(it)
+          }
         )
       }
 

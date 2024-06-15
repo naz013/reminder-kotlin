@@ -19,7 +19,7 @@ import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.adjustAlpha
-import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 
 class UiReminderScheduleListAdapter(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,

@@ -41,6 +41,7 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -72,6 +73,7 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.datetime.Repea
 import com.elementary.tasks.reminder.build.valuedialog.controller.datetime.TimeController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.GroupController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.LedColorController
+import com.elementary.tasks.reminder.build.valuedialog.controller.extra.NoteController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.OtherParamsController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.PriorityController
 import com.elementary.tasks.reminder.build.valuedialog.controller.extra.RepeatLimitController
@@ -229,6 +231,8 @@ class ValueControllerFactory(
       )
 
       is ICalIntBuilderItem -> ICalIntController(builderItem)
+
+      is NoteBuilderItem -> NoteController(builderItem)
 
       is StringBuilderItem -> TextInputController(
         builderItem = builderItem,

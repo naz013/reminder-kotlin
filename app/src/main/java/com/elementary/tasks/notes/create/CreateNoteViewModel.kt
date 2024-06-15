@@ -33,7 +33,6 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -49,7 +48,6 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
-import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -66,7 +64,6 @@ class CreateNoteViewModel(
   private val id: String,
   private val imageDecoder: ImageDecoder,
   dispatcherProvider: DispatcherProvider,
-  private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   private val workerLauncher: WorkerLauncher,
   private val notesDao: NotesDao,
@@ -106,7 +103,6 @@ class CreateNoteViewModel(
   var images: MutableLiveData<List<UiNoteImage>> = MutableLiveData()
 
   private var localNote: NoteWithImages? = null
-  private var localReminder: Reminder? = null
 
   var hasSameInDb: Boolean = false
     private set
@@ -119,7 +115,6 @@ class CreateNoteViewModel(
   var isLogged = false
   var isNoteEdited = false
     private set
-  private var isReminderEdited = false
   var isFromFile: Boolean = false
     private set
 
@@ -179,7 +174,7 @@ class CreateNoteViewModel(
   }
 
   fun load() {
-    setDateTime(null)
+    setDateTime()
     viewModelScope.launch(dispatcherProvider.default()) {
       localNote = notesDao.getById(id)
       localNote?.also { noteWithImages ->
@@ -203,13 +198,6 @@ class CreateNoteViewModel(
         images.postValue(uiNoteEdit.images)
       }
       isNoteEdited = true
-      localReminder = reminderDao.getByNoteKey(if (id == "") "1" else id)?.also { reminder ->
-        if (!isReminderEdited) {
-          setDateTime(reminder.eventTime)
-          isReminderAttached.postValue(true)
-          isReminderEdited = true
-        }
-      }
     }
   }
 
@@ -220,8 +208,8 @@ class CreateNoteViewModel(
     }
   }
 
-  private fun setDateTime(eventTime: String?) {
-    val dateTime = dateTimeManager.fromGmtToLocal(eventTime) ?: LocalDateTime.now()
+  private fun setDateTime() {
+    val dateTime = LocalDateTime.now()
     onNewDate(dateTime.toLocalDate())
     onNewTime(dateTime.toLocalTime())
   }
@@ -311,23 +299,6 @@ class CreateNoteViewModel(
     }
   }
 
-  fun deleteReminder() {
-    val reminder = localReminder ?: return
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      eventControlFactory.getController(reminder).disable()
-      reminderDao.delete(reminder)
-      googleCalendarUtils.deleteEvents(reminder.uuId)
-      workerLauncher.startWork(
-        ReminderDeleteBackupWorker::class.java,
-        Constants.INTENT_ID,
-        reminder.uuId
-      )
-      postInProgress(false)
-      postCommand(Commands.UPDATED)
-    }
-  }
-
   fun parseDrop(clipData: ClipData, text: String) {
     Timber.d("parseDrop: ${clipData.itemCount}, ${clipData.description}")
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -357,7 +328,6 @@ class CreateNoteViewModel(
   fun saveNote(text: String, opacity: Int, newId: Boolean = false) {
     val noteWithImages = createObject(text, opacity)
     val hasReminder = isReminderAttached.value ?: false
-    if (!hasReminder && localReminder != null) deleteReminder()
     var reminder: Reminder? = null
     val note = noteWithImages.note
     if (hasReminder && note != null) {
@@ -395,10 +365,7 @@ class CreateNoteViewModel(
   }
 
   private fun createReminder(note: Note): Reminder? {
-    var reminder = localReminder
-    if (reminder == null) {
-      reminder = Reminder()
-    }
+    val reminder = Reminder()
     reminder.type = Reminder.BY_DATE
     reminder.delay = 0
     reminder.eventCount = 0
