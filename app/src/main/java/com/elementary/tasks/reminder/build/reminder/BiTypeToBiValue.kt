@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
@@ -79,6 +80,7 @@ class BiTypeToBiValue {
       BiType.GOOGLE_TASK_LIST -> parseGoogleTaskList(value) as? V
       BiType.GOOGLE_CALENDAR -> parseCalendarItem(value) as? V
       BiType.GOOGLE_CALENDAR_DURATION -> parseCalendarDuration(value) as? V
+      BiType.NOTE -> parseUiNoteList(value) as? V
     }
   }
 
@@ -115,6 +117,13 @@ class BiTypeToBiValue {
       return null
     }
     return Gson().fromJson(value, object : TypeToken<UiGroupList>() {}.type)
+  }
+
+  private fun parseUiNoteList(value: String): UiNoteList? {
+    if (value.isEmpty()) {
+      return null
+    }
+    return Gson().fromJson(value, object : TypeToken<UiNoteList>() {}.type)
   }
 
   private fun parseShopItemList(value: String): List<ShopItem> {

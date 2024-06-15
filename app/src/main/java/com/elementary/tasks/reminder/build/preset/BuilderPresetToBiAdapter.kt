@@ -38,6 +38,7 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -90,6 +91,7 @@ import com.elementary.tasks.reminder.build.bi.BiType.LED_COLOR
 import com.elementary.tasks.reminder.build.bi.BiType.LINK
 import com.elementary.tasks.reminder.build.bi.BiType.LOCATION_DELAY_DATE
 import com.elementary.tasks.reminder.build.bi.BiType.LOCATION_DELAY_TIME
+import com.elementary.tasks.reminder.build.bi.BiType.NOTE
 import com.elementary.tasks.reminder.build.bi.BiType.OTHER_PARAMS
 import com.elementary.tasks.reminder.build.bi.BiType.PHONE_CALL
 import com.elementary.tasks.reminder.build.bi.BiType.PRIORITY
@@ -166,6 +168,7 @@ class BuilderPresetToBiAdapter(
       GOOGLE_TASK_LIST -> create(scheme, GoogleTaskListBuilderItem::class.java)
       GOOGLE_CALENDAR -> create(scheme, GoogleCalendarBuilderItem::class.java)
       GOOGLE_CALENDAR_DURATION -> create(scheme, GoogleCalendarDurationBuilderItem::class.java)
+      NOTE -> create(scheme, NoteBuilderItem::class.java)
     }
   }
 

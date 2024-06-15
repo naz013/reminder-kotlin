@@ -74,6 +74,10 @@ class BiTypeForUiAdapter(
         iCalendarPrefix() + " " + context.getString(R.string.builder_until_time)
       }
 
+      BiType.NOTE -> {
+        context.getString(R.string.note)
+      }
+
       else -> {
         val recurParamType = biType.toRecurParamType()
         if (BiGroup.ICAL.types.contains(biType) && recurParamType != null) {

@@ -16,15 +16,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/material_margin"
-            android:layout_marginEnd="@dimen/material_margin"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/noteText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="72dp"
+                android:layout_marginEnd="@dimen/material_margin"
                 android:textSize="18sp"
                 tools:text="Note" />
 
@@ -32,7 +32,9 @@
                 android:id="@+id/imagesList"
                 android:layout_width="match_parent"
                 android:layout_height="196dp"
+                android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/material_margin"
                 android:clipChildren="false"
                 android:clipToPadding="false" />
 
@@ -41,9 +43,9 @@
                 style="@style/UiComponentDetailsCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/material_margin"
                 android:clipChildren="false"
                 android:stateListAnimator="@animator/card_animator"
                 android:visibility="gone"
@@ -57,90 +59,17 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/reminderContainer"
-                style="@style/UiComponentDetailsCard"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/attachedRemindersList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="5dp"
-                app:contentPadding="8dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:scaleType="centerInside"
-                            app:srcCompat="@drawable/ic_fluent_alert"
-                            app:tint="?colorOnSurface" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:orientation="vertical">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/reminderCardTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="@string/reminder"
-                                android:textAppearance="?textAppearanceTitleSmall"
-                                android:textColor="?colorOnSurface"
-                                tools:ignore="RtlSymmetry" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/reminderTime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:textAppearance="?textAppearanceTitleMedium"
-                                android:textColor="?colorOnSurface"
-                                tools:text="Summary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/buttonContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:gravity="end"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/editReminder"
-                            style="@style/UiComponentActionCard.ButtonNeutral"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/edit" />
-
-                        <Button
-                            android:id="@+id/deleteReminder"
-                            style="@style/UiComponentActionCard.ButtonPositive"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/delete" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingEnd="16dp"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/list_item_note_attached_reminder" />
 
         </LinearLayout>
 

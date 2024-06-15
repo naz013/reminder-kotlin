@@ -21,8 +21,8 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
-import com.elementary.tasks.reminder.build.formatter.PlaceFormatter
-import com.elementary.tasks.reminder.build.formatter.ShopItemsFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
 
 class UiReminderListAdapter(

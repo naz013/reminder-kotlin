@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import org.threeten.bp.LocalDate
@@ -345,6 +346,30 @@ class PlaceModifier(
   override fun putInto(reminder: Reminder) {
     storage.value?.also {
       reminder.places = listOf(it)
+    }
+  }
+
+  override fun isCorrect(): Boolean {
+    return storage.value != null
+  }
+}
+
+class NoteModifier(
+  private val formatter: Formatter<UiNoteList>,
+  private val initValue: UiNoteList? = null
+) : DefaultModifier<UiNoteList>(DefaultBiStorage(initValue)) {
+  override fun getUiRepresentation(emptyText: String): String {
+    val value = storage.value ?: return emptyText
+    return formatter.format(value)
+  }
+
+  override fun setDefault() {
+    storage.value = initValue
+  }
+
+  override fun putInto(reminder: Reminder) {
+    storage.value?.also {
+      reminder.noteId = it.id
     }
   }
 

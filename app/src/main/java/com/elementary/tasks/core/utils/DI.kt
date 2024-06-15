@@ -70,14 +70,7 @@ import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.notes.list.NotesViewModel
-import com.elementary.tasks.notes.list.archived.ArchivedNotesViewModel
-import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.notes.preview.NotePreviewViewModel
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.places.create.PlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
@@ -104,8 +97,6 @@ val workerModule = module {
   worker { UpdateTaskWorker(get(), get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
   worker { GroupSingleBackupWorker(get(), get(), get(), get()) }
-  worker { DeleteNoteBackupWorker(get(), get(), get(), get()) }
-  worker { NoteSingleBackupWorker(get(), get(), get(), get()) }
   worker { PlaceDeleteBackupWorker(get(), get(), get(), get()) }
   worker { PlaceSingleBackupWorker(get(), get(), get(), get()) }
   worker { ReminderDeleteBackupWorker(get(), get(), get(), get()) }
@@ -115,24 +106,6 @@ val workerModule = module {
 
 val viewModelModule = module {
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { (id: String) ->
-    NotePreviewViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
 
   viewModel { (id: String) ->
     CreateGroupViewModel(
@@ -153,63 +126,9 @@ val viewModelModule = module {
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   viewModel { UsedTimeViewModel(get(), get(), get()) }
 
-  viewModel {
-    NotesViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel {
-    ArchivedNotesViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
   viewModel { CloudViewModel(get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
 
-  viewModel {
-    CreateNoteViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
   viewModel { TimesViewModel(get(), get()) }
   viewModel { LoginStateViewModel() }
   viewModel {
@@ -300,7 +219,6 @@ val utilModule = module {
   factory { providesRecognizer(get(), get()) }
   single { CacheUtil(get(), get()) }
   single { GlobalButtonObservable() }
-  single { ImagesSingleton(get()) }
 
   factory { SyncManagers(get(), get(), get(), get()) }
 

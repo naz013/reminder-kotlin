@@ -57,7 +57,7 @@ interface ReminderDao {
     JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
     WHERE reminder.noteId=:key"""
   )
-  fun getByNoteKey(key: String): Reminder?
+  fun getByNoteKey(key: String): List<Reminder>
 
   @Transaction
   @Query(

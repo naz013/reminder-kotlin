@@ -6,12 +6,12 @@ import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import androidx.core.view.get
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -23,7 +23,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
@@ -34,6 +33,8 @@ import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
+import com.elementary.tasks.notes.preview.reminders.AttachedRemindersAdapter
+import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.google.android.material.carousel.CarouselLayoutManager
@@ -47,8 +48,12 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private var isBgDark = false
 
   private val adapter = ImagesCarouselAdapter()
+  private val attachedRemindersAdapter = AttachedRemindersAdapter(
+    onEdit = { editReminder(it.id) },
+    onDetach = { viewModel.detachReminder(it.id) }
+  )
+
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
-  private val dateTimeManager by inject<DateTimeManager>()
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val uiHandler = Handler(Looper.getMainLooper())
@@ -89,7 +94,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.note.nonNullObserve(this) { showNote(it) }
-    viewModel.reminder.observe(this) { showReminder(it) }
+    viewModel.reminders.nonNullObserve(this) { showReminders(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
         Commands.DELETED -> closeWindow()
@@ -102,15 +107,17 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun initReminderCard() {
-    binding.reminderContainer.gone()
-    binding.editReminder.setOnClickListener { editReminder() }
-    binding.deleteReminder.setOnClickListener { showReminderDeleteDialog() }
+    binding.attachedRemindersList.layoutManager = LinearLayoutManager(
+      this,
+      LinearLayoutManager.HORIZONTAL,
+      false
+    )
+    binding.attachedRemindersList.adapter = attachedRemindersAdapter
   }
 
-  private fun editReminder() {
-    val reminder = viewModel.reminder.value ?: return
+  private fun editReminder(id: String) {
     reminderBuilderLauncher.openLogged(this) {
-      putExtra(Constants.INTENT_ID, reminder.uuId)
+      putExtra(Constants.INTENT_ID, id)
     }
   }
 
@@ -246,15 +253,12 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     binding.noteText.setTextColor(textColor)
   }
 
-  private fun showReminder(reminder: Reminder?) {
-    if (reminder != null) {
-      val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.let {
-        dateTimeManager.getFullDateTime(it)
-      }
-      binding.reminderTime.text = dateTime
-      binding.reminderContainer.visible()
+  private fun showReminders(reminders: List<UiNoteAttachedReminder>) {
+    if (reminders.isNotEmpty()) {
+      attachedRemindersAdapter.submitList(reminders)
+      binding.attachedRemindersList.visible()
     } else {
-      binding.reminderContainer.gone()
+      binding.attachedRemindersList.gone()
     }
   }
 
@@ -292,22 +296,5 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
     builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
     builder.create().show()
-  }
-
-  private fun showReminderDeleteDialog() {
-    val builder = dialogues.getMaterialDialog(this)
-    builder.setMessage(R.string.delete_this_reminder)
-    builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-      dialog.dismiss()
-      deleteReminder()
-    }
-    builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-    builder.create().show()
-  }
-
-  private fun deleteReminder() {
-    val reminder = viewModel.reminder.value ?: return
-    viewModel.deleteReminder(reminder)
-    binding.reminderContainer.gone()
   }
 }

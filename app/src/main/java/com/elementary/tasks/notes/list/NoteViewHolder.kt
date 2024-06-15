@@ -3,16 +3,10 @@ package com.elementary.tasks.notes.list
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import coil.load
-import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.dp2px
-import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.core.utils.ui.transparent
 import com.elementary.tasks.core.utils.ui.visible
@@ -20,6 +14,7 @@ import com.elementary.tasks.databinding.ListItemNoteBinding
 
 class NoteViewHolder(
   parent: ViewGroup,
+  private val common: UiNoteListAdapterCommon = UiNoteListAdapterCommon(),
   private val listener: ((View, Int, ListActions) -> Unit)?,
   private val imageClickListener: ((View, position: Int, imageId: Int) -> Unit)?
 ) : HolderBinding<ListItemNoteBinding>(
@@ -71,72 +66,19 @@ class NoteViewHolder(
   }
 
   fun setData(uiNoteList: UiNoteList) {
-    loadImage(binding.imagesView, uiNoteList)
-    loadNote(binding.noteTv, uiNoteList)
-
-    binding.bgView.setBackgroundColor(uiNoteList.backgroundColor)
-    binding.buttonMore.setImageDrawable(uiNoteList.moreIcon)
-    binding.noteTv.setTextColor(uiNoteList.textColor)
-  }
-
-  private fun loadNote(textView: TextView, note: UiNoteList) {
-    var text = note.text
-    if (text.isEmpty()) {
-      textView.gone()
-      return
-    }
-    textView.visible()
-    if (text.length > 500) {
-      val substring = text.substring(0, 500)
-      text = "$substring..."
-    }
-    textView.text = text
-    textView.typeface = note.typeface
-    textView.textSize = note.fontSize
-  }
-
-  private fun setImage(imageView: ImageView, image: String?) {
-    if (image == null) return
-    imageView.load(image)
-  }
-
-  private fun setClick(
-    imageView: ImageView,
-    position: Int,
-    imageId: Int
-  ) {
-    hoverClick(imageView) {
-      imageClickListener?.invoke(it, position, imageId)
-    }
-  }
-
-  private fun loadImage(container: LinearLayout, item: UiNoteList) {
-    val images = item.images
-
-    val imageView = container.findViewById<ImageView>(R.id.noteImage)
-    val horView = container.findViewById<LinearLayout>(R.id.imagesContainer)
-    horView.removeAllViewsInLayout()
-
-    if (images.isNotEmpty()) {
-      imageView.visibility = View.VISIBLE
-      horView.visibility = View.VISIBLE
-      setImage(imageView, images[0].filePath)
-      var index = 1
-
-      while (index < images.size) {
-        val imV = ImageView(container.context)
-        val params = LinearLayout.LayoutParams(container.dp2px(128), container.dp2px(128))
-        imV.layoutParams = params
-        setClick(imV, bindingAdapterPosition, images[index].id)
-        imV.scaleType = ImageView.ScaleType.CENTER_CROP
-        horView.addView(imV)
-        setImage(imV, images[index].filePath)
-        index++
+    common.populateNoteUi(
+      uiNoteList = uiNoteList,
+      imagesViewContainer = binding.imagesView,
+      textView = binding.noteTv,
+      secondaryImageSize = itemView.dp2px(128),
+      backgroundView = binding.bgView,
+      imageClickListener = { view: View, imageId: Int ->
+        hoverClick(view) {
+          imageClickListener?.invoke(it, bindingAdapterPosition, imageId)
+        }
       }
-    } else {
-      imageView.setImageDrawable(null)
-      imageView.visibility = View.GONE
-      horView.visibility = View.GONE
-    }
+    )
+
+    binding.buttonMore.setImageDrawable(uiNoteList.moreIcon)
   }
 }
