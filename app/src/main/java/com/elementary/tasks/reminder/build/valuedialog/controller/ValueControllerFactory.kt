@@ -8,6 +8,7 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
+import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriHelper
@@ -236,7 +237,9 @@ class ValueControllerFactory(
 
       is StringBuilderItem -> TextInputController(
         builderItem = builderItem,
-        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!
+        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
+        speechEngine = SpeechEngine(fragment.requireContext()),
+        permissionFlow = PermissionFlow(fragment, dialogues)
       )
 
       else -> {

@@ -1,25 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout"
         style="@style/OutlinedBoxStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
-        <com.elementary.tasks.core.views.FixedTextInputEditText
+        <com.elementary.tasks.core.views.gradient.UiGradientEditText
             android:id="@+id/input_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
-            android:maxLength="300"
+            android:maxLength="1000"
             android:maxLines="6"
             android:textAppearance="?textAppearanceSubtitle1"
             tools:hint="@string/remind_me" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-</FrameLayout>
+    <FrameLayout
+        android:id="@+id/voice_input_frame"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:background="?selectableItemBackgroundBorderless">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/voice_speak_animation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/mic_speaking_waves"
+            app:tint="?colorOnSurface"
+            tools:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/voice_input_mic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_builder_mic_on"
+            app:tint="?colorOnSurface"
+            tools:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/voice_input_stop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_fluent_recording_stop"
+            app:tint="?colorError"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+</LinearLayout>

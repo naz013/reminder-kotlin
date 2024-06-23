@@ -12,6 +12,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -161,6 +162,8 @@ fun AppCompatEditText.trimmedText() = text.toString().trim()
 fun AutoCompleteTextView.trimmedText() = text.toString().trim()
 
 fun AppCompatTextView.text() = text.toString()
+
+fun EditText.readText() = text.toString()
 
 fun TextView.setTextOrHide(text: String?) {
   visibleGone(!text.isNullOrEmpty())

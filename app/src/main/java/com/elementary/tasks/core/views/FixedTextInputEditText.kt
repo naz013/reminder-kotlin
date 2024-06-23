@@ -9,13 +9,13 @@ import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import java.util.Locale
 
-class FixedTextInputEditText : TextInputEditText {
+open class FixedTextInputEditText : TextInputEditText {
 
   constructor(context: Context) : super(context)
 
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+  constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+  constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
     context,
     attrs,
     defStyle
