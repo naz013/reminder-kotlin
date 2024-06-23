@@ -46,7 +46,7 @@
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.elementary.tasks.core.views.gradient.UiGradientEditText
                     android:id="@+id/taskMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -104,28 +104,43 @@
                         android:orientation="horizontal">
 
                         <FrameLayout
+                            android:id="@+id/voice_input_frame"
                             android:layout_width="56dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="8dp">
+                            android:layout_marginStart="8dp"
+                            android:background="?selectableItemBackgroundBorderless">
+
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:id="@+id/voice_speak_animation"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:padding="8dp"
+                                android:visibility="gone"
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true"
+                                app:lottie_rawRes="@raw/mic_speaking_waves"
+                                app:tint="?colorOnSurface"
+                                tools:visibility="gone" />
 
                             <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/micButton"
+                                android:id="@+id/voice_input_mic"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="?selectableItemBackgroundBorderless"
                                 android:contentDescription="@string/acc_type_by_voice"
                                 android:scaleType="centerInside"
-                                app:srcCompat="@drawable/ic_builder_mic_on" />
+                                app:srcCompat="@drawable/ic_builder_mic_on"
+                                app:tint="?colorOnSurface"
+                                tools:visibility="gone" />
 
-                            <com.google.android.material.progressindicator.CircularProgressIndicator
-                                android:id="@+id/voiceProgress"
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/voice_input_stop"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:indeterminate="true"
+                                android:scaleType="centerInside"
                                 android:visibility="gone"
-                                app:indicatorColor="@color/pureBlack"
-                                app:indicatorSize="48dp"
-                                app:trackThickness="2dp" />
+                                app:srcCompat="@drawable/ic_fluent_recording_stop"
+                                tools:visibility="visible" />
 
                         </FrameLayout>
 

@@ -8,9 +8,6 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -32,9 +29,12 @@ import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.os.toast
+import com.elementary.tasks.core.speech.SpeechEngine
+import com.elementary.tasks.core.speech.SpeechEngineCallback
+import com.elementary.tasks.core.speech.SpeechError
+import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -48,6 +48,8 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.font.FontParams
 import com.elementary.tasks.core.utils.ui.gone
+import com.elementary.tasks.core.utils.ui.readText
+import com.elementary.tasks.core.utils.ui.singleClick
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.ui.visible
@@ -60,7 +62,6 @@ import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.pin.PinLoginActivity
 import com.google.android.material.slider.Slider
-import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -88,52 +89,51 @@ class CreateNoteActivity :
   }
 
   private val imagesGridAdapter = ImagesGridAdapter()
-  private var speech: SpeechRecognizer? = null
 
-  private val mRecognitionListener = object : RecognitionListener {
-    override fun onReadyForSpeech(bundle: Bundle?) {
+  private val speechEngine = SpeechEngine(this)
+  private val speechEngineCallback = object : SpeechEngineCallback() {
+    override fun onStarted() {
+      super.onStarted()
+      updateSpeechState(SpeechState.STARTED)
     }
 
-    override fun onBeginningOfSpeech() {
-      Timber.d("onBeginningOfSpeech: ")
-      showRecording()
+    override fun onStopped() {
+      super.onStopped()
+      updateSpeechState(SpeechState.IDLE)
     }
 
-    override fun onRmsChanged(v: Float) {
+    override fun onSpeechStarted() {
+      super.onSpeechStarted()
+      updateSpeechState(SpeechState.SPEAKING)
     }
 
-    override fun onBufferReceived(bytes: ByteArray?) {
+    override fun onSpeechEnded() {
+      super.onSpeechEnded()
+      updateSpeechState(SpeechState.STOPPED)
     }
 
-    override fun onEndOfSpeech() {
-      hideRecording()
-      Timber.d("onEndOfSpeech: ")
+    override fun onSpeechError(error: SpeechError) {
+      super.onSpeechError(error)
+      updateSpeechState(SpeechState.IDLE)
     }
 
-    override fun onError(i: Int) {
-      Timber.d("onError: $i")
-      releaseSpeech()
-      hideRecording()
-    }
-
-    override fun onResults(bundle: Bundle?) {
-      val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-      if (res != null && res.size > 0) {
-        appendText(res[0].toString())
+    override fun onSpeechResult(speechText: SpeechText) {
+      super.onSpeechResult(speechText)
+      binding.taskMessage.clearSections()
+      binding.taskMessage.setText(speechText.text)
+      speechText.newText?.also { newText ->
+//        binding.taskMessage.addGradientSection(
+//          startIndex = newText.startIndex,
+//          endIndex = newText.endIndex + 1,
+//          startColor = ContextCompat.getColor(this@CreateNoteActivity, R.color.greenAccent),
+//          endColor = ContextCompat.getColor(this@CreateNoteActivity, R.color.redAccent)
+//        )
+        binding.taskMessage.addBoldSection(
+          startIndex = newText.startIndex,
+          endIndex = newText.endIndex + 1
+        )
       }
-      Timber.d("onResults: $res")
-      releaseSpeech()
-    }
-
-    override fun onPartialResults(bundle: Bundle?) {
-      val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-      if (res != null && res.size > 0) {
-        appendText(res[0].toString())
-      }
-      Timber.d("onPartialResults: $res")
-    }
-
-    override fun onEvent(i: Int, bundle: Bundle?) {
+      binding.taskMessage.setSelection(binding.taskMessage.readText().length)
     }
   }
 
@@ -198,11 +198,12 @@ class CreateNoteActivity :
 
     initActionBar()
     initMenu()
-    hideRecording()
 
     binding.taskMessage.textSize = prefs.lastNoteFontSize.toFloat()
 
-    binding.micButton.setOnClickListener { tryMicClick() }
+    binding.voiceInputFrame.visibleGone(speechEngine.supportsRecognition())
+    binding.voiceInputFrame.singleClick { tryMicClick() }
+    updateSpeechState(SpeechState.IDLE)
 
     binding.clickView.setOnClickListener {
       Timber.d("onCreate: on outside touch")
@@ -286,58 +287,10 @@ class CreateNoteActivity :
     Random().nextInt(ThemeProvider.NOTE_COLORS)
   }
 
-  private fun appendText(text: String?) {
-    if (text != null) {
-      val oldText = binding.taskMessage.trimmedText()
-      val newText = if (oldText.isEmpty()) {
-        StringUtils.capitalize(text)
-      } else {
-        "$oldText $text"
-      }
-      binding.taskMessage.setText(newText)
-      binding.taskMessage.setSelection(binding.taskMessage.text.toString().length)
-    }
-  }
-
   private fun setText(text: String?) {
+    speechEngine.setText(text ?: "")
     binding.taskMessage.setText(text)
     binding.taskMessage.setSelection(binding.taskMessage.text.toString().length)
-  }
-
-  private fun showRecording() {
-    binding.voiceProgress.visible()
-  }
-
-  private fun hideRecording() {
-    binding.voiceProgress.gone()
-  }
-
-  private fun initRecognizer() {
-    try {
-      val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-      recognizerIntent.putExtra(
-        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-        RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
-      )
-      recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-      recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-      speech = SpeechRecognizer.createSpeechRecognizer(this)
-      speech?.setRecognitionListener(mRecognitionListener)
-      speech?.startListening(recognizerIntent)
-      showRecording()
-    } catch (e: Throwable) {
-      speech = null
-      toast(R.string.failed_to_start_voice_recognition)
-    }
-  }
-
-  private fun releaseSpeech() {
-    runCatching {
-      speech?.stopListening()
-      speech?.cancel()
-      speech?.destroy()
-      speech = null
-    }
   }
 
   private fun tryMicClick() {
@@ -345,12 +298,13 @@ class CreateNoteActivity :
   }
 
   private fun micClick() {
-    if (speech != null) {
-      hideRecording()
-      releaseSpeech()
-      return
+    if (speechEngine.isStarted()) {
+      speechEngine.stopListening()
+    } else {
+      permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+        speechEngine.startListening(speechEngineCallback)
+      }
     }
-    initRecognizer()
   }
 
   private fun newPair(color: Int = -1, opacity: Int = -1): Pair<Int, Int> {
@@ -367,8 +321,6 @@ class CreateNoteActivity :
   }
 
   private fun initMenu() {
-    binding.micButton.visibleGone(Module.hasMicrophone(this))
-
     binding.colorButton.setOnClickListener {
       tabController.onTabClick(TabController.Tab.COLOR)
     }
@@ -566,15 +518,8 @@ class CreateNoteActivity :
       }
     }
     viewModel.noteToShare.nonNullObserve(this) { sendNote(it.second, it.first) }
-    viewModel.isInProgress.nonNullObserve(this) {
-      if (it) {
-        showProgress()
-      } else {
-        hideProgress()
-      }
-    }
     viewModel.error.nonNullObserve(this) { toast(it) }
-    viewModel.parsedText.nonNullObserve(this) { binding.taskMessage.setText(it) }
+    viewModel.parsedText.nonNullObserve(this) { setText(it) }
     lifecycle.addObserver(viewModel)
   }
 
@@ -618,9 +563,16 @@ class CreateNoteActivity :
   private fun updateIcons() {
     binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
     binding.toolbar.tintOverflowButton(isBgDark)
-    binding.micButton.setImageDrawable(
+    binding.voiceInputMic.setImageDrawable(
       ViewUtils.tintIcon(this, R.drawable.ic_builder_mic_on, isBgDark)
     )
+    binding.voiceInputStop.setImageDrawable(
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_recording_stop, isBgDark)
+    )
+    binding.voiceSpeakAnimation.imageTintList = ColorStateList.valueOf(
+      ViewUtils.tintIconColor(this, isBgDark)
+    )
+
     binding.colorButton.setImageDrawable(
       ViewUtils.tintIcon(this, R.drawable.ic_fluent_color_background, isBgDark)
     )
@@ -681,14 +633,6 @@ class CreateNoteActivity :
     startActivity(ImagePreviewActivity::class.java) {
       putExtra(Constants.INTENT_POSITION, position)
     }
-  }
-
-  private fun hideProgress() {
-    binding.voiceProgress.gone()
-  }
-
-  private fun showProgress() {
-    binding.voiceProgress.visible()
   }
 
   private fun sendNote(file: File, name: String) {
@@ -884,13 +828,13 @@ class CreateNoteActivity :
     imagesGridAdapter.actionsListener = null
     lifecycle.removeObserver(viewModel)
     hideKeyboard(binding.taskMessage.windowToken)
-    releaseSpeech()
+    speechEngine.stopListening()
   }
 
   private fun handleSendText(intent: Intent) {
     intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
       Timber.d("handleSendText: $it")
-      binding.taskMessage.setText(it)
+      setText(it)
     }
   }
 
@@ -921,6 +865,38 @@ class CreateNoteActivity :
       finish()
     }
     return true
+  }
+
+  private fun updateSpeechState(state: SpeechState) {
+    when (state) {
+      SpeechState.IDLE -> {
+        binding.voiceInputMic.visible()
+        binding.voiceSpeakAnimation.gone()
+        binding.voiceInputStop.gone()
+      }
+      SpeechState.STARTED -> {
+        binding.voiceInputMic.gone()
+        binding.voiceSpeakAnimation.gone()
+        binding.voiceInputStop.visible()
+      }
+      SpeechState.SPEAKING -> {
+        binding.voiceInputMic.gone()
+        binding.voiceSpeakAnimation.visible()
+        binding.voiceInputStop.gone()
+      }
+      SpeechState.STOPPED -> {
+        binding.voiceInputMic.gone()
+        binding.voiceSpeakAnimation.gone()
+        binding.voiceInputStop.visible()
+      }
+    }
+  }
+
+  private enum class SpeechState {
+    IDLE,
+    STARTED,
+    SPEAKING,
+    STOPPED
   }
 }
 

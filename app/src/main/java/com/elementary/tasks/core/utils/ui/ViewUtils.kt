@@ -112,17 +112,21 @@ object ViewUtils {
     return null
   }
 
+  @ColorInt
+  fun tintIconColor(context: Context, isDark: Boolean): Int {
+    return if (isDark) {
+      ContextCompat.getColor(context, R.color.whitePrimary)
+    } else {
+      ContextCompat.getColor(context, R.color.pureBlack)
+    }
+  }
+
   fun tintIcon(context: Context, @DrawableRes resource: Int, isDark: Boolean): Drawable? {
     var icon = ContextCompat.getDrawable(context, resource)
     if (icon != null) {
       icon = (DrawableCompat.wrap(icon)).mutate()
       if (icon == null) return null
-      val color = if (isDark) {
-        ContextCompat.getColor(context, R.color.whitePrimary)
-      } else {
-        ContextCompat.getColor(context, R.color.pureBlack)
-      }
-      DrawableCompat.setTint(icon, color)
+      DrawableCompat.setTint(icon, tintIconColor(context, isDark))
       DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
       return icon
     }

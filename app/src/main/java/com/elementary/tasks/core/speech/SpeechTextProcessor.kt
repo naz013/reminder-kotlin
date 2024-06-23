@@ -28,9 +28,11 @@ class SpeechTextProcessor(initValue: String = "") {
 
   fun process(text: String): SpeechText {
     if (text.isEmpty() && currentSection.isEmpty()) {
+      Traces.d("SpeechTextProcessor:process text is empty and currentSection is empty")
       return SpeechText(text = completedSection, newText = null)
     }
     if (text.isEmpty()) {
+      Traces.d("SpeechTextProcessor:process text is empty")
       saveSection()
       return SpeechText(text = completedSection, newText = null)
     }
@@ -62,7 +64,9 @@ class SpeechTextProcessor(initValue: String = "") {
       newText = NewText(newText, startIndex, startIndex + newText.length)
     )
     return if (sameAsLast) {
-      lastSpeechText ?: newSpeechText
+      lastSpeechText ?: newSpeechText.also {
+        lastSpeechText = it
+      }
     } else {
       newSpeechText.also {
         lastSpeechText = it
