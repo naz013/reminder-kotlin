@@ -1,7 +1,9 @@
 package com.elementary.tasks.core.appwidgets.singlenote
 
 import android.content.Context
+import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.WidgetPrefsProvider
+import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 
 class SingleNoteWidgetPrefsProvider(
@@ -49,12 +51,52 @@ class SingleNoteWidgetPrefsProvider(
       ?: NoteDrawableParams.VerticalAlignment.CENTER
   }
 
+  fun setTextColorPosition(position: Int) {
+    putInt(WIDGET_TEXT_COLOR_POSITION, position)
+  }
+
+  fun getTextColorPosition(): Int {
+    return getInt(WIDGET_TEXT_COLOR_POSITION, def = ThemeProvider.Color.BLACK).also {
+      Traces.d("getTextColorPosition: $it")
+    }
+  }
+
+  fun setTextColorOpacity(opacity: Float) {
+    putFloat(WIDGET_TEXT_COLOR_OPACITY, opacity)
+  }
+
+  fun getTextColorOpacity(): Float {
+    return getFloat(WIDGET_TEXT_COLOR_OPACITY, def = 100f)
+  }
+
+  fun setOverlayColorPosition(position: Int) {
+    putInt(WIDGET_OVERLAY_COLOR_POSITION, position)
+  }
+
+  fun getOverlayColorPosition(): Int {
+    return getInt(WIDGET_OVERLAY_COLOR_POSITION, def = ThemeProvider.Color.WHITE).also {
+      Traces.d("getOverlayColorPosition: $it")
+    }
+  }
+
+  fun setOverlayColorOpacity(opacity: Float) {
+    putFloat(WIDGET_OVERLAY_COLOR_OPACITY, opacity)
+  }
+
+  fun getOverlayColorOpacity(): Float {
+    return getFloat(WIDGET_OVERLAY_COLOR_OPACITY, def = 0f)
+  }
+
   override fun getKeys(): List<String> {
     return listOf(
       WIDGET_NOTE_ID,
       WIDGET_TEXT_SIZE,
       WIDGET_TEXT_HOR_ALIGNMENT,
-      WIDGET_TEXT_VER_ALIGNMENT
+      WIDGET_TEXT_VER_ALIGNMENT,
+      WIDGET_TEXT_COLOR_POSITION,
+      WIDGET_TEXT_COLOR_OPACITY,
+      WIDGET_OVERLAY_COLOR_POSITION,
+      WIDGET_OVERLAY_COLOR_OPACITY
     )
   }
 
@@ -63,5 +105,11 @@ class SingleNoteWidgetPrefsProvider(
     private const val WIDGET_TEXT_SIZE = "widget_text_size"
     private const val WIDGET_TEXT_VER_ALIGNMENT = "widget_text_hor_alignment"
     private const val WIDGET_TEXT_HOR_ALIGNMENT = "widget_text_ver_alignment"
+
+    private const val WIDGET_TEXT_COLOR_POSITION = "widget_text_color_position"
+    private const val WIDGET_TEXT_COLOR_OPACITY = "widget_text_color_opacity"
+
+    private const val WIDGET_OVERLAY_COLOR_POSITION = "widget_overlay_color_position"
+    private const val WIDGET_OVERLAY_COLOR_OPACITY = "widget_overlay_color_opacity"
   }
 }

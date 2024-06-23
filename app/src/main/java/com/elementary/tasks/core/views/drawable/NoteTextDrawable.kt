@@ -28,6 +28,7 @@ class NoteTextDrawable(
 
   private val textPaint: TextPaint
   private val borderPaint: Paint
+  private val overlayPaint: Paint
   private val color: Int
   private val shape: RectShape?
   private val height: Int
@@ -60,6 +61,11 @@ class NoteTextDrawable(
     borderPaint.color = getDarkerShade(color)
     borderPaint.style = Paint.Style.STROKE
     borderPaint.strokeWidth = borderThickness.toFloat()
+
+    // border paint settings
+    overlayPaint = Paint()
+    overlayPaint.color = params.overlayParams.color
+    overlayPaint.style = Paint.Style.FILL
 
     // drawable paint color
     val paint = paint
@@ -103,8 +109,13 @@ class NoteTextDrawable(
 
     val image = params.backgroundImage
     if (image != null) {
-      val src = Rect(0, 0, image.width, image.height)
-      canvas.drawBitmap(clipCenterPartOfBackgroundImage(image, params.radius), src, r, null)
+      val scaledBitmap = Bitmap.createScaledBitmap(image, r.width(), r.height(), true)
+      val src = Rect(0, 0, scaledBitmap.width, scaledBitmap.height)
+
+      canvas.drawBitmap(clipCenterPartOfBackgroundImage(scaledBitmap, params.radius), src, r, null)
+
+      // draw overlay
+      drawOverlay(canvas)
     }
 
     // draw border
@@ -237,6 +248,15 @@ class NoteTextDrawable(
     textPaint.textSize = textPaint.textSize + scaleStep
     val textLayout = createStaticLayout(text, textWidth)
     return scaleText(targetHeight, textLayout.height, text, textWidth, scaleStep)
+  }
+
+  private fun drawOverlay(canvas: Canvas) {
+    val rect = RectF(bounds)
+    when (shape) {
+      is OvalShape -> canvas.drawOval(rect, overlayPaint)
+      is RoundRectShape -> canvas.drawRoundRect(rect, params.radius, params.radius, overlayPaint)
+      else -> canvas.drawRect(rect, overlayPaint)
+    }
   }
 
   private fun drawBorder(canvas: Canvas) {

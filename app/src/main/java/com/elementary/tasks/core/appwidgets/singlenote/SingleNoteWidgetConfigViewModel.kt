@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
@@ -49,7 +50,11 @@ class SingleNoteWidgetConfigViewModel(
     id: String,
     verticalAlignment: NoteDrawableParams.VerticalAlignment,
     horizontalAlignment: NoteDrawableParams.HorizontalAlignment,
-    textSize: Float
+    textSize: Float,
+    textColor: Int,
+    textColorOpacity: Float,
+    overlayColor: Int,
+    overlayOpacity: Float
   ) {
     previewJob?.cancel()
     previewJob = viewModelScope.launch(dispatcherProvider.default()) {
@@ -61,7 +66,9 @@ class SingleNoteWidgetConfigViewModel(
         verticalAlignment = verticalAlignment,
         horizontalAlignment = horizontalAlignment,
         fontSize = textSize,
-        marginDp = 8
+        marginDp = 8,
+        overlayColor = overlayColor.adjustAlpha(overlayOpacity.toInt()),
+        textColor = textColor.adjustAlpha(textColorOpacity.toInt())
       )
       if (!isActive) return@launch
       _previewBitmap.postValue(preview)

@@ -843,4 +843,8 @@
     <string name="archive_was_emptied">Archive was emptied</string>
     <string name="builder_attach_note_to_the_reminder">Attach note to the reminder</string>
     <string name="detach">Detach</string>
+    <string name="text_color">Text color</string>
+    <string name="text_opacity">Text opacity</string>
+    <string name="foreground_opacity">Foreground opacity</string>
+    <string name="foreground_color">Foreground color</string>
 </resources>

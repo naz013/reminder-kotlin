@@ -270,6 +270,8 @@ class ThemeProvider(
     const val ORANGE = 14
     const val DEEP_ORANGE = 15
     const val LIVING_CORAL = 16
+    const val WHITE = 17
+    const val BLACK = 18
   }
 
   @ColorInt
@@ -399,6 +401,31 @@ class ThemeProvider(
     }
 
     @ColorInt
+    fun colorsForNoteWidgetSlider(context: Context): IntArray {
+      return intArrayOf(
+        ContextCompat.getColor(context, R.color.redAccentOld),
+        ContextCompat.getColor(context, R.color.pinkAccentOld),
+        ContextCompat.getColor(context, R.color.purpleAccentOld),
+        ContextCompat.getColor(context, R.color.purpleDeepAccentOld),
+        ContextCompat.getColor(context, R.color.indigoAccentOld),
+        ContextCompat.getColor(context, R.color.blueAccentOld),
+        ContextCompat.getColor(context, R.color.blueLightAccentOld),
+        ContextCompat.getColor(context, R.color.cyanAccentOld),
+        ContextCompat.getColor(context, R.color.tealAccentOld),
+        ContextCompat.getColor(context, R.color.greenAccentOld),
+        ContextCompat.getColor(context, R.color.greenLightAccentOld),
+        ContextCompat.getColor(context, R.color.limeAccentOld),
+        ContextCompat.getColor(context, R.color.yellowAccentOld),
+        ContextCompat.getColor(context, R.color.amberAccentOld),
+        ContextCompat.getColor(context, R.color.orangeAccentOld),
+        ContextCompat.getColor(context, R.color.orangeDeepAccentOld),
+        ContextCompat.getColor(context, R.color.secondaryLivingCoral),
+        ContextCompat.getColor(context, R.color.pureWhite),
+        ContextCompat.getColor(context, R.color.pureBlack)
+      )
+    }
+
+    @ColorInt
     fun colorsForSliderThemed(context: Context): IntArray {
       return intArrayOf(
         ContextCompat.getColor(context, R.color.redAccent),
@@ -440,6 +467,8 @@ class ThemeProvider(
         Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
         Color.LIME -> color = R.color.limeAccent
         Color.INDIGO -> color = R.color.indigoAccent
+        Color.WHITE -> color = R.color.pureWhite
+        Color.BLACK -> color = R.color.pureBlack
         else -> color = R.color.blueAccent
       }
       return ContextCompat.getColor(context, color)

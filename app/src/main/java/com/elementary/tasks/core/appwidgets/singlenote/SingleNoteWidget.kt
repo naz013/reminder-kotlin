@@ -16,6 +16,8 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ThemeProvider
+import com.elementary.tasks.core.utils.adjustAlpha
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -72,13 +74,25 @@ class SingleNoteWidget : AppWidgetProvider(), KoinComponent {
         val sizeScale = size / baseSize
         val fontScale = sizeScale * 0.85f
 
+        val textColor = ThemeProvider.themedColor(
+          context = context,
+          code = prefsProvider.getTextColorPosition()
+        ).adjustAlpha(prefsProvider.getTextColorOpacity().toInt())
+
+        val overlayColor = ThemeProvider.themedColor(
+          context = context,
+          code = prefsProvider.getOverlayColorPosition()
+        ).adjustAlpha(prefsProvider.getOverlayColorOpacity().toInt())
+
         val uiNoteWidget = uiNoteWidgetAdapter.convert(
           noteWithImages = noteWithImages,
           size = size,
           fontSize = prefsProvider.getTextSize() * fontScale,
+          textColor = textColor,
           horizontalAlignment = prefsProvider.getHorizontalAlignment(),
           verticalAlignment = prefsProvider.getVerticalAlignment(),
-          margin = baseMargin * sizeScale
+          margin = baseMargin * sizeScale,
+          overlayColor = overlayColor
         )
 
         rv.setImageViewBitmap(R.id.note_image, uiNoteWidget.bitmap)
