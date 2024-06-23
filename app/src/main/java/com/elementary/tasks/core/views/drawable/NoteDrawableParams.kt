@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.drawable.shapes.RoundRectShape
+import androidx.annotation.ColorInt
 import com.elementary.tasks.core.os.dp2px
 
 data class NoteDrawableParams(
@@ -25,8 +26,13 @@ data class NoteDrawableParams(
   val backgroundImage: Bitmap? = null,
   val horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
   val verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-  val textAutoScale: Boolean = true
+  val textAutoScale: Boolean = true,
+  val overlayParams: OverlayParams = OverlayParams(Color.TRANSPARENT)
 ) {
+
+  data class OverlayParams(
+    @ColorInt val color: Int = Color.GRAY
+  )
 
   enum class HorizontalAlignment {
     LEFT, CENTER, RIGHT
@@ -46,14 +52,15 @@ data class NoteDrawableParams(
       width: Int = 0,
       height: Int = 0,
       font: Typeface = Typeface.create("sans-serif-light", Typeface.NORMAL),
-      textColor: Int = Color.WHITE,
+      @ColorInt textColor: Int = Color.WHITE,
       fontSize: Float = 0f,
       margin: Float = context.dp2px(16).toFloat(),
       radius: Float = 0.toFloat(),
       backgroundImage: Bitmap? = null,
       horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
       verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-      textAutoScale: Boolean = true
+      textAutoScale: Boolean = true,
+      overlayParams: OverlayParams = OverlayParams(Color.TRANSPARENT)
     ): NoteDrawableParams {
       return NoteDrawableParams(
         context = context,
@@ -71,7 +78,8 @@ data class NoteDrawableParams(
         backgroundImage = backgroundImage,
         horizontalAlignment = horizontalAlignment,
         verticalAlignment = verticalAlignment,
-        textAutoScale = textAutoScale
+        textAutoScale = textAutoScale,
+        overlayParams = overlayParams
       )
     }
 
@@ -83,14 +91,15 @@ data class NoteDrawableParams(
       width: Int = 0,
       height: Int = 0,
       font: Typeface = Typeface.create("sans-serif-light", Typeface.NORMAL),
-      textColor: Int = Color.WHITE,
+      @ColorInt textColor: Int = Color.WHITE,
       fontSize: Float = 0f,
       margin: Float = context.dp2px(16).toFloat(),
       radius: Float = 0.toFloat(),
       backgroundImage: Bitmap? = null,
       horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
       verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-      textAutoScale: Boolean = true
+      textAutoScale: Boolean = true,
+      overlayParams: OverlayParams = OverlayParams(Color.TRANSPARENT)
     ): NoteDrawableParams {
       return NoteDrawableParams(
         context = context,
@@ -108,7 +117,8 @@ data class NoteDrawableParams(
         backgroundImage = backgroundImage,
         horizontalAlignment = horizontalAlignment,
         verticalAlignment = verticalAlignment,
-        textAutoScale = textAutoScale
+        textAutoScale = textAutoScale,
+        overlayParams = overlayParams
       )
     }
 
@@ -121,13 +131,14 @@ data class NoteDrawableParams(
       width: Int = 0,
       height: Int = 0,
       font: Typeface = Typeface.create("sans-serif-light", Typeface.NORMAL),
-      textColor: Int = Color.WHITE,
+      @ColorInt textColor: Int = Color.WHITE,
       fontSize: Float = 0f,
       margin: Float = context.dp2px(16).toFloat(),
       backgroundImage: Bitmap? = null,
       horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER,
       verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER,
-      textAutoScale: Boolean = true
+      textAutoScale: Boolean = true,
+      overlayParams: OverlayParams = OverlayParams(Color.TRANSPARENT)
     ): NoteDrawableParams {
       val radii = floatArrayOf(radius, radius, radius, radius, radius, radius, radius, radius)
       return NoteDrawableParams(
@@ -146,7 +157,8 @@ data class NoteDrawableParams(
         backgroundImage = backgroundImage,
         horizontalAlignment = horizontalAlignment,
         verticalAlignment = verticalAlignment,
-        textAutoScale = textAutoScale
+        textAutoScale = textAutoScale,
+        overlayParams = overlayParams
       )
     }
   }

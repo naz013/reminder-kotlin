@@ -2,7 +2,9 @@ package com.elementary.tasks.core.data.adapter.note
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Matrix
+import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -31,25 +33,19 @@ class UiNoteWidgetAdapter(
     noteWithImages: NoteWithImages,
     size: Int,
     fontSize: Float,
+    @ColorInt textColor: Int,
     horizontalAlignment: NoteDrawableParams.HorizontalAlignment =
       NoteDrawableParams.HorizontalAlignment.CENTER,
     verticalAlignment: NoteDrawableParams.VerticalAlignment =
       NoteDrawableParams.VerticalAlignment.CENTER,
-    margin: Float
+    margin: Float,
+    @ColorInt overlayColor: Int = Color.TRANSPARENT
   ): UiNoteWidget {
     val backgroundColor = themeProvider.getNoteLightColor(
       noteWithImages.getColor(),
       noteWithImages.getOpacity(),
       noteWithImages.getPalette()
     )
-
-    val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
-      backgroundColor.isColorDark()
-    val textColor = if (isDarkBg) {
-      colorProvider.getColor(R.color.pureWhite)
-    } else {
-      colorProvider.getColor(R.color.pureBlack)
-    }
 
     val typeface = AssetsUtil.getTypeface(
       contextProvider.themedContext,
@@ -97,7 +93,8 @@ class UiNoteWidgetAdapter(
       backgroundImage = image,
       text = noteWithImages.getSummary(),
       color = backgroundColor,
-      radius = radius
+      radius = radius,
+      overlayParams = NoteDrawableParams.OverlayParams(overlayColor)
     )
 
     val bitmap = if (size != 0) {
