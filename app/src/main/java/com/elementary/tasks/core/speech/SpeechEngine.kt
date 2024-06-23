@@ -130,7 +130,7 @@ class SpeechEngine(
       RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
       1000 * 5
     )
-    recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+    recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       recognizerIntent.putExtra(
         RecognizerIntent.EXTRA_ENABLE_FORMATTING,
