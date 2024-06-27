@@ -23,7 +23,8 @@
                 app:menu="@menu/activity_birthday_preview"
                 app:navigationIcon="@drawable/ic_builder_arrow_left"
                 app:navigationIconTint="?colorOnSurface"
-                app:title="@string/details" />
+                app:title="@string/details"
+                app:titleTextAppearance="@style/TextAppearance.Title" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,197 +38,184 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/UiComponentDetailsCard"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/contactPhoto"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="32dp"
+                    android:contentDescription="@string/acc_contact_photo"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    app:civ_border_color="?colorOnBackground"
+                    app:civ_border_width="1dp"
+                    tools:src="@tools:sample/avatars[3]"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/nameBlockView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="24dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        app:srcCompat="@drawable/ic_fluent_person"
+                        app:tint="?colorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/nameBlockTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.HeadLine"
+                        android:textColor="?colorPrimary"
+                        tools:text="Test User 1 as alksdj sldjsa dasd lksadj kajs dhkasd" />
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/contactPhoto"
-                            android:layout_width="72dp"
-                            android:layout_height="72dp"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="32dp"
-                            android:contentDescription="@string/acc_contact_photo"
-                            android:scaleType="centerCrop"
-                            android:visibility="visible"
-                            app:civ_border_color="?colorOnBackground"
-                            app:civ_border_width="1dp"
-                            tools:src="@tools:sample/avatars[3]"
-                            tools:visibility="visible" />
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/nameBlockView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginEnd="24dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/contactNumberBlockView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:padding="2dp"
-                                app:srcCompat="@drawable/ic_fluent_person"
-                                app:tint="?colorPrimary" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        app:srcCompat="@drawable/ic_fluent_phone"
+                        app:tint="?colorOnBackground" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/nameBlockTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:textAppearance="?textAppearanceTitleLarge"
-                                android:textColor="?colorPrimary"
-                                android:textStyle="bold"
-                                tools:text="Test" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/contactNumberBlockTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/TextAppearance.BodyLarge"
+                        android:textColor="?colorOnBackground"
+                        tools:text="1234567890" />
 
-                        </LinearLayout>
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/contactNumberBlockView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="24dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/ageBlockView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:padding="2dp"
-                                app:srcCompat="@drawable/ic_fluent_phone"
-                                app:tint="?colorOnBackground" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        app:srcCompat="@drawable/ic_fluent_emoji_laugh"
+                        app:tint="?colorOnBackground" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/contactNumberBlockTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:textAppearance="?textAppearanceTitleLarge"
-                                android:textColor="?colorOnBackground"
-                                tools:text="1234567890" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/ageBlockTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/TextAppearance.BodyLarge"
+                        android:textColor="?colorOnBackground"
+                        android:textStyle="bold"
+                        tools:text="25 years" />
 
-                        </LinearLayout>
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/ageBlockView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="24dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/dateOfBirthBlockView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:padding="2dp"
-                                app:srcCompat="@drawable/ic_fluent_emoji_laugh"
-                                app:tint="?colorOnBackground" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        app:srcCompat="@drawable/ic_fluent_food_cake"
+                        app:tint="?colorOnBackground" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/ageBlockTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:textAppearance="?textAppearanceTitleLarge"
-                                android:textColor="?colorOnBackground"
-                                android:textStyle="bold"
-                                tools:text="25 years" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/dateOfBirthBlockTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.BodyLarge"
+                        android:textColor="?colorOnBackground"
+                        tools:text="25 May, 2000" />
 
-                        </LinearLayout>
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/dateOfBirthBlockView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="24dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/nextBirthdayDateBlockView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:padding="2dp"
-                                app:srcCompat="@drawable/ic_fluent_food_cake"
-                                app:tint="?colorOnBackground" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        android:contentDescription="@string/estimated_next_reminder"
+                        app:srcCompat="@drawable/ic_fluent_alert"
+                        app:tint="?colorOnBackground" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/dateOfBirthBlockTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:textAppearance="?textAppearanceTitleLarge"
-                                android:textColor="?colorOnBackground"
-                                tools:text="25 May, 2000" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/nextBirthdayDateBlockTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.BodyLarge"
+                        android:textColor="?colorOnBackground"
+                        tools:text="25 May, 2000" />
 
-                        </LinearLayout>
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/nextBirthdayDateBlockView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="24dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@string/estimated_next_reminder"
-                                android:padding="2dp"
-                                app:srcCompat="@drawable/ic_fluent_alert"
-                                app:tint="?colorOnBackground" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/nextBirthdayDateBlockTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:textAppearance="?textAppearanceTitleLarge"
-                                android:textColor="?colorOnBackground"
-                                tools:text="25 May, 2000" />
-
-                        </LinearLayout>
-
-                        <Space
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
 
 
                 <LinearLayout
                     android:id="@+id/ads_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginEnd="16dp"
                     android:orientation="vertical" />
 
             </LinearLayout>
@@ -254,7 +242,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/make_call"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.Button" />
 
         <Button
             android:id="@+id/buttonSms"
@@ -263,7 +252,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/send_sms"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.Button" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 

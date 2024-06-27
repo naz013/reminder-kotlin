@@ -18,7 +18,8 @@
             app:menu="@menu/activity_create_birthday"
             app:navigationIcon="@drawable/ic_builder_arrow_left"
             app:navigationIconTint="?colorOnSurface"
-            app:title="@string/add_birthday" />
+            app:title="@string/add_birthday"
+            app:titleTextAppearance="@style/TextAppearance.Title" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,7 +42,8 @@
                 style="@style/FilledBoxStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                app:hintTextAppearance="@style/TextAppearance.Label">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/birthName"
@@ -51,7 +53,8 @@
                     android:imeOptions="actionDone"
                     android:inputType="textPersonName"
                     android:maxLength="70"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.BodyMedium" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,6 +65,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/i_don_t_know_the_year"
+                android:textAppearance="@style/TextAppearance.Label"
                 android:textColor="?colorOnBackground" />
 
             <com.google.android.material.card.MaterialCardView
@@ -83,7 +87,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:text="@string/select_date"
-                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textAppearance="@style/TextAppearance.Label"
                         android:textColor="?colorPrimary" />
 
                     <TextView
@@ -95,7 +99,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:background="?selectableItemBackground"
-                        android:textAppearance="?textAppearanceHeadlineSmall"
+                        android:textAppearance="@style/TextAppearance.BodyLarge"
                         android:textColor="?colorOnSurface"
                         tools:text="25/05/1985" />
 
@@ -110,6 +114,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/attach_contact"
+                android:textAppearance="@style/TextAppearance.Label"
                 android:textColor="?colorOnBackground" />
 
             <com.elementary.tasks.core.views.ContactPickerView
