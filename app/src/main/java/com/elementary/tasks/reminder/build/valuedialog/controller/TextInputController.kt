@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller
 
+import android.annotation.SuppressLint
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -118,17 +119,25 @@ class TextInputController(
         updateValue(it)
         speechEngine.setText(it ?: "")
       }
+      updateCharacterCount()
     }
   }
 
   override fun onDataChanged(data: String?) {
     super.onDataChanged(data)
     binding.inputEditText.setText(data)
+    updateCharacterCount()
   }
 
   override fun onStop() {
     super.onStop()
     speechEngine.stopListening()
+  }
+
+  @SuppressLint("SetTextI18n")
+  private fun updateCharacterCount() {
+    val count = binding.inputEditText.readText().length
+    binding.characterCountView.text = "$count/1000"
   }
 
   private fun micClick() {
