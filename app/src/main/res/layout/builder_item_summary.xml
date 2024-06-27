@@ -5,64 +5,79 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_layout"
-        style="@style/OutlinedBoxStyle"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.gradient.UiGradientEditText
-            android:id="@+id/input_edit_text"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout"
+            style="@style/OutlinedBoxStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:maxLength="1000"
-            android:maxLines="6"
-            android:textAppearance="?textAppearanceSubtitle1"
-            tools:hint="@string/remind_me" />
+            android:layout_weight="1">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.elementary.tasks.core.views.gradient.UiGradientEditText
+                android:id="@+id/input_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:maxLength="1000"
+                android:maxLines="6"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:hint="@string/remind_me" />
 
-    <FrameLayout
-        android:id="@+id/voice_input_frame"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:background="?selectableItemBackgroundBorderless">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/voice_speak_animation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/mic_speaking_waves"
-            app:tint="?colorOnSurface"
-            tools:visibility="gone" />
+        <FrameLayout
+            android:id="@+id/voice_input_frame"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackgroundBorderless">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/voice_input_mic"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_builder_mic_on"
-            app:tint="?colorOnSurface"
-            tools:visibility="gone" />
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/voice_speak_animation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/mic_speaking_waves"
+                app:tint="?colorOnSurface"
+                tools:visibility="gone" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/voice_input_stop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_fluent_recording_stop"
-            app:tint="?colorError"
-            tools:visibility="visible" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/voice_input_mic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_builder_mic_on"
+                app:tint="?colorOnSurface"
+                tools:visibility="gone" />
 
-    </FrameLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/voice_input_stop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_fluent_recording_stop"
+                app:tint="?colorError"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/character_count_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        tools:text="50/1000" />
 
 </LinearLayout>
