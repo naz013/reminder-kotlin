@@ -41,25 +41,41 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
   override fun getTitle(): String = getString(R.string.time)
 
   private fun morningDialog() {
-    dateTimePickerProvider.showTimePicker(requireContext(), viewModel.morningLocalTime) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = childFragmentManager,
+      time = viewModel.morningLocalTime,
+      title = getString(R.string.morning)
+    ) {
       viewModel.onMorningTime(it)
     }
   }
 
   private fun dayDialog() {
-    dateTimePickerProvider.showTimePicker(requireContext(), viewModel.dayLocalTime) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = childFragmentManager,
+      time = viewModel.dayLocalTime,
+      title = getString(R.string.day)
+    ) {
       viewModel.onDayTime(it)
     }
   }
 
   private fun nightDialog() {
-    dateTimePickerProvider.showTimePicker(requireContext(), viewModel.nightLocalTime) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = childFragmentManager,
+      time = viewModel.nightLocalTime,
+      title = getString(R.string.night)
+    ) {
       viewModel.onNightTime(it)
     }
   }
 
   private fun eveningDialog() {
-    dateTimePickerProvider.showTimePicker(requireContext(), viewModel.eveningLocalTime) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = childFragmentManager,
+      time = viewModel.eveningLocalTime,
+      title = getString(R.string.evening)
+    ) {
       viewModel.onEveningTime(it)
     }
   }

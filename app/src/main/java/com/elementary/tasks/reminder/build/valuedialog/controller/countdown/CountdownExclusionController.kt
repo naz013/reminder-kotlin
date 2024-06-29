@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -17,6 +18,7 @@ import org.threeten.bp.LocalTime
 
 class CountdownExclusionController(
   builderItem: BuilderItem<TimerExclusion>,
+  private val fragment: Fragment,
   private val dateTimeManager: DateTimeManager,
   private val dateTimePickerProvider: DateTimePickerProvider
 ) : AbstractBindingValueController<TimerExclusion, BuilderItemCountdownExclusionBinding>(
@@ -68,7 +70,11 @@ class CountdownExclusionController(
 
   @SuppressLint("SetTextI18n")
   private fun fromTime(textView: TextView) {
-    dateTimePickerProvider.showTimePicker(getContext(), fromTime) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = fragment.childFragmentManager,
+      time = fromTime,
+      title = getContext().getString(R.string.from)
+    ) {
       fromTime = it
       showFromTime(textView, it)
       notifyUpdate()
@@ -77,7 +83,11 @@ class CountdownExclusionController(
 
   @SuppressLint("SetTextI18n")
   private fun toTime(textView: TextView) {
-    dateTimePickerProvider.showTimePicker(getContext(), toTime) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = fragment.childFragmentManager,
+      time = toTime,
+      title = getContext().getString(R.string.to)
+    ) {
       toTime = it
       showToTime(textView, it)
       notifyUpdate()

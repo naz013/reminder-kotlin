@@ -6,6 +6,8 @@
     <DatePicker
         android:id="@+id/date_picker_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:datePickerMode="calendar"
+        android:theme="@style/DatePickerTheme" />
 
 </FrameLayout>

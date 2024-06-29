@@ -13,11 +13,8 @@ import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
-import com.elementary.tasks.databinding.DialogBottomColorSliderBinding
-import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.ViewColorSliderBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 data class SelectionList(
@@ -63,39 +60,6 @@ class Dialogues(
       dialog.dismiss()
     }
   }.create()
-
-  fun showColorBottomDialog(
-    activity: Activity,
-    current: Int,
-    colors: IntArray = ThemeProvider.colorsForSlider(activity),
-    onChange: (Int) -> Unit
-  ) {
-    val dialog = BottomSheetDialog(activity)
-    val b = DialogBottomColorSliderBinding.inflate(LayoutInflater.from(activity))
-    b.colorSlider.setColors(colors)
-    b.colorSlider.setSelectorColorResource(
-      currentStateHolder.theme.pickColorRes(R.color.pureBlack, R.color.pureWhite)
-    )
-    b.colorSlider.setSelection(current)
-    b.colorSlider.setListener { i, _ ->
-      onChange.invoke(i)
-    }
-    dialog.setContentView(b.root)
-    dialog.show()
-  }
-
-  fun showRadiusBottomDialog(activity: Activity, current: Int, formatter: (Int) -> String) {
-    val dialog = BottomSheetDialog(activity)
-    val b = DialogBottomSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
-
-    RadiusSliderBehaviour(b.seekBar, current) {
-      b.titleView.text = formatter.invoke(it)
-    }
-    b.titleView.text = formatter.invoke(current)
-
-    dialog.setContentView(b.root)
-    dialog.show()
-  }
 
   fun showColorDialog(
     activity: Activity,

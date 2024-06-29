@@ -127,6 +127,7 @@ class ValueControllerFactory(
       is TimerBuilderItem -> CountdownTimeController(builderItem)
       is TimerExclusionBuilderItem -> CountdownExclusionController(
         builderItem = builderItem,
+        fragment = fragment,
         dateTimeManager = dateTimeManager,
         dateTimePickerProvider = dateTimePickerProvider
       )

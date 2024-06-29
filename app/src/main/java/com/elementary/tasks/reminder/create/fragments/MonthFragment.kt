@@ -115,12 +115,20 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.monthDayField.setOnClickListener {
-      dateTimePickerProvider.showDatePicker(requireContext(), getDate()) {
+      dateTimePickerProvider.showDatePicker(
+        fragmentManager = childFragmentManager,
+        date = getDate(),
+        title = getString(R.string.select_date)
+      ) {
         onDateSelected(it)
       }
     }
     binding.timeField.setOnClickListener {
-      dateTimePickerProvider.showTimePicker(requireContext(), time) { onTimeSelected(it) }
+      dateTimePickerProvider.showTimePicker(
+        fragmentManager = childFragmentManager,
+        time = time,
+        title = getString(R.string.select_time)
+      ) { onTimeSelected(it) }
     }
     binding.timeField.text = dateTimeManager.getTime(time)
     binding.repeatView.defaultValue = 1
