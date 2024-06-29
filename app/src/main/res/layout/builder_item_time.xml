@@ -6,6 +6,8 @@
     <TimePicker
         android:id="@+id/time_picker_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:theme="@style/TimePickerTheme"
+        android:timePickerMode="clock" />
 
 </FrameLayout>

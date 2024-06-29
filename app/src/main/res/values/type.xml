@@ -37,48 +37,93 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="TextAppearance.SearchBar" parent="TextAppearance.Material3.SearchBar">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.SearchView" parent="Widget.Material3.SearchView">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
     <style name="TextAppearance.MyTheme.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="TextAppearance.MyTheme.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="TextAppearance.MyTheme.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
-        <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+        <item name="fontFamily">@font/montserrat_medium</item>
     </style>
 
     <style name="TextAppearance.MyTheme.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="TextAppearance.MyTheme.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="TextAppearance.MyTheme.BodySmall" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:fontFamily">@font/roboto_bold</item>
-        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="fontFamily">@font/montserrat_bold</item>
     </style>
 
     <style name="TextAppearance.MyTheme.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
-        <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+        <item name="fontFamily">@font/montserrat_medium</item>
     </style>
 
     <style name="TextAppearance.MyTheme.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="TextAppearance.MyTheme.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TextAppearance.MyTheme.MenuItem" parent="">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
     </style>
 </resources>

@@ -139,12 +139,14 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
             is BirthdayDateDeepLinkData -> {
               viewModel.onDateChanged(deepLinkData.date)
             }
+
             else -> {
               viewModel.onDateChanged(LocalDate.now())
             }
           }
         }
       }
+
       idFromIntent().isEmpty() -> viewModel.onDateChanged(LocalDate.now())
     }
   }
@@ -228,9 +230,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private fun dateDialog() {
     dateTimePickerProvider.showDatePicker(
-      context = this,
+      fragmentManager = supportFragmentManager,
       date = viewModel.selectedDate,
-      showYear = !binding.yearCheck.isChecked
+      title = getString(R.string.select_date)
     ) {
       viewModel.onDateChanged(it)
     }

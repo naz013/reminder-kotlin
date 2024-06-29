@@ -139,7 +139,11 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     binding.mondayCheck.setOnCheckedChangeListener(mCheckListener)
 
     binding.timeField.setOnClickListener {
-      dateTimePickerProvider.showTimePicker(requireContext(), time) {
+      dateTimePickerProvider.showTimePicker(
+        fragmentManager = childFragmentManager,
+        time = time,
+        title = getString(R.string.select_time)
+      ) {
         onTimeSelected(it)
       }
     }

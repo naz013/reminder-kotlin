@@ -156,7 +156,11 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
   private fun initTimesPrefs() {
     binding.doNotDisturbFromPrefs.setOnClickListener {
       val time = dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now()
-      dateTimePickerProvider.showTimePicker(requireContext(), time) {
+      dateTimePickerProvider.showTimePicker(
+        fragmentManager = childFragmentManager,
+        time = time,
+        title = getString(R.string.from)
+      ) {
         prefs.doNotDisturbFrom = dateTimeManager.to24HourString(it)
         showFromTime()
       }
@@ -165,7 +169,11 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
 
     binding.doNotDisturbToPrefs.setOnClickListener {
       val time = dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now()
-      dateTimePickerProvider.showTimePicker(requireContext(), time) {
+      dateTimePickerProvider.showTimePicker(
+        fragmentManager = childFragmentManager,
+        time = time,
+        title = getString(R.string.to)
+      ) {
         prefs.doNotDisturbTo = dateTimeManager.to24HourString(it)
         showToTime()
       }

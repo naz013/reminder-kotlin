@@ -105,6 +105,16 @@
     <style name="OutlinedBoxStyle" parent="@style/Widget.Material3.TextInputLayout.OutlinedBox">
     </style>
 
+    <style name="DatePickerTheme">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="TimePickerTheme">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+    </style>
+
     <!--OLD STYLES-->
 
     <style name="SplashScreenTheme" parent="Theme.SplashScreen">
