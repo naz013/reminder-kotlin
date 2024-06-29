@@ -125,6 +125,8 @@
 -keep,allowobfuscation @interface kotlin.coroutines.jvm.internal.** { *; }
 -keep @interface kotlin.coroutines.jvm.internal.DebugMetadata { *; }
 
+-dontwarn org.eclipse.jdt.annotation.NonNullByDefault
+
 -keepclassmembers class * extends androidx.work.Worker {
     public <init>(android.content.Context,androidx.work.WorkerParameters);
 }
@@ -152,3 +154,12 @@
 -dontwarn javax.mail.internet.MimeBodyPart
 -dontwarn javax.mail.internet.MimeMessage
 -dontwarn javax.mail.internet.MimeMultipart
+
+-keep class com.google.android.gms.internal.location.** {
+    *;
+}
+
+-keep @interface kotlin.Metadata {
+  *;
+}
+-keepattributes RuntimeVisibleAnnotations
