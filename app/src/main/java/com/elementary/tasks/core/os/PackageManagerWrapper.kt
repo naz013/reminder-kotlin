@@ -49,7 +49,7 @@ class PackageManagerWrapper(
   }
 
   fun getVersionName(): String = try {
-    getPackageInfo(context.packageName).versionName
+    getPackageInfo(context.packageName).versionName ?: ""
   } catch (e: Throwable) {
     ""
   }
