@@ -618,7 +618,11 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
   private fun showTimePickerDialog(builderParam: UiBuilderParam<UtcDateTime>) {
     builderParam.param.value.dateTime?.also { localDateTime ->
-      dateTimePickerProvider.showTimePicker(requireContext(), localDateTime.toLocalTime()) {
+      dateTimePickerProvider.showTimePicker(
+        fragmentManager = childFragmentManager,
+        time = localDateTime.toLocalTime(),
+        title = builderParam.text
+      ) {
         val newDateTime = LocalDateTime.of(localDateTime.toLocalDate(), it)
         viewModel.selectOrUpdateParam(
           builderParam.param.copy(

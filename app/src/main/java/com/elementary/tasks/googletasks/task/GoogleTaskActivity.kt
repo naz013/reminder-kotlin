@@ -304,11 +304,19 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun dateDialog() {
-    dateTimePickerProvider.showDatePicker(this, viewModel.date) { viewModel.onDateSet(it) }
+    dateTimePickerProvider.showDatePicker(
+      fragmentManager = supportFragmentManager,
+      date = viewModel.date,
+      title = getString(R.string.select_date)
+    ) { viewModel.onDateSet(it) }
   }
 
   private fun timeDialog() {
-    dateTimePickerProvider.showTimePicker(this, viewModel.time) { viewModel.onTimeSet(it) }
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = supportFragmentManager,
+      time = viewModel.time,
+      title = getString(R.string.select_time)
+    ) { viewModel.onTimeSet(it) }
   }
 
   override fun onDestroy() {

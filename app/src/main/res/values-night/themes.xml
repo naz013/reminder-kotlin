@@ -54,6 +54,14 @@
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
 
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.MyTheme.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.MyTheme.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.MyTheme.DisplaySmall</item>
+
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MyTheme.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MyTheme.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.MyTheme.HeadlineSmall</item>
+
         <item name="textAppearanceTitleLarge">@style/TextAppearance.MyTheme.TitleLarge</item>
         <item name="textAppearanceTitleMedium">@style/TextAppearance.MyTheme.TitleMedium</item>
         <item name="textAppearanceTitleSmall">@style/TextAppearance.MyTheme.TitleSmall</item>
@@ -65,5 +73,19 @@
         <item name="textAppearanceLabelLarge">@style/TextAppearance.MyTheme.LabelLarge</item>
         <item name="textAppearanceLabelMedium">@style/TextAppearance.MyTheme.LabelMedium</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.MyTheme.LabelSmall</item>
+
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MyTheme.TitleMedium</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MyTheme.TitleSmall</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MyTheme.BodyLarge</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MyTheme.BodyMedium</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MyTheme.DisplaySmall</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MyTheme.HeadlineLarge</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MyTheme.HeadlineMedium</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MyTheme.HeadlineSmall</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MyTheme.TitleLarge</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MyTheme.TitleLarge</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MyTheme.LabelMedium</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MyTheme.BodySmall</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MyTheme.LabelLarge</item>
     </style>
 </resources>

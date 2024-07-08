@@ -816,11 +816,19 @@ class CreateNoteActivity :
   }
 
   private fun dateDialog() {
-    dateTimePickerProvider.showDatePicker(this, viewModel.date) { viewModel.onNewDate(it) }
+    dateTimePickerProvider.showDatePicker(
+      fragmentManager = supportFragmentManager,
+      date = viewModel.date,
+      title = getString(R.string.select_date)
+    ) { viewModel.onNewDate(it) }
   }
 
   private fun timeDialog() {
-    dateTimePickerProvider.showTimePicker(this, viewModel.time) { viewModel.onNewTime(it) }
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = supportFragmentManager,
+      time = viewModel.time,
+      title = getString(R.string.select_time)
+    ) { viewModel.onNewTime(it) }
   }
 
   override fun onDestroy() {
@@ -874,16 +882,19 @@ class CreateNoteActivity :
         binding.voiceSpeakAnimation.gone()
         binding.voiceInputStop.gone()
       }
+
       SpeechState.STARTED -> {
         binding.voiceInputMic.gone()
         binding.voiceSpeakAnimation.gone()
         binding.voiceInputStop.visible()
       }
+
       SpeechState.SPEAKING -> {
         binding.voiceInputMic.gone()
         binding.voiceSpeakAnimation.visible()
         binding.voiceInputStop.gone()
       }
+
       SpeechState.STOPPED -> {
         binding.voiceInputMic.gone()
         binding.voiceSpeakAnimation.gone()

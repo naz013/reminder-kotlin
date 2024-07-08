@@ -256,7 +256,11 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
 
   private fun showTimeDialog() {
     val time = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
-    dateTimePickerProvider.showTimePicker(requireContext(), time) {
+    dateTimePickerProvider.showTimePicker(
+      fragmentManager = childFragmentManager,
+      time = time,
+      title = getString(R.string.remind_at)
+    ) {
       prefs.birthdayTime = dateTimeManager.to24HourString(it)
       initBirthdayTimePrefs()
       if (prefs.isBirthdayReminderEnabled) {
