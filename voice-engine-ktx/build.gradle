@@ -13,7 +13,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.apache.commons:commons-lang3:3.14.0'
 
-    implementation 'org.threeten:threetenbp:1.6.8'
+    implementation 'org.threeten:threetenbp:1.6.9'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'io.mockk:mockk:1.13.8'
