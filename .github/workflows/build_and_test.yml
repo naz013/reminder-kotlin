@@ -46,7 +46,7 @@ jobs:
       run: ./gradlew :voice-engine-ktx:test
 
     - name: Upload Voice module Test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
       with:
         name: voice_reports
@@ -56,7 +56,7 @@ jobs:
       run: ./gradlew testProDebugUnitTest
 
     - name: Upload Main module Test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
       with:
         name: reports
