@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -14,8 +13,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 29
         targetSdkVersion 35
-        versionCode 312
-        versionName "9.3.3"
+        versionCode 315
+        versionName "9.3.4"
         multiDexEnabled true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
