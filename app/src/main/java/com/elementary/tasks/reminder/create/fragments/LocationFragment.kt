@@ -9,6 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.fadeInAnimation
 import com.elementary.tasks.core.utils.ui.fadeOutAnimation
@@ -67,6 +68,14 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
   override fun prepare(): Reminder? {
     if (!Permissions.checkForeground(requireActivity())) {
       permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {}
+      return null
+    }
+    if (Module.is15 && !Permissions.checkPermission(
+        requireContext(),
+        Permissions.FOREGROUND_SERVICE_LOCATION
+      )
+    ) {
+      permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE_LOCATION) {}
       return null
     }
     if (!Permissions.isBgLocationAllowed(requireActivity())) {

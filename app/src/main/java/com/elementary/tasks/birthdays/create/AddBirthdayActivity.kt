@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
@@ -16,6 +17,8 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.showError
@@ -38,7 +41,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.scrollView.applyBottomInsets()
     initTopAppBar()
     initContactView()
     binding.scrollView.listenScrollableView { binding.appBar.isSelected = it > 0 }
@@ -82,6 +87,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   }
 
   private fun initTopAppBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setTitle(R.string.add_birthday)
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       return@setOnMenuItemClickListener when (menuItem.itemId) {

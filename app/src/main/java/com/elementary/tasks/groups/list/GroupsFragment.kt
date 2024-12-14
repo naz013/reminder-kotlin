@@ -17,6 +17,8 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
@@ -36,6 +38,8 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.recyclerView.applyBottomInsets()
+    binding.fab.applyBottomInsetsMargin()
     binding.fab.setOnClickListener { addGroup() }
     initGroupsList()
     initViewModel()

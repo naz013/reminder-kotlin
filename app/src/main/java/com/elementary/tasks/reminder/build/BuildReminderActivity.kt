@@ -68,7 +68,10 @@ class BuildReminderActivity :
     initToolbar()
 
     ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
-      val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+      val insets = windowInsets.getInsets(
+        WindowInsetsCompat.Type.systemBars() or
+          WindowInsetsCompat.Type.displayCutout()
+      )
       if (!paddingApplied) {
         paddingApplied = true
         binding.appBar.updatePadding(

@@ -1,6 +1,7 @@
 package com.elementary.tasks.places.create
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
@@ -11,6 +12,7 @@ import com.elementary.tasks.core.os.datapicker.LoginLauncher
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.elementary.tasks.pin.PinLoginActivity
@@ -34,6 +36,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
   override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     initActionBar()
     googleMap = SimpleMapFragment.newInstance(
@@ -88,6 +91,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
   }
 
   private fun initActionBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setNavigationOnClickListener { finish() }
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {

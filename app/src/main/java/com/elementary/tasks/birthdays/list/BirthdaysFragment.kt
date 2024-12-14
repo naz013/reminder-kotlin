@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
@@ -47,6 +48,7 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.recyclerView.applyBottomInsets()
     addMenu(R.menu.fragment_birthdays, { false }) {
       searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
     }

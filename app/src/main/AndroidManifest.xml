@@ -455,8 +455,7 @@
             android:name=".core.services.GeolocationService"
             android:enabled="true"
             android:foregroundServiceType="location"
-            android:permission="android.permission.FOREGROUND_SERVICE_LOCATION"
-            tools:targetApi="q" />
+            android:permission="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
         <receiver
             android:name=".core.appwidgets.buttons.CombinedButtonsWidget"

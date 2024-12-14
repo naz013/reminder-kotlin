@@ -1,10 +1,13 @@
 package com.elementary.tasks.reminder.create
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
@@ -20,7 +23,10 @@ class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBindin
   override fun inflateBinding() = ActivityConfigureReminderCreatorBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.appBar.applyTopInsets()
+    binding.scrollView.applyBottomInsets()
     binding.toolbar.setNavigationOnClickListener { finish() }
 
     initParam(binding.beforeParam, config.isBeforePickerEnabled()) {

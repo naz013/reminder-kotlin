@@ -11,6 +11,7 @@ import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
+import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.backdoor.engine.Model
 import com.backdoor.engine.misc.Action
@@ -33,6 +34,8 @@ import com.elementary.tasks.core.os.datapicker.TtsLauncher
 import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.transparent
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ActivityConversationBinding
@@ -137,7 +140,11 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   override fun inflateBinding() = ActivityConversationBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.controlContainer.applyBottomInsets()
+    binding.conversationList.applyTopInsets()
+
     isRotated = savedInstanceState != null
     binding.micButton.setOnClickListener { tryToActivateMic() }
     binding.recordingView.setOnClickListener {

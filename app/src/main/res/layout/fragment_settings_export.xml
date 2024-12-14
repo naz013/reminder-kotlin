@@ -191,5 +191,9 @@
             android:text="@string/sync_data_now"
             android:textAllCaps="true" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_bottom_space" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -854,7 +854,8 @@ data class ArrivingCoordinatesBuilderItem(
       Permissions.ACCESS_COARSE_LOCATION,
       Permissions.ACCESS_FINE_LOCATION,
       Permissions.BACKGROUND_LOCATION,
-      Permissions.FOREGROUND_SERVICE
+      Permissions.FOREGROUND_SERVICE,
+      Permissions.FOREGROUND_SERVICE_LOCATION
     )
     blockedBy(
       BiType.COUNTDOWN_TIMER,
@@ -883,7 +884,8 @@ data class LeavingCoordinatesBuilderItem(
       Permissions.ACCESS_COARSE_LOCATION,
       Permissions.ACCESS_FINE_LOCATION,
       Permissions.BACKGROUND_LOCATION,
-      Permissions.FOREGROUND_SERVICE
+      Permissions.FOREGROUND_SERVICE,
+      Permissions.FOREGROUND_SERVICE_LOCATION
     )
     blockedBy(
       BiType.COUNTDOWN_TIMER,

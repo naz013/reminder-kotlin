@@ -113,17 +113,25 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     if (!Permissions.checkPermission(activity, Permissions.RECORD_AUDIO)) {
       mDataList.add(Item(getString(R.string.record_audio), Permissions.RECORD_AUDIO))
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-      if (!Permissions.checkPermission(activity, Permissions.FOREGROUND_SERVICE)) {
-        mDataList.add(Item(getString(R.string.foreground_service), Permissions.FOREGROUND_SERVICE))
-      }
+    if (!Permissions.checkPermission(activity, Permissions.FOREGROUND_SERVICE)) {
+      mDataList.add(Item(getString(R.string.foreground_service), Permissions.FOREGROUND_SERVICE))
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      if (!Permissions.checkPermission(activity, Permissions.BACKGROUND_LOCATION)) {
-        mDataList.add(
-          Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION)
+    if (!Permissions.checkPermission(activity, Permissions.BACKGROUND_LOCATION)) {
+      mDataList.add(
+        Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION)
+      )
+    }
+    if (Module.is15 && !Permissions.checkPermission(
+        activity,
+        Permissions.FOREGROUND_SERVICE_LOCATION
+      )
+    ) {
+      mDataList.add(
+        Item(
+          getString(R.string.foreground_service_location),
+          Permissions.FOREGROUND_SERVICE_LOCATION
         )
-      }
+      )
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (!Permissions.checkPermission(activity, Permissions.POST_NOTIFICATION)) {

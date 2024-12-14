@@ -2,6 +2,7 @@ package com.elementary.tasks.googletasks.task
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
@@ -12,6 +13,8 @@ import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
@@ -29,11 +32,14 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   override fun inflateBinding() = ActivityCreateGoogleTaskBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     if (!viewModel.isLogged) {
       finish()
       return
     }
+
+    binding.scrollView.applyBottomInsets()
 
     initToolbar()
     initFields()
@@ -139,6 +145,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun initToolbar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setTitle(R.string.new_task)
     binding.toolbar.setNavigationOnClickListener { handleBackPress() }
     binding.toolbar.setOnMenuItemClickListener {

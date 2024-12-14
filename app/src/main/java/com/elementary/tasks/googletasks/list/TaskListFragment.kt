@@ -23,6 +23,8 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
@@ -51,6 +53,9 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.fab.applyBottomInsetsMargin()
+    binding.recyclerView.applyBottomInsets()
+
     addMenu(null, { menuItem ->
       when (menuItem.itemId) {
         MENU_ITEM_EDIT -> {
