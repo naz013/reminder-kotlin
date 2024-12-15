@@ -146,7 +146,8 @@ class RecurBuilderViewModel(
         name = name,
         type = PresetType.RECUR,
         createdAt = dateTimeManager.getCurrentDateTime(),
-        useCount = 1
+        useCount = 1,
+        description = null
       )
       recurPresetRepository.save(preset)
       analyticsEventSender.send(PresetUsed(PresetAction.CREATE))

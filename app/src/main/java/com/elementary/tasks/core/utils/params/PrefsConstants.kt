@@ -123,6 +123,7 @@ object PrefsConstants {
   const val BIRTHDAY_REMINDER_TIME = "reminder_hour"
 
   const val IS_PRESET_INIT = "preset_init"
+  const val IS_DEFAULT_PRESET_INIT = "preset_init_default"
 
   const val PRIVACY_POLICY_URL = "privacy_url"
   const val TERMS_URL = "terms_url"

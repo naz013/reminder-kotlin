@@ -25,8 +25,9 @@ import com.elementary.tasks.reminder.build.logic.builderstate.BuilderStateCalcul
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BiValueToBuilderSchemeValue
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
-import com.elementary.tasks.reminder.build.preset.BuilderPresetInitializer
+import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
+import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
 import com.elementary.tasks.reminder.build.preset.primitive.PrimitiveProtocol
@@ -276,7 +277,9 @@ val reminderModule = module {
 
   factory { ReminderPredictionCalculator(get(), get()) }
 
-  factory { BuilderPresetInitializer(get(), get(), get(), get()) }
+  factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
+
+  factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
 
   single { ReminderBuilderLauncher(get()) }
 
