@@ -662,7 +662,8 @@ class BuildReminderViewModel(
       type = PresetType.BUILDER,
       createdAt = dateTimeManager.getCurrentDateTime(),
       useCount = 1,
-      builderScheme = builderItemsToBuilderPresetAdapter(items)
+      builderScheme = builderItemsToBuilderPresetAdapter(items),
+      description = null
     )
     recurPresetRepository.save(preset)
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))

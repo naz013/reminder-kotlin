@@ -206,7 +206,7 @@ fun dbModule(context: Context): Module {
 
 val utilModule = module {
   single { Prefs(get()) }
-  factory { PresetInitProcessor(get(), get(), get(), get(), get()) }
+  factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
   single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { ThemeProvider(get(), get()) }

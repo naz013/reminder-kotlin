@@ -83,6 +83,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.IS_PRESET_INIT, def = true)
     set(value) = putBoolean(PrefsConstants.IS_PRESET_INIT, value)
 
+  var initDefaultPresets: Boolean
+    get() = getBoolean(PrefsConstants.IS_DEFAULT_PRESET_INIT, def = true)
+    set(value) = putBoolean(PrefsConstants.IS_DEFAULT_PRESET_INIT, value)
+
   var showAdvancedDayDialog: Boolean
     get() = getBoolean(PrefsConstants.RECUR_SHOW_ADVANCED_DAY_DIALOG, def = false)
     set(value) = putBoolean(PrefsConstants.RECUR_SHOW_ADVANCED_DAY_DIALOG, value)

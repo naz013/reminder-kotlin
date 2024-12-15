@@ -14,15 +14,15 @@ class UiPresetListAdapter(
     return UiPresetList(
       id = data.id,
       name = data.name,
-      description = getDescription(data.recurObject)
+      description = getDescription(data)
     )
   }
 
-  private fun getDescription(recurObject: String): String {
-    val rrule = runCatching { recurrenceManager.parseObject(recurObject) }
+  private fun getDescription(data: RecurPreset): String {
+    val rrule = runCatching { recurrenceManager.parseObject(data.recurObject) }
       .getOrNull()
       ?.map?.values?.firstOrNull { it.tagType == TagType.RRULE }
       ?.buildString()
-    return rrule ?: ""
+    return rrule ?: data.description ?: ""
   }
 }

@@ -6,7 +6,8 @@ import com.elementary.tasks.core.data.models.RecurPreset
 import com.elementary.tasks.core.data.repository.RecurPresetRepository
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.build.preset.BuilderPresetInitializer
+import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
+import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
 import org.threeten.bp.LocalDateTime
 
 class PresetInitProcessor(
@@ -14,7 +15,8 @@ class PresetInitProcessor(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val builderPresetInitializer: BuilderPresetInitializer
+  private val builderPresetsGenerateUseCase: BuilderPresetsGenerateUseCase,
+  private val builderDefaultPresetsGenerateUseCase: DefaultPresetsGenerateUseCase
 ) {
 
   fun run() {
@@ -22,7 +24,11 @@ class PresetInitProcessor(
       prefs.initPresets = false
       setBuilderSettings()
       createRecurPresets().forEach { savePreset(it) }
-      builderPresetInitializer().forEach { savePreset(it) }
+      builderPresetsGenerateUseCase().forEach { savePreset(it) }
+    }
+    if (prefs.initDefaultPresets) {
+      prefs.initDefaultPresets = false
+      builderDefaultPresetsGenerateUseCase().forEach { savePreset(it) }
     }
   }
 
@@ -191,7 +197,8 @@ class PresetInitProcessor(
       recurObject = rule,
       type = PresetType.RECUR,
       createdAt = LocalDateTime.now(),
-      useCount = 0
+      useCount = 0,
+      description = null
     )
   }
 

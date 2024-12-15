@@ -37,7 +37,9 @@ data class RecurPreset(
   @SerializedName("builderScheme")
   val builderScheme: List<PresetBuilderScheme> = emptyList(),
   @SerializedName("useCount")
-  val useCount: Int
+  val useCount: Int,
+  @SerializedName("description")
+  val description: String?
 ) : Parcelable
 
 enum class PresetType {
