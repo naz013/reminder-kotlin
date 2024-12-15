@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -30,8 +32,10 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
       requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
       exitTransition = Explode()
     }
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
 
+    binding.mapButton.applyBottomInsetsMargin()
     binding.mapButton.setOnClickListener {
       val reminder = reminder ?: return@setOnClickListener
       if (placeIndex < reminder.places.size - 1) {

@@ -7,8 +7,11 @@ import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
@@ -19,9 +22,11 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
 
   @SuppressLint("SetJavaScriptEnabled")
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     initActionBar()
 
+    binding.webView.applyBottomInsets()
     binding.webView.settings.javaScriptEnabled = true
     binding.webView.webViewClient = object : WebViewClient() {
       @Deprecated("Deprecated in Java")
@@ -48,6 +53,7 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
   }
 
   private fun initActionBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setNavigationOnClickListener { finish() }
     binding.toolbar.title = getString(R.string.privacy_policy)
   }

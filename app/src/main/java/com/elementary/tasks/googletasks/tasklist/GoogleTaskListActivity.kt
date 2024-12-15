@@ -2,6 +2,7 @@ package com.elementary.tasks.googletasks.tasklist
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
@@ -10,6 +11,8 @@ import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
@@ -23,7 +26,10 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
   override fun inflateBinding() = ActivityCreateTaskListBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+
+    binding.scrollView.applyBottomInsets()
     binding.progressMessageView.text = getString(R.string.please_wait)
     updateProgress(false)
 
@@ -63,6 +69,7 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
   }
 
   private fun initActionBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setTitle(R.string.new_tasks_list)
     binding.toolbar.setNavigationOnClickListener { handleBackPress() }
     binding.toolbar.setOnMenuItemClickListener { menuItem ->

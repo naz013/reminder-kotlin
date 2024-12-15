@@ -58,5 +58,9 @@
             app:prefs_secondary_text_on="@string/remember_last_set_font_style"
             app:prefs_type="check_switch" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_bottom_space" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

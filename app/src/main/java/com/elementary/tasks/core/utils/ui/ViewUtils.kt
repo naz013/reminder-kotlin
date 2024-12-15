@@ -13,7 +13,6 @@ import android.view.Menu
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -141,16 +140,6 @@ object ViewUtils {
     isDark: Boolean
   ) {
     runCatching { menu?.getItem(index)?.icon = tintIcon(context, resource, isDark) }
-  }
-
-  fun tintMenuIconId(
-    context: Context,
-    menu: Menu?,
-    @IdRes id: Int,
-    @DrawableRes resource: Int,
-    isDark: Boolean
-  ) {
-    kotlin.runCatching { menu?.findItem(id)?.icon = tintIcon(context, resource, isDark) }
   }
 
   fun listenScrollableView(recyclerView: RecyclerView, fabListener: (show: Boolean) -> Unit) {

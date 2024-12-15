@@ -15,6 +15,7 @@ import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
@@ -75,6 +76,7 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.recyclerView.applyBottomInsets()
     addMenu(R.menu.fragment_reminders, { menuItem ->
       when (menuItem.itemId) {
         R.id.action_map -> {

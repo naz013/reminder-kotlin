@@ -56,5 +56,9 @@
             app:prefs_secondary_text_on="@string/show_voice_control_screen"
             app:prefs_type="check_switch" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_bottom_space" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

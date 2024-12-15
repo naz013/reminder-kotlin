@@ -364,6 +364,10 @@
 
         </LinearLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_bottom_space" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

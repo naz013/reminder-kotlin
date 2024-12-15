@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
@@ -27,6 +28,8 @@ import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.visible
@@ -64,7 +67,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   override fun inflateBinding() = ActivityNotePreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+
+    binding.scrollView.applyBottomInsets()
     isBgDark = isDarkMode
     initActionBar()
     updateTextColors()
@@ -152,6 +158,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun initActionBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.title = ""
     binding.toolbar.setNavigationOnClickListener { closeWindow() }
     binding.toolbar.setOnMenuItemClickListener { menuItem ->

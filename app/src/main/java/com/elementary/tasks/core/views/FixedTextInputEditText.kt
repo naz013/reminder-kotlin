@@ -1,11 +1,13 @@
 package com.elementary.tasks.core.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.TextView
+import com.elementary.tasks.core.utils.Module
 import com.google.android.material.textfield.TextInputEditText
 import java.util.Locale
 
@@ -30,14 +32,18 @@ open class FixedTextInputEditText : TextInputEditText {
   }
 
   private fun isMeizu(): Boolean {
-    val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
+    val manufacturer = Build.MANUFACTURER.lowercase(Locale.US)
     if (manufacturer.contains("meizu")) {
       return true
     }
     return false
   }
 
+  @SuppressLint("SoonBlockedPrivateApi")
   private fun getSuperHintHack(): CharSequence? {
+    if (Module.is15) {
+      return hint
+    }
     val f = try {
       TextView::class.java.getDeclaredField("mHint")
     } catch (e: Exception) {

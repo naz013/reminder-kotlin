@@ -12,9 +12,8 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/list_margin"
         android:layout_marginEnd="@dimen/list_margin"
-        android:visibility="visible"
         android:clipToPadding="false"
-        android:paddingBottom="96dp"
+        android:visibility="visible"
         tools:itemCount="5"
         tools:listitem="@layout/list_item_birthday" />
 
@@ -55,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:contentDescription="@string/add_birthday"
         app:srcCompat="@drawable/ic_fluent_add" />
 

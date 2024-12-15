@@ -10,6 +10,8 @@ import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
 class NotesWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetNoteConfigBinding>() {
@@ -24,6 +26,8 @@ class NotesWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetNoteCon
     super.onCreate(savedInstanceState)
     readIntent()
 
+    binding.appBar.applyTopInsets()
+    binding.fabSave.applyBottomInsetsMargin()
     binding.toolbar.setNavigationOnClickListener { finish() }
     binding.fabSave.setOnClickListener { savePrefs() }
     binding.bgColorSlider.setSelectorColorResource(

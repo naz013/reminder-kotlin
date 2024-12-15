@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -16,6 +17,8 @@ import com.elementary.tasks.core.os.datapicker.FragmentLauncherCreator
 import com.elementary.tasks.core.os.datapicker.IntentPicker
 import com.elementary.tasks.core.os.datapicker.LauncherCreator
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
@@ -31,7 +34,11 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
   override fun inflateBinding() = ActivityConfigureReminderCreatorBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.appBar.applyTopInsets()
+    binding.scrollView.applyBottomInsets()
+
     binding.toolbar.setNavigationOnClickListener { closeScreen() }
 
     initParam(binding.beforeParam, config.isBeforePickerEnabled()) {

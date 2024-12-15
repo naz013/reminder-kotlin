@@ -3,6 +3,7 @@ package com.elementary.tasks.googletasks.preview
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -11,6 +12,9 @@ import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
@@ -29,7 +33,11 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   override fun inflateBinding() = ActivityGoogleTaskPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+
+    binding.scrollView.applyBottomInsets()
+    binding.buttonComplete.applyBottomInsetsMargin()
     initTopAppBar()
     binding.buttonComplete.setOnClickListener { viewModel.onComplete() }
     loadAds()
@@ -46,6 +54,7 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   }
 
   private fun initTopAppBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       return@setOnMenuItemClickListener when (menuItem.itemId) {
         R.id.action_edit -> {

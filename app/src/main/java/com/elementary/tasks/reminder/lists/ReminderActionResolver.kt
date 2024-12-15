@@ -51,7 +51,12 @@ class ReminderActionResolver(
     isGps: Boolean
   ) {
     if (isGps) {
-      permissionFlow.askPermission(Permissions.FOREGROUND_SERVICE) {
+      permissionFlow.askPermissions(
+        listOf(
+          Permissions.FOREGROUND_SERVICE,
+          Permissions.FOREGROUND_SERVICE_LOCATION
+        )
+      ) {
         toggleAction(id)
       }
     } else {

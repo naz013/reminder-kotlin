@@ -847,4 +847,7 @@
     <string name="text_opacity">Text opacity</string>
     <string name="foreground_opacity">Foreground opacity</string>
     <string name="foreground_color">Foreground color</string>
+
+    <string name="foreground_service_location">Foreground Location Service</string>
+    <string name="foreground_service_location_explanation">To allow the application to be fully functional, it requires to access your Location from the Foreground Service</string>
 </resources>

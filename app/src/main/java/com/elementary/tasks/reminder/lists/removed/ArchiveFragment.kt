@@ -12,6 +12,7 @@ import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentTrashBinding
@@ -67,6 +68,7 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.recyclerView.applyBottomInsets()
     addMenu(R.menu.fragment_reminders_archive, { menuItem ->
       return@addMenu when (menuItem.itemId) {
         R.id.action_delete_all -> {

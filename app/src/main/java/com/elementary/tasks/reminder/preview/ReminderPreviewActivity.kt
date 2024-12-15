@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -18,6 +19,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
@@ -57,7 +60,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   override fun inflateBinding() = ActivityReminderPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.dataListView.applyBottomInsets()
     initTopAppBar()
     initViews()
     initViewModel()
@@ -194,6 +199,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun initTopAppBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       return@setOnMenuItemClickListener when (menuItem.itemId) {
         R.id.action_delete -> {

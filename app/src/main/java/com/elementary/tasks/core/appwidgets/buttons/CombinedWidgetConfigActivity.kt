@@ -9,6 +9,8 @@ import com.elementary.tasks.core.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityWidgetCombinedConfigBinding
 
 class CombinedWidgetConfigActivity :
@@ -24,6 +26,8 @@ class CombinedWidgetConfigActivity :
     super.onCreate(savedInstanceState)
     readIntent()
 
+    binding.appBar.applyTopInsets()
+    binding.fabSave.applyBottomInsetsMargin()
     binding.fabSave.setOnClickListener { savePrefs() }
     binding.toolbar.setNavigationOnClickListener { finish() }
     binding.bgColorSlider.setSelectorColorResource(

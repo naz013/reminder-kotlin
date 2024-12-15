@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.9.22'
+    ext.kotlin_version = '2.1.0'
     repositories {
         google()
         maven { url "https://plugins.gradle.org/m2/" }
@@ -10,14 +10,14 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools:r8:8.3.37'
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools:r8:8.5.35'
+        classpath 'com.android.tools.build:gradle:8.7.3'
         classpath 'com.google.gms:google-services:4.4.2'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.8.5"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:11.5.0"
-        classpath "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.9.21-1.0.15"
+        classpath "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.1.0-1.0.29"
     }
 }
 

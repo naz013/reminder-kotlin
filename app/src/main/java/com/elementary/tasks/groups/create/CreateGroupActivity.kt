@@ -1,6 +1,7 @@
 package com.elementary.tasks.groups.create
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
@@ -10,6 +11,8 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -21,9 +24,11 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     initActionBar()
 
+    binding.scrollView.applyBottomInsets()
     binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(this))
     binding.colorSlider.setSelectorColorResource(
       if (isDarkMode) {
@@ -46,6 +51,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   private fun getId(): String = intentString(Constants.INTENT_ID)
 
   private fun initActionBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setTitle(R.string.create_group)
     binding.toolbar.setNavigationOnClickListener { finish() }
     binding.toolbar.setOnMenuItemClickListener { menuItem ->

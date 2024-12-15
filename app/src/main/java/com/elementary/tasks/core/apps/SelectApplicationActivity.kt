@@ -3,6 +3,7 @@ package com.elementary.tasks.core.apps
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.apps.filter.SearchModifier
@@ -14,6 +15,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.visible
@@ -51,7 +54,10 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
   override fun inflateBinding() = ActivityApplicationListBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.toolbarView.applyTopInsets()
+    binding.listView.applyBottomInsets()
     binding.progressView.gone()
     initActionBar()
     initRecyclerView()

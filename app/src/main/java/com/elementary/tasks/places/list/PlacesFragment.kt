@@ -19,6 +19,8 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
@@ -55,6 +57,9 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.recyclerView.applyBottomInsets()
+    binding.fab.applyBottomInsetsMargin()
+
     addMenu(R.menu.fragment_reminders_archive, { false }) {
       it.findItem(R.id.action_delete_all)?.isVisible = false
       ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_fluent_search, isDark)

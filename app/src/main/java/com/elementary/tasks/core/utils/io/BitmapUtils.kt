@@ -46,13 +46,13 @@ object BitmapUtils {
         val word1 = words[0]
         val word2 = words[1]
         init = if (word1.isNotEmpty() && word2.isNotEmpty()) {
-          word1.toUpperCase().substring(0, 1) + word2.toUpperCase().substring(0, 1)
+          word1.uppercase().substring(0, 1) + word2.uppercase().substring(0, 1)
         } else if (word1.length > 1) {
-          word1.toUpperCase().substring(0, 2)
+          word1.uppercase().substring(0, 2)
         } else if (word2.length > 1) {
-          word2.toUpperCase().substring(0, 2)
+          word2.uppercase().substring(0, 2)
         } else {
-          val w = userName.toUpperCase()
+          val w = userName.uppercase()
           if (w.length > 1) {
             w.substring(0, 2)
           } else {
@@ -60,7 +60,7 @@ object BitmapUtils {
           }
         }
       } else {
-        val w = userName.toUpperCase()
+        val w = userName.uppercase()
         init = if (w.length > 1) {
           w.substring(0, 2)
         } else {

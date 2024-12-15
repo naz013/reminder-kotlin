@@ -48,6 +48,10 @@ class PermissionFlow private constructor(
     permission: String,
     callback: (permission: String) -> Unit
   ) {
+    if (permission == Permissions.FOREGROUND_SERVICE_LOCATION && !Module.is15) {
+      callback.invoke(permission)
+      return
+    }
     if (permission == Permissions.POST_NOTIFICATION && !Module.is13) {
       callback.invoke(permission)
       return
@@ -108,6 +112,11 @@ class PermissionFlow private constructor(
 
   private fun checkPermission(permission: String) {
     when (permission) {
+      Permissions.FOREGROUND_SERVICE_LOCATION -> if (!Module.is15) {
+        permissionGranted(permission)
+        return
+      }
+
       Permissions.POST_NOTIFICATION -> if (!Module.is13) {
         permissionGranted(permission)
         return
@@ -180,6 +189,7 @@ class PermissionFlow private constructor(
       Permissions.RECORD_AUDIO -> UiPermissionDialogData.RECORD_AUDIO
       Permissions.BACKGROUND_LOCATION -> UiPermissionDialogData.BACKGROUND_LOCATION
       Permissions.FOREGROUND_SERVICE -> UiPermissionDialogData.FOREGROUND_SERVICE
+      Permissions.FOREGROUND_SERVICE_LOCATION -> UiPermissionDialogData.FOREGROUND_SERVICE_LOCATION
       else -> null
     } ?: return
 

@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
@@ -104,6 +105,8 @@ class HomeFragment :
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.scheduleHeaderView.applyTopInsets()
+
     binding.searchBar.inflateMenu(R.menu.fragment_home)
     binding.searchBar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {

@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays.preview
 
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -13,6 +14,9 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
@@ -29,7 +33,10 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
   override fun inflateBinding() = ActivityBirthdayPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.buttonsView.applyBottomInsetsMargin()
+    binding.scrollView.applyBottomInsets()
     initTopAppBar()
 
     binding.buttonCall.setOnClickListener { tryToMakeCall() }
@@ -65,6 +72,7 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
   }
 
   private fun initTopAppBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       return@setOnMenuItemClickListener when (menuItem.itemId) {
         R.id.action_edit -> {

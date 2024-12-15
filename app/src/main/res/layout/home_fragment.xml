@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
-    android:paddingBottom="80dp"
     tools:context="com.elementary.tasks.home.HomeFragment">
 
     <LinearLayout
@@ -48,7 +46,6 @@
         android:id="@+id/schedule_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         app:elevation="0dp"
         app:liftOnScroll="false"
         tools:visibility="gone">
@@ -57,7 +54,6 @@
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             app:contentScrim="@android:color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">

@@ -28,6 +28,7 @@ object Permissions {
   const val CAMERA = Manifest.permission.CAMERA
 
   const val FOREGROUND_SERVICE = Manifest.permission.FOREGROUND_SERVICE
+  const val FOREGROUND_SERVICE_LOCATION = Manifest.permission.FOREGROUND_SERVICE_LOCATION
 
   const val POST_NOTIFICATION = Manifest.permission.POST_NOTIFICATIONS
 
@@ -66,10 +67,16 @@ object Permissions {
   }
 
   fun checkPermission(a: Context, permission: String): Boolean {
-    return if (Module.is13 && (permission == READ_EXTERNAL || permission == WRITE_EXTERNAL)) {
-      true
-    } else {
-      ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
+    return when {
+      !Module.is15 && permission == FOREGROUND_SERVICE_LOCATION -> {
+        true
+      }
+      Module.is13 && (permission == READ_EXTERNAL || permission == WRITE_EXTERNAL) -> {
+        true
+      }
+      else -> {
+        ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED
+      }
     }
   }
 

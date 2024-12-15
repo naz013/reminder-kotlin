@@ -1,11 +1,14 @@
 package com.elementary.tasks.notes.preview
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import org.koin.android.ext.android.inject
 import java.util.Locale
@@ -17,7 +20,9 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   override fun inflateBinding() = ActivityImagePreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.photoPager.applyBottomInsets()
     initActionBar()
     updateBackground()
     showImages()
@@ -75,6 +80,7 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   }
 
   private fun initActionBar() {
+    binding.appBar.applyTopInsets()
     binding.toolbar.setNavigationOnClickListener { finish() }
     binding.toolbar.title = ""
   }

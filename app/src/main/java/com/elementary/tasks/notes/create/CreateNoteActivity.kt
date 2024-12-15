@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
@@ -46,6 +47,8 @@ import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.font.FontParams
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.readText
@@ -122,12 +125,6 @@ class CreateNoteActivity :
       binding.taskMessage.clearSections()
       binding.taskMessage.setText(speechText.text)
       speechText.newText?.also { newText ->
-//        binding.taskMessage.addGradientSection(
-//          startIndex = newText.startIndex,
-//          endIndex = newText.endIndex + 1,
-//          startColor = ContextCompat.getColor(this@CreateNoteActivity, R.color.greenAccent),
-//          endColor = ContextCompat.getColor(this@CreateNoteActivity, R.color.redAccent)
-//        )
         binding.taskMessage.addBoldSection(
           startIndex = newText.startIndex,
           endIndex = newText.endIndex + 1
@@ -142,7 +139,10 @@ class CreateNoteActivity :
   override fun inflateBinding() = ActivityCreateNoteBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    binding.appBar.applyTopInsets()
+    binding.bottomBar.applyBottomInsetsMargin()
 
     tabController = TabController(
       tabs = listOf(

@@ -78,5 +78,10 @@ data class UiPermissionDialogData(
       R.string.post_notification,
       R.string.post_notification_explanation
     )
+    val FOREGROUND_SERVICE_LOCATION = UiPermissionDialogData(
+      Permissions.FOREGROUND_SERVICE_LOCATION,
+      R.string.foreground_service_location,
+      R.string.foreground_service_location_explanation
+    )
   }
 }

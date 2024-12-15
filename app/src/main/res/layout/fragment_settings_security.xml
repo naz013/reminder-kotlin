@@ -71,5 +71,9 @@
             app:prefs_secondary_text_on="@string/allow_phone_call_and_sms_func"
             app:prefs_type="check_switch" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_bottom_space" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -15,6 +15,9 @@ import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.ui.applyBottomInsets
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.databinding.ActivityWidgetSingleNoteBinding
 import org.koin.android.ext.android.inject
@@ -48,6 +51,10 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     readIntent()
+
+    binding.appBar.applyTopInsets()
+    binding.fabSave.applyBottomInsetsMargin()
+    binding.scrollView.applyBottomInsets()
 
     binding.recyclerView.layoutManager = LinearLayoutManager(this)
     binding.recyclerView.adapter = adapter

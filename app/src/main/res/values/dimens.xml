@@ -47,4 +47,6 @@
     <dimen name="map_button_size">56dp</dimen>
     <dimen name="map_button_margin">8dp</dimen>
 
+    <dimen name="settings_bottom_space">24dp</dimen>
+
 </resources>

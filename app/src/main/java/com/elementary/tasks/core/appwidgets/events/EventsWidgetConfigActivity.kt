@@ -11,6 +11,8 @@ import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.os.colorOf
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
@@ -27,6 +29,8 @@ class EventsWidgetConfigActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     readIntent()
+    binding.appBar.applyTopInsets()
+    binding.fabSave.applyBottomInsetsMargin()
     binding.fabSave.setOnClickListener { showTextSizeDialog() }
     binding.toolbar.setNavigationOnClickListener { finish() }
 

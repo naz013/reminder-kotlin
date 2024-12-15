@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.databinding.FragmentBaseToolbarBinding
 
 abstract class BaseTopToolbarFragment<B : ViewBinding> :
@@ -39,6 +40,7 @@ abstract class BaseTopToolbarFragment<B : ViewBinding> :
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    containerBinding.appBar.applyTopInsets()
     containerBinding.toolbar.title = getTitle()
     containerBinding.toolbar.setNavigationIcon(getNavigationIcon())
     containerBinding.toolbar.setNavigationOnClickListener { moveBack() }

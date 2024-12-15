@@ -148,8 +148,7 @@ fun RecyclerView.listenScrollableView(listener: ((x: Int) -> Unit)?) {
 }
 
 fun TextInputLayout.showError(@StringRes message: Int) {
-  error = context.getString(message)
-  isErrorEnabled = true
+  showError(context.getString(message))
 }
 
 fun TextInputLayout.showError(message: String) {
