@@ -13,8 +13,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 29
         targetSdkVersion 35
-        versionCode 315
-        versionName "9.3.4"
+        versionCode 318
+        versionName "9.4.0"
         multiDexEnabled true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true

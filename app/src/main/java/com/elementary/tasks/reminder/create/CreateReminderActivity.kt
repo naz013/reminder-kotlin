@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import androidx.activity.enableEdgeToEdge
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -34,8 +33,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
@@ -98,16 +95,14 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   override fun requireLogin() = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    binding.appBar.applyTopInsets()
-    binding.coordinator.applyBottomInsets()
 
     hasLocation = Module.hasLocation(this)
     isTablet = resources.getBoolean(R.bool.is_tablet)
     canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
     canExportToTasks = stateViewModel.isLoggedToGoogleTasks()
 
+    initActionBar()
     initNavigation()
 
     if (savedInstanceState == null) {
@@ -117,6 +112,14 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     }
 
     loadReminder()
+  }
+
+  private fun initActionBar() {
+    setSupportActionBar(binding.toolbar)
+    supportActionBar?.setDisplayShowTitleEnabled(false)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    supportActionBar?.setHomeButtonEnabled(true)
+    supportActionBar?.setDisplayShowHomeEnabled(true)
   }
 
   private fun openScreen(uiSelectorType: UiSelectorType) {

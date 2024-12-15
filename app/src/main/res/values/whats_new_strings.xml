@@ -3,6 +3,7 @@
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
         \n
+        ✅ Add Android 15 support;\n
         ✅ Add option to attach the Note to the Reminder;\n
         ⭐ Update translations;\n
         🐞 Bug fixes and improvements.
