@@ -3,7 +3,7 @@ package com.backdoor.engine.lang
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.ContactsInterface
-import com.backdoor.engine.misc.Logger
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
@@ -470,7 +470,7 @@ internal class PlWorker(zoneId: ZoneId, contactsInterface: ContactsInterface?) :
   override fun hasNextModifier(input: String): Boolean = input.matches(".*następn.*")
 
   override fun getTime(input: String, ampm: Ampm?, times: List<String>): LocalTime? {
-    Logger.log("getTime: $ampm, input $input")
+    Logger.d("getTime: $ampm, input $input")
     val parts = input.splitByWhitespaces().toTypedArray()
 
     var localTime: LocalTime? = null

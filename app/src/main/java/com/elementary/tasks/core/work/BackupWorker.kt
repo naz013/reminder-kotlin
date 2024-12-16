@@ -1,12 +1,12 @@
 package com.elementary.tasks.core.work
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.Job
 import timber.log.Timber
 
@@ -37,11 +37,11 @@ class BackupWorker(
   private fun launchSync() {
     val storage = CompositeStorage(syncManagers.storageManager)
     mJob = launchIo {
-      Traces.log("Start full backup")
+      Logger.i("Start full backup")
       val result = OperationProcessor(
         syncOperationsFactory(storage, SyncOperationType.JUST_BACKUP, true)
       ).process()
-      Traces.log("Full backup completed with result = $result")
+      Logger.i("Full backup completed with result = $result")
       withUIContext {
         onEnd?.invoke()
       }

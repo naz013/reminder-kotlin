@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.speech
 
-import com.elementary.tasks.core.analytics.Traces
+import com.github.naz013.logging.Logger
 
 class SpeechTextProcessor(initValue: String = "") {
 
@@ -9,7 +9,7 @@ class SpeechTextProcessor(initValue: String = "") {
   private var lastSpeechText: SpeechText? = null
 
   fun setText(text: String) {
-    Traces.d("SpeechTextProcessor:setText text=$text")
+    Logger.d("SpeechTextProcessor:setText text=$text")
     completedSection = if (text.isEmpty()) {
       ""
     } else {
@@ -28,11 +28,11 @@ class SpeechTextProcessor(initValue: String = "") {
 
   fun process(text: String): SpeechText {
     if (text.isEmpty() && currentSection.isEmpty()) {
-      Traces.d("SpeechTextProcessor:process text is empty and currentSection is empty")
+      Logger.d("SpeechTextProcessor:process text is empty and currentSection is empty")
       return SpeechText(text = completedSection, newText = null)
     }
     if (text.isEmpty()) {
-      Traces.d("SpeechTextProcessor:process text is empty")
+      Logger.d("SpeechTextProcessor:process text is empty")
       saveSection()
       return SpeechText(text = completedSection, newText = null)
     }

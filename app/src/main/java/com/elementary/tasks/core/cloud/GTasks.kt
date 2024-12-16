@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.cloud
 
 import android.content.Context
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -10,6 +9,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.usecase.GoogleTaskFactory
 import com.elementary.tasks.googletasks.usecase.GoogleTaskListFactory
+import com.github.naz013.logging.Logger
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
@@ -17,7 +17,6 @@ import com.google.api.services.tasks.Tasks
 import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
-import timber.log.Timber
 import java.util.Collections
 
 class GTasks(
@@ -42,9 +41,9 @@ class GTasks(
   }
 
   fun login(user: String) {
-    Traces.log("Login to Google Tasks")
+    Logger.i("Login to Google Tasks")
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
-      Timber.d("user -> $user")
+      Logger.d("Logged google user -> $user")
       val credential = GoogleAccountCredential.usingOAuth2(
         context,
         Collections.singleton(TasksScopes.TASKS)
@@ -61,7 +60,7 @@ class GTasks(
   }
 
   fun logOut() {
-    Traces.log("Log out from Google Tasks")
+    Logger.i("Log out from Google Tasks")
     prefs.tasksUser = Prefs.DRIVE_USER_NONE
     tasksService = null
     isLogged = false
@@ -74,7 +73,7 @@ class GTasks(
         ?.filterNotNull()
         ?: emptyList()
     } catch (e: Exception) {
-      Timber.e(e, "Failed to get task lists")
+      Logger.e("Failed to get task lists", e)
       emptyList()
     }
   }
@@ -83,7 +82,7 @@ class GTasks(
     return try {
       withService { it.tasklists().get(listId).execute() }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to get task list")
+      Logger.e("Failed to get task list", e)
       null
     }
   }
@@ -123,7 +122,7 @@ class GTasks(
         return true
       }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to insert task id=${item.taskId}")
+      Logger.e("Failed to insert task id=${item.taskId}", e)
       return false
     }
     return false
@@ -142,7 +141,7 @@ class GTasks(
         googleTasksDao.insert(googleTaskFactory.update(item, result))
       }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to update task status id=${item.taskId}")
+      Logger.e("Failed to update task status id=${item.taskId}", e)
     }
   }
 
@@ -151,7 +150,7 @@ class GTasks(
     try {
       withService { it.tasks().delete(item.listId, item.taskId).execute() }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to delete task id=${item.taskId}")
+      Logger.e("Failed to delete task id=${item.taskId}", e)
     }
   }
 
@@ -170,7 +169,7 @@ class GTasks(
       task.updated = dateTimeManager.toRfc3339Format(System.currentTimeMillis())
       withService { it.tasks().update(item.listId, task.id, task).execute() }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to update task id=${item.taskId}")
+      Logger.e("Failed to update task id=${item.taskId}", e)
     }
   }
 
@@ -178,7 +177,7 @@ class GTasks(
     try {
       return withService { it.tasks().list(listId).execute().items } ?: emptyList()
     } catch (e: Exception) {
-      Timber.e(e, "Failed to get tasks listId=$listId")
+      Logger.e(e, "Failed to get tasks listId=$listId")
     }
     return emptyList()
   }
@@ -189,7 +188,7 @@ class GTasks(
       taskList.title = listTitle
       return withService { it.tasklists().insert(taskList).execute() }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to add task list $listTitle")
+      Logger.e(e, "Failed to add task list $listTitle")
       null
     }
   }
@@ -202,7 +201,7 @@ class GTasks(
       val item = googleTaskListFactory.create(result, color)
       googleTaskListsDao.insert(item)
     } catch (e: Exception) {
-      Timber.e(e, "Failed to insert task list $listTitle")
+      Logger.e(e, "Failed to insert task list $listTitle")
     }
   }
 
@@ -219,7 +218,7 @@ class GTasks(
         googleTaskListsDao.insert(googleTaskListFactory.update(item, taskList))
       }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to update task list $listTitle")
+      Logger.e(e, "Failed to update task list $listTitle")
     }
   }
 
@@ -230,7 +229,7 @@ class GTasks(
     try {
       withService { it.tasklists().delete(listId).execute() }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to delete task list")
+      Logger.e(e, "Failed to delete task list")
     }
   }
 
@@ -241,7 +240,7 @@ class GTasks(
     try {
       withService { it.tasks().clear(listId).execute() }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to clear task list")
+      Logger.e(e, "Failed to clear task list")
     }
   }
 
@@ -256,7 +255,7 @@ class GTasks(
         return insertTask(item)
       }
     } catch (e: Exception) {
-      Timber.e(e, "Failed to move task")
+      Logger.e(e, "Failed to move task")
     }
     return false
   }

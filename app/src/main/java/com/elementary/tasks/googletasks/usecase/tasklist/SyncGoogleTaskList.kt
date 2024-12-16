@@ -1,11 +1,11 @@
 package com.elementary.tasks.googletasks.usecase.tasklist
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.googletasks.usecase.task.SyncGoogleTasks
 import com.elementary.tasks.googletasks.usecase.db.SaveGoogleTaskList
 import com.elementary.tasks.googletasks.usecase.remote.DownloadGoogleTaskList
+import com.elementary.tasks.googletasks.usecase.task.SyncGoogleTasks
+import com.github.naz013.logging.Logger
 
 class SyncGoogleTaskList(
   private val gTasks: GTasks,
@@ -16,22 +16,22 @@ class SyncGoogleTaskList(
 
   operator fun invoke(list: GoogleTaskList) {
     if (!gTasks.isLogged) {
-      Traces.log("Sync task list - not logged")
+      Logger.i("Sync task list - not logged")
       return
     }
 
     // Upload if not uploaded
 
     // Download remote version
-    Traces.log("Sync task list - load remote version")
+    Logger.i("Sync task list - load remote version")
     val remote = downloadGoogleTaskList(list)
 
     // Save updated version to db
-    Traces.log("Sync task list - save new version")
+    Logger.i("Sync task list - save new version")
     saveGoogleTaskList(remote)
 
     // Sync Tasks
-    Traces.log("Sync task list - sync tasks")
+    Logger.i("Sync task list - sync tasks")
     syncGoogleTasks(remote)
   }
 }

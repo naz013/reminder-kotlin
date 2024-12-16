@@ -1,7 +1,6 @@
 package com.elementary.tasks.settings.troubleshooting
 
 import androidx.lifecycle.LifecycleOwner
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.livedata.toSingleEvent
 import com.elementary.tasks.core.os.ContextProvider
@@ -12,7 +11,7 @@ import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.File
 
 class TroubleshootingViewModel(
@@ -51,7 +50,7 @@ class TroubleshootingViewModel(
   private fun getLogFile(): File? {
     val dir = contextProvider.context.dataDir
     val logDir = File(dir, "files/log")
-    Timber.d("getLogFile: dir = $dir, logDir = $logDir")
+    Logger.d("getLogFile: dir = $dir, logDir = $logDir")
     if (!logDir.exists()) return null
     val files = logDir.listFiles() ?: return null
     return files.firstOrNull { it.name.endsWith(".log") }
@@ -67,7 +66,7 @@ class TroubleshootingViewModel(
   private fun checkLogs() {
     val enabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
       hasLogFiles()
-    Traces.d("Logging is $enabled")
+    Logger.d("Logging is $enabled")
     _showSendLogs.postValue(enabled)
   }
 
@@ -77,7 +76,7 @@ class TroubleshootingViewModel(
 
   private fun checkBatteryOptimization() {
     val optimizationStatus = powerManager?.isIgnoringBatteryOptimizations(packageName())
-    Traces.d("Battery optimization is disabled = $optimizationStatus")
+    Logger.d("Battery optimization is disabled = $optimizationStatus")
     _hideBatteryOptimizationCard.postValue(optimizationStatus ?: false)
   }
 

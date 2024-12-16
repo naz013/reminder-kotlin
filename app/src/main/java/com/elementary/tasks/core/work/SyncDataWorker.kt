@@ -7,7 +7,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
@@ -16,6 +15,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.withContext
 
 class SyncDataWorker(
@@ -39,7 +39,7 @@ class SyncDataWorker(
         syncOperationsFactory(storage, SyncOperationType.FULL)
       ).process()
 
-      Traces.log("Sync finished with result = $result")
+      Logger.i("Sync finished with result = $result")
 
       withUIContext {
         updatesHelper.updateWidgets()

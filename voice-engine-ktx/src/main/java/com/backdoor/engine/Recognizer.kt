@@ -6,10 +6,9 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.ContactsInterface
-import com.backdoor.engine.misc.Logger
-import com.backdoor.engine.misc.Logger.log
 import com.backdoor.engine.misc.LongInternal
 import com.backdoor.engine.misc.TimeUtil.getGmtFromDateTime
+import com.github.naz013.logging.Logger
 import org.apache.commons.lang3.StringUtils
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -23,11 +22,6 @@ class Recognizer private constructor(
   timeZone: String
 ) {
 
-  var enableLogging: Boolean = true
-    set(value) {
-      field = value
-      Logger.LOG_ENABLED = value
-    }
   private var contactsInterface: ContactsInterface? = null
   private var zoneId = ZoneId.of(timeZone)
 
@@ -47,12 +41,12 @@ class Recognizer private constructor(
   }
 
   fun recognize(input: String): Model? {
-    log("recognize: input = $input, worker = $worker")
+    Logger.d("recognize: input = $input, worker = $worker")
     return input.lowercase(LOCALE).trim()
       .let { worker.splitWords(it) ?: "" }
-      .also { log("recognize: after split words = $it") }
+      .also { Logger.d("recognize: after split words = $it") }
       .let { worker.replaceNumbers(it) ?: "" }
-      .also { log("recognize: after numbers replaced = $it") }
+      .also { Logger.d("recognize: after numbers replaced = $it") }
       .let { s ->
         val showAction = if (worker.hasShowAction(s)) {
           worker.getShowAction(s)
@@ -67,7 +61,7 @@ class Recognizer private constructor(
         val ampm = worker.getAmpm(s)
         val time = runCatching { worker.getTime(s, ampm, times) }.getOrNull()
         val canBeReminder = worker.hasCall(s) || worker.hasSender(s) || date != null || time != null
-        log("recognize: action=$showAction, event=$event, can=$canBeReminder")
+        Logger.d("recognize: action=$showAction, event=$event, can=$canBeReminder")
         when {
           showAction != null -> createAction(worker.clearShowAction(s), showAction)
           worker.hasNote(s) -> getNote(input)
@@ -83,10 +77,10 @@ class Recognizer private constructor(
   }
 
   private fun parseReminder(input: String, origin: String): Model? {
-    log("parse: reminder $input")
+    Logger.d("parse: reminder $input")
     return Proc(input = input)
       .also { proc ->
-        log("parse: call $proc")
+        Logger.d("parse: call $proc")
         if (worker.hasCall(proc.input)) {
           proc.hasAction = true
           proc.action = Action.CALL
@@ -97,7 +91,7 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: sender $proc")
+        Logger.d("parse: sender $proc")
         if (worker.hasSender(proc.input)) {
           worker.getMessageType(proc.input)?.also { action ->
             proc.hasAction = true
@@ -113,7 +107,7 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: has repeat $proc")
+        Logger.d("parse: has repeat $proc")
         if (worker.hasRepeat(proc.input).also { proc.isRepeating = it }) {
           proc.isEveryDay = worker.hasEveryDay(proc.input)
           proc.updateInput { worker.clearRepeat(it) }
@@ -127,31 +121,31 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: calendar $proc")
+        Logger.d("parse: calendar $proc")
         proc.hasCalendar = worker.hasCalendar(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearCalendar(it) }
         }
       }
       .also { proc ->
-        log("parse: today $proc")
+        Logger.d("parse: today $proc")
         proc.hasToday = worker.hasToday(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearToday(it) }
         }
       }
       .also { proc ->
-        log("parse: after tomorrow $proc")
+        Logger.d("parse: after tomorrow $proc")
         proc.hasAfterTomorrow = worker.hasAfterTomorrow(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearAfterTomorrow(it) }
         }
       }
       .also { proc ->
-        log("parse: tomorrow $proc")
+        Logger.d("parse: tomorrow $proc")
         proc.hasTomorrow = worker.hasTomorrow(proc.input).also { b ->
           if (b) proc.updateInput { worker.clearTomorrow(it) }
         }
       }
       .also { proc ->
-        log("parse: timer check $proc")
+        Logger.d("parse: timer check $proc")
         proc.hasTimer = worker.hasTimer(proc.input).also { b ->
           if (b) {
             proc.updateInput { worker.cleanTimer(it) }
@@ -162,13 +156,13 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: ampm $proc")
+        Logger.d("parse: ampm $proc")
         proc.ampm = worker.getAmpm(proc.input)?.also {
           proc.updateInput { worker.clearAmpm(it) }
         }
       }
       .also { proc ->
-        log("parse: weekdays $proc")
+        Logger.d("parse: weekdays $proc")
         if (!proc.isEveryDay) {
           proc.weekdays = worker.getWeekDays(proc.input)
           proc.hasWeekday = proc.weekdays.any { it == 1 }.also { b ->
@@ -184,39 +178,39 @@ class Recognizer private constructor(
         }
       }
       .also { proc ->
-        log("parse: date $proc")
+        Logger.d("parse: date $proc")
         proc.updateInput { s ->
           worker.getDateAndClear(s) { proc.date = it }
         }
       }
       .also { proc ->
-        log("parse: time $proc")
+        Logger.d("parse: time $proc")
         proc.time = worker.getTime(proc.input, proc.ampm, times)?.also {
           proc.updateInput { worker.clearTime(it) }
         }
       }
       .also { proc ->
-        log("parse: calculate date time $proc")
+        Logger.d("parse: calculate date time $proc")
         if (proc.hasToday) {
-          log("parse: today")
+          Logger.d("parse: today")
           proc.dateTime = getTodayTime(proc.time)
         } else if (proc.hasAfterTomorrow) {
-          log("parse: after tomorrow")
+          Logger.d("parse: after tomorrow")
           proc.dateTime = getAfterTomorrowTime(proc.time)
         } else if (proc.hasTomorrow) {
-          log("parse: tomorrow")
+          Logger.d("parse: tomorrow")
           proc.dateTime = getTomorrowTime(proc.time)
         } else if (proc.hasWeekday && !proc.isRepeating) {
-          log("parse: on weekday")
+          Logger.d("parse: on weekday")
           proc.dateTime = getDayTime(proc.time, proc.weekdays)
         } else if (proc.isRepeating) {
-          log("parse: repeating")
+          Logger.d("parse: repeating")
           proc.dateTime = getDateTime(proc.date, proc.time)
         } else if (proc.hasTimer) {
-          log("parse: timer")
+          Logger.d("parse: timer")
           proc.dateTime = nowDateTime().plusSeconds(proc.afterTime.value / 1000L)
         } else if (proc.date != null || proc.time != null) {
-          log("parse: date/time")
+          Logger.d("parse: date/time")
           proc.dateTime = getDateTime(proc.date, proc.time)
         } else {
           proc.skipNext = true
@@ -224,7 +218,7 @@ class Recognizer private constructor(
       }
       .takeIf { !it.skipNext }
       ?.also { proc ->
-        log("parse: message  $proc")
+        Logger.d("parse: message  $proc")
         if (proc.hasAction && (proc.action == Action.MESSAGE || proc.action == Action.MAIL)) {
           proc.message = worker.getMessage(proc.input)
           proc.updateInput { worker.clearMessage(it) }
@@ -250,7 +244,7 @@ class Recognizer private constructor(
       }
       ?.takeIf { !it.skipNext }
       ?.let {
-        log("parse: now time ${LocalDateTime.now(zoneId)}")
+        Logger.d("parse: now time ${LocalDateTime.now(zoneId)}")
         Model(
           type = it.actionType,
           summary = it.summary,
@@ -263,7 +257,7 @@ class Recognizer private constructor(
           afterMillis = it.afterTime.value
         )
       }
-      ?.also { log("parse: out = $it") }
+      ?.also { Logger.d("parse: out = $it") }
   }
 
   private fun createAction(input: String, action: Action): Model {
@@ -406,7 +400,7 @@ class Recognizer private constructor(
   }
 
   private fun getNote(input: String?): Model? {
-    log("getNote: $input")
+    Logger.d("getNote: $input")
     return input?.let { StringUtils.capitalize(worker.clearNote(input)) }?.let {
       Model(
         summary = it,

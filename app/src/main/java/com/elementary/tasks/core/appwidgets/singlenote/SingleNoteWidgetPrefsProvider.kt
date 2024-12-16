@@ -1,10 +1,10 @@
 package com.elementary.tasks.core.appwidgets.singlenote
 
 import android.content.Context
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.WidgetPrefsProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
+import com.github.naz013.logging.Logger
 
 class SingleNoteWidgetPrefsProvider(
   context: Context,
@@ -57,7 +57,7 @@ class SingleNoteWidgetPrefsProvider(
 
   fun getTextColorPosition(): Int {
     return getInt(WIDGET_TEXT_COLOR_POSITION, def = ThemeProvider.Color.BLACK).also {
-      Traces.d("getTextColorPosition: $it")
+      Logger.d("getTextColorPosition: $it")
     }
   }
 
@@ -75,7 +75,7 @@ class SingleNoteWidgetPrefsProvider(
 
   fun getOverlayColorPosition(): Int {
     return getInt(WIDGET_OVERLAY_COLOR_POSITION, def = ThemeProvider.Color.WHITE).also {
-      Traces.d("getOverlayColorPosition: $it")
+      Logger.d("getOverlayColorPosition: $it")
     }
   }
 

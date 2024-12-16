@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.params
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Language
@@ -10,10 +9,10 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
 import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
 import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
+import com.github.naz013.logging.Logger
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
-import timber.log.Timber
 
 class RemotePrefs(
   private val prefs: Prefs,
@@ -46,7 +45,7 @@ class RemotePrefs(
 
   private fun fetchConfig() {
     config?.fetchAndActivate()?.addOnCompleteListener { task ->
-      Timber.d("fetchConfig: ${task.isSuccessful}, ${task.exception}")
+      Logger.d("fetchConfig: ${task.isSuccessful}, ${task.exception}")
       if (task.isSuccessful) {
         config.fetchAndActivate()
       }
@@ -68,8 +67,8 @@ class RemotePrefs(
     val updateMessage =
       runCatching { Gson().fromJson(json, UpdateMessageV2::class.java) }.getOrNull()
 
-    Timber.d("readUpdateMessage: json=$json")
-    Timber.d("readUpdateMessage: message=$updateMessage")
+    Logger.d("readUpdateMessage: json=$json")
+    Logger.d("readUpdateMessage: message=$updateMessage")
 
     if (updateMessage != null) {
       val currentVersionCode = packageManagerWrapper.getVersionCode()
@@ -94,8 +93,8 @@ class RemotePrefs(
 
     val saleMessageV2 = runCatching { Gson().fromJson(json, SaleMessageV2::class.java) }.getOrNull()
 
-    Timber.d("readSaleMessage: json=$json")
-    Timber.d("readSaleMessage: message=$saleMessageV2")
+    Logger.d("readSaleMessage: json=$json")
+    Logger.d("readSaleMessage: message=$saleMessageV2")
 
     if (saleMessageV2 != null) {
       prefs.saleMessage = json ?: ""
@@ -113,9 +112,9 @@ class RemotePrefs(
     val startDateTime = dateTimeManager.fromRfc3339ToLocal(saleMessageV2.startAt)
     val endDateTime = dateTimeManager.fromRfc3339ToLocal(saleMessageV2.endAt)
 
-    Timber.d("checkSaleMessage: now=$now")
-    Timber.d("checkSaleMessage: startDateTime=$startDateTime")
-    Timber.d("checkSaleMessage: endDateTime=$endDateTime")
+    Logger.d("checkSaleMessage: now=$now")
+    Logger.d("checkSaleMessage: startDateTime=$startDateTime")
+    Logger.d("checkSaleMessage: endDateTime=$endDateTime")
 
     if (startDateTime != null && endDateTime != null) {
       if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
@@ -141,8 +140,8 @@ class RemotePrefs(
     val internalMessageV1 =
       runCatching { Gson().fromJson(json, InternalMessageV1::class.java) }.getOrNull()
 
-    Timber.d("readInternalMessage: json=$json")
-    Timber.d("readInternalMessage: message=$internalMessageV1")
+    Logger.d("readInternalMessage: json=$json")
+    Logger.d("readInternalMessage: message=$internalMessageV1")
 
     if (internalMessageV1 != null) {
       prefs.internalMessage = json ?: ""
@@ -160,9 +159,9 @@ class RemotePrefs(
     val startDateTime = dateTimeManager.fromRfc3339ToLocal(internalMessageV1.startAt)
     val endDateTime = dateTimeManager.fromRfc3339ToLocal(internalMessageV1.endAt)
 
-    Timber.d("checkInternalMessage: now=$now")
-    Timber.d("checkInternalMessage: startDateTime=$startDateTime")
-    Timber.d("checkInternalMessage: endDateTime=$endDateTime")
+    Logger.d("checkInternalMessage: now=$now")
+    Logger.d("checkInternalMessage: startDateTime=$startDateTime")
+    Logger.d("checkInternalMessage: endDateTime=$endDateTime")
 
     if (startDateTime != null && endDateTime != null) {
       if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
@@ -198,9 +197,9 @@ class RemotePrefs(
     val termsUrl = config?.getString(TERMS_URL)
     val voiceHelpUrls = config?.getString(VOICE_HELP_URLS)
 
-    Timber.d("RemoteConfig: privacyUrl=$privacyUrl")
-    Timber.d("RemoteConfig: termsUrl=$termsUrl")
-    Timber.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
+    Logger.d("RemoteConfig: privacyUrl=$privacyUrl")
+    Logger.d("RemoteConfig: termsUrl=$termsUrl")
+    Logger.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
 
     privacyUrl?.also { prefs.privacyUrl = it }
     termsUrl?.also { prefs.termsUrl = it }
@@ -211,14 +210,14 @@ class RemotePrefs(
     FeatureManager.Feature.entries.map {
       it to (readBool(it.value) ?: it.defaultValue)
     }.forEach {
-      Traces.d("Feature ${it.first} isEnabled=${it.second}")
+      Logger.d("Feature ${it.first} isEnabled=${it.second}")
       prefs.putBoolean(it.first.value, it.second)
     }
   }
 
   private fun readBool(key: String): Boolean? {
     return config?.getBoolean(key).also {
-      Timber.d("Read bool key=$key, val=$it")
+      Logger.d("Read bool key=$key, val=$it")
     }
   }
 

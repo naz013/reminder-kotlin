@@ -1,12 +1,12 @@
 package com.elementary.tasks.core.cloud
 
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.cloud.completables.Completable
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.elementary.tasks.core.cloud.storages.Storage
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -28,7 +28,7 @@ class DataFlow<T>(
     val stream = convertible.toOutputStream(item) ?: return
     val metadata = convertible.metadata(item)
     storage.backup(stream, metadata)
-    Traces.log("Backed up file with ext = ${metadata.fileExt} and id = ${metadata.id}")
+    Logger.i("Backed up file with ext = ${metadata.fileExt} and id = ${metadata.id}")
   }
 
   suspend fun restore(id: String, type: IndexTypes) {
@@ -47,7 +47,7 @@ class DataFlow<T>(
       true
     }
     if (needUpdate) {
-      Traces.log("Saved remote file with ext = ${metadata.fileExt} and id = $id")
+      Logger.i("Saved remote file with ext = ${metadata.fileExt} and id = $id")
       repository.insert(item)
       completable?.action(item)
     }
@@ -58,7 +58,7 @@ class DataFlow<T>(
     if (id.isEmpty() || fileName.isEmpty()) {
       return
     }
-    Traces.log("Delete file with type = $type and id = $id")
+    Logger.i("Delete file with type = $type and id = $id")
     runCatching {
       val t = repository.get(id)
       if (t != null) {

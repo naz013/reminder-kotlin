@@ -7,12 +7,12 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.withContext
 
 class BackupDataWorker(
@@ -25,12 +25,12 @@ class BackupDataWorker(
 
   override suspend fun doWork(): Result {
     withContext(dispatcherProvider.io()) {
-      Traces.log("Start full backup")
+      Logger.i("Start full backup")
       val storage = CompositeStorage(syncManagers.storageManager)
       val result = OperationProcessor(
         syncOperationsFactory(storage, SyncOperationType.JUST_BACKUP)
       ).process()
-      Traces.log("Full backup completed with result = $result")
+      Logger.i("Full backup completed with result = $result")
     }
     return Result.success()
   }
