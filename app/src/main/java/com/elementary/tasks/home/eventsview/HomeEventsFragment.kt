@@ -1,5 +1,6 @@
 package com.elementary.tasks.home.eventsview
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -54,7 +55,10 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
         }
       }
     )
+  }
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
     Handler(Looper.getMainLooper()).postDelayed(
       { addFragment(RemindersFragment()) },
       250
