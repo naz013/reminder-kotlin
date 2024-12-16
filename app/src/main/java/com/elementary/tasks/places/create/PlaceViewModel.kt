@@ -3,7 +3,6 @@ package com.elementary.tasks.places.create
 import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
@@ -22,6 +21,7 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -83,7 +83,7 @@ class PlaceViewModel(
       }
       placesDao.insert(place)
       workerLauncher.startWork(PlaceSingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
-      Traces.logEvent("Place saved")
+      Logger.logEvent("Place saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils
 import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
-import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
@@ -301,6 +300,3 @@ fun providesRecognizer(prefs: Prefs, language: Language) =
     )
     .setTimeZone(ZoneId.systemDefault().id)
     .build()
-    .apply {
-      enableLogging = BuildConfig.DEBUG
-    }

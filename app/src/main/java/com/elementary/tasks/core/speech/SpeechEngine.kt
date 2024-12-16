@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.utils.Module
+import com.github.naz013.logging.Logger
 
 class SpeechEngine(
   private val context: Context,
@@ -21,12 +21,12 @@ class SpeechEngine(
   private var speech: SpeechRecognizer? = null
   private val listener = object : RecognitionListener {
     override fun onReadyForSpeech(bundle: Bundle?) {
-      Traces.d("SpeechEngine:onReadyForSpeech")
+      Logger.d("SpeechEngine:onReadyForSpeech")
       callback?.onStarted()
     }
 
     override fun onBeginningOfSpeech() {
-      Traces.d("SpeechEngine:onBeginningOfSpeech")
+      Logger.d("SpeechEngine:onBeginningOfSpeech")
       // Show a progress indicator
       callback?.onSpeechStarted()
       speechTextProcessor.saveSection()
@@ -39,13 +39,13 @@ class SpeechEngine(
     }
 
     override fun onEndOfSpeech() {
-      Traces.d("SpeechEngine:onEndOfSpeech")
+      Logger.d("SpeechEngine:onEndOfSpeech")
       // Hide the progress indicator
       callback?.onSpeechEnded()
     }
 
     override fun onError(i: Int) {
-      Traces.d("SpeechEngine:onError error=$i")
+      Logger.d("SpeechEngine:onError error=$i")
       releaseSpeech()
       callback?.onSpeechError(SpeechError.NoSpeechError)
     }
@@ -55,14 +55,14 @@ class SpeechEngine(
 
     override fun onPartialResults(bundle: Bundle?) {
       val results = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-      Traces.d("SpeechEngine:onPartialResults res=${results?.size}")
+      Logger.d("SpeechEngine:onPartialResults res=${results?.size}")
       if (results != null && results.size > 0) {
         callback?.onSpeechResult(speechTextProcessor.process(results[0].toString()))
       }
     }
 
     override fun onEvent(i: Int, bundle: Bundle?) {
-      Traces.d("SpeechEngine:onEvent event=$i")
+      Logger.d("SpeechEngine:onEvent event=$i")
     }
   }
 
@@ -90,7 +90,7 @@ class SpeechEngine(
       speech?.startListening(getIntent())
       state = State.STARTED
     } catch (e: Throwable) {
-      Traces.d("SpeechEngine:startListening error=${e.message}")
+      Logger.e("SpeechEngine:startListening error=${e.message}")
       callback.onSpeechError(SpeechError.OperationError(0))
     }
   }
@@ -103,7 +103,7 @@ class SpeechEngine(
     try {
       releaseSpeech()
     } catch (e: Throwable) {
-      Traces.d("SpeechEngine:stopListening error=${e.message}")
+      Logger.e("SpeechEngine:stopListening error=${e.message}")
       callback?.onSpeechError(SpeechError.OperationError(1))
     }
   }

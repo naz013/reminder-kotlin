@@ -6,6 +6,7 @@ import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.Locale
 import com.backdoor.engine.misc.TimeUtil
+import com.github.naz013.logging.Logger
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -24,6 +25,8 @@ class EsWorkerTest {
 
   @Before
   fun setUp() {
+    Logger.loggingEnabled = false
+    Logger.reportingEnabled = false
     every { contactsInterface.findNumber(any()) }.answers { null }
     every { contactsInterface.findNumber("casa") }.answers { "123456" }
     every { contactsInterface.findEmail(any()) }.answers { null }

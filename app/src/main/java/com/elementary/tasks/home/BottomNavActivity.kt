@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.ui.GlobalAction
@@ -31,10 +30,10 @@ import com.elementary.tasks.navigation.SearchableFragmentQueryObserver
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
 import com.elementary.tasks.voice.ConversationViewModel
+import com.github.naz013.logging.Logger
 import com.google.android.material.search.SearchView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class BottomNavActivity :
   BindingActivity<ActivityBottomNavBinding>(),
@@ -57,7 +56,7 @@ class BottomNavActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    Timber.d("onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}")
+    Logger.d("onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}")
 
     val navHostFragment =
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
@@ -106,7 +105,7 @@ class BottomNavActivity :
   override fun setCurrentFragment(fragment: BaseNavigationFragment<*>) {
     currentResumedFragment = fragment
     binding.bottomNavigation.visibleGone(fragment is BaseTopFragment<*>)
-    Traces.logEvent("Fragment opened = ${fragment.javaClass.name}")
+    Logger.logEvent("Fragment opened = ${fragment.javaClass.name}")
   }
 
   override fun onCreateFragment(fragment: BaseNavigationFragment<*>) {
@@ -144,7 +143,7 @@ class BottomNavActivity :
   }
 
   override fun handleBackPress(): Boolean {
-    Timber.d("handleBackPress: $currentResumedFragment")
+    Logger.d("handleBackPress: $currentResumedFragment")
     if (currentResumedFragment is HomeFragment) {
       finishAffinity()
     } else {

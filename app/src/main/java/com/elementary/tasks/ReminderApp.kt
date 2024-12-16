@@ -6,7 +6,6 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.calendar.calendarModule
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.appwidgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.data.repository.repositoryModule
@@ -31,6 +30,7 @@ import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.voice.voiceModule
+import com.github.naz013.logging.initLogging
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -39,7 +39,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
-import timber.log.Timber
 
 @Suppress("unused")
 class ReminderApp : MultiDexApplication(), KoinComponent {
@@ -51,8 +50,9 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
 
   override fun onCreate() {
     super.onCreate()
-    if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-    Traces.setUpKeys(this)
+    initLogging(
+      isDebug = BuildConfig.DEBUG
+    )
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     val logger = object : Logger(level = Level.DEBUG) {
       override fun display(level: Level, msg: MESSAGE) {

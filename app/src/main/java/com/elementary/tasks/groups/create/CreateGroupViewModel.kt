@@ -7,25 +7,25 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.analytics.Traces
+import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.IdProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -142,7 +142,7 @@ class CreateGroupViewModel(
         Constants.INTENT_ID,
         group.groupUuId
       )
-      Traces.logEvent("Group saved")
+      Logger.logEvent("Group saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -155,7 +155,7 @@ class CreateGroupViewModel(
       reminderGroupDao.delete(reminderGroup)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      Traces.logEvent("Group deleted")
+      Logger.logEvent("Group deleted")
       workerLauncher.startWork(
         GroupDeleteBackupWorker::class.java,
         Constants.INTENT_ID,

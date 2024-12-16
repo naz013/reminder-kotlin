@@ -1,0 +1,56 @@
+[versions]
+minSdk = "29"
+compileSdk = "35"
+kotlinTargetJvm = "17"
+
+# Plugins
+agp = "8.7.3"
+kotlin = "2.1.0"
+google-services = "4.4.2"
+navigation-safeargs = "2.8.5"
+crashlytics-gradle = "3.0.2"
+ktlint = "11.5.0"
+ksp = "2.1.0-1.0.29"
+
+# Libraries
+firebase-bom = "33.7.0"
+
+commons-lang3 = "3.17.0"
+threetenbp = "1.7.0"
+
+slf4j-api = "2.0.16"
+logback-android = "3.0.0"
+
+junit = "4.13.2"
+mockk = "1.13.13"
+logback-classic = "1.5.12"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
+threetenbp = { group = "org.threeten", name = "threetenbp", version.ref = "threetenbp" }
+
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-api" }
+logback-android = { group = "com.github.tony19", name = "logback-android", version.ref = "logback-android" }
+
+# Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback-classic" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+java-library = { id = "java-library" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation-safeargs" }
+crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-gradle" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

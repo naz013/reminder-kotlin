@@ -2,7 +2,6 @@ package com.elementary.tasks.globalsearch
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.dao.RecentQueryDao
 import com.elementary.tasks.core.data.livedata.toSingleEvent
@@ -18,6 +17,7 @@ import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 
@@ -41,7 +41,7 @@ class GlobalSearchViewModel(
   }
 
   fun onSearchResultClicked(searchResult: SearchResult) {
-    Traces.logEvent("Search result clicked")
+    Logger.logEvent("Search result clicked")
     createAction(searchResult)?.also {
       _navigateLiveData.postValue(it)
     }

@@ -167,6 +167,10 @@ configurations.testImplementation {
 }
 
 dependencies {
+    implementation project(':voice-engine-ktx')
+    implementation project(':logging-api')
+    implementation project(':logging')
+
     implementation('com.google.apis:google-api-services-calendar:v3-rev20230406-2.0.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
@@ -178,7 +182,6 @@ dependencies {
     implementation('com.google.apis:google-api-services-drive:v3-rev20230423-2.0.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation project(':voice-engine-ktx')
 
     implementation 'io.insert-koin:koin-android:3.5.6'
     implementation 'io.insert-koin:koin-android-ext:3.0.2'
@@ -221,9 +224,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.5'
 
-    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation libs.firebase.bom
 
-    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation libs.firebase.crashlytics
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-config'
@@ -249,7 +252,7 @@ dependencies {
     implementation 'com.github.naz013:android-calendar-ext:1.0.4'
     implementation 'com.airbnb.android:lottie:6.6.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.0"
     implementation 'org.threeten:threetenbp:1.7.0'
     implementation 'com.maxkeppeler.sheets:core:2.3.1'
     implementation 'com.maxkeppeler.sheets:lottie:2.3.1'

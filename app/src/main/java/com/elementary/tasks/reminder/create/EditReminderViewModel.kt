@@ -8,7 +8,6 @@ import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -28,9 +27,9 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 
 @Deprecated("Replaced by new Builder")
 class EditReminderViewModel(
@@ -76,7 +75,7 @@ class EditReminderViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
-        Timber.d("saveAndStartReminder: save START")
+        Logger.d("saveAndStartReminder: save START")
         if (reminder.groupUuId == "") {
           val group = reminderGroupDao.defaultGroup()
           if (group != null) {
@@ -95,10 +94,10 @@ class EditReminderViewModel(
           }
         }
         eventControlFactory.getController(reminder).enable()
-        Timber.d("saveAndStartReminder: save DONE")
+        Logger.d("saveAndStartReminder: save DONE")
         analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
         reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type))
-        Traces.logEvent("Reminder saved, type = ${reminder.type}")
+        Logger.logEvent("Reminder saved, type = ${reminder.type}")
       }
       backupReminder(reminder.uuId)
       postInProgress(false)
@@ -167,7 +166,7 @@ class EditReminderViewModel(
   }
 
   private fun backupReminder(uuId: String) {
-    Timber.d("backupReminder: start backup")
+    Logger.d("backupReminder: start backup")
     workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
   }
 }

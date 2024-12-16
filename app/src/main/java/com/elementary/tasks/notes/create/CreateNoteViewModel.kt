@@ -11,7 +11,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.analytics.Feature
 import com.elementary.tasks.core.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.analytics.Traces
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
@@ -49,11 +48,11 @@ import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -244,7 +243,7 @@ class CreateNoteViewModel(
 
       val filePath = noteImageRepository.saveTemporaryImage(imageFile.fileName, bs)
 
-      Timber.d("addBitmap: size=${bos.size()}")
+      Logger.d("addBitmap: size=${bos.size()}")
       imageFile = imageFile.copy(
         filePath = filePath,
         state = UiNoteImageState.READY
@@ -300,7 +299,7 @@ class CreateNoteViewModel(
   }
 
   fun parseDrop(clipData: ClipData, text: String) {
-    Timber.d("parseDrop: ${clipData.itemCount}, ${clipData.description}")
+    Logger.d("parseDrop: ${clipData.itemCount}, ${clipData.description}")
     viewModelScope.launch(dispatcherProvider.default()) {
       var parsedText = ""
       val uris = mutableListOf<Uri>()
@@ -343,7 +342,7 @@ class CreateNoteViewModel(
     }
     noteWithImages.note?.archived = false
     analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
-    Traces.logEvent("Note saved")
+    Logger.logEvent("Note saved")
     saveNote(noteWithImages, reminder)
   }
 
@@ -352,7 +351,7 @@ class CreateNoteViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       v.updatedAt = DateTimeManager.gmtDateTime
-      Timber.d("saveNote: %s", note)
+      Logger.d("saveNote: $note")
       saveImages(note.images, v.key)
       notesDao.insert(v)
       workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
@@ -443,16 +442,16 @@ class CreateNoteViewModel(
 
   private fun saveImages(list: List<ImageFile>, id: String) {
     val oldList = notesDao.getImagesByNoteId(id)
-    Timber.d("saveImages: ${oldList.size}")
+    Logger.d("saveImages: ${oldList.size}")
     for (image in oldList) {
-      Timber.d("saveImages: delete -> ${image.id}, ${image.noteId}")
+      Logger.d("saveImages: delete -> ${image.id}, ${image.noteId}")
       notesDao.delete(image)
     }
     noteImageRepository.moveImagesToFolder(list, id)
       .map { it.copy(noteId = id) }
       .takeIf { it.isNotEmpty() }
       ?.also {
-        Timber.d("saveImages: new list -> $it")
+        Logger.d("saveImages: new list -> $it")
         notesDao.insertAll(it)
       }
   }
