@@ -111,3 +111,4 @@ jobs:
         packageName: com.cray.software.justreminderpro
         releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
         track: alpha
+        changesNotSentForReview: true
