@@ -11,8 +11,8 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.elementary.tasks.R
+import com.github.naz013.logging.Logger
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import timber.log.Timber
 
 class UiSelectorView : LinearLayout {
 
@@ -125,7 +125,7 @@ class UiSelectorView : LinearLayout {
 
         labelView.isEnabled = showDialog
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

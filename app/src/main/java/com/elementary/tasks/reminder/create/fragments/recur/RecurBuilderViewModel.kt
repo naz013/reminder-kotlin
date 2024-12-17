@@ -47,9 +47,9 @@ import com.elementary.tasks.reminder.create.fragments.recur.intdialog.Number
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewData
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewItem
 import com.elementary.tasks.reminder.create.fragments.recur.preview.Style
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
 
@@ -114,7 +114,7 @@ class RecurBuilderViewModel(
   }
 
   fun onPresetSelected(presetId: String) {
-    Timber.d("onPresetSelected: $presetId")
+    Logger.d("onPresetSelected: $presetId")
     viewModelScope.launch(dispatcherProvider.default()) {
       val preset = recurPresetRepository.getById(presetId) ?: return@launch
 
@@ -177,11 +177,11 @@ class RecurBuilderViewModel(
   fun getEventData(): EventData? {
     val usedParams = _usedParams.value?.map { it.param } ?: return null
 
-    Timber.d("calculateEvents: params = $usedParams")
+    Logger.d("calculateEvents: params = $usedParams")
 
     val ruleMap = createRuleMap(usedParams)
 
-    Timber.d("calculateEvents: map = $ruleMap")
+    Logger.d("calculateEvents: map = $ruleMap")
 
     val recurObject = runCatching {
       recurrenceManager.createObject(ruleMap)
@@ -200,7 +200,7 @@ class RecurBuilderViewModel(
 
   fun onEdit(reminder: Reminder) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      Timber.d("onEdit: recurDataObject = ${reminder.recurDataObject}")
+      Logger.d("onEdit: recurDataObject = ${reminder.recurDataObject}")
 
       val rules = runCatching {
         recurrenceManager.parseObject(reminder.recurDataObject)
@@ -210,7 +210,7 @@ class RecurBuilderViewModel(
         when (tag) {
           is RecurrenceRuleTag -> {
             tag.params.map { it.toBuilderParam() }.also {
-              Timber.d("onEdit: builder params = $it")
+              Logger.d("onEdit: builder params = $it")
               builderParamLogic.addOrUpdateParams(it)
             }
           }
@@ -297,10 +297,10 @@ class RecurBuilderViewModel(
 
   private fun generateDates(used: List<UiBuilderParam<*>>): Pair<List<PreviewItem>, Int> {
     val usedParams = used.map { it.param }
-    Timber.d("calculateEvents: params = $usedParams")
+    Logger.d("calculateEvents: params = $usedParams")
 
     if (!hasLimit(usedParams)) {
-      Timber.d("calculateEvents: no limit, show error")
+      Logger.d("calculateEvents: no limit, show error")
       _previewError.postValue(textProvider.getText(R.string.recur_no_limit_error))
       return Pair(emptyList(), 0)
     }
@@ -315,7 +315,7 @@ class RecurBuilderViewModel(
   }
 
   private fun generateFromMap(ruleMap: RuleMap): Pair<List<PreviewItem>, Int> {
-    Timber.d("calculateEvents: map = $ruleMap")
+    Logger.d("calculateEvents: map = $ruleMap")
 
     val generated = runCatching { recurrenceManager.generate(ruleMap) }.getOrNull() ?: emptyList()
 
@@ -378,7 +378,7 @@ class RecurBuilderViewModel(
 
     val scrollPosition = dates.indexOfFirst { it.style == Style.BOLD }
 
-    Timber.d("calculateEvents: scrollPosition = $scrollPosition, dates = ${dates.size}")
+    Logger.d("calculateEvents: scrollPosition = $scrollPosition, dates = ${dates.size}")
     return Pair(dates, scrollPosition)
   }
 

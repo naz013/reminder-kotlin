@@ -8,9 +8,9 @@ import android.graphics.drawable.Drawable
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.views.drawable.TextDrawable
+import com.github.naz013.logging.Logger
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import timber.log.Timber
 import java.util.Random
 
 object BitmapUtils {
@@ -67,7 +67,7 @@ object BitmapUtils {
           w
         }
       }
-      Timber.d("imageFromName: %s", init)
+      Logger.d("imageFromName: %s", init)
       val drawable = TextDrawable.builder()
         .beginConfig()
         .width(150)

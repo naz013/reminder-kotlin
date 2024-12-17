@@ -18,8 +18,8 @@ import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class SettingsFragment :
   BaseSettingsFragment<FragmentSettingsBinding>(),
@@ -91,10 +91,10 @@ class SettingsFragment :
 
   private fun checkDoNotDisturb() {
     if (doNotDisturbManager.applyDoNotDisturb(0)) {
-      Timber.d("checkDoNotDisturb: active")
+      Logger.d("checkDoNotDisturb: active")
       binding.doNoDisturbIcon.visible()
     } else {
-      Timber.d("checkDoNotDisturb: not active")
+      Logger.d("checkDoNotDisturb: not active")
       binding.doNoDisturbIcon.gone()
     }
   }
@@ -191,7 +191,7 @@ class SettingsFragment :
 
   @SuppressLint("SetTextI18n")
   override fun onUpdateChanged(hasUpdate: Boolean, version: String) {
-    Timber.d("onUpdateChanged: $hasUpdate, $version")
+    Logger.d("onUpdateChanged: $hasUpdate, $version")
     if (hasUpdate) {
       binding.updateBadge.visible()
       binding.updateBadge.text = getString(R.string.new_update_message, version)
@@ -202,7 +202,7 @@ class SettingsFragment :
   }
 
   override fun onSaleChanged(showDiscount: Boolean, discount: String, until: String) {
-    Timber.d("onSaleChanged: $showDiscount, $discount")
+    Logger.d("onSaleChanged: $showDiscount, $discount")
     if (showDiscount) {
       binding.saleBadge.visible()
       binding.saleBadge.text = getString(R.string.new_sale_message, discount, until)

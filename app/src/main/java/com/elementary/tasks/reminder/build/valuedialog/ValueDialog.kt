@@ -13,10 +13,10 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueController
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerParent
+import com.github.naz013.logging.Logger
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueControllerParent {
 
@@ -83,7 +83,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     }
     binding.buttonsHolder.gone()
 
-    Timber.d("onViewCreated: position=${getPosition()}")
+    Logger.d("onViewCreated: position=${getPosition()}")
     dataHolder.data?.also { builderItem ->
       binding.titleView.text = builderItem.title
       binding.descriptionView.text = builderItem.description

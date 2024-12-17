@@ -20,6 +20,7 @@ import com.elementary.tasks.core.os.datapicker.MultiPicturePicker
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.databinding.ViewUrlFieldBinding
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,7 +28,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class PhotoSelectionUtil(
   private val activity: ComponentActivity,
@@ -169,7 +169,7 @@ class PhotoSelectionUtil(
             }
           }
         } catch (e: Exception) {
-          Timber.d("downloadUrl: $e")
+          Logger.d("downloadUrl: $e")
           withUIContext {
             activity.toast(R.string.failed_to_download)
           }

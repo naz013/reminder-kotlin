@@ -10,13 +10,13 @@ import android.os.Bundle
 import android.os.Looper
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import timber.log.Timber
 
 class LocationTracker(
   private val listener: Listener,
@@ -29,7 +29,7 @@ class LocationTracker(
   private var mFusedLocationClient: FusedLocationProviderClient? = null
   private val mLocationCallback = object : LocationCallback() {
     override fun onLocationResult(locationResult: LocationResult) {
-      Timber.d("onLocationResult: $locationResult")
+      Logger.d("onLocationResult: $locationResult")
       for (location in locationResult.locations) {
         val latitude = location.latitude
         val longitude = location.longitude
@@ -86,7 +86,7 @@ class LocationTracker(
   }
 
   override fun onLocationChanged(location: Location) {
-    Timber.d("onLocationResult: $location")
+    Logger.d("onLocationResult: $location")
     val latitude = location.latitude
     val longitude = location.longitude
     listener.onUpdate(latitude, longitude)
@@ -94,17 +94,17 @@ class LocationTracker(
 
   @Deprecated("Deprecated in Java")
   override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-    Timber.d("onStatusChanged: $provider")
+    Logger.d("onStatusChanged: $provider")
     updateListener()
   }
 
   override fun onProviderEnabled(provider: String) {
-    Timber.d("onProviderEnabled: $provider")
+    Logger.d("onProviderEnabled: $provider")
     updateListener()
   }
 
   override fun onProviderDisabled(provider: String) {
-    Timber.d("onProviderDisabled: $provider")
+    Logger.d("onProviderDisabled: $provider")
     updateListener()
   }
 

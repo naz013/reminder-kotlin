@@ -9,8 +9,8 @@ import com.elementary.tasks.core.utils.EventImportProcessor
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class EventsImportViewModel(
   dispatcherProvider: DispatcherProvider,
@@ -48,7 +48,7 @@ class EventsImportViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val result = eventImportProcessor.importEventsFor(ids)
-      Timber.d("import: result=$result")
+      Logger.d("import: result=$result")
       withUIContext {
         postInProgress(false)
         if (result.importCount == 0) {

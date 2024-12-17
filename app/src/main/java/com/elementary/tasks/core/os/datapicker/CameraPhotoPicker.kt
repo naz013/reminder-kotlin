@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.utils.UriUtil
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,7 +42,7 @@ class CameraPhotoPicker private constructor(
   }
 
   override fun dispatchResult(result: Boolean) {
-    Timber.d("dispatchResult: $result, $imageUri")
+    Logger.d("dispatchResult: $result, $imageUri")
     if (result) {
       val uri = imageUri ?: return
       resultCallback.invoke(uri)

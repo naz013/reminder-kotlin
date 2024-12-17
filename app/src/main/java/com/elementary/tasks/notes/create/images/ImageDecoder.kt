@@ -7,9 +7,9 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.UUID
 
 class ImageDecoder(
@@ -58,7 +58,7 @@ class ImageDecoder(
       return image.copy(state = UiNoteImageState.ERROR)
     }
     val type = context.contentResolver.getType(uri) ?: ""
-    Timber.d("addImageFromUri: $type")
+    Logger.d("addImageFromUri: $type")
     if (!type.contains("image")) {
       return image.copy(state = UiNoteImageState.ERROR)
     }
@@ -70,7 +70,7 @@ class ImageDecoder(
     }.getOrNull()
 
     return if (filePath != null) {
-      Timber.d("addImageFromUri: filePath=$filePath")
+      Logger.d("addImageFromUri: filePath=$filePath")
       image.copy(
         filePath = filePath,
         state = UiNoteImageState.READY

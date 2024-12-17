@@ -18,7 +18,7 @@ import com.elementary.tasks.notes.list.UiNoteListAdapterCommon
 import com.elementary.tasks.notes.list.UiNoteListDiffCallback
 import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class NoteController(
   private val noteBuilderItem: NoteBuilderItem
@@ -65,7 +65,7 @@ class NoteController(
     }
 
     private fun updateSelection(position: Int) {
-      Timber.d("updateSelection: pos=$position, selected=${position == selectedPosition}")
+      Logger.d("updateSelection: pos=$position, selected=${position == selectedPosition}")
       if (position == selectedPosition) {
         val prevSelected = selectedPosition
         selectedPosition = -1

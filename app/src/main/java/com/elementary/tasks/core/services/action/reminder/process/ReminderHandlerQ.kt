@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ReminderHandlerQ(
   private val reminderDataProvider: ReminderDataProvider,
@@ -33,7 +33,7 @@ class ReminderHandlerQ(
   }
 
   private fun showNotificationWithSound(reminder: Reminder) {
-    Timber.d("showReminderNotification: $reminder")
+    Logger.d("showReminderNotification: $reminder")
     val context = contextProvider.context
     val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
 

@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
 
@@ -71,7 +71,7 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     if (binding.attackDelay.isChecked) {
       val startTime = binding.dateView.selectedDateTime
       val time = dateTimeManager.getGmtFromDateTime(startTime)
-      Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+      Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
       if (!dateTimeManager.isCurrent(time)) {
         Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
         return null

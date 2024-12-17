@@ -6,10 +6,10 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.logging.Logger
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
-import timber.log.Timber
 import java.util.Calendar
 
 class EventImportProcessor(
@@ -23,7 +23,7 @@ class EventImportProcessor(
     val currTime = System.currentTimeMillis()
     var eventsCount = 0
     val eventItems = googleCalendarUtils.getEvents(ids)
-    Timber.d("import: eventItems=${eventItems.size}")
+    Logger.d("import: eventItems=${eventItems.size}")
     if (eventItems.isNotEmpty()) {
       val list = appDb.calendarEventsDao().eventIds()
       for (item in eventItems) {
@@ -31,7 +31,7 @@ class EventImportProcessor(
         if (!list.contains(itemId)) {
           val rrule = item.rrule
           var repeat: Long = 0
-          Timber.d("import: rrule=$rrule, dtStart=${item.dtStart}")
+          Logger.d("import: rrule=$rrule, dtStart=${item.dtStart}")
           if (rrule != "" && !rrule.matches("".toRegex())) {
             try {
               val rule = RecurrenceRule(rrule)

@@ -64,11 +64,11 @@ import com.elementary.tasks.notes.create.images.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.logging.Logger
 import com.google.android.material.slider.Slider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 import java.io.File
 import java.util.Random
 
@@ -206,7 +206,7 @@ class CreateNoteActivity :
     updateSpeechState(SpeechState.IDLE)
 
     binding.clickView.setOnClickListener {
-      Timber.d("onCreate: on outside touch")
+      Logger.d("onCreate: on outside touch")
       hideKeyboard(binding.taskMessage.windowToken)
     }
     initImagesList()
@@ -316,7 +316,7 @@ class CreateNoteActivity :
     if (opacity == -1) {
       newOpacity = binding.opacityBar.valueInt
     }
-    Timber.d("newPair: $newColor, $newOpacity")
+    Logger.d("newPair: $newColor, $newOpacity")
     return Pair(newColor, newOpacity)
   }
 
@@ -472,7 +472,7 @@ class CreateNoteActivity :
 
   private fun initViewModel() {
     viewModel.colorOpacity.nonNullObserve(this) {
-      Timber.d("observeStates: opacity $it")
+      Logger.d("observeStates: opacity $it")
       updateDarkness(it)
       updateBackground(it)
       updateTextColors()
@@ -489,11 +489,11 @@ class CreateNoteActivity :
     viewModel.fontStyle.nonNullObserve(this) { updateFontStyle(it) }
     viewModel.fontSize.nonNullObserve(this) { updateFontSize(it) }
     viewModel.images.nonNullObserve(this) {
-      Timber.d("observeStates: images -> $it")
+      Logger.d("observeStates: images -> $it")
       imagesGridAdapter.submitList(it)
     }
     viewModel.palette.nonNullObserve(this) {
-      Timber.d("observeStates: palette -> $it")
+      Logger.d("observeStates: palette -> $it")
       prefs.notePalette = it
       binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
       val pair = newPair(binding.colorSlider.selectedItem, binding.opacityBar.valueInt)
@@ -505,7 +505,7 @@ class CreateNoteActivity :
     }
     viewModel.note.nonNullObserve(this) { showNote(it) }
     viewModel.result.nonNullObserve(this) { commands ->
-      Timber.d("initViewModel: $commands")
+      Logger.d("initViewModel: $commands")
       when (commands) {
         Commands.DELETED, Commands.SAVED -> {
           updatesHelper.updateNotesWidget()
@@ -595,7 +595,7 @@ class CreateNoteActivity :
   }
 
   private fun showNote(uiNoteEdit: UiNoteEdit) {
-    Timber.d("editNote: $uiNoteEdit")
+    Logger.d("editNote: $uiNoteEdit")
     binding.colorSlider.setSelection(uiNoteEdit.colorPosition)
     binding.opacityBar.valueInt = uiNoteEdit.opacity
     binding.fontSizeBar.valueInt = uiNoteEdit.fontSize
@@ -699,7 +699,7 @@ class CreateNoteActivity :
   }
 
   private fun updateBackground(pair: Pair<Int, Int>, palette: Int = palette()) {
-    Timber.d("updateBackground: $pair, $palette")
+    Logger.d("updateBackground: $pair, $palette")
 
     val lightColorSemi = themeUtil.getNoteLightColor(pair.first, pair.second, palette)
     binding.layoutContainer.setBackgroundColor(lightColorSemi)
@@ -841,7 +841,7 @@ class CreateNoteActivity :
 
   private fun handleSendText(intent: Intent) {
     intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-      Timber.d("handleSendText: $it")
+      Logger.d("handleSendText: $it")
       setText(it)
     }
   }

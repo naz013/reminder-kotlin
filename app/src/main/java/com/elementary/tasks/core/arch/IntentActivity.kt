@@ -20,8 +20,8 @@ import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class IntentActivity : ThemedActivity() {
 
@@ -35,11 +35,11 @@ class IntentActivity : ThemedActivity() {
     val data = intent.data ?: return
     val scheme = data.scheme
 
-    Timber.d("onCreate: $data, $scheme")
+    Logger.d("onCreate: $data, $scheme")
 
     if (ContentResolver.SCHEME_CONTENT == scheme) {
       val any = MemoryUtil.readFromUri(this, data)
-      Timber.d("getPlace: $any")
+      Logger.d("getPlace: $any")
       if (any != null) {
         when (any) {
           is Place -> {

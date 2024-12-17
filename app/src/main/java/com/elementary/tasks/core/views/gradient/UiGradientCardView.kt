@@ -3,8 +3,8 @@ package com.elementary.tasks.core.views.gradient
 import android.content.Context
 import android.util.AttributeSet
 import com.elementary.tasks.R
+import com.github.naz013.logging.Logger
 import com.google.android.material.card.MaterialCardView
-import timber.log.Timber
 
 class UiGradientCardView : MaterialCardView {
 
@@ -52,7 +52,7 @@ class UiGradientCardView : MaterialCardView {
           gradientHelper.applyBackground { background = it }
         }
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

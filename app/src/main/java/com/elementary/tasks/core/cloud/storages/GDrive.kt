@@ -9,6 +9,7 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -18,7 +19,6 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -42,7 +42,7 @@ class GDrive(
 
   fun login(user: String) {
     if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
-      Timber.d("GDrive: user -> $user")
+      Logger.d("GDrive: user -> $user")
       val credential = GoogleAccountCredential.usingOAuth2(
         context,
         Collections.singleton(DriveScopes.DRIVE_APPDATA)
@@ -83,12 +83,12 @@ class GDrive(
         stream.close()
       }
     } catch (e: Throwable) {
-      Timber.d(e)
+      Logger.e("Gdrive: backup: ${e.message}")
     }
   }
 
   override suspend fun restore(fileName: String): InputStream? {
-    Timber.d("restore: $fileName")
+    Logger.d("restore: $fileName")
     val service = driveService ?: return null
     if (!isLogged) return null
     try {
@@ -100,7 +100,7 @@ class GDrive(
         val filesResult = request.execute()
         val fileList = filesResult.files as ArrayList<File>
         for (f in fileList) {
-          Timber.d("restore: ${f.name}, ${f.id}, $fileName")
+          Logger.d("restore: ${f.name}, ${f.id}, $fileName")
           val title = f.name
           if (title == fileName) {
             return service.files().get(f.id).executeMediaAsInputStream()
@@ -109,7 +109,7 @@ class GDrive(
         request.pageToken = filesResult.nextPageToken
       } while (request.pageToken != null)
     } catch (e: Throwable) {
-      Timber.d(e)
+      Logger.e("Gdrive: restore: ${e.message}")
       return null
     }
     return null
@@ -121,7 +121,7 @@ class GDrive(
     convertible: Convertible<T>,
     outputChannel: DataChannel<T>
   ) {
-    Timber.d("restoreAll: start, isLogged=$isLogged, service=$driveService")
+    Logger.d("restoreAll: start, isLogged=$isLogged, service=$driveService")
     val service = driveService ?: return
     if (!isLogged) {
       return
@@ -135,12 +135,12 @@ class GDrive(
         val filesResult = request.execute()
         val fileList = filesResult.files as ArrayList<File>
         for (f in fileList) {
-          Timber.d("restoreAll: ${f.name}, ${f.id}, $ext")
+          Logger.d("restoreAll: ${f.name}, ${f.id}, $ext")
           val shouldDownload = f.name.endsWith(ext)
-          Timber.d("restoreAll: should download = $shouldDownload")
+          Logger.d("restoreAll: should download = $shouldDownload")
           if (shouldDownload) {
             val obj = convertible.convert(service.files().get(f.id).executeMediaAsInputStream())
-            Timber.d("restoreAll: converted = $obj")
+            Logger.d("restoreAll: converted = $obj")
             if (obj != null) {
               outputChannel.onNewData(obj)
             }
@@ -152,7 +152,7 @@ class GDrive(
         request.pageToken = filesResult.nextPageToken
       } while (request.pageToken != null)
     } catch (e: Throwable) {
-      Timber.d(e)
+      Logger.e("Gdrive: restoreAll: ${e.message}")
     }
   }
 
@@ -208,7 +208,7 @@ class GDrive(
         val fileList = files.files as ArrayList<File>
         for (f in fileList) {
           val title = f.name
-          Timber.d("countFiles: $title")
+          Logger.d("countFiles: $title")
           when {
             title.contains(FileConfig.FILE_NAME_SETTINGS) -> count++
             title.endsWith(FileConfig.FILE_NAME_PLACE) -> count++
@@ -246,7 +246,7 @@ class GDrive(
         val out = ByteArrayOutputStream()
         it.files().get(id).executeMediaAndDownloadTo(out)
         val data = out.toString()
-        Timber.d("showContent: $id, $data")
+        Logger.d("showContent: $id, $data")
       }
     }
   }
@@ -263,7 +263,7 @@ class GDrive(
       val driveFile = it.files().create(fileMetadata, mediaContent)
         .setFields("id")
         .execute()
-      Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
+      Logger.d("backup: ${driveFile.id}, ${metadata.fileName}")
     }
   }
 
@@ -271,7 +271,7 @@ class GDrive(
     return try {
       withService(call)
     } catch (e: Throwable) {
-      Timber.d(e, errorMessage ?: "Failed to call Drive service")
+      Logger.e("Failed to $errorMessage: ${e.message}")
       null
     }
   }

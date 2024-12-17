@@ -42,10 +42,10 @@ import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.settings.other.SendFeedbackActivity
+import com.github.naz013.logging.Logger
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 import java.util.Locale
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
@@ -74,7 +74,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     if (status == TextToSpeech.SUCCESS && tts != null) {
       val result = tts?.setLanguage(Locale(language.getLanguage(prefs.voiceLocale)))
       if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-        Timber.d("This Language is not supported")
+        Logger.d("This Language is not supported")
       } else {
         isTtsReady = true
         if (!isRotated || conversationAdapter.itemCount == 0) {
@@ -83,32 +83,32 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         }
       }
     } else {
-      Timber.d("Initialization Failed!")
+      Logger.d("Initialization Failed!")
     }
   }
   private val mRecognitionListener = object : RecognitionListener {
     override fun onReadyForSpeech(bundle: Bundle) {
-      Timber.d("onReadyForSpeech: ")
+      Logger.d("onReadyForSpeech: ")
     }
 
     override fun onBeginningOfSpeech() {
-      Timber.d("onBeginningOfSpeech: ")
+      Logger.d("onBeginningOfSpeech: ")
     }
 
     override fun onRmsChanged(f: Float) {
     }
 
     override fun onBufferReceived(bytes: ByteArray) {
-      Timber.d("onBufferReceived: ")
+      Logger.d("onBufferReceived: ")
     }
 
     override fun onEndOfSpeech() {
-      Timber.d("onEndOfSpeech: ")
+      Logger.d("onEndOfSpeech: ")
       isListening = false
     }
 
     override fun onError(i: Int) {
-      Timber.d("onError: $i")
+      Logger.d("onError: $i")
       isListening = false
       showSilentMessage()
     }
@@ -133,7 +133,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     }
 
     override fun onEvent(i: Int, bundle: Bundle) {
-      Timber.d("onEvent: ")
+      Logger.d("onEvent: ")
     }
   }
 
@@ -190,7 +190,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     viewModel.replies.nonNullObserve(this) {
       conversationAdapter.submitList(it)
       binding.conversationList.scrollToPosition(0)
-      Timber.d("initViewModel: $it")
+      Logger.d("initViewModel: $it")
     }
   }
 
@@ -208,7 +208,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
   }
 
   private fun parseResults(list: List<String>?) {
-    Timber.d("parseResults: $list")
+    Logger.d("parseResults: $list")
     if (list.isNullOrEmpty()) {
       showSilentMessage()
       return
@@ -255,7 +255,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     if (mAskAction != null) {
       viewModel.removeAsk()
     }
-    Timber.d("performResult: $model")
+    Logger.d("performResult: $model")
     when (model.type) {
       ActionType.REMINDER -> reminderAction(model)
       ActionType.NOTE -> noteAction(model)
@@ -281,7 +281,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
       ActionType.ANSWER -> performAnswer(model)
       ActionType.SHOW -> {
         stopView()
-        Timber.d("performResult: gmt ${model.dateTime}")
+        Logger.d("performResult: gmt ${model.dateTime}")
         when (model.action) {
           Action.REMINDERS -> viewModel.getReminders(model.dateTime)
           Action.NOTES -> viewModel.getNotes()

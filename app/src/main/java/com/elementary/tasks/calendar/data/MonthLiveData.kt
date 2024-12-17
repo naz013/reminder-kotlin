@@ -6,11 +6,11 @@ import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 class MonthLiveData(
   private val context: ContextProvider,
@@ -57,7 +57,7 @@ class MonthLiveData(
       ).let { mapData(it) }
         .also { postValue(it) }
         .also {
-          Timber.d("loadData: ${it.size}, date=$date")
+          Logger.d("loadData: ${it.size}, date=$date")
         }
     }
   }

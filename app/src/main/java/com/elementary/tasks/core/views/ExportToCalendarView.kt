@@ -7,9 +7,9 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.databinding.ViewCalendarExportBinding
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class ExportToCalendarView : LinearLayout, KoinComponent {
 
@@ -96,7 +96,7 @@ class ExportToCalendarView : LinearLayout, KoinComponent {
   }
 
   private fun setState(state: State) {
-    Timber.d("setState: $state")
+    Logger.d("setState: $state")
     this.internalState = state
     enableViews(state != State.NO)
     listener?.onChanged(state == State.YES, calendarId)

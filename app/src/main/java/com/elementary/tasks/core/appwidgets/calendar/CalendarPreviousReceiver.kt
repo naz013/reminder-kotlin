@@ -5,16 +5,16 @@ import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.appwidgets.WidgetPrefsHolder
 import com.elementary.tasks.core.services.BaseBroadcast
+import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 class CalendarPreviousReceiver : BaseBroadcast() {
 
   private val widgetPrefsHolder by inject<WidgetPrefsHolder>()
 
   override fun onReceive(context: Context?, intent: Intent?) {
-    Timber.d("onReceive: $intent")
+    Logger.d("onReceive: $intent")
     if (intent != null && ACTION_PREVIOUS == intent.action && context != null) {
       val widgetId = intent.getIntExtra(
         AppWidgetManager.EXTRA_APPWIDGET_ID,

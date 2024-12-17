@@ -18,9 +18,9 @@ import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -60,7 +60,7 @@ class BackupTool(
         if (allData != null) {
           var hasAnyData = false
           val defGroup = if (allData.groups.isNotEmpty()) {
-            Timber.d("importAll: has groups ${allData.groups.size}")
+            Logger.d("importAll: has groups ${allData.groups.size}")
             hasAnyData = true
             allData.groups.map {
               it.copy(isDefaultGroup = false)
@@ -76,7 +76,7 @@ class BackupTool(
           }
 
           if (allData.reminders.isNotEmpty()) {
-            Timber.d("importAll: has reminders ${allData.reminders.size}")
+            Logger.d("importAll: has reminders ${allData.reminders.size}")
             hasAnyData = true
             val allGroups = appDb.reminderGroupDao().all()
             if (replace) {
@@ -95,7 +95,7 @@ class BackupTool(
           }
 
           if (allData.birthdays.isNotEmpty()) {
-            Timber.d("importAll: has birthdays ${allData.birthdays.size}")
+            Logger.d("importAll: has birthdays ${allData.birthdays.size}")
             hasAnyData = true
             if (replace) {
               appDb.birthdaysDao().deleteAll()
@@ -104,7 +104,7 @@ class BackupTool(
           }
 
           if (allData.places.isNotEmpty()) {
-            Timber.d("importAll: has places ${allData.places.size}")
+            Logger.d("importAll: has places ${allData.places.size}")
             hasAnyData = true
             if (replace) {
               appDb.placesDao().deleteAll()
@@ -113,7 +113,7 @@ class BackupTool(
           }
 
           if (allData.notes.isNotEmpty()) {
-            Timber.d("importAll: has notes ${allData.notes.size}")
+            Logger.d("importAll: has notes ${allData.notes.size}")
             hasAnyData = true
             if (replace) {
               appDb.notesDao().deleteAllImages()

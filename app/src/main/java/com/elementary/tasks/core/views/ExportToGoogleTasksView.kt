@@ -8,13 +8,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.databinding.ViewTasksExportBinding
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class ExportToGoogleTasksView : LinearLayout, KoinComponent {
 
@@ -117,7 +117,7 @@ class ExportToGoogleTasksView : LinearLayout, KoinComponent {
   }
 
   private fun setState(state: State) {
-    Timber.d("setState: $state")
+    Logger.d("setState: $state")
     this.internalState = state
     enableViews(state != State.NO)
     taskListId?.also { listener?.onChanged(state == State.YES, it) }

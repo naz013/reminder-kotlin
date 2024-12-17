@@ -14,10 +14,10 @@ import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentDayViewBinding
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
 
@@ -91,7 +91,7 @@ class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
   }
 
   private fun scrollPositions(date: LocalDate) {
-    Timber.d("scrollPositions: date=$date")
+    Logger.d("scrollPositions: date=$date")
     datePageChangeListener.jumpToDate(date)
   }
 
@@ -164,10 +164,10 @@ class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
     }
 
     override fun onPageSelected(position: Int) {
-      Timber.d("onPageSelected: position=$position")
+      Logger.d("onPageSelected: position=$position")
       refreshAdapters(position)
       val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
-      Timber.d("onPageSelected: item=$item")
+      Logger.d("onPageSelected: item=$item")
       date = item.date
       updateMenuTitles()
       weekViewModel.onDateSelected(date)

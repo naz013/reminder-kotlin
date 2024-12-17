@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.databinding.ViewRemindBeforeBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedListener {
 
@@ -39,7 +39,7 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
   private val beforeValue: Long
     get() {
       val rep = mRepeatValue * multiplier
-      Timber.d("getBeforeValue: $rep")
+      Logger.d("getBeforeValue: $rep")
       return rep
     }
 
@@ -92,7 +92,7 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
           /* defValue = */ DateTimeManager.MultiplierType.MINUTE.index
         )
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

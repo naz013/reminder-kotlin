@@ -46,11 +46,11 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 import java.io.File
 
 class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>() {
@@ -95,7 +95,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val mLocalReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       val action = intent?.action ?: ""
-      Timber.d("onReceive: $action, ${getId()}")
+      Logger.d("onReceive: $action, ${getId()}")
       if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && mReminder?.uuId == getId()) {
         finish()
       }
@@ -199,7 +199,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   }
 
   private fun initViewModel() {
-    Timber.d("initViewModel: ${getId()}")
+    Logger.d("initViewModel: ${getId()}")
     viewModel.reminder.observeForever(mReminderObserver)
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
@@ -229,7 +229,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     if (!isMockedTest) {
       this.mControl = get<EventControlFactory>().getController(reminder)
     }
-    Timber.d("showInfo: ${dateTimeManager.logDateTime(reminder.eventTime)}")
+    Logger.d("showInfo: ${dateTimeManager.logDateTime(reminder.eventTime)}")
 
     moreActionParams.canOpenAttachment = reminder.attachmentFile != ""
 
@@ -607,12 +607,12 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   }
 
   private fun discardNotification(id: Int) {
-    Timber.d("discardNotification: $id")
+    Logger.d("discardNotification: $id")
     notifier.cancel(id)
   }
 
   private fun showWearNotification(secondaryText: String) {
-    Timber.d("showWearNotification: $secondaryText")
+    Logger.d("showWearNotification: $secondaryText")
     val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
     wearableNotificationBuilder.setContentTitle(summary)

@@ -13,10 +13,10 @@ import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderWeekdaysBinding
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
 
@@ -98,7 +98,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     }
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
-    Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
     return reminder
   }
 

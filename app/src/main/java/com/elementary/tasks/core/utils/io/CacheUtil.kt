@@ -8,7 +8,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import com.elementary.tasks.core.utils.copyInputStreamToFile
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -105,10 +105,10 @@ class CacheUtil(
     val file = File(cacheDir, fileName)
     val fId = fileId.ifEmpty { name }
 
-    Timber.d("cacheFile: $fId, ${file.absolutePath}, $fileName")
+    Logger.d("cacheFile: $fId, ${file.absolutePath}, $fileName")
 
     if (hasCache(fId) && file.exists()) {
-      Timber.d("cacheFile: FROM CACHE")
+      Logger.d("cacheFile: FROM CACHE")
       return file.absolutePath
     }
 

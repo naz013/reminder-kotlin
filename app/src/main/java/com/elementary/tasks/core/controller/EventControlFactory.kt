@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class EventControlFactory(
   private val prefs: Prefs,
@@ -162,7 +162,7 @@ class EventControlFactory(
         googleTasksDao
       )
     }.also {
-      Timber.d("getController: $it")
+      Logger.d("getController: $it")
     }
   }
 }

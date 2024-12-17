@@ -18,7 +18,6 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class GeolocationService : Service() {
 
@@ -40,7 +39,7 @@ class GeolocationService : Service() {
     super.onDestroy()
     locationTracker.removeUpdates()
     stopForeground(STOP_FOREGROUND_REMOVE)
-    Timber.d("onDestroy: ")
+    Logger.d("onDestroy: ")
   }
 
   override fun onBind(intent: Intent?): IBinder? {
@@ -53,7 +52,7 @@ class GeolocationService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Timber.d("onStartCommand: ")
+    Logger.d("onStartCommand: ")
     showDefaultNotification()
     locationTracker.startUpdates()
     return START_STICKY

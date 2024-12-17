@@ -26,11 +26,11 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class GoogleTaskViewModel(
   id: String,
@@ -206,7 +206,7 @@ class GoogleTaskViewModel(
   }
 
   private fun saveReminder(reminder: Reminder?) {
-    Timber.d("saveReminder: $reminder")
+    Logger.d("saveReminder: $reminder")
     if (reminder != null) {
       viewModelScope.launch(dispatcherProvider.default()) {
         val group = reminderGroupDao.defaultGroup()
@@ -310,7 +310,7 @@ class GoogleTaskViewModel(
     note: String,
     reminder: Reminder?
   ): GoogleTask {
-    Timber.d("update: date=$date, time=$time")
+    Logger.d("update: date=$date, time=$time")
     return googleTask.copy(
       listId = listId,
       status = GTasks.TASKS_NEED_ACTION,

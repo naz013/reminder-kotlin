@@ -8,7 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.databinding.ViewTimerPickerBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class TimerPickerView : LinearLayout {
 
@@ -89,7 +89,7 @@ class TimerPickerView : LinearLayout {
   }
 
   private fun onDigitClicked(d: Int) {
-    Timber.d("onDigitClicked: $d, $timeString")
+    Logger.d("onDigitClicked: $d, $timeString")
     if (timeString[0] == '0') {
       timeString = timeString.substring(1, timeString.length)
       timeString += d.toString()

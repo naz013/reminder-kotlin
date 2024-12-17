@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.elementary.tasks.R
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class UiCheckableImageView : AppCompatImageView {
 
@@ -53,7 +53,7 @@ class UiCheckableImageView : AppCompatImageView {
         checkedIcon = a.getResourceId(R.styleable.UiCheckableImageView_civ_checkedIcon, 0)
         uncheckedIcon = a.getResourceId(R.styleable.UiCheckableImageView_civ_uncheckedIcon, 0)
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

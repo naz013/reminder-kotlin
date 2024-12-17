@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.logging.Logger
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
@@ -20,7 +21,6 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
-import timber.log.Timber
 import java.util.Locale
 import kotlin.math.abs
 
@@ -36,7 +36,7 @@ class DateTimeManager(
       fromMillis(millis),
       ZoneId.systemDefault()
     ).format(RFC3339_DATE_FORMATTER).also {
-      Timber.d("toRfc3339Format: $it")
+      Logger.d("toRfc3339Format: $it")
     }
   }
 
@@ -95,7 +95,7 @@ class DateTimeManager(
     return try {
       LocalDate.parse(date, BIRTH_DATE_FORMATTER)
     } catch (e: Throwable) {
-      Timber.d(e, "parseBirthdayDate: failed = $date")
+      Logger.e("parseBirthdayDate: failed = $date", e)
       null
     }
   }
@@ -136,7 +136,7 @@ class DateTimeManager(
     val fromTime = toLocalTime(from) ?: return LongRange(0, 0)
     val toTime = toLocalTime(to) ?: return LongRange(0, 0)
 
-    Timber.d("doNotDisturbRange: HM $fromTime, $toTime")
+    Logger.d("doNotDisturbRange: HM $fromTime, $toTime")
     val compare = compareHm(fromTime, toTime)
     val fromMillis = toMillis(LocalDateTime.of(LocalDate.now(), fromTime))
     var toMillis = toMillis(LocalDateTime.of(LocalDate.now(), toTime))
@@ -147,7 +147,7 @@ class DateTimeManager(
     } else if (compare == 0) {
       return LongRange(0, 0)
     }
-    Timber.d("doNotDisturbRange: millis $fromMillis, $toMillis")
+    Logger.d("doNotDisturbRange: millis $fromMillis, $toMillis")
     return if (fromMillis > toMillis) {
       LongRange(toMillis, fromMillis)
     } else {
@@ -495,7 +495,7 @@ class DateTimeManager(
       dateTime = start.plusDays(n.toLong())
       list.add("${dateTime.dayOfMonth}|${dateTime.monthValue - 1}")
     }
-    Timber.d("getBirthdayDayMonthList: $list")
+    Logger.d("getBirthdayDayMonthList: $list")
     return list
   }
 
@@ -613,7 +613,7 @@ class DateTimeManager(
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
 
-    Timber.d("getNextMonthDayTime: dayOfMonth=$dayOfMonth, before=$beforeValue, from=$fromTime")
+    Logger.d("getNextMonthDayTime: dayOfMonth=$dayOfMonth, before=$beforeValue, from=$fromTime")
 
     if (dayOfMonth == 0) {
       return getLastMonthDayTime(fromTime, reminder)

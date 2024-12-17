@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.utils.Module
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class DropboxLogin(
   private val activity: Activity,
@@ -40,7 +40,7 @@ class DropboxLogin(
   }
 
   fun checkDropboxStatus() {
-    Timber.d("checkDropboxStatus: ${dropbox.isLinked}")
+    Logger.d("checkDropboxStatus: ${dropbox.isLinked}")
     if (dropbox.isLinked) {
       callback.onResult(true)
     } else {

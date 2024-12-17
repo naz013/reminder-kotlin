@@ -17,9 +17,9 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.GeocoderTask
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
 
@@ -101,7 +101,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
 
   private fun performTypeValue(s: String) {
     geocoderTask.findAddresses(s) {
-      Timber.d("onAddressReceived: $it")
+      Logger.d("onAddressReceived: $it")
       foundPlaces.clear()
       foundPlaces.addAll(it)
       mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, it)

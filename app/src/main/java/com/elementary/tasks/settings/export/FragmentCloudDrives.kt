@@ -21,10 +21,10 @@ import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
 
@@ -44,7 +44,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
 
     override fun onResult(isLogged: Boolean, mode: GoogleLogin.Mode) {
-      Timber.d("onResult: $isLogged, mode=$mode")
+      Logger.d("onResult: $isLogged, mode=$mode")
       if (mode == GoogleLogin.Mode.TASKS) {
         if (isLogged) {
           viewModel.loadGoogleTasks()

@@ -13,10 +13,10 @@ import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.databinding.FragmentReminderYearBinding
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
 
@@ -77,7 +77,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
 
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
-    Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
     if (!dateTimeManager.isCurrent(reminder.eventTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null

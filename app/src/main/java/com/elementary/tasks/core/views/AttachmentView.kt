@@ -12,9 +12,9 @@ import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ViewAttachmentBinding
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class AttachmentView : LinearLayout, KoinComponent {
 
@@ -53,11 +53,11 @@ class AttachmentView : LinearLayout, KoinComponent {
   }
 
   fun setUri(uri: Uri) {
-    Timber.d("setUri: ${uri.path}")
+    Logger.d("setUri: ${uri.path}")
     content = uri.toString()
     if (Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) {
       UriUtil.obtainPath(cacheUtil, uri) { success, path ->
-        Timber.d("setUri: $success, $path")
+        Logger.d("setUri: $success, $path")
         content = if (success && path != null) {
           path
         } else {

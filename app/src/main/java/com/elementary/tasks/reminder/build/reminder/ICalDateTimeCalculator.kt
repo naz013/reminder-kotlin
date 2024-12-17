@@ -20,8 +20,8 @@ import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.create.fragments.recur.EventData
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class ICalDateTimeCalculator(
   private val recurrenceManager: RecurrenceManager,
@@ -29,14 +29,14 @@ class ICalDateTimeCalculator(
 ) {
 
   operator fun invoke(processedBuilderItems: ProcessedBuilderItems): EventData? {
-    Timber.d("invoke: $processedBuilderItems")
+    Logger.d("invoke: $processedBuilderItems")
 
     val iCalParams = processedBuilderItems.groupMap[BiGroup.ICAL]
       ?.takeIf { it.isNotEmpty() }
       ?.associateBy { it.biType }
       ?: return null
 
-    Timber.d("invoke: iCalParams = $iCalParams")
+    Logger.d("invoke: iCalParams = $iCalParams")
 
     val startDate = iCalParams.readValue(
       BiType.ICAL_START_DATE,
@@ -49,25 +49,25 @@ class ICalDateTimeCalculator(
 
     val startDateTime = LocalDateTime.of(startDate, startTime)
 
-    Timber.d("invoke: startDateTime = $startDateTime")
+    Logger.d("invoke: startDateTime = $startDateTime")
 
     val ruleMap = createRuleMap(startDateTime, iCalParams)
 
-    Timber.d("invoke: ruleMap = $ruleMap")
+    Logger.d("invoke: ruleMap = $ruleMap")
 
     val recurObject = runCatching {
       recurrenceManager.createObject(ruleMap)
     }.getOrNull() ?: return null
 
-    Timber.d("invoke: recurObject = $recurObject")
+    Logger.d("invoke: recurObject = $recurObject")
 
     val dates = runCatching { recurrenceManager.generate(ruleMap) }.getOrNull() ?: emptyList()
 
-    Timber.d("invoke: dates = $dates")
+    Logger.d("invoke: dates = $dates")
 
     val position = findPosition(dates)
 
-    Timber.d("invoke: position = $position")
+    Logger.d("invoke: position = $position")
 
     return dates[position].dateTime?.let {
       EventData(
@@ -114,7 +114,7 @@ class ICalDateTimeCalculator(
       null
     }
 
-    Timber.d("invoke: untilDateTime = $untilDateTime")
+    Logger.d("invoke: untilDateTime = $untilDateTime")
 
     untilDateTime?.also {
       recurParams.add(UntilRecurParam(UtcDateTime(untilDateTime)))

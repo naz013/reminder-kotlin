@@ -16,8 +16,8 @@ import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBinding>() {
 
@@ -74,7 +74,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
-    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
     if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null

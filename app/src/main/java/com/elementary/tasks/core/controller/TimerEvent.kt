@@ -10,8 +10,8 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class TimerEvent(
   reminder: Reminder,
@@ -78,9 +78,9 @@ class TimerEvent(
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
         time = calculateTime(false)
       }
-      Timber.d("next: ${dateTimeManager.logDateTime(time)}")
+      Logger.d("next: ${dateTimeManager.logDateTime(time)}")
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(time)
-      reminder.eventCount = reminder.eventCount + 1
+      reminder.eventCount += 1
       enable()
     } else {
       disable()

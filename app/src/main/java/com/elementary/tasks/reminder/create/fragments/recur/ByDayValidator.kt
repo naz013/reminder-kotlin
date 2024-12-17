@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.create.fragments.recur
 
 import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ByDayValidator {
 
@@ -15,7 +15,7 @@ class ByDayValidator {
       emptyList()
     } else {
       lastValue.split(",").map { DayValue(it) }.also {
-        Timber.d("getValues: $it")
+        Logger.d("getValues: $it")
       }
     }
   }
@@ -26,13 +26,13 @@ class ByDayValidator {
 
   fun onTextChanged(text: String) {
     if (text == lastValue) {
-      Timber.d("onTextChanged: same")
+      Logger.d("onTextChanged: same")
       return
     }
     isValid = false
     lastValue = text
     if (text.matches(".*\\s.*".toRegex())) {
-      Timber.d("onTextChanged: has whitespace")
+      Logger.d("onTextChanged: has whitespace")
       stateListener?.invoke(isValid)
       return
     }
@@ -41,19 +41,19 @@ class ByDayValidator {
 
     val allContainDays = values.all { containsDay(it) }
     if (!allContainDays) {
-      Timber.d("onTextChanged: not all contain day")
+      Logger.d("onTextChanged: not all contain day")
       stateListener?.invoke(isValid)
       return
     }
 
     val allCorrectPrefix = values.all { hasCorrectPrefix(it) }
     if (!allCorrectPrefix) {
-      Timber.d("onTextChanged: not all have correct prefix")
+      Logger.d("onTextChanged: not all have correct prefix")
       stateListener?.invoke(isValid)
       return
     }
 
-    Timber.d("onTextChanged: is correct")
+    Logger.d("onTextChanged: is correct")
 
     isValid = true
     stateListener?.invoke(true)
@@ -63,14 +63,14 @@ class ByDayValidator {
     return days().firstOrNull { value.contains(it) }?.let { day ->
       val withoutDay = value.replace(day, "")
       if (withoutDay.isEmpty()) {
-        Timber.d("hasCorrectPrefix: day = $day, no prefix")
+        Logger.d("hasCorrectPrefix: day = $day, no prefix")
         true
       } else {
         if (hasSuffix(value, day)) {
           false
         } else {
           val integer = runCatching { withoutDay.toInt() }.getOrNull()
-          Timber.d("hasCorrectPrefix: day = $day, prefix integer = $integer")
+          Logger.d("hasCorrectPrefix: day = $day, prefix integer = $integer")
           integer != null
         }
       }
@@ -91,6 +91,6 @@ class ByDayValidator {
   }
 
   private fun days(): List<String> {
-    return Day.values().map { it.value }
+    return Day.entries.map { it.value }
   }
 }

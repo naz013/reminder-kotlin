@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
 
@@ -40,7 +40,7 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
       return null
     }
     val startTime = binding.dateView.selectedDateTime
-    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
     if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))

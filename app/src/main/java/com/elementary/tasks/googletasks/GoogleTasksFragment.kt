@@ -39,10 +39,10 @@ import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>() {
 
@@ -60,7 +60,7 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
     }
 
     override fun onResult(isLogged: Boolean, mode: GoogleLogin.Mode) {
-      Timber.d("onResult: $isLogged")
+      Logger.d("onResult: $isLogged")
       if (isLogged) {
         viewModel.loadGoogleTasks()
       }

@@ -11,7 +11,7 @@ import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
 import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.util.UUID
 
 class BiToReminderAdapter(
@@ -31,10 +31,10 @@ class BiToReminderAdapter(
     val itemsMap = processedBuilderItems.typeMap
 
     val type = typeCalculator(processedBuilderItems)
-    Timber.d("invoke: type=$type")
+    Logger.d("invoke: type=$type")
 
     val builderState = builderStateCalculator(type, itemsMap)
-    Timber.d("invoke: builderState=$builderState")
+    Logger.d("invoke: builderState=$builderState")
 
     if (builderState is EmptyState || builderState is ErrorState) {
       return BuildResult.Error("State is not valid")
@@ -51,7 +51,7 @@ class BiToReminderAdapter(
 
     when (val validationResult = reminderValidator(reminder)) {
       is ReminderValidator.ValidationResult.Failed -> {
-        Timber.d("invoke: reminder not valid cause = ${validationResult.error}")
+        Logger.d("invoke: reminder not valid cause = ${validationResult.error}")
         return BuildResult.Error("Reminder is not valid")
       }
       else -> {
@@ -67,7 +67,7 @@ class BiToReminderAdapter(
     }
     reminder.version = Reminder.Version.V3
 
-    Timber.d("invoke: new reminder=$reminder")
+    Logger.d("invoke: new reminder=$reminder")
     return BuildResult.Success(reminder)
   }
 

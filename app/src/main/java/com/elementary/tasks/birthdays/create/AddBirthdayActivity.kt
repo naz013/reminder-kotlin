@@ -27,11 +27,11 @@ import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleInvisible
 import com.elementary.tasks.core.views.ContactPickerView
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
@@ -43,6 +43,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    Logger.i("Opening the birthday screen for id: ${idFromIntent()}")
     binding.scrollView.applyBottomInsets()
     initTopAppBar()
     initContactView()
@@ -169,7 +170,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       }
     }
     viewModel.formattedDate.nonNullObserve(this) {
-      Timber.d("onDateChanged: $it")
       binding.birthDate.text = it
     }
     viewModel.isContactAttached.nonNullObserve(this) {

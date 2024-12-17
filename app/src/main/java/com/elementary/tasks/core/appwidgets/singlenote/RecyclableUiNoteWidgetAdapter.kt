@@ -20,7 +20,7 @@ import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.core.views.drawable.NoteTextDrawable
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class RecyclableUiNoteWidgetAdapter(
   private val themeProvider: ThemeProvider,
@@ -95,7 +95,7 @@ class RecyclableUiNoteWidgetAdapter(
       }
     }
 
-    Timber.d("convert: image time -> ${System.currentTimeMillis() - startMillis}")
+    Logger.d("convert: image time -> ${System.currentTimeMillis() - startMillis}")
 
     val params = NoteDrawableParams.roundedRectParams(
       context = contextProvider.themedContext,
@@ -120,7 +120,7 @@ class RecyclableUiNoteWidgetAdapter(
       height = maxSize.toInt()
     )
 
-    Timber.d("convert: full drawable -> ${System.currentTimeMillis() - startMillis}")
+    Logger.d("convert: full drawable -> ${System.currentTimeMillis() - startMillis}")
 
     return UiNoteWidget(
       id = noteWithImages.getKey(),

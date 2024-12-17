@@ -19,8 +19,8 @@ import com.elementary.tasks.core.utils.io.readInt
 import com.elementary.tasks.core.utils.io.readLong
 import com.elementary.tasks.core.utils.io.readString
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import com.google.gson.annotations.SerializedName
-import timber.log.Timber
 import java.util.TimeZone
 
 class GoogleCalendarUtils(
@@ -77,7 +77,7 @@ class GoogleCalendarUtils(
           )
         }
       } catch (e: Exception) {
-        Timber.d("addEvent: ${e.message}")
+        Logger.d("addEvent: ${e.message}")
       }
     }
   }

@@ -14,20 +14,20 @@ import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class AppWidgetActionActivity : ThemedActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val direction = intent.readSerializable(DIRECTION, Direction::class.java)
-    Timber.d("direction -> $direction")
+    Logger.d("direction -> $direction")
     if (direction == null) {
       finish()
       return
     }
     val data = intent.readSerializable(DATA, WidgetIntentProtocol::class.java)
-    Timber.d("data -> $data")
+    Logger.d("data -> $data")
     when (direction) {
       Direction.REMINDER -> {
         val id = data?.extra?.get(Constants.INTENT_ID) as? String ?: return

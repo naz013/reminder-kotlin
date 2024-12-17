@@ -24,7 +24,7 @@ import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHol
 import com.elementary.tasks.notes.list.NoteViewHolder
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingViewHolder
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ConversationAdapter(
   private val currentStateHolder: CurrentStateHolder
@@ -37,7 +37,7 @@ class ConversationAdapter(
   private val handler = Handler(Looper.getMainLooper())
 
   fun submitList(list: List<Reply>?) {
-    Timber.d("submitList: $list")
+    Logger.d("submitList: $list")
     if (list == null) {
       this.data.clear()
       notifyDataSetChanged()

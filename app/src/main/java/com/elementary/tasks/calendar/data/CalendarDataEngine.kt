@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.getNonNullList
 import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -30,7 +31,6 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class CalendarDataEngine(
   birthdaysDao: BirthdaysDao,
@@ -166,7 +166,7 @@ class CalendarDataEngine(
         async { mapBirthdays(birthdays) }
       )
       val duration = System.currentTimeMillis() - millis
-      Timber.d("processData: duration=$duration millis")
+      Logger.d("processData: duration=$duration millis")
       state = EngineState.READY
       withContext(dispatcherProvider.main()) {
         calendarDataEngineBroadcast.sendEvent()
@@ -192,14 +192,14 @@ class CalendarDataEngine(
     val dayMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
     filtered.forEach { mapReminder(it, monthMap, dayMap) }
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -209,7 +209,7 @@ class CalendarDataEngine(
     }
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -218,10 +218,10 @@ class CalendarDataEngine(
       dayReminderMap.putAll(dayMap)
     }
 
-    Timber.d("mapReminders: took ${System.currentTimeMillis() - millis} millis")
+    Logger.d("mapReminders: took ${System.currentTimeMillis() - millis} millis")
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -230,14 +230,14 @@ class CalendarDataEngine(
     dayMap.clear()
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
     filtered.forEach { mapFutureReminder(it, monthMap, dayMap) }
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -247,7 +247,7 @@ class CalendarDataEngine(
     }
 
     if (!isActive) {
-      Timber.d("mapReminders: cancelled, return")
+      Logger.d("mapReminders: cancelled, return")
       return@withContext
     }
 
@@ -259,7 +259,7 @@ class CalendarDataEngine(
     monthMap.clear()
     dayMap.clear()
 
-    Timber.d("mapReminders: future: took ${System.currentTimeMillis() - millis} millis")
+    Logger.d("mapReminders: future: took ${System.currentTimeMillis() - millis} millis")
   }
 
   private fun mapReminder(
@@ -464,7 +464,7 @@ class CalendarDataEngine(
     list.forEach { mapBirthday(it, monthBirthdaysMap, dayBirthdaysMap) }
 
     if (!isActive) {
-      Timber.d("mapBirthdays: cancelled, return")
+      Logger.d("mapBirthdays: cancelled, return")
       return@withContext
     }
 
@@ -474,7 +474,7 @@ class CalendarDataEngine(
     }
 
     if (!isActive) {
-      Timber.d("mapBirthdays: cancelled, return")
+      Logger.d("mapBirthdays: cancelled, return")
       return@withContext
     }
 
@@ -483,7 +483,7 @@ class CalendarDataEngine(
       dayBirthdayMap.putAll(dayBirthdaysMap)
     }
 
-    Timber.d("mapBirthdays: took ${System.currentTimeMillis() - millis} millis")
+    Logger.d("mapBirthdays: took ${System.currentTimeMillis() - millis} millis")
   }
 
   private fun mapBirthday(

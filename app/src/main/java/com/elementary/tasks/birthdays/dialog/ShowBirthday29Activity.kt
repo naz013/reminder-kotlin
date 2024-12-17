@@ -22,9 +22,9 @@ import com.elementary.tasks.core.utils.ui.transparent
 import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.databinding.ActivityDialogBirthdayBinding
 import com.elementary.tasks.tests.TestObjects
+import com.github.naz013.logging.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() {
 
@@ -34,6 +34,8 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    Logger.i("Showing the birthday full screen for id: ${getId()}")
+
     drawBehindSystemBars(binding.rootView)
 
     binding.buttonOk.setOnClickListener { ok() }
@@ -59,6 +61,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
     }
     lifecycle.addObserver(viewModel)
     if (getId().isEmpty() && BuildConfig.DEBUG) {
+      Logger.d("Showing the birthday full screen for test id")
       loadTest()
     }
   }
@@ -110,7 +113,6 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
   }
 
   private fun discardNotification(id: Int) {
-    Timber.d("discardNotification: $id")
     notifier.cancel(id)
   }
 
@@ -120,6 +122,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
   }
 
   private fun makeCall() {
+    Logger.i("Making a call for id: ${getId()}")
     permissionFlow.askPermission(Permissions.CALL_PHONE) {
       viewModel.getNumber()?.also {
         TelephonyUtil.makeCall(it, this)
@@ -129,6 +132,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
   }
 
   private fun sendSMS() {
+    Logger.i("Sending an SMS for id: ${getId()}")
     viewModel.getNumber()?.also {
       TelephonyUtil.sendSms(it, this)
       updateBirthday()
@@ -136,6 +140,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
   }
 
   private fun ok() {
+    Logger.i("Ok button clicked for id: ${getId()}")
     updateBirthday()
   }
 

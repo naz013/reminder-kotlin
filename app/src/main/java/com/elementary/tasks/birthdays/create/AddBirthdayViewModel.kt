@@ -132,8 +132,8 @@ class AddBirthdayViewModel(
         updatedAt = dateTimeManager.getNowGmtDateTime(),
         ignoreYear = ignoreYear
       )
-      Logger.logEvent("Birthday saved")
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
+      Logger.i("Saving the birthday with id: ${birthday.uuId}")
       saveBirthday(birthday)
     }
   }
@@ -146,7 +146,7 @@ class AddBirthdayViewModel(
       updatesHelper.updateTasksWidget()
       updatesHelper.updateBirthdaysWidget()
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
-      Logger.logEvent("Birthday deleted")
+      Logger.i("Deleting the birthday with id: $id")
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

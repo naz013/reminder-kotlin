@@ -6,7 +6,7 @@ import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.elementary.tasks.core.cloud.storages.DataChannel
 import com.elementary.tasks.core.cloud.storages.Storage
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class BulkDataFlow<T>(
   private val repository: Repository<T>,
@@ -22,10 +22,10 @@ class BulkDataFlow<T>(
   }
 
   suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {
-    Timber.d("restore: type=$indexTypes")
+    Logger.d("restore: type=$indexTypes")
     val channel = object : DataChannel<T> {
       override suspend fun onNewData(data: T) {
-        Timber.d("restore: onNewData $data")
+        Logger.d("restore: onNewData $data")
         repository.insert(data)
         completable?.action(data)
       }

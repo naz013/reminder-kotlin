@@ -14,8 +14,8 @@ import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.File
 
 class LoadFileWorker(
@@ -29,7 +29,7 @@ class LoadFileWorker(
     val fileName = workerParams.inputData.getString(ARG_FILE_NAME) ?: ""
     if (fileName.isNotEmpty()) {
       val uuId = uuIdFromFileName(fileName) ?: return Result.success()
-      Timber.d("doWork: $uuId")
+      Logger.d("doWork: $uuId")
       val storage = CompositeStorage(syncManagers.storageManager)
       withContext(dispatcherProvider.io()) {
         when {

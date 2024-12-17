@@ -42,10 +42,10 @@ import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.logging.Logger
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 @Deprecated("Replaced by new Builder")
 abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
@@ -346,7 +346,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   override fun onResume() {
     super.onResume()
     getDynamicViews().forEach { updateVisibility(it) }
-    Timber.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
+    Logger.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
     if (
       iFace.state.reminder.groupUuId.isBlank() ||
       TextUtils.isEmpty(iFace.state.reminder.groupTitle)

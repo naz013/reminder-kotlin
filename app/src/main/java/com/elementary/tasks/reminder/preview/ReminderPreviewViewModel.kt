@@ -33,12 +33,12 @@ import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDetails
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class ReminderPreviewViewModel(
   private val id: String,
@@ -93,12 +93,12 @@ class ReminderPreviewViewModel(
       val subTasks = reminder.shoppings.toMutableList()
       val index = subTasks.indexOfFirst { it.uuId == subTaskId }
 
-      Timber.d("onSubTaskRemoved: id=$subTaskId, subTasks=$subTasks")
+      Logger.d("onSubTaskRemoved: id=$subTaskId, subTasks=$subTasks")
 
       if (index != -1) {
         subTasks.removeAt(index)
 
-        Timber.d("onSubTaskRemoved: save subTasks=$subTasks")
+        Logger.d("onSubTaskRemoved: save subTasks=$subTasks")
 
         saveReminder(reminder.copy(shoppings = subTasks.toList()))
         loadReminder()
@@ -294,7 +294,7 @@ class ReminderPreviewViewModel(
           name = it.summary
         )
       }?.also {
-        Timber.d("shareReminder: $it")
+        Logger.d("shareReminder: $it")
         _sharedFile.postValue(it)
       }
     }

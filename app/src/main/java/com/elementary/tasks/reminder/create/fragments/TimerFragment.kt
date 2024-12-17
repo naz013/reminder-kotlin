@@ -25,8 +25,8 @@ import com.elementary.tasks.databinding.FragmentReminderTimerBinding
 import com.elementary.tasks.databinding.ListItemUsedTimeBinding
 import com.elementary.tasks.reminder.create.fragments.timer.UiUsedTimeListDiffCallback
 import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
+import com.github.naz013.logging.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
@@ -81,7 +81,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     reminder.recurDataObject = null
 
     val startTime = dateTimeManager.generateNextTimer(reminder, true)
-    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
     if (!validBefore(startTime, reminder)) {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))

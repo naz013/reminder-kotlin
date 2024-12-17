@@ -11,8 +11,8 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class RecurEvent(
   reminder: Reminder,
@@ -51,7 +51,7 @@ class RecurEvent(
   }
 
   override fun enable(): Boolean {
-    Timber.d("start: ${reminder.eventTime}")
+    Logger.d("start: ${reminder.eventTime}")
     if (dateTimeManager.isCurrent(reminder.eventTime)) {
       reminder.isActive = true
       reminder.isRemoved = false

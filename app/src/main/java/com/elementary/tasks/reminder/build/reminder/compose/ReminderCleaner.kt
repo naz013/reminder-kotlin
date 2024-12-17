@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.reminder.compose
 
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ReminderCleaner {
 
@@ -10,7 +10,7 @@ class ReminderCleaner {
     val type = UiReminderType(reminder.type)
     when {
       type.isByDate() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as BY_DATE")
+        Logger.d("invoke: clean up for ${reminder.type} as BY_DATE")
         reminder.weekdays = listOf()
         reminder.dayOfMonth = 0
         reminder.after = 0L
@@ -20,7 +20,7 @@ class ReminderCleaner {
       }
 
       type.isTimer() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as BY_TIME")
+        Logger.d("invoke: clean up for ${reminder.type} as BY_TIME")
         reminder.weekdays = listOf()
         reminder.delay = 0
         reminder.eventCount = 0
@@ -28,7 +28,7 @@ class ReminderCleaner {
       }
 
       type.isByWeekday() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as BY_WEEK")
+        Logger.d("invoke: clean up for ${reminder.type} as BY_WEEK")
         reminder.after = 0L
         reminder.delay = 0
         reminder.eventCount = 0
@@ -37,7 +37,7 @@ class ReminderCleaner {
       }
 
       type.isMonthly() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as BY_MONTH")
+        Logger.d("invoke: clean up for ${reminder.type} as BY_MONTH")
         reminder.weekdays = listOf()
         reminder.after = 0L
         reminder.delay = 0
@@ -46,7 +46,7 @@ class ReminderCleaner {
       }
 
       type.isYearly() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as BY_DAY_OF_YEAR")
+        Logger.d("invoke: clean up for ${reminder.type} as BY_DAY_OF_YEAR")
         reminder.weekdays = listOf()
         reminder.after = 0L
         reminder.delay = 0
@@ -56,7 +56,7 @@ class ReminderCleaner {
       }
 
       type.isGpsType() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as BY_GPS")
+        Logger.d("invoke: clean up for ${reminder.type} as BY_GPS")
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
         reminder.after = 0L
@@ -67,7 +67,7 @@ class ReminderCleaner {
       }
 
       type.isRecur() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as ICAL")
+        Logger.d("invoke: clean up for ${reminder.type} as ICAL")
         reminder.weekdays = listOf()
         reminder.after = 0L
         reminder.delay = 0
@@ -76,12 +76,12 @@ class ReminderCleaner {
       }
 
       type.isSubTasks() -> {
-        Timber.d("invoke: clean up for ${reminder.type} as SUB_TASKS")
+        Logger.d("invoke: clean up for ${reminder.type} as SUB_TASKS")
         reminder.target = ""
       }
 
       else -> {
-        Timber.d("invoke: nothing to clean up for ${reminder.type}")
+        Logger.d("invoke: nothing to clean up for ${reminder.type}")
       }
     }
   }

@@ -14,11 +14,11 @@ import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import timber.log.Timber
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.ByteArrayInputStream
@@ -82,7 +82,7 @@ class MemoryUtil {
         is OldNote -> object : TypeToken<OldNote>() {}.type
         else -> null
       } ?: return false
-      Timber.d("toStream: $type, $any")
+      Logger.d("toStream: $type, $any")
       try {
         Gson().toJson(any, type, writer)
       } catch (e: Exception) {
@@ -165,7 +165,7 @@ class MemoryUtil {
         val output64 = Base64InputStream(stream, Base64.DEFAULT)
         val bufferedReader = BufferedReader(InputStreamReader(output64))
         val reader = JsonReader(bufferedReader)
-        Timber.d("fromStream: $stream, $clazz")
+        Logger.d("fromStream: $stream, $clazz")
         val t: T?
         try {
           t = Gson().fromJson<T>(reader, clazz)
@@ -186,7 +186,7 @@ class MemoryUtil {
       try {
         val bufferedReader = BufferedReader(InputStreamReader(stream))
         val reader = JsonReader(bufferedReader)
-        Timber.d("fromStream: $stream, $clazz")
+        Logger.d("fromStream: $stream, $clazz")
         val t: T?
         try {
           t = Gson().fromJson<T>(reader, clazz)
@@ -235,7 +235,7 @@ class MemoryUtil {
       } catch (e: Exception) {
         source
       }
-      Timber.d("readFromUri: $name, $source")
+      Logger.d("readFromUri: $name, $source")
       return try {
         val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
         val bufferedReader = BufferedReader(InputStreamReader(output64))
@@ -258,10 +258,10 @@ class MemoryUtil {
           }
           else -> null
         }
-        Timber.d("readFromUri: obj=$obj")
+        Logger.d("readFromUri: obj=$obj")
         obj
       } catch (e: Exception) {
-        Timber.d("readFromUri: Bad JSON")
+        Logger.d("readFromUri: Bad JSON")
         e.printStackTrace()
         null
       }

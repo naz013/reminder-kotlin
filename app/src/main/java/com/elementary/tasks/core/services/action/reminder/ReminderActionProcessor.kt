@@ -11,11 +11,11 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class ReminderActionProcessor(
   private val dispatcherProvider: DispatcherProvider,
@@ -32,7 +32,7 @@ class ReminderActionProcessor(
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun snooze(id: String) {
-    Timber.d("snooze: $id")
+    Logger.d("snooze: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       withContext(dispatcherProvider.main()) {
@@ -42,7 +42,7 @@ class ReminderActionProcessor(
   }
 
   fun cancel(id: String) {
-    Timber.d("cancel: $id")
+    Logger.d("cancel: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       jobScheduler.cancelReminder(reminder.uniqueId)
@@ -53,7 +53,7 @@ class ReminderActionProcessor(
   }
 
   fun process(id: String) {
-    Timber.d("process: $id")
+    Logger.d("process: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
@@ -71,7 +71,7 @@ class ReminderActionProcessor(
         val canShowWindow = !SuperUtil.isPhoneCallActive(contextProvider.context)
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
         val handler = reminderHandlerFactory.createAction(canShowWindow)
-        Timber.d("process: handler=$handler")
+        Logger.d("process: handler=$handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
         }

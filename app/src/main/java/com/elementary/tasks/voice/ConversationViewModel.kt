@@ -61,9 +61,9 @@ import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import java.util.LinkedList
 import java.util.Random
 
@@ -156,7 +156,7 @@ class ConversationViewModel(
   fun addMoreItemsToList(position: Int) {
     val reply = repliesList[position]
     val container = reply.content as Container<*>
-    Timber.d("addMoreItemsToList: $container")
+    Logger.d("addMoreItemsToList: $container")
     when (container.type) {
       is UiGroupList -> {
         repliesList.removeAt(position)
@@ -279,7 +279,7 @@ class ConversationViewModel(
 
   fun getEnabledReminders(gmtDateTime: String?) {
     postInProgress(true)
-    Timber.d("getEnabledReminders: gmt $gmtDateTime")
+    Logger.d("getEnabledReminders: gmt $gmtDateTime")
     viewModelScope.launch(dispatcherProvider.default()) {
       val list = reminderDao.getAllTypesInRange(
         active = true,
@@ -351,7 +351,7 @@ class ConversationViewModel(
       val keyStr = key.toString()
       val model = runCatching { recognizer.recognize(keyStr) }.getOrNull()
       if (model != null) {
-        Timber.d("findResults: $model")
+        Logger.d("findResults: $model")
         voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.SUCCESS, model)
         return createReminder(model)
       }
@@ -365,7 +365,7 @@ class ConversationViewModel(
       val keyStr = key.toString()
       val model = findSuggestion(keyStr)
       if (model != null) {
-        Timber.d("parseResults: $model")
+        Logger.d("parseResults: $model")
         val types = model.type
         if (types == ActionType.ACTION && isWidget) {
           when (model.action) {
@@ -524,7 +524,7 @@ class ConversationViewModel(
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(eventTime)
     reminder.exportToCalendar = model.hasCalendar && (isCal || isStock)
-    Timber.d("createReminder: $reminder")
+    Logger.d("createReminder: $reminder")
     return reminder
   }
 
@@ -532,7 +532,7 @@ class ConversationViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       runBlocking {
-        Timber.d("saveAndStartReminder: save START")
+        Logger.d("saveAndStartReminder: save START")
         if (reminder.groupUuId == "") {
           val group = defaultGroup
           if (group != null) {
@@ -551,7 +551,7 @@ class ConversationViewModel(
           }
         }
         eventControlFactory.getController(reminder).enable()
-        Timber.d("saveAndStartReminder: save DONE")
+        Logger.d("saveAndStartReminder: save DONE")
       }
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,

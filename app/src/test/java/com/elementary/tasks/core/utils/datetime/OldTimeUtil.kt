@@ -14,7 +14,6 @@ import com.github.naz013.calendarext.setDayOfMonth
 import com.github.naz013.calendarext.setMillis
 import com.github.naz013.calendarext.setTime
 import com.github.naz013.calendarext.toDate
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -24,8 +23,6 @@ class OldTimeUtil {
   fun getNextMonthDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
-
-    Timber.d("getNextMonthDayTime: $dayOfMonth, before -> $beforeValue")
 
     if (dayOfMonth == 0) {
       return getLastMonthDayTime(fromTime, reminder)

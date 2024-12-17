@@ -21,8 +21,8 @@ import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
@@ -93,7 +93,7 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
     reloadView()
 
     viewModel.events.nonNullObserve(viewLifecycleOwner) {
-      Timber.d("nonNullObserve: $dayPagerItem, ${it.size}")
+      Logger.d("nonNullObserve: $dayPagerItem, ${it.size}")
       dayEventsAdapter.setData(it)
       reloadView()
     }
