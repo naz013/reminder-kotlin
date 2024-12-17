@@ -19,4 +19,12 @@ class ReminderRepository(private val reminderDao: ReminderDao) {
       UiReminderType(it.type).isGpsType()
     }
   }
+
+  suspend fun getActiveGpsTypes(): List<Reminder> {
+    return reminderDao.getAllTypes(active = true, removed = false, types = Reminder.gpsTypes())
+  }
+
+  suspend fun save(reminder: Reminder) {
+    reminderDao.insert(reminder)
+  }
 }

@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.data.repository.repositoryModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
+import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
@@ -87,7 +88,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           voiceModule,
           googleTaskModule,
           workModule,
-          noteModule
+          noteModule,
+          servicesModule
         )
       )
     }
