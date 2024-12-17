@@ -42,7 +42,6 @@ class PresetInitProcessor(
 
       prefs.reminderCreatorParams.apply {
         setICalendarEnabled(true)
-        setWindowTypePickerEnabled(true)
         setPhoneCallEnabled(true)
         setSendSmsEnabled(true)
         setOpenAppEnabled(true)
