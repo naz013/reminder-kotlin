@@ -13,6 +13,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.transparent
 import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.logging.Logger
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -27,7 +28,6 @@ import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
-import timber.log.Timber
 
 class AdsProvider {
 
@@ -123,7 +123,7 @@ class AdsProvider {
       .withAdListener(object : AdListener() {
         override fun onAdFailedToLoad(error: LoadAdError) {
           super.onAdFailedToLoad(error)
-          Timber.d("onAdFailedToLoad: $error")
+          Logger.e("Failed to load native ad: ${error.message}")
           wasError = true
           failListener?.invoke()
         }
@@ -223,7 +223,7 @@ class AdsProvider {
     fun init(context: Context) {
       if (SuperUtil.isGooglePlayServicesAvailable(context)) {
         MobileAds.initialize(context) {
-          Timber.d("init: $it")
+          Logger.i("Ads provider initialized")
         }
       } else {
         wasError = true
