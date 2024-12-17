@@ -102,16 +102,6 @@ data class ReminderCreatorConfig(private val value: String) {
     updateBitAndByte(1, LED_PICKER_BIT, enabled)
   }
 
-  @Deprecated("Do not use it")
-  fun isWindowTypePickerEnabled(): Boolean {
-    return bytes.isBitSet(1, WINDOW_TYPE_PICKER_BIT)
-  }
-
-  @Deprecated("Do not use it")
-  fun setWindowTypePickerEnabled(enabled: Boolean) {
-    updateBitAndByte(1, WINDOW_TYPE_PICKER_BIT, enabled)
-  }
-
   fun isICalendarEnabled(): Boolean {
     return bytes.isBitSet(1, ICALENDAR_BIT)
   }

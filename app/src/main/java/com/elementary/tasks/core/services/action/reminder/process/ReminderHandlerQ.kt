@@ -61,11 +61,7 @@ class ReminderHandlerQ(
       PendingIntent.FLAG_CANCEL_CURRENT
     )
 
-    if (reminder.priority >= 2) {
-      builder.setFullScreenIntent(intent, true)
-    } else {
-      builder.setContentIntent(intent)
-    }
+    builder.setContentIntent(intent)
 
     val dismissIntent = getActionReceiverIntent(ReminderActionReceiver.ACTION_HIDE, reminder.uuId)
     val piDismiss = PendingIntentWrapper.getBroadcast(

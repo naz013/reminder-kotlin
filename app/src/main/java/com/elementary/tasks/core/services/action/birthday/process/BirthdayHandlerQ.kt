@@ -66,7 +66,7 @@ class BirthdayHandlerQ(
       PendingIntent.FLAG_CANCEL_CURRENT
     )
 
-    builder.setFullScreenIntent(intent, true)
+    builder.setContentIntent(intent)
 
     getActionReceiverIntent(BirthdayActionReceiver.ACTION_HIDE, birthday.uuId).let {
       PendingIntentWrapper.getBroadcast(
