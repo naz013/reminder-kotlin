@@ -93,7 +93,6 @@ jobs:
         packageName: com.cray.software.justreminder
         releaseFiles: ${{ steps.sign-free.outputs.signedReleaseFile }}
         track: alpha
-        changesNotSentForReview: true
 
     - name: Sign Pro AAB
       id: sign-pro
