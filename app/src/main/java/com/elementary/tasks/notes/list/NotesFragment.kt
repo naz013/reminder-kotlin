@@ -42,9 +42,9 @@ import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 import java.io.File
 
 class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
@@ -149,7 +149,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.notes.nonNullObserve(viewLifecycleOwner) { list ->
-      Timber.d("initViewModel: $list")
+      Logger.d("initViewModel: $list")
       notesRecyclerAdapter.submitList(list)
       binding.emptyItem.visibleGone(list.isEmpty())
       binding.recyclerView.visibleGone(list.isNotEmpty())

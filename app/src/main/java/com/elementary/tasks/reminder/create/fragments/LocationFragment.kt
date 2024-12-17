@@ -21,8 +21,8 @@ import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.logging.Logger
 import com.google.android.gms.maps.model.LatLng
-import timber.log.Timber
 
 class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
 
@@ -150,7 +150,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
       val startTime = binding.dateView.selectedDateTime
       reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
       reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
-      Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+      Logger.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
     } else {
       reminder.eventTime = ""
       reminder.startTime = ""
@@ -381,7 +381,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
 
   private fun editReminder() {
     val reminder = iFace.state.reminder
-    Timber.d("editReminder: %s", reminder)
+    Logger.d("editReminder: $reminder")
     if (reminder.eventTime != "" && reminder.hasReminder) {
       binding.dateView.setDateTime(reminder.eventTime)
       binding.enableDelayCheck.isChecked = true

@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.elementary.tasks.R
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class UiGradientFrameLayout : FrameLayout {
 
@@ -78,7 +78,7 @@ class UiGradientFrameLayout : FrameLayout {
           gradientHelper.applyBackground { background = it }
         }
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

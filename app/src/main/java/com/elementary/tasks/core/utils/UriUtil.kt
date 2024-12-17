@@ -7,7 +7,7 @@ import androidx.core.content.FileProvider
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.io.CacheUtil
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.File
 
 object UriUtil {
@@ -33,7 +33,7 @@ object UriUtil {
   }
 
   fun getUri(context: Context, filePath: String): Uri? {
-    Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $filePath")
+    Logger.d("getUri: ${BuildConfig.APPLICATION_ID}, $filePath")
     return try {
       FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
     } catch (e: Throwable) {
@@ -42,7 +42,7 @@ object UriUtil {
   }
 
   fun getUri(context: Context, file: File): Uri? {
-    Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $file")
+    Logger.d("getUri: ${BuildConfig.APPLICATION_ID}, $file")
     return try {
       FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
     } catch (e: Throwable) {

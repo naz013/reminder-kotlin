@@ -6,12 +6,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.github.naz013.logging.Logger
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.tasks.TasksScopes
-import timber.log.Timber
 
 class GoogleLogin(
   private val fragment: BaseNavigationFragment<*>,
@@ -95,7 +95,7 @@ class GoogleLogin(
   }
 
   private fun processResult(resultCode: Int, data: Intent?) {
-    Timber.d("processResult: mode=$mode, res=$resultCode, data=$data")
+    Logger.d("processResult: mode=$mode, res=$resultCode, data=$data")
     if (resultCode == RESULT_OK) {
       if (data != null) {
         handleSignInResult(data)
@@ -110,17 +110,17 @@ class GoogleLogin(
   private fun handleSignInResult(result: Intent) {
     GoogleSignIn.getSignedInAccountFromIntent(result)
       .addOnSuccessListener { googleAccount ->
-        Timber.d("Signed in as ${googleAccount.email}")
+        Logger.d("Signed in as ${googleAccount.email}")
         finishLogin(googleAccount.account?.name ?: "")
       }
       .addOnFailureListener {
-        Timber.d("Sign in fail: ${it.message}")
+        Logger.d("Sign in fail: ${it.message}")
         sendFail()
       }
   }
 
   private fun finishLogin(account: String) {
-    Timber.d("finishLogin: mode=$mode, $account")
+    Logger.d("finishLogin: mode=$mode, $account")
     if (account.isEmpty()) {
       sendFail()
       return

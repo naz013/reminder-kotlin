@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -11,11 +10,8 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.media.AudioManager
 import android.net.Uri
-import android.os.PowerManager
 import android.provider.Settings
 import android.util.Base64
-import android.view.Window
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,11 +20,10 @@ import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface
+import com.github.naz013.logging.Logger
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import timber.log.Timber
 import java.io.UnsupportedEncodingException
-import java.util.UUID
 
 object SuperUtil {
 
@@ -44,63 +39,6 @@ object SuperUtil {
     } else {
       summary
     }
-  }
-
-  fun wakeDevice(
-    activity: Activity,
-    id: String = UUID.randomUUID().toString()
-  ): PowerManager.WakeLock {
-    val screenLock = (activity.getSystemService(Context.POWER_SERVICE) as PowerManager)
-      .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "reminder:ReminderAPPTAG:$id")
-    screenLock.acquire(10 * 60 * 1000L /*10 minutes*/)
-    return screenLock
-  }
-
-  @Suppress("DEPRECATION")
-  fun unlockOff(activity: Activity) {
-    Timber.d("unlockOff: ")
-    activity.setShowWhenLocked(false)
-  }
-
-  @Suppress("DEPRECATION")
-  fun unlockOn(activity: Activity, window: Window) {
-    Timber.d("unlockOn: ")
-    val keyguardManager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
-    keyguardManager?.requestDismissKeyguard(activity, null)
-  }
-
-  @Suppress("DEPRECATION")
-  fun turnScreenOff(activity: Activity, window: Window, wakeLock: PowerManager.WakeLock? = null) {
-    Timber.d("turnScreenOff: ")
-    if (wakeLock?.isHeld == true) {
-      wakeLock.release()
-    }
-    activity.setShowWhenLocked(false)
-    activity.setTurnScreenOn(false)
-    window.clearFlags(
-      WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-    )
-    unlockOff(activity)
-  }
-
-  @Suppress("DEPRECATION")
-  fun turnScreenOn(activity: Activity, window: Window) {
-    Timber.d("turnScreenOn: ")
-    activity.setTurnScreenOn(true)
-    activity.setShowWhenLocked(true)
-    window.addFlags(
-      WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-    )
-    unlockOn(activity, window)
-  }
-
-  fun hasVolumePermission(context: Context?): Boolean {
-    if (context == null) return false
-    val notificationManager =
-      context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-    return notificationManager != null && notificationManager.isNotificationPolicyAccessGranted
   }
 
   fun stopService(context: Context, clazz: Class<*>) {
@@ -144,10 +82,10 @@ object SuperUtil {
       filter == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
       filter == NotificationManager.INTERRUPTION_FILTER_NONE
     ) {
-      Timber.d("isDoNotDisturbEnabled: true")
+      Logger.d("isDoNotDisturbEnabled: true")
       true
     } else {
-      Timber.d("isDoNotDisturbEnabled: false")
+      Logger.d("isDoNotDisturbEnabled: false")
       false
     }
   }
@@ -200,7 +138,7 @@ object SuperUtil {
   fun checkGooglePlayServicesAvailability(a: Activity): Boolean {
     val googleAPI = GoogleApiAvailability.getInstance()
     val result = googleAPI.isGooglePlayServicesAvailable(a)
-    Timber.d("checkGooglePlayServicesAvailability: $result")
+    Logger.d("checkGooglePlayServicesAvailability: $result")
     return if (result != ConnectionResult.SUCCESS) {
       if (googleAPI.isUserResolvableError(result)) {
         googleAPI.getErrorDialog(a, result, 69)?.show()

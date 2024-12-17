@@ -35,6 +35,7 @@ import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentSimpleMapBinding
 import com.elementary.tasks.databinding.ViewMapCustomButtonBinding
 import com.elementary.tasks.places.list.PlacesViewModel
+import com.github.naz013.logging.Logger
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -44,7 +45,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.parcelize.Parcelize
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
@@ -265,7 +265,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
             ?: ""
         )
       } catch (e: Throwable) {
-        Timber.d("moveToMyLocation: ${e.message}")
+        Logger.d("moveToMyLocation: ${e.message}")
       }
 
       if (location != null) {

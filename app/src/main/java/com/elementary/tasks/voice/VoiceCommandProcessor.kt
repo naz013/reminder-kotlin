@@ -9,8 +9,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
+import com.github.naz013.logging.Logger
 import org.apache.commons.lang3.StringUtils
-import timber.log.Timber
 
 class VoiceCommandProcessor(
   private val dateTimeManager: DateTimeManager,
@@ -41,7 +41,7 @@ class VoiceCommandProcessor(
       val keyStr = key.toString()
       val model = runCatching { recognizer.recognize(keyStr) }.getOrNull()
       if (model != null) {
-        Timber.d("findResults: $model")
+        Logger.d("findResults: $model")
         voiceAnalyticsTracker.sendEvent(prefs.voiceLocale, Status.SUCCESS, model)
         return createReminder(model)
       }
@@ -85,7 +85,7 @@ class VoiceCommandProcessor(
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(eventTime)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(eventTime)
     reminder.exportToCalendar = model.hasCalendar && (isCal || isStock)
-    Timber.d("createReminder: $reminder")
+    Logger.d("createReminder: $reminder")
     return reminder
   }
 

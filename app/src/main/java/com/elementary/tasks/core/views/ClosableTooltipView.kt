@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.ViewClosableTooltipBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ClosableTooltipView : FrameLayout {
 
@@ -38,7 +38,7 @@ class ClosableTooltipView : FrameLayout {
       try {
         text = a.getString(R.styleable.ClosableTooltipView_text) ?: ""
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

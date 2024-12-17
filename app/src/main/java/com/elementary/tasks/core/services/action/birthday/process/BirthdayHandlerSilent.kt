@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class BirthdayHandlerSilent(
   private val birthdayDataProvider: BirthdayDataProvider,
@@ -35,7 +35,7 @@ class BirthdayHandlerSilent(
   }
 
   private fun showNotificationWithoutSound(birthday: Birthday) {
-    Timber.d("showNotificationWithoutSound: ")
+    Logger.d("showNotificationWithoutSound: ")
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
 

@@ -3,9 +3,9 @@ package com.elementary.tasks.core.services.action.reminder
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class ReminderRepeatProcessor(
   private val dispatcherProvider: DispatcherProvider,
@@ -17,7 +17,7 @@ class ReminderRepeatProcessor(
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun process(id: String) {
-    Timber.d("process: $id")
+    Logger.d("process: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       reminderActionProcessor.process(reminder.uuId)

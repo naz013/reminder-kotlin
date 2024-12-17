@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.adjustAlpha
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 object ViewUtils {
 
@@ -34,7 +34,7 @@ object ViewUtils {
     view.setOnDragListener { v, event ->
       return@setOnDragListener when (event.action) {
         DragEvent.ACTION_DRAG_STARTED -> {
-          Timber.d("registerDragAndDrop: started, ${event.clipDescription}")
+          Logger.d("registerDragAndDrop: started, ${event.clipDescription}")
           for (type in mimeTypes) {
             if (type == UriUtil.ANY_MIME || event.clipDescription.hasMimeType(type)) {
               if (markAction) {

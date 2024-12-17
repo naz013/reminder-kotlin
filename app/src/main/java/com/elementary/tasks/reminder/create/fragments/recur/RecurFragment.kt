@@ -42,11 +42,11 @@ import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamBuilder
 import com.elementary.tasks.reminder.create.fragments.recur.intdialog.IntListAdapter
 import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetPicker
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewDataAdapter
+import com.github.naz013.logging.Logger
 import com.google.android.material.tabs.TabLayout
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
 
@@ -123,12 +123,11 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     }
 
     val startTime = eventData.startDateTime
-    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
     reminder.recurDataObject = eventData.recurObject
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
-    Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
 
     if (binding.savePresetCheck.isChecked) {
       viewModel.addPreset(

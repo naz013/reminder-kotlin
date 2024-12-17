@@ -17,9 +17,9 @@ import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.intentForClass
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 import java.util.Calendar
 import java.util.Formatter
 import java.util.GregorianCalendar
@@ -77,7 +77,7 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
       if (height != 0) {
         val rowHeight = (height - 58).toFloat() / 7f
         sp.setRowHeight(rowHeight)
-        Timber.d("CALENDAR WIDGET SIZE w=$width, h=$height, row=$rowHeight")
+        Logger.d("CALENDAR WIDGET SIZE w=$width, h=$height, row=$rowHeight")
       }
 
       val cal = GregorianCalendar()
@@ -234,7 +234,7 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
       )
       rv.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent)
 
-      Timber.d("updateWidget: id = ${sp.widgetId}")
+      Logger.d("updateWidget: id = ${sp.widgetId}")
 
       val previousIntent = context.intentForClass(CalendarPreviousReceiver::class.java)
       previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS

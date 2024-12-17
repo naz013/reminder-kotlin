@@ -4,22 +4,22 @@ import android.net.Uri
 import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.UriHelper
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class UriToAttachmentFileAdapter(
   private val uriHelper: UriHelper
 ) {
 
   operator fun invoke(uri: Uri): AttachmentFile {
-    Timber.d("invoke: $uri")
+    Logger.d("invoke: $uri")
     val type = getAttachmentType(uriHelper.getMimeType(uri) ?: "")
     val fileName = try {
       uriHelper.getFileName(uri) ?: "NA"
     } catch (e: Throwable) {
-      Timber.d("get fileName: $e")
+      Logger.d("get fileName: $e")
       uri.toString()
     }
-    Timber.d("fileName: $fileName")
+    Logger.d("fileName: $fileName")
     return AttachmentFile(
       uri = uri,
       name = fileName,
@@ -29,7 +29,7 @@ class UriToAttachmentFileAdapter(
   }
 
   private fun getAttachmentType(type: String): AttachmentType {
-    Timber.d("getAttachmentType: $type")
+    Logger.d("getAttachmentType: $type")
     return when {
       type.contains("gif") -> AttachmentType.GIF
       type.contains("image") -> AttachmentType.IMAGE

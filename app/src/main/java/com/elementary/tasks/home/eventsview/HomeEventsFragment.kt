@@ -13,9 +13,9 @@ import com.elementary.tasks.databinding.FragmentHomeEventsBinding
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.reminder.lists.active.RemindersFragment
 import com.elementary.tasks.reminder.lists.todo.TodoRemindersFragment
+import com.github.naz013.logging.Logger
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import timber.log.Timber
 
 class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
 
@@ -33,7 +33,7 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
     binding.tabLayout.addOnTabSelectedListener(
       object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
-          Timber.d("onTabSelected: $tab")
+          Logger.d("onTabSelected: $tab")
           when (tab?.position) {
             0 -> {
               addFragment(RemindersFragment())
@@ -51,7 +51,7 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
         }
 
         override fun onTabReselected(tab: TabLayout.Tab?) {
-          Timber.d("onTabReselected: $tab")
+          Logger.d("onTabReselected: $tab")
         }
       }
     )

@@ -5,7 +5,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.InputStream
 import java.lang.ref.WeakReference
 
@@ -38,7 +38,7 @@ class NoteConverter(
       val oldNote = weakNote.get() ?: return null
       return noteToOldNoteConverter.toNote(oldNote)
     } catch (e: Exception) {
-      Timber.e(e)
+      Logger.e("NoteConverter: convert error: $e")
       null
     }
   }

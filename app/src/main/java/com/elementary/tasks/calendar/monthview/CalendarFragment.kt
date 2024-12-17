@@ -13,11 +13,11 @@ import com.elementary.tasks.core.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
+import com.github.naz013.logging.Logger
 import org.apache.commons.lang3.StringUtils
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class CalendarFragment :
   BaseCalendarFragment<FragmentFlextCalBinding>(),
@@ -117,7 +117,7 @@ class CalendarFragment :
         override fun onPageScrollStateChanged(state: Int) {
           super.onPageScrollStateChanged(state)
           if (state == ViewPager2.SCROLL_STATE_IDLE) {
-            Timber.d("onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
+            Logger.d("onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
             when (binding.infiniteViewPager.currentItem) {
               0 -> {
                 // move to 4th position, current - 1
@@ -152,7 +152,7 @@ class CalendarFragment :
 
         override fun onPageSelected(position: Int) {
           super.onPageSelected(position)
-          Timber.d("onPageSelected: $position")
+          Logger.d("onPageSelected: $position")
           if (position == 1 || position == 4) {
             updateMenuTitles(currentDate)
             infinitePagerAdapter.selectPosition(position)

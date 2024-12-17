@@ -3,7 +3,7 @@ package com.elementary.tasks.core.appwidgets.singlenote
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.data.ui.note.UiNoteListSelectable
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class SelectableNotesRecyclerAdapter(
   private val onSelectionChangeListener: (id: String) -> Unit
@@ -30,7 +30,7 @@ class SelectableNotesRecyclerAdapter(
 
   private fun updateSelection(position: Int) {
     val item = getItem(position)
-    Timber.d("updateSelection: position=$position, isSelected=${item.isSelected}")
+    Logger.d("updateSelection: position=$position, isSelected=${item.isSelected}")
     if (item.isSelected) {
       return
     }
@@ -39,7 +39,7 @@ class SelectableNotesRecyclerAdapter(
       currentList[index].isSelected = false
       notifyItemChanged(index)
     }
-    Timber.d("updateSelection: index=$index")
+    Logger.d("updateSelection: index=$index")
     currentList[position].isSelected = true
     notifyItemChanged(position)
     onSelectionChangeListener.invoke(currentList[position].id)

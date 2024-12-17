@@ -8,11 +8,11 @@ import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class VoiceHelpViewModel(
   private val prefs: Prefs,
@@ -27,10 +27,10 @@ class VoiceHelpViewModel(
     viewModelScope.launch {
       val urls = withContext(dispatcherProvider.default()) {
         val json = prefs.voiceHelpUrls
-        Timber.d("voice help json $json")
+        Logger.d("voice help json $json")
         parseUrls(json)
       }
-      Timber.d("voice help data $urls")
+      Logger.d("voice help data $urls")
       urls?.also { _urls.postValue(it) }
     }
   }

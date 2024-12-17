@@ -2,7 +2,7 @@ package com.elementary.tasks.core.data.repository
 
 import android.content.Context
 import com.elementary.tasks.core.data.models.ImageFile
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.InputStream
 
@@ -20,7 +20,7 @@ class NoteImageRepository(private val context: Context) {
         runCatching { it.createNewFile() }
       }
       file.writeBytes(byteArray)
-      Timber.d("saveBytesToFile: saved $file")
+      Logger.d("saveBytesToFile: saved $file")
       file.toString()
     }.getOrNull() ?: ""
   }
@@ -32,7 +32,7 @@ class NoteImageRepository(private val context: Context) {
     tmpFolder.listFiles()?.filter { it.isFile && !it.isHidden }?.forEach { file ->
       if (fileNames.contains(file.name)) {
         val dstFile = File(dstFolder, file.name)
-        Timber.d("moveImagesToFolder: name=${file.name}, dst=$dstFile")
+        Logger.d("moveImagesToFolder: name=${file.name}, dst=$dstFile")
         file.copyTo(dstFile, overwrite = true)
         files.firstOrNull { it.fileName == file.name }?.apply {
           filePath = dstFile.toString()
@@ -45,18 +45,18 @@ class NoteImageRepository(private val context: Context) {
 
   fun saveTemporaryImage(fileName: String, inputStream: InputStream): String {
     val tmpFile = createTemporaryFile(fileName)
-    Timber.d("saveTemporaryImage: name=$fileName")
+    Logger.d("saveTemporaryImage: name=$fileName")
     tmpFile.copyInputStreamToFile(inputStream)
     return tmpFile.toString()
   }
 
   fun clearFolder(folderName: String) {
-    Timber.d("clearFolder: $folderName")
+    Logger.d("clearFolder: $folderName")
     getImageFolder(folderName).deleteRecursively()
   }
 
   private fun clearTemporaryFolder() {
-    Timber.d("clearTemporaryFolder: ")
+    Logger.d("clearTemporaryFolder: ")
     getTmpFolder().deleteRecursively()
   }
 

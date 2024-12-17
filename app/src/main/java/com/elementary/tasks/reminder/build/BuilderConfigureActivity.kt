@@ -23,8 +23,8 @@ import com.elementary.tasks.core.utils.ui.visible
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBinding>() {
 
@@ -113,7 +113,7 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
   }
 
   private fun save() {
-    Timber.d("save: $config")
+    Logger.d("save: $config")
     prefs.reminderCreatorParams = config
   }
 

@@ -25,6 +25,7 @@ import com.elementary.tasks.core.views.PriorityPickerView
 import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import java.util.Calendar
@@ -129,6 +129,7 @@ fun launchIo(
   block: suspend CoroutineScope.() -> Unit
 ): Job = GlobalScope.launch(Dispatchers.IO, start, block)
 
+@Deprecated("Will be removed in the future")
 fun EditText.onChanged(function: (String) -> Unit) {
   this.addTextChangedListener(object : TextWatcher {
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -143,6 +144,7 @@ fun EditText.onChanged(function: (String) -> Unit) {
   })
 }
 
+@Deprecated("Will be removed in the future")
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
   this.useGlobal = reminder.useGlobal
   this.vibrate = reminder.vibrate
@@ -151,6 +153,7 @@ fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
   return this
 }
 
+@Deprecated("Will be removed in the future")
 fun TuneExtraView.Extra.toReminder(reminder: Reminder): Reminder {
   reminder.useGlobal = this.useGlobal
   reminder.vibrate = this.vibrate
@@ -169,6 +172,7 @@ fun Reminder.copyExtra(reminder: Reminder) {
   this.auto = reminder.auto
 }
 
+@Deprecated("Will be removed in the future")
 fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) {
   this.setText(value)
   this.addTextChangedListener(object : TextWatcher {
@@ -186,6 +190,7 @@ fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) 
   })
 }
 
+@Deprecated("Will be removed in the future")
 fun ExportToCalendarView.bindProperty(
   enabled: Boolean,
   calendarId: Long,
@@ -204,6 +209,7 @@ fun ExportToCalendarView.bindProperty(
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun ExportToGoogleTasksView.bindProperty(
   enabled: Boolean,
   listId: String?,
@@ -222,16 +228,18 @@ fun ExportToGoogleTasksView.bindProperty(
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun RepeatView.bindProperty(value: Long, listener: ((Long) -> Unit)) {
   this.repeat = value
   this.onRepeatChangeListener = object : RepeatView.OnRepeatChangeListener {
     override fun onChanged(repeat: Long) {
-      Timber.d("onChanged: $repeat")
+      Logger.d("onChanged: $repeat")
       listener.invoke(repeat)
     }
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun BeforePickerView.bindProperty(value: Long, listener: ((Long) -> Unit)?) {
   this.setBefore(value)
   this.onBeforeChangedListener = object : BeforePickerView.OnBeforeChangedListener {
@@ -241,6 +249,7 @@ fun BeforePickerView.bindProperty(value: Long, listener: ((Long) -> Unit)?) {
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun PriorityPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   this.priority = value
   this.onPriorityChaneListener = {
@@ -248,6 +257,7 @@ fun PriorityPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun ActionView.bindProperty(value: String, listener: ((String) -> Unit)) {
   this.number = value
   this.setListener(object : ActionView.OnActionListener {
@@ -257,6 +267,7 @@ fun ActionView.bindProperty(value: String, listener: ((String) -> Unit)) {
   })
 }
 
+@Deprecated("Will be removed in the future")
 fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
   this.content = value
   this.onFileUpdateListener = {
@@ -264,6 +275,7 @@ fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun RepeatLimitView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   this.setLimit(value)
   this.onLevelUpdateListener = {
@@ -271,6 +283,7 @@ fun RepeatLimitView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun LedPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   this.led = value
   this.onLedChangeListener = {
@@ -278,6 +291,7 @@ fun LedPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun TuneExtraView.bindProperty(value: Reminder, listener: ((Reminder) -> Unit)) {
   this.extra = TuneExtraView.Extra().fromReminder(value)
   this.onExtraUpdateListener = {
@@ -285,6 +299,7 @@ fun TuneExtraView.bindProperty(value: Reminder, listener: ((Reminder) -> Unit)) 
   }
 }
 
+@Deprecated("Will be removed in the future")
 fun ExclusionPickerView.bindProperty(
   v1: List<Int>,
   v2: String,

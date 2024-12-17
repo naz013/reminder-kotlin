@@ -8,7 +8,6 @@ import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.Job
-import timber.log.Timber
 
 class BackupWorker(
   private val syncManagers: SyncManagers,
@@ -20,7 +19,7 @@ class BackupWorker(
   var listener: ((Boolean) -> Unit)? = null
     set(value) {
       field = value
-      Timber.d("BackupWorker: $mJob")
+      Logger.d("BackupWorker: $mJob")
       value?.invoke(mJob != null)
     }
 

@@ -30,11 +30,11 @@ import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>() {
 
@@ -179,7 +179,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun saveCopy(time: LocalTime) {
-    Timber.d("saveCopy: $time")
+    Logger.d("saveCopy: $time")
     viewModel.copyReminder(time)
   }
 

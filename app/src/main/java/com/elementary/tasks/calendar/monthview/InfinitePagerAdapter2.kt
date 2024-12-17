@@ -8,10 +8,10 @@ import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.ui.inflater
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.databinding.FragmentMonthViewBinding
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 class InfinitePagerAdapter2(
   private val dataAccessor: DataAccessor,
@@ -26,7 +26,7 @@ class InfinitePagerAdapter2(
   fun selectPosition(position: Int) {
     selectedPosition = position
     val viewHolder = findViewHolder(position)
-    Timber.d("selectPosition: $position, $viewHolder")
+    Logger.d("selectPosition: $position, $viewHolder")
     if (viewHolder is ViewHolderDynamic) {
       onBindViewHolder(viewHolder, position)
     }
@@ -59,7 +59,7 @@ class InfinitePagerAdapter2(
 
   override fun onViewRecycled(holder: ViewHolderDynamic) {
     super.onViewRecycled(holder)
-    Timber.d("onViewRecycled: ${holder.bindingAdapterPosition}")
+    Logger.d("onViewRecycled: ${holder.bindingAdapterPosition}")
   }
 
   override fun getItemCount(): Int {
@@ -80,13 +80,13 @@ class InfinitePagerAdapter2(
 
     init {
       monthLiveData.observeForever {
-        Timber.d("onChanged: map=${it.size}")
+        Logger.d("onChanged: map=${it.size}")
         binding.monthView.setEventsMap(it)
       }
     }
 
     fun bind(monthPagerItem: MonthPagerItem) {
-      Timber.d("bind: $bindingAdapterPosition, $monthPagerItem")
+      Logger.d("bind: $bindingAdapterPosition, $monthPagerItem")
 
       binding.monthView.setTodayColor(dataAccessor.getTodayColor())
       binding.monthView.setStartDayOfWeek(dataAccessor.getStartDay())

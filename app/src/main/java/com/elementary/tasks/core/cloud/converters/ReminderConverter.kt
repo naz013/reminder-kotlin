@@ -5,7 +5,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.InputStream
 
 class ReminderConverter(
@@ -34,7 +34,7 @@ class ReminderConverter(
       stream.close()
       return reminder?.takeIf { !isDeprecatedType(it.type) }
     } catch (e: Throwable) {
-      Timber.e(e)
+      Logger.e("ReminderConverter: convert error: $e")
       null
     }
   }

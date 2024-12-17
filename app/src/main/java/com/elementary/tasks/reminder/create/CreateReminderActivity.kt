@@ -49,12 +49,12 @@ import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
 import com.elementary.tasks.reminder.create.fragments.recur.RecurFragment
 import com.elementary.tasks.voice.ConversationViewModel
+import com.github.naz013.logging.Logger
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 import java.util.UUID
 
 @Deprecated("Replaced by new Builder")
@@ -232,14 +232,14 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
           }
           editReminder(reminder, false, fromFile)
         } catch (e: Throwable) {
-          Timber.d("loadReminder: ${e.message}")
+          Logger.d("loadReminder: ${e.message}")
         }
       }
     }
   }
 
   private fun editReminder(reminder: Reminder, stop: Boolean = true, fromFile: Boolean = false) {
-    Timber.d("editReminder: $stop, $reminder")
+    Logger.d("editReminder: $stop, $reminder")
     stateViewModel.reminder = reminder
     stateViewModel.isFromFile = fromFile
     if (fromFile) {
@@ -497,7 +497,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private fun save(newId: Boolean = false) {
     fragment?.let {
       it.prepare()?.let { item ->
-        Timber.d("save: $item")
+        Logger.d("save: $item")
         viewModel.reminder.removeObserver(reminderObserver)
         stateViewModel.isSaving = true
         if (newId) {

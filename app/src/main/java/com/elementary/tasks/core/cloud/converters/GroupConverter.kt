@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.InputStream
 
 class GroupConverter(
@@ -33,7 +33,7 @@ class GroupConverter(
       stream.close()
       return group
     } catch (e: Exception) {
-      Timber.e(e)
+      Logger.e("GroupConverter: convert error: $e")
       null
     }
   }

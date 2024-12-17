@@ -20,10 +20,10 @@ import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.home.BottomNavActivity
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class CalendarMonthFactory(
   intent: Intent,
@@ -62,7 +62,7 @@ class CalendarMonthFactory(
     }
     val mYear = year
 
-    Timber.d("onDataSetChanged: mMonth=$mMonth, mYear=$mYear")
+    Logger.d("onDataSetChanged: mMonth=$mMonth, mYear=$mYear")
 
     val firstDateOfMonth = LocalDate.of(mYear, mMonth, 1)
     val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.lengthOfMonth() - 1L)

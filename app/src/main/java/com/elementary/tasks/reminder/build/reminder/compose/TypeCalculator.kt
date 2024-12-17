@@ -4,7 +4,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class TypeCalculator(
   private val actionCalculator: ActionCalculator
@@ -54,7 +54,7 @@ class TypeCalculator(
       0
     }
 
-    Timber.d("mainType: $mainType")
+    Logger.d("mainType: $mainType")
 
     return mainType
   }

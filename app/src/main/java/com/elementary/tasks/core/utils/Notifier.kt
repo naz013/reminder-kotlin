@@ -30,8 +30,8 @@ import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 import java.util.Calendar
 
 class Notifier(
@@ -111,7 +111,7 @@ class Notifier(
       if (Permissions.isNotificationsAllowed(context)) {
         getManager()?.notify(id, notification)
       } else {
-        Timber.d("Notification not allowed by user")
+        Logger.i("Notification not allowed by user")
       }
     } else {
       getManager()?.notify(id, notification)
@@ -169,7 +169,7 @@ class Notifier(
 
   // Checked for Notification permission
   fun showReminderPermanent() {
-    Timber.d("showReminderPermanent: ")
+    Logger.d("showReminderPermanent: ")
     val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
     val builder = NotificationCompat.Builder(context, CHANNEL_SILENT)
     builder.setAutoCancel(false)

@@ -14,10 +14,10 @@ import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
@@ -51,7 +51,7 @@ class Dropbox(
     }
     val api = mDBApi ?: return
     val folder = folderFromExt(metadata.fileExt)
-    Timber.d("backup: ${metadata.fileName}, $folder")
+    Logger.d("backup: ${metadata.fileName}, $folder")
     val fis = ByteArrayInputStream(stream.toByteArray())
     try {
       api.files().uploadBuilder(folder + metadata.fileName)
@@ -64,7 +64,7 @@ class Dropbox(
         stream.close()
       }
     } catch (e: Throwable) {
-      Timber.d(e)
+      Logger.e("Dropbox: backup: ${e.message}")
     }
   }
 
@@ -74,11 +74,11 @@ class Dropbox(
     }
     val api = mDBApi ?: return null
     val folder = folderFromFileName(fileName)
-    Timber.d("restore: $fileName, $folder")
+    Logger.d("restore: $fileName, $folder")
     return try {
       api.files().download(folder + fileName).inputStream
     } catch (e: Throwable) {
-      Timber.d("restore: ${e.message}")
+      Logger.e("Dropbox: restore: ${e.message}")
       null
     }
   }
@@ -94,14 +94,14 @@ class Dropbox(
     }
     val api = mDBApi ?: return
     val folder = folderFromExt(ext)
-    Timber.d("restoreAll: $ext, $folder")
+    Logger.d("restoreAll: $ext, $folder")
     try {
       val result = api.files().listFolder(templateFolder)
       if (result != null) {
         for (e in result.entries) {
           val fileName = e.name
           val obj = convertible.convert(api.files().download(folder + fileName).inputStream)
-          Timber.d("restoreAll: obj=$obj")
+          Logger.d("restoreAll: obj=$obj")
           if (obj != null) {
             outputChannel.onNewData(obj)
           }
@@ -111,7 +111,7 @@ class Dropbox(
         }
       }
     } catch (e: Throwable) {
-      Timber.d(e)
+      Logger.e("Dropbox: restoreAll: ${e.message}")
     }
   }
 
@@ -120,12 +120,12 @@ class Dropbox(
       return
     }
     val api = mDBApi ?: return
-    Timber.d("delete: $fileName")
+    Logger.d("delete: $fileName")
     val folder = folderFromFileName(fileName)
     try {
       api.files().deleteV2(folder + fileName)
     } catch (e: Throwable) {
-      Timber.d(e)
+      Logger.e("Dropbox: delete: ${e.message}")
     }
   }
 
@@ -185,7 +185,7 @@ class Dropbox(
     try {
       account = api.users().spaceUsage
     } catch (e: DbxException) {
-      Timber.d("userQuota: ${e.message}")
+      Logger.e("Dropbox: userQuota: ${e.message}")
     }
 
     return account?.allocation?.individualValue?.allocated ?: 0
@@ -197,7 +197,7 @@ class Dropbox(
     try {
       account = api.users().spaceUsage
     } catch (e: DbxException) {
-      Timber.d("userQuotaNormal: ${e.message}")
+      Logger.e("Dropbox: userQuota: ${e.message}")
     }
 
     return account?.used ?: 0
@@ -226,7 +226,7 @@ class Dropbox(
   }
 
   fun deleteReminder(name: String) {
-    Timber.d("deleteReminder: $name")
+    Logger.d("deleteReminder: $name")
     startSession()
     if (!isLinked) {
       return
@@ -235,7 +235,7 @@ class Dropbox(
     try {
       api.files().deleteV2(reminderFolder + name)
     } catch (e: DbxException) {
-      Timber.d("deleteReminder: ${e.message}")
+      Logger.e("Dropbox: deleteReminder: ${e.message}")
     }
   }
 
@@ -258,7 +258,7 @@ class Dropbox(
     try {
       api.files().deleteV2(folder)
     } catch (e: DbxException) {
-      Timber.d("deleteFolder: ${e.message}")
+      Logger.e("Dropbox: deleteFolder: ${e.message}")
     }
   }
 
@@ -273,7 +273,7 @@ class Dropbox(
       val result = api.files().listFolder("/") ?: return 0
       count = result.entries.size
     } catch (e: DbxException) {
-      Timber.d("countFiles: ${e.message}")
+      Logger.e("Dropbox: countFiles: ${e.message}")
     }
 
     return count

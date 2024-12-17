@@ -12,7 +12,7 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ViewActionBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ActionView : LinearLayout, TextWatcher {
 
@@ -102,7 +102,7 @@ class ActionView : LinearLayout, TextWatcher {
   }
 
   private fun setState(state: ActionState) {
-    Timber.d("setState: $state")
+    Logger.d("setState: $state")
     this.internalState = state
     enableViews(state != ActionState.NO_ACTION)
     listener?.onStateChanged(state, number)

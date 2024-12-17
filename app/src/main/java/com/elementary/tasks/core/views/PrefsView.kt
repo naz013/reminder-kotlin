@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.transparent
 import com.elementary.tasks.core.utils.ui.visible
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class PrefsView : RelativeLayout {
 
@@ -104,7 +104,7 @@ class PrefsView : RelativeLayout {
           binding.prefsPrimaryText.setTextColor(primaryColor)
         }
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

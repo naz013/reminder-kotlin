@@ -24,8 +24,8 @@ import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
+import com.github.naz013.logging.Logger
 import com.google.gson.Gson
-import timber.log.Timber
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -166,7 +166,7 @@ class JobScheduler(
     if (millis <= 0) {
       return false
     }
-    Timber.d("scheduleReminderRepeat: $millis, ${reminder.uuId}")
+    Logger.d("scheduleReminderRepeat: $millis, ${reminder.uuId}")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_REPEAT,
@@ -187,7 +187,7 @@ class JobScheduler(
     if (millis <= 0) {
       return
     }
-    Timber.d("scheduleReminderDelay: $millis, $uuId")
+    Logger.d("scheduleReminderDelay: $millis, $uuId")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER,
@@ -204,7 +204,7 @@ class JobScheduler(
     if (millis <= 0) {
       return false
     }
-    Timber.d("scheduleGpsDelay: $millis, ${reminder.uuId}")
+    Logger.d("scheduleGpsDelay: $millis, ${reminder.uuId}")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_GPS,
@@ -220,11 +220,11 @@ class JobScheduler(
   fun scheduleReminder(reminder: Reminder?) {
     if (reminder == null) return
     var due = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-    Timber.d("scheduleReminder: noe -> ${dateTimeManager.logDateTime()}")
+    Logger.d("scheduleReminder: noe -> ${dateTimeManager.logDateTime()}")
     if (due == null) {
       return
     }
-    Timber.d("scheduleReminder: ${dateTimeManager.logDateTime(due)}")
+    Logger.d("scheduleReminder: ${dateTimeManager.logDateTime(due)}")
     if (reminder.remindBefore != 0L) {
       due = due.minusMillis(reminder.remindBefore)
     }
@@ -232,12 +232,12 @@ class JobScheduler(
       due = due.withSecond(0)
     }
     if (due == null) {
-      Timber.d("scheduleReminder: return due is NULL")
+      Logger.d("scheduleReminder: return due is NULL")
       return
     }
     val millis = dateTimeManager.toMillis(due)
     if (millis <= 0) {
-      Timber.d("scheduleReminder: return due is 0")
+      Logger.d("scheduleReminder: return due is 0")
       return
     }
 
@@ -284,12 +284,12 @@ class JobScheduler(
   }
 
   private fun cancelReminder(uuId: String) {
-    Timber.i("cancelReminder: uuId=$uuId")
+    Logger.i("cancelReminder: uuId=$uuId")
     WorkManager.getInstance(context).cancelAllWorkByTag(uuId)
   }
 
   fun cancelReminder(requestCode: Int) {
-    Timber.i("cancelReminder: requestCode=$requestCode")
+    Logger.i("cancelReminder: requestCode=$requestCode")
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntentWrapper.getBroadcast(
       context = context,

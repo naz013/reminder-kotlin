@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
 import com.elementary.tasks.core.utils.params.Prefs
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class DoNotDisturbManager(
   private val prefs: Prefs,
@@ -10,7 +10,7 @@ class DoNotDisturbManager(
 
   fun applyDoNotDisturb(priority: Int, millis: Long = System.currentTimeMillis()): Boolean {
     if (prefs.isDoNotDisturbEnabled) {
-      Timber.d("applyDoNotDisturb: enabled, $millis")
+      Logger.d("applyDoNotDisturb: enabled, $millis")
       val range = dateTimeManager.doNotDisturbRange(prefs.doNotDisturbFrom, prefs.doNotDisturbTo)
       return if (range.contains(millis)) {
         if (prefs.doNotDisturbIgnore == 5) {

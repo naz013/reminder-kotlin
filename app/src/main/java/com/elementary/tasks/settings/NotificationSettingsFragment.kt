@@ -14,7 +14,7 @@ import com.elementary.tasks.core.utils.ui.SelectionList
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.util.Locale
 
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
@@ -249,7 +249,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
   private fun tryChangeSbPrefs() {
     val isChecked = binding.permanentNotificationPrefs.isChecked
-    Timber.d("tryChangeSbPrefs: $isChecked")
+    Logger.d("tryChangeSbPrefs: $isChecked")
     if (!isChecked) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { changeSbPrefs() }

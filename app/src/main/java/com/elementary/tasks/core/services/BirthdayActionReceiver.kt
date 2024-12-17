@@ -5,8 +5,8 @@ import android.content.Intent
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
 import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class BirthdayActionReceiver : BaseBroadcast() {
 
@@ -16,7 +16,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
     if (intent != null) {
       val action = intent.action
       val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-      Timber.d("onReceive: $action, id=$id")
+      Logger.d("onReceive: $action, id=$id")
       if (action != null && id.isNotEmpty()) {
         when {
           action.matches(ACTION_CALL.toRegex()) -> birthdayActionProcessor.makeCall(id)

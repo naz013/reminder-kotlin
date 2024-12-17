@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.databinding.ViewRepeatBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class RepeatView : LinearLayout, TextWatcher {
 
@@ -123,7 +123,7 @@ class RepeatView : LinearLayout, TextWatcher {
         )
         mIsLocked = a.getBoolean(R.styleable.RepeatView_isLocked, false)
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

@@ -19,10 +19,10 @@ import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.googletasks.TasksConstants
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
@@ -221,7 +221,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun showDateState(dateState: GoogleTaskViewModel.DateState) {
-    Timber.d("showDateState: $dateState")
+    Logger.d("showDateState: $dateState")
     when (dateState) {
       is GoogleTaskViewModel.DateState.SelectedDate -> {
         binding.dateField.text = dateState.formattedDate
@@ -235,7 +235,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun showTimeState(timeState: GoogleTaskViewModel.TimeState) {
-    Timber.d("showTimeState: $timeState")
+    Logger.d("showTimeState: $timeState")
     when (timeState) {
       is GoogleTaskViewModel.TimeState.SelectedTime -> {
         binding.timeField.text = timeState.formattedTime

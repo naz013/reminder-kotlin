@@ -4,18 +4,18 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
+import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import timber.log.Timber
 
 class BirthdaySettingsViewModel(
   private val birthdaysDao: BirthdaysDao,
@@ -33,7 +33,7 @@ class BirthdaySettingsViewModel(
     mJob = viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
       val count = runCatching { scanContactsWorker.scanContacts() }.getOrNull() ?: 0
-      Timber.d("Found $count birthdays")
+      Logger.d("Found $count birthdays")
       postInProgress(false)
       val message = if (count == 0) {
         textProvider.getText(R.string.no_new_birthdays)

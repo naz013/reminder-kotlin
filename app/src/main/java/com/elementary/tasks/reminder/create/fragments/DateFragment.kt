@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderDateBinding
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
 
@@ -49,10 +49,10 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
         Reminder.BY_DATE_SMS
       }
     }
-    Timber.d("prepare: $type")
+    Logger.d("prepare: $type")
 
     val startTime = binding.dateView.selectedDateTime
-    Timber.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
     if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(string(R.string.reminder_is_outdated))
       return null

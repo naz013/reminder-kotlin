@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils.datetime.recurrence
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.builder.RuleBuilder
 import com.elementary.tasks.core.utils.datetime.recurrence.parser.TagParser
+import com.github.naz013.logging.Logger
 import org.dmfs.rfc5545.DateTime
 import org.dmfs.rfc5545.iterable.RecurrenceSet
 import org.dmfs.rfc5545.iterable.instanceiterable.RuleInstances
@@ -10,7 +11,6 @@ import org.dmfs.rfc5545.recur.RecurrenceRule
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 import java.util.TimeZone
 
 class RecurrenceManager(
@@ -27,7 +27,7 @@ class RecurrenceManager(
       map[it.tagType] = it
     }
 
-    Timber.d("parseObject: map = $map")
+    Logger.d("parseObject: map = $map")
 
     return RuleMap(map)
   }

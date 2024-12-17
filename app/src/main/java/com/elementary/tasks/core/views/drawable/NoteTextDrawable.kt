@@ -20,7 +20,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextDirectionHeuristics
 import android.text.TextPaint
-import timber.log.Timber
 
 class NoteTextDrawable(
   private val params: NoteDrawableParams
@@ -175,8 +174,6 @@ class NoteTextDrawable(
     canvas.restore()
 
     canvas.restoreToCount(count)
-
-    Timber.d("buildComplete")
   }
 
   private fun StaticLayout.maxLineWith(): Float {

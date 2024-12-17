@@ -8,9 +8,9 @@ import com.elementary.tasks.core.services.action.reminder.ReminderActionProcesso
 import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcessor
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.SuperUtil
+import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class AlarmReceiver : BaseBroadcast() {
 
@@ -21,8 +21,8 @@ class AlarmReceiver : BaseBroadcast() {
     if (context == null) return
     val action = intent?.action ?: return
 
-    Timber.d("onReceive: action = $action")
-    Timber.d("onReceive: date time = ${LocalDateTime.now()}")
+    Logger.d("onReceive: action = $action")
+    Logger.d("onReceive: date time = ${LocalDateTime.now()}")
 
     when (action) {
       ACTION_REMINDER -> processReminder(intent.extras)
@@ -34,7 +34,7 @@ class AlarmReceiver : BaseBroadcast() {
   private fun processReminder(extras: Bundle?) {
     val id = extras?.getString(Constants.INTENT_ID) ?: return
 
-    Timber.d("processReminder: id = $id")
+    Logger.d("processReminder: id = $id")
 
     reminderActionProcessor.process(id)
   }
@@ -42,7 +42,7 @@ class AlarmReceiver : BaseBroadcast() {
   private fun processRepeat(extras: Bundle?) {
     val id = extras?.getString(Constants.INTENT_ID) ?: return
 
-    Timber.d("processRepeat: id = $id")
+    Logger.d("processRepeat: id = $id")
 
     reminderRepeatProcessor.process(id)
   }

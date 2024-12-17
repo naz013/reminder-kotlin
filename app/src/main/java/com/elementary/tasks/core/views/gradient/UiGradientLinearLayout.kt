@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class UiGradientLinearLayout : LinearLayout {
 
@@ -88,7 +88,7 @@ class UiGradientLinearLayout : LinearLayout {
           gradientHelper.applyBackground { background = it }
         }
       } catch (e: Exception) {
-        Timber.d("init: ${e.message}")
+        Logger.d("init: ${e.message}")
       } finally {
         a.recycle()
       }

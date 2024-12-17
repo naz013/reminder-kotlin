@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class ReminderHandlerSilent(
   private val reminderDataProvider: ReminderDataProvider,
@@ -32,7 +32,7 @@ class ReminderHandlerSilent(
   }
 
   private fun showNotificationWithoutSound(reminder: Reminder) {
-    Timber.d("showNotificationWithoutSound: ")
+    Logger.d("showNotificationWithoutSound: ")
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
 

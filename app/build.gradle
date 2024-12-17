@@ -245,7 +245,6 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14'
     implementation 'com.dropbox.core:dropbox-core-sdk:5.4.6'
-    implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'org.dmfs:lib-recur:0.17.1'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'com.github.naz013:ColorSlider:2.0.6'
@@ -261,10 +260,6 @@ dependencies {
     implementation 'io.coil-kt:coil:2.7.0'
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect:2.1.0'
-
-    implementation 'org.slf4j:slf4j-api:2.0.16'
-    implementation 'com.github.tony19:logback-android:3.0.0'
-    testImplementation 'ch.qos.logback:logback-classic:1.5.12'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test:core:1.6.1'

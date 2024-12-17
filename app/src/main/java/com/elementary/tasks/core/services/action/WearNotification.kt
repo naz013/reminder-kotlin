@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Notifier
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 
 class WearNotification(
   private val contextProvider: ContextProvider,
@@ -18,7 +18,7 @@ class WearNotification(
     secondaryText: String,
     groupName: String
   ) {
-    Timber.d("showWearNotification: $secondaryText")
+    Logger.d("showWearNotification: $secondaryText")
     val wearableNotificationBuilder =
       NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)

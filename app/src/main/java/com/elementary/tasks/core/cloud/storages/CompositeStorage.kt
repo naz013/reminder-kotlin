@@ -3,7 +3,7 @@ package com.elementary.tasks.core.cloud.storages
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.InputStream
 
 class CompositeStorage(
@@ -13,7 +13,7 @@ class CompositeStorage(
   private val storageList = storageManager.availableStorageList()
 
   init {
-    Timber.d("init: $storageList")
+    Logger.d("init: $storageList")
   }
 
   override suspend fun backup(stream: CopyByteArrayStream, metadata: Metadata) {
@@ -37,7 +37,7 @@ class CompositeStorage(
     if (storageList.isEmpty()) {
       return
     }
-    Timber.d("restoreAll: start")
+    Logger.d("restoreAll: start")
     storageList.forEach {
       it.restoreAll(ext, deleteFile, convertible, outputChannel)
     }

@@ -7,7 +7,7 @@ import com.elementary.tasks.core.data.models.SettingsModel
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.params.PrefsConstants
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.IOException
 import java.io.InputStream
 import java.io.ObjectInputStream
@@ -55,7 +55,7 @@ class SettingsConverter(
         }
       }
     } catch (e: Exception) {
-      Timber.e(e)
+      Logger.e("SettingsConverter: toOutputStream error: $e")
       null
     }
   }
@@ -78,7 +78,7 @@ class SettingsConverter(
         }
       }
     } catch (e: Exception) {
-      Timber.e(e)
+      Logger.e("SettingsConverter: convert error: $e")
       null
     }
   }

@@ -13,11 +13,11 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DateValidator
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 class BirthdayActionProcessor(
   private val dispatcherProvider: DispatcherProvider,
@@ -35,7 +35,7 @@ class BirthdayActionProcessor(
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun sendSms(id: String) {
-    Timber.d("sendSms: $id")
+    Logger.d("sendSms: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -46,7 +46,7 @@ class BirthdayActionProcessor(
   }
 
   fun makeCall(id: String) {
-    Timber.d("makeCall: $id")
+    Logger.d("makeCall: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -57,7 +57,7 @@ class BirthdayActionProcessor(
   }
 
   fun cancel(id: String) {
-    Timber.d("cancel: $id")
+    Logger.d("cancel: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -65,7 +65,7 @@ class BirthdayActionProcessor(
   }
 
   fun process() {
-    Timber.d("process: ")
+    Logger.d("process: ")
     jobScheduler.cancelDailyBirthday()
     jobScheduler.scheduleDailyBirthday()
     scope.launch {

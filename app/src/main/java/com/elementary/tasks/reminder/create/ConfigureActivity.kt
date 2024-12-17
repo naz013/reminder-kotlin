@@ -11,8 +11,8 @@ import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 @Deprecated("Replaced by new Builder")
 class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBinding>() {
@@ -78,7 +78,7 @@ class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBindin
   }
 
   private fun save() {
-    Timber.d("save: $config")
+    Logger.d("save: $config")
     prefs.reminderCreatorParams = config
   }
 }

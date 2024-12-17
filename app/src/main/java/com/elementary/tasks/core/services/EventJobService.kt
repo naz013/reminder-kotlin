@@ -10,9 +10,9 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.reminder.work.CheckEventsWorker
+import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class EventJobService(
   private val context: Context,
@@ -26,11 +26,7 @@ class EventJobService(
   private val birthdayActionProcessor by inject<BirthdayActionProcessor>()
 
   override suspend fun doWork(): Result {
-    Timber.d(
-      "onRunJob: %s, tag -> %s",
-      dateTimeManager.logDateTime(),
-      params.tags.toList()
-    )
+    Logger.d("onRunJob: ${dateTimeManager.logDateTime()}, tag -> ${params.tags.toList()}")
     when (params.tags.first()) {
       JobScheduler.EVENT_BIRTHDAY -> birthdayAction()
       JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()

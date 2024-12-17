@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.io.InputStream
 
 class BirthdayConverter(
@@ -33,7 +33,7 @@ class BirthdayConverter(
       stream.close()
       return birthday
     } catch (e: Exception) {
-      Timber.e(e)
+      Logger.e("BirthdayConverter: convert error: $e")
       null
     }
   }

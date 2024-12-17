@@ -10,10 +10,10 @@ import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class DateTimeInjector(
   private val dateTimeManager: DateTimeManager,
@@ -35,7 +35,7 @@ class DateTimeInjector(
         if (date != null && time != null) {
           val dateTime = LocalDateTime.of(date, time)
           val startTime = dateTimeManager.getGmtFromDateTime(dateTime)
-          Timber.d("invoke: put date time $dateTime for sub tasks")
+          Logger.d("invoke: put date time $dateTime for sub tasks")
           reminder.eventTime = startTime
           reminder.startTime = startTime
           reminder.hasReminder = true
@@ -93,13 +93,13 @@ class DateTimeInjector(
         }
         if (delayDateTime != null && dateTimeManager.isCurrent(delayDateTime)) {
           val startTime = delayDateTime.let { dateTimeManager.getGmtFromDateTime(it) }
-          Timber.d("invoke: put delay date time $delayDateTime")
+          Logger.d("invoke: put delay date time $delayDateTime")
           reminder.eventTime = startTime
           reminder.startTime = startTime
           reminder.hasReminder = true
           delayDateTime
         } else {
-          Timber.d("invoke: no delay date time needed for ${reminder.type}")
+          Logger.d("invoke: no delay date time needed for ${reminder.type}")
           reminder.eventTime = ""
           reminder.startTime = ""
           reminder.hasReminder = false
@@ -112,14 +112,14 @@ class DateTimeInjector(
       }
 
       else -> {
-        Timber.d("invoke: no date time needed for ${reminder.type}")
+        Logger.d("invoke: no date time needed for ${reminder.type}")
         reminder.eventTime = ""
         reminder.startTime = ""
         null
       }
     }?.also { dateTime ->
       val startTime = dateTime.let { dateTimeManager.getGmtFromDateTime(it) }
-      Timber.d("invoke: put date time $dateTime")
+      Logger.d("invoke: put date time $dateTime")
       reminder.eventTime = startTime
       reminder.startTime = startTime
     }

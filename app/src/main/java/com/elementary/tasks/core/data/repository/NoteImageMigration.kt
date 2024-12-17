@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data.repository
 
 import com.elementary.tasks.core.data.dao.NotesDao
-import timber.log.Timber
+import com.github.naz013.logging.Logger
 import java.util.UUID
 
 class NoteImageMigration(
@@ -14,7 +14,7 @@ class NoteImageMigration(
       runCatching { notesDao.getImageById(it) }.getOrNull()
         ?.takeIf { it.image != null }
         ?.also { imageFile ->
-          Timber.d("migrate image: ${imageFile.noteId}")
+          Logger.d("migrate image: ${imageFile.noteId}")
           val fileName = imageFile.fileName.takeIf { it.isNotEmpty() }
             ?: UUID.randomUUID().toString()
           imageFile.filePath =

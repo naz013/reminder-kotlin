@@ -4,8 +4,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 
 class ICalDateTimeInjector(
   private val iCalDateTimeCalculator: ICalDateTimeCalculator,
@@ -17,10 +17,10 @@ class ICalDateTimeInjector(
     processedBuilderItems: ProcessedBuilderItems
   ): LocalDateTime? {
     val eventData = iCalDateTimeCalculator(processedBuilderItems) ?: return null
-    Timber.d("invoke: eventData = $eventData")
+    Logger.d("invoke: eventData = $eventData")
 
     val startTime = eventData.startDateTime
-    Timber.d("invoke: startTime = $startTime, recurObject = ${eventData.recurObject}")
+    Logger.d("invoke: startTime = $startTime, recurObject = ${eventData.recurObject}")
 
     reminder.recurDataObject = eventData.recurObject
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)

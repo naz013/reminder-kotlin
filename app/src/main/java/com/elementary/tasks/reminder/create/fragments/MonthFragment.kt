@@ -12,10 +12,10 @@ import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderMonthBinding
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import timber.log.Timber
 
 class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
@@ -71,7 +71,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
       iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
       return null
     }
-    Timber.d("EVENT_TIME %s", dateTimeManager.logDateTime(startTime))
+    Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
     if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
@@ -179,7 +179,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
     }
-    Timber.d("calculateNextDate: $reminder")
+    Logger.d("calculateNextDate: $reminder")
     val startTime = dateTimeManager.getNewNextMonthDayTime(reminder)
     binding.calculatedNextTime.text = dateTimeManager.getFullDateTime(startTime)
   }
@@ -201,7 +201,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     if (iFace.state.day <= 0) {
       iFace.state.day = LocalDate.now().dayOfMonth
     }
-    Timber.d("showSelectedDay: ${iFace.state.day}")
+    Logger.d("showSelectedDay: ${iFace.state.day}")
     binding.monthDayField.text = getZeroedInt(iFace.state.day)
   }
 
@@ -226,7 +226,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   private fun editReminder() {
     val reminder = iFace.state.reminder
     updateTime(dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime()).also {
-      Timber.d("editReminder: time=$it")
+      Logger.d("editReminder: time=$it")
       binding.timeField.text = dateTimeManager.getTime(it)
     }
     if (iFace.state.isLastDay || reminder.dayOfMonth == 0) {

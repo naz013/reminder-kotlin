@@ -22,10 +22,10 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.logging.Logger
 import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 import java.io.Serializable
 
 abstract class ThemedActivity : AppCompatActivity() {
@@ -82,7 +82,7 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   private fun logId() {
     if (intent.hasExtra(Constants.INTENT_ID)) {
-      Timber.d("Has ID as ${intent.getStringExtra(Constants.INTENT_ID)}")
+      Logger.d("Has ID as ${intent.getStringExtra(Constants.INTENT_ID)}")
     }
   }
 

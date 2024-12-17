@@ -25,9 +25,9 @@ import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
+import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
 
@@ -112,7 +112,7 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
   private fun initViewModel() {
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
     viewModel.error.nonNullObserve(viewLifecycleOwner) {
-      Timber.d("initViewModel: onError -> $it")
+      Logger.d("initViewModel: onError -> $it")
       toast(it)
     }
     viewModel.result.nonNullObserve(viewLifecycleOwner) {

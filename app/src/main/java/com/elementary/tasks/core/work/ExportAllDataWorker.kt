@@ -3,8 +3,8 @@ package com.elementary.tasks.core.work
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.Job
-import timber.log.Timber
 import java.io.File
 
 class ExportAllDataWorker(private val backupTool: BackupTool) {
@@ -14,7 +14,7 @@ class ExportAllDataWorker(private val backupTool: BackupTool) {
   var listener: ((Boolean) -> Unit)? = null
     set(value) {
       field = value
-      Timber.d("ExportAllDataWorker: $mJob")
+      Logger.d("ExportAllDataWorker: $mJob")
       value?.invoke(mJob != null)
     }
 

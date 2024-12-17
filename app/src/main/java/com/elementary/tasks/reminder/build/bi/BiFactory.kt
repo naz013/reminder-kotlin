@@ -53,10 +53,8 @@ import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
-import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
-import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
@@ -68,7 +66,9 @@ import com.elementary.tasks.reminder.build.formatter.datetime.TimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.TimerFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
-import timber.log.Timber
+import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.logging.Logger
 
 class BiFactory(
   private val contextProvider: ContextProvider,
@@ -94,7 +94,7 @@ class BiFactory(
 
   private fun <T : BuilderItem<*>> createTyped(biType: BiType, clazz: Class<T>): T? {
     val created = create(biType)
-    Timber.d("createTyped: created=$created, wanted=$clazz")
+    Logger.d("createTyped: created=$created, wanted=$clazz")
     return created.takeIf { it::class.java == clazz } as? T
   }
 
