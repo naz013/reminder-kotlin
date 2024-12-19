@@ -3,9 +3,9 @@ package com.elementary.tasks.birthdays.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
@@ -21,14 +21,14 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import kotlinx.coroutines.launch
 
 class BirthdayPreviewViewModel(
-  private val id: String,
-  private val birthdayRepository: BirthdayRepository,
-  dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
-  private val updatesHelper: UpdatesHelper
+    private val id: String,
+    private val birthdayRepository: BirthdayRepository,
+    dispatcherProvider: DispatcherProvider,
+    private val workerLauncher: WorkerLauncher,
+    private val notifier: Notifier,
+    private val analyticsEventSender: AnalyticsEventSender,
+    private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
+    private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayPreview>()

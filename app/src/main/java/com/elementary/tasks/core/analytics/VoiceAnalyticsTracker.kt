@@ -2,6 +2,11 @@ package com.elementary.tasks.core.analytics
 
 import com.backdoor.engine.Model
 import com.backdoor.engine.misc.ActionType
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.AnalyticsTracker
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.VoiceFeatureUsedEvent
 
 class VoiceAnalyticsTracker(
   private val analyticsEventSender: AnalyticsEventSender

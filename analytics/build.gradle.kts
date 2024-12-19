@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-  namespace = "com.github.naz013.logging"
+  namespace = "com.github.naz013.analytics"
   compileSdk = libs.versions.compileSdk.get().toInt()
 
   defaultConfig {
@@ -31,17 +31,18 @@ android {
   kotlinOptions {
     jvmTarget = libs.versions.kotlinTargetJvm.get()
   }
+
+  sourceSets["main"].java {
+    srcDir("src/main/kotlin")
+  }
 }
 
 dependencies {
+  implementation(project(":domain"))
   implementation(project(":logging-api"))
-  implementation(libs.slf4j.api)
-  implementation(libs.logback.android)
-
+  implementation(libs.androidx.core.ktx)
   implementation(platform(libs.firebase.bom))
-  implementation(libs.firebase.crashlytics)
-
-  testImplementation(libs.logback.classic)
+  implementation(libs.firebase.analytics.ktx)
 }
 
 ktlint {

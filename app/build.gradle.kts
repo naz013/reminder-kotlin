@@ -182,9 +182,11 @@ fun getDate(): String {
 }
 
 dependencies {
+  implementation(project(":domain"))
   implementation(project(":voice-engine-ktx"))
   implementation(project(":logging-api"))
   implementation(project(":logging"))
+  implementation(project(":analytics"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -242,7 +244,6 @@ dependencies {
 
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.crashlytics)
-  implementation(libs.firebase.analytics.ktx)
   implementation(libs.firebase.auth.ktx)
   implementation(libs.firebase.config)
 

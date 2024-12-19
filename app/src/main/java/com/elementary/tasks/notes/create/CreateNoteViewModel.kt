@@ -8,9 +8,9 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
@@ -60,23 +60,23 @@ import java.util.Random
 import java.util.UUID
 
 class CreateNoteViewModel(
-  private val id: String,
-  private val imageDecoder: ImageDecoder,
-  dispatcherProvider: DispatcherProvider,
-  private val eventControlFactory: EventControlFactory,
-  private val workerLauncher: WorkerLauncher,
-  private val notesDao: NotesDao,
-  private val reminderDao: ReminderDao,
-  private val reminderGroupDao: ReminderGroupDao,
-  private val prefs: Prefs,
-  private val dateTimeManager: DateTimeManager,
-  private val textProvider: TextProvider,
-  private val backupTool: BackupTool,
-  private val contextProvider: ContextProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val uiNoteEditAdapter: UiNoteEditAdapter,
-  private val noteImageRepository: NoteImageRepository,
-  private val noteToOldNoteConverter: NoteToOldNoteConverter
+    private val id: String,
+    private val imageDecoder: ImageDecoder,
+    dispatcherProvider: DispatcherProvider,
+    private val eventControlFactory: EventControlFactory,
+    private val workerLauncher: WorkerLauncher,
+    private val notesDao: NotesDao,
+    private val reminderDao: ReminderDao,
+    private val reminderGroupDao: ReminderGroupDao,
+    private val prefs: Prefs,
+    private val dateTimeManager: DateTimeManager,
+    private val textProvider: TextProvider,
+    private val backupTool: BackupTool,
+    private val contextProvider: ContextProvider,
+    private val analyticsEventSender: AnalyticsEventSender,
+    private val uiNoteEditAdapter: UiNoteEditAdapter,
+    private val noteImageRepository: NoteImageRepository,
+    private val noteToOldNoteConverter: NoteToOldNoteConverter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()

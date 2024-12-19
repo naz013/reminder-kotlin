@@ -6,11 +6,11 @@ import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.analytics.PresetAction
-import com.elementary.tasks.core.analytics.PresetUsed
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.PresetAction
+import com.github.naz013.analytics.PresetUsed
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -74,37 +74,37 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 class BuildReminderViewModel(
-  private val googleCalendarUtils: GoogleCalendarUtils,
-  private val eventControlFactory: EventControlFactory,
-  dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val reminderGroupDao: ReminderGroupDao,
-  private val reminderDao: ReminderDao,
-  private val placesDao: PlacesDao,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
-  private val biFactory: BiFactory,
-  private val builderItemsLogic: BuilderItemsLogic,
-  private val selectorDialogDataHolder: SelectorDialogDataHolder,
-  private val uiBuilderItemsAdapter: UiBuilderItemsAdapter,
-  private val uiSelectorItemsAdapter: UiSelectorItemsAdapter,
-  private val valueDialogDataHolder: ValueDialogDataHolder,
-  private val biToReminderAdapter: BiToReminderAdapter,
-  private val permissionValidator: PermissionValidator,
-  private val reminderToBiDecomposer: ReminderToBiDecomposer,
-  private val biFilter: BiFilter,
-  private val uiPresetListAdapter: UiPresetListAdapter,
-  private val recurPresetRepository: RecurPresetRepository,
-  private val recurrenceManager: RecurrenceManager,
-  private val recurParamsToBiAdapter: RecurParamsToBiAdapter,
-  private val builderPresetToBiAdapter: BuilderPresetToBiAdapter,
-  private val reminderPredictionCalculator: ReminderPredictionCalculator,
-  private val uriReader: UriReader,
-  private val updatesHelper: UpdatesHelper,
-  private val voiceCommandProcessor: VoiceCommandProcessor,
-  private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
-  private val dateTimeManager: DateTimeManager,
-  private val textProvider: TextProvider
+    private val googleCalendarUtils: GoogleCalendarUtils,
+    private val eventControlFactory: EventControlFactory,
+    dispatcherProvider: DispatcherProvider,
+    private val workerLauncher: WorkerLauncher,
+    private val reminderGroupDao: ReminderGroupDao,
+    private val reminderDao: ReminderDao,
+    private val placesDao: PlacesDao,
+    private val analyticsEventSender: AnalyticsEventSender,
+    private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
+    private val biFactory: BiFactory,
+    private val builderItemsLogic: BuilderItemsLogic,
+    private val selectorDialogDataHolder: SelectorDialogDataHolder,
+    private val uiBuilderItemsAdapter: UiBuilderItemsAdapter,
+    private val uiSelectorItemsAdapter: UiSelectorItemsAdapter,
+    private val valueDialogDataHolder: ValueDialogDataHolder,
+    private val biToReminderAdapter: BiToReminderAdapter,
+    private val permissionValidator: PermissionValidator,
+    private val reminderToBiDecomposer: ReminderToBiDecomposer,
+    private val biFilter: BiFilter,
+    private val uiPresetListAdapter: UiPresetListAdapter,
+    private val recurPresetRepository: RecurPresetRepository,
+    private val recurrenceManager: RecurrenceManager,
+    private val recurParamsToBiAdapter: RecurParamsToBiAdapter,
+    private val builderPresetToBiAdapter: BuilderPresetToBiAdapter,
+    private val reminderPredictionCalculator: ReminderPredictionCalculator,
+    private val uriReader: UriReader,
+    private val updatesHelper: UpdatesHelper,
+    private val voiceCommandProcessor: VoiceCommandProcessor,
+    private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
+    private val dateTimeManager: DateTimeManager,
+    private val textProvider: TextProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -692,7 +692,7 @@ class BuildReminderViewModel(
       Logger.i("saveAndStartReminder: save DONE")
 
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-      reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type))
+      reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
       Logger.logEvent("Reminder saved, type = ${reminder.type}")
     }
     backupReminder(reminder.uuId)

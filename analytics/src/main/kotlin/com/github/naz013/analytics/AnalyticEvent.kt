@@ -1,7 +1,6 @@
-package com.elementary.tasks.core.analytics
+package com.github.naz013.analytics
 
 import android.os.Bundle
-import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 sealed class AnalyticEvent(val event: Event) {
   abstract fun getParams(): Bundle
@@ -24,31 +23,13 @@ data class VoiceFeatureUsedEvent(
 }
 
 data class ReminderFeatureUsedEvent(
-  val type: UiReminderType,
+  val type: AnalyticsReminderType,
   val timeSeconds: Long
 ) : AnalyticEvent(Event.REMINDER_USED) {
   override fun getParams(): Bundle {
     return Bundle().apply {
-      putString(Parameter.REMINDER_TYPE, getReminderType(type))
+      putString(Parameter.REMINDER_TYPE, type.value)
       putLong(Parameter.DURATION, timeSeconds)
-    }
-  }
-
-  private fun getReminderType(type: UiReminderType): String {
-    return when {
-      type.isRecur() -> "recur"
-      type.isEmail() -> "email"
-      type.isLink() -> "web_link"
-      type.isApp() -> "app"
-      type.isCall() -> "call"
-      type.isSms() -> "sms"
-      type.isGpsType() -> "gps"
-      type.isMonthly() -> "monthly"
-      type.isByWeekday() -> "weekday"
-      type.isTimer() -> "timer"
-      type.isYearly() -> "yearly"
-      type.isByDate() -> "by_date"
-      else -> "other"
     }
   }
 }
@@ -158,6 +139,22 @@ enum class PresetAction(val value: String) {
   USE("use"),
   DELETE("delete"),
   USE_BUILDER("use_builder")
+}
+
+enum class AnalyticsReminderType(val value: String) {
+  Recur("recur"),
+  Email("email"),
+  WebLink("web_link"),
+  App("app"),
+  Call("call"),
+  Sms("sms"),
+  Gps("gps"),
+  Monthly("monthly"),
+  Weekday("weekday"),
+  Timer("timer"),
+  Yearly("yearly"),
+  ByDate("by_date"),
+  Other("other")
 }
 
 object Parameter {

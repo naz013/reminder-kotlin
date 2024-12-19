@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.elementary.tasks.R
 import com.elementary.tasks.calendar.BaseCalendarFragment
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.databinding.FragmentFlextCalBinding

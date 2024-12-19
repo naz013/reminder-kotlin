@@ -1,9 +1,9 @@
 package com.elementary.tasks.googletasks.task
 
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory

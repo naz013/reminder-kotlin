@@ -7,8 +7,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Widget
-import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.github.naz013.analytics.Widget
+import com.github.naz013.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.dao.NotesDao

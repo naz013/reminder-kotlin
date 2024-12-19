@@ -4,9 +4,9 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
@@ -30,15 +30,15 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class CreateGroupViewModel(
-  private val id: String,
-  dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val reminderGroupDao: ReminderGroupDao,
-  private val dateTimeManager: DateTimeManager,
-  private val contextProvider: ContextProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val uiGroupEditAdapter: UiGroupEditAdapter,
-  private val idProvider: IdProvider
+    private val id: String,
+    dispatcherProvider: DispatcherProvider,
+    private val workerLauncher: WorkerLauncher,
+    private val reminderGroupDao: ReminderGroupDao,
+    private val dateTimeManager: DateTimeManager,
+    private val contextProvider: ContextProvider,
+    private val analyticsEventSender: AnalyticsEventSender,
+    private val uiGroupEditAdapter: UiGroupEditAdapter,
+    private val idProvider: IdProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _reminderGroup = mutableLiveDataOf<UiGroupEdit>()

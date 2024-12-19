@@ -4,9 +4,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -96,7 +96,7 @@ class EditReminderViewModel(
         eventControlFactory.getController(reminder).enable()
         Logger.d("saveAndStartReminder: save DONE")
         analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-        reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type))
+        reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
         Logger.logEvent("Reminder saved, type = ${reminder.type}")
       }
       backupReminder(reminder.uuId)

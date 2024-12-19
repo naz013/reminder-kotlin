@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.analytics
+package com.github.naz013.analytics
 
 open class AnalyticsTracker {
 

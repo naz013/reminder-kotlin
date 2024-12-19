@@ -2,9 +2,9 @@ package com.elementary.tasks.googletasks.preview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
@@ -20,14 +20,14 @@ import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.launch
 
 class GoogleTaskPreviewViewModel(
-  private val id: String,
-  private val gTasks: GTasks,
-  dispatcherProvider: DispatcherProvider,
-  private val googleTasksDao: GoogleTasksDao,
-  private val googleTaskListsDao: GoogleTaskListsDao,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
-  private val updatesHelper: UpdatesHelper
+    private val id: String,
+    private val gTasks: GTasks,
+    dispatcherProvider: DispatcherProvider,
+    private val googleTasksDao: GoogleTasksDao,
+    private val googleTaskListsDao: GoogleTaskListsDao,
+    private val analyticsEventSender: AnalyticsEventSender,
+    private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
+    private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _googleTask = mutableLiveDataOf<UiGoogleTaskPreview>()

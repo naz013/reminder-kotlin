@@ -2,9 +2,9 @@ package com.elementary.tasks.reminder.create.fragments.recur
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.PresetAction
-import com.elementary.tasks.core.analytics.PresetUsed
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.PresetAction
+import com.github.naz013.analytics.PresetUsed
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.livedata.toSingleEvent
 import com.elementary.tasks.core.data.models.PresetType
