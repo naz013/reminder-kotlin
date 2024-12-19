@@ -3,9 +3,9 @@ package com.elementary.tasks.notes.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
@@ -33,19 +33,19 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class NotePreviewViewModel(
-  val key: String,
-  dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val backupTool: BackupTool,
-  private val notesDao: NotesDao,
-  private val reminderDao: ReminderDao,
-  private val uiNotePreviewAdapter: UiNotePreviewAdapter,
-  private val textProvider: TextProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
-  private val noteImageRepository: NoteImageRepository,
-  private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
-  private val notifier: Notifier,
-  private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder
+    val key: String,
+    dispatcherProvider: DispatcherProvider,
+    private val workerLauncher: WorkerLauncher,
+    private val backupTool: BackupTool,
+    private val notesDao: NotesDao,
+    private val reminderDao: ReminderDao,
+    private val uiNotePreviewAdapter: UiNotePreviewAdapter,
+    private val textProvider: TextProvider,
+    private val analyticsEventSender: AnalyticsEventSender,
+    private val noteImageRepository: NoteImageRepository,
+    private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
+    private val notifier: Notifier,
+    private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()

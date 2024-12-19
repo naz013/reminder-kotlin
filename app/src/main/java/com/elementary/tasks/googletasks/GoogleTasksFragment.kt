@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList

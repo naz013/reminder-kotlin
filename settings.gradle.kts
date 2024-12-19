@@ -1,5 +1,11 @@
 import java.net.URI
 
+include(":domain")
+
+
+include(":analytics")
+
+
 pluginManagement {
   repositories {
     google()

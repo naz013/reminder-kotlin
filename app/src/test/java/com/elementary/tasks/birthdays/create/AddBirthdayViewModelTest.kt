@@ -2,7 +2,7 @@ package com.elementary.tasks.birthdays.create
 
 import android.net.Uri
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.dao.BirthdaysDao

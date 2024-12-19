@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.data.ui.reminder
 
+import com.github.naz013.analytics.AnalyticsReminderType
+
 data class UiReminderType(
   val value: Int
 ) {
@@ -47,6 +49,24 @@ data class UiReminderType(
 
   fun isGpsType(): Boolean {
     return isBase(Base.LOCATION_IN) || isBase(Base.LOCATION_OUT) || isBase(Base.PLACE)
+  }
+
+  fun getEventType(): AnalyticsReminderType {
+    return when {
+      isRecur() -> AnalyticsReminderType.Recur
+      isEmail() -> AnalyticsReminderType.Email
+      isLink() -> AnalyticsReminderType.WebLink
+      isApp() -> AnalyticsReminderType.App
+      isCall() -> AnalyticsReminderType.Call
+      isSms() -> AnalyticsReminderType.Sms
+      isGpsType() -> AnalyticsReminderType.Gps
+      isMonthly() -> AnalyticsReminderType.Monthly
+      isByWeekday() -> AnalyticsReminderType.Weekday
+      isTimer() -> AnalyticsReminderType.Timer
+      isYearly() -> AnalyticsReminderType.Yearly
+      isByDate() -> AnalyticsReminderType.ByDate
+      else -> AnalyticsReminderType.Other
+    }
   }
 
   enum class Base(val value: Int) {

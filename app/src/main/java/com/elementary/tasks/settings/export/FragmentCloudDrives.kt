@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.os.Permissions

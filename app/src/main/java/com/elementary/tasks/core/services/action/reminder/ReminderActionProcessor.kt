@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.services.action.reminder
 
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
-import com.elementary.tasks.core.analytics.Feature
-import com.elementary.tasks.core.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.JobScheduler

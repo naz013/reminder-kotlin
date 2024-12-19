@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.ThemedActivity

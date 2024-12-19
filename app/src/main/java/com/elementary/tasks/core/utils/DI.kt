@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils
 import android.app.Activity
 import android.content.Context
 import com.backdoor.engine.Recognizer
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
@@ -84,7 +84,8 @@ import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.github.naz013.analytics.AnalyticsStateProvider
+import com.github.naz013.analytics.initializeAnalytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.module.Module
@@ -261,7 +262,9 @@ val utilModule = module {
   factory { WorkManagerProvider(get()) }
   factory { WorkerLauncher(get(), get()) }
 
-  single { AnalyticsEventSender(FirebaseAnalytics.getInstance(get()), get()) }
+  factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
+
+  single { initializeAnalytics(get(), get()) }
   factory { ReminderAnalyticsTracker(get()) }
   factory { VoiceAnalyticsTracker(get()) }
 

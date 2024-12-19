@@ -15,8 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.visibleGone

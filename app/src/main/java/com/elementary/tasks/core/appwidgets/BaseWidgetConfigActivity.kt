@@ -3,7 +3,7 @@ package com.elementary.tasks.core.appwidgets
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.viewbinding.ViewBinding
-import com.elementary.tasks.core.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.arch.BindingActivity
 import org.koin.android.ext.android.inject
 

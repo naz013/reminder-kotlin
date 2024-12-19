@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.analytics.Widget
-import com.elementary.tasks.core.analytics.WidgetUsedEvent
+import com.github.naz013.analytics.Widget
+import com.github.naz013.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.cloud.GTasks

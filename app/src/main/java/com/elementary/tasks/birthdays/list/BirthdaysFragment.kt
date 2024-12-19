@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.analytics.Screen
-import com.elementary.tasks.core.analytics.ScreenUsedEvent
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
