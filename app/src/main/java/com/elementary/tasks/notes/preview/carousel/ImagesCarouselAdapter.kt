@@ -9,7 +9,7 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.inflater
+import com.github.naz013.feature.common.android.inflater
 import com.elementary.tasks.databinding.ListItemNoteImageCarouselBinding
 import com.elementary.tasks.notes.create.images.UiNoteImageDiffCallback
 

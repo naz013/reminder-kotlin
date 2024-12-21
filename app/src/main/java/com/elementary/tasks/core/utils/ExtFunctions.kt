@@ -3,17 +3,7 @@ package com.elementary.tasks.core.utils
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import androidx.annotation.CheckResult
-import androidx.annotation.ColorInt
-import androidx.annotation.IntRange
-import androidx.annotation.MainThread
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -25,6 +15,7 @@ import com.elementary.tasks.core.views.PriorityPickerView
 import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -33,82 +24,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.threeten.bp.LocalDateTime
-import java.io.File
-import java.io.InputStream
-import java.util.Calendar
-
-fun <T> LiveData<List<T>>.getNonNullList(): List<T> {
-  return value ?: emptyList()
-}
-
-fun <K, V> LiveData<Map<K, V>>.getNonNullMap(): Map<K, V> {
-  return value ?: emptyMap()
-}
-
-fun LocalDateTime.minusMillis(millis: Long): LocalDateTime {
-  return minusSeconds(millis / 1000L)
-}
-
-fun LocalDateTime.plusMillis(millis: Long): LocalDateTime {
-  return plusSeconds(millis / 1000L)
-}
-
-fun List<String>.append(): String {
-  val stringBuilder = StringBuilder()
-  for (string in this) {
-    stringBuilder.append(string)
-  }
-  return stringBuilder.toString()
-}
-
-fun listOfNotEmpty(vararg items: String?): List<String> = items.filterNotNull().filterNotEmpty()
-
-fun List<String?>.filterNotEmpty() = filterNotNull().filter { it.isNotEmpty() }
-
-fun String.normalizeSummary(): String {
-  return if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
-    substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
-  } else {
-    this
-  }
-}
-
-@ColorInt
-fun Int.adjustAlpha(@IntRange(from = 0, to = 100) factor: Int): Int {
-  val alpha = 255f * (factor.toFloat() / 100f)
-  val red = android.graphics.Color.red(this)
-  val green = android.graphics.Color.green(this)
-  val blue = android.graphics.Color.blue(this)
-  return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
-}
-
-// Check if Color is Dark
-fun Int.isColorDark(): Boolean {
-  val darkness = 1 - (
-    0.299 * android.graphics.Color.red(this) +
-      0.587 * android.graphics.Color.green(this) +
-      0.114 * android.graphics.Color.blue(this)
-    ) / 255
-  return darkness >= 0.5
-}
-
-// Check of opacity of Color
-fun Int.isAlmostTransparent(): Boolean {
-  return this < 25
-}
-
-fun <T> mutableLiveDataOf() = MutableLiveData<T>()
-
-fun <T> MutableLiveData<T>.toLiveData(): LiveData<T> = this
-
-fun File.copyInputStreamToFile(inputStream: InputStream) {
-  inputStream.use { input ->
-    this.outputStream().use { fileOut ->
-      input.copyTo(fileOut)
-    }
-  }
-}
 
 fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
   lazy(LazyThreadSafetyMode.NONE, initializer)
@@ -162,6 +77,7 @@ fun TuneExtraView.Extra.toReminder(reminder: Reminder): Reminder {
   return reminder
 }
 
+@Deprecated("Will be removed in the future")
 fun Reminder.copyExtra(reminder: Reminder) {
   this.useGlobal = reminder.useGlobal
   this.vibrate = reminder.vibrate
@@ -311,38 +227,4 @@ fun ExclusionPickerView.bindProperty(
   this.onExclusionUpdateListener = { a1, a2, a3 ->
     listener.invoke(a1, a2, a3)
   }
-}
-
-fun <T> Calendar.map(func: (Calendar) -> T): T {
-  return func.invoke(this)
-}
-
-fun <T> LiveData<T>.nonNullObserve(owner: LifecycleOwner, observer: Observer<T>) {
-  this.observe(owner) { o: T? ->
-    if (o != null) {
-      observer.onChanged(o)
-    }
-  }
-}
-
-fun <T> LiveData<out T?>.nullObserve(owner: LifecycleOwner, observer: Observer<T>) {
-  this.observe(owner) { o: T? ->
-    if (o != null) {
-      observer.onChanged(o)
-    }
-  }
-}
-
-@MainThread
-@CheckResult
-fun <X, Y> LiveData<X?>.mapNullable(
-  transform: (@JvmSuppressWildcards X) -> (@JvmSuppressWildcards Y)
-): LiveData<Y> {
-  val result = MediatorLiveData<Y>()
-  result.addSource(this) { x ->
-    if (x != null) {
-      result.value = transform(x)
-    }
-  }
-  return result
 }

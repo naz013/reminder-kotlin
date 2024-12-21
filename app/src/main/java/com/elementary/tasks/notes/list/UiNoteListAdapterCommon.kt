@@ -8,8 +8,8 @@ import androidx.annotation.Px
 import coil.load
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.visible
 
 class UiNoteListAdapterCommon {
 

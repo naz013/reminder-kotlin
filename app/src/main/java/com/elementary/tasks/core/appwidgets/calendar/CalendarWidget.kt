@@ -14,7 +14,7 @@ import com.elementary.tasks.core.appwidgets.WidgetPrefsHolder
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.os.intentForClass
+import com.github.naz013.feature.common.android.intentForClass
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.github.naz013.logging.Logger

@@ -2,22 +2,22 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.ScheduleTimes
-import com.elementary.tasks.core.utils.getNonNullList
-import com.elementary.tasks.core.utils.getNonNullMap
-import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.home.scheduleview.data.UiBirthdayScheduleListAdapter
 import com.elementary.tasks.home.scheduleview.data.UiReminderScheduleListAdapter
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.getNonNullList
+import com.github.naz013.feature.common.livedata.getNonNullMap
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
@@ -49,7 +49,7 @@ class ScheduleLiveData(
   private var transformJob: Job? = null
   private val scope = CoroutineScope(Job())
 
-  private val _dateLiveData = mutableLiveDataOf<DateObject>()
+  private val _dateLiveData = MutableLiveData<DateObject>()
   private val reminderSource = _dateLiveData.switchMap {
     scope.observeTable(
       table = Table.Reminder,

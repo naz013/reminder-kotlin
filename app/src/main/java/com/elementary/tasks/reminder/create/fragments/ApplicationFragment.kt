@@ -12,8 +12,8 @@ import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import com.github.naz013.logging.Logger

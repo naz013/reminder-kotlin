@@ -3,8 +3,9 @@ package com.elementary.tasks.calendar.dayview
 import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.arch.OneWayLiveData
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import org.threeten.bp.LocalDate
 
 class WeekViewModel(
@@ -12,9 +13,10 @@ class WeekViewModel(
   private val weekHeaderController: WeekHeaderController
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val week = OneWayLiveData<List<WeekDay>>()
+  private val _week = mutableLiveDataOf<List<WeekDay>>()
+  val week = _week.toLiveData()
 
   fun onDateSelected(date: LocalDate) {
-    week.viewModelPost(weekHeaderController.calculateWeek(date))
+    _week.postValue(weekHeaderController.calculateWeek(date))
   }
 }

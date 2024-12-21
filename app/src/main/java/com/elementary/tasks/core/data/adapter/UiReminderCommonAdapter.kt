@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.data.adapter
 
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
 import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
@@ -13,11 +12,12 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.TextProvider
 
 class UiReminderCommonAdapter(
   private val textProvider: TextProvider,
@@ -57,6 +57,7 @@ class UiReminderCommonAdapter(
             reminder.target,
             packageManagerWrapper.getApplicationName(reminder.target)
           )
+
           type.isLink() -> UiLinkTarget(reminder.target)
           type.isEmail() -> UiEmailTarget(
             reminder.summary,

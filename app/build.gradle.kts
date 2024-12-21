@@ -9,7 +9,6 @@ plugins {
   alias(libs.plugins.navigation.safeargs)
   alias(libs.plugins.crashlytics.gradle)
   alias(libs.plugins.google.services)
-  alias(libs.plugins.ksp)
   alias(libs.plugins.ktlint)
 }
 
@@ -189,6 +188,7 @@ dependencies {
   implementation(project(":logging"))
   implementation(project(":analytics"))
   implementation(project(":repository"))
+  implementation(project(":feature-common"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -236,10 +236,6 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.androidx.lifecycle.common.java8)
   implementation(libs.androidx.lifecycle.livedata.ktx)
-
-  implementation(libs.androidx.room.ktx)
-  implementation(libs.androidx.room.runtime)
-  ksp(libs.androidx.room.compiler)
 
   implementation(libs.androidx.navigation.fragment.ktx)
   implementation(libs.androidx.navigation.ui.ktx)

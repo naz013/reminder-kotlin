@@ -2,7 +2,7 @@ package com.elementary.tasks.core.utils.ui.radius
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.UnitConverter
 import com.elementary.tasks.core.utils.ui.ValueFormatter
 

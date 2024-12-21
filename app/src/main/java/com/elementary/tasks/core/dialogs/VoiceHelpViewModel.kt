@@ -4,10 +4,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName

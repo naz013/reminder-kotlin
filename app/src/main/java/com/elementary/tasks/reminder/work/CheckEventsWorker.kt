@@ -6,9 +6,9 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.EventImportProcessor
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import kotlinx.coroutines.withContext
 
 class CheckEventsWorker(

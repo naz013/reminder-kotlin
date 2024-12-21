@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.platform
 
+import com.github.naz013.domain.Bytes
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -12,8 +12,8 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.os.IntentDataHolder
-import com.elementary.tasks.core.os.intentForClass
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.intentForClass
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.groups.create.CreateGroupActivity

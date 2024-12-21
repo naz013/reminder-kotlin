@@ -5,10 +5,10 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.utils.ui.ValueFormatter
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.isVisible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.isVisible
 import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.visible
 import com.google.android.material.slider.Slider
 
 class MarkerRadiusController(

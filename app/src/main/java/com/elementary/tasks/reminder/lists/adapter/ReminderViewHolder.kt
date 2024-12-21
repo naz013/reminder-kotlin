@@ -10,10 +10,10 @@ import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
 import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visible
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visible
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderBinding
 
 class ReminderViewHolder(

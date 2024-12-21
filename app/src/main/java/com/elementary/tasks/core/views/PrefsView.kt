@@ -14,9 +14,9 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.transparent
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.feature.common.android.visible
 import com.github.naz013.logging.Logger
 
 class PrefsView : RelativeLayout {

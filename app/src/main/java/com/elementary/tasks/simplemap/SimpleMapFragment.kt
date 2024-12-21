@@ -6,7 +6,6 @@ import android.location.Address
 import android.location.Criteria
 import android.location.Location
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,23 +17,23 @@ import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.fragments.BaseMapFragment
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.SystemServiceProvider
-import com.elementary.tasks.core.os.colorOf
-import com.elementary.tasks.core.os.readParcelable
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.android.colorOf
+import com.github.naz013.feature.common.android.readSerializable
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.GeocoderTask
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.BitmapUtils
-import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DrawableHelper
-import com.elementary.tasks.core.utils.ui.gone
+import com.github.naz013.feature.common.android.gone
 import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentSimpleMapBinding
 import com.elementary.tasks.databinding.ViewMapCustomButtonBinding
 import com.elementary.tasks.places.list.PlacesViewModel
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -42,9 +41,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.Serializable
 
 class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
@@ -562,7 +562,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   }
 
   private fun obtainParams(bundle: Bundle): MapParams {
-    return bundle.readParcelable(KEY_PARAMS, MapParams::class.java) ?: MapParams()
+    return bundle.readSerializable(KEY_PARAMS, MapParams::class.java) ?: MapParams()
   }
 
   private fun initMarkerStyleController(view: View) {
@@ -692,43 +692,60 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       .get()
   }
 
-  @Parcelize
   data class MapParams(
+    @SerializedName("isTouch")
     val isTouch: Boolean = true,
+    @SerializedName("isStyles")
     val isStyles: Boolean = true,
+    @SerializedName("isPlaces")
     val isPlaces: Boolean = true,
+    @SerializedName("isSearch")
     val isSearch: Boolean = true,
+    @SerializedName("isRadius")
     val isRadius: Boolean = true,
+    @SerializedName("isLayers")
     val isLayers: Boolean = true,
+    @SerializedName("rememberMapStyle")
     val rememberMapStyle: Boolean = true,
+    @SerializedName("rememberMarkerRadius")
     val rememberMarkerRadius: Boolean = true,
+    @SerializedName("rememberMarkerStyle")
     val rememberMarkerStyle: Boolean = true,
+    @SerializedName("markerStyle")
     val markerStyle: Int = -1,
+    @SerializedName("radiusParams")
     val radiusParams: RadiusParams = RadiusParams(),
+    @SerializedName("mapParams")
     val mapStyleParams: MapStyleParams = MapStyleParams(),
+    @SerializedName("customButtons")
     val customButtons: List<MapCustomButton> = emptyList()
-  ) : Parcelable
+  ) : Serializable
 
-  @Parcelize
   data class RadiusParams(
+    @SerializedName("min_radius")
     val minRadius: Int = RadiusConfig.MIN_RADIUS,
+    @SerializedName("max_radius")
     val maxRadius: Int = RadiusConfig.MAX_RADIUS,
+    @SerializedName("radius")
     val radius: Int = -1
-  ) : Parcelable
+  ) : Serializable
 
-  @Parcelize
   data class MapStyleParams(
+    @SerializedName("map_type")
     val mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
+    @SerializedName("map_style")
     val mapStyle: Int = 0
-  ) : Parcelable
+  ) : Serializable
 
-  @Parcelize
   data class MapCustomButton(
+    @SerializedName("icon")
     @DrawableRes
     val icon: Int,
+    @SerializedName("id")
     val id: Int,
+    @SerializedName("content_description")
     val contentDescription: String? = null
-  ) : Parcelable
+  ) : Serializable
 
   data class MarkerState(
     val latLng: LatLng,
@@ -777,7 +794,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     fun newInstance(mapParams: MapParams): SimpleMapFragment {
       return SimpleMapFragment().apply {
         arguments = Bundle().apply {
-          putParcelable(KEY_PARAMS, mapParams)
+          putSerializable(KEY_PARAMS, mapParams)
         }
       }
     }

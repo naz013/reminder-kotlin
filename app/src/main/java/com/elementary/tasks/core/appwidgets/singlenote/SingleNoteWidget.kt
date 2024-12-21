@@ -13,10 +13,10 @@ import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.os.dp2px
+import com.github.naz013.feature.common.android.dp2px
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.adjustAlpha
+import com.github.naz013.feature.common.android.adjustAlpha
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.repository.NoteRepository
 import org.koin.core.component.KoinComponent

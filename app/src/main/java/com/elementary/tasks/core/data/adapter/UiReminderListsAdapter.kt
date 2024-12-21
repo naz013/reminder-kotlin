@@ -5,7 +5,7 @@ import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.UiReminderListHeader
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import org.threeten.bp.LocalDate
 import java.util.UUID

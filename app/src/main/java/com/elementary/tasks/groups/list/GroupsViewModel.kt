@@ -7,11 +7,11 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table

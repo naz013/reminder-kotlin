@@ -9,8 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.core.os.intentForClass
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.intentForClass
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.voice.ConversationActivity

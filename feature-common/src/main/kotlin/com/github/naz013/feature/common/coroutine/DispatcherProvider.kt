@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils
+package com.github.naz013.feature.common.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

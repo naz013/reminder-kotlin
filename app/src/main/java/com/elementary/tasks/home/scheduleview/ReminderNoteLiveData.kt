@@ -2,11 +2,11 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.lifecycle.MediatorLiveData
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table

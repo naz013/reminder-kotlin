@@ -14,6 +14,7 @@ import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.feature.common.readString
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -10,13 +10,13 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.elementary.tasks.core.utils.getNonNullList
-import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.feature.common.livedata.getNonNullList
+import com.github.naz013.feature.common.plusMillis
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger

@@ -9,7 +9,7 @@ import com.elementary.tasks.core.data.ui.reminder.widget.UiReminderWidgetList
 import com.elementary.tasks.core.data.ui.reminder.widget.UiReminderWidgetShopList
 import com.elementary.tasks.core.data.ui.reminder.widget.UiShopListWidget
 import com.elementary.tasks.core.data.ui.widget.DateSorted
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import java.util.Locale
 

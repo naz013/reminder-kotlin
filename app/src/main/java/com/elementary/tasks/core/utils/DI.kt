@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
@@ -22,7 +21,6 @@ import com.elementary.tasks.core.cloud.converters.BirthdayConverter
 import com.elementary.tasks.core.cloud.converters.ConverterManager
 import com.elementary.tasks.core.cloud.converters.GroupConverter
 import com.elementary.tasks.core.cloud.converters.NoteConverter
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
@@ -87,7 +85,6 @@ import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
-import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.threeten.bp.ZoneId
 
@@ -183,12 +180,6 @@ val dataFlowRepositoryModule = module {
   factory { RepositoryManager(get(), get(), get(), get(), get(), get()) }
 }
 
-fun dbModule(context: Context): Module {
-  return module {
-    factory { NoteToOldNoteConverter(get()) }
-  }
-}
-
 val utilModule = module {
   single { Prefs(get()) }
   factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
@@ -242,8 +233,6 @@ val utilModule = module {
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
 
-  factory { DispatcherProvider() }
-
   factory { WorkManagerProvider(get()) }
   factory { WorkerLauncher(get(), get()) }
 
@@ -253,7 +242,6 @@ val utilModule = module {
   factory { ReminderAnalyticsTracker(get()) }
   factory { VoiceAnalyticsTracker(get()) }
 
-  single { TextProvider(get()) }
   single { FeatureManager(get()) }
   factory { GroupsUtil(get(), get(), get(), get()) }
   factory { ImageDecoder(get(), get(), get()) }

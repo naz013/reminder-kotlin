@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visibleGone
-import com.elementary.tasks.core.utils.ui.visibleInvisible
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.feature.common.android.visibleInvisible
 import com.elementary.tasks.databinding.ListItemGoogleTaskBinding
 
 class GoogleTaskHolder(

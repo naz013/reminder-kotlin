@@ -8,7 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject

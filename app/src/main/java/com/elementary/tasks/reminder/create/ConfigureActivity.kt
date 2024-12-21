@@ -6,9 +6,9 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.applyTopInsets
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.applyTopInsets
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
 import com.github.naz013.logging.Logger

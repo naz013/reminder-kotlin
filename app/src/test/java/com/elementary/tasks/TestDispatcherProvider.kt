@@ -1,6 +1,6 @@
 package com.elementary.tasks
 
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers

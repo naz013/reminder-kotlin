@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.create.fragments.recur.adapter
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.Day
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
@@ -9,6 +8,7 @@ import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
 import com.elementary.tasks.reminder.create.fragments.recur.BuilderParam
+import com.github.naz013.feature.common.android.TextProvider
 
 class ParamToTextAdapter(
   private val textProvider: TextProvider,

@@ -5,8 +5,7 @@ import org.koin.dsl.module
 
 val osModule = module {
   factory { ContactsReader(get()) }
-  single { ContextProvider(get()) }
-  factory { SystemServiceProvider(get()) }
+
   factory { PackageManagerWrapper(get()) }
 
   single { IntentDataHolder() }

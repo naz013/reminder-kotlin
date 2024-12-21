@@ -9,9 +9,9 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.elementary.tasks.core.work.operation.SyncOperationsFactory
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.withContext
 

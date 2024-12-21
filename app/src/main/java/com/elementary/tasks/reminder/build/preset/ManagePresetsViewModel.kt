@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.RecurPresetRepository
 import kotlinx.coroutines.launch
 

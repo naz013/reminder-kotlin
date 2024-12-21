@@ -1,8 +1,8 @@
 package com.elementary.tasks.notes.list
 
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.plus

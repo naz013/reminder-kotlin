@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.data.platform
+package com.github.naz013.domain
 
 import kotlin.experimental.and
 import kotlin.experimental.or

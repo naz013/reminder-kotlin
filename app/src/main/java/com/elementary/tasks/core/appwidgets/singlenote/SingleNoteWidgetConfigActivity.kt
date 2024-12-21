@@ -10,12 +10,12 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
 import com.elementary.tasks.core.data.invokeSuspend
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
-import com.elementary.tasks.core.utils.ui.applyTopInsets
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.applyBottomInsetsMargin
+import com.github.naz013.feature.common.android.applyTopInsets
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.databinding.ActivityWidgetSingleNoteBinding
 import com.github.naz013.analytics.Widget

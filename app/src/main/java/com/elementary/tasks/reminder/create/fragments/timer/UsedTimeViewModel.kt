@@ -5,9 +5,9 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.adapter.UiUsedTimeListAdapter
 import com.elementary.tasks.core.data.observeTable
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.github.naz013.domain.UsedTime
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table

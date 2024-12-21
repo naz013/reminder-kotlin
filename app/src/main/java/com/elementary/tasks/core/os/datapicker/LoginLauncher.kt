@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.core.os.buildIntent
+import com.github.naz013.feature.common.android.buildIntent
 import com.elementary.tasks.pin.PinLoginActivity
 
 class LoginLauncher private constructor(

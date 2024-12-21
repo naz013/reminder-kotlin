@@ -2,12 +2,12 @@ package com.elementary.tasks.core.apps
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import kotlinx.coroutines.launch
 
 @Deprecated("After S")

@@ -10,8 +10,8 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ListItemNoteImageBinding
 
 class ImagesGridAdapter : ListAdapter<UiNoteImage, ImagesGridAdapter.PhotoViewHolder>(

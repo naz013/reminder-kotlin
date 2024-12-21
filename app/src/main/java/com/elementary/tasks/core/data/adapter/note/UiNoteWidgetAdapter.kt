@@ -10,12 +10,12 @@ import com.elementary.tasks.R
 import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
 import com.elementary.tasks.core.os.ColorProvider
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.elementary.tasks.core.utils.isAlmostTransparent
-import com.elementary.tasks.core.utils.isColorDark
+import com.github.naz013.feature.common.android.isAlmostTransparent
+import com.github.naz013.feature.common.android.isColorDark
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.core.views.drawable.NoteTextDrawable

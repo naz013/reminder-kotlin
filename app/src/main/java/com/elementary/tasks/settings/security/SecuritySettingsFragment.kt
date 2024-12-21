@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.BiometricProvider
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 

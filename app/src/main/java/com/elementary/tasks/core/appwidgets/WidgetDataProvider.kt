@@ -6,7 +6,7 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.feature.common.plusMillis
 import com.github.naz013.domain.Reminder
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository

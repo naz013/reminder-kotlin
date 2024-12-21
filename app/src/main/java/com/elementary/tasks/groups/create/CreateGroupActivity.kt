@@ -10,9 +10,9 @@ import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.applyTopInsets
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.applyTopInsets
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

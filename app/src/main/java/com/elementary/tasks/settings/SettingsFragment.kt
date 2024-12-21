@@ -14,8 +14,8 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.logging.Logger

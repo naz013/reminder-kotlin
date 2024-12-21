@@ -2,15 +2,15 @@ package com.elementary.tasks.settings.troubleshooting
 
 import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.os.SystemServiceProvider
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.logging.Logger
 import java.io.File
 

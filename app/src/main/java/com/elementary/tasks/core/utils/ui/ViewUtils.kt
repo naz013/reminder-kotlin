@@ -18,7 +18,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.adjustAlpha
+import com.github.naz013.feature.common.android.adjustAlpha
 import com.github.naz013.logging.Logger
 
 object ViewUtils {

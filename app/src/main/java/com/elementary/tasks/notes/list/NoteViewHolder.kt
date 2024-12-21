@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.dp2px
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.transparent
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.dp2px
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ListItemNoteBinding
 
 class NoteViewHolder(

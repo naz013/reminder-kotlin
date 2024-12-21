@@ -2,9 +2,9 @@ package com.elementary.tasks.groups
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.IdProvider
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.feature.common.android.TextProvider
 import com.github.naz013.repository.ReminderGroupRepository
 import java.util.Random
 

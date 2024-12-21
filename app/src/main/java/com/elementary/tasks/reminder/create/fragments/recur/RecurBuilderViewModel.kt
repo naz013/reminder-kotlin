@@ -3,10 +3,10 @@ package com.elementary.tasks.reminder.create.fragments.recur
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.livedata.toSingleEvent
+import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.ByHourRecurParam
@@ -33,9 +33,9 @@ import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
 import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
-import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.create.fragments.recur.intdialog.Number
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewData

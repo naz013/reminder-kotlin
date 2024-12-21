@@ -10,7 +10,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.DrawableHelper
-import com.elementary.tasks.core.utils.ui.inflater
+import com.github.naz013.feature.common.android.inflater
 import com.elementary.tasks.databinding.ListItemLocationBinding
 
 class LocationPlacesAdapter(

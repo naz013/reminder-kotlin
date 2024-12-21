@@ -8,7 +8,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import com.elementary.tasks.core.os.SystemServiceProvider
+import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.logging.Logger
 import com.google.android.gms.location.FusedLocationProviderClient

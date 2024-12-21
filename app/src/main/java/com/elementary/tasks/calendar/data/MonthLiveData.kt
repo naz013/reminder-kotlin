@@ -2,10 +2,10 @@ package com.elementary.tasks.calendar.data
 
 import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.calendar.EventsCursor
-import com.elementary.tasks.core.os.ContextProvider
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -78,6 +78,7 @@ class MonthLiveData(
             map
           )
         }
+
         is ReminderEventModel -> {
           val eventTime = model.model.due?.localDateTime ?: continue
           setEvent(

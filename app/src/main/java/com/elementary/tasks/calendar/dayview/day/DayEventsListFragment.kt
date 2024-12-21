@@ -16,8 +16,8 @@ import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver

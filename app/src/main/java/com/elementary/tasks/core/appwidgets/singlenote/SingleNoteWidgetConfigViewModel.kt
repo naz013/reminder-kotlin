@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.note.UiNoteListSelectableAdapter
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.adjustAlpha
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.notes.list.SearchableNotesData
+import com.github.naz013.feature.common.android.adjustAlpha
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive

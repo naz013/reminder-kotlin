@@ -2,12 +2,12 @@ package com.elementary.tasks.core.data.adapter.google
 
 import androidx.annotation.ColorInt
 import com.elementary.tasks.core.cloud.GTasks
-import com.github.naz013.domain.GoogleTask
-import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
-import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.feature.common.android.ContextProvider
 
 class UiGoogleTaskPreviewAdapter(
   private val contextProvider: ContextProvider,

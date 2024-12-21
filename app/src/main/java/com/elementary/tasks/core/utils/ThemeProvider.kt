@@ -11,8 +11,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.feature.common.android.adjustAlpha
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 

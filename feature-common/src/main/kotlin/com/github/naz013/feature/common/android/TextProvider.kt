@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils
+package com.github.naz013.feature.common.android
 
 import android.content.Context
 import androidx.annotation.StringRes

@@ -6,11 +6,11 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.TextProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository

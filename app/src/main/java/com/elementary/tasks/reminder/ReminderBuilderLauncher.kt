@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.deeplink.DeepLinkData
-import com.elementary.tasks.core.os.intentForClass
+import com.github.naz013.feature.common.android.intentForClass
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.build.BuildReminderActivity

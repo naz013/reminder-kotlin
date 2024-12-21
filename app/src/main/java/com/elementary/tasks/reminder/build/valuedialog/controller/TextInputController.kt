@@ -14,12 +14,12 @@ import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
-import com.elementary.tasks.core.utils.ui.gone
+import com.github.naz013.feature.common.android.gone
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.core.utils.ui.readText
-import com.elementary.tasks.core.utils.ui.singleClick
-import com.elementary.tasks.core.utils.ui.visible
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.singleClick
+import com.github.naz013.feature.common.android.visible
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.BuilderItemSummaryBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController

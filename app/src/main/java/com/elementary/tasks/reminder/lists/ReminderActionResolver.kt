@@ -5,7 +5,7 @@ import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.startActivity
+import com.github.naz013.feature.common.android.startActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.reminder.ReminderBuilderLauncher

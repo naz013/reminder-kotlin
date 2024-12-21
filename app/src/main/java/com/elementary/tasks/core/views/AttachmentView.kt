@@ -9,8 +9,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ViewAttachmentBinding
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent

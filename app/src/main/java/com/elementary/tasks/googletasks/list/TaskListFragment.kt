@@ -12,21 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.dp2px
-import com.elementary.tasks.core.os.startActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.isColorDark
-import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
-import com.elementary.tasks.core.utils.ui.visible
-import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.googletasks.TasksConstants
@@ -35,6 +26,15 @@ import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.applyBottomInsetsMargin
+import com.github.naz013.feature.common.android.dp2px
+import com.github.naz013.feature.common.android.isColorDark
+import com.github.naz013.feature.common.android.startActivity
+import com.github.naz013.feature.common.android.visible
+import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

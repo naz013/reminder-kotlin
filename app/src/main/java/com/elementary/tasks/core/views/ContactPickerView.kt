@@ -13,9 +13,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.elementary.tasks.core.utils.ui.gone
+import com.github.naz013.feature.common.android.gone
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ViewContactPickerBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

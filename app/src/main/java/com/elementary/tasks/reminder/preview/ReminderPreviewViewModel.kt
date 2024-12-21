@@ -12,13 +12,13 @@ import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData

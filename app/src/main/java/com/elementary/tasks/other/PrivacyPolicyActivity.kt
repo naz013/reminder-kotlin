@@ -10,8 +10,8 @@ import android.webkit.WebViewClient
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.applyTopInsets
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.applyTopInsets
 import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {

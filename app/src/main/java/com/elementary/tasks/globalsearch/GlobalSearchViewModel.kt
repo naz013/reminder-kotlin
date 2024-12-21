@@ -3,11 +3,7 @@ package com.elementary.tasks.globalsearch
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
@@ -16,6 +12,10 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.github.naz013.domain.RecentQuery
 import com.github.naz013.domain.RecentQueryTarget
 import com.github.naz013.domain.RecentQueryType
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RecentQueryRepository
 import kotlinx.coroutines.launch
@@ -56,12 +56,14 @@ class GlobalSearchViewModel(
           objectId = searchResult.objectId
         )
       }
+
       is RecentObjectSearchResult -> {
         ActivityNavigation(
           clazz = searchResult.objectType.toTargetClass(),
           objectId = searchResult.objectId
         )
       }
+
       is RecentSearchResult -> null
     }
   }
@@ -88,6 +90,7 @@ class GlobalSearchViewModel(
           id = id
         )
       }
+
       is RecentObjectSearchResult -> {
         RecentQuery(
           queryType = RecentQueryType.OBJECT,
@@ -98,6 +101,7 @@ class GlobalSearchViewModel(
           targetType = objectType.toTargetType()
         )
       }
+
       is ObjectSearchResult -> {
         RecentQuery(
           queryType = RecentQueryType.OBJECT,

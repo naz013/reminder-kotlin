@@ -1,10 +1,8 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller
 
 import androidx.fragment.app.Fragment
-import com.github.naz013.domain.Place
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
@@ -91,6 +89,8 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ical.ICalWeekS
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksController
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
+import com.github.naz013.domain.Place
+import com.github.naz013.feature.common.android.SystemServiceProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 

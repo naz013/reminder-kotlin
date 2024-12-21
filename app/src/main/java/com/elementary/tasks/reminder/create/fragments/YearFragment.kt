@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.minusMillis
+import com.github.naz013.feature.common.minusMillis
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView

@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.data.platform
 
+import com.github.naz013.domain.Bytes
+
 data class ReminderCreatorConfig(private val value: String) {
 
   private val bytes = Bytes(value)

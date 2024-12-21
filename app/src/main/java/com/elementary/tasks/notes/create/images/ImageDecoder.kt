@@ -5,8 +5,8 @@ import android.net.Uri
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

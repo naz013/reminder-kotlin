@@ -9,9 +9,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.applyStyles
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.transparent
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ListItemShopItemBinding
 import com.elementary.tasks.databinding.ViewListItemBadgeBinding
 

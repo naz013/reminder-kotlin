@@ -25,13 +25,13 @@ import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
-import com.elementary.tasks.core.os.startActivity
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.startActivity
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment

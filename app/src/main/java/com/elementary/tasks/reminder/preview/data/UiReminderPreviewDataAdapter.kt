@@ -5,8 +5,6 @@ import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.UiIcon
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
@@ -21,9 +19,11 @@ import com.elementary.tasks.core.text.UiTextDecoration
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.reminder.Icons
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.feature.common.android.TextProvider
 import java.util.Locale
 
 class UiReminderPreviewDataAdapter(

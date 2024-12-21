@@ -6,8 +6,8 @@ import android.text.TextUtils
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.readLong
-import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.feature.common.readLong
+import com.github.naz013.feature.common.readString
 import com.github.naz013.domain.Birthday
 import com.github.naz013.repository.BirthdayRepository
 

@@ -9,8 +9,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.nullObserve
-import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
+import com.github.naz013.feature.common.livedata.nullObserve
+import com.github.naz013.feature.common.android.applyBottomInsetsMargin
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.google.android.gms.maps.model.LatLng

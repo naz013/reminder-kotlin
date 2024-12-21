@@ -8,12 +8,9 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.deeplink.DeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
+import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.normalizeSummary
-import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -23,6 +20,9 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -344,6 +344,14 @@ class GoogleTaskViewModel(
 
   fun isTimeSelected(): Boolean {
     return timeState.value is TimeState.SelectedTime
+  }
+
+  fun String.normalizeSummary(): String {
+    return if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
+      substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
+    } else {
+      this
+    }
   }
 
   sealed class DateState {

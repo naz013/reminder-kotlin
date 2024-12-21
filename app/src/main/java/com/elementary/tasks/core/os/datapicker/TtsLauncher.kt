@@ -7,7 +7,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.toast
 
 class TtsLauncher private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,

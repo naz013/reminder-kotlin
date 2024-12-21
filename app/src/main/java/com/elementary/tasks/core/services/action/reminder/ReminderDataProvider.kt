@@ -4,8 +4,8 @@ import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.feature.common.android.TextProvider
 
 class ReminderDataProvider(
   private val textProvider: TextProvider,

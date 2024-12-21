@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.append
-import com.elementary.tasks.core.utils.listOfNotEmpty
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.append
+import com.github.naz013.feature.common.listOfNotEmpty
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ListItemBirthdayBinding
 
 class BirthdayHolder(

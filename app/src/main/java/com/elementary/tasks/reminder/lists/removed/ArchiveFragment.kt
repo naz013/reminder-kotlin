@@ -8,12 +8,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.os.SystemServiceProvider
-import com.elementary.tasks.core.os.dp2px
-import com.elementary.tasks.core.utils.nonNullObserve
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.android.dp2px
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
