@@ -9,10 +9,10 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.domain.Birthday
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

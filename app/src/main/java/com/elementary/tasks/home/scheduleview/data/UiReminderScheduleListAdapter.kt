@@ -17,8 +17,8 @@ import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.adjustAlpha
+import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.feature.common.android.adjustAlpha
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 
 class UiReminderScheduleListAdapter(

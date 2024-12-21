@@ -13,9 +13,9 @@ import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.readInt
-import com.elementary.tasks.core.utils.io.readLong
-import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.feature.common.readInt
+import com.github.naz013.feature.common.readLong
+import com.github.naz013.feature.common.readString
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.logging.Logger

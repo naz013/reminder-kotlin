@@ -19,7 +19,7 @@ import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.elementary.tasks.core.utils.isAlmostTransparent
+import com.github.naz013.feature.common.android.isAlmostTransparent
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.repository.NoteRepository

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data
 
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.core.utils.mutableLiveDataOf
+import androidx.lifecycle.MutableLiveData
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +14,7 @@ fun <T> CoroutineScope.observeTable(
   tableChangeListenerFactory: TableChangeListenerFactory,
   queryProducer: suspend() -> T
 ): LiveData<T> {
-  val liveData = mutableLiveDataOf<T>()
+  val liveData = MutableLiveData<T>()
   val listener = tableChangeListenerFactory.create(table) {
     launch(Dispatchers.Default) {
       liveData.postValue(queryProducer())

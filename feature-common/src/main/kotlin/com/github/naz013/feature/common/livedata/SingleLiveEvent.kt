@@ -1,15 +1,14 @@
-package com.elementary.tasks.core.data.livedata
+package com.github.naz013.feature.common.livedata
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SingleLiveEvent<T> : MediatorLiveData<T>() {
+internal class SingleLiveEvent<T> : MediatorLiveData<T>() {
 
   private val observers = ConcurrentHashMap<LifecycleOwner, MutableSet<ObserverWrapper<in T>>>()
 
@@ -72,12 +71,4 @@ class SingleLiveEvent<T> : MediatorLiveData<T>() {
       pending.set(true)
     }
   }
-}
-
-fun <T> LiveData<T>.toSingleEvent(): LiveData<T> {
-  val result = SingleLiveEvent<T>()
-  result.addSource(this) {
-    result.value = it
-  }
-  return result
 }

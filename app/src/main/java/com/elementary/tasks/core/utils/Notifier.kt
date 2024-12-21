@@ -19,7 +19,6 @@ import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -29,6 +28,7 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.domain.Birthday
+import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository

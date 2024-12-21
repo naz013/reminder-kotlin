@@ -13,7 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.WidgetDataProvider
 import com.elementary.tasks.core.appwidgets.WidgetPrefsHolder
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.os.dp2px
+import com.github.naz013.feature.common.android.dp2px
 import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ThemeProvider

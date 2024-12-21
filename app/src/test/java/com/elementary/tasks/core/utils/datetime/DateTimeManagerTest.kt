@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.datetime
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyVararg

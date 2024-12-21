@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.feature.common.android.TextProvider
 import java.util.Locale
 
 class Language(

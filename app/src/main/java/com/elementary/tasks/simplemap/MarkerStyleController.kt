@@ -4,9 +4,9 @@ import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.config.MapConfig
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.isVisible
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.isVisible
+import com.github.naz013.feature.common.android.visible
 import com.github.naz013.colorslider.ColorSlider
 
 class MarkerStyleController(

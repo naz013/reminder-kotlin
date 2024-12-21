@@ -9,7 +9,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.os.data.ContactData
-import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.feature.common.readString
 
 class ContactPicker(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,

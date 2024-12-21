@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.transparent
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ListItemSearchResultBinding
 import com.elementary.tasks.globalsearch.ObjectSearchResult
 import com.elementary.tasks.globalsearch.ObjectType

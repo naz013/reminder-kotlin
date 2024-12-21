@@ -6,7 +6,7 @@ import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.GTasks
 import com.github.naz013.domain.GoogleTask
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.google.gson.Gson
 import kotlinx.coroutines.withContext
 

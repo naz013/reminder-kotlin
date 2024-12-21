@@ -7,8 +7,8 @@ import android.widget.LinearLayout
 import androidx.core.view.children
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PinCodeViewBinding
-import com.elementary.tasks.core.utils.ui.transparent
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.feature.common.android.visible
 
 class PinCodeView : LinearLayout {
 

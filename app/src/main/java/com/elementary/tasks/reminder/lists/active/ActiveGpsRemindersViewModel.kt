@@ -3,8 +3,8 @@ package com.elementary.tasks.reminder.lists.active
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.observeTable
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table

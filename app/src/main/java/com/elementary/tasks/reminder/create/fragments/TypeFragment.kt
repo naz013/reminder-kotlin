@@ -25,9 +25,9 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.visible
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.visible
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView

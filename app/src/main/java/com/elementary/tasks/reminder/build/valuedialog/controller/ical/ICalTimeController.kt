@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.ical
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.startActivity
+import com.github.naz013.feature.common.android.startActivity
 import com.elementary.tasks.databinding.BuilderItemTimeBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController

@@ -5,6 +5,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.core.utils.ThemeProvider
+import com.github.naz013.feature.common.android.ContextProvider
 
 class ColorProvider(
   private val contextProvider: ContextProvider

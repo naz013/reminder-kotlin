@@ -7,12 +7,12 @@ import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewGoogleCalendar
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewHeader
+import com.github.naz013.feature.common.android.TextProvider
 
 class EventToUiReminderPreview(
   private val textProvider: TextProvider,

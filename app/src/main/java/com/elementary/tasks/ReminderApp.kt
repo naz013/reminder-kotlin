@@ -15,7 +15,6 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
 import com.elementary.tasks.core.utils.dataFlowRepositoryModule
-import com.elementary.tasks.core.utils.dbModule
 import com.elementary.tasks.core.utils.newUtilsModule
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
@@ -30,6 +29,7 @@ import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.voice.voiceModule
+import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.repository.repositoryModule
 import org.koin.android.ext.android.get
@@ -66,7 +66,7 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
       modules(
         listOf(
           utilModule,
-          dbModule(this@ReminderApp),
+          featureCommonModule,
           dataFlowRepositoryModule,
           storageModule,
           completableModule,

@@ -3,12 +3,13 @@ package com.elementary.tasks.settings.calendar
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.arch.OneWayLiveData
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.EventImportProcessor
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 
@@ -20,9 +21,14 @@ class EventsImportViewModel(
   private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val calendars = OneWayLiveData<List<SelectableCalendar>>()
-  val selectedCalendars = OneWayLiveData<List<Long>>()
-  val action = OneWayLiveData<ImportAction>()
+  private val _calendars = mutableLiveDataOf<List<SelectableCalendar>>()
+  val calendars = _calendars.toLiveData()
+
+  private val _selectedCalendars = mutableLiveDataOf<List<Long>>()
+  val selectedCalendars = _selectedCalendars.toLiveData()
+
+  private val _action = mutableLiveDataOf<ImportAction>()
+  val action = _action.toLiveData()
 
   fun importEvents(calendarIds: List<Long>) {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -39,8 +45,8 @@ class EventsImportViewModel(
   fun loadCalendars() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val list = googleCalendarUtils.getCalendarsList().map { SelectableCalendar(it) }
-      calendars.viewModelPost(list)
-      selectedCalendars.viewModelPost(prefs.trackCalendarIds.toList())
+      _calendars.postValue(list)
+      _selectedCalendars.postValue(prefs.trackCalendarIds.toList())
     }
   }
 
@@ -52,9 +58,9 @@ class EventsImportViewModel(
       withUIContext {
         postInProgress(false)
         if (result.importCount == 0) {
-          action.viewModelPost(NoEventsAction)
+          _action.postValue(NoEventsAction)
         } else {
-          action.viewModelPost(EventsImportedAction(result.importCount))
+          _action.postValue(EventsImportedAction(result.importCount))
           updatesHelper.updateCalendarWidget()
         }
       }
@@ -63,7 +69,7 @@ class EventsImportViewModel(
 
   sealed class ImportAction
 
-  object NoEventsAction : ImportAction()
+  data object NoEventsAction : ImportAction()
 
   data class EventsImportedAction(
     val count: Int

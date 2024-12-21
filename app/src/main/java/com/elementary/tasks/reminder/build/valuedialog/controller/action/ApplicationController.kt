@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.BuilderItemApplicationBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController

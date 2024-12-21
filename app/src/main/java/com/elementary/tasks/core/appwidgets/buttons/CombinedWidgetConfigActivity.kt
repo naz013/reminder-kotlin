@@ -9,8 +9,8 @@ import com.github.naz013.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
-import com.elementary.tasks.core.utils.ui.applyTopInsets
+import com.github.naz013.feature.common.android.applyBottomInsetsMargin
+import com.github.naz013.feature.common.android.applyTopInsets
 import com.elementary.tasks.databinding.ActivityWidgetCombinedConfigBinding
 
 class CombinedWidgetConfigActivity :

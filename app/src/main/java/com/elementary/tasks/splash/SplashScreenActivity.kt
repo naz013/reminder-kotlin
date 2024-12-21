@@ -10,7 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.os.ContextSwitcher
-import com.elementary.tasks.core.os.finishWith
+import com.github.naz013.feature.common.android.finishWith
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity

@@ -2,14 +2,14 @@ package com.elementary.tasks.core.utils.datetime
 
 import android.app.AlarmManager
 import com.elementary.tasks.R
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.feature.common.minusMillis
+import com.github.naz013.feature.common.plusMillis
 import com.github.naz013.logging.Logger
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Instant

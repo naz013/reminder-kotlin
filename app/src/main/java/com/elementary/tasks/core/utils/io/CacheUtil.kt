@@ -7,7 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
-import com.elementary.tasks.core.utils.copyInputStreamToFile
+import com.github.naz013.feature.common.copyInputStreamToFile
 import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.FileInputStream

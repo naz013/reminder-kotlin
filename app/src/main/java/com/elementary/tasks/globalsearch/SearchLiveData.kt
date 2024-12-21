@@ -2,10 +2,9 @@ package com.elementary.tasks.globalsearch
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import com.elementary.tasks.core.data.observeTable
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Place
@@ -15,6 +14,7 @@ import com.github.naz013.domain.RecentQueryType
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.Note
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
@@ -40,7 +40,7 @@ class SearchLiveData(
   private val tableChangeListenerFactory: TableChangeListenerFactory
 ) : MediatorLiveData<List<SearchResult>>() {
 
-  private val queryLiveDate = mutableLiveDataOf<String>()
+  private val queryLiveDate = MutableLiveData<String>()
 
   private val recentSearchSource = queryLiveDate.switchMap {
     createRecentQueryLiveData(it)
@@ -122,7 +122,7 @@ class SearchLiveData(
   }
 
   private fun <T> emptyLiveData(): LiveData<T> {
-    return mutableLiveDataOf()
+    return MutableLiveData()
   }
 
   private fun transform(

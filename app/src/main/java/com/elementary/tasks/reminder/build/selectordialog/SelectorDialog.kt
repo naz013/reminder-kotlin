@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.gone
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.android.gone
 import com.elementary.tasks.core.utils.ui.onTabSelected
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.elementary.tasks.core.utils.ui.visibleGone
-import com.elementary.tasks.core.utils.ui.visibleInvisible
+import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.feature.common.android.visibleInvisible
 import com.elementary.tasks.databinding.BottomSheetBuilderSelectorBinding
 import com.elementary.tasks.reminder.build.selectordialog.params.SelectorAdapter
 import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetAdapter

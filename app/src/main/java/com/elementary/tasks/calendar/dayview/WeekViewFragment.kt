@@ -11,7 +11,7 @@ import com.elementary.tasks.calendar.dayview.pager.DayPagerAdapter
 import com.elementary.tasks.calendar.dayview.weekheader.WeekAdapter
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
-import com.elementary.tasks.core.utils.nonNullObserve
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.github.naz013.logging.Logger

@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes
 
+import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.list.NotesViewModel
@@ -15,6 +16,8 @@ import org.koin.dsl.module
 
 val noteModule = module {
   factory { ReminderToUiNoteAttachedReminder(get()) }
+
+  factory { NoteToOldNoteConverter(get()) }
 
   single { ImagesSingleton(get()) }
 

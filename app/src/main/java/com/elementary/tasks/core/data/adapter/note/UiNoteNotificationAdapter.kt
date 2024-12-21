@@ -5,10 +5,10 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.isAlmostTransparent
-import com.elementary.tasks.core.utils.isColorDark
+import com.github.naz013.feature.common.android.isAlmostTransparent
+import com.github.naz013.feature.common.android.isColorDark
 
 class UiNoteNotificationAdapter(
   private val themeProvider: ThemeProvider,

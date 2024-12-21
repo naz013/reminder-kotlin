@@ -3,9 +3,9 @@ package com.elementary.tasks.settings.voice
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.livedata.toLiveData
 import org.threeten.bp.LocalTime
 
 class TimesViewModel(

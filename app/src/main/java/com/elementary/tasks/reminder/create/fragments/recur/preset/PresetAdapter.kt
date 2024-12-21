@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.elementary.tasks.core.utils.ui.visibleInvisible
+import com.github.naz013.feature.common.android.visibleInvisible
 import com.elementary.tasks.databinding.ListItemRecurPresetBinding
 
 class PresetAdapter(

@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.action.ActionHandler
@@ -14,7 +14,7 @@ import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs

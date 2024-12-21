@@ -12,12 +12,12 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiUsedTimeList
 import com.elementary.tasks.core.utils.bindProperty
-import com.elementary.tasks.core.utils.minusMillis
-import com.elementary.tasks.core.utils.nonNullObserve
+import com.github.naz013.feature.common.minusMillis
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.core.views.TimerPickerView

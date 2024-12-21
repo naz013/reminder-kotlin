@@ -8,7 +8,7 @@ import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.drawable.shapes.RoundRectShape
 import androidx.annotation.ColorInt
-import com.elementary.tasks.core.os.dp2px
+import com.github.naz013.feature.common.android.dp2px
 
 data class NoteDrawableParams(
   val context: Context,

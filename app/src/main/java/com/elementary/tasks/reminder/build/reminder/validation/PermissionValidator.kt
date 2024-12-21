@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.bi.constraint.PermissionConstraint

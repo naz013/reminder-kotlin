@@ -1,14 +1,14 @@
 package com.elementary.tasks.reminder.lists.data
 
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.TextProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
@@ -72,6 +72,7 @@ class UiReminderListsAdapter(
           else -> formattedDate
         }
       }
+
       isActive -> textProvider.getText(R.string.permanent)
       else -> textProvider.getText(R.string.disabled)
     }

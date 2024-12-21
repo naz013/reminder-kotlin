@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.dp2px
+import com.github.naz013.feature.common.android.dp2px
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment

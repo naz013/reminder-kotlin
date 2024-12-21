@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.io
+package com.github.naz013.feature.common
 
 import android.database.Cursor
 

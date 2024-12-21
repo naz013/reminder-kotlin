@@ -4,8 +4,8 @@ import android.content.res.ColorStateList
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visibleInvisible
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visibleInvisible
 import com.elementary.tasks.databinding.ListItemReminderPreviewElementBinding
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewElement
 

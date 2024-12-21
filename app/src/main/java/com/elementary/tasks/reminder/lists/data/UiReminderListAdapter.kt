@@ -4,7 +4,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
@@ -17,13 +16,14 @@ import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.elementary.tasks.core.utils.TextProvider
-import com.elementary.tasks.core.utils.adjustAlpha
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
+import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
-import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.feature.common.android.adjustAlpha
 
 class UiReminderListAdapter(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,

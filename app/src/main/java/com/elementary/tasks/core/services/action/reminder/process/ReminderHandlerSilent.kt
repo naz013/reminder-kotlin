@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.services.action.ActionHandler
@@ -13,7 +13,7 @@ import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.TextProvider
+import com.github.naz013.feature.common.android.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import com.github.naz013.logging.Logger

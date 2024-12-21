@@ -3,9 +3,9 @@ package com.elementary.tasks.home.scheduleview.viewholder
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.elementary.tasks.core.utils.ui.gone
-import com.elementary.tasks.core.utils.ui.inflater
-import com.elementary.tasks.core.utils.ui.visible
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ListItemScheduleBirthdayBinding
 import com.elementary.tasks.home.scheduleview.data.UiBirthdayScheduleList
 

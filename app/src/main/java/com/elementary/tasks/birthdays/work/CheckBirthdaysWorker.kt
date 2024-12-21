@@ -9,9 +9,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.feature.common.readString
 import com.github.naz013.domain.Birthday
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.withContext

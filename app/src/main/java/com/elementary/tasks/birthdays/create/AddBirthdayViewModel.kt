@@ -12,12 +12,12 @@ import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature

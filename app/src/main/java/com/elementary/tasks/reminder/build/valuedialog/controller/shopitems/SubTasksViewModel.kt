@@ -1,19 +1,19 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.shopitems
 
-import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.github.naz013.domain.reminder.ShopItem
+import androidx.lifecycle.MutableLiveData
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.mutableLiveDataOf
-import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
 
 class SubTasksViewModel(
   private val dateTimeManager: DateTimeManager
 ) {
 
-  private val _showItems = mutableLiveDataOf<List<ShopItem>>()
+  private val _showItems = MutableLiveData<List<ShopItem>>()
   val showItems = _showItems.toLiveData()
 
-  private val _saveItems = mutableLiveDataOf<List<ShopItem>>()
+  private val _saveItems = MutableLiveData<List<ShopItem>>()
   val saveItems = _saveItems.toSingleEvent()
 
   private var internalItems: List<ShopItem> = emptyList()

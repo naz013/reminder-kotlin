@@ -7,7 +7,7 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import java.text.SimpleDateFormat

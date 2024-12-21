@@ -7,7 +7,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.apps.SelectApplicationActivity
-import com.elementary.tasks.core.os.intentForClass
+import com.github.naz013.feature.common.android.intentForClass
 import com.elementary.tasks.core.utils.Constants
 
 class ApplicationPicker private constructor(

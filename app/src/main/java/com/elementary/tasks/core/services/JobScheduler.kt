@@ -16,11 +16,11 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.os.SystemServiceProvider
+import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.minusMillis
+import com.github.naz013.feature.common.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker

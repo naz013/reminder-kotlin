@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.os.ContextProvider
+import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 
 class ReminderPredictionCalculator(

@@ -9,10 +9,10 @@ import com.github.naz013.domain.Place
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.applyTopInsets
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.android.applyTopInsets
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.elementary.tasks.pin.PinLoginActivity

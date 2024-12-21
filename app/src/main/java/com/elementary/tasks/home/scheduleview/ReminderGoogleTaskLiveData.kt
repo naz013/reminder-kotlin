@@ -4,8 +4,8 @@ import androidx.lifecycle.MediatorLiveData
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
-import com.elementary.tasks.core.utils.DispatcherProvider
-import com.elementary.tasks.core.utils.getNonNullList
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.getNonNullList
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.repository.GoogleTaskListRepository

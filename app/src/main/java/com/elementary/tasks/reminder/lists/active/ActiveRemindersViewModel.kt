@@ -7,11 +7,11 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

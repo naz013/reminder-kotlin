@@ -13,13 +13,13 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.SystemServiceProvider
+import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.nonNullObserve
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.applyBottomInsets
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.applyBottomInsets
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.pin.PinLoginActivity

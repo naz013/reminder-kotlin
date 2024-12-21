@@ -2,6 +2,8 @@ package com.elementary.tasks.core.os
 
 import android.util.TypedValue
 import androidx.annotation.Px
+import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.feature.common.android.spToPx
 
 class UnitsConverter(
   private val contextProvider: ContextProvider

@@ -8,11 +8,11 @@ import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.nonNullObserve
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject

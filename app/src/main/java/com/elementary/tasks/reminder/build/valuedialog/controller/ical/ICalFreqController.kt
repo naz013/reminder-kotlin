@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.ical
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.startActivity
+import com.github.naz013.feature.common.android.startActivity
 import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractTypeController

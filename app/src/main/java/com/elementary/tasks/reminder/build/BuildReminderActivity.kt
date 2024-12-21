@@ -18,11 +18,11 @@ import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.nonNullObserve
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.elementary.tasks.core.utils.ui.singleClick
-import com.elementary.tasks.core.utils.ui.visible
-import com.elementary.tasks.core.utils.ui.visibleGone
+import com.github.naz013.feature.common.android.singleClick
+import com.github.naz013.feature.common.android.visible
+import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ActivityReminderBuilderBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.build.adapter.BuilderAdapter

@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.arch.ThemedActivity
-import com.elementary.tasks.core.os.intentForClass
-import com.elementary.tasks.core.os.readSerializable
+import com.github.naz013.feature.common.android.intentForClass
+import com.github.naz013.feature.common.android.readSerializable
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity

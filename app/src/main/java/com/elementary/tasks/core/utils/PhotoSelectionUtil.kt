@@ -17,7 +17,7 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.CameraPhotoPicker
 import com.elementary.tasks.core.os.datapicker.MultiPicturePicker
-import com.elementary.tasks.core.os.toast
+import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.databinding.ViewUrlFieldBinding
 import com.github.naz013.logging.Logger

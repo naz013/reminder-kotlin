@@ -1,8 +1,7 @@
-package com.elementary.tasks.core.os
+package com.github.naz013.feature.common.android
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.util.TypedValue
 import androidx.annotation.ColorRes
 import androidx.annotation.Px
@@ -43,13 +42,3 @@ fun Context.spToPx(sp: Float): Float {
     resources.displayMetrics
   )
 }
-
-@Px
-fun Context.getActionBarSize(): Int {
-  val value = TypedValue()
-  theme.resolveAttribute(android.R.attr.actionBarSize, value, true)
-  return TypedValue.complexToDimensionPixelSize(value.data, resources.displayMetrics)
-}
-
-fun Context.isHorizontal() =
-  resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE

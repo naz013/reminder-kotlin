@@ -13,7 +13,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.feature.common.readString
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
