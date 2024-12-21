@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
@@ -8,7 +8,7 @@ import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
@@ -83,12 +83,15 @@ class DateTimeInjector(
           delayDate != null && delayTime != null -> {
             LocalDateTime.of(delayDate, delayTime)
           }
+
           delayDate != null -> {
             LocalDateTime.of(delayDate, LocalTime.now())
           }
+
           delayTime != null -> {
             LocalDateTime.of(LocalDate.now(), delayTime)
           }
+
           else -> null
         }
         if (delayDateTime != null && dateTimeManager.isCurrent(delayDateTime)) {

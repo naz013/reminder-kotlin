@@ -8,7 +8,7 @@ import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteWidget
 import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.ContextProvider

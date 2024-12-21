@@ -1,16 +1,19 @@
 package com.elementary.tasks.googletasks.tasklist
 
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -18,13 +21,22 @@ class GoogleTaskListViewModel(
   listId: String,
   private val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
-  private val googleTasksDao: GoogleTasksDao,
-  private val googleTaskListsDao: GoogleTaskListsDao,
-  private val analyticsEventSender: AnalyticsEventSender
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
+  private val analyticsEventSender: AnalyticsEventSender,
+  tableChangeListenerFactory: TableChangeListenerFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  var googleTaskList = googleTaskListsDao.loadById(listId)
-  var googleTask = googleTasksDao.loadAllByList(listId)
+  var googleTaskList = viewModelScope.observeTable(
+    table = Table.GoogleTaskList,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskListRepository.getById(listId) }
+  )
+  var googleTask = viewModelScope.observeTable(
+    table = Table.GoogleTask,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskRepository.getAllByList(listId) }
+  )
 
   var isEdited = false
   var listId: String = ""
@@ -48,14 +60,14 @@ class GoogleTaskListViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val def = googleTaskList.def
       gTasks.deleteTaskList(googleTaskList.listId)
-      googleTaskListsDao.delete(googleTaskList)
-      googleTasksDao.deleteAll(googleTaskList.listId)
+      googleTaskListRepository.delete(googleTaskList.listId)
+      googleTaskRepository.deleteAll(googleTaskList.listId)
       if (def == 1) {
-        val lists = googleTaskListsDao.all()
+        val lists = googleTaskListRepository.getAll()
         if (lists.isNotEmpty()) {
           val taskList = lists[0]
           taskList.def = 1
-          googleTaskListsDao.insert(taskList)
+          googleTaskListRepository.save(taskList)
         }
       }
       postInProgress(false)
@@ -71,10 +83,10 @@ class GoogleTaskListViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       if (googleTaskList.isDefault()) {
-        val default = googleTaskListsDao.getDefault()
+        val default = googleTaskListRepository.getDefault()
         default.forEach {
           it.def = 0
-          googleTaskListsDao.insert(it)
+          googleTaskListRepository.save(it)
         }
       }
       gTasks.insertTasksList(googleTaskList.title, googleTaskList.color)
@@ -92,13 +104,13 @@ class GoogleTaskListViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       if (googleTaskList.isDefault()) {
-        val default = googleTaskListsDao.getDefault()
+        val default = googleTaskListRepository.getDefault()
         default.forEach {
           it.def = 0
-          googleTaskListsDao.insert(it)
+          googleTaskListRepository.save(it)
         }
       }
-      googleTaskListsDao.insert(googleTaskList)
+      googleTaskListRepository.save(googleTaskList)
       try {
         gTasks.updateTasksList(googleTaskList.title, googleTaskList.listId)
         postInProgress(false)

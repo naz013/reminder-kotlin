@@ -9,9 +9,9 @@ import com.elementary.tasks.reminder.build.bi.BiFactoryICal
 import com.elementary.tasks.reminder.build.bi.BiFilter
 import com.elementary.tasks.reminder.build.bi.CreatorConfigFilter
 import com.elementary.tasks.reminder.build.bi.LocationFilter
-import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.elementary.tasks.reminder.build.formatter.factory.RadiusFormatterFactory
+import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.logic.BuilderItemBlockedByConstraintCalculator
 import com.elementary.tasks.reminder.build.logic.BuilderItemMandatoryIfConstraintCalculator
 import com.elementary.tasks.reminder.build.logic.BuilderItemPermissionConstraintCalculator
@@ -25,8 +25,8 @@ import com.elementary.tasks.reminder.build.logic.builderstate.BuilderStateCalcul
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BiValueToBuilderSchemeValue
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
-import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
+import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
@@ -87,7 +87,7 @@ val reminderModule = module {
   viewModel { RecurBuilderViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { PresetViewModel(get(), get(), get()) }
 
-  viewModel { ActiveGpsRemindersViewModel(get(), get()) }
+  viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
@@ -154,11 +154,12 @@ val reminderModule = module {
     )
   }
 
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
-  viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
+  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get(), get()) }
   viewModel { (id: String) ->
     EditReminderViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),

@@ -6,6 +6,6 @@ import org.koin.android.ext.android.get
 
 class TasksService : RemoteViewsService() {
   override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-    return TasksFactory(applicationContext, intent, get())
+    return TasksFactory(applicationContext, intent, get(), get())
   }
 }

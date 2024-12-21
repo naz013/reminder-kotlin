@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.github.naz013.logging.Logger
 

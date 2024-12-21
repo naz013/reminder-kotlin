@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
@@ -18,17 +17,18 @@ import com.elementary.tasks.reminder.build.PriorityBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
+import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.repository.GoogleTaskListRepository
 
 class ExtrasDecomposer(
   private val biFactory: BiFactory,
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleCalendarUtils: GoogleCalendarUtils
 ) {
 
-  operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val summary = reminder.summary.takeIf { it.isNotBlank() }
       ?.let { biFactory.createWithValue(BiType.SUMMARY, it, SummaryBuilderItem::class.java) }
 
@@ -64,7 +64,7 @@ class ExtrasDecomposer(
     }
 
     val googleTaskList = reminder.taskListId.takeIf { !it.isNullOrEmpty() }
-      ?.let { googleTaskListsDao.getById(it) }
+      ?.let { googleTaskListRepository.getById(it) }
       ?.let {
         biFactory.createWithValue(
           BiType.GOOGLE_TASK_LIST,

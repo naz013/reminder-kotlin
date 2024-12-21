@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.adapter.birthday
 
-import com.elementary.tasks.core.data.models.Birthday
+import com.github.naz013.domain.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager

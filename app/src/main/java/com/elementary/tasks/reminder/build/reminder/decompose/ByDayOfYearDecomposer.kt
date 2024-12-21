@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
 import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
@@ -15,7 +15,7 @@ class ByDayOfYearDecomposer(
   private val biFactory: BiFactory
 ) {
 
-  operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val dateTIme = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return emptyList()
 
     val dayOfYear = runCatching {

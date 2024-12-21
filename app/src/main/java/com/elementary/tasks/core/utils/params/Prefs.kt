@@ -7,7 +7,7 @@ import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.github.naz013.domain.font.FontParams
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
 import java.util.Locale

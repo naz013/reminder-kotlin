@@ -8,7 +8,6 @@ import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.appwidgets.widgetModule
 import com.elementary.tasks.core.data.adapter.adapterModule
-import com.elementary.tasks.core.data.repository.repositoryModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.services.servicesModule
@@ -32,6 +31,7 @@ import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.voice.voiceModule
 import com.github.naz013.logging.initLogging
+import com.github.naz013.repository.repositoryModule
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -75,7 +75,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           viewModelModule,
           adapterModule,
           actionModule,
-          repositoryModule,
           uiUtilsModule,
           reminderModule,
           widgetModule,
@@ -89,7 +88,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           googleTaskModule,
           workModule,
           noteModule,
-          servicesModule
+          servicesModule,
+          repositoryModule
         )
       )
     }

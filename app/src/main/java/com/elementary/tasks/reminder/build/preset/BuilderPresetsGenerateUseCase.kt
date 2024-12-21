@@ -2,11 +2,7 @@ package com.elementary.tasks.reminder.build.preset
 
 import android.app.AlarmManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.PresetBuilderScheme
-import com.elementary.tasks.core.data.models.PresetType
-import com.elementary.tasks.core.data.models.RecurPreset
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.protocol.WeekDaysProtocol
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -22,7 +18,11 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.PresetBuilderScheme
+import com.github.naz013.domain.PresetType
+import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.reminder.BiType
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -36,7 +36,7 @@ class BuilderPresetsGenerateUseCase(
 
   private val context by lazy { contextProvider.context }
 
-  operator fun invoke(): List<RecurPreset> {
+  suspend operator fun invoke(): List<RecurPreset> {
     return listOf(
       createPreset(
         name = context.getString(R.string.builder_preset_remind_at_exact_date_and_time),

@@ -7,5 +7,5 @@ import org.koin.dsl.module
 val widgetModule = module {
   single { WidgetPrefsHolder(get()) }
 
-  viewModel { SingleNoteWidgetConfigViewModel(get(), get(), get(), get(), get()) }
+  viewModel { SingleNoteWidgetConfigViewModel(get(), get(), get(), get()) }
 }

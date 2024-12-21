@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.shopitems
 
 import androidx.recyclerview.widget.DiffUtil
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.reminder.ShopItem
 
 class ShopItemDiffCallback : DiffUtil.ItemCallback<ShopItem>() {
   override fun areItemsTheSame(oldItem: ShopItem, newItem: ShopItem): Boolean {

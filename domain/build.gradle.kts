@@ -15,6 +15,11 @@ kotlin {
   }
 }
 
+dependencies {
+  implementation(libs.gson)
+  implementation(libs.threetenbp)
+}
+
 ktlint {
   android = false
   outputColorName.set("RED")

@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.create.fragments
 
 import android.view.View
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.reminder.create.ReminderStateViewModel
 
 @Deprecated("Replaced by new Builder")

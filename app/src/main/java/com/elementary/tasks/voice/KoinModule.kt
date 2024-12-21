@@ -7,10 +7,9 @@ val voiceModule = module {
   factory { VoiceCommandProcessor(get(), get(), get(), get(), get()) }
   factory { ContactsHelper(get()) }
 
-  viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get()) }
+  viewModel { (id: String) -> VoiceResultDialogViewModel(id, get(), get(), get(), get()) }
   viewModel {
     ConversationViewModel(
-      get(),
       get(),
       get(),
       get(),

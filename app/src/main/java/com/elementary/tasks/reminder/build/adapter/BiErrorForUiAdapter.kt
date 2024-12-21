@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.BuilderItemError
 
 class BiErrorForUiAdapter(

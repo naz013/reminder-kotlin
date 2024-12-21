@@ -7,19 +7,19 @@ import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
-import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.github.naz013.domain.Birthday
+import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 class BirthdaysViewModel(
-  private val birthdaysDao: BirthdaysDao,
+  private val birthdayRepository: BirthdayRepository,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
@@ -28,9 +28,9 @@ class BirthdaysViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val birthdaysData = SearchableBirthdayData(
-    dispatcherProvider,
-    viewModelScope,
-    birthdaysDao
+    dispatcherProvider = dispatcherProvider,
+    parentScope = viewModelScope,
+    birthdayRepository = birthdayRepository
   )
   val birthdays = birthdaysData.map { list ->
     list.map { uiBirthdayListAdapter.convert(it) }.sortedBy { it.nextBirthdayDateMillis }
@@ -43,7 +43,7 @@ class BirthdaysViewModel(
   fun deleteBirthday(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdaysDao.delete(id)
+      birthdayRepository.delete(id)
       notifier.showBirthdayPermanent()
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
       birthdaysData.refresh()
@@ -57,14 +57,14 @@ class BirthdaysViewModel(
   internal class SearchableBirthdayData(
     dispatcherProvider: DispatcherProvider,
     parentScope: CoroutineScope,
-    private val birthdaysDao: BirthdaysDao
+    private val birthdayRepository: BirthdayRepository
   ) : SearchableLiveData<List<Birthday>>(parentScope + dispatcherProvider.default()) {
 
-    override fun runQuery(query: String): List<Birthday> {
+    override suspend fun runQuery(query: String): List<Birthday> {
       return if (query.isEmpty()) {
-        birthdaysDao.getAll()
+        birthdayRepository.getAll()
       } else {
-        birthdaysDao.searchByName(query.lowercase())
+        birthdayRepository.searchByName(query.lowercase())
       }
     }
   }

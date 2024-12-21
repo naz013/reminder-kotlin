@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import org.junit.Before
 import org.junit.Test
 

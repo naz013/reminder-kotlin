@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.adapter.note
 
-import com.elementary.tasks.core.data.models.ImageFile
+import com.github.naz013.domain.note.ImageFile
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 
 class UiNoteImagesAdapter {

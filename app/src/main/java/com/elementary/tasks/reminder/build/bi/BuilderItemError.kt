@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.build.bi
 
+import com.github.naz013.domain.reminder.BiType
+
 sealed class BuilderItemError {
   data class RequiresAllConstraintError(
     val constraints: List<BiType>

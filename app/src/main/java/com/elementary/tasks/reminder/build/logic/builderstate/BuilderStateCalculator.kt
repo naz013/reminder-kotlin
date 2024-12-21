@@ -4,7 +4,7 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.BuilderState
 import com.elementary.tasks.reminder.build.EmptyState
 import com.elementary.tasks.reminder.build.ReadyState
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 
 class BuilderStateCalculator {
 

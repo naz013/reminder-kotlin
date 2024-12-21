@@ -6,19 +6,22 @@ import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.completables.ReminderCompletable
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.OldNote
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.OldNote
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import java.io.File
@@ -28,13 +31,16 @@ import java.io.InputStreamReader
 import java.lang.ref.WeakReference
 
 class BackupTool(
-  private val appDb: AppDb,
+  private val reminderRepository: ReminderRepository,
   private val reminderCompletable: ReminderCompletable,
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
   private val noteRepository: NoteRepository,
   private val noteToOldNoteConverter: NoteToOldNoteConverter,
-  private val memoryUtil: MemoryUtil
+  private val memoryUtil: MemoryUtil,
+  private val birthdayRepository: BirthdayRepository,
+  private val placeRepository: PlaceRepository,
+  private val reminderGroupRepository: ReminderGroupRepository
 ) {
 
   fun importAll(
@@ -66,30 +72,29 @@ class BackupTool(
               it.copy(isDefaultGroup = false)
             }
             if (replace) {
-              appDb.reminderGroupDao().deleteAll()
+              reminderGroupRepository.deleteAll()
               allData.groups[0] = allData.groups[0].copy(isDefaultGroup = true)
             }
-            allData.groups.forEach { appDb.reminderGroupDao().insert(it) }
-            appDb.reminderGroupDao().defaultGroup()
+            allData.groups.forEach { reminderGroupRepository.save(it) }
+            reminderGroupRepository.defaultGroup()
           } else {
-            appDb.reminderGroupDao().defaultGroup()
+            reminderGroupRepository.defaultGroup()
           }
 
           if (allData.reminders.isNotEmpty()) {
             Logger.d("importAll: has reminders ${allData.reminders.size}")
             hasAnyData = true
-            val allGroups = appDb.reminderGroupDao().all()
+            val allGroups = reminderGroupRepository.getAll()
             if (replace) {
-              appDb.reminderDao().deleteAll()
+              reminderRepository.deleteAll()
             }
-            val dao = appDb.reminderDao()
             allData.reminders.forEach {
               if (!hasGroup(it.groupUuId, allGroups) && defGroup != null) {
                 it.groupUuId = defGroup.groupUuId
                 it.groupColor = defGroup.groupColor
                 it.groupTitle = defGroup.groupTitle
               }
-              dao.insert(it)
+              reminderRepository.save(it)
               reminderCompletable.action(it)
             }
           }
@@ -98,35 +103,35 @@ class BackupTool(
             Logger.d("importAll: has birthdays ${allData.birthdays.size}")
             hasAnyData = true
             if (replace) {
-              appDb.birthdaysDao().deleteAll()
+              birthdayRepository.deleteAll()
             }
-            allData.birthdays.forEach { appDb.birthdaysDao().insert(it) }
+            allData.birthdays.forEach { birthdayRepository.save(it) }
           }
 
           if (allData.places.isNotEmpty()) {
             Logger.d("importAll: has places ${allData.places.size}")
             hasAnyData = true
             if (replace) {
-              appDb.placesDao().deleteAll()
+              placeRepository.deleteAll()
             }
-            allData.places.forEach { appDb.placesDao().insert(it) }
+            allData.places.forEach { placeRepository.save(it) }
           }
 
           if (allData.notes.isNotEmpty()) {
             Logger.d("importAll: has notes ${allData.notes.size}")
             hasAnyData = true
             if (replace) {
-              appDb.notesDao().deleteAllImages()
-              appDb.notesDao().deleteAllNotes()
+              noteRepository.deleteAllImages()
+              noteRepository.deleteAllNotes()
             }
             allData.notes.mapNotNull { noteToOldNoteConverter.toNote(it) }
               .filter { it.note != null }
               .forEach {
                 it.note?.also { note: Note ->
                   it.images.forEach { image ->
-                    appDb.notesDao().insert(image)
+                    noteRepository.save(image)
                   }
-                  appDb.notesDao().insert(note)
+                  noteRepository.save(note)
                 }
               }
           }
@@ -149,13 +154,13 @@ class BackupTool(
     return false
   }
 
-  fun exportAll(): File? {
+  suspend fun exportAll(): File? {
     val allData = AllData(
-      reminders = appDb.reminderDao().getAll(),
-      groups = appDb.reminderGroupDao().all().toMutableList(),
+      reminders = reminderRepository.getAll(),
+      groups = reminderGroupRepository.getAll().toMutableList(),
       notes = noteRepository.getAll().mapNotNull { noteToOldNoteConverter.toOldNote(it) },
-      places = appDb.placesDao().getAll(),
-      birthdays = appDb.birthdaysDao().getAll()
+      places = placeRepository.getAll(),
+      birthdays = birthdayRepository.getAll()
     )
     return createAllDataFile(allData)
   }

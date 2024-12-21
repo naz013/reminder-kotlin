@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.shopitems
 
 import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData

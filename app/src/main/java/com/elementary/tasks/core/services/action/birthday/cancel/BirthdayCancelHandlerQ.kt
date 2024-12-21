@@ -2,13 +2,13 @@ package com.elementary.tasks.core.services.action.birthday.cancel
 
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.github.naz013.domain.Birthday
+import com.github.naz013.repository.BirthdayRepository
 import org.threeten.bp.LocalDate
 
 class BirthdayCancelHandlerQ(
@@ -19,7 +19,7 @@ class BirthdayCancelHandlerQ(
   private val updatesHelper: UpdatesHelper
 ) : ActionHandler<Birthday> {
 
-  override fun handle(data: Birthday) {
+  override suspend fun handle(data: Birthday) {
     birthdayRepository.save(
       data.copy(
         updatedAt = dateTimeManager.getNowGmtDateTime(),

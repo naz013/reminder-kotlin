@@ -4,7 +4,7 @@ import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 
 class BiTypeForUiAdapter(

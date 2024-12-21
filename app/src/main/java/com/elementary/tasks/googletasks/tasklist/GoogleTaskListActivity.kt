@@ -6,16 +6,17 @@ import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.nullObserve
 import com.elementary.tasks.core.utils.ui.applyBottomInsets
 import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
+import com.github.naz013.domain.GoogleTaskList
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -97,7 +98,7 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
   }
 
   private fun initViewModel() {
-    viewModel.googleTaskList.nonNullObserve(this) { editTaskList(it) }
+    viewModel.googleTaskList.nullObserve(this) { editTaskList(it) }
     viewModel.isInProgress.nonNullObserve(this) { updateProgress(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       handleBackPress().takeIf { commands == Commands.DELETED || commands == Commands.SAVED }

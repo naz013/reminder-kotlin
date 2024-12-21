@@ -1,15 +1,15 @@
 package com.elementary.tasks.core.cloud
 
 import android.content.Context
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.usecase.GoogleTaskFactory
 import com.elementary.tasks.googletasks.usecase.GoogleTaskListFactory
+import com.github.naz013.domain.GoogleTask
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
@@ -21,8 +21,8 @@ import java.util.Collections
 
 class GTasks(
   private val context: Context,
-  private val googleTasksDao: GoogleTasksDao,
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val googleTaskFactory: GoogleTaskFactory,
@@ -87,7 +87,7 @@ class GTasks(
     }
   }
 
-  fun insertTask(item: GoogleTask): Boolean {
+  suspend fun insertTask(item: GoogleTask): Boolean {
     if (item.title.isEmpty()) {
       return false
     }
@@ -105,7 +105,7 @@ class GTasks(
       if (listId.isNotEmpty()) {
         result = withService { it.tasks().insert(listId, task).execute() }
       } else {
-        val googleTaskList = googleTaskListsDao.defaultGoogleTaskList()
+        val googleTaskList = googleTaskListRepository.defaultGoogleTaskList()
         if (googleTaskList != null) {
           item.listId = googleTaskList.listId
           result = withService { it.tasks().insert(googleTaskList.listId, task).execute() }
@@ -118,7 +118,7 @@ class GTasks(
         }
       }
       if (result != null) {
-        googleTasksDao.insert(googleTaskFactory.update(item, result))
+        googleTaskRepository.save(googleTaskFactory.update(item, result))
         return true
       }
     } catch (e: Exception) {
@@ -128,7 +128,7 @@ class GTasks(
     return false
   }
 
-  fun updateTaskStatus(status: String, item: GoogleTask) {
+  suspend fun updateTaskStatus(status: String, item: GoogleTask) {
     try {
       val task = withService { it.tasks().get(item.listId, item.taskId).execute() } ?: return
       task.status = status
@@ -138,7 +138,7 @@ class GTasks(
       task.updated = dateTimeManager.toRfc3339Format(System.currentTimeMillis())
       val result = withService { it.tasks().update(item.listId, task.id, task).execute() }
       if (result != null) {
-        googleTasksDao.insert(googleTaskFactory.update(item, result))
+        googleTaskRepository.save(googleTaskFactory.update(item, result))
       }
     } catch (e: Exception) {
       Logger.e("Failed to update task status id=${item.taskId}", e)
@@ -193,19 +193,19 @@ class GTasks(
     }
   }
 
-  fun insertTasksList(listTitle: String, color: Int) {
+  suspend fun insertTasksList(listTitle: String, color: Int) {
     val taskList = TaskList()
     taskList.title = listTitle
     try {
       val result = withService { it.tasklists().insert(taskList).execute() } ?: return
       val item = googleTaskListFactory.create(result, color)
-      googleTaskListsDao.insert(item)
+      googleTaskListRepository.save(item)
     } catch (e: Exception) {
       Logger.e(e, "Failed to insert task list $listTitle")
     }
   }
 
-  fun updateTasksList(listTitle: String, listId: String?) {
+  suspend fun updateTasksList(listTitle: String, listId: String?) {
     if (listId == null) {
       return
     }
@@ -213,9 +213,9 @@ class GTasks(
       val taskList = withService { it.tasklists().get(listId).execute() } ?: return
       taskList.title = listTitle
       withService { it.tasklists().update(listId, taskList).execute() }
-      val item = googleTaskListsDao.getById(listId)
+      val item = googleTaskListRepository.getById(listId)
       if (item != null) {
-        googleTaskListsDao.insert(googleTaskListFactory.update(item, taskList))
+        googleTaskListRepository.save(googleTaskListFactory.update(item, taskList))
       }
     } catch (e: Exception) {
       Logger.e(e, "Failed to update task list $listTitle")
@@ -244,14 +244,14 @@ class GTasks(
     }
   }
 
-  fun moveTask(item: GoogleTask, oldList: String): Boolean {
+  suspend fun moveTask(item: GoogleTask, oldList: String): Boolean {
     try {
       val task = withService { it.tasks().get(oldList, item.taskId).execute() }
       if (task != null) {
         val clone = GoogleTask(item)
         clone.listId = oldList
         deleteTask(clone)
-        googleTasksDao.delete(item)
+        googleTaskRepository.delete(item.taskId)
         return insertTask(item)
       }
     } catch (e: Exception) {

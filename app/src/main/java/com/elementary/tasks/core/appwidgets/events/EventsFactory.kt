@@ -17,8 +17,7 @@ import com.elementary.tasks.core.appwidgets.WidgetIntentProtocol
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayWidgetListAdapter
 import com.elementary.tasks.core.data.adapter.reminder.UiReminderWidgetListAdapter
-import com.elementary.tasks.core.data.repository.BirthdayRepository
-import com.elementary.tasks.core.data.repository.ReminderRepository
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayWidgetList
 import com.elementary.tasks.core.data.ui.reminder.widget.UiReminderWidgetList
 import com.elementary.tasks.core.data.ui.reminder.widget.UiReminderWidgetShopList
@@ -27,7 +26,9 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.github.naz013.domain.font.FontParams
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
 
 class EventsFactory(
   private val context: Context,
@@ -71,14 +72,19 @@ class EventsFactory(
       ContextCompat.getColor(context, R.color.pureBlack)
     }
 
-    reminderRepository.getActive()
+    invokeSuspend { reminderRepository.getActive() }
       .map { uiReminderWidgetListAdapter.create(it, textColor) }
       .also { data.addAll(it) }
 
     if (prefs.isBirthdayInWidgetEnabled) {
       val dateTime = dateTimeManager.getCurrentDateTime()
 
-      birthdayRepository.getByDayMonth(dateTime.dayOfMonth, dateTime.monthValue - 1)
+      invokeSuspend {
+        birthdayRepository.getByDayMonth(
+          dateTime.dayOfMonth,
+          dateTime.monthValue - 1
+        )
+      }
         .map { uiBirthdayWidgetListAdapter.convert(it) }
         .also { data.addAll(it) }
     }

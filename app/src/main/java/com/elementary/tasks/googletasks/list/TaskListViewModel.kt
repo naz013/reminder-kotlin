@@ -7,15 +7,15 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.googletasks.usecase.tasklist.SyncGoogleTaskList
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -24,8 +24,8 @@ class TaskListViewModel(
   private val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
   private val updatesHelper: UpdatesHelper,
-  private val googleTasksDao: GoogleTasksDao,
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
   private val syncGoogleTaskList: SyncGoogleTaskList
 ) : BaseProgressViewModel(dispatcherProvider) {
@@ -47,8 +47,8 @@ class TaskListViewModel(
 
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTaskList = googleTaskListsDao.getById(listId) ?: return@launch
-      val googleTasks = googleTasksDao.getAllByList(listId).map {
+      val googleTaskList = googleTaskListRepository.getById(listId) ?: return@launch
+      val googleTasks = googleTaskRepository.getAllByList(listId).map {
         uiGoogleTaskListAdapter.convert(it, googleTaskList)
       }
       currentTaskList = googleTaskList
@@ -66,7 +66,7 @@ class TaskListViewModel(
     isSyncing = true
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val taskList = googleTaskListsDao.getById(listId)
+      val taskList = googleTaskListRepository.getById(listId)
 
       if (taskList == null) {
         withUIContext {
@@ -98,8 +98,9 @@ class TaskListViewModel(
     val googleTaskList = currentTaskList ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTasks = googleTasksDao.getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
-      googleTasksDao.deleteAll(googleTasks)
+      val googleTasks =
+        googleTaskRepository.getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
+      googleTaskRepository.deleteAll(googleTasks.map { it.taskId })
       gTasks.clearTaskList(googleTaskList.listId)
       load()
       postInProgress(false)
@@ -121,14 +122,14 @@ class TaskListViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val def = googleTaskList.def
       gTasks.deleteTaskList(googleTaskList.listId)
-      googleTaskListsDao.delete(googleTaskList)
-      googleTasksDao.deleteAll(googleTaskList.listId)
+      googleTaskListRepository.delete(googleTaskList.listId)
+      googleTaskRepository.deleteAll(googleTaskList.listId)
       if (def == 1) {
-        val lists = googleTaskListsDao.all()
+        val lists = googleTaskListRepository.getAll()
         if (lists.isNotEmpty()) {
           val taskList = lists[0]
           taskList.def = 1
-          googleTaskListsDao.insert(taskList)
+          googleTaskListRepository.save(taskList)
         }
       }
       load()
@@ -146,7 +147,7 @@ class TaskListViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
-        val googleTask = googleTasksDao.getById(taskId)
+        val googleTask = googleTaskRepository.getById(taskId)
         if (googleTask == null) {
           postInProgress(false)
           postCommand(Commands.FAILED)

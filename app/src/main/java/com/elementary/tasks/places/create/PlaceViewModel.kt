@@ -7,8 +7,6 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
-import com.elementary.tasks.core.data.dao.PlacesDao
-import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
@@ -21,7 +19,9 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
+import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.PlaceRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -30,7 +30,7 @@ class PlaceViewModel(
   private val id: String,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val placesDao: PlacesDao,
+  private val placeRepository: PlaceRepository,
   private val dateTimeManager: DateTimeManager,
   private val uiPlaceEditAdapter: UiPlaceEditAdapter,
   private val contextProvider: ContextProvider,
@@ -70,7 +70,7 @@ class PlaceViewModel(
   fun savePlace(data: SavePlaceData) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = (placesDao.getByKey(id) ?: Place()).apply {
+      val place = (placeRepository.getById(id) ?: Place()).apply {
         this.name = data.name
         this.dateTime = dateTimeManager.getNowGmtDateTime()
         this.radius = markerRadius
@@ -81,7 +81,7 @@ class PlaceViewModel(
       if (data.newId) {
         place.id = UUID.randomUUID().toString()
       }
-      placesDao.insert(place)
+      placeRepository.save(place)
       workerLauncher.startWork(PlaceSingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
       Logger.logEvent("Place saved")
       postInProgress(false)
@@ -113,13 +113,13 @@ class PlaceViewModel(
   fun deletePlace() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = placesDao.getByKey(id)
+      val place = placeRepository.getById(id)
       if (place == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
         return@launch
       }
-      placesDao.delete(place)
+      placeRepository.delete(place.id)
       workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -128,7 +128,7 @@ class PlaceViewModel(
 
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = placesDao.getByKey(id)
+      val place = placeRepository.getById(id)
       if (place != null) {
         canDelete = true
         onPlaceLoaded(place)
@@ -153,7 +153,7 @@ class PlaceViewModel(
 
   private fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = placesDao.getByKey(id)
+      val place = placeRepository.getById(id)
       hasSameInDb = place != null
     }
   }

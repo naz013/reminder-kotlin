@@ -5,7 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Place
+import com.github.naz013.domain.Place
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.LoginLauncher
@@ -141,7 +141,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
       permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
       runCatching {
-        viewModel.loadFromIntent(intentParcelable(Constants.INTENT_ITEM, Place::class.java))
+        viewModel.loadFromIntent(intentSerializable(Constants.INTENT_ITEM, Place::class.java))
       }
     }
   }

@@ -18,7 +18,19 @@ val calendarModule = module {
   viewModel { WeekViewModel(get(), get()) }
   factory { DayViewModel(get(), get(), get(), get(), get(), get()) }
 
-  single { CalendarDataEngine(get(), get(), get(), get(), get(), get(), get(), get()) }
+  single {
+    CalendarDataEngine(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   factory { CalendarDataEngineBroadcast(get()) }
 
   factory { MonthLiveData(get(), get(), get(), get(), get()) }

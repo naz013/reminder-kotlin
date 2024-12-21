@@ -1,20 +1,11 @@
 package com.elementary.tasks.googletasks.task
 
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.deeplink.DeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Constants
@@ -26,7 +17,19 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -38,12 +41,13 @@ class GoogleTaskViewModel(
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val googleTasksDao: GoogleTasksDao,
-  private val googleTaskListsDao: GoogleTaskListsDao,
-  private val reminderDao: ReminderDao,
-  private val reminderGroupDao: ReminderGroupDao,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
+  private val reminderRepository: ReminderRepository,
+  private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
-  private val analyticsEventSender: AnalyticsEventSender
+  private val analyticsEventSender: AnalyticsEventSender,
+  tableChangeListenerFactory: TableChangeListenerFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateState = mutableLiveDataOf<DateState>()
@@ -67,9 +71,21 @@ class GoogleTaskViewModel(
   var editedTask: GoogleTask? = null
   private var editedReminder: Reminder? = null
 
-  val googleTask = googleTasksDao.loadById(id)
-  val defaultTaskList = googleTaskListsDao.loadDefault()
-  val googleTaskLists = googleTaskListsDao.loadAll()
+  val googleTask = viewModelScope.observeTable(
+    table = Table.GoogleTask,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskRepository.getById(id) }
+  )
+  val defaultTaskList = viewModelScope.observeTable(
+    table = Table.GoogleTaskList,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskListRepository.defaultGoogleTaskList() }
+  )
+  val googleTaskLists = viewModelScope.observeTable(
+    table = Table.GoogleTaskList,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskListRepository.getAll() }
+  )
 
   val isLogged = gTasks.isLogged
 
@@ -113,7 +129,7 @@ class GoogleTaskViewModel(
         }
       isEdited = true
       viewModelScope.launch(dispatcherProvider.default()) {
-        googleTaskListsDao.all().firstOrNull { it.listId == googleTask.listId }?.also {
+        googleTaskListRepository.getAll().firstOrNull { it.listId == googleTask.listId }?.also {
           _taskList.postValue(it)
         }
       }
@@ -161,7 +177,7 @@ class GoogleTaskViewModel(
     }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTasksDao.insert(googleTask)
+      googleTaskRepository.save(googleTask)
       gTasks.moveTask(googleTask, oldListId)
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -177,7 +193,7 @@ class GoogleTaskViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
         gTasks.deleteTask(googleTask)
-        googleTasksDao.delete(googleTask)
+        googleTaskRepository.delete(googleTask.taskId)
         postInProgress(false)
         postCommand(Commands.DELETED)
       } catch (e: Exception) {
@@ -190,7 +206,7 @@ class GoogleTaskViewModel(
   private fun loadReminder(uuId: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderDao.getById(uuId)
+      val reminder = reminderRepository.getById(uuId)
       if (reminder == null) {
         postInProgress(false)
         return@launch
@@ -209,12 +225,12 @@ class GoogleTaskViewModel(
     Logger.d("saveReminder: $reminder")
     if (reminder != null) {
       viewModelScope.launch(dispatcherProvider.default()) {
-        val group = reminderGroupDao.defaultGroup()
+        val group = reminderGroupRepository.defaultGroup()
         if (group != null) {
           reminder.groupColor = group.groupColor
           reminder.groupTitle = group.groupTitle
           reminder.groupUuId = group.groupUuId
-          reminderDao.insert(reminder)
+          reminderRepository.save(reminder)
         }
         if (reminder.groupUuId != "") {
           eventControlFactory.getController(reminder).enable()
@@ -254,7 +270,7 @@ class GoogleTaskViewModel(
     }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTasksDao.insert(googleTask)
+      googleTaskRepository.save(googleTask)
       try {
         gTasks.updateTask(googleTask)
         saveReminder(reminder)
@@ -278,7 +294,7 @@ class GoogleTaskViewModel(
     }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTasksDao.insert(googleTask)
+      googleTaskRepository.save(googleTask)
       try {
         gTasks.updateTask(googleTask)
         gTasks.moveTask(googleTask, oldListId)

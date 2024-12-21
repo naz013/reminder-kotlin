@@ -20,8 +20,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.os.Permissions
@@ -49,6 +47,8 @@ import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
 import com.elementary.tasks.reminder.create.fragments.recur.RecurFragment
 import com.elementary.tasks.voice.ConversationViewModel
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
@@ -183,7 +183,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
       intent.hasExtra(Constants.INTENT_ITEM) -> {
         runCatching {
-          val reminder = intentParcelable(Constants.INTENT_ITEM, Reminder::class.java) ?: Reminder()
+          val reminder =
+            intentSerializable(Constants.INTENT_ITEM, Reminder::class.java) ?: Reminder()
           editReminder(reminder, false, fromFile = true)
         }
       }
@@ -365,7 +366,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun changeGroup() {
-    val groups = viewModel.groups
+    val groups = viewModel.getGroups()
     val names = groups.map { it.groupTitle }
     val builder = dialogues.getMaterialDialog(this)
     builder.setTitle(R.string.choose_group)

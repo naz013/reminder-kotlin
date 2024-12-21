@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.arch.isValid
-import com.elementary.tasks.core.data.models.ImageFile
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.OldImageFile
-import com.elementary.tasks.core.data.models.OldNote
+import com.github.naz013.domain.note.ImageFile
+import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.OldImageFile
+import com.github.naz013.domain.note.OldNote
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import java.util.UUID
 

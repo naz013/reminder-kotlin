@@ -1,13 +1,13 @@
 package com.elementary.tasks.googletasks.usecase.db
 
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTask
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.repository.GoogleTaskRepository
 
 class SaveGoogleTasks(
-  private val googleTasksDao: GoogleTasksDao
+  private val googleTaskRepository: GoogleTaskRepository
 ) {
 
-  operator fun invoke(tasks: List<GoogleTask>) {
-    googleTasksDao.insertAll(tasks)
+  suspend operator fun invoke(tasks: List<GoogleTask>) {
+    googleTaskRepository.saveAll(tasks)
   }
 }

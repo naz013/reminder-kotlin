@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data.adapter
 
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderListActive
 import com.elementary.tasks.core.data.ui.UiReminderListActiveGps
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop

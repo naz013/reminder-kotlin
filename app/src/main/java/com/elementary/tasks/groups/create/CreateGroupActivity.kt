@@ -5,7 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Constants
@@ -96,7 +96,12 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
       permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
       runCatching {
-        viewModel.loadFromIntent(intentParcelable(Constants.INTENT_ITEM, ReminderGroup::class.java))
+        viewModel.loadFromIntent(
+          intentSerializable(
+            Constants.INTENT_ITEM,
+            ReminderGroup::class.java
+          )
+        )
       }
     }
   }

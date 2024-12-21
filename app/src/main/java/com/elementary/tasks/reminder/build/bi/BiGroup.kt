@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.build.bi
 
+import com.github.naz013.domain.reminder.BiType
+
 enum class BiGroup(val types: List<BiType> = emptyList()) {
   CORE,
   PARAMS,

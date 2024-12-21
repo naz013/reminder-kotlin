@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes
 
+import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.list.archived.ArchivedNotesViewModel
@@ -16,6 +17,8 @@ val noteModule = module {
   factory { ReminderToUiNoteAttachedReminder(get()) }
 
   single { ImagesSingleton(get()) }
+
+  factory { NoteImageRepository(get()) }
 
   worker { DeleteNoteBackupWorker(get(), get(), get(), get()) }
   worker { NoteSingleBackupWorker(get(), get(), get(), get()) }
@@ -53,16 +56,11 @@ val noteModule = module {
       get(),
       get(),
       get(),
-      get(),
       get()
     )
   }
   viewModel {
     ArchivedNotesViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
       get(),
       get(),
       get(),

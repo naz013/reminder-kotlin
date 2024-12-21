@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs

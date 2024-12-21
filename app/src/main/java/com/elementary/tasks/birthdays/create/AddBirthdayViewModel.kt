@@ -4,15 +4,10 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.os.contacts.ContactsReader
@@ -24,25 +19,30 @@ import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.Birthday
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
 class AddBirthdayViewModel(
-    private val id: String,
-    private val birthdaysDao: BirthdaysDao,
-    dispatcherProvider: DispatcherProvider,
-    private val workerLauncher: WorkerLauncher,
-    private val notifier: Notifier,
-    private val contactsReader: ContactsReader,
-    private val dateTimeManager: DateTimeManager,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
-    private val uriReader: UriReader,
-    private val updatesHelper: UpdatesHelper,
-    private val intentDataHolder: IntentDataHolder,
-    private val uiBirthdayDateFormatter: UiBirthdayDateFormatter
+  private val id: String,
+  private val birthdayRepository: BirthdayRepository,
+  dispatcherProvider: DispatcherProvider,
+  private val workerLauncher: WorkerLauncher,
+  private val notifier: Notifier,
+  private val contactsReader: ContactsReader,
+  private val dateTimeManager: DateTimeManager,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
+  private val uriReader: UriReader,
+  private val updatesHelper: UpdatesHelper,
+  private val intentDataHolder: IntentDataHolder,
+  private val uiBirthdayDateFormatter: UiBirthdayDateFormatter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
@@ -63,7 +63,7 @@ class AddBirthdayViewModel(
 
   fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val birthday = birthdaysDao.getById(id) ?: return@launch
+      val birthday = birthdayRepository.getById(id) ?: return@launch
       Logger.logEvent("Birthday loaded from DB")
       onBirthdayLoaded(birthday)
     }
@@ -141,7 +141,7 @@ class AddBirthdayViewModel(
   fun deleteBirthday() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdaysDao.delete(id)
+      birthdayRepository.delete(id)
       notifier.showBirthdayPermanent()
       updatesHelper.updateTasksWidget()
       updatesHelper.updateBirthdaysWidget()
@@ -165,7 +165,7 @@ class AddBirthdayViewModel(
 
   private fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val birthday = birthdaysDao.getById(id)
+      val birthday = birthdayRepository.getById(id)
       hasSameInDb = birthday != null
     }
   }
@@ -173,7 +173,7 @@ class AddBirthdayViewModel(
   private fun saveBirthday(birthday: Birthday) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdaysDao.insert(birthday)
+      birthdayRepository.save(birthday)
       notifier.showBirthdayPermanent()
       updatesHelper.updateBirthdaysWidget()
       updatesHelper.updateTasksWidget()

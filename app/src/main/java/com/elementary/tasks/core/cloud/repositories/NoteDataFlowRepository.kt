@@ -1,24 +1,22 @@
 package com.elementary.tasks.core.cloud.repositories
 
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.core.data.repository.NoteRepository
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.repository.NoteRepository
 
 class NoteDataFlowRepository(
-  appDb: AppDb,
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository
-) : DatabaseRepository<NoteWithImages>(appDb) {
+) : DatabaseRepository<NoteWithImages>() {
   override suspend fun get(id: String): NoteWithImages? {
-    return appDb.notesDao().getById(id)
+    return noteRepository.getById(id)
   }
 
   override suspend fun insert(t: NoteWithImages) {
     val note = t.note
     if (note != null) {
-      appDb.notesDao().insert(note)
-      appDb.notesDao().insertAll(t.images)
+      noteRepository.save(note)
+      noteRepository.saveAll(t.images)
     }
   }
 
@@ -28,9 +26,9 @@ class NoteDataFlowRepository(
 
   override suspend fun delete(t: NoteWithImages) {
     val note = t.note ?: return
-    appDb.notesDao().delete(note)
+    noteRepository.delete(note.key)
     for (image in t.images) {
-      appDb.notesDao().delete(image)
+      noteRepository.deleteImage(image.id)
     }
     noteImageRepository.clearFolder(note.key)
   }

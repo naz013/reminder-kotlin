@@ -2,11 +2,8 @@ package com.elementary.tasks.birthdays.create
 
 import android.net.Uri
 import com.elementary.tasks.BaseTest
-import com.github.naz013.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Notifier
@@ -15,9 +12,13 @@ import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.domain.Birthday
+import com.github.naz013.repository.BirthdayRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -27,7 +28,7 @@ class AddBirthdayViewModelTest : BaseTest() {
 
   private lateinit var viewModel: AddBirthdayViewModel
 
-  private val birthdaysDao = mockk<BirthdaysDao>()
+  private val birthdayRepository = mockk<BirthdayRepository>()
   private val workerLauncher = mockk<WorkerLauncher>()
   private val notifier = mockk<Notifier>()
   private val contactsReader = mockk<ContactsReader>()
@@ -45,7 +46,7 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     viewModel = AddBirthdayViewModel(
       id = ID,
-      birthdaysDao = birthdaysDao,
+      birthdayRepository = birthdayRepository,
       dispatcherProvider = mockDispatcherProvider(),
       workerLauncher = workerLauncher,
       notifier = notifier,
@@ -62,11 +63,11 @@ class AddBirthdayViewModelTest : BaseTest() {
 
   @Test
   fun testInitLoad_doNothing() = runTest {
-    every { birthdaysDao.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
 
     viewModel.load()
 
-    verify(exactly = 1) { birthdaysDao.getById(ID) }
+    coVerify(exactly = 1) { birthdayRepository.getById(ID) }
 
     assertEquals(null, viewModel.birthday.getOrAwaitValue())
     assertEquals(null, viewModel.formattedDate.getOrAwaitValue())
@@ -80,7 +81,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     val date = LocalDate.now()
     val formattedDate = "AAA"
 
-    every { birthdaysDao.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
     viewModel.formattedDate.observeForever { }
@@ -91,7 +92,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.onContactAttached(false)
     viewModel.onDateChanged(date)
 
-    verify(exactly = 1) { birthdaysDao.getById(eq(ID)) }
+    coVerify(exactly = 1) { birthdayRepository.getById(eq(ID)) }
 
     assertEquals(false, viewModel.isEdited)
     assertEquals(false, viewModel.isFromFile)
@@ -119,7 +120,7 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthday)
 
-    every { birthdaysDao.getById(ID) }.returns(birthday)
+    coEvery { birthdayRepository.getById(ID) }.returns(birthday)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
@@ -129,7 +130,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.load()
     viewModel.onContactAttached(false)
 
-    verify(exactly = 1) { birthdaysDao.getById(eq(ID)) }
+    coVerify(exactly = 1) { birthdayRepository.getById(eq(ID)) }
 
     assertEquals(true, viewModel.isEdited)
     assertEquals(false, viewModel.isFromFile)
@@ -157,8 +158,8 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
-    every { birthdaysDao.getById(ID) }.returns(null)
-    every { birthdaysDao.getById(objectId) }.returns(null)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(objectId) }.returns(null)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
@@ -171,7 +172,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.onContactAttached(false)
     viewModel.onIntent()
 
-    verify(exactly = 2) { birthdaysDao.getById(any()) }
+    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
 
     assertEquals(true, viewModel.isEdited)
     assertEquals(true, viewModel.isFromFile)
@@ -199,8 +200,8 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
-    every { birthdaysDao.getById(ID) }.returns(null)
-    every { birthdaysDao.getById(objectId) }.returns(birthdayObject)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(objectId) }.returns(birthdayObject)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
@@ -213,7 +214,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.onContactAttached(false)
     viewModel.onIntent()
 
-    verify(exactly = 2) { birthdaysDao.getById(any()) }
+    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
 
     assertEquals(true, viewModel.isEdited)
     assertEquals(true, viewModel.isFromFile)
@@ -243,8 +244,8 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
-    every { birthdaysDao.getById(ID) }.returns(null)
-    every { birthdaysDao.getById(objectId) }.returns(null)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(objectId) }.returns(null)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
     every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
@@ -256,7 +257,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.onContactAttached(false)
     viewModel.onFile(uri)
 
-    verify(exactly = 2) { birthdaysDao.getById(any()) }
+    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
 
     assertEquals(true, viewModel.isEdited)
     assertEquals(true, viewModel.isFromFile)
@@ -274,7 +275,7 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     val uri = mockk<Uri>()
 
-    every { birthdaysDao.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
     every { dateTimeManager.getCurrentDate() }.returns(date)
@@ -287,7 +288,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.onContactAttached(false)
     viewModel.onFile(uri)
 
-    verify(exactly = 1) { birthdaysDao.getById(any()) }
+    coVerify(exactly = 1) { birthdayRepository.getById(any()) }
 
     assertEquals(false, viewModel.isEdited)
     assertEquals(false, viewModel.isFromFile)
@@ -317,8 +318,8 @@ class AddBirthdayViewModelTest : BaseTest() {
 
     val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
 
-    every { birthdaysDao.getById(ID) }.returns(null)
-    every { birthdaysDao.getById(objectId) }.returns(birthdayObject)
+    coEvery { birthdayRepository.getById(ID) }.returns(null)
+    coEvery { birthdayRepository.getById(objectId) }.returns(birthdayObject)
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
     every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
@@ -330,7 +331,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     viewModel.onContactAttached(false)
     viewModel.onFile(uri)
 
-    verify(exactly = 2) { birthdaysDao.getById(any()) }
+    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
 
     assertEquals(true, viewModel.isEdited)
     assertEquals(true, viewModel.isFromFile)

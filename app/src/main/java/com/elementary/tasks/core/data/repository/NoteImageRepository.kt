@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data.repository
 
 import android.content.Context
-import com.elementary.tasks.core.data.models.ImageFile
+import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.InputStream

@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller
 
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.core.data.models.Place
+import com.github.naz013.domain.Place
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.SystemServiceProvider

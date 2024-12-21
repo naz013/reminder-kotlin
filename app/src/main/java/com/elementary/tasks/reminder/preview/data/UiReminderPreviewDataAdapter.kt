@@ -5,8 +5,8 @@ import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.UiIcon
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget

@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.services.BirthdayActionReceiver
@@ -19,6 +18,7 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.Birthday
 import com.github.naz013.logging.Logger
 
 class BirthdayHandlerQ(
@@ -31,7 +31,7 @@ class BirthdayHandlerQ(
   private val wearNotification: WearNotification
 ) : ActionHandler<Birthday> {
 
-  override fun handle(data: Birthday) {
+  override suspend fun handle(data: Birthday) {
     showBirthdayNotification(data)
   }
 

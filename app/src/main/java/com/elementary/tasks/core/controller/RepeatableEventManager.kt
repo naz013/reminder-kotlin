@@ -3,10 +3,7 @@ package com.elementary.tasks.core.controller
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
@@ -14,10 +11,14 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.ReminderRepository
 
 abstract class RepeatableEventManager(
   reminder: Reminder,
-  reminderDao: ReminderDao,
+  reminderRepository: ReminderRepository,
   prefs: Prefs,
   private val googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
@@ -25,8 +26,8 @@ abstract class RepeatableEventManager(
   updatesHelper: UpdatesHelper,
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
-  private val googleTasksDao: GoogleTasksDao
-) : EventManager(reminder, reminderDao, prefs, notifier, updatesHelper) {
+  private val googleTaskRepository: GoogleTaskRepository
+) : EventManager(reminder, reminderRepository, prefs, notifier, updatesHelper) {
 
   protected fun enableReminder() {
     jobScheduler.scheduleReminder(reminder)
@@ -52,7 +53,7 @@ abstract class RepeatableEventManager(
         )
       }
       if (prefs.isCalendarEnabled || reminder.version == Reminder.Version.V3) {
-        googleCalendarUtils.addEvent(reminder)
+        invokeSuspend { googleCalendarUtils.addEvent(reminder) }
       }
     }
   }
@@ -60,7 +61,7 @@ abstract class RepeatableEventManager(
   private fun makeGoogleTaskDone() {
     if (reminder.exportToTasks) {
       launchIo {
-        val googleTask = googleTasksDao.getByReminderId(reminder.uuId)
+        val googleTask = googleTaskRepository.getByReminderId(reminder.uuId)
         if (googleTask != null && googleTask.status == GTasks.TASKS_NEED_ACTION) {
           jobScheduler.scheduleTaskDone(googleTask, reminder.uuId)
         }

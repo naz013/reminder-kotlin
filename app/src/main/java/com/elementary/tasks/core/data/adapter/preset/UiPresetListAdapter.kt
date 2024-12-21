@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data.adapter.preset
 
 import com.elementary.tasks.core.data.adapter.UiAdapter
-import com.elementary.tasks.core.data.models.RecurPreset
+import com.github.naz013.domain.RecurPreset
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType

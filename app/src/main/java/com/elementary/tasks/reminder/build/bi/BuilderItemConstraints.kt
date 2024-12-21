@@ -6,6 +6,7 @@ import com.elementary.tasks.reminder.build.bi.constraint.MandatoryIfConstraint
 import com.elementary.tasks.reminder.build.bi.constraint.PermissionConstraint
 import com.elementary.tasks.reminder.build.bi.constraint.RequiresAllConstraint
 import com.elementary.tasks.reminder.build.bi.constraint.RequiresAnyOfConstraint
+import com.github.naz013.domain.reminder.BiType
 
 data class BuilderItemConstraints(val constraints: List<BiConstraint<*>>) {
 

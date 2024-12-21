@@ -9,8 +9,8 @@ import android.text.TextUtils
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.utils.Configs

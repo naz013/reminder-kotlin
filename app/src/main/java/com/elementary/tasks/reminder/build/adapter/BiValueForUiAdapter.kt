@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.adapter
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.BuilderItem
 
 class BiValueForUiAdapter(

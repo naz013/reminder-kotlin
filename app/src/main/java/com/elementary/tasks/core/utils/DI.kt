@@ -37,7 +37,6 @@ import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
@@ -120,13 +119,13 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { GroupsViewModel(get(), get(), get(), get()) }
+  viewModel { GroupsViewModel(get(), get(), get(), get(), get()) }
 
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
-  viewModel { UsedTimeViewModel(get(), get(), get()) }
+  viewModel { UsedTimeViewModel(get(), get(), get(), get()) }
 
-  viewModel { CloudViewModel(get(), get(), get(), get()) }
+  viewModel { CloudViewModel(get(), get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
 
   viewModel { TimesViewModel(get(), get()) }
@@ -177,7 +176,7 @@ val storageModule = module {
 val dataFlowRepositoryModule = module {
   factory { BirthdayDataFlowRepository(get()) }
   factory { GroupDataFlowRepository(get()) }
-  factory { NoteDataFlowRepository(get(), get(), get()) }
+  factory { NoteDataFlowRepository(get(), get()) }
   factory { PlaceDataFlowRepository(get()) }
   factory { ReminderDataFlowRepository(get()) }
   factory { SettingsDataFlowRepository(get()) }
@@ -185,21 +184,7 @@ val dataFlowRepositoryModule = module {
 }
 
 fun dbModule(context: Context): Module {
-  val appDb = AppDb.getAppDatabase(context)
   return module {
-    single { appDb }
-    single { appDb.birthdaysDao() }
-    single { appDb.reminderDao() }
-    single { appDb.reminderGroupDao() }
-    single { appDb.googleTaskListsDao() }
-    single { appDb.googleTasksDao() }
-    single { appDb.calendarEventsDao() }
-    single { appDb.notesDao() }
-    single { appDb.placesDao() }
-    single { appDb.usedTimeDao() }
-    single { appDb.recurPresetDao() }
-    single { appDb.recentQueryDao() }
-
     factory { NoteToOldNoteConverter(get()) }
   }
 }
@@ -212,7 +197,7 @@ val utilModule = module {
   single { ThemeProvider(get(), get()) }
   single { MemoryUtil() }
   factory { UriReader(get()) }
-  single { BackupTool(get(), get(), get(), get(), get(), get(), get()) }
+  single { BackupTool(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   single { Dialogues(get()) }
   single { Language(get(), get(), get()) }
   factory { GoogleCalendarUtils(get(), get(), get(), get()) }
@@ -246,7 +231,7 @@ val utilModule = module {
 
   single { RemotePrefs(get(), get(), get(), get()) }
 
-  factory { Notifier(get(), get(), get(), get(), get()) }
+  factory { Notifier(get(), get(), get(), get(), get(), get()) }
   factory { JobScheduler(get(), get(), get(), get()) }
   factory { UpdatesHelper(get()) }
 

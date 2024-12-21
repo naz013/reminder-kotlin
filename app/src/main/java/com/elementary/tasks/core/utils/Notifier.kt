@@ -15,9 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.repository.ReminderRepository
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.Permissions
@@ -30,7 +28,10 @@ import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.domain.Birthday
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
 import org.threeten.bp.LocalDateTime
 import java.util.Calendar
 
@@ -39,7 +40,8 @@ class Notifier(
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val systemServiceProvider: SystemServiceProvider,
-  private val reminderRepository: ReminderRepository
+  private val reminderRepository: ReminderRepository,
+  private val birthdayRepository: BirthdayRepository
 ) {
 
   fun createChannels() {
@@ -214,7 +216,7 @@ class Notifier(
     }
     remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)
     remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt)
-    val reminders = reminderRepository.getActive().toMutableList()
+    val reminders = invokeSuspend { reminderRepository.getActive() }.toMutableList()
     val count = reminders.size
 
     for (i in reminders.indices.reversed()) {
@@ -276,7 +278,7 @@ class Notifier(
     calendar.timeInMillis = System.currentTimeMillis()
     val day = calendar.get(Calendar.DAY_OF_MONTH)
     val month = calendar.get(Calendar.MONTH)
-    val list = AppDb.getAppDatabase(context).birthdaysDao().getAll("$day|$month")
+    val list = invokeSuspend { birthdayRepository.getAll("$day|$month") }
 
     if (list.isNotEmpty()) {
       val dismissIntent = Intent(context, PermanentBirthdayReceiver::class.java)

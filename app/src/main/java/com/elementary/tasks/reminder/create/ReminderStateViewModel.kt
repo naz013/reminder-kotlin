@@ -3,9 +3,9 @@ package com.elementary.tasks.reminder.create
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.FeatureManager
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime

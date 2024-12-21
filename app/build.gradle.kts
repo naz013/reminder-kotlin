@@ -19,7 +19,7 @@ android {
   setFlavorDimensions(listOf("level"))
 
   defaultConfig {
-    applicationId  = "com.cray.software.justreminder"
+    applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
     versionCode = 321
@@ -72,7 +72,7 @@ android {
   productFlavors {
     create("free") {
       dimension = "level"
-      applicationId  = "com.cray.software.justreminder"
+      applicationId = "com.cray.software.justreminder"
       buildConfigField("boolean", "IS_PRO", "false")
 
       val api = props.getProperty("freeApiKey", "API_KEY")
@@ -86,7 +86,7 @@ android {
     }
     create("pro") {
       dimension = "level"
-      applicationId  = "com.cray.software.justreminderpro"
+      applicationId = "com.cray.software.justreminderpro"
       buildConfigField("boolean", "IS_PRO", "true")
 
       val api = props.getProperty("proApiKey", "API_KEY")
@@ -185,8 +185,10 @@ dependencies {
   implementation(project(":domain"))
   implementation(project(":voice-engine-ktx"))
   implementation(project(":logging-api"))
+  implementation(project(":repository-api"))
   implementation(project(":logging"))
   implementation(project(":analytics"))
+  implementation(project(":repository"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

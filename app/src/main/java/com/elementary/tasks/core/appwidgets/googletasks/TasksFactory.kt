@@ -13,12 +13,14 @@ import com.elementary.tasks.core.appwidgets.Direction
 import com.elementary.tasks.core.appwidgets.WidgetIntentProtocol
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.googletasks.TasksConstants
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -26,7 +28,8 @@ import java.util.Locale
 class TasksFactory(
   private val context: Context,
   intent: Intent,
-  private val appDb: AppDb
+  private val googleTaskListRepository: GoogleTaskListRepository,
+  private val googleTaskRepository: GoogleTaskRepository
 ) : RemoteViewsService.RemoteViewsFactory {
 
   private val widgetID: Int = intent.getIntExtra(
@@ -45,12 +48,12 @@ class TasksFactory(
 
   override fun onDataSetChanged() {
     map.clear()
-    val list = appDb.googleTaskListsDao().all()
+    val list = invokeSuspend { googleTaskListRepository.getAll() }
     for (item in list) {
       map[item.listId] = item.color
     }
     mData.clear()
-    mData.addAll(appDb.googleTasksDao().all())
+    mData.addAll(invokeSuspend { googleTaskRepository.getAll() })
   }
 
   override fun onDestroy() {

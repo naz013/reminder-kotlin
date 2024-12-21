@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
@@ -9,7 +9,7 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import org.threeten.bp.LocalDateTime
 
 class ByLocationDecomposer(
@@ -17,7 +17,7 @@ class ByLocationDecomposer(
   private val biFactory: BiFactory
 ) {
 
-  operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val type = UiReminderType(reminder.type)
     val place = when {
       type.isBase(UiReminderType.Base.LOCATION_IN) -> {

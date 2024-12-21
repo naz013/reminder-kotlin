@@ -9,11 +9,11 @@ import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.OldNote
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

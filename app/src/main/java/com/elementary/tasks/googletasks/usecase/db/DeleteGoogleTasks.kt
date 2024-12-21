@@ -1,16 +1,16 @@
 package com.elementary.tasks.googletasks.usecase.db
 
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTask
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.repository.GoogleTaskRepository
 
 class DeleteGoogleTasks(
-  private val googleTasksDao: GoogleTasksDao
+  private val googleTaskRepository: GoogleTaskRepository
 ) {
 
-  operator fun invoke(tasks: List<GoogleTask>) {
+  suspend operator fun invoke(tasks: List<GoogleTask>) {
     if (tasks.isEmpty()) {
       return
     }
-    googleTasksDao.deleteAll(tasks)
+    googleTaskRepository.deleteAll(tasks.map { it.taskId })
   }
 }

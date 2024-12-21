@@ -7,11 +7,9 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.analytics.Widget
-import com.github.naz013.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
-import com.elementary.tasks.core.data.dao.NotesDao
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.nonNullObserve
@@ -20,6 +18,9 @@ import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
 import com.elementary.tasks.core.utils.ui.applyTopInsets
 import com.elementary.tasks.core.views.drawable.NoteDrawableParams
 import com.elementary.tasks.databinding.ActivityWidgetSingleNoteBinding
+import com.github.naz013.analytics.Widget
+import com.github.naz013.analytics.WidgetUsedEvent
+import com.github.naz013.repository.NoteRepository
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -40,7 +41,7 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
   }
 
   private val uiNoteWidgetAdapter by inject<UiNoteWidgetAdapter>()
-  private val notesDao by inject<NotesDao>()
+  private val noteRepository by inject<NoteRepository>()
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
@@ -257,7 +258,7 @@ class SingleNoteWidgetConfigActivity : BaseWidgetConfigActivity<ActivityWidgetSi
       appWidgetManager = appWidgetManager,
       prefsProvider = prefsProvider,
       uiNoteWidgetAdapter = uiNoteWidgetAdapter,
-      noteWithImages = notesDao.getById(noteId)
+      noteWithImages = invokeSuspend { noteRepository.getById(noteId) }
     )
     setResult(RESULT_OK, resultValue)
     finish()

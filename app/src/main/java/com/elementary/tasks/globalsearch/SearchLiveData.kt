@@ -3,88 +3,88 @@ package com.elementary.tasks.globalsearch
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.switchMap
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.dao.PlacesDao
-import com.elementary.tasks.core.data.dao.RecentQueryDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.RecentQuery
-import com.elementary.tasks.core.data.models.RecentQueryTarget
-import com.elementary.tasks.core.data.models.RecentQueryType
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.RecentQuery
+import com.github.naz013.domain.RecentQueryTarget
+import com.github.naz013.domain.RecentQueryType
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.note.Note
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.repository.RecentQueryRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SearchLiveData(
-  private val recentQueryDao: RecentQueryDao,
-  private val reminderDao: ReminderDao,
-  private val birthdaysDao: BirthdaysDao,
-  private val notesDao: NotesDao,
-  private val googleTasksDao: GoogleTasksDao,
-  private val placesDao: PlacesDao,
-  private val groupDao: ReminderGroupDao,
-  private val dispatcherProvider: DispatcherProvider
+  private val recentQueryRepository: RecentQueryRepository,
+  private val reminderRepository: ReminderRepository,
+  private val birthdayRepository: BirthdayRepository,
+  private val noteRepository: NoteRepository,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val placeRepository: PlaceRepository,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val dispatcherProvider: DispatcherProvider,
+  private val tableChangeListenerFactory: TableChangeListenerFactory
 ) : MediatorLiveData<List<SearchResult>>() {
 
   private val queryLiveDate = mutableLiveDataOf<String>()
 
   private val recentSearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      recentQueryDao.search()
-    } else {
-      recentQueryDao.search(it)
-    }
+    createRecentQueryLiveData(it)
   }
   private val reminderSearchSource = queryLiveDate.switchMap {
     if (it.isBlank()) {
       emptyLiveData()
     } else {
-      reminderDao.search(it)
+      createReminderLiveData(it)
     }
   }
   private val birthdaySearchSource = queryLiveDate.switchMap {
     if (it.isBlank()) {
       emptyLiveData()
     } else {
-      birthdaysDao.search(it)
+      createBirthdayLiveData(it)
     }
   }
   private val noteSearchSource = queryLiveDate.switchMap {
     if (it.isBlank()) {
       emptyLiveData()
     } else {
-      notesDao.search(it)
+      createNoteLiveData(it)
     }
   }
   private val googleTaskSearchSource = queryLiveDate.switchMap {
     if (it.isBlank()) {
       emptyLiveData()
     } else {
-      googleTasksDao.search(it)
+      createGoogleTaskLiveData(it)
     }
   }
   private val placeSearchSource = queryLiveDate.switchMap {
     if (it.isBlank()) {
       emptyLiveData()
     } else {
-      placesDao.search(it)
+      createPlaceLiveData(it)
     }
   }
   private val groupSearchSource = queryLiveDate.switchMap {
     if (it.isBlank()) {
       emptyLiveData()
     } else {
-      groupDao.search(it)
+      createGroupLiveData(it)
     }
   }
 
@@ -237,5 +237,81 @@ class SearchLiveData(
       RecentQueryTarget.REMINDER -> ObjectType.REMINDER
       RecentQueryTarget.SCREEN -> null
     }
+  }
+
+  private fun createReminderLiveData(
+    query: String
+  ): LiveData<List<Reminder>> {
+    return scope.observeTable(
+      Table.Reminder,
+      tableChangeListenerFactory,
+      { reminderRepository.search(query) }
+    )
+  }
+
+  private fun createNoteLiveData(
+    query: String
+  ): LiveData<List<Note>> {
+    return scope.observeTable(
+      Table.Note,
+      tableChangeListenerFactory,
+      { noteRepository.search(query) }
+    )
+  }
+
+  private fun createGoogleTaskLiveData(
+    query: String
+  ): LiveData<List<GoogleTask>> {
+    return scope.observeTable(
+      Table.GoogleTask,
+      tableChangeListenerFactory,
+      { googleTaskRepository.search(query) }
+    )
+  }
+
+  private fun createGroupLiveData(
+    query: String
+  ): LiveData<List<ReminderGroup>> {
+    return scope.observeTable(
+      Table.ReminderGroup,
+      tableChangeListenerFactory,
+      { reminderGroupRepository.search(query) }
+    )
+  }
+
+  private fun createPlaceLiveData(
+    query: String
+  ): LiveData<List<Place>> {
+    return scope.observeTable(
+      Table.Place,
+      tableChangeListenerFactory,
+      { placeRepository.searchByName(query) }
+    )
+  }
+
+  private fun createBirthdayLiveData(
+    query: String
+  ): LiveData<List<Birthday>> {
+    return scope.observeTable(
+      Table.Birthday,
+      tableChangeListenerFactory,
+      { birthdayRepository.searchByName(query) }
+    )
+  }
+
+  private fun createRecentQueryLiveData(
+    query: String
+  ): LiveData<List<RecentQuery>> {
+    return scope.observeTable(
+      Table.RecentQuery,
+      tableChangeListenerFactory,
+      {
+        if (query.isBlank()) {
+          recentQueryRepository.getAll()
+        } else {
+          recentQueryRepository.search(query)
+        }
+      }
+    )
   }
 }

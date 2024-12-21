@@ -5,21 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 class ArchiveRemindersViewModel(
-  private val reminderDao: ReminderDao,
+  private val reminderRepository: ReminderRepository,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
@@ -27,7 +27,11 @@ class ArchiveRemindersViewModel(
   private val uiReminderListAdapter: UiReminderListAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val reminderData = SearchableReminderData(dispatcherProvider, viewModelScope, reminderDao)
+  private val reminderData = SearchableReminderData(
+    dispatcherProvider = dispatcherProvider,
+    parentScope = viewModelScope,
+    reminderRepository = reminderRepository
+  )
   val events = reminderData.map { list ->
     list.map { uiReminderListAdapter.create(it) }
   }
@@ -41,10 +45,10 @@ class ArchiveRemindersViewModel(
   }
 
   fun deleteReminder(id: String) {
-    withResult {
-      reminderDao.getById(id)?.let {
+    withResultSuspend {
+      reminderRepository.getById(id)?.let {
         eventControlFactory.getController(it).disable()
-        reminderDao.delete(it)
+        reminderRepository.delete(it.uuId)
         googleCalendarUtils.deleteEvents(it.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
@@ -66,7 +70,7 @@ class ArchiveRemindersViewModel(
       reminders.forEach {
         eventControlFactory.getController(it).disable()
       }
-      reminderDao.deleteAll(reminders)
+      reminderRepository.deleteAll(reminders.map { it.uuId })
       reminders.forEach {
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
@@ -83,14 +87,14 @@ class ArchiveRemindersViewModel(
   internal class SearchableReminderData(
     dispatcherProvider: DispatcherProvider,
     parentScope: CoroutineScope,
-    private val reminderDao: ReminderDao
+    private val reminderRepository: ReminderRepository
   ) : SearchableLiveData<List<Reminder>>(parentScope + dispatcherProvider.default()) {
 
-    override fun runQuery(query: String): List<Reminder> {
+    override suspend fun runQuery(query: String): List<Reminder> {
       return if (query.isEmpty()) {
-        reminderDao.getByRemovedStatus(removed = true)
+        reminderRepository.getByRemovedStatus(removed = true)
       } else {
-        reminderDao.searchBySummaryAndRemovedStatus(query.lowercase(), removed = true)
+        reminderRepository.searchBySummaryAndRemovedStatus(query.lowercase(), removed = true)
       }
     }
   }

@@ -3,8 +3,7 @@ package com.elementary.tasks.core.controller
 import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Module
@@ -12,18 +11,20 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.ReminderRepository
 import org.threeten.bp.LocalDateTime
 
 class LocationEvent(
   reminder: Reminder,
-  private val reminderDao: ReminderDao,
+  private val reminderRepository: ReminderRepository,
   prefs: Prefs,
   private val context: Context,
   notifier: Notifier,
   private val jobScheduler: JobScheduler,
   updatesHelper: UpdatesHelper,
   private val dateTimeManager: DateTimeManager
-) : EventManager(reminder, reminderDao, prefs, notifier, updatesHelper) {
+) : EventManager(reminder, reminderRepository, prefs, notifier, updatesHelper) {
 
   override val isActive: Boolean
     get() = reminder.isActive
@@ -70,11 +71,13 @@ class LocationEvent(
   }
 
   private fun stopTracking(isPaused: Boolean) {
-    val list = reminderDao.getAllTypes(
-      active = true,
-      removed = false,
-      types = Reminder.gpsTypes()
-    )
+    val list = invokeSuspend {
+      reminderRepository.getAllTypes(
+        active = true,
+        removed = false,
+        types = Reminder.gpsTypes()
+      )
+    }
     if (list.isEmpty()) {
       SuperUtil.stopService(context, GeolocationService::class.java)
     }

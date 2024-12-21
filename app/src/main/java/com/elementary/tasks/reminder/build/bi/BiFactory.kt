@@ -5,9 +5,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -68,15 +65,19 @@ import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormat
 import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.ReminderGroupRepository
 
 class BiFactory(
   private val contextProvider: ContextProvider,
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val groupDao: ReminderGroupDao,
+  private val reminderGroupRepository: ReminderGroupRepository,
   private val uiGroupListAdapter: UiGroupListAdapter,
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val gTasks: GTasks,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val prefs: Prefs,
@@ -87,18 +88,22 @@ class BiFactory(
 
   private val context: Context = contextProvider.themedContext
 
-  fun <V, T : BuilderItem<V>> createWithValue(biType: BiType, value: V?, clazz: Class<T>): T? {
+  suspend fun <V, T : BuilderItem<V>> createWithValue(
+    biType: BiType,
+    value: V?,
+    clazz: Class<T>
+  ): T? {
     return createTyped(biType, clazz)
       ?.apply { modifier.update(value) }
   }
 
-  private fun <T : BuilderItem<*>> createTyped(biType: BiType, clazz: Class<T>): T? {
+  private suspend fun <T : BuilderItem<*>> createTyped(biType: BiType, clazz: Class<T>): T? {
     val created = create(biType)
     Logger.d("createTyped: created=$created, wanted=$clazz")
     return created.takeIf { it::class.java == clazz } as? T
   }
 
-  fun create(biType: BiType): BuilderItem<*> {
+  suspend fun create(biType: BiType): BuilderItem<*> {
     return when (biType) {
       BiType.SUMMARY -> {
         SummaryBuilderItem(
@@ -176,8 +181,9 @@ class BiFactory(
         GroupBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.choose_group),
-          groups = groupDao.all().map { uiGroupListAdapter.convert(it) },
-          defaultGroup = groupDao.defaultGroup()?.let { uiGroupListAdapter.convert(it) }
+          groups = reminderGroupRepository.getAll().map { uiGroupListAdapter.convert(it) },
+          defaultGroup = reminderGroupRepository.defaultGroup()
+            ?.let { uiGroupListAdapter.convert(it) }
         )
       }
 
@@ -259,7 +265,7 @@ class BiFactory(
           description = context.getString(
             R.string.builder_select_google_task_list_where_the_reminder_should_be_added
           ),
-          taskLists = googleTaskListsDao.all(),
+          taskLists = googleTaskListRepository.getAll(),
           gTasks = gTasks
         )
       }

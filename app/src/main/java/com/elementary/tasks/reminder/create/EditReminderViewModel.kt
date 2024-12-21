@@ -2,22 +2,12 @@ package com.elementary.tasks.reminder.create
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.PlacesDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -27,7 +17,19 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -38,32 +40,33 @@ class EditReminderViewModel(
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val reminderGroupDao: ReminderGroupDao,
-  private val reminderDao: ReminderDao,
-  private val placesDao: PlacesDao,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val reminderRepository: ReminderRepository,
+  private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val reminderAnalyticsTracker: ReminderAnalyticsTracker
+  private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
+  private val tableChangeListenerFactory: TableChangeListenerFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _googleTask = mutableLiveDataOf<Pair<GoogleTaskList?, GoogleTask?>>()
   val googleTask = _googleTask.toLiveData()
 
-  val reminder = reminderDao.loadById(id)
+  val reminder = viewModelScope.observeTable(
+    table = Table.Reminder,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { reminderRepository.getById(id) }
+  )
   var hasSameInDb: Boolean = false
 
-  private var _allGroups: MutableLiveData<List<ReminderGroup>> = MutableLiveData()
+  private var _allGroups = viewModelScope.observeTable(
+    table = Table.ReminderGroup,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { reminderGroupRepository.getAll() }
+  )
   var allGroups: LiveData<List<ReminderGroup>> = _allGroups
 
-  val groups = mutableListOf<ReminderGroup>()
-
-  init {
-    reminderGroupDao.loadAll().observeForever {
-      _allGroups.postValue(it)
-      if (it != null) {
-        groups.clear()
-        groups.addAll(it)
-      }
-    }
+  fun getGroups(): List<ReminderGroup> {
+    return _allGroups.value ?: emptyList()
   }
 
   override fun onCreate(owner: LifecycleOwner) {
@@ -77,19 +80,19 @@ class EditReminderViewModel(
       runBlocking {
         Logger.d("saveAndStartReminder: save START")
         if (reminder.groupUuId == "") {
-          val group = reminderGroupDao.defaultGroup()
+          val group = reminderGroupRepository.defaultGroup()
           if (group != null) {
             reminder.groupColor = group.groupColor
             reminder.groupTitle = group.groupTitle
             reminder.groupUuId = group.groupUuId
           }
         }
-        reminderDao.insert(reminder)
+        reminderRepository.save(reminder)
         if (!isEdit) {
           if (Reminder.isGpsType(reminder.type)) {
             val places = reminder.places
             if (places.isNotEmpty()) {
-              placesDao.insert(places[0])
+              placeRepository.save(places[0])
             }
           }
         }
@@ -123,16 +126,16 @@ class EditReminderViewModel(
 
   fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderDao.getById(id)
+      val reminder = reminderRepository.getById(id)
       hasSameInDb = reminder != null
     }
   }
 
   fun moveToTrash(reminder: Reminder) {
-    withResult {
+    withResultSuspend {
       reminder.isRemoved = true
       eventControlFactory.getController(reminder).disable()
-      reminderDao.insert(reminder)
+      reminderRepository.save(reminder)
       backupReminder(reminder.uuId)
       Commands.DELETED
     }
@@ -140,9 +143,9 @@ class EditReminderViewModel(
 
   fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
     if (showMessage) {
-      withResult {
+      withResultSuspend {
         eventControlFactory.getController(reminder).disable()
-        reminderDao.delete(reminder)
+        reminderRepository.delete(reminder.uuId)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
@@ -152,9 +155,9 @@ class EditReminderViewModel(
         Commands.DELETED
       }
     } else {
-      withProgress {
+      withProgressSuspend {
         eventControlFactory.getController(reminder).disable()
-        reminderDao.delete(reminder)
+        reminderRepository.delete(reminder.uuId)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,

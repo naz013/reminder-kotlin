@@ -4,7 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.services.ReminderActionReceiver
@@ -27,7 +27,7 @@ class ReminderHandlerSilent(
   private val wearNotification: WearNotification
 ) : ActionHandler<Reminder> {
 
-  override fun handle(data: Reminder) {
+  override suspend fun handle(data: Reminder) {
     showNotificationWithoutSound(data)
   }
 

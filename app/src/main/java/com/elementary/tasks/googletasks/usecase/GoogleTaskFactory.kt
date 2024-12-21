@@ -1,6 +1,6 @@
 package com.elementary.tasks.googletasks.usecase
 
-import com.elementary.tasks.core.data.models.GoogleTask
+import com.github.naz013.domain.GoogleTask
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.google.api.services.tasks.model.Task
 

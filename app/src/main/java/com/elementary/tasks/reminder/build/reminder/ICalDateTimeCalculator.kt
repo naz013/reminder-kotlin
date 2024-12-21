@@ -17,7 +17,7 @@ import com.elementary.tasks.reminder.build.ICalStartTimeBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.create.fragments.recur.EventData
 import com.github.naz013.logging.Logger

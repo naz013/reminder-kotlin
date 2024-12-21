@@ -10,8 +10,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.visibleGone

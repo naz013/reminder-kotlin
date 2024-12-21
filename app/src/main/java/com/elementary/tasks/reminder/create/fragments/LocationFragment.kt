@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility

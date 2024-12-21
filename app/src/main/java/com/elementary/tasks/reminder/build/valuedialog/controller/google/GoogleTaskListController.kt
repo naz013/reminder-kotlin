@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.google
 
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractSelectableRadioController
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.SelectableValue

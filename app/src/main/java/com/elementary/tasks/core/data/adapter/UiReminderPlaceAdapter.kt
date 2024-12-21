@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.adapter
 
-import com.elementary.tasks.core.data.models.Place
+import com.github.naz013.domain.Place
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 
 class UiReminderPlaceAdapter : UiAdapter<Place, UiReminderPlace> {

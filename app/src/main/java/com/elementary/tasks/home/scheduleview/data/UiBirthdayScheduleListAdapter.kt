@@ -1,7 +1,7 @@
 package com.elementary.tasks.home.scheduleview.data
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Birthday
+import com.github.naz013.domain.Birthday
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.UnitsConverter

@@ -1,22 +1,24 @@
 package com.elementary.tasks.core.cloud.repositories
 
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.repository.ReminderGroupRepository
 
-class GroupDataFlowRepository(appDb: AppDb) : DatabaseRepository<ReminderGroup>(appDb) {
+class GroupDataFlowRepository(
+  private val reminderGroupRepository: ReminderGroupRepository
+) : DatabaseRepository<ReminderGroup>() {
   override suspend fun get(id: String): ReminderGroup? {
-    return appDb.reminderGroupDao().getById(id)
+    return reminderGroupRepository.getById(id)
   }
 
   override suspend fun insert(t: ReminderGroup) {
-    appDb.reminderGroupDao().insert(t)
+    reminderGroupRepository.save(t)
   }
 
   override suspend fun all(): List<ReminderGroup> {
-    return appDb.reminderGroupDao().all()
+    return reminderGroupRepository.getAll()
   }
 
   override suspend fun delete(t: ReminderGroup) {
-    appDb.reminderGroupDao().delete(t)
+    reminderGroupRepository.delete(t.groupUuId)
   }
 }

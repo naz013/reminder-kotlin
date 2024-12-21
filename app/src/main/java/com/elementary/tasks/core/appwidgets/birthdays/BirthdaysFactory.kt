@@ -16,10 +16,11 @@ import com.elementary.tasks.core.appwidgets.Direction
 import com.elementary.tasks.core.appwidgets.WidgetIntentProtocol
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayWidgetListAdapter
-import com.elementary.tasks.core.data.repository.BirthdayRepository
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayWidgetList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.github.naz013.repository.BirthdayRepository
 
 class BirthdaysFactory(
   private val context: Context,
@@ -59,7 +60,7 @@ class BirthdaysFactory(
 
     list.clear()
 
-    birthdayRepository.getAll()
+    invokeSuspend { birthdayRepository.getAll() }
       .map { uiBirthdayWidgetListAdapter.convert(it) }
       .sortedBy { it.millis }
       .also { list.addAll(it) }

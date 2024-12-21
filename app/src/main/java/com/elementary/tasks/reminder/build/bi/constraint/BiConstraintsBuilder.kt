@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.bi.constraint
 
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 
 class BiConstraints(
   val constraints: List<BiConstraint<*>>

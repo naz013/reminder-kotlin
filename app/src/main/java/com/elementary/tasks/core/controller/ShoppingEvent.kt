@@ -2,20 +2,20 @@ package com.elementary.tasks.core.controller
 
 import android.text.TextUtils
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.ReminderRepository
 import org.threeten.bp.LocalDateTime
 
 class ShoppingEvent(
   reminder: Reminder,
-  reminderDao: ReminderDao,
+  reminderRepository: ReminderRepository,
   prefs: Prefs,
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
@@ -23,10 +23,10 @@ class ShoppingEvent(
   updatesHelper: UpdatesHelper,
   textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
-  googleTasksDao: GoogleTasksDao
+  googleTaskRepository: GoogleTaskRepository
 ) : RepeatableEventManager(
   reminder,
-  reminderDao,
+  reminderRepository,
   prefs,
   googleCalendarUtils,
   notifier,
@@ -34,7 +34,7 @@ class ShoppingEvent(
   updatesHelper,
   textProvider,
   dateTimeManager,
-  googleTasksDao
+  googleTaskRepository
 ) {
 
   override val isActive: Boolean

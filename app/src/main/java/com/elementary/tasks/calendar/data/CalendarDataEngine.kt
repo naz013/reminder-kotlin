@@ -5,10 +5,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.Observer
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
@@ -20,7 +17,13 @@ import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.getNonNullList
 import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -33,24 +36,34 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class CalendarDataEngine(
-  birthdaysDao: BirthdaysDao,
-  reminderDao: ReminderDao,
+  birthdayRepository: BirthdayRepository,
+  reminderRepository: ReminderRepository,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager,
   private val recurrenceManager: RecurrenceManager,
   private val dispatcherProvider: DispatcherProvider,
   private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
-  private val scope: CoroutineScope = CoroutineScope(Job())
+  private val tableChangeListenerFactory: TableChangeListenerFactory
 ) {
 
-  private val birthdaysLiveData = birthdaysDao.loadAll()
+  private val scope: CoroutineScope = CoroutineScope(Job())
+
+  private val birthdaysLiveData = scope.observeTable(
+    table = Table.Birthday,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { birthdayRepository.getAll() }
+  )
   private val birthdayObserver: Observer<List<Birthday>> = Observer { processData(birthdays = it) }
 
   private val monthBirthdayMap = mutableMapOf<LocalDate, MutableList<BirthdayEventModel>>()
   private val dayBirthdayMap = mutableMapOf<LocalDate, MutableList<BirthdayEventModel>>()
 
-  private val remindersLiveData = reminderDao.loadType(active = true, removed = false)
+  private val remindersLiveData = scope.observeTable(
+    table = Table.Reminder,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { reminderRepository.getAll(active = true, removed = false) }
+  )
   private val reminderObserver: Observer<List<Reminder>> = Observer { processData(reminders = it) }
 
   private val monthReminderMap = mutableMapOf<LocalDate, MutableList<ReminderEventModel>>()
@@ -327,7 +340,7 @@ class CalendarDataEngine(
         continue
       }
       days++
-      val localItem = Reminder(reminder, true).apply {
+      val localItem = Reminder(reminder, true, DateTimeManager.gmtDateTime).apply {
         this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
       }
       addFutureReminderToMaps(
@@ -353,7 +366,7 @@ class CalendarDataEngine(
     dates?.mapNotNull { it.dateTime }
       ?.forEach { localDateTime ->
         if (baseTime != localDateTime) {
-          localItem = Reminder(localItem, true).apply {
+          localItem = Reminder(localItem, true, DateTimeManager.gmtDateTime).apply {
             this.eventTime = dateTimeManager.getGmtFromDateTime(localDateTime)
           }
           addFutureReminderToMaps(
@@ -399,7 +412,7 @@ class CalendarDataEngine(
         continue
       }
       days++
-      localItem = Reminder(localItem, true).apply {
+      localItem = Reminder(localItem, true, DateTimeManager.gmtDateTime).apply {
         this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
       }
       addFutureReminderToMaps(
@@ -441,7 +454,7 @@ class CalendarDataEngine(
       val weekDay = dateTimeManager.localDayOfWeekToOld(eventTime.dayOfWeek)
       if (weekdays[weekDay - 1] == 1) {
         days++
-        val localItem = Reminder(reminder, true).apply {
+        val localItem = Reminder(reminder, true, DateTimeManager.gmtDateTime).apply {
           this.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
         }
         addFutureReminderToMaps(

@@ -1,14 +1,15 @@
 package com.elementary.tasks.core.appwidgets
 
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.repository.BirthdayRepository
-import com.elementary.tasks.core.data.repository.ReminderRepository
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.TagType
 import com.elementary.tasks.core.utils.plusMillis
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -75,7 +76,7 @@ class WidgetDataProvider(
   }
 
   private fun loadReminders() {
-    val reminders = reminderRepository.getActiveWithoutGpsTypes()
+    val reminders = invokeSuspend { reminderRepository.getActiveWithoutGpsTypes() }
     for (item in reminders) {
       val mType = item.type
       var eventTime = dateTimeManager.fromGmtToLocal(item.eventTime) ?: continue
@@ -146,7 +147,7 @@ class WidgetDataProvider(
   }
 
   private fun loadBirthdays() {
-    val birthdays = birthdayRepository.getAll()
+    val birthdays = invokeSuspend { birthdayRepository.getAll() }
     for (item in birthdays) {
       val date = dateTimeManager.parseBirthdayDate(item.date) ?: continue
       data.add(Item(date, WidgetType.BIRTHDAY))

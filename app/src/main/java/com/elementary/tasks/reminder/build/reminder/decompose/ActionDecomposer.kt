@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
@@ -10,13 +10,13 @@ import com.elementary.tasks.reminder.build.SmsBuilderItem
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 
 class ActionDecomposer(
   private val biFactory: BiFactory
 ) {
 
-  operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val type = UiReminderType(reminder.type)
     val mainItem = when {
       type.isCall() -> {

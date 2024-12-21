@@ -6,11 +6,6 @@ import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.analytics.PresetAction
-import com.github.naz013.analytics.PresetUsed
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -18,20 +13,13 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
-import com.elementary.tasks.core.data.dao.PlacesDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
 import com.elementary.tasks.core.data.livedata.Event
 import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.elementary.tasks.core.data.models.PresetType
-import com.elementary.tasks.core.data.models.RecurPreset
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.repository.RecurPresetRepository
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.os.readParcelable
+import com.elementary.tasks.core.os.readSerializable
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -48,7 +36,6 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.build.bi.BiComparator
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFilter
-import com.elementary.tasks.reminder.build.bi.BiType
 import com.elementary.tasks.reminder.build.bi.constraint.PermissionConstraint
 import com.elementary.tasks.reminder.build.logic.BuilderItemsLogic
 import com.elementary.tasks.reminder.build.logic.UiBuilderItemsAdapter
@@ -66,7 +53,20 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.voice.VoiceCommandProcessor
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.analytics.PresetAction
+import com.github.naz013.analytics.PresetUsed
+import com.github.naz013.domain.PresetType
+import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -74,37 +74,37 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 class BuildReminderViewModel(
-    private val googleCalendarUtils: GoogleCalendarUtils,
-    private val eventControlFactory: EventControlFactory,
-    dispatcherProvider: DispatcherProvider,
-    private val workerLauncher: WorkerLauncher,
-    private val reminderGroupDao: ReminderGroupDao,
-    private val reminderDao: ReminderDao,
-    private val placesDao: PlacesDao,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
-    private val biFactory: BiFactory,
-    private val builderItemsLogic: BuilderItemsLogic,
-    private val selectorDialogDataHolder: SelectorDialogDataHolder,
-    private val uiBuilderItemsAdapter: UiBuilderItemsAdapter,
-    private val uiSelectorItemsAdapter: UiSelectorItemsAdapter,
-    private val valueDialogDataHolder: ValueDialogDataHolder,
-    private val biToReminderAdapter: BiToReminderAdapter,
-    private val permissionValidator: PermissionValidator,
-    private val reminderToBiDecomposer: ReminderToBiDecomposer,
-    private val biFilter: BiFilter,
-    private val uiPresetListAdapter: UiPresetListAdapter,
-    private val recurPresetRepository: RecurPresetRepository,
-    private val recurrenceManager: RecurrenceManager,
-    private val recurParamsToBiAdapter: RecurParamsToBiAdapter,
-    private val builderPresetToBiAdapter: BuilderPresetToBiAdapter,
-    private val reminderPredictionCalculator: ReminderPredictionCalculator,
-    private val uriReader: UriReader,
-    private val updatesHelper: UpdatesHelper,
-    private val voiceCommandProcessor: VoiceCommandProcessor,
-    private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
-    private val dateTimeManager: DateTimeManager,
-    private val textProvider: TextProvider
+  private val googleCalendarUtils: GoogleCalendarUtils,
+  private val eventControlFactory: EventControlFactory,
+  dispatcherProvider: DispatcherProvider,
+  private val workerLauncher: WorkerLauncher,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val reminderRepository: ReminderRepository,
+  private val placeRepository: PlaceRepository,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
+  private val biFactory: BiFactory,
+  private val builderItemsLogic: BuilderItemsLogic,
+  private val selectorDialogDataHolder: SelectorDialogDataHolder,
+  private val uiBuilderItemsAdapter: UiBuilderItemsAdapter,
+  private val uiSelectorItemsAdapter: UiSelectorItemsAdapter,
+  private val valueDialogDataHolder: ValueDialogDataHolder,
+  private val biToReminderAdapter: BiToReminderAdapter,
+  private val permissionValidator: PermissionValidator,
+  private val reminderToBiDecomposer: ReminderToBiDecomposer,
+  private val biFilter: BiFilter,
+  private val uiPresetListAdapter: UiPresetListAdapter,
+  private val recurPresetRepository: RecurPresetRepository,
+  private val recurrenceManager: RecurrenceManager,
+  private val recurParamsToBiAdapter: RecurParamsToBiAdapter,
+  private val builderPresetToBiAdapter: BuilderPresetToBiAdapter,
+  private val reminderPredictionCalculator: ReminderPredictionCalculator,
+  private val uriReader: UriReader,
+  private val updatesHelper: UpdatesHelper,
+  private val voiceCommandProcessor: VoiceCommandProcessor,
+  private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
+  private val dateTimeManager: DateTimeManager,
+  private val textProvider: TextProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -432,7 +432,7 @@ class BuildReminderViewModel(
       delay(50)
     }
     runCatching {
-      val reminder = intent.readParcelable(Constants.INTENT_ITEM, Reminder::class.java)
+      val reminder = intent.readSerializable(Constants.INTENT_ITEM, Reminder::class.java)
       if (reminder != null) {
         isFromFile = true
         editReminder(reminder)
@@ -485,7 +485,7 @@ class BuildReminderViewModel(
 
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderDao.getById(id) ?: return@launch
+      val reminder = reminderRepository.getById(id) ?: return@launch
       editReminder(reminder)
       pauseReminder(reminder)
     }
@@ -511,7 +511,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun findSame(id: String) {
-    val reminder = reminderDao.getById(id)
+    val reminder = reminderRepository.getById(id)
     hasSameInDb = reminder != null
     reminder?.also { pauseReminder(it) }
   }
@@ -552,9 +552,9 @@ class BuildReminderViewModel(
 
   private fun loadPresets() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val recurPresets = recurPresetRepository.getAll(presetType = PresetType.RECUR)
+      val recurPresets = recurPresetRepository.getAllByType(presetType = PresetType.RECUR)
         .map { uiPresetListAdapter.create(it) }
-      val presets = recurPresetRepository.getAll(presetType = PresetType.BUILDER)
+      val presets = recurPresetRepository.getAllByType(presetType = PresetType.BUILDER)
         .map { uiPresetListAdapter.create(it) }
 
       withUIContext {
@@ -672,19 +672,19 @@ class BuildReminderViewModel(
     runBlocking {
       Logger.i("saveAndStartReminder: save START")
       if (reminder.groupUuId == "") {
-        val group = reminderGroupDao.defaultGroup()
+        val group = reminderGroupRepository.defaultGroup()
         if (group != null) {
           reminder.groupColor = group.groupColor
           reminder.groupTitle = group.groupTitle
           reminder.groupUuId = group.groupUuId
         }
       }
-      reminderDao.insert(reminder)
+      reminderRepository.save(reminder)
       if (!isEdit) {
         if (Reminder.isGpsType(reminder.type)) {
           val places = reminder.places
           if (places.isNotEmpty()) {
-            placesDao.insert(places[0])
+            placeRepository.save(places[0])
           }
         }
       }
@@ -720,10 +720,10 @@ class BuildReminderViewModel(
 
     Logger.i("Move reminder to Archive")
 
-    withResult {
+    withResultSuspend {
       reminder.isRemoved = true
       eventControlFactory.getController(reminder).disable()
-      reminderDao.insert(reminder)
+      reminderRepository.save(reminder)
       backupReminder(reminder.uuId)
       Commands.DELETED
     }
@@ -739,9 +739,9 @@ class BuildReminderViewModel(
     Logger.i("Delete reminder")
 
     if (showMessage) {
-      withResult {
+      withResultSuspend {
         eventControlFactory.getController(reminder).disable()
-        reminderDao.delete(reminder)
+        reminderRepository.delete(reminder.uuId)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
@@ -751,9 +751,9 @@ class BuildReminderViewModel(
         Commands.DELETED
       }
     } else {
-      withProgress {
+      withProgressSuspend {
         eventControlFactory.getController(reminder).disable()
-        reminderDao.delete(reminder)
+        reminderRepository.delete(reminder.uuId)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,

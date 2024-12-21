@@ -5,7 +5,7 @@ import com.backdoor.engine.Recognizer
 import com.backdoor.engine.misc.Action
 import com.elementary.tasks.core.analytics.Status
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants

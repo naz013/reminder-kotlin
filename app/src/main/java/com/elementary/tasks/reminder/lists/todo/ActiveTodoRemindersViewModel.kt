@@ -5,21 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 class ActiveTodoRemindersViewModel(
   dispatcherProvider: DispatcherProvider,
-  private val reminderDao: ReminderDao,
+  private val reminderRepository: ReminderRepository,
   private val eventControlFactory: EventControlFactory,
   private val workerLauncher: WorkerLauncher,
   private val uiReminderListsAdapter: UiReminderListsAdapter
@@ -28,7 +28,7 @@ class ActiveTodoRemindersViewModel(
   private val reminderData = SearchableTodoReminderData(
     dispatcherProvider = dispatcherProvider,
     parentScope = viewModelScope,
-    reminderDao = reminderDao
+    reminderRepository = reminderRepository
   )
   val events = reminderData.map { uiReminderListsAdapter.convert(it) }
 
@@ -37,8 +37,8 @@ class ActiveTodoRemindersViewModel(
   }
 
   fun skip(id: String) {
-    withResult {
-      val fromDb = reminderDao.getById(id)
+    withResultSuspend {
+      val fromDb = reminderRepository.getById(id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
         workerLauncher.startWork(
@@ -56,7 +56,7 @@ class ActiveTodoRemindersViewModel(
   fun toggleReminder(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val item = reminderDao.getById(id) ?: return@launch
+      val item = reminderRepository.getById(id) ?: return@launch
       if (!eventControlFactory.getController(item).onOff()) {
         postInProgress(false)
         postCommand(Commands.OUTDATED)
@@ -74,11 +74,11 @@ class ActiveTodoRemindersViewModel(
   }
 
   fun moveToTrash(id: String) {
-    withResult {
-      reminderDao.getById(id)?.let {
+    withResultSuspend {
+      reminderRepository.getById(id)?.let {
         it.isRemoved = true
         eventControlFactory.getController(it).disable()
-        reminderDao.insert(it)
+        reminderRepository.save(it)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
           Constants.INTENT_ID,
@@ -95,18 +95,18 @@ class ActiveTodoRemindersViewModel(
   internal class SearchableTodoReminderData(
     dispatcherProvider: DispatcherProvider,
     parentScope: CoroutineScope,
-    private val reminderDao: ReminderDao
+    private val reminderRepository: ReminderRepository
   ) : SearchableLiveData<List<Reminder>>(parentScope + dispatcherProvider.default()) {
 
-    override fun runQuery(query: String): List<Reminder> {
+    override suspend fun runQuery(query: String): List<Reminder> {
       return if (query.isEmpty()) {
-        reminderDao.getAllTypes(
+        reminderRepository.getAllTypes(
           removed = false,
           active = true,
           types = TYPES
         )
       } else {
-        reminderDao.searchBySummaryAllTypes(
+        reminderRepository.searchBySummaryAllTypes(
           query = query.lowercase(),
           removed = false,
           active = true,

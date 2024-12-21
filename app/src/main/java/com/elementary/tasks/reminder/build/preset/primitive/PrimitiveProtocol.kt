@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.preset.primitive
 
-import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Place
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Place
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.datetime.recurrence.DayValue

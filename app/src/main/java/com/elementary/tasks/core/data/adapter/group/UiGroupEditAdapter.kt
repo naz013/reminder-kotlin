@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.adapter.group
 
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 
 class UiGroupEditAdapter {

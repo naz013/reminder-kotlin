@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.elementary.tasks.core.data.models.BuilderSchemeItem
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.reminder.BuilderSchemeItem
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.EmptyState
 import com.elementary.tasks.reminder.build.ErrorState

@@ -1,15 +1,15 @@
 package com.elementary.tasks.core.cloud.completables
 
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.groups.GroupsUtil
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
 
 class ReminderCompletable(
-  private val reminderGroupDao: ReminderGroupDao,
-  private val reminderDao: ReminderDao,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val reminderRepository: ReminderRepository,
   private val eventControlFactory: EventControlFactory,
   private val groupsUtil: GroupsUtil,
   private val dateTimeManager: DateTimeManager
@@ -17,7 +17,7 @@ class ReminderCompletable(
 
   override suspend fun action(t: Reminder) {
     val groups = groupsUtil.mapAll()
-    val defGroup = reminderGroupDao.defaultGroup() ?: groups.values.first()
+    val defGroup = reminderGroupRepository.defaultGroup() ?: groups.values.first()
 
     if (!groups.containsKey(t.groupUuId)) {
       t.apply {
@@ -34,7 +34,7 @@ class ReminderCompletable(
         t.isActive = false
       }
     }
-    reminderDao.insert(t)
+    reminderRepository.save(t)
     if (t.isActive && !t.isRemoved) {
       val control = eventControlFactory.getController(t)
       if (control.canSkip()) {
