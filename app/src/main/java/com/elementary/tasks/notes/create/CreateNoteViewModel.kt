@@ -8,23 +8,12 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.ImageFile
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.OldNote
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
@@ -41,14 +30,25 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.toLiveData
-import com.elementary.tasks.core.utils.ui.font.FontParams
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.font.FontParams
+import com.github.naz013.domain.note.ImageFile
+import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.OldNote
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -60,23 +60,23 @@ import java.util.Random
 import java.util.UUID
 
 class CreateNoteViewModel(
-    private val id: String,
-    private val imageDecoder: ImageDecoder,
-    dispatcherProvider: DispatcherProvider,
-    private val eventControlFactory: EventControlFactory,
-    private val workerLauncher: WorkerLauncher,
-    private val notesDao: NotesDao,
-    private val reminderDao: ReminderDao,
-    private val reminderGroupDao: ReminderGroupDao,
-    private val prefs: Prefs,
-    private val dateTimeManager: DateTimeManager,
-    private val textProvider: TextProvider,
-    private val backupTool: BackupTool,
-    private val contextProvider: ContextProvider,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val uiNoteEditAdapter: UiNoteEditAdapter,
-    private val noteImageRepository: NoteImageRepository,
-    private val noteToOldNoteConverter: NoteToOldNoteConverter
+  private val id: String,
+  private val imageDecoder: ImageDecoder,
+  dispatcherProvider: DispatcherProvider,
+  private val eventControlFactory: EventControlFactory,
+  private val workerLauncher: WorkerLauncher,
+  private val noteRepository: NoteRepository,
+  private val reminderRepository: ReminderRepository,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val prefs: Prefs,
+  private val dateTimeManager: DateTimeManager,
+  private val textProvider: TextProvider,
+  private val backupTool: BackupTool,
+  private val contextProvider: ContextProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val uiNoteEditAdapter: UiNoteEditAdapter,
+  private val noteImageRepository: NoteImageRepository,
+  private val noteToOldNoteConverter: NoteToOldNoteConverter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -175,7 +175,7 @@ class CreateNoteViewModel(
   fun load() {
     setDateTime()
     viewModelScope.launch(dispatcherProvider.default()) {
-      localNote = notesDao.getById(id)
+      localNote = noteRepository.getById(id)
       localNote?.also { noteWithImages ->
         onNoteLoaded(noteWithImages)
       }
@@ -202,7 +202,7 @@ class CreateNoteViewModel(
 
   private fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val note = notesDao.getById(id)
+      val note = noteRepository.getById(id)
       hasSameInDb = note?.note != null
     }
   }
@@ -287,10 +287,8 @@ class CreateNoteViewModel(
     val note = noteWithImages.note ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      notesDao.delete(note)
-      for (image in noteWithImages.images) {
-        notesDao.delete(image)
-      }
+      noteRepository.delete(note.key)
+      noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
@@ -353,7 +351,7 @@ class CreateNoteViewModel(
       v.updatedAt = DateTimeManager.gmtDateTime
       Logger.d("saveNote: $note")
       saveImages(note.images, v.key)
-      notesDao.insert(v)
+      noteRepository.save(v)
       workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -422,12 +420,12 @@ class CreateNoteViewModel(
 
   private fun saveReminder(reminder: Reminder) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val group = reminderGroupDao.defaultGroup()
+      val group = reminderGroupRepository.defaultGroup()
       if (group != null) {
         reminder.groupColor = group.groupColor
         reminder.groupTitle = group.groupTitle
         reminder.groupUuId = group.groupUuId
-        reminderDao.insert(reminder)
+        reminderRepository.save(reminder)
       }
       if (reminder.groupUuId != "") {
         eventControlFactory.getController(reminder).enable()
@@ -440,19 +438,19 @@ class CreateNoteViewModel(
     }
   }
 
-  private fun saveImages(list: List<ImageFile>, id: String) {
-    val oldList = notesDao.getImagesByNoteId(id)
+  private suspend fun saveImages(list: List<ImageFile>, id: String) {
+    val oldList = noteRepository.getImagesByNoteId(id)
     Logger.d("saveImages: ${oldList.size}")
     for (image in oldList) {
       Logger.d("saveImages: delete -> ${image.id}, ${image.noteId}")
-      notesDao.delete(image)
+      noteRepository.deleteImage(image.id)
     }
     noteImageRepository.moveImagesToFolder(list, id)
       .map { it.copy(noteId = id) }
       .takeIf { it.isNotEmpty() }
       ?.also {
         Logger.d("saveImages: new list -> $it")
-        notesDao.insertAll(it)
+        noteRepository.saveAll(it)
       }
   }
 }

@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.fromReminder
 import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.databinding.ViewTuneExtraBinding

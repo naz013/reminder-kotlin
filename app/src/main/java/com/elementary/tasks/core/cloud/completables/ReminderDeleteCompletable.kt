@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.cloud.completables
 
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 
 class ReminderDeleteCompletable(
   private val eventControlFactory: EventControlFactory

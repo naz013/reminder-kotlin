@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.adapter
 
-import com.elementary.tasks.core.data.models.UsedTime
+import com.github.naz013.domain.UsedTime
 import com.elementary.tasks.core.data.ui.UiUsedTimeList
 
 class UiUsedTimeListAdapter {

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.os
 
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull

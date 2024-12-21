@@ -1,7 +1,7 @@
 package com.elementary.tasks.googletasks.usecase.tasklist
 
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.googletasks.usecase.db.SaveGoogleTaskList
 import com.elementary.tasks.googletasks.usecase.remote.DownloadGoogleTaskList
 import com.elementary.tasks.googletasks.usecase.task.SyncGoogleTasks
@@ -14,7 +14,7 @@ class SyncGoogleTaskList(
   private val syncGoogleTasks: SyncGoogleTasks
 ) {
 
-  operator fun invoke(list: GoogleTaskList) {
+  suspend operator fun invoke(list: GoogleTaskList) {
     if (!gTasks.isLogged) {
       Logger.i("Sync task list - not logged")
       return

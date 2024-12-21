@@ -21,7 +21,6 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.buildIntent
 import com.elementary.tasks.core.os.colorOf
@@ -46,6 +45,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -219,7 +219,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun loadTest() {
     isMockedTest = intentBoolean(ARG_TEST)
     if (isMockedTest) {
-      val reminder = intentParcelable(ARG_TEST_ITEM, Reminder::class.java)
+      val reminder = intentSerializable(ARG_TEST_ITEM, Reminder::class.java)
       if (reminder != null) showInfo(reminder)
     }
   }

@@ -1,8 +1,8 @@
 package com.elementary.tasks.googletasks.usecase.remote
 
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.googletasks.usecase.GoogleTaskFactory
 
 class DownloadGoogleTasks(

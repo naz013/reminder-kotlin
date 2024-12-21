@@ -3,7 +3,7 @@ package com.elementary.tasks.core.data.adapter.group
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider

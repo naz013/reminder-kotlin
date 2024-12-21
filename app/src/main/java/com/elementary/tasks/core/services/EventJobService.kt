@@ -60,7 +60,7 @@ class EventJobService(
     }
   }
 
-  private fun birthdayAction() {
+  private suspend fun birthdayAction() {
     birthdayActionProcessor.process()
   }
 }

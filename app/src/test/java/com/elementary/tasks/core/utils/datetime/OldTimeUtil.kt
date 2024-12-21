@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.utils.datetime
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.github.naz013.calendarext.addMonths
 import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds

@@ -13,8 +13,8 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.SystemServiceProvider
 import com.elementary.tasks.core.services.alarm.AlarmReceiver

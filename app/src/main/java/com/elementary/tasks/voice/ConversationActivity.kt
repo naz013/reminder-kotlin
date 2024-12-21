@@ -20,9 +20,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop

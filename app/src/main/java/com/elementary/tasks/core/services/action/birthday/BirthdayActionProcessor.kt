@@ -1,9 +1,5 @@
 package com.elementary.tasks.core.services.action.birthday
 
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -13,23 +9,27 @@ import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DateValidator
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 
 class BirthdayActionProcessor(
-    private val dispatcherProvider: DispatcherProvider,
-    private val birthdayHandlerFactory: BirthdayHandlerFactory,
-    private val birthdayRepository: BirthdayRepository,
-    private val prefs: Prefs,
-    private val doNotDisturbManager: DoNotDisturbManager,
-    private val dateTimeManager: DateTimeManager,
-    private val jobScheduler: JobScheduler,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val contextProvider: ContextProvider,
-    private val dateValidator: DateValidator = DateValidator()
+  private val dispatcherProvider: DispatcherProvider,
+  private val birthdayHandlerFactory: BirthdayHandlerFactory,
+  private val birthdayRepository: BirthdayRepository,
+  private val prefs: Prefs,
+  private val doNotDisturbManager: DoNotDisturbManager,
+  private val dateTimeManager: DateTimeManager,
+  private val jobScheduler: JobScheduler,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val contextProvider: ContextProvider,
+  private val dateValidator: DateValidator = DateValidator()
 ) {
 
   private val scope = CoroutineScope(dispatcherProvider.default())
@@ -64,7 +64,7 @@ class BirthdayActionProcessor(
     }
   }
 
-  fun process() {
+  suspend fun process() {
     Logger.d("process: ")
     jobScheduler.cancelDailyBirthday()
     jobScheduler.scheduleDailyBirthday()

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity

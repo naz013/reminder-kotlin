@@ -3,16 +3,16 @@ package com.elementary.tasks.birthdays.work
 import android.content.Context
 import android.provider.ContactsContract
 import android.text.TextUtils
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.readLong
 import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.domain.Birthday
+import com.github.naz013.repository.BirthdayRepository
 
 class ScanContactsWorker(
-  private val birthdaysDao: BirthdaysDao,
+  private val birthdayRepository: BirthdayRepository,
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader
@@ -50,7 +50,7 @@ class ScanContactsWorker(
           ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
           "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
       val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-      val contacts = birthdaysDao.getAll()
+      val contacts = birthdayRepository.getAll()
       val birthdayCur =
         cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
       if (birthdayCur != null && birthdayCur.count > 0) {
@@ -80,7 +80,7 @@ class ScanContactsWorker(
             if (contacts.firstOrNull { it.key == birthdayItem.key } == null) {
               i += 1
             }
-            birthdaysDao.insert(birthdayItem)
+            birthdayRepository.save(birthdayItem)
           }
         }
       }

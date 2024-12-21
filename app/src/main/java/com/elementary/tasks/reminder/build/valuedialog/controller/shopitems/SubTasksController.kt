@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.nonNullObserve
 import com.elementary.tasks.databinding.BuilderItemShopItemsBinding
 import com.elementary.tasks.reminder.build.BuilderItem

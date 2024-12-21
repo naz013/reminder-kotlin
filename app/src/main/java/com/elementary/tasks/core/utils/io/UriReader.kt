@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.io
 import android.content.ContentResolver
 import android.net.Uri
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.data.models.Birthday
+import com.github.naz013.domain.Birthday
 import com.elementary.tasks.core.os.ContextProvider
 
 class UriReader(

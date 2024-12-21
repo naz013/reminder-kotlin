@@ -5,7 +5,7 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.calendar.monthview.DayBottomSheetDialog
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.utils.datetime.DateTimeManager

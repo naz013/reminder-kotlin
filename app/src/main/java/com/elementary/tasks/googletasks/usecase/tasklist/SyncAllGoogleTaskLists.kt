@@ -1,26 +1,26 @@
 package com.elementary.tasks.googletasks.usecase.tasklist
 
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
 import com.elementary.tasks.googletasks.usecase.db.DeleteGoogleTaskList
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
 
 class SyncAllGoogleTaskLists(
   private val gTasks: GTasks,
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val syncGoogleTaskList: SyncGoogleTaskList,
   private val addNewTaskList: AddNewTaskList,
   private val deleteGoogleTaskList: DeleteGoogleTaskList
 ) {
 
-  operator fun invoke() {
+  suspend operator fun invoke() {
     if (!gTasks.isLogged) {
       Logger.i("Sync all gtasks - not logged")
       return
     }
 
     // Get all Google Task Lists from DB
-    val localTaskLists = googleTaskListsDao.all()
+    val localTaskLists = googleTaskListRepository.getAll()
     Logger.i("Sync all gtasks, number of local = ${localTaskLists.size}")
 
     // Sync each of them
@@ -48,11 +48,11 @@ class SyncAllGoogleTaskLists(
     }
 
     // Set default Task list if not present
-    if (googleTaskListsDao.defaultGoogleTaskList() == null) {
+    if (googleTaskListRepository.defaultGoogleTaskList() == null) {
       Logger.i("Sync all gtasks, set default task list")
-      googleTaskListsDao.all().firstOrNull()
+      googleTaskListRepository.getAll().firstOrNull()
         ?.apply { def = 1 }
-        ?.also { googleTaskListsDao.insert(it) }
+        ?.also { googleTaskListRepository.save(it) }
     }
   }
 }

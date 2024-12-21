@@ -31,6 +31,7 @@ import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericIntFormatte
 import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericListIntFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormatter
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
+import com.github.naz013.domain.reminder.BiType
 
 class BiFactoryICal(
   contextProvider: ContextProvider,

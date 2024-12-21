@@ -2,7 +2,7 @@ package com.elementary.tasks.core.data.adapter.note
 
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
 import com.elementary.tasks.core.utils.isColorDark
 import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.github.naz013.domain.font.FontParams
 
 class UiNoteListAdapter(
   private val dateTimeManager: DateTimeManager,

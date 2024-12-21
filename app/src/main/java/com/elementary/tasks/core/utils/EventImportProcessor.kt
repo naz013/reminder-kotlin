@@ -2,11 +2,13 @@ package com.elementary.tasks.core.utils
 
 import android.app.AlarmManager
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.CalendarEvent
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.domain.CalendarEvent
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.CalendarEventRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -14,18 +16,20 @@ import java.util.Calendar
 
 class EventImportProcessor(
   private val googleCalendarUtils: GoogleCalendarUtils,
-  private val appDb: AppDb,
+  private val reminderRepository: ReminderRepository,
   private val dateTimeManager: DateTimeManager,
-  private val eventControlFactory: EventControlFactory
+  private val eventControlFactory: EventControlFactory,
+  private val calendarEventRepository: CalendarEventRepository,
+  private val reminderGroupRepository: ReminderGroupRepository
 ) {
 
-  fun importEventsFor(ids: List<Long>): Result {
+  suspend fun importEventsFor(ids: List<Long>): Result {
     val currTime = System.currentTimeMillis()
     var eventsCount = 0
     val eventItems = googleCalendarUtils.getEvents(ids)
     Logger.d("import: eventItems=${eventItems.size}")
     if (eventItems.isNotEmpty()) {
-      val list = appDb.calendarEventsDao().eventIds()
+      val list = calendarEventRepository.eventIds()
       for (item in eventItems) {
         val itemId = item.id
         if (!list.contains(itemId)) {
@@ -51,7 +55,7 @@ class EventImportProcessor(
             }
           }
           val summary = item.title
-          val group = appDb.reminderGroupDao().defaultGroup()
+          val group = reminderGroupRepository.defaultGroup()
           var categoryId = ""
           if (group != null) {
             categoryId = group.groupUuId
@@ -94,7 +98,7 @@ class EventImportProcessor(
     return Result(eventsCount)
   }
 
-  private fun saveReminder(
+  private suspend fun saveReminder(
     itemId: Long,
     summary: String,
     dtStart: Long,
@@ -113,9 +117,9 @@ class EventImportProcessor(
       this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
       this.allDay = allDay
     }
-    appDb.reminderDao().insert(reminder)
+    reminderRepository.save(reminder)
     eventControlFactory.getController(reminder).enable()
-    appDb.calendarEventsDao().insert(
+    calendarEventRepository.save(
       CalendarEvent(
         reminderId = reminder.uuId,
         event = summary,

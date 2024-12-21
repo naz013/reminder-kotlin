@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.services.action.birthday
 
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.repository.BirthdayRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
@@ -14,6 +12,8 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.github.naz013.domain.Birthday
+import com.github.naz013.repository.BirthdayRepository
 
 class BirthdayHandlerFactory(
   private val birthdayDataProvider: BirthdayDataProvider,

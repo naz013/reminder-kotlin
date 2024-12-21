@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil

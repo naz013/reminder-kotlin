@@ -2,29 +2,41 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.lifecycle.MediatorLiveData
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.getNonNullList
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ReminderGoogleTaskLiveData(
   private val dispatcherProvider: DispatcherProvider,
-  googleTaskListsDao: GoogleTaskListsDao,
-  googleTasksDao: GoogleTasksDao,
-  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter
+  googleTaskListRepository: GoogleTaskListRepository,
+  googleTaskRepository: GoogleTaskRepository,
+  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
+  tableChangeListenerFactory: TableChangeListenerFactory
 ) : MediatorLiveData<Map<String, UiGoogleTaskList>>() {
 
-  private val googleTaskListsSource = googleTaskListsDao.loadAll()
-  private val googleTasksSource = googleTasksDao.loadAttachedToReminder()
+  private val scope = CoroutineScope(Job())
+  private val googleTaskListsSource = scope.observeTable(
+    table = Table.GoogleTaskList,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskListRepository.getAll() }
+  )
+  private val googleTasksSource = scope.observeTable(
+    table = Table.GoogleTask,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { googleTaskRepository.getAttachedToReminder() }
+  )
 
   private var transformJob: Job? = null
-  private val scope = CoroutineScope(Job())
 
   override fun onActive() {
     super.onActive()

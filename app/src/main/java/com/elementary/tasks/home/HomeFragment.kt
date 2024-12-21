@@ -10,7 +10,7 @@ import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData

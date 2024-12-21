@@ -31,17 +31,17 @@ import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.ICalWeekStartBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 
 class RecurParamsToBiAdapter(
   private val biFactory: BiFactory
 ) {
 
-  operator fun invoke(params: List<RecurParam>): List<BuilderItem<*>> {
+  suspend operator fun invoke(params: List<RecurParam>): List<BuilderItem<*>> {
     return params.map { it.toBuilderItem() }.flatten()
   }
 
-  private fun RecurParam.toBuilderItem(): List<ICalBuilderItem<*>> {
+  private suspend fun RecurParam.toBuilderItem(): List<ICalBuilderItem<*>> {
     return when (this) {
       is CountRecurParam -> {
         listOfNotNull(

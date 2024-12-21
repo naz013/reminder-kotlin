@@ -4,15 +4,10 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.Constants
@@ -25,20 +20,25 @@ import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.ReminderGroupRepository
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class CreateGroupViewModel(
-    private val id: String,
-    dispatcherProvider: DispatcherProvider,
-    private val workerLauncher: WorkerLauncher,
-    private val reminderGroupDao: ReminderGroupDao,
-    private val dateTimeManager: DateTimeManager,
-    private val contextProvider: ContextProvider,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val uiGroupEditAdapter: UiGroupEditAdapter,
-    private val idProvider: IdProvider
+  private val id: String,
+  dispatcherProvider: DispatcherProvider,
+  private val workerLauncher: WorkerLauncher,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val dateTimeManager: DateTimeManager,
+  private val contextProvider: ContextProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val uiGroupEditAdapter: UiGroupEditAdapter,
+  private val idProvider: IdProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _reminderGroup = mutableLiveDataOf<UiGroupEdit>()
@@ -88,8 +88,8 @@ class CreateGroupViewModel(
 
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminderGroup = reminderGroupDao.getById(id) ?: return@launch
-      canBeDeleted = reminderGroupDao.all().size > 1 && !reminderGroup.isDefaultGroup
+      val reminderGroup = reminderGroupRepository.getById(id) ?: return@launch
+      canBeDeleted = reminderGroupRepository.getAll().size > 1 && !reminderGroup.isDefaultGroup
       onLoaded(reminderGroup)
     }
   }
@@ -104,7 +104,7 @@ class CreateGroupViewModel(
 
   private fun findSame(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val group = reminderGroupDao.getById(id)
+      val group = reminderGroupRepository.getById(id)
       hasSameInDb = group != null
     }
   }
@@ -133,10 +133,10 @@ class CreateGroupViewModel(
       )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
       if (!wasDefault && group.isDefaultGroup) {
-        val groups = reminderGroupDao.all().map { it.copy(isDefaultGroup = false) }
-        reminderGroupDao.insertAll(groups)
+        val groups = reminderGroupRepository.getAll().map { it.copy(isDefaultGroup = false) }
+        reminderGroupRepository.saveAll(groups)
       }
-      reminderGroupDao.insert(group)
+      reminderGroupRepository.save(group)
       workerLauncher.startWork(
         GroupSingleBackupWorker::class.java,
         Constants.INTENT_ID,
@@ -152,7 +152,7 @@ class CreateGroupViewModel(
     val reminderGroup = localGroup ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderGroupDao.delete(reminderGroup)
+      reminderGroupRepository.delete(reminderGroup.groupUuId)
       postInProgress(false)
       postCommand(Commands.DELETED)
       Logger.logEvent("Group deleted")

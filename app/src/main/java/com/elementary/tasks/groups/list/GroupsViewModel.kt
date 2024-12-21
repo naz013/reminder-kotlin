@@ -5,36 +5,44 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.launch
 
 class GroupsViewModel(
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val reminderGroupDao: ReminderGroupDao,
-  private val uiGroupListAdapter: UiGroupListAdapter
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val uiGroupListAdapter: UiGroupListAdapter,
+  tableChangeListenerFactory: TableChangeListenerFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  val allGroups = reminderGroupDao.loadAll().map { list ->
+  val allGroups = viewModelScope.observeTable(
+    table = Table.ReminderGroup,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { reminderGroupRepository.getAll() }
+  ).map { list ->
     list.map { uiGroupListAdapter.convert(it) }
   }
 
   fun deleteGroup(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminderGroup = reminderGroupDao.getById(id)
+      val reminderGroup = reminderGroupRepository.getById(id)
       if (reminderGroup == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
         return@launch
       }
-      reminderGroupDao.delete(reminderGroup)
+      reminderGroupRepository.delete(reminderGroup.groupUuId)
       postInProgress(false)
       postCommand(Commands.DELETED)
       workerLauncher.startWork(
@@ -48,14 +56,14 @@ class GroupsViewModel(
   fun changeGroupColor(id: String, color: Int) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminderGroup = reminderGroupDao.getById(id)
+      val reminderGroup = reminderGroupRepository.getById(id)
       if (reminderGroup == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
         return@launch
       }
 
-      reminderGroupDao.insert(reminderGroup.copy(groupColor = color))
+      reminderGroupRepository.save(reminderGroup.copy(groupColor = color))
       workerLauncher.startWork(
         GroupSingleBackupWorker::class.java,
         Constants.INTENT_ID,

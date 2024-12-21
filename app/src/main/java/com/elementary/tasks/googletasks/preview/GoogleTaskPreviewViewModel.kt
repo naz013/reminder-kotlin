@@ -2,32 +2,32 @@ package com.elementary.tasks.googletasks.preview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 import kotlinx.coroutines.launch
 
 class GoogleTaskPreviewViewModel(
-    private val id: String,
-    private val gTasks: GTasks,
-    dispatcherProvider: DispatcherProvider,
-    private val googleTasksDao: GoogleTasksDao,
-    private val googleTaskListsDao: GoogleTaskListsDao,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
-    private val updatesHelper: UpdatesHelper
+  private val id: String,
+  private val gTasks: GTasks,
+  dispatcherProvider: DispatcherProvider,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
+  private val updatesHelper: UpdatesHelper
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _googleTask = mutableLiveDataOf<UiGoogleTaskPreview>()
@@ -51,14 +51,14 @@ class GoogleTaskPreviewViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
-        val googleTask = googleTasksDao.getById(id)
+        val googleTask = googleTaskRepository.getById(id)
         if (googleTask == null) {
           postInProgress(false)
           postCommand(Commands.FAILED)
           return@launch
         }
         gTasks.deleteTask(googleTask)
-        googleTasksDao.delete(googleTask)
+        googleTaskRepository.delete(googleTask.taskId)
         postInProgress(false)
         postCommand(Commands.DELETED)
       } catch (e: Throwable) {
@@ -76,7 +76,7 @@ class GoogleTaskPreviewViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
-        val googleTask = googleTasksDao.getById(id)
+        val googleTask = googleTaskRepository.getById(id)
         if (googleTask == null) {
           postInProgress(false)
           postCommand(Commands.FAILED)
@@ -108,9 +108,9 @@ class GoogleTaskPreviewViewModel(
       return
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTask = googleTasksDao.getById(id) ?: return@launch
-      val googleTaskList = googleTaskListsDao.getById(googleTask.listId)
-        ?: googleTaskListsDao.defaultGoogleTaskList()
+      val googleTask = googleTaskRepository.getById(id) ?: return@launch
+      val googleTaskList = googleTaskListRepository.getById(googleTask.listId)
+        ?: googleTaskListRepository.defaultGoogleTaskList()
       _googleTask.postValue(uiGoogleTaskPreviewAdapter.convert(googleTask, googleTaskList))
     }
   }

@@ -1,24 +1,24 @@
 package com.elementary.tasks.googletasks.usecase.task
 
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.googletasks.usecase.db.DeleteGoogleTasks
 import com.elementary.tasks.googletasks.usecase.db.SaveGoogleTasks
 import com.elementary.tasks.googletasks.usecase.remote.DownloadGoogleTasks
 import com.elementary.tasks.googletasks.usecase.remote.UploadGoogleTask
+import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskRepository
 
 class SyncGoogleTasks(
-  private val googleTasksDao: GoogleTasksDao,
+  private val googleTaskRepository: GoogleTaskRepository,
   private val uploadGoogleTask: UploadGoogleTask,
   private val downloadGoogleTasks: DownloadGoogleTasks,
   private val saveGoogleTasks: SaveGoogleTasks,
   private val deleteGoogleTasks: DeleteGoogleTasks
 ) {
 
-  operator fun invoke(taskList: GoogleTaskList) {
+  suspend operator fun invoke(taskList: GoogleTaskList) {
     // Get local tasks
-    val local = googleTasksDao.getAllByList(taskList.listId)
+    val local = googleTaskRepository.getAllByList(taskList.listId)
     Logger.i("Sync tasks for list - number of local tasks = ${local.size}")
 
     // Upload changed tasks

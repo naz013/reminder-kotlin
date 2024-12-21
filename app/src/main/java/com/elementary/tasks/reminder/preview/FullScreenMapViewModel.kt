@@ -1,13 +1,22 @@
 package com.elementary.tasks.reminder.preview
 
-import com.elementary.tasks.core.data.dao.ReminderDao
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.utils.DispatcherProvider
+import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 
 class FullScreenMapViewModel(
   id: String,
-  reminderDao: ReminderDao,
-  dispatcherProvider: DispatcherProvider
+  reminderRepository: ReminderRepository,
+  dispatcherProvider: DispatcherProvider,
+  tableChangeListenerFactory: TableChangeListenerFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
-  val reminder = reminderDao.loadById(id)
+  val reminder = viewModelScope.observeTable(
+    table = Table.Reminder,
+    tableChangeListenerFactory = tableChangeListenerFactory,
+    queryProducer = { reminderRepository.getById(id) }
+  )
 }

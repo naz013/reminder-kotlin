@@ -2,15 +2,9 @@ package com.elementary.tasks.reminder.create.fragments.recur
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.PresetAction
-import com.github.naz013.analytics.PresetUsed
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.elementary.tasks.core.data.models.PresetType
-import com.elementary.tasks.core.data.models.RecurPreset
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.repository.RecurPresetRepository
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -47,7 +41,13 @@ import com.elementary.tasks.reminder.create.fragments.recur.intdialog.Number
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewData
 import com.elementary.tasks.reminder.create.fragments.recur.preview.PreviewItem
 import com.elementary.tasks.reminder.create.fragments.recur.preview.Style
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.PresetAction
+import com.github.naz013.analytics.PresetUsed
+import com.github.naz013.domain.PresetType
+import com.github.naz013.domain.RecurPreset
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.RecurPresetRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 import java.util.Timer

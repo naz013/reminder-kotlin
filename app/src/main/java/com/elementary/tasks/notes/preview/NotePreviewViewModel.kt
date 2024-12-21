@@ -3,16 +3,10 @@ package com.elementary.tasks.notes.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.utils.Constants
@@ -28,24 +22,30 @@ import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedRemi
 import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class NotePreviewViewModel(
-    val key: String,
-    dispatcherProvider: DispatcherProvider,
-    private val workerLauncher: WorkerLauncher,
-    private val backupTool: BackupTool,
-    private val notesDao: NotesDao,
-    private val reminderDao: ReminderDao,
-    private val uiNotePreviewAdapter: UiNotePreviewAdapter,
-    private val textProvider: TextProvider,
-    private val analyticsEventSender: AnalyticsEventSender,
-    private val noteImageRepository: NoteImageRepository,
-    private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
-    private val notifier: Notifier,
-    private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder
+  val key: String,
+  dispatcherProvider: DispatcherProvider,
+  private val workerLauncher: WorkerLauncher,
+  private val backupTool: BackupTool,
+  private val noteRepository: NoteRepository,
+  private val reminderRepository: ReminderRepository,
+  private val uiNotePreviewAdapter: UiNotePreviewAdapter,
+  private val textProvider: TextProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val noteImageRepository: NoteImageRepository,
+  private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
+  private val notifier: Notifier,
+  private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -71,7 +71,7 @@ class NotePreviewViewModel(
 
   private fun loadInternal() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(key)
+      val noteWithImages = noteRepository.getById(key)
       if (noteWithImages != null) {
         _note.postValue(uiNotePreviewAdapter.convert(noteWithImages))
       }
@@ -79,8 +79,8 @@ class NotePreviewViewModel(
     }
   }
 
-  private fun loadReminders() {
-    val reminders = reminderDao.getByNoteKey(key).map {
+  private suspend fun loadReminders() {
+    val reminders = reminderRepository.getByNoteKey(key).map {
       reminderToUiNoteAttachedReminder(it)
     }
     _reminders.postValue(reminders)
@@ -88,7 +88,7 @@ class NotePreviewViewModel(
 
   fun showNoteInNotification(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(id) ?: return@launch
+      val noteWithImages = noteRepository.getById(id) ?: return@launch
       uiNoteNotificationAdapter.convert(noteWithImages).also {
         withUIContext { notifier.showNoteNotification(it) }
       }
@@ -98,7 +98,7 @@ class NotePreviewViewModel(
   fun toggleArchiveFlag() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(key)
+      val noteWithImages = noteRepository.getById(key)
       if (noteWithImages == null) {
         postInProgress(false)
         postError(textProvider.getText(R.string.notes_failed_to_update))
@@ -113,7 +113,7 @@ class NotePreviewViewModel(
       }
 
       note.archived = !note.archived
-      notesDao.insert(note)
+      noteRepository.save(note)
 
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
 
@@ -127,7 +127,7 @@ class NotePreviewViewModel(
   fun deleteNote() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(key)
+      val noteWithImages = noteRepository.getById(key)
       if (noteWithImages == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
@@ -139,10 +139,8 @@ class NotePreviewViewModel(
         postCommand(Commands.FAILED)
         return@launch
       }
-      notesDao.delete(note)
-      for (image in noteWithImages.images) {
-        notesDao.delete(image)
-      }
+      noteRepository.delete(note.key)
+      noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
@@ -153,7 +151,7 @@ class NotePreviewViewModel(
   fun shareNote() {
     viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
-      val noteWithImages = notesDao.getById(key)
+      val noteWithImages = noteRepository.getById(key)
       if (noteWithImages == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
@@ -174,7 +172,7 @@ class NotePreviewViewModel(
   fun detachReminder(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderDao.getById(id)
+      val reminder = reminderRepository.getById(id)
 
       if (reminder == null) {
         postInProgress(false)
@@ -183,7 +181,7 @@ class NotePreviewViewModel(
 
       reminder.noteId = ""
 
-      reminderDao.insert(reminder)
+      reminderRepository.save(reminder)
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,
         Constants.INTENT_ID,

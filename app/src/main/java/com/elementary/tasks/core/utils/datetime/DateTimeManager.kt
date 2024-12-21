@@ -2,8 +2,8 @@ package com.elementary.tasks.core.utils.datetime
 
 import android.app.AlarmManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.TextProvider
@@ -279,6 +279,7 @@ class DateTimeManager(
       futureBirthdayDateTime.isBefore(nowDateTime) -> {
         textProvider.getText(R.string.not_born)
       }
+
       else -> getRemaining(futureBirthdayDateTime, nowDateTime)
     }
   }

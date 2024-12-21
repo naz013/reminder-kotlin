@@ -1,9 +1,5 @@
 package com.elementary.tasks.core.services.action.reminder
 
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
-import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -11,7 +7,11 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

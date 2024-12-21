@@ -15,13 +15,14 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.AppWidgetActionActivity
 import com.elementary.tasks.core.appwidgets.Direction
 import com.elementary.tasks.core.appwidgets.WidgetIntentProtocol
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.repository.NoteRepository
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.isAlmostTransparent
-import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.github.naz013.domain.font.FontParams
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.repository.NoteRepository
 
 class NotesFactory(
   private val context: Context,
@@ -38,7 +39,7 @@ class NotesFactory(
 
   override fun onDataSetChanged() {
     notes.clear()
-    notes.addAll(noteRepository.getAll())
+    notes.addAll(invokeSuspend { noteRepository.getAll() })
   }
 
   override fun onDestroy() {

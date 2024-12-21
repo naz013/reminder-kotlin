@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiUsedTimeList
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.minusMillis

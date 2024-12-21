@@ -1,18 +1,18 @@
 package com.elementary.tasks.googletasks.usecase.db
 
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
 
 class DeleteGoogleTaskList(
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val deleteGoogleTasks: DeleteGoogleTasks,
   private val getGoogleTasksByList: GetGoogleTasksByList
 ) {
 
-  operator fun invoke(googleTaskList: GoogleTaskList) {
+  suspend operator fun invoke(googleTaskList: GoogleTaskList) {
     Logger.i("Delete Google task list")
-    googleTaskListsDao.delete(googleTaskList)
+    googleTaskListRepository.delete(googleTaskList.listId)
     val googleTasks = getGoogleTasksByList(googleTaskList)
     deleteGoogleTasks(googleTasks)
   }

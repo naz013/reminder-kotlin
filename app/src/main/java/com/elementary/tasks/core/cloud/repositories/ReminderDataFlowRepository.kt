@@ -1,22 +1,24 @@
 package com.elementary.tasks.core.cloud.repositories
 
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.ReminderRepository
 
-class ReminderDataFlowRepository(appDb: AppDb) : DatabaseRepository<Reminder>(appDb) {
+class ReminderDataFlowRepository(
+  private val reminderRepository: ReminderRepository
+) : DatabaseRepository<Reminder>() {
   override suspend fun get(id: String): Reminder? {
-    return appDb.reminderDao().getById(id)
+    return reminderRepository.getById(id)
   }
 
   override suspend fun insert(t: Reminder) {
-    appDb.reminderDao().insert(t)
+    reminderRepository.save(t)
   }
 
   override suspend fun all(): List<Reminder> {
-    return appDb.reminderDao().getAll()
+    return reminderRepository.getAll()
   }
 
   override suspend fun delete(t: Reminder) {
-    appDb.reminderDao().delete(t)
+    reminderRepository.delete(t.uuId)
   }
 }

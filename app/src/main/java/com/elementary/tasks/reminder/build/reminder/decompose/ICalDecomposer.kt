@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
@@ -8,7 +8,7 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalStartDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalStartTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.elementary.tasks.reminder.build.bi.BiType
+import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
 
 class ICalDecomposer(
@@ -17,7 +17,7 @@ class ICalDecomposer(
   private val recurParamsToBiAdapter: RecurParamsToBiAdapter
 ) {
 
-  operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val rules = runCatching {
       recurrenceManager.parseObject(reminder.recurDataObject)
     }.getOrNull() ?: return emptyList()

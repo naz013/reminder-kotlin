@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.preset
 
-import com.elementary.tasks.core.data.models.PresetBuilderScheme
+import com.github.naz013.domain.PresetBuilderScheme
 import com.elementary.tasks.reminder.build.BuilderItem
 
 class BuilderItemsToBuilderPresetAdapter(

@@ -6,12 +6,11 @@ import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.os.toast
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nonNullObserve
+import com.elementary.tasks.core.utils.nullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.applyBottomInsets
 import com.elementary.tasks.core.utils.ui.applyTopInsets
@@ -19,6 +18,8 @@ import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.utils.ui.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.googletasks.TasksConstants
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -92,7 +93,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
         }
       }
     }
-    viewModel.googleTask.nonNullObserve(this) { editTask(it) }
+    viewModel.googleTask.nullObserve(this) { editTask(it) }
     viewModel.googleTaskLists.nonNullObserve(this) { selectCurrent(it) }
     viewModel.defaultTaskList.observe(this) { googleTaskList ->
       if (googleTaskList != null && listId == "") {

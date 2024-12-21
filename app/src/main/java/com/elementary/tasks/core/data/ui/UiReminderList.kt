@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.ui
 
-import com.elementary.tasks.core.data.models.ShopItem
+import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace

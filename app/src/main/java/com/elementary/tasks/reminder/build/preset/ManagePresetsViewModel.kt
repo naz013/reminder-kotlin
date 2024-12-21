@@ -3,11 +3,11 @@ package com.elementary.tasks.reminder.build.preset
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
-import com.elementary.tasks.core.data.repository.RecurPresetRepository
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
+import com.github.naz013.repository.RecurPresetRepository
 import kotlinx.coroutines.launch
 
 class ManagePresetsViewModel(
@@ -27,12 +27,12 @@ class ManagePresetsViewModel(
 
   fun deletePreset(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      recurPresetRepository.deleteById(id)
+      recurPresetRepository.delete(id)
       loadPresets()
     }
   }
 
-  private fun loadPresets() {
+  private suspend fun loadPresets() {
     val presets = recurPresetRepository.getAll().map { uiPresetListAdapter.create(it) }
     _presets.postValue(presets)
   }

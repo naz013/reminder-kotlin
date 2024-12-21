@@ -2,9 +2,6 @@ package com.elementary.tasks.core.controller
 
 import android.content.Context
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -13,7 +10,10 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.ReminderRepository
 
 class EventControlFactory(
   private val prefs: Prefs,
@@ -23,8 +23,8 @@ class EventControlFactory(
   private val jobScheduler: JobScheduler,
   private val updatesHelper: UpdatesHelper,
   private val textProvider: TextProvider,
-  private val reminderDao: ReminderDao,
-  private val googleTasksDao: GoogleTasksDao,
+  private val reminderRepository: ReminderRepository,
+  private val googleTaskRepository: GoogleTaskRepository,
   private val dateTimeManager: DateTimeManager,
   private val recurEventManager: RecurEventManager
 ) {
@@ -35,7 +35,7 @@ class EventControlFactory(
       type.isSame(Reminder.BY_DATE_SHOP) && !reminder.hasReminder -> {
         ShoppingEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -43,14 +43,14 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao
+          googleTaskRepository
         )
       }
 
       type.isBase(UiReminderType.Base.DATE) -> {
         DateEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -58,14 +58,14 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao
+          googleTaskRepository
         )
       }
 
       type.isGpsType() -> {
         LocationEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           context,
           notifier,
@@ -78,7 +78,7 @@ class EventControlFactory(
       type.isBase(UiReminderType.Base.MONTHLY) -> {
         MonthlyEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -86,14 +86,14 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao
+          googleTaskRepository
         )
       }
 
       type.isBase(UiReminderType.Base.WEEKDAY) -> {
         WeeklyEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -101,14 +101,14 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao
+          googleTaskRepository
         )
       }
 
       type.isBase(UiReminderType.Base.TIMER) -> {
         TimerEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -116,14 +116,14 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao
+          googleTaskRepository
         )
       }
 
       type.isBase(UiReminderType.Base.YEARLY) ->
         YearlyEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -131,13 +131,13 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao
+          googleTaskRepository
         )
 
       type.isBase(UiReminderType.Base.RECUR) ->
         RecurEvent(
           reminder,
-          reminderDao,
+          reminderRepository,
           prefs,
           googleCalendarUtils,
           notifier,
@@ -145,13 +145,13 @@ class EventControlFactory(
           updatesHelper,
           textProvider,
           dateTimeManager,
-          googleTasksDao,
+          googleTaskRepository,
           recurEventManager
         )
 
       else -> DateEvent(
         reminder,
-        reminderDao,
+        reminderRepository,
         prefs,
         googleCalendarUtils,
         notifier,
@@ -159,7 +159,7 @@ class EventControlFactory(
         updatesHelper,
         textProvider,
         dateTimeManager,
-        googleTasksDao
+        googleTaskRepository
       )
     }.also {
       Logger.d("getController: $it")

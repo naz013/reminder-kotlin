@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.ThemeProvider

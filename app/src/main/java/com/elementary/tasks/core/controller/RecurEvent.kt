@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
@@ -11,12 +8,15 @@ import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.ReminderRepository
 import org.threeten.bp.LocalDateTime
 
 class RecurEvent(
   reminder: Reminder,
-  reminderDao: ReminderDao,
+  reminderRepository: ReminderRepository,
   prefs: Prefs,
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
@@ -24,11 +24,11 @@ class RecurEvent(
   updatesHelper: UpdatesHelper,
   textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
-  googleTasksDao: GoogleTasksDao,
+  googleTaskRepository: GoogleTaskRepository,
   private val recurEventManager: RecurEventManager
 ) : RepeatableEventManager(
   reminder,
-  reminderDao,
+  reminderRepository,
   prefs,
   googleCalendarUtils,
   notifier,
@@ -36,7 +36,7 @@ class RecurEvent(
   updatesHelper,
   textProvider,
   dateTimeManager,
-  googleTasksDao
+  googleTaskRepository
 ) {
 
   override val isActive: Boolean

@@ -22,15 +22,6 @@ import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.dao.PlacesDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.ReminderGroupDao
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListData
@@ -61,7 +52,15 @@ import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.note.Note
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
@@ -76,11 +75,10 @@ class ConversationViewModel(
   private val updatesHelper: UpdatesHelper,
   private val dateTimeManager: DateTimeManager,
   private val idProvider: IdProvider,
-  private val notesDao: NotesDao,
-  private val birthdaysDao: BirthdaysDao,
-  private val reminderDao: ReminderDao,
-  private val reminderGroupDao: ReminderGroupDao,
-  private val placesDao: PlacesDao,
+  private val birthdayRepository: BirthdayRepository,
+  private val reminderRepository: ReminderRepository,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val placeRepository: PlaceRepository,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val uiGroupListAdapter: UiGroupListAdapter,
@@ -127,15 +125,13 @@ class ConversationViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       autoMicClick = prefs.isAutoMicClick
       tellAboutEvent = prefs.isTellAboutEvent
-      reminderGroupDao.defaultGroup(true)?.also {
+      reminderGroupRepository.defaultGroup(true)?.also {
         defaultGroup = uiGroupListAdapter.convert(it)
       }
-    }
-    reminderGroupDao.loadAll().observeForever { list ->
-      if (list != null) {
-        groups.clear()
-        groups.addAll(list.map { uiGroupListAdapter.convert(it) })
-      }
+      groups.clear()
+      groups.addAll(
+        reminderGroupRepository.getAll().map { uiGroupListAdapter.convert(it) }
+      )
     }
   }
 
@@ -267,7 +263,7 @@ class ConversationViewModel(
   fun getShoppingReminders() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = reminderDao.getAllTypes(
+      val list = reminderRepository.getAllTypes(
         true,
         removed = false,
         types = intArrayOf(Reminder.BY_DATE_SHOP)
@@ -281,7 +277,7 @@ class ConversationViewModel(
     postInProgress(true)
     Logger.d("getEnabledReminders: gmt $gmtDateTime")
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = reminderDao.getAllTypesInRange(
+      val list = reminderRepository.getAllTypesInRange(
         active = true,
         removed = false,
         fromTime = dateTimeManager.getGmtDateTimeFromMillis(System.currentTimeMillis()),
@@ -299,7 +295,7 @@ class ConversationViewModel(
   fun getReminders(gmtDateTime: String?) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = reminderDao.getActiveInRange(
+      val list = reminderRepository.getActiveInRange(
         false,
         dateTimeManager.getGmtDateTimeFromMillis(System.currentTimeMillis()),
         dateTimeManager.getGmtDateTimeFromMillis(
@@ -316,7 +312,7 @@ class ConversationViewModel(
   fun getBirthdays(gmtDateTime: String?) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = birthdaysDao.getAll()
+      val list = birthdayRepository.getAll()
         .map { uiBirthdayListAdapter.convert(it) }
         .filter {
           it.nextBirthdayDateMillis >= System.currentTimeMillis() &&
@@ -433,7 +429,7 @@ class ConversationViewModel(
   fun disableAllReminders(showToast: Boolean) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      for (reminder in reminderDao.getAll(active = true, removed = false)) {
+      for (reminder in reminderRepository.getAll(active = true, removed = false)) {
         stopReminder(reminder)
       }
       postInProgress(false)
@@ -453,13 +449,13 @@ class ConversationViewModel(
   fun emptyTrash(showToast: Boolean) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val archived = reminderDao.getAll(
+      val archived = reminderRepository.getAll(
         active = false,
         removed = true
       )
       for (reminder in archived) {
         eventControlFactory.getController(reminder).disable()
-        reminderDao.delete(reminder)
+        reminderRepository.delete(reminder.uuId)
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
@@ -541,12 +537,12 @@ class ConversationViewModel(
             reminder.groupUuId = group.id
           }
         }
-        reminderDao.insert(reminder)
+        reminderRepository.save(reminder)
         if (!isEdit) {
           if (Reminder.isGpsType(reminder.type)) {
             val places = reminder.places
             if (places.isNotEmpty()) {
-              placesDao.insert(places[0])
+              placeRepository.save(places[0])
             }
           }
         }
@@ -575,7 +571,7 @@ class ConversationViewModel(
   fun saveNote(note: Note, showToast: Boolean) {
     viewModelScope.launch(dispatcherProvider.default()) {
       note.updatedAt = dateTimeManager.getNowGmtDateTime()
-      notesDao.insert(note)
+      noteRepository.save(note)
     }
     updatesHelper.updateNotesWidget()
     if (showToast) {
@@ -595,7 +591,7 @@ class ConversationViewModel(
 
   fun saveGroup(model: ReminderGroup, showToast: Boolean) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderGroupDao.insert(model)
+      reminderGroupRepository.save(model)
     }
     if (showToast) {
       Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()

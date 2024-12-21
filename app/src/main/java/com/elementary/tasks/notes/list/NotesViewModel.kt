@@ -8,10 +8,7 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.core.data.repository.NoteRepository
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
@@ -25,6 +22,8 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -33,7 +32,6 @@ class NotesViewModel(
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val backupTool: BackupTool,
-  private val notesDao: NotesDao,
   private val textProvider: TextProvider,
   private val uiNoteListAdapter: UiNoteListAdapter,
   private val prefs: Prefs,
@@ -51,7 +49,6 @@ class NotesViewModel(
   private val notesData = SearchableNotesData(
     dispatcherProvider = dispatcherProvider,
     parentScope = viewModelScope,
-    notesDao = notesDao,
     noteRepository = noteRepository,
     isArchived = false
   )
@@ -70,7 +67,7 @@ class NotesViewModel(
   fun moveToArchive(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(id)
+      val noteWithImages = noteRepository.getById(id)
       if (noteWithImages == null) {
         postInProgress(false)
         postError(textProvider.getText(R.string.notes_failed_to_update))
@@ -85,7 +82,7 @@ class NotesViewModel(
       }
 
       note.archived = true
-      notesDao.insert(note)
+      noteRepository.save(note)
 
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
 
@@ -103,7 +100,7 @@ class NotesViewModel(
   fun shareNote(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val note = notesDao.getById(id)
+      val note = noteRepository.getById(id)
       if (note == null) {
         postInProgress(false)
         postError(textProvider.getText(R.string.failed_to_send_note))
@@ -124,7 +121,7 @@ class NotesViewModel(
   fun deleteNote(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(id)
+      val noteWithImages = noteRepository.getById(id)
       if (noteWithImages == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
@@ -136,10 +133,8 @@ class NotesViewModel(
         postCommand(Commands.FAILED)
         return@launch
       }
-      notesDao.delete(note)
-      for (image in noteWithImages.images) {
-        notesDao.delete(image)
-      }
+      noteRepository.delete(note.key)
+      noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
       workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
 
@@ -157,7 +152,7 @@ class NotesViewModel(
   fun saveNoteColor(id: String, color: Int) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(id)
+      val noteWithImages = noteRepository.getById(id)
       if (noteWithImages == null) {
         postInProgress(false)
         postCommand(Commands.FAILED)
@@ -171,7 +166,7 @@ class NotesViewModel(
       }
       note.color = color
       note.updatedAt = DateTimeManager.gmtDateTime
-      notesDao.insert(note)
+      noteRepository.save(note)
       workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, note.key)
 
       notesData.refresh()
@@ -187,7 +182,7 @@ class NotesViewModel(
 
   fun showNoteInNotification(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = notesDao.getById(id) ?: return@launch
+      val noteWithImages = noteRepository.getById(id) ?: return@launch
       uiNoteNotificationAdapter.convert(noteWithImages).also {
         withUIContext { notifier.showNoteNotification(it) }
       }

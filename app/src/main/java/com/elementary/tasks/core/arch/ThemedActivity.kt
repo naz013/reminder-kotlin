@@ -124,16 +124,6 @@ abstract class ThemedActivity : AppCompatActivity() {
 
   protected fun intentBoolean(key: String, def: Boolean = false) = intent.getBooleanExtra(key, def)
 
-  protected fun <T> intentParcelable(key: String, clazz: Class<T>): T? {
-    return runCatching {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        intent.getParcelableExtra(key, clazz)
-      } else {
-        intent.getParcelableExtra(key) as? T
-      }
-    }.getOrNull()
-  }
-
   protected fun <T : Serializable> intentSerializable(key: String, clazz: Class<T>): T? {
     return runCatching {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

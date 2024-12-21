@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.lists.data
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.os.ColorProvider
 import com.elementary.tasks.core.os.UnitsConverter

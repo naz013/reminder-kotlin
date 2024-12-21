@@ -3,7 +3,7 @@ package com.elementary.tasks.core.data.adapter.reminder
 import androidx.annotation.ColorInt
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.widget.UiReminderWidgetList
 import com.elementary.tasks.core.data.ui.reminder.widget.UiReminderWidgetShopList

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.databinding.ViewGroupBinding
 
 class GroupView : LinearLayout {

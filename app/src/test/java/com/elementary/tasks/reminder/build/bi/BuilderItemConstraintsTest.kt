@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.build.bi
 
 import com.elementary.tasks.reminder.build.bi.constraint.constraints
+import com.github.naz013.domain.reminder.BiType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

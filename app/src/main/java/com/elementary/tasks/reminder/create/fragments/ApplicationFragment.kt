@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.utils.Module

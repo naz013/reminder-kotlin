@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.services.action.reminder
 
-import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

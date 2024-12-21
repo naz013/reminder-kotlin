@@ -6,19 +6,19 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TextProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
 class BirthdaySettingsViewModel(
-  private val birthdaysDao: BirthdaysDao,
+  private val birthdayRepository: BirthdayRepository,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
@@ -48,9 +48,9 @@ class BirthdaySettingsViewModel(
   fun deleteAllBirthdays() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val list = birthdaysDao.getAll()
+      val list = birthdayRepository.getAll()
       for (birthday in list) {
-        birthdaysDao.delete(birthday)
+        birthdayRepository.delete(birthday.uuId)
         workerLauncher.startWork(
           BirthdayDeleteBackupWorker::class.java,
           Constants.INTENT_ID,

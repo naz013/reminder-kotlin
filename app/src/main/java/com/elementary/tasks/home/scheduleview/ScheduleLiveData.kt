@@ -1,12 +1,10 @@
 package com.elementary.tasks.home.scheduleview
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.switchMap
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.DispatcherProvider
@@ -18,6 +16,12 @@ import com.elementary.tasks.core.utils.getNonNullMap
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.home.scheduleview.data.UiBirthdayScheduleListAdapter
 import com.elementary.tasks.home.scheduleview.data.UiReminderScheduleListAdapter
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -32,12 +36,13 @@ import org.threeten.bp.LocalTime
 class ScheduleLiveData(
   private val dispatcherProvider: DispatcherProvider,
   private val dateTimeManager: DateTimeManager,
-  private val reminderDao: ReminderDao,
-  private val birthdaysDao: BirthdaysDao,
+  private val reminderRepository: ReminderRepository,
+  private val birthdayRepository: BirthdayRepository,
   private val uiBirthdayScheduleListAdapter: UiBirthdayScheduleListAdapter,
   private val textProvider: TextProvider,
   private val reminderGoogleTaskLiveData: ReminderGoogleTaskLiveData,
-  private val uiReminderScheduleListAdapter: UiReminderScheduleListAdapter
+  private val uiReminderScheduleListAdapter: UiReminderScheduleListAdapter,
+  private val tableChangeListenerFactory: TableChangeListenerFactory
 ) : MediatorLiveData<List<ScheduleModel>>(), KoinComponent {
 
   private var selectedDateTime: LocalDateTime = LocalDateTime.now()
@@ -46,15 +51,21 @@ class ScheduleLiveData(
 
   private val _dateLiveData = mutableLiveDataOf<DateObject>()
   private val reminderSource = _dateLiveData.switchMap {
-    reminderDao.loadAllTypesInRange(
-      active = true,
-      removed = false,
-      fromTime = it.startDateTime,
-      toTime = it.endDateTime
+    scope.observeTable(
+      table = Table.Reminder,
+      tableChangeListenerFactory = tableChangeListenerFactory,
+      queryProducer = {
+        reminderRepository.getAllTypesInRange(
+          active = true,
+          removed = false,
+          fromTime = it.startDateTime,
+          toTime = it.endDateTime
+        )
+      }
     )
   }
   private val birthdaySource = _dateLiveData.switchMap {
-    birthdaysDao.loadAll(it.birthdayDayMonth)
+    createBirthdayLiveData(it.birthdayDayMonth)
   }
   private val noteSource = reminderSource.switchMap {
     get<ReminderNoteLiveData> { parametersOf(it) }
@@ -175,6 +186,16 @@ class ScheduleLiveData(
     return HeaderScheduleModel(text, headerTimeType)
   }
 
+  private fun createBirthdayLiveData(
+    query: String
+  ): LiveData<List<Birthday>> {
+    return scope.observeTable(
+      Table.Birthday,
+      tableChangeListenerFactory,
+      { birthdayRepository.getAll(query) }
+    )
+  }
+
   private fun Birthday.toScheduleModel(
     dateTime: LocalDateTime = dateTimeManager.getCurrentDateTime()
   ): BirthdayScheduleModel {
@@ -197,6 +218,7 @@ class ScheduleLiveData(
           )
         } ?: ReminderScheduleModel(reminder)
       }
+
       reminder.noteId != null && notesMap.containsKey(reminder.noteId) -> {
         reminder.noteId.let { notesMap[it] }
           ?.let {
@@ -206,6 +228,7 @@ class ScheduleLiveData(
             )
           } ?: ReminderScheduleModel(reminder)
       }
+
       else -> {
         ReminderScheduleModel(reminder)
       }

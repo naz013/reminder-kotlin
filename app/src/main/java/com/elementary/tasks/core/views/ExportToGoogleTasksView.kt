@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.databinding.ViewTasksExportBinding
+import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,9 +16,10 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+@Deprecated("Should be removed")
 class ExportToGoogleTasksView : LinearLayout, KoinComponent {
 
-  private val googleTaskListsDao by inject<GoogleTaskListsDao>()
+  private val googleTaskListRepository by inject<GoogleTaskListRepository>()
   private val viewScope = CoroutineScope(Dispatchers.Default)
   private var taskLists: List<GoogleTaskList> = emptyList()
 
@@ -70,7 +71,7 @@ class ExportToGoogleTasksView : LinearLayout, KoinComponent {
 
   private fun loadGoogleTaskLists() {
     viewScope.launch {
-      taskLists = googleTaskListsDao.all()
+      taskLists = googleTaskListRepository.getAll()
 
       withContext(Dispatchers.Main) {
         binding.selector.pickerProvider = {

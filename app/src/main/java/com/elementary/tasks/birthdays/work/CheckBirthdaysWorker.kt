@@ -7,17 +7,17 @@ import android.provider.ContactsContract
 import android.text.TextUtils
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.contacts.ContactsReader
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.readString
+import com.github.naz013.domain.Birthday
+import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.withContext
 
 class CheckBirthdaysWorker(
-  private val birthdaysDao: BirthdaysDao,
+  private val birthdayRepository: BirthdayRepository,
   context: Context,
   workerParams: WorkerParameters,
   private val dateTimeManager: DateTimeManager,
@@ -63,7 +63,7 @@ class CheckBirthdaysWorker(
           ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
           "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
       val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-      val contacts = birthdaysDao.getAll()
+      val contacts = birthdayRepository.getAll()
       val birthdayCur = try {
         cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
       } catch (e: Exception) {
@@ -71,7 +71,7 @@ class CheckBirthdaysWorker(
       }
       if (birthdayCur != null && birthdayCur.count > 0) {
         while (birthdayCur.moveToNext()) {
-          i += loadBirthday(birthdayCur, contacts, birthdaysDao)
+          i += loadBirthday(birthdayCur, contacts)
         }
       }
       birthdayCur?.close()
@@ -79,10 +79,9 @@ class CheckBirthdaysWorker(
     cur.close()
   }
 
-  private fun loadBirthday(
+  private suspend fun loadBirthday(
     birthdayCur: Cursor,
-    contacts: List<Birthday>,
-    dao: BirthdaysDao
+    contacts: List<Birthday>
   ): Int {
     val birthday = birthdayCur.readString(ContactsContract.CommonDataKinds.Event.START_DATE)
     val name = birthdayCur.readString(ContactsContract.PhoneLookup.DISPLAY_NAME)
@@ -111,7 +110,7 @@ class CheckBirthdaysWorker(
       if (contacts.firstOrNull { it.key == birthdayItem.key } == null) {
         counter += 1
       }
-      dao.insert(birthdayItem)
+      birthdayRepository.save(birthdayItem)
     }
     return counter
   }

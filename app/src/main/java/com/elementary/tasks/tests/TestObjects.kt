@@ -1,7 +1,7 @@
 package com.elementary.tasks.tests
 
 import android.text.TextUtils
-import com.elementary.tasks.core.data.models.Birthday
+import com.github.naz013.domain.Birthday
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.services.action.reminder
 
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification

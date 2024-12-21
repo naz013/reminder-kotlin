@@ -8,13 +8,13 @@ import com.elementary.tasks.calendar.data.EventModel
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 
@@ -22,8 +22,8 @@ class DayViewModel(
   dispatcherProvider: DispatcherProvider,
   private val dayLiveData: DayLiveData,
   private val workerLauncher: WorkerLauncher,
-  private val reminderDao: ReminderDao,
-  private val birthdaysDao: BirthdaysDao,
+  private val reminderRepository: ReminderRepository,
+  private val birthdayRepository: BirthdayRepository,
   private val eventControlFactory: EventControlFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
@@ -36,7 +36,7 @@ class DayViewModel(
   fun deleteBirthday(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdaysDao.delete(id)
+      birthdayRepository.delete(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
       workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
@@ -46,11 +46,11 @@ class DayViewModel(
   fun moveToTrash(reminder: UiReminderListData) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val fromDb = reminderDao.getById(reminder.id)
+      val fromDb = reminderRepository.getById(reminder.id)
       if (fromDb != null) {
         fromDb.isRemoved = true
         eventControlFactory.getController(fromDb).disable()
-        reminderDao.insert(fromDb)
+        reminderRepository.save(fromDb)
         postInProgress(false)
         postCommand(Commands.DELETED)
         workerLauncher.startWork(
@@ -67,7 +67,7 @@ class DayViewModel(
   fun skip(reminder: UiReminderListData) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val fromDb = reminderDao.getById(reminder.id)
+      val fromDb = reminderRepository.getById(reminder.id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
         postInProgress(false)

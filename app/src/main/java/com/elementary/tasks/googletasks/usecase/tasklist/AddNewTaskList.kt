@@ -15,7 +15,7 @@ class AddNewTaskList(
   private val saveGoogleTasks: SaveGoogleTasks
 ) {
 
-  operator fun invoke(taskList: TaskList) {
+  suspend operator fun invoke(taskList: TaskList) {
     // Create DB object
     val googleTaskList = googleTaskListFactory.create(taskList, getRandomGoogleTaskListColor())
 

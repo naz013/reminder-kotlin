@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.OldNote
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.OldNote
 import com.elementary.tasks.core.utils.io.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.github.naz013.logging.Logger

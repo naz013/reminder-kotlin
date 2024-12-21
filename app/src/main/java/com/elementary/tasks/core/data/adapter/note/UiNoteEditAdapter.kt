@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.data.adapter.note
 
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
-import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.github.naz013.domain.font.FontParams
 
 class UiNoteEditAdapter(
   private val uiNoteImagesAdapter: UiNoteImagesAdapter

@@ -1,7 +1,7 @@
 package com.elementary.tasks.googletasks.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.github.naz013.domain.GoogleTaskList
 
 class GoogleTasksListDiffCallback : DiffUtil.ItemCallback<GoogleTaskList>() {
 

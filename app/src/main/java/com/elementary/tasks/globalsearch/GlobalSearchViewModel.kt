@@ -3,11 +3,7 @@ package com.elementary.tasks.globalsearch
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.dao.RecentQueryDao
 import com.elementary.tasks.core.data.livedata.toSingleEvent
-import com.elementary.tasks.core.data.models.RecentQuery
-import com.elementary.tasks.core.data.models.RecentQueryTarget
-import com.elementary.tasks.core.data.models.RecentQueryType
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.mutableLiveDataOf
@@ -17,14 +13,18 @@ import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.github.naz013.domain.RecentQuery
+import com.github.naz013.domain.RecentQueryTarget
+import com.github.naz013.domain.RecentQueryType
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.RecentQueryRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 
 class GlobalSearchViewModel(
   dispatcherProvider: DispatcherProvider,
   private val searchLiveData: SearchLiveData,
-  private val recentQueryDao: RecentQueryDao,
+  private val recentQueryRepository: RecentQueryRepository,
   private val dateTimeManager: DateTimeManager
 ) : BaseProgressViewModel(dispatcherProvider) {
 
@@ -69,11 +69,11 @@ class GlobalSearchViewModel(
   private fun updateRecentQueries(searchResult: SearchResult) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val recentQuery = searchResult.toRecentQuery(dateTimeManager.getCurrentDateTime())
-      val similarQuery = recentQueryDao.getByQuery(recentQuery.queryText)
+      val similarQuery = recentQueryRepository.getByQuery(recentQuery.queryText)
       if (similarQuery != null) {
-        recentQueryDao.insert(recentQuery.copy(id = similarQuery.id))
+        recentQueryRepository.save(recentQuery.copy(id = similarQuery.id))
       } else {
-        recentQueryDao.insert(recentQuery)
+        recentQueryRepository.save(recentQuery)
       }
     }
   }

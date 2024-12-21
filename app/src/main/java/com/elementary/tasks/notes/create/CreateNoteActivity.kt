@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -49,7 +49,7 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.ui.ViewUtils
 import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin
 import com.elementary.tasks.core.utils.ui.applyTopInsets
-import com.elementary.tasks.core.utils.ui.font.FontParams
+import com.github.naz013.domain.font.FontParams
 import com.elementary.tasks.core.utils.ui.gone
 import com.elementary.tasks.core.utils.ui.readText
 import com.elementary.tasks.core.utils.ui.singleClick
@@ -446,7 +446,7 @@ class CreateNoteActivity :
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
           runCatching {
             viewModel.onNoteReceivedFromIntent(
-              intentParcelable(Constants.INTENT_ITEM, NoteWithImages::class.java)
+              intentSerializable(Constants.INTENT_ITEM, NoteWithImages::class.java)
             )
           }
         }

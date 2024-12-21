@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.data.adapter
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
 import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget

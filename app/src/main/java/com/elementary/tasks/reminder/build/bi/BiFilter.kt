@@ -4,6 +4,7 @@ import android.content.Context
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.domain.reminder.BiType
 
 class BiFilter(
   private val locationFilter: LocationFilter,

@@ -1,13 +1,13 @@
 package com.elementary.tasks.core.utils
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.PresetType
-import com.elementary.tasks.core.data.models.RecurPreset
-import com.elementary.tasks.core.data.repository.RecurPresetRepository
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
+import com.github.naz013.domain.PresetType
+import com.github.naz013.domain.RecurPreset
+import com.github.naz013.repository.RecurPresetRepository
 import org.threeten.bp.LocalDateTime
 
 class PresetInitProcessor(
@@ -19,7 +19,7 @@ class PresetInitProcessor(
   private val builderDefaultPresetsGenerateUseCase: DefaultPresetsGenerateUseCase
 ) {
 
-  fun run() {
+  suspend fun run() {
     if (prefs.initPresets) {
       prefs.initPresets = false
       setBuilderSettings()
@@ -201,7 +201,7 @@ class PresetInitProcessor(
     )
   }
 
-  private fun savePreset(recurPreset: RecurPreset) {
+  private suspend fun savePreset(recurPreset: RecurPreset) {
     recurPresetRepository.save(recurPreset)
   }
 }

@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.bi.BiComparator
 import com.elementary.tasks.reminder.build.bi.BiFactory
@@ -21,7 +21,7 @@ class ReminderToBiDecomposer(
   private val noteDecomposer: NoteDecomposer
 ) {
 
-  operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val items = mutableListOf<BuilderItem<*>>()
 
     items.addAll(extrasDecomposer(reminder))

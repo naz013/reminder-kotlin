@@ -1,11 +1,5 @@
 import java.net.URI
 
-include(":domain")
-
-
-include(":analytics")
-
-
 pluginManagement {
   repositories {
     google()
@@ -28,3 +22,7 @@ include(":app")
 include(":voice-engine-ktx")
 include(":logging")
 include(":logging-api")
+include(":repository-api")
+include(":domain")
+include(":analytics")
+include(":repository")

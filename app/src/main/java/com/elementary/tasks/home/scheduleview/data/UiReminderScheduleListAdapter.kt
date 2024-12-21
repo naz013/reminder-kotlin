@@ -4,7 +4,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget

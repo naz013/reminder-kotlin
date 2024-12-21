@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 
 class EventTimeValidator {

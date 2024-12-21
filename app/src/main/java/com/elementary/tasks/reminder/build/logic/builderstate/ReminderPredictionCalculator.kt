@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.logic.builderstate
 
 import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.os.ContextProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager

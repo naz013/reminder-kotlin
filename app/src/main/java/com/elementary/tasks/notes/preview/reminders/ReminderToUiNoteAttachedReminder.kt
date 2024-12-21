@@ -1,6 +1,6 @@
 package com.elementary.tasks.notes.preview.reminders
 
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 
 class ReminderToUiNoteAttachedReminder(

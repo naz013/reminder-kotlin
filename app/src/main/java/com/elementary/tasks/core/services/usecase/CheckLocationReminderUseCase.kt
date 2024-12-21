@@ -2,11 +2,11 @@ package com.elementary.tasks.core.services.usecase
 
 import android.content.Context
 import android.location.Location
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.repository.ReminderRepository
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DefaultDistanceFormatter
+import com.github.naz013.domain.Reminder
+import com.github.naz013.repository.ReminderRepository
 import kotlin.math.roundToInt
 
 class CheckLocationReminderUseCase(

@@ -12,7 +12,7 @@ abstract class SearchableLiveData<T>(
   private var job: Job? = null
   private var query: String = ""
 
-  protected abstract fun runQuery(query: String): T
+  protected abstract suspend fun runQuery(query: String): T
 
   fun refresh() {
     load()

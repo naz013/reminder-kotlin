@@ -7,15 +7,15 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.DispatcherProvider
 import com.elementary.tasks.core.utils.mutableLiveDataOf
 import com.elementary.tasks.core.utils.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -24,8 +24,8 @@ class GoogleTasksViewModel(
   private val gTasks: GTasks,
   dispatcherProvider: DispatcherProvider,
   private val updatesHelper: UpdatesHelper,
-  private val googleTasksDao: GoogleTasksDao,
-  private val googleTaskListsDao: GoogleTaskListsDao,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
   private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists
 ) : BaseProgressViewModel(dispatcherProvider) {
@@ -52,11 +52,11 @@ class GoogleTasksViewModel(
       return
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTaskLists = googleTaskListsDao.all()
+      val googleTaskLists = googleTaskListRepository.getAll()
 
       val map = mapTaskLists(googleTaskLists)
 
-      val googleTasks = googleTasksDao.all().map {
+      val googleTasks = googleTaskRepository.getAll().map {
         uiGoogleTaskListAdapter.convert(it, map[it.listId])
       }
 
@@ -114,7 +114,7 @@ class GoogleTasksViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
-        val googleTask = googleTasksDao.getById(taskId)
+        val googleTask = googleTaskRepository.getById(taskId)
         if (googleTask == null) {
           postInProgress(false)
           postCommand(Commands.FAILED)

@@ -11,20 +11,21 @@ import com.elementary.tasks.core.appwidgets.Direction
 import com.elementary.tasks.core.appwidgets.WidgetIntentProtocol
 import com.elementary.tasks.core.appwidgets.WidgetUtils
 import com.elementary.tasks.core.data.adapter.note.UiNoteWidgetAdapter
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.os.dp2px
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.adjustAlpha
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.repository.NoteRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class SingleNoteWidget : AppWidgetProvider(), KoinComponent {
 
   private val uiNoteWidgetAdapter by inject<UiNoteWidgetAdapter>()
-  private val notesDao by inject<NotesDao>()
+  private val noteRepository by inject<NoteRepository>()
 
   override fun onUpdate(
     context: Context,
@@ -39,7 +40,9 @@ class SingleNoteWidget : AppWidgetProvider(), KoinComponent {
         appWidgetManager = appWidgetManager,
         prefsProvider = prefsProvider,
         uiNoteWidgetAdapter = uiNoteWidgetAdapter,
-        noteWithImages = prefsProvider.getNoteId()?.let { notesDao.getById(it) }
+        noteWithImages = prefsProvider.getNoteId()?.let {
+          invokeSuspend { noteRepository.getById(it) }
+        }
       )
     }
   }

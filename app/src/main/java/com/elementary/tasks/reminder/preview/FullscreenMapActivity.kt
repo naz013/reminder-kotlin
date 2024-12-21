@@ -7,7 +7,7 @@ import android.view.Window
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.nullObserve
 import com.elementary.tasks.core.utils.ui.applyBottomInsetsMargin

@@ -60,7 +60,7 @@ class SplashViewModel(
     }
   }
 
-  private fun checkDb() {
+  private suspend fun checkDb() {
     runCatching {
       groupsUtil.initDefaultIfEmpty()
       if (!prefs.noteMigrationDone) {

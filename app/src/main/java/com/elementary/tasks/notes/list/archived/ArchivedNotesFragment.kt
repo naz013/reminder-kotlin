@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.data.models.NoteWithImages
+import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.os.SystemServiceProvider
