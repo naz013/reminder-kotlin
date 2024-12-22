@@ -2,7 +2,7 @@ package com.elementary.tasks.core.utils.params
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.google.gson.Gson
 import java.io.File

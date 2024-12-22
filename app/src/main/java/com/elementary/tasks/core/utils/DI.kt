@@ -10,8 +10,8 @@ import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.appwidgets.WidgetDataProvider
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.LoginStateViewModel
+import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.completables.CompletableManager
@@ -31,8 +31,6 @@ import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.RepositoryManager
 import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.Dropbox
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.repository.NoteImageMigration
@@ -83,14 +81,15 @@ import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
+import com.github.naz013.cloudapi.CloudKeysStorage
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 import org.threeten.bp.ZoneId
 
 val workerModule = module {
-  worker { SaveNewTaskWorker(get(), get(), get(), get()) }
-  worker { UpdateTaskWorker(get(), get(), get(), get()) }
+  worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
+  worker { UpdateTaskWorker(get(), get(), get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
   worker { GroupSingleBackupWorker(get(), get(), get(), get()) }
   worker { PlaceDeleteBackupWorker(get(), get(), get(), get()) }
@@ -165,9 +164,8 @@ val completableModule = module {
 }
 
 val storageModule = module {
-  single { Dropbox(get()) }
-  single { GDrive(get(), get()) }
-  factory { StorageManager(get(), get()) }
+  factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
+  factory { StorageManager(get(), get(), get(), get()) }
 }
 
 val dataFlowRepositoryModule = module {
@@ -184,7 +182,6 @@ val utilModule = module {
   single { Prefs(get()) }
   factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
-  single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { ThemeProvider(get(), get()) }
   single { MemoryUtil() }
   factory { UriReader(get()) }
@@ -253,10 +250,10 @@ val utilModule = module {
   factory { DoNotDisturbManager(get(), get()) }
 
   factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
-    GoogleLogin(fragment, get(), get(), get(), callback)
+    GoogleLogin(fragment, get(), get(), get(), get(), callback)
   }
   factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
-    DropboxLogin(activity, get(), callback)
+    DropboxLogin(activity, get(), get(), callback)
   }
   factory { (listener: LocationTracker.Listener) ->
     LocationTracker(listener, get(), get(), get())

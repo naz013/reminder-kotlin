@@ -1,9 +1,11 @@
 package com.elementary.tasks.core.cloud.converters
 
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Place
-import com.elementary.tasks.core.utils.io.CopyByteArrayStream
+import com.github.naz013.cloudapi.stream.CopyByteArrayStream
 import com.elementary.tasks.core.utils.io.MemoryUtil
+import com.github.naz013.cloudapi.legacy.Convertible
+import com.github.naz013.cloudapi.legacy.Metadata
 import com.github.naz013.logging.Logger
 import java.io.InputStream
 

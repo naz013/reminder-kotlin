@@ -2,7 +2,6 @@ package com.elementary.tasks.googletasks.task
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.observeTable
@@ -17,6 +16,8 @@ import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Reminder
@@ -37,7 +38,7 @@ import org.threeten.bp.LocalTime
 
 class GoogleTaskViewModel(
   id: String,
-  private val gTasks: GTasks,
+  private val googleTasksApi: GoogleTasksApi,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
@@ -47,7 +48,8 @@ class GoogleTaskViewModel(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
-  tableChangeListenerFactory: TableChangeListenerFactory
+  tableChangeListenerFactory: TableChangeListenerFactory,
+  googleTasksAuthManager: GoogleTasksAuthManager
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateState = mutableLiveDataOf<DateState>()
@@ -87,7 +89,7 @@ class GoogleTaskViewModel(
     queryProducer = { googleTaskListRepository.getAll() }
   )
 
-  val isLogged = gTasks.isLogged
+  val isLogged = googleTasksAuthManager.isAuthorized()
 
   fun onDateSet(localDate: LocalDate) {
     date = localDate
@@ -171,32 +173,27 @@ class GoogleTaskViewModel(
   }
 
   fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTaskRepository.save(googleTask)
-      gTasks.moveTask(googleTask, oldListId)
-      postInProgress(false)
-      postCommand(Commands.SAVED)
+      googleTasksApi.moveTask(googleTask, oldListId)?.let {
+        googleTaskRepository.save(it)
+        postInProgress(false)
+        postCommand(Commands.SAVED)
+      } ?: run {
+        postInProgress(false)
+        postCommand(Commands.FAILED)
+      }
     }
   }
 
   fun deleteGoogleTask(googleTask: GoogleTask) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      try {
-        gTasks.deleteTask(googleTask)
+      if (googleTasksApi.deleteTask(googleTask)) {
         googleTaskRepository.delete(googleTask.taskId)
         postInProgress(false)
         postCommand(Commands.DELETED)
-      } catch (e: Exception) {
+      } else {
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
@@ -245,18 +242,14 @@ class GoogleTaskViewModel(
   }
 
   private fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      try {
-        gTasks.insertTask(googleTask)
+      googleTasksApi.saveTask(googleTask)?.let {
+        googleTaskRepository.save(it)
         saveReminder(reminder)
         postInProgress(false)
         postCommand(Commands.SAVED)
-      } catch (e: Exception) {
+      } ?: run {
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
@@ -264,19 +257,14 @@ class GoogleTaskViewModel(
   }
 
   private fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTaskRepository.save(googleTask)
-      try {
-        gTasks.updateTask(googleTask)
+      googleTasksApi.updateTask(googleTask)?.let {
+        googleTaskRepository.save(it)
         saveReminder(reminder)
         postInProgress(false)
         postCommand(Commands.SAVED)
-      } catch (e: Exception) {
+      } ?: run {
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
@@ -288,20 +276,16 @@ class GoogleTaskViewModel(
     oldListId: String,
     reminder: Reminder?
   ) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTaskRepository.save(googleTask)
-      try {
-        gTasks.updateTask(googleTask)
-        gTasks.moveTask(googleTask, oldListId)
+      googleTasksApi.updateTask(googleTask)?.let {
+        googleTasksApi.moveTask(it, oldListId)
+      }?.let {
+        googleTaskRepository.save(it)
         saveReminder(reminder)
         postInProgress(false)
         postCommand(Commands.SAVED)
-      } catch (e: Exception) {
+      } ?: run {
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
@@ -329,7 +313,7 @@ class GoogleTaskViewModel(
     Logger.d("update: date=$date, time=$time")
     return googleTask.copy(
       listId = listId,
-      status = GTasks.TASKS_NEED_ACTION,
+      status = GoogleTask.TASKS_NEED_ACTION,
       title = summary,
       notes = note,
       dueDate = date.takeIf { isDateSelected() }
@@ -346,7 +330,7 @@ class GoogleTaskViewModel(
     return timeState.value is TimeState.SelectedTime
   }
 
-  fun String.normalizeSummary(): String {
+  private fun String.normalizeSummary(): String {
     return if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
       substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
     } else {

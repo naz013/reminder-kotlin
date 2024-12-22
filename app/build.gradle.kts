@@ -188,16 +188,13 @@ dependencies {
   implementation(project(":logging"))
   implementation(project(":analytics"))
   implementation(project(":repository"))
+  implementation(project(":cloud-api"))
+  implementation(project(":cloud"))
   implementation(project(":feature-common"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
   }
-  implementation(libs.google.api.services.tasks)
-  implementation(libs.google.api.services.drive) {
-    exclude(group = "org.apache.httpcomponents")
-  }
-  implementation(libs.google.http.client.gson)
   implementation(libs.google.api.client.android) {
     exclude(group = "org.apache.httpcomponents")
   }
@@ -258,7 +255,6 @@ dependencies {
   implementation(libs.gson)
   implementation(libs.jsr305)
   implementation(libs.okhttp3.logging.interceptor)
-  implementation(libs.dropbox.core.sdk)
   implementation(libs.lib.recur)
   implementation(libs.commons.lang3)
   implementation(libs.colorslider)

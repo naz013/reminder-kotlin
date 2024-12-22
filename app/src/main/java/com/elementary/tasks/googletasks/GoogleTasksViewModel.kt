@@ -4,12 +4,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
+import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class GoogleTasksViewModel(
-  private val gTasks: GTasks,
+  private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,
   private val updatesHelper: UpdatesHelper,
   private val googleTaskRepository: GoogleTaskRepository,
@@ -48,9 +49,6 @@ class GoogleTasksViewModel(
   }
 
   private fun load() {
-    if (!gTasks.isLogged) {
-      return
-    }
     viewModelScope.launch(dispatcherProvider.default()) {
       val googleTaskLists = googleTaskListRepository.getAll()
 
@@ -73,10 +71,6 @@ class GoogleTasksViewModel(
   }
 
   fun loadGoogleTasks() {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     job = viewModelScope.launch(dispatcherProvider.default()) {
       syncAllGoogleTaskLists()
@@ -89,10 +83,6 @@ class GoogleTasksViewModel(
   }
 
   fun sync() {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     if (isSyncing) return
     isSyncing = true
     postInProgress(true)
@@ -107,10 +97,6 @@ class GoogleTasksViewModel(
   }
 
   fun toggleTask(taskId: String) {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
@@ -120,11 +106,12 @@ class GoogleTasksViewModel(
           postCommand(Commands.FAILED)
           return@launch
         }
-        if (googleTask.status == GTasks.TASKS_NEED_ACTION) {
-          gTasks.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask)
+        val updated = if (googleTask.isNeedAction()) {
+          googleTasksApi.updateTaskStatus(GoogleTask.TASKS_COMPLETE, googleTask)
         } else {
-          gTasks.updateTaskStatus(GTasks.TASKS_NEED_ACTION, googleTask)
+          googleTasksApi.updateTaskStatus(GoogleTask.TASKS_NEED_ACTION, googleTask)
         }
+        updated?.also { googleTaskRepository.save(it) }
         load()
         postInProgress(false)
         postCommand(Commands.UPDATED)

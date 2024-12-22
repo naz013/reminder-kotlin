@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.cloud
+package com.github.naz013.cloudapi
 
 object FileConfig {
   /**

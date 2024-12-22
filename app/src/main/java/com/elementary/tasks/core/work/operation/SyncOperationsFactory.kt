@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.work.operation
 
 import com.elementary.tasks.core.cloud.converters.IndexTypes
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.work.Operation
 import com.elementary.tasks.core.work.SyncDataWorker
@@ -12,7 +12,7 @@ class SyncOperationsFactory(
 ) {
 
   operator fun invoke(
-    storage: Storage,
+    storage: CloudFileApi,
     syncOperationType: SyncOperationType,
     ignoreFlags: Boolean = false
   ): List<Operation> {

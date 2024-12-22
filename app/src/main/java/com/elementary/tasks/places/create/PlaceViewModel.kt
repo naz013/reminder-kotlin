@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit

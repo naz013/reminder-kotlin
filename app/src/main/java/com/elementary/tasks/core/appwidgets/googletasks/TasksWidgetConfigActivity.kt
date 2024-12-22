@@ -6,16 +6,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.github.naz013.analytics.Widget
-import com.github.naz013.analytics.WidgetUsedEvent
 import com.elementary.tasks.core.appwidgets.BaseWidgetConfigActivity
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.cloud.GTasks
-import com.github.naz013.feature.common.android.colorOf
 import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
+import com.github.naz013.analytics.Widget
+import com.github.naz013.analytics.WidgetUsedEvent
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.android.applyBottomInsetsMargin
 import com.github.naz013.feature.common.android.applyTopInsets
-import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
+import com.github.naz013.feature.common.android.colorOf
 import org.koin.android.ext.android.get
 
 class TasksWidgetConfigActivity :
@@ -65,7 +65,7 @@ class TasksWidgetConfigActivity :
 
     showCurrentTheme()
 
-    if (!get<GTasks>().isLogged) {
+    if (!get<GoogleTasksAuthManager>().isAuthorized()) {
       Toast.makeText(this, getString(R.string.you_not_logged_to_google_tasks), Toast.LENGTH_SHORT)
         .show()
       finish()

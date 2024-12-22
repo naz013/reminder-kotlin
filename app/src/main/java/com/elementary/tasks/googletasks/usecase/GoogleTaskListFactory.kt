@@ -1,34 +1,17 @@
 package com.elementary.tasks.googletasks.usecase
 
 import com.github.naz013.domain.GoogleTaskList
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.google.api.services.tasks.model.TaskList
 
-class GoogleTaskListFactory(
-  private val dateTimeManager: DateTimeManager
-) {
+class GoogleTaskListFactory {
 
-  fun create(taskList: TaskList, color: Int): GoogleTaskList {
-    return GoogleTaskList(
-      color = color,
-      title = taskList.title ?: "",
-      listId = taskList.id ?: "",
-      eTag = taskList.etag ?: "",
-      kind = taskList.kind ?: "",
-      selfLink = taskList.selfLink ?: "",
-      updated = dateTimeManager.fromRfc3339Format(taskList.updated),
-      uploaded = true
-    )
-  }
-
-  fun update(googleTaskList: GoogleTaskList, taskList: TaskList): GoogleTaskList {
+  fun update(googleTaskList: GoogleTaskList, newGoogleTaskList: GoogleTaskList): GoogleTaskList {
     return googleTaskList.copy(
-      title = taskList.title ?: "",
-      listId = taskList.id ?: "",
-      eTag = taskList.etag ?: "",
-      kind = taskList.kind ?: "",
-      selfLink = taskList.selfLink ?: "",
-      updated = dateTimeManager.fromRfc3339Format(taskList.updated),
+      title = newGoogleTaskList.title,
+      listId = newGoogleTaskList.listId,
+      eTag = newGoogleTaskList.eTag,
+      kind = newGoogleTaskList.kind,
+      selfLink = newGoogleTaskList.selfLink,
+      updated = newGoogleTaskList.updated,
       uploaded = true
     )
   }

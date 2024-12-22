@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.data.CalendarDataEngine
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.os.PackageManagerWrapper
 import com.elementary.tasks.core.utils.EnableThread
@@ -15,12 +14,13 @@ import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
-  gTasks: GTasks,
+  googleTasksAuthManager: GoogleTasksAuthManager,
   private val prefs: Prefs,
   private val enableThread: EnableThread,
   private val dispatcherProvider: DispatcherProvider,
@@ -34,7 +34,7 @@ class SplashViewModel(
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
-    gTasks.isLogged
+    googleTasksAuthManager.isAuthorized()
   val openHome = mutableLiveDataOf<Boolean>()
 
   override fun onCreate(owner: LifecycleOwner) {

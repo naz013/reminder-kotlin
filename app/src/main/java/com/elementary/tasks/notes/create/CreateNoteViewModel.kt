@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands

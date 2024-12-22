@@ -3,11 +3,6 @@ package com.elementary.tasks.reminder.build
 import android.os.Build
 import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.GTasks
-import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.os.Permissions
@@ -31,7 +26,6 @@ import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
 import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.BuilderModifier
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.DateModifier
@@ -85,6 +79,12 @@ import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormat
 import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.ShopItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -597,7 +597,7 @@ data class GoogleTaskListBuilderItem(
   override val title: String,
   override val description: String?,
   val taskLists: List<GoogleTaskList>,
-  private val gTasks: GTasks
+  private val googleTasksAuthManager: GoogleTasksAuthManager
 ) : BuilderItem<GoogleTaskList>() {
   override val iconRes: Int = R.drawable.ic_builder_google_task_list
   override val isForPro: Boolean = false
@@ -605,7 +605,7 @@ data class GoogleTaskListBuilderItem(
   override val biType: BiType = BiType.GOOGLE_TASK_LIST
   override val biGroup: BiGroup = BiGroup.EXTRA
   override val isEnabled: Boolean
-    get() = gTasks.isLogged
+    get() = googleTasksAuthManager.isAuthorized()
   override val constraints: List<BiConstraint<*>> = constraints {
     requiresAny(
       BiType.COUNTDOWN_TIMER,

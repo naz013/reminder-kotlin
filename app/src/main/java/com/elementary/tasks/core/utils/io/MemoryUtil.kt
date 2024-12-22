@@ -8,7 +8,7 @@ import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.Place

@@ -5,7 +5,7 @@ import com.elementary.tasks.core.cloud.completables.ReminderCompletable
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.work.Operation
 
 class ReminderOperationFactory(
@@ -16,7 +16,7 @@ class ReminderOperationFactory(
 ) {
 
   operator fun invoke(
-    storage: Storage,
+    storage: CloudFileApi,
     syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(

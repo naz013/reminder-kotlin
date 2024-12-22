@@ -9,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter

@@ -12,7 +12,6 @@ import com.elementary.tasks.core.appwidgets.AppWidgetActionActivity
 import com.elementary.tasks.core.appwidgets.Direction
 import com.elementary.tasks.core.appwidgets.WidgetIntentProtocol
 import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeProvider
@@ -96,7 +95,7 @@ class TasksFactory(
       ThemeProvider.themedColor(context, 0)
     }
 
-    val icon = if (task.status == GTasks.TASKS_COMPLETE) {
+    val icon = if (task.status == GoogleTask.TASKS_COMPLETE) {
       ViewUtils.createIcon(context, R.drawable.ic_builder_google_task_list, listColor)
     } else {
       ViewUtils.createIcon(context, R.drawable.ic_fluent_radio_button, listColor)

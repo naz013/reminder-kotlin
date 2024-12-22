@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.cloud.converters
+package com.github.naz013.cloudapi.legacy
 
 data class Metadata(
   val id: String,

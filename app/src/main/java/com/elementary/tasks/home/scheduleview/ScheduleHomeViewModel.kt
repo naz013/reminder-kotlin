@@ -3,8 +3,8 @@ package com.elementary.tasks.home.scheduleview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.datetime.ScheduleTimes
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import org.threeten.bp.LocalTime
 class ScheduleHomeViewModel(
   dispatcherProvider: DispatcherProvider,
   private val scheduleLiveData: ScheduleLiveData,
-  private val gTasks: GTasks
+  private val googleTasksAuthManager: GoogleTasksAuthManager
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   val scheduleData = scheduleLiveData.toLiveData()
@@ -48,7 +48,7 @@ class ScheduleHomeViewModel(
   }
 
   fun hasGoogleTasks(): Boolean {
-    return gTasks.isLogged
+    return googleTasksAuthManager.isAuthorized()
   }
 
   private fun internalLoad() {

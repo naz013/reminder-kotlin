@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.io
+package com.github.naz013.cloudapi.stream
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
