@@ -493,10 +493,6 @@ class Prefs(
     get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY)
     set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
-  var dropboxUid: String
-    get() = getString(PrefsConstants.DROPBOX_UID)
-    set(uid) = putString(PrefsConstants.DROPBOX_UID, uid)
-
   var dropboxToken: String
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)

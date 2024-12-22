@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.converters.BirthdayConverter
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.BirthdayDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.work.Operation
 
 class BirthdayOperationFactory(
@@ -14,7 +14,7 @@ class BirthdayOperationFactory(
 ) {
 
   operator fun invoke(
-    storage: Storage,
+    storage: CloudFileApi,
     syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(

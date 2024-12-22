@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
 import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.work.Operation
 
 class SettingsOperationFactory(
@@ -14,7 +14,7 @@ class SettingsOperationFactory(
 ) {
 
   operator fun invoke(
-    storage: Storage,
+    storage: CloudFileApi,
     syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(

@@ -1,17 +1,17 @@
 package com.elementary.tasks.core.cloud
 
 import com.elementary.tasks.core.cloud.completables.Completable
-import com.elementary.tasks.core.cloud.converters.Convertible
+import com.github.naz013.cloudapi.legacy.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
-import com.elementary.tasks.core.cloud.storages.DataChannel
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.legacy.DataChannel
+import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.logging.Logger
 
 class BulkDataFlow<T>(
   private val repository: Repository<T>,
   private val convertible: Convertible<T>,
-  private val storage: Storage,
+  private val storage: CloudFileApi,
   private val completable: Completable<T>? = null
 ) {
 

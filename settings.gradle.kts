@@ -1,5 +1,11 @@
 import java.net.URI
 
+include(":cloud")
+
+
+include(":cloud-api")
+
+
 include(":feature-common")
 
 

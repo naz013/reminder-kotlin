@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.io
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.Keep
-import com.elementary.tasks.core.cloud.FileConfig
+import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.cloud.completables.ReminderCompletable
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.utils.datetime.DateTimeManager

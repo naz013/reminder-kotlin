@@ -10,6 +10,7 @@ import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.appwidgets.WidgetDataProvider
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.LoginStateViewModel
+import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
@@ -31,8 +32,6 @@ import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
 import com.elementary.tasks.core.cloud.repositories.RepositoryManager
 import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.Dropbox
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.repository.NoteImageMigration
@@ -83,6 +82,7 @@ import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
+import com.github.naz013.cloudapi.CloudKeysStorage
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
@@ -165,9 +165,8 @@ val completableModule = module {
 }
 
 val storageModule = module {
-  single { Dropbox(get()) }
-  single { GDrive(get(), get()) }
-  factory { StorageManager(get(), get()) }
+  factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
+  factory { StorageManager(get(), get(), get(), get()) }
 }
 
 val dataFlowRepositoryModule = module {
@@ -253,10 +252,10 @@ val utilModule = module {
   factory { DoNotDisturbManager(get(), get()) }
 
   factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
-    GoogleLogin(fragment, get(), get(), get(), callback)
+    GoogleLogin(fragment, get(), get(), get(), get(), callback)
   }
   factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
-    DropboxLogin(activity, get(), callback)
+    DropboxLogin(activity, get(), get(), callback)
   }
   factory { (listener: LocationTracker.Listener) ->
     LocationTracker(listener, get(), get(), get())

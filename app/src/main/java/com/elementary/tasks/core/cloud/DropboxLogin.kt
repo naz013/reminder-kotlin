@@ -2,20 +2,20 @@ package com.elementary.tasks.core.cloud
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.utils.Module
-import com.github.naz013.logging.Logger
+import com.github.naz013.cloudapi.dropbox.DropboxApi
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 
 class DropboxLogin(
   private val activity: Activity,
-  private val dropbox: Dropbox,
+  private val dropboxApi: DropboxApi,
+  private val dropboxAuthManager: DropboxAuthManager,
   private val callback: LoginCallback
 ) {
 
@@ -25,31 +25,27 @@ class DropboxLogin(
     if (isIn) {
       checkDialog().show()
     } else {
-      performDropboxLinking(activity)
+      performDropboxLinking()
     }
   }
 
-  private fun performDropboxLinking(context: Context) {
-    if (dropbox.isLinked) {
-      if (dropbox.unlink()) {
-        callback.onResult(false)
-      }
+  private fun performDropboxLinking() {
+    if (dropboxAuthManager.isAuthorized()) {
+      dropboxApi.disconnect()
+      dropboxAuthManager.removeOAuth2Token()
+      callback.onResult(false)
     } else {
-      dropbox.startLink(context)
+      dropboxAuthManager.startAuth()
     }
   }
 
-  fun checkDropboxStatus() {
-    Logger.d("checkDropboxStatus: ${dropbox.isLinked}")
-    if (dropbox.isLinked) {
+  fun checkAuthOnResume() {
+    if (dropboxAuthManager.isAuthorized()) {
       callback.onResult(true)
     } else {
-      dropbox.startSession()
-      if (dropbox.isLinked) {
-        callback.onResult(true)
-      } else {
-        callback.onResult(false)
-      }
+      dropboxAuthManager.onAuthFinished()
+      dropboxApi.initialize()
+      callback.onResult(dropboxAuthManager.isAuthorized())
     }
   }
 

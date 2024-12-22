@@ -215,7 +215,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
   override fun onBackStackResume() {
     super.onBackStackResume()
-    dropboxLogin.checkDropboxStatus()
+    dropboxLogin.checkAuthOnResume()
     updateGoogleDriveStatus(googleLogin.isGoogleDriveLogged)
     updateGoogleTasksStatus(googleLogin.isGoogleTasksLogged)
   }

@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.work.Operation
 
 class PlaceOperationFactory(
@@ -14,7 +14,7 @@ class PlaceOperationFactory(
 ) {
 
   operator fun invoke(
-    storage: Storage,
+    storage: CloudFileApi,
     syncOperationType: SyncOperationType
   ): Operation {
     val dataFlow = BulkDataFlow(

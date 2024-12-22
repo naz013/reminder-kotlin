@@ -3,20 +3,22 @@ package com.elementary.tasks.core.cloud
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
+import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.logging.Logger
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
-import com.google.api.services.drive.DriveScopes
 import com.google.api.services.tasks.TasksScopes
 
 class GoogleLogin(
   private val fragment: BaseNavigationFragment<*>,
   private val prefs: Prefs,
-  private val drive: GDrive,
+  private val googleDriveApi: GoogleDriveApi,
+  private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val tasks: GTasks,
   private val loginCallback: LoginCallback
 ) {
@@ -24,7 +26,7 @@ class GoogleLogin(
   var isGoogleDriveLogged = false
     private set
     get() {
-      return drive.isLogged
+      return googleDriveAuthManager.isAuthorized()
     }
 
   var isGoogleTasksLogged = false
@@ -41,13 +43,10 @@ class GoogleLogin(
   fun logOutDrive() {
     mode = Mode.DRIVE
 
-    drive.logOut()
+    googleDriveApi.disconnect()
+    googleDriveAuthManager.saveUserName("")
 
-    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-      .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
-      .requestEmail()
-      .build()
-    val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
+    val client = getGoogleDriveSignInClient()
     client.signOut().addOnSuccessListener {
       loginCallback.onResult(false, mode)
     }
@@ -70,12 +69,7 @@ class GoogleLogin(
 
   fun loginDrive() {
     mode = Mode.DRIVE
-
-    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-      .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
-      .requestEmail()
-      .build()
-    val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
+    val client = getGoogleDriveSignInClient()
     resultLauncher.launch(client.signInIntent)
   }
 
@@ -88,6 +82,18 @@ class GoogleLogin(
       .build()
     val client = GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
     resultLauncher.launch(client.signInIntent)
+  }
+
+  private fun getGoogleDriveSignInClient(): GoogleSignInClient {
+    val scopes = googleDriveAuthManager.getScopes().map { Scope(it) }.toTypedArray()
+    val firstScope = scopes.first()
+    val restScopes = scopes.drop(1).toTypedArray()
+
+    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+      .requestScopes(firstScope, *restScopes)
+      .requestEmail()
+      .build()
+    return GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
   }
 
   private fun sendFail() {
@@ -126,14 +132,9 @@ class GoogleLogin(
       return
     }
     if (mode == Mode.DRIVE) {
-      drive.logOut()
-      prefs.driveUser = account
-      drive.statusCallback = object : GDrive.StatusCallback {
-        override fun onStatusChanged(isLogged: Boolean) {
-          loginCallback.onResult(isLogged, mode)
-        }
-      }
-      drive.login(account)
+      googleDriveApi.disconnect()
+      googleDriveAuthManager.saveUserName(account)
+      loginCallback.onResult(googleDriveApi.initialize(), mode)
     } else {
       tasks.logOut()
       tasks.statusCallback = object : GTasks.StatusCallback {

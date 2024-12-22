@@ -5,25 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.storages.Dropbox
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.BackupFilePicker
-import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.transparent
-import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.cloudapi.dropbox.DropboxApi
+import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
+import com.github.naz013.feature.common.android.gone
+import com.github.naz013.feature.common.android.toast
+import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.feature.common.android.visible
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -33,8 +33,8 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
   private val syncWorker by inject<SyncWorker>()
   private val backupWorker by inject<BackupWorker>()
   private val exportAllDataWorker by inject<ExportAllDataWorker>()
-  private val dropbox by inject<Dropbox>()
-  private val gDrive by inject<GDrive>()
+  private val dropboxApi by inject<DropboxApi>()
+  private val googleDriveApi by inject<GoogleDriveApi>()
   private val jobScheduler by inject<JobScheduler>()
   private val backupFilePicker = BackupFilePicker(this) {
     onProgress.invoke(true)
@@ -291,8 +291,8 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       deleteRecursive(it)
     }
     launchDefault {
-      gDrive.clean()
-      dropbox.cleanFolder()
+      googleDriveApi.removeAllData()
+      dropboxApi.removeAllData()
     }
   }
 

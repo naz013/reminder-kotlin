@@ -1,11 +1,12 @@
 package com.elementary.tasks.core.cloud
 
 import com.elementary.tasks.core.cloud.completables.Completable
-import com.elementary.tasks.core.cloud.converters.Convertible
+import com.github.naz013.cloudapi.legacy.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -13,7 +14,7 @@ import org.koin.core.component.inject
 class DataFlow<T>(
   private val repository: Repository<T>,
   private val convertible: Convertible<T>,
-  private val storage: Storage,
+  private val storage: CloudFileApi,
   private val completable: Completable<T>? = null
 ) : KoinComponent {
 

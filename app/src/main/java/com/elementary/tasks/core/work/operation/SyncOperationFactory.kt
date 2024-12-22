@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.work.operation
 
 import com.elementary.tasks.core.cloud.converters.IndexTypes
-import com.elementary.tasks.core.cloud.storages.Storage
+import com.github.naz013.cloudapi.CloudFileApi
 import com.elementary.tasks.core.work.Operation
 
 class SyncOperationFactory(
@@ -15,7 +15,7 @@ class SyncOperationFactory(
 
   fun create(
     indexTypes: IndexTypes,
-    storage: Storage,
+    storage: CloudFileApi,
     syncOperationType: SyncOperationType
   ): Operation {
     return when (indexTypes) {

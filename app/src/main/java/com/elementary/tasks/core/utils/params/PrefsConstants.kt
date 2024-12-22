@@ -65,7 +65,6 @@ object PrefsConstants {
   const val LAST_NOTE_FONT_STYLE = "last_note_font_style"
   const val NOTE_COLOR_OPACITY = "note_color_opacity"
 
-  const val DROPBOX_UID = "dropbox_uid"
   const val DROPBOX_TOKEN = "dropbox_token"
   const val TELL_ABOUT_EVENT = "tell_about_event"
   const val APP_LANGUAGE = "app_language"

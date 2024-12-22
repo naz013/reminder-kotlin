@@ -29,6 +29,7 @@ import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.voice.voiceModule
+import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.repository.repositoryModule
@@ -89,7 +90,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           workModule,
           noteModule,
           servicesModule,
-          repositoryModule
+          repositoryModule,
+          cloudApiModule
         )
       )
     }
