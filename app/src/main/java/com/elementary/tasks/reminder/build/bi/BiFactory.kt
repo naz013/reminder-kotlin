@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.os.PackageManagerWrapper
@@ -64,6 +63,7 @@ import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormat
 import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.feature.common.android.ContextProvider
 import com.github.naz013.logging.Logger
@@ -78,7 +78,7 @@ class BiFactory(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val googleTaskListRepository: GoogleTaskListRepository,
-  private val gTasks: GTasks,
+  private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val prefs: Prefs,
   private val biFactoryICal: BiFactoryICal,
@@ -266,7 +266,7 @@ class BiFactory(
             R.string.builder_select_google_task_list_where_the_reminder_should_be_added
           ),
           taskLists = googleTaskListRepository.getAll(),
-          gTasks = gTasks
+          googleTasksAuthManager = googleTasksAuthManager
         )
       }
 

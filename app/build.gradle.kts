@@ -195,8 +195,6 @@ dependencies {
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
   }
-  implementation(libs.google.api.services.tasks)
-  implementation(libs.google.http.client.gson)
   implementation(libs.google.api.client.android) {
     exclude(group = "org.apache.httpcomponents")
   }

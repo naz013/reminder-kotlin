@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.data.adapter.google
 
 import androidx.annotation.ColorInt
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
@@ -24,7 +23,7 @@ class UiGoogleTaskPreviewAdapter(
         ?.let { dateTimeManager.getFullDateTime(it) },
       completedDate = googleTask.completeDate.takeIf { it != 0L }
         ?.let { dateTimeManager.getFullDateTime(it) },
-      isCompleted = googleTask.status == GTasks.TASKS_COMPLETE,
+      isCompleted = googleTask.isCompleted(),
       taskListName = googleTaskList?.title ?: "",
       taskListColor = getColor(googleTaskList)
     )

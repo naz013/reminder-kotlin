@@ -17,6 +17,7 @@ kotlin {
 
 dependencies {
   implementation(project(":logging-api"))
+  implementation(project(":domain"))
 }
 
 ktlint {

@@ -2,18 +2,18 @@ package com.elementary.tasks.reminder.create
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
-import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.reminder.ShopItem
-import com.elementary.tasks.core.utils.FeatureManager
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 @Deprecated("Replaced by new Builder")
 class ReminderStateViewModel(
-  private val gTasks: GTasks,
+  private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val featureManager: FeatureManager
 ) : ViewModel(), LifecycleObserver {
 
@@ -61,7 +61,8 @@ class ReminderStateViewModel(
   }
 
   fun isLoggedToGoogleTasks(): Boolean {
-    return featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) && gTasks.isLogged
+    return featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+      googleTasksAuthManager.isAuthorized()
   }
 
   private fun setDateTime() {

@@ -12,7 +12,6 @@ import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.arch.LoginStateViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.completables.CompletableManager
@@ -89,8 +88,8 @@ import org.koin.dsl.module
 import org.threeten.bp.ZoneId
 
 val workerModule = module {
-  worker { SaveNewTaskWorker(get(), get(), get(), get()) }
-  worker { UpdateTaskWorker(get(), get(), get(), get()) }
+  worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
+  worker { UpdateTaskWorker(get(), get(), get(), get(), get()) }
   worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
   worker { GroupSingleBackupWorker(get(), get(), get(), get()) }
   worker { PlaceDeleteBackupWorker(get(), get(), get(), get()) }
@@ -183,7 +182,6 @@ val utilModule = module {
   single { Prefs(get()) }
   factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
-  single { GTasks(get(), get(), get(), get(), get(), get(), get()) }
   single { ThemeProvider(get(), get()) }
   single { MemoryUtil() }
   factory { UriReader(get()) }

@@ -12,18 +12,17 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
-import com.elementary.tasks.core.cloud.GTasks
-import com.github.naz013.domain.GoogleTask
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.github.naz013.feature.common.minusMillis
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
+import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.minusMillis
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import java.util.Calendar
@@ -317,7 +316,7 @@ class JobScheduler(
       .setInputData(
         Data.Builder()
           .putString(Constants.INTENT_JSON, Gson().toJson(googleTask))
-          .putString(Constants.INTENT_STATUS, GTasks.TASKS_COMPLETE)
+          .putString(Constants.INTENT_STATUS, GoogleTask.TASKS_COMPLETE)
           .build()
       )
       .addTag(uuId)

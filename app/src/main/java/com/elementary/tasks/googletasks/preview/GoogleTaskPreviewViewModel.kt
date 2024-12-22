@@ -4,7 +4,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
@@ -12,6 +11,8 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
+import com.github.naz013.domain.GoogleTask
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 
 class GoogleTaskPreviewViewModel(
   private val id: String,
-  private val gTasks: GTasks,
+  private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
@@ -44,10 +45,6 @@ class GoogleTaskPreviewViewModel(
   }
 
   fun onDelete() {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
@@ -57,10 +54,14 @@ class GoogleTaskPreviewViewModel(
           postCommand(Commands.FAILED)
           return@launch
         }
-        gTasks.deleteTask(googleTask)
-        googleTaskRepository.delete(googleTask.taskId)
-        postInProgress(false)
-        postCommand(Commands.DELETED)
+        if (googleTasksApi.deleteTask(googleTask)) {
+          googleTaskRepository.delete(googleTask.taskId)
+          postInProgress(false)
+          postCommand(Commands.DELETED)
+        } else {
+          postInProgress(false)
+          postCommand(Commands.FAILED)
+        }
       } catch (e: Throwable) {
         postInProgress(false)
         postCommand(Commands.FAILED)
@@ -69,10 +70,6 @@ class GoogleTaskPreviewViewModel(
   }
 
   fun onComplete() {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
@@ -82,8 +79,14 @@ class GoogleTaskPreviewViewModel(
           postCommand(Commands.FAILED)
           return@launch
         }
-        if (googleTask.status == GTasks.TASKS_NEED_ACTION) {
-          gTasks.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask)
+        if (googleTask.isNeedAction()) {
+          googleTasksApi.updateTaskStatus(GoogleTask.TASKS_COMPLETE, googleTask)?.also {
+            googleTaskRepository.save(it)
+          } ?: run {
+            postInProgress(false)
+            postCommand(Commands.FAILED)
+            return@launch
+          }
         } else {
           postInProgress(false)
           postCommand(Commands.FAILED)
@@ -103,10 +106,6 @@ class GoogleTaskPreviewViewModel(
   }
 
   private fun loadTask() {
-    if (!gTasks.isLogged) {
-      postCommand(Commands.FAILED)
-      return
-    }
     viewModelScope.launch(dispatcherProvider.default()) {
       val googleTask = googleTaskRepository.getById(id) ?: return@launch
       val googleTaskList = googleTaskListRepository.getById(googleTask.listId)

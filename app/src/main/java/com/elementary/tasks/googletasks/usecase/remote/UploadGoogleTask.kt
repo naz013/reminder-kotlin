@@ -1,13 +1,17 @@
 package com.elementary.tasks.googletasks.usecase.remote
 
-import com.elementary.tasks.core.cloud.GTasks
+import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.repository.GoogleTaskRepository
 
 class UploadGoogleTask(
-  private val gTasks: GTasks
+  private val googleTasksApi: GoogleTasksApi,
+  private val googleTaskRepository: GoogleTaskRepository
 ) {
 
-  operator fun invoke(googleTask: GoogleTask) {
-    gTasks.updateTask(googleTask)
+  suspend operator fun invoke(googleTask: GoogleTask) {
+    googleTasksApi.updateTask(googleTask)?.let {
+      googleTaskRepository.save(it)
+    }
   }
 }

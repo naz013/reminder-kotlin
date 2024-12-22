@@ -1,24 +1,17 @@
 package com.elementary.tasks.googletasks.usecase.tasklist
 
-import com.elementary.tasks.googletasks.usecase.GetRandomGoogleTaskListColor
-import com.elementary.tasks.googletasks.usecase.GoogleTaskListFactory
 import com.elementary.tasks.googletasks.usecase.db.SaveGoogleTaskList
 import com.elementary.tasks.googletasks.usecase.db.SaveGoogleTasks
 import com.elementary.tasks.googletasks.usecase.remote.DownloadGoogleTasks
-import com.google.api.services.tasks.model.TaskList
+import com.github.naz013.domain.GoogleTaskList
 
 class AddNewTaskList(
   private val saveGoogleTaskList: SaveGoogleTaskList,
-  private val googleTaskListFactory: GoogleTaskListFactory,
-  private val getRandomGoogleTaskListColor: GetRandomGoogleTaskListColor,
   private val downloadGoogleTasks: DownloadGoogleTasks,
   private val saveGoogleTasks: SaveGoogleTasks
 ) {
 
-  suspend operator fun invoke(taskList: TaskList) {
-    // Create DB object
-    val googleTaskList = googleTaskListFactory.create(taskList, getRandomGoogleTaskListColor())
-
+  suspend operator fun invoke(googleTaskList: GoogleTaskList) {
     // Save to DB
     saveGoogleTaskList(googleTaskList)
 

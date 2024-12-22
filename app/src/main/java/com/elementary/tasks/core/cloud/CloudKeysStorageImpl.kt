@@ -7,19 +7,27 @@ class CloudKeysStorageImpl(
   private val prefs: Prefs
 ) : CloudKeysStorage {
 
-    override fun getGoogleDriveUserName(): String {
-      return prefs.driveUser
-    }
+  override fun getGoogleDriveUserName(): String {
+    return prefs.driveUser
+  }
 
-    override fun saveGoogleDriveUserName(name: String) {
-      prefs.driveUser = name
-    }
+  override fun saveGoogleDriveUserName(name: String) {
+    prefs.driveUser = name
+  }
 
-    override fun getDropboxToken(): String {
-      return prefs.dropboxToken
-    }
+  override fun getDropboxToken(): String {
+    return prefs.dropboxToken
+  }
 
-    override fun saveDropboxToken(token: String) {
-      prefs.dropboxToken = token
-    }
+  override fun saveDropboxToken(token: String) {
+    prefs.dropboxToken = token
+  }
+
+  override fun getGoogleTasksUserName(): String {
+    return prefs.tasksUser
+  }
+
+  override fun saveGoogleTasksUserName(name: String) {
+    prefs.tasksUser = name
+  }
 }

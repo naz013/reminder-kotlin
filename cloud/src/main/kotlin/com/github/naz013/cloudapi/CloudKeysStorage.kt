@@ -5,4 +5,6 @@ interface CloudKeysStorage {
   fun saveGoogleDriveUserName(name: String)
   fun getDropboxToken(): String
   fun saveDropboxToken(token: String)
+  fun getGoogleTasksUserName(): String
+  fun saveGoogleTasksUserName(name: String)
 }

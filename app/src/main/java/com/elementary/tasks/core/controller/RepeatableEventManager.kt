@@ -2,7 +2,6 @@ package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -38,7 +37,7 @@ abstract class RepeatableEventManager(
       val due = dateTimeManager.toMillis(reminder.eventTime)
       val googleTask = GoogleTask()
       googleTask.listId = reminder.taskListId ?: ""
-      googleTask.status = GTasks.TASKS_NEED_ACTION
+      googleTask.status = GoogleTask.TASKS_NEED_ACTION
       googleTask.title = reminder.summary
       googleTask.dueDate = due
       googleTask.notes = reminder.description ?: textProvider.getText(R.string.from_reminder)
@@ -62,7 +61,7 @@ abstract class RepeatableEventManager(
     if (reminder.exportToTasks) {
       launchIo {
         val googleTask = googleTaskRepository.getByReminderId(reminder.uuId)
-        if (googleTask != null && googleTask.status == GTasks.TASKS_NEED_ACTION) {
+        if (googleTask != null && googleTask.status == GoogleTask.TASKS_NEED_ACTION) {
           jobScheduler.scheduleTaskDone(googleTask, reminder.uuId)
         }
       }

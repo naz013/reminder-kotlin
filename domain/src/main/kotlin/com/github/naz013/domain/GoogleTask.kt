@@ -39,4 +39,17 @@ data class GoogleTask(
     uuId = item.uuId,
     uploaded = true
   )
+
+  fun isCompleted(): Boolean {
+    return status == TASKS_COMPLETE
+  }
+
+  fun isNeedAction(): Boolean {
+    return status == TASKS_NEED_ACTION
+  }
+
+  companion object {
+    const val TASKS_NEED_ACTION = "needsAction"
+    const val TASKS_COMPLETE = "completed"
+  }
 }
