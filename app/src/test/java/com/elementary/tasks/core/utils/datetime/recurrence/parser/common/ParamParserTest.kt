@@ -1,8 +1,9 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
 
-import com.elementary.tasks.core.utils.datetime.recurrence.Param
-import com.elementary.tasks.core.utils.datetime.recurrence.ParamValueType
-import com.elementary.tasks.core.utils.datetime.recurrence.ValueParam
+import com.github.naz013.icalendar.Param
+import com.github.naz013.icalendar.ParamValueType
+import com.github.naz013.icalendar.ValueParam
+import com.github.naz013.icalendar.parser.common.ParamParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

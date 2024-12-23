@@ -7,22 +7,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyBottomInsetsMargin
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
-import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
@@ -48,7 +48,7 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
   }
 
   private fun addGroup() {
-    PinLoginActivity.openLogged(requireContext(), CreateGroupActivity::class.java)
+    LoginApi.openLogged(requireContext(), CreateGroupActivity::class.java)
   }
 
   private fun initViewModel() {
@@ -137,8 +137,8 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
   }
 
   private fun editGroup(id: String) {
-    PinLoginActivity.openLogged(requireContext(), CreateGroupActivity::class.java) {
-      putExtra(Constants.INTENT_ID, id)
+    LoginApi.openLogged(requireContext(), CreateGroupActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 

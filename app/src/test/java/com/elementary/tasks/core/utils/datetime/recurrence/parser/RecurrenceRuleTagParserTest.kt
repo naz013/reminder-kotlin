@@ -1,11 +1,12 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser
 
-import com.elementary.tasks.core.utils.datetime.recurrence.ByYearDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.CountRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
-import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
+import com.github.naz013.icalendar.ByYearDayRecurParam
+import com.github.naz013.icalendar.CountRecurParam
+import com.github.naz013.icalendar.FreqRecurParam
+import com.github.naz013.icalendar.FreqType
+import com.github.naz013.icalendar.IntervalRecurParam
+import com.github.naz013.icalendar.RecurrenceRuleTag
+import com.github.naz013.icalendar.parser.RecurrenceRuleTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

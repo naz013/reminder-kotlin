@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemApplicationBinding
 
 @Deprecated("After S")

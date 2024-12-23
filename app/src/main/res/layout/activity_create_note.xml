@@ -46,7 +46,7 @@
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-                <com.elementary.tasks.core.views.gradient.UiGradientEditText
+                <com.github.naz013.ui.common.view.gradient.UiGradientEditText
                     android:id="@+id/taskMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

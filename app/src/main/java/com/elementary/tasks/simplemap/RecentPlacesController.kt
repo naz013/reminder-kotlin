@@ -7,9 +7,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.isVisible
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.isVisible
+import com.github.naz013.ui.common.view.visible
 
 class RecentPlacesController(
   rootView: View,

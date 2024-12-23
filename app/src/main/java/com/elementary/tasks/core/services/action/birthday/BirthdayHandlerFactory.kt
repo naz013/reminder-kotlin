@@ -1,19 +1,20 @@
 package com.elementary.tasks.core.services.action.birthday
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.github.naz013.feature.common.android.ContextProvider
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.birthday.cancel.BirthdayCancelHandlerQ
 import com.elementary.tasks.core.services.action.birthday.process.BirthdayHandlerQ
 import com.elementary.tasks.core.services.action.birthday.process.BirthdayHandlerSilent
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.TextProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 
 class BirthdayHandlerFactory(
   private val birthdayDataProvider: BirthdayDataProvider,
@@ -25,7 +26,8 @@ class BirthdayHandlerFactory(
   private val dateTimeManager: DateTimeManager,
   private val workerLauncher: WorkerLauncher,
   private val wearNotification: WearNotification,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun createAction(canPlaySound: Boolean): ActionHandler<Birthday> {
@@ -36,8 +38,8 @@ class BirthdayHandlerFactory(
         textProvider,
         notifier,
         prefs,
-        dateTimeManager,
-        wearNotification
+        wearNotification,
+        modelDateTimeFormatter
       )
     } else {
       BirthdayHandlerSilent(
@@ -47,7 +49,7 @@ class BirthdayHandlerFactory(
         notifier,
         prefs,
         wearNotification,
-        dateTimeManager
+        modelDateTimeFormatter
       )
     }
   }
@@ -58,7 +60,7 @@ class BirthdayHandlerFactory(
       birthdayRepository,
       dateTimeManager,
       workerLauncher,
-      updatesHelper
+      appWidgetUpdater
     )
   }
 }

@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.inflater
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
 

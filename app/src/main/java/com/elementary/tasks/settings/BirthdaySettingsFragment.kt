@@ -6,23 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.toast
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.github.naz013.feature.common.android.transparent
-import com.github.naz013.feature.common.android.visible
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
+import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalTime
@@ -31,7 +31,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
 
   private val viewModel by viewModel<BirthdaySettingsViewModel>()
   private val jobScheduler by inject<JobScheduler>()
-  private val updatesHelper by inject<UpdatesHelper>()
+  private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
@@ -390,8 +390,8 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     val isChecked = binding.widgetShowPrefs.isChecked
     binding.widgetShowPrefs.isChecked = !isChecked
     prefs.isBirthdayInWidgetEnabled = !isChecked
-    updatesHelper.updateCalendarWidget()
-    updatesHelper.updateWidgets()
+    appWidgetUpdater.updateCalendarWidget()
+    appWidgetUpdater.updateAllWidgets()
   }
 
   private fun initBirthdayReminderPrefs() {

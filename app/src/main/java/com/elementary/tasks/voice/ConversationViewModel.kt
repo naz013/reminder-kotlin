@@ -14,7 +14,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.analytics.Status
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -31,39 +30,44 @@ import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
-import com.github.naz013.feature.common.android.ContextProvider
-import com.github.naz013.feature.common.android.startActivity
-import com.elementary.tasks.core.utils.Constants
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.IdProvider
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.home.BottomNavActivity
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.other.SendFeedbackActivity
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.Note
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.DeepLinkDestination
+import com.github.naz013.navigation.FragmentSettings
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.locale.Language
+import com.github.naz013.ui.common.login.LoginApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.LinkedList
+import java.util.Locale
 import java.util.Random
 
 class ConversationViewModel(
@@ -72,7 +76,7 @@ class ConversationViewModel(
   private val eventControlFactory: EventControlFactory,
   private val recognizer: Recognizer,
   private val workerLauncher: WorkerLauncher,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val dateTimeManager: DateTimeManager,
   private val idProvider: IdProvider,
   private val birthdayRepository: BirthdayRepository,
@@ -84,12 +88,12 @@ class ConversationViewModel(
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val uiNoteListAdapter: UiNoteListAdapter,
   private val prefs: Prefs,
-  private val language: Language,
   private val contextProvider: ContextProvider,
   private val contactsHelper: ContactsHelper,
   private val voiceAnalyticsTracker: VoiceAnalyticsTracker,
   private val noteRepository: NoteRepository,
-  private val reminderBuilderLauncher: ReminderBuilderLauncher
+  private val reminderBuilderLauncher: ReminderBuilderLauncher,
+  private val language: Language
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var _shoppingLists = MutableLiveData<List<UiReminderList>>()
@@ -136,7 +140,26 @@ class ConversationViewModel(
   }
 
   fun getDateTimeText(gmtDateTime: String?): String {
-    return dateTimeManager.getVoiceDateTime(gmtDateTime) ?: ""
+    val loc = Locale(language.getTextLanguage(prefs.voiceLocale))
+    return getVoiceDateTime(gmtDateTime, loc) ?: ""
+  }
+
+  private fun getVoiceDateTime(date: String?, locale: Locale): String? {
+    if (date.isNullOrEmpty()) return null
+    val formatter = if (prefs.voiceLocale == 0) {
+      if (prefs.is24HourFormat) {
+        DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy HH:mm", locale)
+      } else {
+        DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy h:mm a", locale)
+      }
+    } else {
+      if (prefs.is24HourFormat) {
+        DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy HH:mm", locale)
+      } else {
+        DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy h:mm a", locale)
+      }
+    }
+    return dateTimeManager.fromGmtToLocal(date)?.format(formatter)
   }
 
   fun toggleTellAboutEvent() {
@@ -376,7 +399,7 @@ class ConversationViewModel(
             }
 
             Action.BIRTHDAY -> {
-              PinLoginActivity.openLogged(context, AddBirthdayActivity::class.java)
+              LoginApi.openLogged(context, AddBirthdayActivity::class.java)
             }
 
             Action.REMINDER -> {
@@ -388,7 +411,7 @@ class ConversationViewModel(
             Action.SETTINGS -> {
               context.startActivity(BottomNavActivity::class.java) {
                 action = Intent.ACTION_VIEW
-                putExtra(BottomNavActivity.ARG_DEST, BottomNavActivity.Companion.Dest.SETTINGS)
+                putExtra(DeepLinkDestination.KEY, FragmentSettings)
               }
             }
 
@@ -418,7 +441,7 @@ class ConversationViewModel(
     saveAndStartReminder(reminder)
     if (widget) {
       contextProvider.context.startActivity(VoiceResultDialog::class.java) {
-        putExtra(Constants.INTENT_ID, reminder.uuId)
+        putExtra(IntentKeys.INTENT_ID, reminder.uuId)
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
       }
     } else {
@@ -459,7 +482,7 @@ class ConversationViewModel(
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           reminder.uuId
         )
         googleCalendarUtils.deleteEvents(reminder.uuId)
@@ -551,7 +574,7 @@ class ConversationViewModel(
       }
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminder.uuId
       )
       postInProgress(false)
@@ -573,7 +596,7 @@ class ConversationViewModel(
       note.updatedAt = dateTimeManager.getNowGmtDateTime()
       noteRepository.save(note)
     }
-    updatesHelper.updateNotesWidget()
+    appWidgetUpdater.updateNotesWidget()
     if (showToast) {
       Toast.makeText(contextProvider.context, R.string.saved, Toast.LENGTH_SHORT).show()
     }
@@ -599,9 +622,19 @@ class ConversationViewModel(
   }
 
   fun clearConversation() {
-    recognizer.updateLocale(language.getVoiceLanguage(prefs.voiceLocale))
+    recognizer.updateLocale(getVoiceLanguage(prefs.voiceLocale))
     repliesList.clear()
     _replies.postValue(repliesList)
+  }
+
+  private fun getVoiceLanguage(code: Int) = when (code) {
+    0 -> com.backdoor.engine.misc.Locale.EN
+    1 -> com.backdoor.engine.misc.Locale.UK
+    2 -> com.backdoor.engine.misc.Locale.ES
+    3 -> com.backdoor.engine.misc.Locale.PT
+    4 -> com.backdoor.engine.misc.Locale.PL
+    5 -> com.backdoor.engine.misc.Locale.IT
+    else -> com.backdoor.engine.misc.Locale.EN
   }
 
   private fun stopReminder(reminder: Reminder) {

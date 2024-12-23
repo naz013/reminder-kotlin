@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -20,10 +20,10 @@ import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.toast
-import com.github.naz013.feature.common.android.transparent
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
 import java.io.File
 

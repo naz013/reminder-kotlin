@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.os.data
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 
 data class UiPermissionDialogData(
   val permission: String,

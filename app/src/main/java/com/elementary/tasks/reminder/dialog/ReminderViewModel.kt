@@ -1,11 +1,11 @@
 package com.elementary.tasks.reminder.dialog
 
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.observeTable
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.domain.Reminder
@@ -20,7 +20,7 @@ class ReminderViewModel(
   private val reminderRepository: ReminderRepository,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   tableChangeListenerFactory: TableChangeListenerFactory
 ) : BaseProgressViewModel(dispatcherProvider) {
 
@@ -34,10 +34,10 @@ class ReminderViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.save(reminder)
-      updatesHelper.updateTasksWidget()
+      appWidgetUpdater.updateScheduleWidget()
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminder.uuId
       )
       postInProgress(false)

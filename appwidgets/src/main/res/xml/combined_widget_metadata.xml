@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.github.naz013.appwidgets.combinedbuttons.CombinedWidgetConfigActivity"
+    android:initialLayout="@layout/widget_combined_buttons"
+    android:minHeight="40dp"
+    android:minWidth="203dp"
+    android:previewImage="@drawable/widget_action_buttons"
+    android:resizeMode="none"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen|keyguard" />

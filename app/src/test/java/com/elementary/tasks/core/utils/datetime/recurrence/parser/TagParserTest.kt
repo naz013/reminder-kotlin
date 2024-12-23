@@ -1,16 +1,17 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser
 
-import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
-import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
-import com.elementary.tasks.core.utils.datetime.recurrence.Tag
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.github.naz013.icalendar.ByDayRecurParam
+import com.github.naz013.icalendar.ByMonthDayRecurParam
+import com.github.naz013.icalendar.ByMonthRecurParam
+import com.github.naz013.icalendar.DateTimeStartTag
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqRecurParam
+import com.github.naz013.icalendar.FreqType
+import com.github.naz013.icalendar.IntervalRecurParam
+import com.github.naz013.icalendar.RecurrenceRuleTag
+import com.github.naz013.icalendar.Tag
+import com.github.naz013.icalendar.UtcDateTime
+import com.github.naz013.icalendar.parser.TagParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -8,14 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.elementary.tasks.core.utils.Module
+import com.github.naz013.ui.common.login.LoginLauncher
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.logging.Logger
@@ -60,7 +61,7 @@ class SettingsFragment :
     prefs.addObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
     remotePrefs.addUpdateObserver(this)
     remotePrefs.addMessageObserver(this)
-    if (!Module.isPro) {
+    if (!BuildParams.isPro) {
       remotePrefs.addSaleObserver(this)
     }
     checkDoNotDisturb()
@@ -74,7 +75,7 @@ class SettingsFragment :
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
-    if (!Module.isPro) {
+    if (!BuildParams.isPro) {
       remotePrefs.removeSaleObserver(this)
     }
     remotePrefs.removeUpdateObserver(this)
@@ -149,7 +150,7 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
     }
     binding.buyProBadge.setOnClickListener { openProPage() }
-    if (!Module.isPro && !SuperUtil.isAppInstalled(
+    if (!BuildParams.isPro && !SuperUtil.isAppInstalled(
         requireContext(),
         "com.cray.software.justreminderpro"
       )

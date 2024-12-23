@@ -7,7 +7,7 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.text.applyStyles
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewMapBinding
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewMap
 import com.elementary.tasks.simplemap.SimpleMapFragment

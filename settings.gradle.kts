@@ -1,14 +1,5 @@
 import java.net.URI
 
-include(":cloud")
-
-
-include(":cloud-api")
-
-
-include(":feature-common")
-
-
 pluginManagement {
   repositories {
     google()
@@ -31,7 +22,19 @@ include(":app")
 include(":voice-engine-ktx")
 include(":logging")
 include(":logging-api")
+include(":repository")
 include(":repository-api")
+include(":cloud")
+include(":cloud-api")
 include(":domain")
 include(":analytics")
-include(":repository")
+include(":navigation-api")
+include(":appwidgets")
+include(":feature-common")
+include(":platform-common")
+include(":ui-common")
+include(":icalendar")
+include(":usecase:googletasks")
+include(":usecase:birthdays")
+include(":usecase:reminders")
+include(":usecase:notes")

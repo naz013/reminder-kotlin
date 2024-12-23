@@ -6,33 +6,33 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.android.TextProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByHourRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMinuteRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.BySetPosRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByWeekNumberRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByYearDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.CountRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
-import com.elementary.tasks.core.utils.datetime.recurrence.Day
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
-import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
-import com.elementary.tasks.core.utils.datetime.recurrence.RuleMap
-import com.elementary.tasks.core.utils.datetime.recurrence.Tag
-import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
-import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.icalendar.ByDayRecurParam
+import com.github.naz013.icalendar.ByHourRecurParam
+import com.github.naz013.icalendar.ByMinuteRecurParam
+import com.github.naz013.icalendar.ByMonthDayRecurParam
+import com.github.naz013.icalendar.ByMonthRecurParam
+import com.github.naz013.icalendar.BySetPosRecurParam
+import com.github.naz013.icalendar.ByWeekNumberRecurParam
+import com.github.naz013.icalendar.ByYearDayRecurParam
+import com.github.naz013.icalendar.CountRecurParam
+import com.github.naz013.icalendar.DateTimeStartTag
+import com.github.naz013.icalendar.Day
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqRecurParam
+import com.github.naz013.icalendar.FreqType
+import com.github.naz013.icalendar.IntervalRecurParam
+import com.github.naz013.icalendar.RecurParam
+import com.github.naz013.icalendar.RecurParamType
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurrenceRuleTag
+import com.github.naz013.icalendar.RuleMap
+import com.github.naz013.icalendar.Tag
+import com.github.naz013.icalendar.TagType
+import com.github.naz013.icalendar.UntilRecurParam
+import com.github.naz013.icalendar.UtcDateTime
+import com.github.naz013.icalendar.WeekStartRecurParam
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -56,7 +56,7 @@ import java.util.TimerTask
 class RecurBuilderViewModel(
   dispatcherProvider: DispatcherProvider,
   private val paramToTextAdapter: ParamToTextAdapter,
-  private val recurrenceManager: RecurrenceManager,
+  private val ICalendarApi: ICalendarApi,
   private val dateTimeManager: DateTimeManager,
   private val recurPresetRepository: RecurPresetRepository,
   private val prefs: Prefs,
@@ -118,7 +118,7 @@ class RecurBuilderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val preset = recurPresetRepository.getById(presetId) ?: return@launch
 
-      val params = runCatching { recurrenceManager.parseObject(preset.recurObject) }.getOrNull()
+      val params = runCatching { ICalendarApi.parseObject(preset.recurObject) }.getOrNull()
         ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
         ?.params
         ?.map { it.toBuilderParam() }
@@ -184,10 +184,10 @@ class RecurBuilderViewModel(
     Logger.d("calculateEvents: map = $ruleMap")
 
     val recurObject = runCatching {
-      recurrenceManager.createObject(ruleMap)
+      ICalendarApi.createObject(ruleMap)
     }.getOrNull() ?: return null
 
-    val dates = runCatching { recurrenceManager.generate(ruleMap) }.getOrNull() ?: emptyList()
+    val dates = runCatching { ICalendarApi.generate(ruleMap) }.getOrNull() ?: emptyList()
     val position = findPosition(dates)
 
     return dates[position].dateTime?.let {
@@ -203,7 +203,7 @@ class RecurBuilderViewModel(
       Logger.d("onEdit: recurDataObject = ${reminder.recurDataObject}")
 
       val rules = runCatching {
-        recurrenceManager.parseObject(reminder.recurDataObject)
+        ICalendarApi.parseObject(reminder.recurDataObject)
       }.getOrNull()
 
       rules?.map?.values?.forEach { tag ->
@@ -317,7 +317,7 @@ class RecurBuilderViewModel(
   private fun generateFromMap(ruleMap: RuleMap): Pair<List<PreviewItem>, Int> {
     Logger.d("calculateEvents: map = $ruleMap")
 
-    val generated = runCatching { recurrenceManager.generate(ruleMap) }.getOrNull() ?: emptyList()
+    val generated = runCatching { ICalendarApi.generate(ruleMap) }.getOrNull() ?: emptyList()
 
     return convertForUi(generated)
   }

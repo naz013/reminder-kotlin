@@ -3,14 +3,14 @@ package com.elementary.tasks.birthdays.dialog
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -28,7 +28,7 @@ class ShowBirthdayViewModel(
   private val notifier: Notifier,
   private val dateTimeManager: DateTimeManager,
   private val uiBirthdayShowAdapter: UiBirthdayShowAdapter,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayShow>()
@@ -83,9 +83,9 @@ class ShowBirthdayViewModel(
         )
       )
       notifier.showBirthdayPermanent()
-      updatesHelper.updateBirthdaysWidget()
-      updatesHelper.updateTasksWidget()
-      workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+      appWidgetUpdater.updateBirthdaysWidget()
+      appWidgetUpdater.updateScheduleWidget()
+      workerLauncher.startWork(SingleBackupWorker::class.java, IntentKeys.INTENT_ID, birthday.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

@@ -2,9 +2,11 @@ package com.elementary.tasks.core.utils.datetime
 
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.Language
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.ui.common.locale.Language
+import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.datetime.NowDateTimeProvider
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyVararg
 import com.nhaarman.mockitokotlin2.mock

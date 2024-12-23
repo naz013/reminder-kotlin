@@ -1,15 +1,15 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceRuleTag
-import com.elementary.tasks.core.utils.datetime.recurrence.RuleMap
-import com.elementary.tasks.core.utils.datetime.recurrence.Tag
-import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.elementary.tasks.core.utils.datetime.recurrence.UntilRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.icalendar.DateTimeStartTag
+import com.github.naz013.icalendar.RecurParam
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurrenceRuleTag
+import com.github.naz013.icalendar.RuleMap
+import com.github.naz013.icalendar.Tag
+import com.github.naz013.icalendar.TagType
+import com.github.naz013.icalendar.UntilRecurParam
+import com.github.naz013.icalendar.UtcDateTime
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalBuilderItem
 import com.elementary.tasks.reminder.build.ICalStartDateBuilderItem
@@ -24,7 +24,7 @@ import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
 
 class ICalDateTimeCalculator(
-  private val recurrenceManager: RecurrenceManager,
+  private val ICalendarApi: ICalendarApi,
   private val dateTimeManager: DateTimeManager
 ) {
 
@@ -56,12 +56,12 @@ class ICalDateTimeCalculator(
     Logger.d("invoke: ruleMap = $ruleMap")
 
     val recurObject = runCatching {
-      recurrenceManager.createObject(ruleMap)
+      ICalendarApi.createObject(ruleMap)
     }.getOrNull() ?: return null
 
     Logger.d("invoke: recurObject = $recurObject")
 
-    val dates = runCatching { recurrenceManager.generate(ruleMap) }.getOrNull() ?: emptyList()
+    val dates = runCatching { ICalendarApi.generate(ruleMap) }.getOrNull() ?: emptyList()
 
     Logger.d("invoke: dates = $dates")
 

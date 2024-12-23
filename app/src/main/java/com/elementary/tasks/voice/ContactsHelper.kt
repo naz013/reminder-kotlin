@@ -1,7 +1,7 @@
 package com.elementary.tasks.voice
 
 import com.backdoor.engine.misc.ContactsInterface
-import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.github.naz013.common.contacts.ContactsReader
 
 class ContactsHelper(
   private val contactsReader: ContactsReader

@@ -5,21 +5,21 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.github.naz013.feature.common.android.ContextProvider
-import com.elementary.tasks.core.os.PendingIntentWrapper
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.TextProvider
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.Birthday
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import com.github.naz013.ui.common.theme.ThemeProvider
 
 class BirthdayHandlerQ(
   private val birthdayDataProvider: BirthdayDataProvider,
@@ -27,8 +27,8 @@ class BirthdayHandlerQ(
   private val textProvider: TextProvider,
   private val notifier: Notifier,
   private val prefs: Prefs,
-  private val dateTimeManager: DateTimeManager,
-  private val wearNotification: WearNotification
+  private val wearNotification: WearNotification,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) : ActionHandler<Birthday> {
 
   override suspend fun handle(data: Birthday) {
@@ -44,12 +44,12 @@ class BirthdayHandlerQ(
     builder.priority = birthdayDataProvider.priority(prefs.birthdayPriority)
     builder.setContentTitle(birthday.name)
     if (!birthday.ignoreYear) {
-      builder.setContentText(dateTimeManager.getAgeFormatted(birthday.date))
+      builder.setContentText(modelDateTimeFormatter.getAgeFormatted(birthday.date))
     }
     builder.setSmallIcon(R.drawable.ic_fluent_food_cake)
     builder.setAutoCancel(false)
     builder.setOngoing(true)
-    if (Module.isPro && birthdayDataProvider.isBirthdayLed()) {
+    if (BuildParams.isPro && birthdayDataProvider.isBirthdayLed()) {
       builder.setLights(birthdayDataProvider.getLedColor(), 500, 1000)
     }
     builder.color = ThemeProvider.getPrimaryColor(contextProvider.themedContext)
@@ -132,7 +132,7 @@ class BirthdayHandlerQ(
   private fun getActionReceiverIntent(action: String, id: String): Intent {
     return Intent(contextProvider.context, BirthdayActionReceiver::class.java).apply {
       this.action = action
-      putExtra(Constants.INTENT_ID, id)
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 }

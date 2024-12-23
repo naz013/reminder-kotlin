@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotesBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
 import java.util.Locale
 
 class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>() {

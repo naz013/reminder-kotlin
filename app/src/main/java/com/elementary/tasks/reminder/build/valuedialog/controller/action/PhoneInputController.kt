@@ -7,7 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.databinding.BuilderItemPhoneNumberBinding
 import com.elementary.tasks.reminder.build.BuilderItem

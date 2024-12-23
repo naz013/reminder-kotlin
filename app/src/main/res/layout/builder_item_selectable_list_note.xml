@@ -9,7 +9,7 @@
         android:id="@+id/items_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/list_item_note_selectable"
+        tools:listitem="@layout/list_item_widget_note_selectable"
         android:layout_marginTop="1dp" />
 
 </LinearLayout>

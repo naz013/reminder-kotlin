@@ -4,7 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.calendarext.getDayOfMonth
 import com.github.naz013.calendarext.getMonth

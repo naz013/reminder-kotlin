@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
 
+import com.github.naz013.icalendar.parser.common.LinesParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

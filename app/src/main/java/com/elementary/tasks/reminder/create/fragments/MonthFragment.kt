@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.minusMillis
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderMonthBinding
+import com.github.naz013.common.datetime.minusMillis
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -64,7 +64,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
     }
-    val startTime = dateTimeManager.getNewNextMonthDayTime(reminder)
+    val startTime = modelDateTimeFormatter.getNewNextMonthDayTime(reminder)
     if (reminder.remindBefore > 0 &&
       !dateTimeManager.isCurrent(startTime.minusMillis(reminder.remindBefore))
     ) {
@@ -180,7 +180,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
       reminder.repeatInterval = 1
     }
     Logger.d("calculateNextDate: $reminder")
-    val startTime = dateTimeManager.getNewNextMonthDayTime(reminder)
+    val startTime = modelDateTimeFormatter.getNewNextMonthDayTime(reminder)
     binding.calculatedNextTime.text = dateTimeManager.getFullDateTime(startTime)
   }
 

@@ -1,18 +1,23 @@
 package com.elementary.tasks.settings.location
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.DrawableHelper
+import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
+import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.Module
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.Dialogues.Companion.setFullWidthDialog
+import com.github.naz013.ui.common.Dialogues.OnValueSelectedListener
+import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
+import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.gms.maps.GoogleMap
 import org.koin.android.ext.android.inject
 import java.util.Locale
@@ -203,7 +208,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     val radius = prefs.radius
     withActivity {
       val radiusFormatter = DefaultRadiusFormatter(it, prefs.useMetric)
-      dialogues.showRadiusDialog(
+      showRadiusDialog(
         it,
         radius,
         object : Dialogues.OnValueSelectedListener<Int> {
@@ -218,5 +223,33 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
         }
       )
     }
+  }
+
+  private fun showRadiusDialog(
+    activity: Activity,
+    current: Int,
+    listener: OnValueSelectedListener<Int>
+  ) {
+    val builder = dialogues.getMaterialDialog(activity)
+    builder.setTitle(com.github.naz013.ui.common.R.string.radius)
+    val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
+
+    val behaviour = RadiusSliderBehaviour(b.seekBar, current) {
+      b.titleView.text = listener.getTitle(it)
+    }
+    b.titleView.text = listener.getTitle(current)
+
+    builder.setView(b.root)
+    builder.setPositiveButton(com.github.naz013.ui.common.R.string.ok) { _, _ ->
+      listener.onSelected(
+        behaviour.getRadius()
+      )
+    }
+    builder.setNegativeButton(
+      R.string.cancel
+    ) { dialog, _ -> dialog.dismiss() }
+    val dialog = builder.create()
+    dialog.show()
+    setFullWidthDialog(dialog, activity)
   }
 }

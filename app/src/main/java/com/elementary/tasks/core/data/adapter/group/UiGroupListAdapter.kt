@@ -5,9 +5,9 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupList
-import com.github.naz013.feature.common.android.ContextProvider
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.android.isColorDark
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.isColorDark
 
 class UiGroupListAdapter(
   private val contextProvider: ContextProvider

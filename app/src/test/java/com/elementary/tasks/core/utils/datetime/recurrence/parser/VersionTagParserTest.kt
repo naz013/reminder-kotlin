@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser
 
-import com.elementary.tasks.core.utils.datetime.recurrence.VersionTag
+import com.github.naz013.icalendar.VersionTag
+import com.github.naz013.icalendar.parser.VersionTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

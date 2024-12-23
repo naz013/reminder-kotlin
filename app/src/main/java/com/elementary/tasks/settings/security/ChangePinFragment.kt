@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.feature.common.android.toast
+import com.github.naz013.ui.common.fragment.toast
 import com.elementary.tasks.databinding.FragmentSettingsChangePinBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 

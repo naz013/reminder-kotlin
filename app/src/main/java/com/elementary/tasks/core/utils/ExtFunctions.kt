@@ -25,9 +25,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
-  lazy(LazyThreadSafetyMode.NONE, initializer)
-
 suspend fun <T> withUIContext(
   block: suspend CoroutineScope.() -> T
 ): T = withContext(Dispatchers.Main, block)

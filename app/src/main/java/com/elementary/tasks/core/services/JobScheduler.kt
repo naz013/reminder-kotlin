@@ -12,17 +12,17 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
-import com.elementary.tasks.core.os.PendingIntentWrapper
+import com.github.naz013.common.intent.PendingIntentWrapper
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.minusMillis
+import com.github.naz013.common.datetime.minusMillis
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import java.util.Calendar
@@ -170,7 +170,7 @@ class JobScheduler(
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_REPEAT,
       bundle = Bundle().apply {
-        putString(Constants.INTENT_ID, reminder.uuId)
+        putString(IntentKeys.INTENT_ID, reminder.uuId)
       },
       millis = millis,
       requestCode = reminder.uniqueId
@@ -191,7 +191,7 @@ class JobScheduler(
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER,
       bundle = Bundle().apply {
-        putString(Constants.INTENT_ID, uuId)
+        putString(IntentKeys.INTENT_ID, uuId)
       },
       millis = System.currentTimeMillis() + millis,
       requestCode = requestCode
@@ -208,7 +208,7 @@ class JobScheduler(
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_GPS,
       bundle = Bundle().apply {
-        putString(Constants.INTENT_ID, reminder.uuId)
+        putString(IntentKeys.INTENT_ID, reminder.uuId)
       },
       millis = millis,
       requestCode = reminder.uniqueId
@@ -243,7 +243,7 @@ class JobScheduler(
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER,
       bundle = Bundle().apply {
-        putString(Constants.INTENT_ID, reminder.uuId)
+        putString(IntentKeys.INTENT_ID, reminder.uuId)
       },
       millis = millis,
       requestCode = reminder.uniqueId
@@ -303,7 +303,7 @@ class JobScheduler(
   fun scheduleSaveNewTask(googleTask: GoogleTask, uuId: String) {
     val work = OneTimeWorkRequest.Builder(SaveNewTaskWorker::class.java)
       .setInputData(
-        Data.Builder().putString(Constants.INTENT_JSON, Gson().toJson(googleTask)).build()
+        Data.Builder().putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask)).build()
       )
       .addTag(uuId)
       .build()
@@ -315,8 +315,8 @@ class JobScheduler(
     val work = OneTimeWorkRequest.Builder(UpdateTaskWorker::class.java)
       .setInputData(
         Data.Builder()
-          .putString(Constants.INTENT_JSON, Gson().toJson(googleTask))
-          .putString(Constants.INTENT_STATUS, GoogleTask.TASKS_COMPLETE)
+          .putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask))
+          .putString(IntentKeys.INTENT_STATUS, GoogleTask.TASKS_COMPLETE)
           .build()
       )
       .addTag(uuId)

@@ -7,8 +7,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.apps.SelectApplicationActivity
-import com.github.naz013.feature.common.android.intentForClass
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.ActivityLauncherCreator
+import com.github.naz013.common.intent.FragmentLauncherCreator
+import com.github.naz013.ui.common.context.intentForClass
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.intent.IntentPicker
+import com.github.naz013.common.intent.LauncherCreator
 
 class ApplicationPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
@@ -39,7 +43,7 @@ class ApplicationPicker private constructor(
 
   override fun dispatchResult(result: ActivityResult) {
     if (result.resultCode == Activity.RESULT_OK) {
-      val appPackage = result.data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
+      val appPackage = result.data?.getStringExtra(IntentKeys.SELECTED_APPLICATION) ?: ""
       resultCallback.invoke(appPackage)
     }
   }

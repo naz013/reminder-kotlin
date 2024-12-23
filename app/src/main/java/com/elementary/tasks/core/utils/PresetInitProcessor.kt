@@ -1,13 +1,13 @@
 package com.elementary.tasks.core.utils
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.github.naz013.repository.RecurPresetRepository
 import org.threeten.bp.LocalDateTime
 

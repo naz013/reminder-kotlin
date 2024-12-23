@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigActivity"
+    android:initialLayout="@layout/widget_single_note_text_only"
+    android:minHeight="110dp"
+    android:minWidth="110dp"
+    android:previewImage="@drawable/widget_note_preview"
+    android:resizeMode="horizontal|vertical"
+    android:description="@string/widget_single_note_description"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen|keyguard" />

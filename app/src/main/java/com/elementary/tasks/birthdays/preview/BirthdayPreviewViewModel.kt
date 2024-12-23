@@ -3,12 +3,12 @@ package com.elementary.tasks.birthdays.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -28,7 +28,7 @@ class BirthdayPreviewViewModel(
   private val notifier: Notifier,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayPreview>()
@@ -55,9 +55,9 @@ class BirthdayPreviewViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       birthdayRepository.delete(id)
       notifier.showBirthdayPermanent()
-      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
-      updatesHelper.updateBirthdaysWidget()
-      updatesHelper.updateTasksWidget()
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, id)
+      appWidgetUpdater.updateBirthdaysWidget()
+      appWidgetUpdater.updateScheduleWidget()
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

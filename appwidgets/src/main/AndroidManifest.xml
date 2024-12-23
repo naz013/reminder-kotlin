@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name="com.github.naz013.appwidgets.AppWidgetActionActivity"
+            android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateUnchanged" />
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.singlenote.SingleNoteWidget"
+            android:exported="true"
+            android:label="@string/note">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/single_note_widget_metadata" />
+        </receiver>
+
+        <activity
+            android:name="com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.github.naz013.appwidgets.notes.NotesWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.notes.NotesWidget"
+            android:exported="true"
+            android:label="@string/notes">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/note_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name="com.github.naz013.appwidgets.notes.NotesService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name="com.github.naz013.appwidgets.calendar.CalendarWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.calendar.CalendarWidget"
+            android:exported="true"
+            android:label="@string/calendar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calendar_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name="com.github.naz013.appwidgets.calendar.CalendarWeekdayService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name="com.github.naz013.appwidgets.calendar.CalendarMonthService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.calendar.CalendarPreviousReceiver"
+            android:exported="false"
+            android:permission="com.nsystudio.permission.UPDATE_CALENDAR">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.calendar.CalendarNextReceiver"
+            android:exported="false"
+            android:permission="com.nsystudio.permission.UPDATE_CALENDAR">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.github.naz013.appwidgets.events.EventsWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.events.EventsWidget"
+            android:exported="true"
+            android:label="@string/active_reminders">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="justreminder.LOCATION_CHANGED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/reminders_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name="com.github.naz013.appwidgets.events.EventsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name="com.github.naz013.appwidgets.birthdays.BirthdaysWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.birthdays.BirthdaysWidget"
+            android:exported="true"
+            android:label="@string/birthdays">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/birthdays_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name="com.github.naz013.appwidgets.birthdays.BirthdaysService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsWidget"
+            android:exported="true"
+            android:label="@string/quick_buttons">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/combined_widget_metadata" />
+        </receiver>
+
+        <activity
+            android:name="com.github.naz013.appwidgets.combinedbuttons.CombinedWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".googletasks.TasksWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.github.naz013.appwidgets.googletasks.TasksWidget"
+            android:exported="true"
+            android:label="@string/google_tasks">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tasks_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name="com.github.naz013.appwidgets.googletasks.TasksService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+    </application>
+</manifest>

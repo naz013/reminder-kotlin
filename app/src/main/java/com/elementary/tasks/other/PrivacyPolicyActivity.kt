@@ -9,14 +9,17 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import org.koin.android.ext.android.inject
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
 
-  private val url = prefs.privacyUrl
+  private val prefs by inject<Prefs>()
+  private val url by lazy { prefs.privacyUrl }
 
   override fun inflateBinding() = ActivityPrivacyPolicyBinding.inflate(layoutInflater)
 

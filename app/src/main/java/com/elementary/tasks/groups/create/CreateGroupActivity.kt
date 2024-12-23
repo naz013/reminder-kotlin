@@ -3,23 +3,29 @@ package com.elementary.tasks.groups.create
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
+  private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<CreateGroupViewModel> { parametersOf(getId()) }
+
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
 
@@ -48,7 +54,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   override fun requireLogin() = true
 
-  private fun getId(): String = intentString(Constants.INTENT_ID)
+  private fun getId(): String = intentString(IntentKeys.INTENT_ID)
 
   private fun initActionBar() {
     binding.appBar.applyTopInsets()
@@ -93,12 +99,12 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   private fun loadGroup() {
     if (intent.data != null) {
-      permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
-    } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+      permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
+    } else if (intent.hasExtra(IntentKeys.INTENT_ITEM)) {
       runCatching {
         viewModel.loadFromIntent(
           intentSerializable(
-            Constants.INTENT_ITEM,
+            IntentKeys.INTENT_ITEM,
             ReminderGroup::class.java
           )
         )

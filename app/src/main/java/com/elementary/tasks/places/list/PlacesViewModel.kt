@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
-import com.elementary.tasks.core.data.livedata.SearchableLiveData
+import com.github.naz013.feature.common.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
@@ -48,7 +48,7 @@ class PlacesViewModel(
         return@launch
       }
       placeRepository.delete(place.id)
-      workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
+      workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, place.id)
       placesData.refresh()
       postInProgress(false)
       postCommand(Commands.DELETED)

@@ -1,7 +1,8 @@
 package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.github.naz013.domain.reminder.BiType
@@ -12,8 +13,8 @@ class BiFilter(
 ) {
 
   operator fun invoke(item: BuilderItem<*>): Boolean {
-    return item.isEnabled && (!item.isForPro || (item.isForPro && Module.isPro)) &&
-      Module.currentSdk in item.minSdk..item.maxSdk && locationFilter(item) &&
+    return item.isEnabled && (!item.isForPro || (item.isForPro && BuildParams.isPro)) &&
+      Module.CURRENT_SDK in item.minSdk..item.maxSdk && locationFilter(item) &&
       creatorConfigFilter(item)
   }
 }

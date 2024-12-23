@@ -18,7 +18,7 @@ val homeModule = module {
   }
 
   factory { UiReminderScheduleListAdapter(get(), get(), get(), get(), get(), get()) }
-  factory { UiBirthdayScheduleListAdapter(get(), get(), get(), get(), get()) }
+  factory { UiBirthdayScheduleListAdapter(get(), get(), get(), get(), get(), get()) }
 
   viewModel {
     ScheduleHomeViewModel(get(), get(), get())

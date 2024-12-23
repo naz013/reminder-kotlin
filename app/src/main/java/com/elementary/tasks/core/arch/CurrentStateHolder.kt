@@ -1,10 +1,10 @@
 package com.elementary.tasks.core.arch
 
 import android.content.Context
-import com.elementary.tasks.core.utils.Language
+import com.github.naz013.ui.common.locale.Language
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.ThemeProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
 
 class CurrentStateHolder(
   prefs: Prefs,

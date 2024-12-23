@@ -2,14 +2,15 @@ package com.elementary.tasks.home.scheduleview.data
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiTextElement
-import com.elementary.tasks.core.os.ColorProvider
-import com.elementary.tasks.core.os.UnitsConverter
-import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.github.naz013.ui.common.theme.ColorProvider
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.ui.common.UnitsConverter
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -19,7 +20,8 @@ class UiBirthdayScheduleListAdapter(
   private val colorProvider: ColorProvider,
   private val textProvider: TextProvider,
   private val contactsReader: ContactsReader,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun create(
@@ -28,13 +30,13 @@ class UiBirthdayScheduleListAdapter(
   ): UiBirthdayScheduleList {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val birthdayDate = dateTimeManager.parseBirthdayDate(data.date) ?: LocalDate.now()
-    val futureBirthdayDateTime = dateTimeManager.getFutureBirthdayDate(
+    val futureBirthdayDateTime = modelDateTimeFormatter.getFutureBirthdayDate(
       birthdayTime = birthTime,
       birthdayDate = birthdayDate,
       nowDateTime = nowDateTime,
       birthday = data
     )
-    val remainingTime = dateTimeManager.getBirthdayRemaining(
+    val remainingTime = modelDateTimeFormatter.getBirthdayRemaining(
       futureBirthdayDateTime = futureBirthdayDateTime,
       ignoreYear = data.ignoreYear,
       nowDateTime = nowDateTime

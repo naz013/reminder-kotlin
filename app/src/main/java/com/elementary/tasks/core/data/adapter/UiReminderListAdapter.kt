@@ -10,7 +10,7 @@ import com.elementary.tasks.core.data.ui.UiReminderListRemoved
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedGps
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 
 class UiReminderListAdapter(

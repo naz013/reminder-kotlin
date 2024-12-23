@@ -5,14 +5,16 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ViewAttachmentBinding
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -56,7 +58,7 @@ class AttachmentView : LinearLayout, KoinComponent {
     Logger.d("setUri: ${uri.path}")
     content = uri.toString()
     if (Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) {
-      UriUtil.obtainPath(cacheUtil, uri) { success, path ->
+      obtainPath(cacheUtil, uri) { success, path ->
         Logger.d("setUri: $success, $path")
         content = if (success && path != null) {
           path
@@ -88,6 +90,22 @@ class AttachmentView : LinearLayout, KoinComponent {
   private fun addClick() {
     if (content == "") {
       onFileSelectListener?.invoke()
+    }
+  }
+
+  @RequiresPermission(Permissions.READ_EXTERNAL)
+  private fun obtainPath(cacheUtil: CacheUtil, uri: Uri, onReady: (Boolean, String?) -> Unit) {
+    launchDefault {
+      try {
+        val path = cacheUtil.cacheFile(uri)
+        if (path == null) {
+          withUIContext { onReady.invoke(false, null) }
+        } else {
+          withUIContext { onReady.invoke(true, path) }
+        }
+      } catch (e: Throwable) {
+        withUIContext { onReady.invoke(false, null) }
+      }
     }
   }
 }

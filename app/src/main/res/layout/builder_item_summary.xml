@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <com.elementary.tasks.core.views.gradient.UiGradientEditText
+            <com.github.naz013.ui.common.view.gradient.UiGradientEditText
                 android:id="@+id/input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

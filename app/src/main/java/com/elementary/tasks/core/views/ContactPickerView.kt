@@ -10,12 +10,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.github.naz013.common.contacts.ContactsReader
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.github.naz013.feature.common.android.gone
+import com.github.naz013.ui.common.view.gone
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.ViewContactPickerBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

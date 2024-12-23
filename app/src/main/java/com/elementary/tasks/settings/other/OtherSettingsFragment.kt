@@ -7,10 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
@@ -198,7 +199,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
       val builder = dialogues.getMaterialDialog(it)
       val b = DialogAboutBinding.inflate(LayoutInflater.from(it))
       val name: String =
-        if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
+        if (BuildParams.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
       b.appName.text = name.uppercase()
       b.translatorsList.text = translators
       b.appVersion.text = packageManagerWrapper.getVersionName()

@@ -9,28 +9,30 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.github.naz013.feature.common.android.buildIntent
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.github.naz013.common.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
-import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.context.buildIntent
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -42,6 +44,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
+  private val dialogues by inject<Dialogues>()
+  private val prefs by inject<Prefs>()
 
   private val adapter = ReminderPreviewDataAdapter(
     fragmentManager = supportFragmentManager,
@@ -68,7 +72,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     initViewModel()
   }
 
-  private fun getId() = intentString(Constants.INTENT_ID)
+  private fun getId() = intentString(IntentKeys.INTENT_ID)
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
@@ -99,15 +103,15 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun onGoogleTaskClicked(id: String) {
-    PinLoginActivity.openLogged(this, GoogleTaskActivity::class.java) {
-      putExtra(Constants.INTENT_ID, id)
-      putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    LoginApi.openLogged(this, GoogleTaskActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, id)
+      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
     }
   }
 
   private fun openNote(id: String) {
     startActivity(NotePreviewActivity::class.java) {
-      putExtra(Constants.INTENT_ID, id)
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 
@@ -120,8 +124,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     )
     startActivity(ImagePreviewActivity::class.java) {
       addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-      putExtra(Constants.INTENT_ID, note.id)
-      putExtra(Constants.INTENT_POSITION, imagePosition)
+      putExtra(IntentKeys.INTENT_ID, note.id)
+      putExtra(IntentKeys.INTENT_POSITION, imagePosition)
     }
   }
 
@@ -131,7 +135,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun editReminder() {
     reminderBuilderLauncher.openLogged(this) {
-      putExtra(Constants.INTENT_ID, getId())
+      putExtra(IntentKeys.INTENT_ID, getId())
     }
   }
 
@@ -192,7 +196,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     val options = ActivityOptions.makeSceneTransitionAnimation(this, view, "map")
     startActivity(
       buildIntent(FullscreenMapActivity::class.java) {
-        putExtra(Constants.INTENT_ID, getId())
+        putExtra(IntentKeys.INTENT_ID, getId())
       },
       options.toBundle()
     )

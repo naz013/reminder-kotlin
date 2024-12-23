@@ -18,10 +18,10 @@ import androidx.annotation.IntRange
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.EventsCursor
-import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.android.colorOf
-import com.github.naz013.feature.common.android.dp2px
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.colorOf
+import com.github.naz013.ui.common.view.dp2px
 import org.threeten.bp.LocalDate
 import java.lang.ref.WeakReference
 

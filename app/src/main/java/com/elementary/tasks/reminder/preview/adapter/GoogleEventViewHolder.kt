@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.inflater
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.ListItemGoogleCalendarEventBinding
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 

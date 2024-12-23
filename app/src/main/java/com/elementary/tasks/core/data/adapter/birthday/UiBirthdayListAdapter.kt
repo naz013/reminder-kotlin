@@ -1,18 +1,20 @@
 package com.elementary.tasks.core.data.adapter.birthday
 
 import com.elementary.tasks.R
-import com.github.naz013.domain.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.github.naz013.feature.common.android.isColorDark
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Birthday
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.theme.ThemeProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class UiBirthdayListAdapter(
   private val dateTimeManager: DateTimeManager,
-  private val themeProvider: ThemeProvider
+  private val themeProvider: ThemeProvider,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun convert(
@@ -25,16 +27,19 @@ class UiBirthdayListAdapter(
       dateOfBirth = birthdayDate,
       ignoreYear = birthday.ignoreYear
     )
-    val futureBirthdayDateTime = dateTimeManager.getFutureBirthdayDate(
+    val futureBirthdayDateTime = modelDateTimeFormatter.getFutureBirthdayDate(
       birthdayTime = birthTime,
       birthdayDate = birthdayDate,
       nowDateTime = nowDateTime,
       birthday = birthday
     )
-    val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date, nowDateTime.toLocalDate())
+    val ageFormatted = modelDateTimeFormatter.getAgeFormatted(
+      date = birthday.date,
+      nowDate = nowDateTime.toLocalDate()
+    )
       .takeIf { !birthday.ignoreYear } ?: ""
     val nextBirthdayDateTime = dateTimeManager.getFullDateTime(futureBirthdayDateTime)
-    val remainingTime = dateTimeManager.getBirthdayRemaining(
+    val remainingTime = modelDateTimeFormatter.getBirthdayRemaining(
       futureBirthdayDateTime = futureBirthdayDateTime,
       ignoreYear = birthday.ignoreYear,
       nowDateTime = nowDateTime

@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.feature.common.livedata.SearchableLiveData
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -43,7 +43,7 @@ class ActiveTodoRemindersViewModel(
         eventControlFactory.getController(fromDb).skip()
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           fromDb.uuId
         )
         reminderData.refresh()
@@ -63,7 +63,7 @@ class ActiveTodoRemindersViewModel(
       } else {
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           item.uuId
         )
         postInProgress(false)
@@ -81,7 +81,7 @@ class ActiveTodoRemindersViewModel(
         reminderRepository.save(it)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           it.uuId
         )
         reminderData.refresh()

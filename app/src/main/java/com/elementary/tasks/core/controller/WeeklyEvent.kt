@@ -1,17 +1,18 @@
 package com.elementary.tasks.core.controller
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.datetime.plusMillis
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
-import com.github.naz013.feature.common.plusMillis
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
 class WeeklyEvent(
@@ -21,10 +22,11 @@ class WeeklyEvent(
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper,
+  appWidgetUpdater: AppWidgetUpdater,
   textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
-  googleTaskRepository: GoogleTaskRepository
+  googleTaskRepository: GoogleTaskRepository,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) : RepeatableEventManager(
   reminder,
   reminderRepository,
@@ -32,7 +34,7 @@ class WeeklyEvent(
   googleCalendarUtils,
   notifier,
   jobScheduler,
-  updatesHelper,
+  appWidgetUpdater,
   textProvider,
   dateTimeManager,
   googleTaskRepository
@@ -64,7 +66,7 @@ class WeeklyEvent(
 
   override fun skip(): Boolean {
     if (canSkip()) {
-      val time = dateTimeManager.getNextWeekdayTime(
+      val time = modelDateTimeFormatter.getNextWeekdayTime(
         reminder,
         dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000)
           ?: LocalDateTime.now()
@@ -93,7 +95,7 @@ class WeeklyEvent(
       disable()
     } else {
       if (!dateTimeManager.isCurrent(reminder.eventTime)) {
-        val time = dateTimeManager.getNextWeekdayTime(
+        val time = modelDateTimeFormatter.getNextWeekdayTime(
           reminder,
           dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000)
             ?: LocalDateTime.now()
@@ -121,6 +123,6 @@ class WeeklyEvent(
   }
 
   override fun calculateTime(isNew: Boolean): LocalDateTime {
-    return dateTimeManager.getNextWeekdayTime(reminder)
+    return modelDateTimeFormatter.getNextWeekdayTime(reminder)
   }
 }

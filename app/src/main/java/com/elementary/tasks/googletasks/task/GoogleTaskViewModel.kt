@@ -5,19 +5,17 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.observeTable
-import com.elementary.tasks.core.deeplink.DeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Reminder
@@ -31,6 +29,8 @@ import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
+import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -104,7 +104,7 @@ class GoogleTaskViewModel(
   fun save(summary: String, note: String) {
     val reminder = createReminder(summary).takeIf { isTimeSelected() }
     val item = editedTask
-    if (action == TasksConstants.EDIT && item != null) {
+    if (action == TasksIntentKeys.EDIT && item != null) {
       val initListId = item.listId
       val newItem = update(item, summary, note, reminder)
       if (listId.isNotEmpty()) {
@@ -233,7 +233,7 @@ class GoogleTaskViewModel(
           eventControlFactory.getController(reminder).enable()
           workerLauncher.startWork(
             ReminderSingleBackupWorker::class.java,
-            Constants.INTENT_ID,
+            IntentKeys.INTENT_ID,
             reminder.uuId
           )
         }

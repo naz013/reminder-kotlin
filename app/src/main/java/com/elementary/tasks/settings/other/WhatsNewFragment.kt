@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.databinding.FragmentSettingsWhatsNewBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.apache.commons.lang3.StringUtils

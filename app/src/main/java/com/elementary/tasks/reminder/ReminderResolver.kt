@@ -3,10 +3,10 @@ package com.elementary.tasks.reminder
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListData
-import com.github.naz013.feature.common.android.startActivity
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 
 class ReminderResolver(
@@ -90,7 +90,7 @@ class ReminderResolver(
   private fun editReminder(view: View, reminder: UiReminderListData) {
     view.context.run {
       reminderBuilderLauncher.openLogged(this) {
-        putExtra(Constants.INTENT_ID, reminder.id)
+        putExtra(IntentKeys.INTENT_ID, reminder.id)
       }
     }
   }
@@ -98,7 +98,7 @@ class ReminderResolver(
   private fun previewReminder(view: View, reminder: UiReminderListData) {
     view.context.run {
       startActivity(ReminderPreviewActivity::class.java) {
-        putExtra(Constants.INTENT_ID, reminder.id)
+        putExtra(IntentKeys.INTENT_ID, reminder.id)
       }
     }
   }

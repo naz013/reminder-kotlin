@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.calendar.data.MonthLiveData
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.databinding.FragmentMonthViewBinding
 import com.github.naz013.logging.Logger

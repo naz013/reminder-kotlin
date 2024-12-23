@@ -7,20 +7,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.apps.filter.SearchModifier
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.ui.common.activity.BindingActivity
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.android.dp2px
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.ui.common.context.dp2px
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.ListActions
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.gone
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.gone
 import com.elementary.tasks.core.utils.ui.listenScrollableView
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceItemDecoration
 import com.elementary.tasks.databinding.ActivityApplicationListBinding
 import org.koin.android.ext.android.inject
@@ -94,7 +94,7 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
       ) {
         if (t != null) {
           val intent = Intent()
-          intent.putExtra(Constants.SELECTED_APPLICATION, t.packageName)
+          intent.putExtra(IntentKeys.SELECTED_APPLICATION, t.packageName)
           setResult(RESULT_OK, intent)
           finish()
         }

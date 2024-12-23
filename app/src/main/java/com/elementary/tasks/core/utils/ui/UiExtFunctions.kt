@@ -19,8 +19,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.github.naz013.feature.common.android.colorOf
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.context.colorOf
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.TextInputLayout

@@ -6,27 +6,30 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyBottomInsetsMargin
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityGoogleTaskPreviewBinding
-import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
-import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.usecase.googletasks.TasksIntentKeys
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBinding>() {
 
+  private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<GoogleTaskPreviewViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
 
@@ -45,7 +48,7 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   }
 
   private fun loadAds() {
-    if (!Module.isPro && AdsProvider.hasAds()) {
+    if (!BuildParams.isPro && AdsProvider.hasAds()) {
       adsProvider.showBanner(
         binding.adsHolder,
         AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID
@@ -76,9 +79,9 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
   }
 
   private fun editGoogleTask() {
-    PinLoginActivity.openLogged(this, GoogleTaskActivity::class.java) {
-      putExtra(Constants.INTENT_ID, idFromIntent())
-      putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
+    LoginApi.openLogged(this, GoogleTaskActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, idFromIntent())
+      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
     }
   }
 
@@ -87,7 +90,7 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     func(value != null)
   }
 
-  private fun idFromIntent() = intentString(Constants.INTENT_ID)
+  private fun idFromIntent() = intentString(IntentKeys.INTENT_ID)
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)

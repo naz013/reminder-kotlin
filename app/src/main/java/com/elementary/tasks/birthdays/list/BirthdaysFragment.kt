@@ -9,20 +9,20 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
-import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -60,7 +60,7 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
   }
 
   private fun addNew() {
-    withContext { PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java) }
+    withContext { LoginApi.openLogged(it, AddBirthdayActivity::class.java) }
   }
 
   private fun initViewModel() {

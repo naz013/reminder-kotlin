@@ -9,10 +9,10 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -115,7 +115,7 @@ class NotePreviewViewModel(
       note.archived = !note.archived
       noteRepository.save(note)
 
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
 
       loadInternal()
 
@@ -142,7 +142,7 @@ class NotePreviewViewModel(
       noteRepository.delete(note.key)
       noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -184,7 +184,7 @@ class NotePreviewViewModel(
       reminderRepository.save(reminder)
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminder.uuId
       )
 

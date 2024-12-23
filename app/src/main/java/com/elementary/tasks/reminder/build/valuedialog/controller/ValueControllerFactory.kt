@@ -1,18 +1,18 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller
 
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriHelper
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem

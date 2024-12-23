@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.utils.params
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.ui.common.locale.Language
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
 import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
 import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
@@ -53,7 +53,7 @@ class RemotePrefs(
       readFeatureFlags()
       readUpdateMessage()
       readInternalMessage()
-      if (!Module.isPro) {
+      if (!BuildParams.isPro) {
         readSaleMessage()
       }
     }?.addOnFailureListener {

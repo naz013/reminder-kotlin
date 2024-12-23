@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.ui.common.activity.BindingActivity
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
-import com.elementary.tasks.core.utils.Constants
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import org.koin.android.ext.android.inject
 import java.util.Locale
@@ -46,7 +46,7 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>() {
   }
 
   private fun setPhotoPosition() {
-    val position = intent.getIntExtra(Constants.INTENT_POSITION, -1)
+    val position = intent.getIntExtra(IntentKeys.INTENT_POSITION, -1)
     if (position != -1) {
       binding.photoPager.currentItem = position
     }

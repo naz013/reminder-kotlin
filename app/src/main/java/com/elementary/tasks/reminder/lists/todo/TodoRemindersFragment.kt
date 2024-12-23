@@ -6,17 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.android.dp2px
-import com.github.naz013.feature.common.android.toast
-import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
@@ -24,7 +15,16 @@ import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.fragment.dp2px
+import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

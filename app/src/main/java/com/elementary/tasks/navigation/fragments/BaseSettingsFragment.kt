@@ -2,7 +2,7 @@ package com.elementary.tasks.navigation.fragments
 
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Language
+import com.github.naz013.ui.common.locale.Language
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import org.koin.android.ext.android.inject
 

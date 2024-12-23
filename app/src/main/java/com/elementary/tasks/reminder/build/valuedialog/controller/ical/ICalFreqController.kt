@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.ical
 
 import com.elementary.tasks.R
-import com.github.naz013.feature.common.android.startActivity
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.icalendar.FreqType
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractTypeController
 import com.elementary.tasks.reminder.create.fragments.recur.RecurHelpActivity

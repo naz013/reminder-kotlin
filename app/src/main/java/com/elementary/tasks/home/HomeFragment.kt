@@ -11,9 +11,7 @@ import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
@@ -22,7 +20,6 @@ import com.elementary.tasks.globalsearch.ActivityNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
 import com.elementary.tasks.globalsearch.NavigationAction
 import com.elementary.tasks.globalsearch.adapter.SearchAdapter
-import com.elementary.tasks.googletasks.TasksConstants
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.scheduleview.HeaderTimeType
@@ -32,19 +29,22 @@ import com.elementary.tasks.home.scheduleview.ScheduleModel
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.Module
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.fragment.startActivity
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -65,26 +65,26 @@ class HomeFragment :
   private val viewModel by viewModel<ScheduleHomeViewModel>()
   private val scheduleAdapter = ScheduleAdapter(
     onReminderClickListener = { _, id ->
-      PinLoginActivity.openLogged(requireContext(), ReminderPreviewActivity::class.java) {
-        putExtra(Constants.INTENT_ID, id)
+      LoginApi.openLogged(requireContext(), ReminderPreviewActivity::class.java) {
+        putExtra(IntentKeys.INTENT_ID, id)
       }
     },
     onHeaderClickListener = { _, time ->
       showEventTypeSelectionDialog(time)
     },
     onNoteClickListener = { _, id ->
-      PinLoginActivity.openLogged(requireContext(), NotePreviewActivity::class.java) {
-        putExtra(Constants.INTENT_ID, id)
+      LoginApi.openLogged(requireContext(), NotePreviewActivity::class.java) {
+        putExtra(IntentKeys.INTENT_ID, id)
       }
     },
     onGoogleTaskClickListener = { _, id ->
-      PinLoginActivity.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-        putExtra(Constants.INTENT_ID, id)
+      LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
+        putExtra(IntentKeys.INTENT_ID, id)
       }
     },
     onBirthdayClickListener = { _, id ->
-      PinLoginActivity.openLogged(requireContext(), BirthdayPreviewActivity::class.java) {
-        putExtra(Constants.INTENT_ID, id)
+      LoginApi.openLogged(requireContext(), BirthdayPreviewActivity::class.java) {
+        putExtra(IntentKeys.INTENT_ID, id)
       }
     }
   )
@@ -189,8 +189,8 @@ class HomeFragment :
       time = time
     )
     withActivity {
-      PinLoginActivity.openLogged(it, GoogleTaskActivity::class.java, deepLinkData) {
-        putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
+      LoginApi.openLogged(it, GoogleTaskActivity::class.java, deepLinkData) {
+        putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
       }
     }
   }
@@ -198,7 +198,7 @@ class HomeFragment :
   private fun openBirthdayCreateScreen() {
     val deepLinkData = BirthdayDateDeepLinkData(LocalDate.now())
     withActivity {
-      PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java, deepLinkData) { }
+      LoginApi.openLogged(it, AddBirthdayActivity::class.java, deepLinkData) { }
     }
   }
 
@@ -290,7 +290,7 @@ class HomeFragment :
     when (navigationAction) {
       is ActivityNavigation -> {
         startActivity(navigationAction.clazz) {
-          putExtra(Constants.INTENT_ID, navigationAction.objectId)
+          putExtra(IntentKeys.INTENT_ID, navigationAction.objectId)
         }
       }
     }

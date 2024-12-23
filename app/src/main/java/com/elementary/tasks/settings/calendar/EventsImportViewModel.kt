@@ -1,7 +1,7 @@
 package com.elementary.tasks.settings.calendar
 
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.utils.EventImportProcessor
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
@@ -18,7 +18,7 @@ class EventsImportViewModel(
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val prefs: Prefs,
   private val eventImportProcessor: EventImportProcessor,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _calendars = mutableLiveDataOf<List<SelectableCalendar>>()
@@ -61,7 +61,7 @@ class EventsImportViewModel(
           _action.postValue(NoEventsAction)
         } else {
           _action.postValue(EventsImportedAction(result.importCount))
-          updatesHelper.updateCalendarWidget()
+          appWidgetUpdater.updateCalendarWidget()
         }
       }
     }

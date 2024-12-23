@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
 import com.github.naz013.logging.Logger

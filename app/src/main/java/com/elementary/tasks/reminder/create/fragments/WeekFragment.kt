@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderWeekdaysBinding
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -91,7 +91,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     reminder.recurDataObject = null
 
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-    val startTime = dateTimeManager.getNextWeekdayTime(reminder)
+    val startTime = modelDateTimeFormatter.getNextWeekdayTime(reminder)
     if (!dateTimeManager.isCurrent(startTime)) {
       iFace.showSnackbar(getString(R.string.reminder_is_outdated))
       return null
@@ -172,7 +172,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     reminder.type = Reminder.BY_WEEK
     reminder.repeatInterval = 0
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-    val startTime = dateTimeManager.getNextWeekdayTime(reminder)
+    val startTime = modelDateTimeFormatter.getNextWeekdayTime(reminder)
     binding.calculatedNextTime.text = dateTimeManager.getFullDateTime(startTime)
   }
 

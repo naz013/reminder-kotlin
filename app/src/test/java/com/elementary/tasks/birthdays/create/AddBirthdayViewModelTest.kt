@@ -2,12 +2,12 @@ package com.elementary.tasks.birthdays.create
 
 import android.net.Uri
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.os.IntentDataHolder
-import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.github.naz013.common.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.getOrAwaitValue
@@ -35,7 +35,7 @@ class AddBirthdayViewModelTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>()
   private val uriReader = mockk<UriReader>()
-  private val updatesHelper = mockk<UpdatesHelper>()
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>()
   private val intentDataHolder = mockk<IntentDataHolder>()
 
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
@@ -55,7 +55,7 @@ class AddBirthdayViewModelTest : BaseTest() {
       analyticsEventSender = analyticsEventSender,
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
       uriReader = uriReader,
-      updatesHelper = updatesHelper,
+      appWidgetUpdater = appWidgetUpdater,
       intentDataHolder = intentDataHolder,
       uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager)
     )

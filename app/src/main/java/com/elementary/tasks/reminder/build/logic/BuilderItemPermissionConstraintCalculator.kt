@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.logic
 
 import android.content.Context
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.elementary.tasks.reminder.build.bi.BuilderItemConstraints
 
 class BuilderItemPermissionConstraintCalculator(

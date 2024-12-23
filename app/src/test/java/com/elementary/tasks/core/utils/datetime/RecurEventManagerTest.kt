@@ -1,9 +1,10 @@
 package com.elementary.tasks.core.utils.datetime
 
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
-import com.elementary.tasks.core.utils.datetime.recurrence.builder.RuleBuilder
-import com.elementary.tasks.core.utils.datetime.recurrence.parser.TagParser
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.UtcDateTime
+import com.github.naz013.icalendar.builder.RuleBuilder
+import com.github.naz013.icalendar.parser.TagParser
+import com.github.naz013.common.datetime.DateTimeManager
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -15,8 +16,8 @@ class RecurEventManagerTest {
   private val ruleBuilder = RuleBuilder()
   private val tagParser = TagParser()
 
-  private val recurrenceManager = RecurrenceManager(ruleBuilder, tagParser, dateTimeManager)
-  private val recurEventManager = RecurEventManager(recurrenceManager)
+  private val ICalendarApi = ICalendarApi(ruleBuilder, tagParser)
+  private val recurEventManager = RecurEventManager(ICalendarApi)
 
   @Test
   fun testFindNext_onEmptyObject() {

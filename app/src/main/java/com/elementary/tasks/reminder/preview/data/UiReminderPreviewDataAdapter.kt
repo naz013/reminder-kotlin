@@ -13,17 +13,17 @@ import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
-import com.elementary.tasks.core.os.ColorProvider
-import com.elementary.tasks.core.os.UnitsConverter
+import com.github.naz013.ui.common.theme.ColorProvider
+import com.github.naz013.ui.common.UnitsConverter
 import com.elementary.tasks.core.text.UiTextDecoration
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.reminder.Icons
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.ShopItem
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import java.util.Locale
 
 class UiReminderPreviewDataAdapter(
@@ -379,7 +379,7 @@ class UiReminderPreviewDataAdapter(
 
   private fun addAds(): List<UiReminderPreviewData> {
     return listOfNotNull(
-      UiReminderPreviewAds.takeIf { !Module.isPro }
+      UiReminderPreviewAds.takeIf { !BuildParams.isPro }
     )
   }
 

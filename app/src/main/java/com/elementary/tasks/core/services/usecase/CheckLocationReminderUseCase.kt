@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services.usecase
 
 import android.content.Context
 import android.location.Location
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DefaultDistanceFormatter
 import com.github.naz013.domain.Reminder

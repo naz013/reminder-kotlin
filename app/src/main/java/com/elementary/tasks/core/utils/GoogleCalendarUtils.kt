@@ -11,8 +11,8 @@ import android.text.TextUtils
 import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.readInt
 import com.github.naz013.feature.common.readLong
 import com.github.naz013.feature.common.readString

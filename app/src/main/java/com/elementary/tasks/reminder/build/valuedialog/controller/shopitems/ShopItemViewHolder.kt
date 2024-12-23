@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.github.naz013.feature.common.android.transparent
+import com.github.naz013.ui.common.view.transparent
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.feature.common.android.visibleInvisible
+import com.github.naz013.ui.common.view.visibleInvisible
 import com.elementary.tasks.databinding.ListItemReminderBuilderShopItemBinding
 
 class ShopItemViewHolder(

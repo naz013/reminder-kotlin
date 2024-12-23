@@ -5,8 +5,8 @@ import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActive
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.adapter.ReminderViewHolder
 import com.elementary.tasks.voice.VoiceResultDialogViewModel
@@ -25,7 +25,7 @@ class VoiceResultDialog : BaseDialog() {
     lifecycle.addObserver(viewModel)
   }
 
-  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
 
   private fun showReminder(reminder: UiReminderList) {
     val alert = dialogues.getMaterialDialog(this)
@@ -48,7 +48,7 @@ class VoiceResultDialog : BaseDialog() {
     alert.setNegativeButton(R.string.edit) { dialogInterface, _ ->
       dialogInterface.dismiss()
       reminderBuilderLauncher.openLogged(this) {
-        putExtra(Constants.INTENT_ID, reminder.id)
+        putExtra(IntentKeys.INTENT_ID, reminder.id)
       }
       finish()
     }

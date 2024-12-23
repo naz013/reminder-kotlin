@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
-import com.elementary.tasks.core.utils.datetime.recurrence.Day
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
+import com.github.naz013.icalendar.Day
+import com.github.naz013.icalendar.DayValue
 import com.github.naz013.logging.Logger
 
 class ByDayValidator {

@@ -9,7 +9,7 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderListData
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -39,7 +39,7 @@ class DayViewModel(
       birthdayRepository.delete(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, id)
     }
   }
 
@@ -55,7 +55,7 @@ class DayViewModel(
         postCommand(Commands.DELETED)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           fromDb.uuId
         )
       } else {
@@ -74,7 +74,7 @@ class DayViewModel(
         postCommand(Commands.DELETED)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           fromDb.uuId
         )
       } else {

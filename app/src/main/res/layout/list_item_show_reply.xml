@@ -7,7 +7,7 @@
     android:layout_marginRight="16dp"
     android:layout_marginBottom="8dp">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/replyText"
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="match_parent"

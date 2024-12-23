@@ -5,7 +5,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.Binding
+import com.github.naz013.ui.common.view.Binding
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.materialswitch.MaterialSwitch
 

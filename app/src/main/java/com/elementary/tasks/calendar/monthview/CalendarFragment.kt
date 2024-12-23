@@ -11,7 +11,7 @@ import com.elementary.tasks.calendar.BaseCalendarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
-import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.github.naz013.logging.Logger
 import org.apache.commons.lang3.StringUtils

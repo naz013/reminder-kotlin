@@ -4,7 +4,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.logging.Logger
 
 class WearNotification(

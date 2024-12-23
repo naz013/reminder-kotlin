@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.views.common.ValueAndTypePickerView
 import com.elementary.tasks.databinding.BuilderItemCalendarDurationBinding
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem

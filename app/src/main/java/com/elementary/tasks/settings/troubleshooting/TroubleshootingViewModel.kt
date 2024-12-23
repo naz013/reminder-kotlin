@@ -3,8 +3,8 @@ package com.elementary.tasks.settings.troubleshooting
 import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.github.naz013.feature.common.livedata.toSingleEvent
-import com.github.naz013.feature.common.android.ContextProvider
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.FeatureManager

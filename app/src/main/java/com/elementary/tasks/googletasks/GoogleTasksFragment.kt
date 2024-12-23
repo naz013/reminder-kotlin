@@ -13,12 +13,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
@@ -27,19 +24,23 @@ import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
-import com.elementary.tasks.pin.PinLoginActivity
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.dp2px
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.isColorDark
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.fragment.dp2px
+import com.github.naz013.ui.common.fragment.startActivity
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -155,9 +156,9 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
   private fun addNewTask() {
     val defId = viewModel.defTaskList.value?.listId ?: return
     withContext {
-      PinLoginActivity.openLogged(it, GoogleTaskActivity::class.java) {
-        putExtra(Constants.INTENT_ID, defId)
-        putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE)
+      LoginApi.openLogged(it, GoogleTaskActivity::class.java) {
+        putExtra(IntentKeys.INTENT_ID, defId)
+        putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
       }
     }
   }
@@ -250,8 +251,8 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun openTask(taskId: String) {
-    PinLoginActivity.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-      putExtra(Constants.INTENT_ID, taskId)
+    LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, taskId)
     }
   }
 

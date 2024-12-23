@@ -4,30 +4,34 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.livedata.nullObserve
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
-import com.elementary.tasks.googletasks.TasksConstants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.nullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
 
+  private val dialogues by inject<Dialogues>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val viewModel by viewModel<GoogleTaskViewModel> { parametersOf(getId()) }
 
   override fun inflateBinding() = ActivityCreateGoogleTaskBinding.inflate(layoutInflater)
@@ -48,13 +52,13 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     binding.progressMessageView.text = getString(R.string.please_wait)
 
     if (savedInstanceState == null) {
-      viewModel.action = intentString(TasksConstants.INTENT_ACTION).also {
-        if (it.isEmpty()) viewModel.action = TasksConstants.CREATE
+      viewModel.action = intentString(TasksIntentKeys.INTENT_ACTION).also {
+        if (it.isEmpty()) viewModel.action = TasksIntentKeys.CREATE
       }
       viewModel.initDefaults()
     }
 
-    if (viewModel.action == TasksConstants.CREATE) {
+    if (viewModel.action == TasksIntentKeys.CREATE) {
       val tmp = if (savedInstanceState != null) {
         savedInstanceState.getString(ARG_LIST, "")
       } else {
@@ -68,7 +72,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
   }
 
   private fun checkDeepLink() {
-    if (intent.getBooleanExtra(Constants.INTENT_DEEP_LINK, false)) {
+    if (intent.getBooleanExtra(IntentKeys.INTENT_DEEP_LINK, false)) {
       runCatching {
         val parser = DeepLinkDataParser()
         viewModel.initFromDeepLink(parser.readDeepLinkData(intent))
@@ -76,7 +80,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
     }
   }
 
-  private fun getId() = intentString(Constants.INTENT_ID)
+  private fun getId() = intentString(IntentKeys.INTENT_ID)
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putString(ARG_LIST, viewModel.listId)
@@ -333,7 +337,7 @@ class GoogleTaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>() {
       lifecycle.removeObserver(viewModel)
     }
     hideKeyboard()
-    updatesHelper.updateTasksWidget()
+    appWidgetUpdater.updateScheduleWidget()
   }
 
   override fun handleBackPress(): Boolean {

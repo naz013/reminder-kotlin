@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.feature.common.livedata.SearchableLiveData
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
@@ -52,7 +52,7 @@ class ArchiveRemindersViewModel(
         googleCalendarUtils.deleteEvents(it.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           it.uuId
         )
         reminderData.refresh()
@@ -74,7 +74,7 @@ class ArchiveRemindersViewModel(
       reminders.forEach {
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           it.uuId
         )
       }

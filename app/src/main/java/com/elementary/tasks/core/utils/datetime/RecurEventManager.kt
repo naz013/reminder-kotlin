@@ -1,19 +1,19 @@
 package com.elementary.tasks.core.utils.datetime
 
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.github.naz013.icalendar.RecurrenceDateTimeTag
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.TagType
+import com.github.naz013.icalendar.UtcDateTime
 import org.threeten.bp.LocalDateTime
 
 class RecurEventManager(
-  private val recurrenceManager: RecurrenceManager
+  private val ICalendarApi: ICalendarApi
 ) {
 
   fun getNextAfterDateTime(dateTime: LocalDateTime?, recurObject: String?): LocalDateTime? {
     if (recurObject == null || dateTime == null) return null
 
-    val map = recurrenceManager.parseObject(recurObject) ?: return null
+    val map = ICalendarApi.parseObject(recurObject) ?: return null
 
     val recurrenceDateTimeTag = map.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)
       ?: return null

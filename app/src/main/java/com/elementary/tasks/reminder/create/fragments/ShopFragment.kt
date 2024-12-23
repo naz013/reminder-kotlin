@@ -13,8 +13,8 @@ import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter

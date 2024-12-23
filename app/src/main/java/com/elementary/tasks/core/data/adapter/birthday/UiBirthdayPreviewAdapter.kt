@@ -1,14 +1,16 @@
 package com.elementary.tasks.core.data.adapter.birthday
 
-import com.github.naz013.domain.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
-import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Birthday
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalTime
 
 class UiBirthdayPreviewAdapter(
   private val contactsReader: ContactsReader,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun convert(birthday: Birthday): UiBirthdayPreview {
@@ -18,7 +20,7 @@ class UiBirthdayPreviewAdapter(
       dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
     }
     val futureBirthday = dateOfBirth?.let {
-      dateTimeManager.getFutureBirthdayDate(
+      modelDateTimeFormatter.getFutureBirthdayDate(
         birthdayTime = birthTime,
         birthdayDate = it,
         birthday = birthday
@@ -39,7 +41,8 @@ class UiBirthdayPreviewAdapter(
       contactName = contactId?.let { contactsReader.getNameFromNumber(birthday.number) },
       dateOfBirth = dateOfBirthFormatted,
       nextBirthdayDate = nextBirthdayDate,
-      ageFormatted = dateTimeManager.getAgeFormatted(birthday.date).takeIf { !birthday.ignoreYear },
+      ageFormatted = modelDateTimeFormatter.getAgeFormatted(birthday.date)
+        .takeIf { !birthday.ignoreYear },
       hasBirthdayToday = dateOfBirth?.let { dateTimeManager.isSameDay(it) } ?: false
     )
   }

@@ -17,36 +17,39 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.buildIntent
-import com.github.naz013.feature.common.android.colorOf
-import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.github.naz013.feature.common.android.startActivity
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.transparent
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.context.buildIntent
+import com.github.naz013.ui.common.context.colorOf
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -60,6 +63,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val dateTimeManager by inject<DateTimeManager>()
   private val contactsReader by inject<ContactsReader>()
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
+  private val prefs by inject<Prefs>()
+  private val dialogues by inject<Dialogues>()
+  private val notifier by inject<Notifier>()
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
 
@@ -122,7 +129,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     )
   }
 
-  private fun getId() = intentString(Constants.INTENT_ID)
+  private fun getId() = intentString(IntentKeys.INTENT_ID)
 
   private fun initButtons() {
     binding.buttonOk.setOnClickListener { ok() }
@@ -499,7 +506,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     discardNotification(id)
     doActions({ it.disable() }, {
       reminderBuilderLauncher.openLogged(this) {
-        putExtra(Constants.INTENT_ID, it.uuId)
+        putExtra(IntentKeys.INTENT_ID, it.uuId)
       }
       finish()
     })
@@ -552,7 +559,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   private fun makeCall() {
     val reminder = mReminder ?: return
-    permissionFlow.askPermission(Permissions.CALL_PHONE) {
+    permissionFlowDelegate.permissionFlow.askPermission(Permissions.CALL_PHONE) {
       TelephonyUtil.makeCall(reminder.target, this)
     }
   }
@@ -586,7 +593,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun showFavouriteNotification() {
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
     builder.setContentTitle(summary)
-    val appName: String = if (Module.isPro) {
+    val appName: String = if (BuildParams.isPro) {
       getString(R.string.app_name_pro)
     } else {
       getString(R.string.app_name)
@@ -667,7 +674,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
     fun getLaunchIntent(context: Context, id: String): Intent {
       return context.buildIntent(ReminderDialog29Activity::class.java) {
-        putExtra(Constants.INTENT_ID, id)
+        putExtra(IntentKeys.INTENT_ID, id)
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
       }
     }

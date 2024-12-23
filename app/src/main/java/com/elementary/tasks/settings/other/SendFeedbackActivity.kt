@@ -8,8 +8,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.utils.Module
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.databinding.ActivitySendFeedbackBinding
 import com.elementary.tasks.navigation.fragments.FeedbackFragment
 
@@ -87,7 +87,7 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>() {
     val emailIntent = Intent(Intent.ACTION_SEND)
     emailIntent.type = "plain/text"
     emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("feedback.cray@gmail.com"))
-    if (Module.isPro) {
+    if (BuildParams.isPro) {
       emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reminder PRO")
     } else {
       emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reminder")

@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.formatter.ical
 
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
+import com.github.naz013.icalendar.FreqType
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 

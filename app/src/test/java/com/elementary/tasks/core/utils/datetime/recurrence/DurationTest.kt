@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils.datetime.recurrence
 
+import com.github.naz013.icalendar.Duration
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

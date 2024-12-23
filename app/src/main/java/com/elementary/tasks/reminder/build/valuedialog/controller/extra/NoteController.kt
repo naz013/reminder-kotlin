@@ -9,9 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.dp2px
-import com.github.naz013.feature.common.android.inflater
 import com.elementary.tasks.databinding.BuilderItemSelectableListNoteBinding
 import com.elementary.tasks.databinding.ListItemNoteSelectableBinding
 import com.elementary.tasks.notes.list.UiNoteListAdapterCommon
@@ -19,6 +16,9 @@ import com.elementary.tasks.notes.list.UiNoteListDiffCallback
 import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.common.view.dp2px
+import com.github.naz013.ui.common.view.inflater
 
 class NoteController(
   private val noteBuilderItem: NoteBuilderItem

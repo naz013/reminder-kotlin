@@ -10,21 +10,26 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
 import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
-import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.TagType
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.TagType
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 
 class UiReminderCommonAdapter(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val recurrenceManager: RecurrenceManager
+  private val iCalendarApi: ICalendarApi,
+  private val prefs: Prefs,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun getPriorityTitle(priority: Int): String {
@@ -88,7 +93,7 @@ class UiReminderCommonAdapter(
       type.isBase(UiReminderType.Base.MONTHLY) ->
         String.format(textProvider.getText(R.string.xM), data.repeatInterval.toString())
 
-      type.isBase(UiReminderType.Base.WEEKDAY) -> dateTimeManager.getRepeatString(data.weekdays)
+      type.isBase(UiReminderType.Base.WEEKDAY) -> getRepeatString(data.weekdays)
       type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
       type.isBase(UiReminderType.Base.RECUR) -> textProvider.getText(R.string.recur_custom)
       else -> IntervalUtil.getInterval(data.repeatInterval) { getIntervalPattern(it) }
@@ -108,7 +113,7 @@ class UiReminderCommonAdapter(
 
   private fun getRecurRules(reminder: Reminder, type: UiReminderType): String? {
     return if (type.isRecur()) {
-      runCatching { recurrenceManager.parseObject(reminder.recurDataObject) }
+      runCatching { iCalendarApi.parseObject(reminder.recurDataObject) }
         .getOrNull()
         ?.map?.values?.firstOrNull { it.tagType == TagType.RRULE }
         ?.buildString()
@@ -118,7 +123,7 @@ class UiReminderCommonAdapter(
   }
 
   private fun getRemaining(reminder: Reminder): String {
-    return dateTimeManager.getRemaining(reminder.eventTime, reminder.delay)
+    return modelDateTimeFormatter.getRemaining(reminder.eventTime, reminder.delay)
   }
 
   fun getTypeString(type: UiReminderType): String {
@@ -181,5 +186,51 @@ class UiReminderCommonAdapter(
       IntervalUtil.PatternType.DAYS -> textProvider.getText(R.string.x_days)
       IntervalUtil.PatternType.WEEKS -> textProvider.getText(R.string.x_weeks)
     }
+  }
+
+  private fun getRepeatString(repCode: List<Int>): String {
+    val sb = StringBuilder()
+    val first = prefs.startDay
+    if (first == 0 && repCode[0] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.sun))
+    }
+    if (repCode[1] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.mon))
+    }
+    if (repCode[2] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.tue))
+    }
+    if (repCode[3] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.wed))
+    }
+    if (repCode[4] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.thu))
+    }
+    if (repCode[5] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.fri))
+    }
+    if (repCode[6] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.sat))
+    }
+    if (first == 1 && repCode[0] == ReminderUtils.DAY_CHECKED) {
+      sb.append(" ")
+      sb.append(textProvider.getText(R.string.sun))
+    }
+    return if (isAllChecked(repCode)) {
+      textProvider.getText(R.string.everyday)
+    } else {
+      sb.toString().trim()
+    }
+  }
+
+  private fun isAllChecked(repCode: List<Int>): Boolean {
+    return repCode.none { it == 0 }
   }
 }

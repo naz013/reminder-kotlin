@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
+import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
 import java.util.Locale
 
@@ -114,7 +114,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   private fun initRemindersColorPrefs() {
     binding.reminderColorPrefs.setViewColor(
-      ThemeProvider.colorReminderCalendar(requireContext(), prefs)
+      ThemeProvider.colorReminderCalendar(requireContext(), prefs.reminderColor)
     )
   }
 
@@ -144,13 +144,13 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   private fun initBirthdaysColorPrefs() {
     binding.birthdayColorPrefs.setViewColor(
-      ThemeProvider.colorBirthdayCalendar(requireContext(), prefs)
+      ThemeProvider.colorBirthdayCalendar(requireContext(), prefs.birthdayColor)
     )
   }
 
   private fun initTodayColorPrefs() {
     binding.todayColorPrefs.setViewColor(
-      ThemeProvider.colorCurrentCalendar(requireContext(), prefs)
+      ThemeProvider.colorTodayCalendar(requireContext(), prefs.todayColor)
     )
   }
 

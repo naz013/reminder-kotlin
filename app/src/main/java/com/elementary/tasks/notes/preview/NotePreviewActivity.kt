@@ -10,36 +10,38 @@ import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.colorOf
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.feature.common.android.isAlmostTransparent
-import com.github.naz013.feature.common.android.isColorDark
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.gone
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
-import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
 import com.elementary.tasks.notes.preview.reminders.AttachedRemindersAdapter
 import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.context.colorOf
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.isAlmostTransparent
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import com.google.android.material.carousel.CarouselLayoutManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -58,11 +60,13 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
+  private val dialogues by inject<Dialogues>()
 
   private val uiHandler = Handler(Looper.getMainLooper())
 
   private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   override fun inflateBinding() = ActivityNotePreviewBinding.inflate(layoutInflater)
 
@@ -81,7 +85,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun loadAds() {
-    if (!Module.isPro && AdsProvider.hasAds()) {
+    if (!BuildParams.isPro && AdsProvider.hasAds()) {
       binding.adsCard.visible()
       adsProvider.showNativeBanner(
         binding.adsHolder,
@@ -95,7 +99,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
   }
 
-  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
@@ -123,7 +127,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun editReminder(id: String) {
     reminderBuilderLauncher.openLogged(this) {
-      putExtra(Constants.INTENT_ID, id)
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 
@@ -153,7 +157,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
       backgroundColor = viewModel.note.value?.backgroundColor ?: -1
     )
     startActivity(ImagePreviewActivity::class.java) {
-      putExtra(Constants.INTENT_POSITION, position)
+      putExtra(IntentKeys.INTENT_POSITION, position)
     }
   }
 
@@ -216,15 +220,17 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editNote() {
-    PinLoginActivity.openLogged(this, CreateNoteActivity::class.java) {
-      putExtra(Constants.INTENT_ID, viewModel.key)
+    LoginApi.openLogged(this, CreateNoteActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, viewModel.key)
     }
   }
 
   private fun moveToStatus() {
     val uiNotePreview = viewModel.note.value ?: return
-    permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-      viewModel.showNoteInNotification(uiNotePreview.id)
+    permissionFlowDelegate.with {
+      askPermission(Permissions.POST_NOTIFICATION) {
+        viewModel.showNoteInNotification(uiNotePreview.id)
+      }
     }
   }
 

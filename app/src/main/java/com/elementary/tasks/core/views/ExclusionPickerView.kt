@@ -10,9 +10,9 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogExclusionPickerBinding
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ViewExclusionPickerBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -2,7 +2,7 @@ package com.elementary.tasks.dayview.weekheader
 
 import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import io.mockk.every
 import io.mockk.mockk

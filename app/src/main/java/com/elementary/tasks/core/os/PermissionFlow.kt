@@ -9,8 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.UiPermissionDialogData
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.common.Module
+import com.github.naz013.common.Permissions
 import java.util.LinkedList
 
 class PermissionFlow private constructor(

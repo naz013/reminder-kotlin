@@ -3,7 +3,7 @@ package com.elementary.tasks.googletasks.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -20,7 +20,7 @@ class SaveNewTaskWorker(
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
-    val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
+    val json = inputData.getString(IntentKeys.INTENT_JSON) ?: "{}"
     if (json.isNotEmpty()) {
       withContext(dispatcherProvider.io()) {
         val googleTask = Gson().fromJson(json, GoogleTask::class.java)

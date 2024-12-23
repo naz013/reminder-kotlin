@@ -1,9 +1,10 @@
 package com.elementary.tasks.core.utils.datetime.recurrence.parser
 
-import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeEndTag
-import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStampTag
-import com.elementary.tasks.core.utils.datetime.recurrence.DateTimeStartTag
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.github.naz013.icalendar.DateTimeEndTag
+import com.github.naz013.icalendar.DateTimeStampTag
+import com.github.naz013.icalendar.DateTimeStartTag
+import com.github.naz013.icalendar.UtcDateTime
+import com.github.naz013.icalendar.parser.DateTimeTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

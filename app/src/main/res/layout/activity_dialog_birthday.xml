@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.elementary.tasks.core.views.gradient.UiGradientLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.naz013.ui.common.view.gradient.UiGradientLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
@@ -78,7 +78,7 @@
         app:selectionRequired="false"
         app:singleSelection="true">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCall"
             style="?attr/materialButtonStyle"
             android:layout_width="0dp"
@@ -87,7 +87,7 @@
             android:text="@string/make_call"
             android:textAllCaps="true" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonOk"
             style="?attr/materialButtonStyle"
             android:layout_width="0dp"
@@ -96,7 +96,7 @@
             android:text="@string/acc_button_ok"
             android:textAllCaps="true" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSms"
             style="?attr/materialButtonStyle"
             android:layout_width="0dp"
@@ -107,4 +107,4 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-</com.elementary.tasks.core.views.gradient.UiGradientLinearLayout>
+</com.github.naz013.ui.common.view.gradient.UiGradientLinearLayout>

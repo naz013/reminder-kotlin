@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
+import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
@@ -53,7 +53,7 @@ class ExtrasDecomposer(
       biFactory.createWithValue(BiType.PRIORITY, it, PriorityBuilderItem::class.java)
     }
 
-    val ledColor = reminder.color.takeIf { Module.isPro }?.let {
+    val ledColor = reminder.color.takeIf { BuildParams.isPro }?.let {
       biFactory.createWithValue(BiType.LED_COLOR, it, LedColorBuilderItem::class.java)
     }
 

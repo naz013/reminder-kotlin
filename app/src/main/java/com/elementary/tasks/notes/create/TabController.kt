@@ -1,7 +1,7 @@
 package com.elementary.tasks.notes.create
 
 import android.view.View
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.visibleGone
 
 class TabController(
   private val tabs: List<TabView>,

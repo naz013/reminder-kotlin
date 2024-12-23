@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="app_languages" >
+        <item>@string/auto</item>
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Français</item>
+        <item>Italiano</item>
+        <item>Português</item>
+        <item>Polski</item>
+        <item>Česky</item>
+        <item>Românesc</item>
+        <item>Türk</item>
+        <item>Українська</item>
+        <item>Русский</item>
+        <item>日本語</item>
+        <item>中文</item>
+        <item>हिन्दी भाषा</item>
+        <item>한국어</item>
+        <item>Български</item>
+    </string-array>
+</resources>

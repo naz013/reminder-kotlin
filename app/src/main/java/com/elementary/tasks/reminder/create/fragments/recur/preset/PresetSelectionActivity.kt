@@ -9,16 +9,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.ui.common.activity.BindingActivity
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.github.naz013.feature.common.android.buildIntent
-import com.elementary.tasks.core.os.datapicker.ActivityLauncherCreator
-import com.elementary.tasks.core.os.datapicker.FragmentLauncherCreator
-import com.elementary.tasks.core.os.datapicker.IntentPicker
-import com.elementary.tasks.core.os.datapicker.LauncherCreator
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.ui.common.context.buildIntent
+import com.github.naz013.common.intent.ActivityLauncherCreator
+import com.github.naz013.common.intent.FragmentLauncherCreator
+import com.github.naz013.common.intent.IntentPicker
+import com.github.naz013.common.intent.LauncherCreator
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ActivityRecurPresetListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -55,7 +55,7 @@ class PresetSelectionActivity : BindingActivity<ActivityRecurPresetListBinding>(
     setResult(
       RESULT_OK,
       Intent().apply {
-        putExtra(Constants.INTENT_ID, item.id)
+        putExtra(IntentKeys.INTENT_ID, item.id)
       }
     )
     finish()
@@ -94,7 +94,7 @@ class PresetPicker private constructor(
 
   override fun dispatchResult(result: ActivityResult) {
     if (result.resultCode == Activity.RESULT_OK) {
-      val appPackage = result.data?.getStringExtra(Constants.INTENT_ID) ?: ""
+      val appPackage = result.data?.getStringExtra(IntentKeys.INTENT_ID) ?: ""
       resultCallback.invoke(appPackage)
     }
   }

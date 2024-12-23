@@ -191,6 +191,15 @@ dependencies {
   implementation(project(":cloud-api"))
   implementation(project(":cloud"))
   implementation(project(":feature-common"))
+  implementation(project(":appwidgets"))
+  implementation(project(":navigation-api"))
+  implementation(project(":platform-common"))
+  implementation(project(":ui-common"))
+  implementation(project(":usecase:googletasks"))
+  implementation(project(":usecase:birthdays"))
+  implementation(project(":usecase:notes"))
+  implementation(project(":usecase:reminders"))
+  implementation(project(":icalendar"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -213,7 +222,6 @@ dependencies {
   implementation(libs.androidx.constraintlayout)
   implementation(libs.androidx.swiperefreshlayout)
   implementation(libs.androidx.viewpager2)
-  implementation(libs.androidx.biometric)
   implementation(libs.androidx.splashscreen)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.fragment.ktx)

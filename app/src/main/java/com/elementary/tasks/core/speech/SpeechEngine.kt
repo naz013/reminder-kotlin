@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import com.elementary.tasks.core.utils.Module
+import com.github.naz013.common.Module
 import com.github.naz013.logging.Logger
 
 class SpeechEngine(

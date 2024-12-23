@@ -3,9 +3,9 @@ package com.elementary.tasks.birthdays.work
 import android.content.Context
 import android.provider.ContactsContract
 import android.text.TextUtils
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.readLong
 import com.github.naz013.feature.common.readString
 import com.github.naz013.domain.Birthday

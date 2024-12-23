@@ -3,12 +3,12 @@ package com.elementary.tasks.birthdays.list
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
-import com.elementary.tasks.core.data.livedata.SearchableLiveData
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.feature.common.livedata.SearchableLiveData
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.domain.Birthday
@@ -24,7 +24,7 @@ class BirthdaysViewModel(
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val birthdaysData = SearchableBirthdayData(
@@ -45,10 +45,10 @@ class BirthdaysViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       birthdayRepository.delete(id)
       notifier.showBirthdayPermanent()
-      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, id)
       birthdaysData.refresh()
-      updatesHelper.updateTasksWidget()
-      updatesHelper.updateBirthdaysWidget()
+      appWidgetUpdater.updateScheduleWidget()
+      appWidgetUpdater.updateBirthdaysWidget()
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

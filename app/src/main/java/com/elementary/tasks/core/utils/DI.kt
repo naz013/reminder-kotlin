@@ -6,10 +6,7 @@ import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.appwidgets.WidgetDataProvider
 import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.arch.LoginStateViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
@@ -37,22 +34,21 @@ import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
-import com.elementary.tasks.core.utils.datetime.NowDateTimeProvider
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.builder.RuleBuilder
-import com.elementary.tasks.core.utils.datetime.recurrence.parser.TagParser
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.io.UriReader
+import com.elementary.tasks.core.utils.params.AppWidgetPreferencesImpl
+import com.elementary.tasks.core.utils.params.AuthPreferencesImpl
+import com.elementary.tasks.core.utils.params.DateTimePreferencesImpl
+import com.elementary.tasks.core.utils.params.LocalePreferencesImpl
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.params.RemotePrefs
+import com.elementary.tasks.core.utils.params.ThemePreferencesImpl
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.Dialogues
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -81,7 +77,12 @@ import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
+import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.cloudapi.CloudKeysStorage
+import com.github.naz013.common.datetime.DateTimePreferences
+import com.github.naz013.ui.common.locale.LocalePreferences
+import com.github.naz013.ui.common.login.AuthPreferences
+import com.github.naz013.ui.common.theme.ThemePreferences
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
@@ -125,7 +126,7 @@ val viewModelModule = module {
   viewModel { ReminderStateViewModel(get(), get()) }
 
   viewModel { TimesViewModel(get(), get()) }
-  viewModel { LoginStateViewModel() }
+
   viewModel {
     SplashViewModel(
       get(),
@@ -182,14 +183,11 @@ val utilModule = module {
   single { Prefs(get()) }
   factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
-  single { ThemeProvider(get(), get()) }
   single { MemoryUtil() }
   factory { UriReader(get()) }
   single { BackupTool(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-  single { Dialogues(get()) }
-  single { Language(get(), get(), get()) }
   factory { GoogleCalendarUtils(get(), get(), get(), get()) }
-  factory { providesRecognizer(get(), get()) }
+  factory { providesRecognizer(get()) }
   single { CacheUtil(get(), get()) }
   single { GlobalButtonObservable() }
 
@@ -207,23 +205,22 @@ val utilModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
 
-  factory { RuleBuilder() }
-  factory { TagParser() }
-
-  factory { RecurrenceManager(get(), get(), get()) }
   factory { RecurEventManager(get()) }
 
   single { RemotePrefs(get(), get(), get(), get()) }
+  single { ThemePreferencesImpl(get()) as ThemePreferences }
+  single { LocalePreferencesImpl(get()) as LocalePreferences }
+  single { AuthPreferencesImpl(get()) as AuthPreferences }
+  single { DateTimePreferencesImpl(get()) as DateTimePreferences }
+  single { AppWidgetPreferencesImpl(get()) as AppWidgetPreferences }
 
-  factory { Notifier(get(), get(), get(), get(), get(), get()) }
+  factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
   factory { JobScheduler(get(), get(), get(), get()) }
-  factory { UpdatesHelper(get()) }
-
-  factory { WidgetDataProvider(get(), get(), get(), get()) }
 
   factory { EnableThread(get(), get()) }
   factory { NoteImageMigration(get(), get()) }
@@ -245,7 +242,6 @@ val utilModule = module {
 
   factory { IdProvider() }
 
-  factory { DateTimeManager(get(), get(), get(), NowDateTimeProvider()) }
   factory { DateTimePickerProvider(get()) }
   factory { DoNotDisturbManager(get(), get()) }
 
@@ -260,9 +256,9 @@ val utilModule = module {
   }
 }
 
-fun providesRecognizer(prefs: Prefs, language: Language) =
+fun providesRecognizer(prefs: Prefs) =
   Recognizer.Builder()
-    .setLocale(language.getVoiceLanguage(prefs.voiceLocale))
+    .setLocale(com.backdoor.engine.misc.Locale.EN)
     .setTimes(
       listOf(
         prefs.morningTime,

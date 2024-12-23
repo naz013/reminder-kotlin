@@ -17,21 +17,17 @@ import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
-import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.os.datapicker.UriPicker
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.github.naz013.feature.common.android.visibleGone
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
@@ -47,9 +43,17 @@ import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
 import com.elementary.tasks.reminder.create.fragments.recur.RecurFragment
 import com.elementary.tasks.voice.ConversationViewModel
+import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.common.Module
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
@@ -60,11 +64,16 @@ import java.util.UUID
 @Deprecated("Replaced by new Builder")
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
+  private val prefs by inject<Prefs>()
   private val dateTimeManager by inject<DateTimeManager>()
+  private val dialogues by inject<Dialogues>()
+  private val appWidgetUpdater by inject<AppWidgetUpdater>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
   private val conversationViewModel by viewModel<ConversationViewModel>()
   private val stateViewModel by viewModel<ReminderStateViewModel>()
+
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
     processVoiceResult(it)
@@ -102,7 +111,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
     canExportToTasks = stateViewModel.isLoggedToGoogleTasks()
 
-    initActionBar()
     initNavigation()
 
     if (savedInstanceState == null) {
@@ -112,14 +120,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     }
 
     loadReminder()
-  }
-
-  private fun initActionBar() {
-    setSupportActionBar(binding.toolbar)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setHomeButtonEnabled(true)
-    supportActionBar?.setDisplayShowHomeEnabled(true)
   }
 
   private fun openScreen(uiSelectorType: UiSelectorType) {
@@ -161,7 +161,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     }
   }
 
-  private fun getId(): String = intentString(Constants.INTENT_ID)
+  private fun getId(): String = intentString(IntentKeys.INTENT_ID)
 
   private fun loadReminder() {
     val id = getId()
@@ -181,15 +181,15 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         readFromIntent()
       }
 
-      intent.hasExtra(Constants.INTENT_ITEM) -> {
+      intent.hasExtra(IntentKeys.INTENT_ITEM) -> {
         runCatching {
           val reminder =
-            intentSerializable(Constants.INTENT_ITEM, Reminder::class.java) ?: Reminder()
+            intentSerializable(IntentKeys.INTENT_ITEM, Reminder::class.java) ?: Reminder()
           editReminder(reminder, false, fromFile = true)
         }
       }
 
-      intent.getBooleanExtra(Constants.INTENT_DEEP_LINK, false) -> {
+      intent.getBooleanExtra(IntentKeys.INTENT_DEEP_LINK, false) -> {
         runCatching {
           val parser = DeepLinkDataParser()
           when (val deepLinkData = parser.readDeepLinkData(intent)) {
@@ -216,7 +216,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   private fun readFromIntent() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+    permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       intent.data?.let {
         try {
           var fromFile = false
@@ -294,7 +294,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
       }
 
       Reminder.BY_RECUR, Reminder.BY_RECUR_CALL, Reminder.BY_RECUR_SMS -> {
-        toSelect = if (Module.isPro) {
+        toSelect = if (com.elementary.tasks.core.utils.BuildParams.isPro) {
           UiSelectorType.RECUR
         } else {
           UiSelectorType.DATE
@@ -346,7 +346,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     if (hasLocation) {
       list.add(UiSelectorReminder(getString(R.string.location), UiSelectorType.GPS))
     }
-    if (Module.isPro) {
+    if (com.elementary.tasks.core.utils.BuildParams.isPro) {
       list.add(UiSelectorReminder(getString(R.string.recur_custom), UiSelectorType.RECUR))
     }
 
@@ -437,7 +437,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   }
 
   override fun attachFile() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) { selectAnyFile() }
+    permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+      selectAnyFile()
+    }
   }
 
   private fun closeScreen() {
@@ -467,7 +469,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   private fun askNotificationPermissionIfNeeded() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { askCopySaving() }
+      permissionFlowDelegate.permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+        askCopySaving()
+      }
     } else {
       askCopySaving()
     }
@@ -584,8 +588,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     if (stateViewModel.isPaused && !stateViewModel.isSaving) {
       stateViewModel.original?.let { viewModel.resumeReminder(it) }
     }
-    updatesHelper.updateWidgets()
-    updatesHelper.updateCalendarWidget()
+    appWidgetUpdater.updateAllWidgets()
+    appWidgetUpdater.updateCalendarWidget()
   }
 
   override fun handleBackPress(): Boolean {

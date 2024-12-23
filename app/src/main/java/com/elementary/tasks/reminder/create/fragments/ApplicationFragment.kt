@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
-import com.elementary.tasks.core.utils.Module
+import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import com.github.naz013.logging.Logger

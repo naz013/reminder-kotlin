@@ -10,9 +10,9 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.github.naz013.domain.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.android.adjustAlpha
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemGoogleTasksListBinding
 
 class ListsRecyclerAdapter :

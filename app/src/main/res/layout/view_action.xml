@@ -32,7 +32,7 @@
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/noAction"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
@@ -40,7 +40,7 @@
                     android:layout_weight="1"
                     android:text="@string/no_action" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/callAction"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
@@ -48,7 +48,7 @@
                     android:layout_weight="1"
                     android:text="@string/make_call" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/smsAction"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"

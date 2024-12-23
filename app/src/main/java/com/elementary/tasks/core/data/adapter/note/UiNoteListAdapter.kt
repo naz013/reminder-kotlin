@@ -4,13 +4,13 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.github.naz013.feature.common.android.ContextProvider
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.github.naz013.feature.common.android.isAlmostTransparent
-import com.github.naz013.feature.common.android.isColorDark
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.github.naz013.ui.common.isAlmostTransparent
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.domain.font.FontParams
 
 class UiNoteListAdapter(

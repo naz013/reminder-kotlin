@@ -18,31 +18,35 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.domain.note.Note
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiReminderListRemovedShop
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.os.datapicker.TtsLauncher
-import com.github.naz013.feature.common.android.startActivity
-import com.elementary.tasks.core.utils.Module
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.transparent
-import com.github.naz013.feature.common.android.visible
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityConversationBinding
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.settings.other.SendFeedbackActivity
+import com.github.naz013.common.Module
+import com.github.naz013.common.Permissions
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.note.Note
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visible
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -51,6 +55,10 @@ import java.util.Locale
 class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
+  private val currentStateHolder by inject<CurrentStateHolder>()
+  private val prefs by inject<Prefs>()
+  private val dialogues by inject<Dialogues>()
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   private var speech: SpeechRecognizer? = null
   private val conversationAdapter = ConversationAdapter(currentStateHolder)
@@ -263,7 +271,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
         when (model.action) {
           Action.BIRTHDAY -> {
             stopView()
-            PinLoginActivity.openLogged(this, AddBirthdayActivity::class.java)
+            LoginApi.openLogged(this, AddBirthdayActivity::class.java)
           }
 
           Action.REMINDER -> {
@@ -677,7 +685,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
     if (isSpeaking()) {
       delayAction(::tryToActivateMic, 1000)
     } else {
-      permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+      permissionFlowDelegate.permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
         micClick()
       }
     }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UiGradientFrameLayout">
+        <attr name="gradientFrameLayout_startColor" format="color" />
+        <attr name="gradientFrameLayout_centerColor" format="color" />
+        <attr name="gradientFrameLayout_endColor" format="color" />
+        <attr name="gradientFrameLayout_colors" format="reference" />
+        <attr name="gradientFrameLayout_orientation" format="enum">
+            <enum name="TOP_BOTTOM" value="0" />
+            <enum name="TR_BL" value="1" />
+            <enum name="RIGHT_LEFT" value="2" />
+            <enum name="BR_TL" value="3" />
+            <enum name="BOTTOM_TOP" value="4" />
+            <enum name="BL_TR" value="5" />
+            <enum name="LEFT_RIGHT" value="6" />
+            <enum name="TL_BR" value="7" />
+        </attr>
+        <attr name="gradientFrameLayout_animate" format="boolean" />
+        <attr name="gradientFrameLayout_animationEnterDuration" format="integer" />
+        <attr name="gradientFrameLayout_animationExitDuration" format="integer" />
+        <attr name="gradientFrameLayout_cornerRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="UiGradientLinearLayout">
+        <attr name="gradientLinearLayout_startColor" format="color" />
+        <attr name="gradientLinearLayout_centerColor" format="color" />
+        <attr name="gradientLinearLayout_endColor" format="color" />
+        <attr name="gradientLinearLayout_colors" format="reference" />
+        <attr name="gradientLinearLayout_orientation" format="enum">
+            <enum name="TOP_BOTTOM" value="0" />
+            <enum name="TR_BL" value="1" />
+            <enum name="RIGHT_LEFT" value="2" />
+            <enum name="BR_TL" value="3" />
+            <enum name="BOTTOM_TOP" value="4" />
+            <enum name="BL_TR" value="5" />
+            <enum name="LEFT_RIGHT" value="6" />
+            <enum name="TL_BR" value="7" />
+        </attr>
+        <attr name="gradientLinearLayout_animate" format="boolean" />
+        <attr name="gradientLinearLayout_animationEnterDuration" format="integer" />
+        <attr name="gradientLinearLayout_animationExitDuration" format="integer" />
+        <attr name="gradientLinearLayout_cornerRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="UiGradientCardView">
+        <attr name="gradientCardView_startColor" format="color" />
+        <attr name="gradientCardView_centerColor" format="color" />
+        <attr name="gradientCardView_endColor" format="color" />
+        <attr name="gradientCardView_colors" format="reference" />
+        <attr name="gradientCardView_orientation" format="enum">
+            <enum name="TOP_BOTTOM" value="0" />
+            <enum name="TR_BL" value="1" />
+            <enum name="RIGHT_LEFT" value="2" />
+            <enum name="BR_TL" value="3" />
+            <enum name="BOTTOM_TOP" value="4" />
+            <enum name="BL_TR" value="5" />
+            <enum name="LEFT_RIGHT" value="6" />
+            <enum name="TL_BR" value="7" />
+        </attr>
+    </declare-styleable>
+</resources>

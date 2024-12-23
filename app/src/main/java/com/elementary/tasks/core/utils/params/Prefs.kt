@@ -4,8 +4,9 @@ import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Module
+import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.domain.font.FontParams
 import com.google.android.gms.maps.GoogleMap
@@ -598,7 +599,7 @@ class Prefs(
       editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
       editor.putBoolean(PrefsConstants.REMINDER_CHANGED, false)
       editor.putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
-      if (Module.isPro) {
+      if (BuildParams.isPro) {
         editor.putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
         editor.putBoolean(PrefsConstants.LED_STATUS, true)
         editor.putInt(PrefsConstants.BIRTHDAY_LED_COLOR, 6)
@@ -757,7 +758,7 @@ class Prefs(
     if (!hasKey(PrefsConstants.NIGHT_MODE)) {
       putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
-    if (Module.isPro) {
+    if (BuildParams.isPro) {
       if (!hasKey(PrefsConstants.LED_STATUS)) {
         putBoolean(PrefsConstants.LED_STATUS, true)
       }

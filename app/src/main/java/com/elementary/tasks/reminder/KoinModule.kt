@@ -243,7 +243,7 @@ val reminderModule = module {
 
   factory { ICalDateTimeCalculator(get(), get()) }
 
-  factory { DateTimeInjector(get(), get()) }
+  factory { DateTimeInjector(get(), get(), get()) }
   factory { ICalDateTimeInjector(get(), get()) }
   factory { ReminderCleaner() }
 

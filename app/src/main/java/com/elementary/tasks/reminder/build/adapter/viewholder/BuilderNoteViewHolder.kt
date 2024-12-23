@@ -1,13 +1,13 @@
 package com.elementary.tasks.reminder.build.adapter.viewholder
 
 import android.view.ViewGroup
-import com.github.naz013.feature.common.android.dp2px
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.inflater
-import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.databinding.ListItemReminderBuilderNotePreviewBinding
 import com.elementary.tasks.notes.list.UiNoteListAdapterCommon
 import com.elementary.tasks.reminder.build.UiListNoteBuilderItem
+import com.github.naz013.ui.common.view.dp2px
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visible
 
 class BuilderNoteViewHolder(
   parent: ViewGroup,

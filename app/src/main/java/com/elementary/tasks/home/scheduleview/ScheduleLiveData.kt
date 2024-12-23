@@ -8,13 +8,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.ScheduleTimes
 import com.elementary.tasks.home.scheduleview.data.UiBirthdayScheduleListAdapter
 import com.elementary.tasks.home.scheduleview.data.UiReminderScheduleListAdapter
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.getNonNullList
 import com.github.naz013.feature.common.livedata.getNonNullMap

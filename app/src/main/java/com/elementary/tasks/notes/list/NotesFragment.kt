@@ -12,27 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.android.dp2px
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.core.views.recyclerview.StaggeredSpaceItemDecoration
 import com.elementary.tasks.databinding.FragmentNotesBinding
@@ -41,8 +27,23 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.fragment.dp2px
+import com.github.naz013.ui.common.fragment.startActivity
+import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -72,7 +73,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
     binding.fab.setOnClickListener {
-      PinLoginActivity.openLogged(
+      LoginApi.openLogged(
         requireContext(),
         CreateNoteActivity::class.java
       )
@@ -238,8 +239,8 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
       )
       requireContext().startActivity(ImagePreviewActivity::class.java) {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        putExtra(Constants.INTENT_ID, note.id)
-        putExtra(Constants.INTENT_POSITION, imagePosition)
+        putExtra(IntentKeys.INTENT_ID, note.id)
+        putExtra(IntentKeys.INTENT_POSITION, imagePosition)
       }
     }
     binding.recyclerView.adapter = notesRecyclerAdapter
@@ -272,8 +273,8 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
         2 -> showInStatusBar(note)
         3 -> selectColor(note)
         4 -> {
-          PinLoginActivity.openLogged(requireContext(), CreateNoteActivity::class.java) {
-            putExtra(Constants.INTENT_ID, note.id)
+          LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java) {
+            putExtra(IntentKeys.INTENT_ID, note.id)
           }
         }
 
@@ -321,7 +322,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
 
   private fun previewNote(id: String?) {
     startActivity(NotePreviewActivity::class.java) {
-      putExtra(Constants.INTENT_ID, id)
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 

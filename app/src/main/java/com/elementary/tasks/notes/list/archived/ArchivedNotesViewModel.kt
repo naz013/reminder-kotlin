@@ -7,14 +7,14 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.list.NoteSortProcessor
 import com.elementary.tasks.notes.list.SearchableNotesData
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -74,7 +74,7 @@ class ArchivedNotesViewModel(
       note.archived = false
       noteRepository.save(note)
 
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
 
       notesData.refresh()
 
@@ -101,7 +101,7 @@ class ArchivedNotesViewModel(
       noteRepository.delete(note.key)
       noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
 
       notesData.refresh()
 

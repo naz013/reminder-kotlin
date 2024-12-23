@@ -18,13 +18,13 @@ import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
-import com.github.naz013.feature.common.android.ContextProvider
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.feature.common.android.TextProvider
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.TextProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -111,7 +111,6 @@ class CreateNoteViewModel(
   var time: LocalTime = LocalTime.now()
     private set
 
-  var isLogged = false
   var isNoteEdited = false
     private set
   var isFromFile: Boolean = false
@@ -290,7 +289,7 @@ class CreateNoteViewModel(
       noteRepository.delete(note.key)
       noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -352,7 +351,7 @@ class CreateNoteViewModel(
       Logger.d("saveNote: $note")
       saveImages(note.images, v.key)
       noteRepository.save(v)
-      workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+      workerLauncher.startWork(NoteSingleBackupWorker::class.java, IntentKeys.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
       if (reminder != null) {
@@ -431,7 +430,7 @@ class CreateNoteViewModel(
         eventControlFactory.getController(reminder).enable()
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           reminder.uuId
         )
       }

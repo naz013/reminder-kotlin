@@ -2,7 +2,7 @@ package com.elementary.tasks.googletasks.preview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
@@ -28,7 +28,7 @@ class GoogleTaskPreviewViewModel(
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _googleTask = mutableLiveDataOf<UiGoogleTaskPreview>()
@@ -96,7 +96,7 @@ class GoogleTaskPreviewViewModel(
         postInProgress(false)
         postCommand(Commands.UPDATED)
         withUIContext {
-          updatesHelper.updateTasksWidget()
+          appWidgetUpdater.updateScheduleWidget()
         }
       } catch (e: Throwable) {
         postInProgress(false)

@@ -4,7 +4,12 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.core.utils.UriUtil
+import com.elementary.tasks.BuildConfig
+import com.github.naz013.common.intent.ActivityLauncherCreator
+import com.github.naz013.common.intent.FragmentLauncherCreator
+import com.github.naz013.common.intent.IntentPicker
+import com.github.naz013.common.intent.LauncherCreator
+import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.logging.Logger
 import java.io.File
 import java.text.SimpleDateFormat
@@ -33,7 +38,7 @@ class CameraPhotoPicker private constructor(
 
   fun takePhoto() {
     val photoFile = createImageFile()
-    UriUtil.getUri(getActivity(), photoFile)?.also {
+    UriUtil.getUri(getActivity(), photoFile, BuildConfig.APPLICATION_ID)?.also {
       imageUri = it
       runCatching {
         launch(it)
