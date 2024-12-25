@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
+package com.github.naz013.icalendar.parser.common
 
 import com.github.naz013.icalendar.ByDayRecurParam
 import com.github.naz013.icalendar.ByMonthDayRecurParam
@@ -16,7 +16,6 @@ import com.github.naz013.icalendar.RecurParam
 import com.github.naz013.icalendar.UntilRecurParam
 import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.icalendar.WeekStartRecurParam
-import com.github.naz013.icalendar.parser.common.RecurParamParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

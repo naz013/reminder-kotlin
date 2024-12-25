@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.datetime.recurrence.parser.common
+package com.github.naz013.icalendar.parser.common
 
 import com.github.naz013.icalendar.Param
 import com.github.naz013.icalendar.ParamValueType

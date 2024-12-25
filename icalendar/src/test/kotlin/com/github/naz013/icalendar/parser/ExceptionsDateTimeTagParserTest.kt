@@ -1,7 +1,6 @@
-package com.elementary.tasks.core.utils.datetime.recurrence.parser
+package com.github.naz013.icalendar.parser
 
 import com.github.naz013.icalendar.UtcDateTime
-import com.github.naz013.icalendar.parser.ExceptionsDateTimeTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

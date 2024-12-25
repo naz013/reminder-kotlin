@@ -52,6 +52,13 @@ jobs:
         name: voice_reports
         path: voice-engine-ktx/build/test-results # path to where the xml test results are stored
 
+    - name: Upload iCalendar module Test results
+      uses: actions/upload-artifact@v4
+      if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+      with:
+        name: iCalendar_reports
+        path: icalendar/build/test-results # path to where the xml test results are stored
+
     - name: Run tests for Main module
       run: ./gradlew testProDebugUnitTest
 

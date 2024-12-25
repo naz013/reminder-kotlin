@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.datetime.recurrence.builder
+package com.github.naz013.icalendar.builder
 
 import com.github.naz013.icalendar.ByDayRecurParam
 import com.github.naz013.icalendar.ByMonthDayRecurParam
@@ -14,12 +14,12 @@ import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.Tag
 import com.github.naz013.icalendar.UntilRecurParam
 import com.github.naz013.icalendar.UtcDateTime
-import com.github.naz013.icalendar.builder.RuleBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
 class RuleBuilderTest {
+
   private val ruleBuilder = RuleBuilder()
 
   @Test

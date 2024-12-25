@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.datetime.recurrence.parser
+package com.github.naz013.icalendar.parser
 
 import com.github.naz013.icalendar.ByYearDayRecurParam
 import com.github.naz013.icalendar.CountRecurParam

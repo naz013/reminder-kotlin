@@ -1,23 +1,7 @@
-package com.elementary.tasks.core.utils.datetime.recurrence
+package com.github.naz013.icalendar
 
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.datetime.NowDateTimeProvider
 import com.github.naz013.icalendar.builder.RuleBuilder
 import com.github.naz013.icalendar.parser.TagParser
-import com.github.naz013.icalendar.ByHourRecurParam
-import com.github.naz013.icalendar.ByMonthDayRecurParam
-import com.github.naz013.icalendar.CountRecurParam
-import com.github.naz013.icalendar.DateTimeStartTag
-import com.github.naz013.icalendar.FreqRecurParam
-import com.github.naz013.icalendar.FreqType
-import com.github.naz013.icalendar.IntervalRecurParam
-import com.github.naz013.icalendar.ICalendarApi
-import com.github.naz013.icalendar.RecurrenceRuleTag
-import com.github.naz013.icalendar.RuleMap
-import com.github.naz013.icalendar.Tag
-import com.github.naz013.icalendar.TagType
-import com.github.naz013.icalendar.UtcDateTime
-import io.mockk.mockk
 import org.junit.Assert
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
@@ -27,18 +11,9 @@ class ICalendarApiTest {
   private val ruleBuilder = RuleBuilder()
   private val tagParser = TagParser()
 
-  private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
-  private val dateTimeManager = DateTimeManager(
-    prefs = mockk(),
-    textProvider = mockk(),
-    language = mockk(),
-    nowDateTimeProvider = nowDateTimeProvider
-  )
-
-  private val ICalendarApi = ICalendarApi(
+  private val iCalendarApi = ICalendarApiImpl(
     ruleBuilder = ruleBuilder,
-    tagParser = tagParser,
-    dateTimeManager = dateTimeManager
+    tagParser = tagParser
   )
 
   @Test
@@ -59,7 +34,7 @@ class ICalendarApiTest {
       )
     }
 
-    val result = ICalendarApi.createObject(RuleMap(map))
+    val result = iCalendarApi.createObject(RuleMap(map))
 
     println(result)
 
@@ -89,7 +64,7 @@ class ICalendarApiTest {
       )
     }
     val ruleMap = RuleMap(map)
-    val result = ICalendarApi.generate(ruleMap)
+    val result = iCalendarApi.generate(ruleMap)
 
     val expected = listOf(
       UtcDateTime(startDateTime),
@@ -123,7 +98,7 @@ class ICalendarApiTest {
       )
     }
 
-    val result = ICalendarApi.createObject(RuleMap(map))
+    val result = iCalendarApi.createObject(RuleMap(map))
 
     println(result)
 
@@ -153,7 +128,7 @@ class ICalendarApiTest {
       )
     }
     val ruleMap = RuleMap(map)
-    val result = ICalendarApi.generate(ruleMap)
+    val result = iCalendarApi.generate(ruleMap)
 
     val expected = listOf(
       UtcDateTime(startDateTime),
@@ -189,7 +164,7 @@ class ICalendarApiTest {
       )
     }
 
-    val result = ICalendarApi.createObject(RuleMap(map))
+    val result = iCalendarApi.createObject(RuleMap(map))
 
     println(result)
 
@@ -221,7 +196,7 @@ class ICalendarApiTest {
       )
     }
     val ruleMap = RuleMap(map)
-    val result = ICalendarApi.generate(ruleMap)
+    val result = iCalendarApi.generate(ruleMap)
 
     val expectedDateTimeStart = startDateTime.withHour(15).withDayOfMonth(20)
 
