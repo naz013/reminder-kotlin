@@ -3,7 +3,7 @@ package com.elementary.tasks.settings.calendar
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.binding.HolderBinding
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemCalendarBinding
 
 class CalendarsAdapter : RecyclerView.Adapter<CalendarsAdapter.ViewHolder>() {

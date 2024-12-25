@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.build.preset
 import android.app.AlarmManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.protocol.WeekDaysProtocol
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
@@ -22,7 +22,7 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.ShopItem
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime

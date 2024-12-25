@@ -9,7 +9,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
@@ -149,7 +149,7 @@ class EditReminderViewModel(
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           reminder.uuId
         )
         Commands.DELETED
@@ -161,7 +161,7 @@ class EditReminderViewModel(
         googleCalendarUtils.deleteEvents(reminder.uuId)
         workerLauncher.startWork(
           ReminderDeleteBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           reminder.uuId
         )
       }
@@ -170,6 +170,6 @@ class EditReminderViewModel(
 
   private fun backupReminder(uuId: String) {
     Logger.d("backupReminder: start backup")
-    workerLauncher.startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
+    workerLauncher.startWork(ReminderSingleBackupWorker::class.java, IntentKeys.INTENT_ID, uuId)
   }
 }

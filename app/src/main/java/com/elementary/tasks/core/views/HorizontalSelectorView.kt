@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.HorizontalSelectorViewBinding
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 
 class HorizontalSelectorView : LinearLayout {
 

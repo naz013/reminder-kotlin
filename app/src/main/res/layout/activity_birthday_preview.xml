@@ -236,7 +236,7 @@
         app:selectionRequired="false"
         app:singleSelection="true">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCall"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
@@ -246,7 +246,7 @@
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.Button" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSms"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"

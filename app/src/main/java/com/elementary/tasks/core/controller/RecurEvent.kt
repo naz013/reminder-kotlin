@@ -1,14 +1,14 @@
 package com.elementary.tasks.core.controller
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository
@@ -21,7 +21,7 @@ class RecurEvent(
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper,
+  appWidgetUpdater: AppWidgetUpdater,
   textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   googleTaskRepository: GoogleTaskRepository,
@@ -33,7 +33,7 @@ class RecurEvent(
   googleCalendarUtils,
   notifier,
   jobScheduler,
-  updatesHelper,
+  appWidgetUpdater,
   textProvider,
   dateTimeManager,
   googleTaskRepository

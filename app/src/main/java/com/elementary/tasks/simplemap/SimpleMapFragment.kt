@@ -16,25 +16,25 @@ import com.elementary.tasks.R
 import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.fragments.BaseMapFragment
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.android.colorOf
-import com.github.naz013.feature.common.android.readSerializable
-import com.github.naz013.feature.common.android.toast
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.GeocoderTask
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.ui.DrawableHelper
-import com.github.naz013.feature.common.android.gone
 import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.databinding.FragmentSimpleMapBinding
 import com.elementary.tasks.databinding.ViewMapCustomButtonBinding
 import com.elementary.tasks.places.list.PlacesViewModel
+import com.github.naz013.common.Permissions
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.fragment.colorOf
+import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -338,7 +338,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       placesAllowed = mapParams.isPlaces,
       listener = object : RecentPlacesController.OnPlaceSelectedListener {
         override fun onPlaceSelected(place: UiPlaceList) {
-          if (!Module.isPro) {
+          if (!BuildParams.isPro) {
             addMarker(
               latLng = place.latLng,
               title = place.name,
@@ -375,7 +375,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
     binding.searchCard.visibleGone(mapParams.isSearch)
     binding.radiusCard.visibleGone(mapParams.isRadius)
-    binding.markersCard.visibleGone(mapParams.isStyles && Module.isPro)
+    binding.markersCard.visibleGone(mapParams.isStyles && BuildParams.isPro)
     binding.layersCard.visibleGone(mapParams.isLayers)
 
     binding.customButtonsContainer.removeAllViewsInLayout()

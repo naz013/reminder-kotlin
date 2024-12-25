@@ -1,7 +1,7 @@
 package com.elementary.tasks.notes.preview
 
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
-import com.elementary.tasks.core.utils.ThemeProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
 
 class ImagesSingleton(
   private val themeProvider: ThemeProvider

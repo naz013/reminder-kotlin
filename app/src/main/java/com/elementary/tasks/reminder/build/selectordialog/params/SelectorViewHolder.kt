@@ -3,9 +3,9 @@ package com.elementary.tasks.reminder.build.selectordialog.params
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.inflater
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.ListItemReminderBuilderSelectorBinding
 import com.elementary.tasks.reminder.build.UiSelectorItem
 import com.elementary.tasks.reminder.build.UiSelectorItemState

@@ -7,7 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.params.Prefs
@@ -23,7 +23,7 @@ class SyncDataWorker(
   private val prefs: Prefs,
   context: Context,
   workerParams: WorkerParameters,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val dispatcherProvider: DispatcherProvider,
   private val syncOperationsFactory: SyncOperationsFactory
 ) : CoroutineWorker(context, workerParams) {
@@ -42,8 +42,8 @@ class SyncDataWorker(
       Logger.i("Sync finished with result = $result")
 
       withUIContext {
-        updatesHelper.updateWidgets()
-        updatesHelper.updateNotesWidget()
+        appWidgetUpdater.updateAllWidgets()
+        appWidgetUpdater.updateNotesWidget()
       }
     }
     return Result.success()

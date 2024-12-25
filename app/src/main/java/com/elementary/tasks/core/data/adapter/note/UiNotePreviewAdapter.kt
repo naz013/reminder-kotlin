@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.data.adapter.note
 
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
-import com.elementary.tasks.core.utils.ThemeProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 
 class UiNotePreviewAdapter(
   private val themeProvider: ThemeProvider,

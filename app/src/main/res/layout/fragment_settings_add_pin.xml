@@ -6,7 +6,7 @@
     android:background="?android:colorBackground"
     android:orientation="vertical">
 
-    <com.elementary.tasks.core.views.PinCodeView
+    <com.github.naz013.ui.common.view.PinCodeView
         android:id="@+id/pinView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

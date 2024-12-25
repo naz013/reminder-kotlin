@@ -5,8 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.widget.Toast
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiShareData
+import com.github.naz013.common.uri.UriUtil
 import java.io.File
 
 object TelephonyUtil {
@@ -28,7 +30,7 @@ object TelephonyUtil {
     }
     intent.putExtra(Intent.EXTRA_SUBJECT, title)
     intent.putExtra(Intent.EXTRA_TEXT, note)
-    val uri = UriUtil.getUri(context, file)
+    val uri = UriUtil.getUri(context, file, BuildConfig.APPLICATION_ID)
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     try {
@@ -42,7 +44,7 @@ object TelephonyUtil {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "*/*"
     intent.putExtra(Intent.EXTRA_SUBJECT, message)
-    val uri = UriUtil.getUri(context, file)
+    val uri = UriUtil.getUri(context, file, BuildConfig.APPLICATION_ID)
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     try {
@@ -58,7 +60,7 @@ object TelephonyUtil {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "*/*"
     intent.putExtra(Intent.EXTRA_SUBJECT, shareData.name)
-    val uri = UriUtil.getUri(context, shareData.file)
+    val uri = UriUtil.getUri(context, shareData.file, BuildConfig.APPLICATION_ID)
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     try {
@@ -73,7 +75,7 @@ object TelephonyUtil {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
     intent.putExtra(Intent.EXTRA_SUBJECT, file.name)
-    val uri = UriUtil.getUri(context, file)
+    val uri = UriUtil.getUri(context, file, BuildConfig.APPLICATION_ID)
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     try {
@@ -97,7 +99,7 @@ object TelephonyUtil {
     intent.putExtra(Intent.EXTRA_SUBJECT, subject)
     intent.putExtra(Intent.EXTRA_TEXT, message)
     if (filePath != null) {
-      val uri = UriUtil.getUri(context, filePath)
+      val uri = UriUtil.getUri(context, filePath, BuildConfig.APPLICATION_ID)
       intent.putExtra(Intent.EXTRA_STREAM, uri)
       intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
@@ -122,7 +124,7 @@ object TelephonyUtil {
     intent.putExtra(Intent.EXTRA_SUBJECT, subject)
     intent.putExtra(Intent.EXTRA_TEXT, message)
     if (file != null) {
-      val uri = UriUtil.getUri(context, file)
+      val uri = UriUtil.getUri(context, file, BuildConfig.APPLICATION_ID)
       intent.putExtra(Intent.EXTRA_STREAM, uri)
       intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }

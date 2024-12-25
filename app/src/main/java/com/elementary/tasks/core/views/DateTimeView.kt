@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.DateTimeViewBinding
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -3,10 +3,10 @@ package com.elementary.tasks.simplemap
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.config.MapConfig
-import com.elementary.tasks.core.utils.Module
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.isVisible
-import com.github.naz013.feature.common.android.visible
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.isVisible
+import com.github.naz013.ui.common.view.visible
 import com.github.naz013.colorslider.ColorSlider
 
 class MarkerStyleController(
@@ -25,7 +25,7 @@ class MarkerStyleController(
     private set
 
   init {
-    if (!Module.isPro && selectedStyle != MapConfig.DEFAULT_MARKER_STYLE) {
+    if (!BuildParams.isPro && selectedStyle != MapConfig.DEFAULT_MARKER_STYLE) {
       selectedStyle = MapConfig.DEFAULT_MARKER_STYLE
     }
 

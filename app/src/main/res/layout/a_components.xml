@@ -216,14 +216,14 @@
                 app:selectionRequired="false"
                 app:singleSelection="false">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/message" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -286,7 +286,7 @@
                     android:textColor="?colorOnSurfaceVariant"
                     tools:text="Application" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/deleteReminder"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"

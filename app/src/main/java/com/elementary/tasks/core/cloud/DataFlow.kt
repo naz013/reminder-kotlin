@@ -5,7 +5,7 @@ import com.github.naz013.cloudapi.legacy.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.github.naz013.cloudapi.CloudFileApi
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent

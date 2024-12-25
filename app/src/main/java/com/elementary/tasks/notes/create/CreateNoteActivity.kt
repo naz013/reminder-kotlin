@@ -19,52 +19,54 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.domain.note.NoteWithImages
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.colorOf
-import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.github.naz013.feature.common.android.startActivity
-import com.github.naz013.feature.common.android.toast
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.UriUtil
-import com.github.naz013.feature.common.android.adjustAlpha
+import com.github.naz013.common.uri.UriUtil
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.github.naz013.feature.common.android.isAlmostTransparent
-import com.github.naz013.feature.common.android.isColorDark
-import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.applyBottomInsetsMargin
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.domain.font.FontParams
-import com.github.naz013.feature.common.android.gone
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.utils.ui.readText
-import com.github.naz013.feature.common.android.singleClick
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
 import com.elementary.tasks.notes.create.images.ImagesGridAdapter
 import com.elementary.tasks.notes.create.images.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.font.FontParams
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.common.context.colorOf
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.isAlmostTransparent
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.singleClick
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.slider.Slider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -76,20 +78,17 @@ class CreateNoteActivity :
   BindingActivity<ActivityCreateNoteBinding>(),
   PhotoSelectionUtil.UriCallback {
 
-  private val themeUtil by inject<ThemeProvider>()
+  private val prefs by inject<Prefs>()
+  private val themeProvider by inject<ThemeProvider>()
+  private val dialogues by inject<Dialogues>()
+  private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private var isBgDark = false
 
   private val viewModel by viewModel<CreateNoteViewModel> { parametersOf(getId()) }
   private val photoSelectionUtil = PhotoSelectionUtil(this, this)
-  private val loginLauncher = LoginLauncher(this) {
-    if (!it) {
-      finish()
-    } else {
-      viewModel.isLogged = true
-    }
-  }
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   private val imagesGridAdapter = ImagesGridAdapter()
 
@@ -244,15 +243,9 @@ class CreateNoteActivity :
       ClipDescription.MIMETYPE_TEXT_PLAIN,
       UriUtil.ANY_MIME
     )
-
-    if (prefs.hasPinCode && !viewModel.isLogged) {
-      loginLauncher.askLogin()
-    }
   }
 
   private fun initDefaults(): Pair<Int, Int> {
-    viewModel.isLogged = intentBoolean(PinLoginActivity.ARG_LOGGED)
-
     val color = if (prefs.isNoteColorRememberingEnabled) {
       prefs.lastNoteColor
     } else {
@@ -294,15 +287,19 @@ class CreateNoteActivity :
   }
 
   private fun tryMicClick() {
-    permissionFlow.askPermission(Permissions.RECORD_AUDIO) { micClick() }
+    permissionFlowDelegate.with {
+      askPermission(Permissions.RECORD_AUDIO) { micClick() }
+    }
   }
 
   private fun micClick() {
     if (speechEngine.isStarted()) {
       speechEngine.stopListening()
     } else {
-      permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
-        speechEngine.startListening(speechEngineCallback)
+      permissionFlowDelegate.with {
+        askPermission(Permissions.RECORD_AUDIO) {
+          speechEngine.startListening(speechEngineCallback)
+        }
       }
     }
   }
@@ -373,7 +370,7 @@ class CreateNoteActivity :
   private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
     isBgDark = when {
       pair.second.isAlmostTransparent() -> isDarkMode
-      else -> themeUtil.getNoteLightColor(pair.first, pair.second, palette).isColorDark()
+      else -> themeProvider.getNoteLightColor(pair.first, pair.second, palette).isColorDark()
     }
   }
 
@@ -423,7 +420,7 @@ class CreateNoteActivity :
     updateDateTimeViewState(viewModel.isReminderAttached.value ?: false)
   }
 
-  private fun getId(): String = intentString(Constants.INTENT_ID)
+  private fun getId(): String = intentString(IntentKeys.INTENT_ID)
 
   private fun loadNote() {
     when {
@@ -442,11 +439,13 @@ class CreateNoteActivity :
 
       else -> {
         if (intent.data != null) {
-          permissionFlow.askPermission(Permissions.READ_EXTERNAL) { loadNoteFromFile() }
-        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+          permissionFlowDelegate.with {
+            askPermission(Permissions.READ_EXTERNAL) { loadNoteFromFile() }
+          }
+        } else if (intent.hasExtra(IntentKeys.INTENT_ITEM)) {
           runCatching {
             viewModel.onNoteReceivedFromIntent(
-              intentSerializable(Constants.INTENT_ITEM, NoteWithImages::class.java)
+              intentSerializable(IntentKeys.INTENT_ITEM, NoteWithImages::class.java)
             )
           }
         }
@@ -495,7 +494,7 @@ class CreateNoteActivity :
     viewModel.palette.nonNullObserve(this) {
       Logger.d("observeStates: palette -> $it")
       prefs.notePalette = it
-      binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
+      binding.colorSlider.setColors(themeProvider.noteColorsForSlider(it))
       val pair = newPair(binding.colorSlider.selectedItem, binding.opacityBar.valueInt)
       updateDarkness(pair, it)
       updateBackground(pair, it)
@@ -508,8 +507,8 @@ class CreateNoteActivity :
       Logger.d("initViewModel: $commands")
       when (commands) {
         Commands.DELETED, Commands.SAVED -> {
-          updatesHelper.updateNotesWidget()
-          updatesHelper.updateWidgets()
+          appWidgetUpdater.updateNotesWidget()
+          appWidgetUpdater.updateAllWidgets()
           finish()
         }
 
@@ -528,9 +527,11 @@ class CreateNoteActivity :
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {
         R.id.action_share -> {
-          permissionFlow.askPermissions(
-            listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-          ) { viewModel.shareNote(getText(), binding.opacityBar.valueInt) }
+          permissionFlowDelegate.with {
+            askPermissions(
+              listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+            ) { viewModel.shareNote(getText(), binding.opacityBar.valueInt) }
+          }
           true
         }
 
@@ -631,7 +632,7 @@ class CreateNoteActivity :
       palette = palette()
     )
     startActivity(ImagePreviewActivity::class.java) {
-      putExtra(Constants.INTENT_POSITION, position)
+      putExtra(IntentKeys.INTENT_POSITION, position)
     }
   }
 
@@ -701,10 +702,10 @@ class CreateNoteActivity :
   private fun updateBackground(pair: Pair<Int, Int>, palette: Int = palette()) {
     Logger.d("updateBackground: $pair, $palette")
 
-    val lightColorSemi = themeUtil.getNoteLightColor(pair.first, pair.second, palette)
+    val lightColorSemi = themeProvider.getNoteLightColor(pair.first, pair.second, palette)
     binding.layoutContainer.setBackgroundColor(lightColorSemi)
 
-    val lightColor = themeUtil.getNoteLightColor(pair.first, 100, palette)
+    val lightColor = themeProvider.getNoteLightColor(pair.first, 100, palette)
     window.statusBarColor = lightColor
     window.navigationBarColor = lightColor
     binding.bottomBar.setCardBackgroundColor(lightColor)
@@ -758,9 +759,9 @@ class CreateNoteActivity :
       else -> bind.paletteOne.isChecked = true
     }
 
-    bind.colorSliderOne.setColors(themeUtil.noteColorsForSlider(0))
-    bind.colorSliderTwo.setColors(themeUtil.noteColorsForSlider(1))
-    bind.colorSliderThree.setColors(themeUtil.noteColorsForSlider(2))
+    bind.colorSliderOne.setColors(themeProvider.noteColorsForSlider(0))
+    bind.colorSliderTwo.setColors(themeProvider.noteColorsForSlider(1))
+    bind.colorSliderThree.setColors(themeProvider.noteColorsForSlider(2))
 
     bind.colorSliderOne.isEnabled = false
     bind.colorSliderTwo.isEnabled = false

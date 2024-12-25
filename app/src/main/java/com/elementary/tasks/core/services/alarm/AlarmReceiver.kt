@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.elementary.tasks.core.services.BaseBroadcast
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcessor
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
@@ -32,7 +32,7 @@ class AlarmReceiver : BaseBroadcast() {
   }
 
   private fun processReminder(extras: Bundle?) {
-    val id = extras?.getString(Constants.INTENT_ID) ?: return
+    val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
 
     Logger.d("processReminder: id = $id")
 
@@ -40,7 +40,7 @@ class AlarmReceiver : BaseBroadcast() {
   }
 
   private fun processRepeat(extras: Bundle?) {
-    val id = extras?.getString(Constants.INTENT_ID) ?: return
+    val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
 
     Logger.d("processRepeat: id = $id")
 

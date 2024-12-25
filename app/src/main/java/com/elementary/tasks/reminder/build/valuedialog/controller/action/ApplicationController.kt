@@ -3,10 +3,10 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.action
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.BuilderItemApplicationBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController

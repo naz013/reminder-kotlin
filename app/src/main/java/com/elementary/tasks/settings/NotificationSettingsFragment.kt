@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.core.utils.ui.SelectionList
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
 import java.util.Locale
 
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
@@ -119,7 +118,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   private fun showLedColorDialog() {
     dialogues.showPropertyDialog(
       requireContext(),
-      SelectionList(
+      Dialogues.SelectionList(
         position = prefs.ledColor,
         title = getString(R.string.led_color),
         okButtonTitle = getString(R.string.ok),

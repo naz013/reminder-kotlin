@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.os
 
 import android.content.Context
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 
 class ContextSwitcher(
   private val contextProvider: ContextProvider

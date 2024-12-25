@@ -7,10 +7,10 @@ import android.provider.ContactsContract
 import android.text.TextUtils
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.contacts.ContactsReader
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.readString
 import com.github.naz013.domain.Birthday
 import com.github.naz013.repository.BirthdayRepository

@@ -5,25 +5,26 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.note.OldNote
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.os.IntentDataHolder
-import com.github.naz013.feature.common.android.intentForClass
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.OldNote
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.LightThemedActivity
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.context.intentForClass
 import org.koin.android.ext.android.inject
 
-class IntentActivity : ThemedActivity() {
+class IntentActivity : LightThemedActivity() {
 
   private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
   private val intentDataHolder by inject<IntentDataHolder>()
@@ -46,7 +47,7 @@ class IntentActivity : ThemedActivity() {
             if (any.isValid()) {
               startActivity(
                 intentForClass(CreatePlaceActivity::class.java)
-                  .putExtra(Constants.INTENT_ITEM, any)
+                  .putExtra(IntentKeys.INTENT_ITEM, any)
               )
             } else {
               toast(getString(R.string.unsupported_file_format))
@@ -59,7 +60,7 @@ class IntentActivity : ThemedActivity() {
             if (noteWithImages != null) {
               startActivity(
                 intentForClass(CreateNoteActivity::class.java)
-                  .putExtra(Constants.INTENT_ITEM, noteWithImages)
+                  .putExtra(IntentKeys.INTENT_ITEM, noteWithImages)
               )
             } else {
               toast(getString(R.string.unsupported_file_format))
@@ -69,7 +70,7 @@ class IntentActivity : ThemedActivity() {
 
           is Birthday -> {
             if (any.isValid()) {
-              intentDataHolder.putData(Constants.INTENT_ITEM, any)
+              intentDataHolder.putData(IntentKeys.INTENT_ITEM, any)
               startActivity(intentForClass(AddBirthdayActivity::class.java))
             } else {
               toast(getString(R.string.unsupported_file_format))
@@ -80,7 +81,7 @@ class IntentActivity : ThemedActivity() {
           is Reminder -> {
             if (any.isValid()) {
               reminderBuilderLauncher.openNotLogged(this) {
-                putExtra(Constants.INTENT_ITEM, any)
+                putExtra(IntentKeys.INTENT_ITEM, any)
               }
             } else {
               toast(getString(R.string.unsupported_file_format))
@@ -92,7 +93,7 @@ class IntentActivity : ThemedActivity() {
             if (any.isValid()) {
               startActivity(
                 intentForClass(CreateGroupActivity::class.java)
-                  .putExtra(Constants.INTENT_ITEM, any)
+                  .putExtra(IntentKeys.INTENT_ITEM, any)
               )
             } else {
               toast(getString(R.string.unsupported_file_format))

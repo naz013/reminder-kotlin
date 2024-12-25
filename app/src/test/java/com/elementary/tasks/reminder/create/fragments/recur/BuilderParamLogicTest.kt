@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
+import com.github.naz013.icalendar.RecurParamType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

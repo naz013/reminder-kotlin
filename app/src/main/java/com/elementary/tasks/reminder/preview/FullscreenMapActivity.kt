@@ -6,11 +6,11 @@ import android.view.MenuItem
 import android.view.Window
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nullObserve
-import com.github.naz013.feature.common.android.applyBottomInsetsMargin
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -52,7 +52,7 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
     initViewModel()
   }
 
-  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)

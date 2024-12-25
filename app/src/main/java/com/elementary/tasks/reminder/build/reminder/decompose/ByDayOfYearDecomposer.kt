@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem

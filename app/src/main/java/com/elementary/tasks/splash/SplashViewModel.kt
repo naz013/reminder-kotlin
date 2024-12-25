@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.data.CalendarDataEngine
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier

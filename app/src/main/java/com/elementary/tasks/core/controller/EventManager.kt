@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.controller
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.invokeSuspend
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.Reminder
@@ -12,12 +12,12 @@ abstract class EventManager(
   private val reminderRepository: ReminderRepository,
   protected val prefs: Prefs,
   protected val notifier: Notifier,
-  protected val updatesHelper: UpdatesHelper
+  protected val appWidgetUpdater: AppWidgetUpdater
 ) : EventControl {
 
   protected fun save() {
     invokeSuspend { reminderRepository.save(reminder) }
-    updatesHelper.updateWidgets()
+    appWidgetUpdater.updateAllWidgets()
     if (prefs.isSbNotificationEnabled) {
       notifier.sendShowReminderPermanent()
     }
@@ -25,7 +25,7 @@ abstract class EventManager(
 
   protected fun remove() {
     invokeSuspend { reminderRepository.delete(reminder.uuId) }
-    updatesHelper.updateWidgets()
+    appWidgetUpdater.updateAllWidgets()
     if (prefs.isSbNotificationEnabled) {
       notifier.sendShowReminderPermanent()
     }

@@ -8,7 +8,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 
@@ -21,7 +21,7 @@ class DropboxLogin(
 
   fun login() {
     var isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO)
-    if (Module.isPro) isIn = isAppInstalled(MARKET_APP_JUSTREMINDER)
+    if (BuildParams.isPro) isIn = isAppInstalled(MARKET_APP_JUSTREMINDER)
     if (isIn) {
       checkDialog().show()
     } else {
@@ -73,7 +73,7 @@ class DropboxLogin(
 
   private fun deleteApp() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-    if (Module.isPro) {
+    if (BuildParams.isPro) {
       intent.data = Uri.parse("package:$MARKET_APP_JUSTREMINDER")
     } else {
       intent.data = Uri.parse("package:$MARKET_APP_JUSTREMINDER_PRO")
@@ -84,7 +84,7 @@ class DropboxLogin(
   private fun openApp() {
     val i: Intent?
     val manager = activity.packageManager
-    i = if (Module.isPro) {
+    i = if (BuildParams.isPro) {
       manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
     } else {
       manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)

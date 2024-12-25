@@ -5,14 +5,14 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.calendar.monthview.DayBottomSheetDialog
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
+import com.github.naz013.domain.Reminder
+import com.github.naz013.ui.common.login.LoginApi
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDate
@@ -66,7 +66,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
     if (isAdded) {
       val deepLinkData = BirthdayDateDeepLinkData(date)
       withActivity {
-        PinLoginActivity.openLogged(it, AddBirthdayActivity::class.java, deepLinkData) { }
+        LoginApi.openLogged(it, AddBirthdayActivity::class.java, deepLinkData) { }
       }
     }
   }

@@ -9,9 +9,9 @@ import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.IdProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
@@ -20,7 +20,7 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -139,7 +139,7 @@ class CreateGroupViewModel(
       reminderGroupRepository.save(group)
       workerLauncher.startWork(
         GroupSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         group.groupUuId
       )
       Logger.logEvent("Group saved")
@@ -158,7 +158,7 @@ class CreateGroupViewModel(
       Logger.logEvent("Group deleted")
       workerLauncher.startWork(
         GroupDeleteBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminderGroup.groupUuId
       )
     }

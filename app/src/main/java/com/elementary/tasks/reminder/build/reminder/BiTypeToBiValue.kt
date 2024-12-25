@@ -8,8 +8,8 @@ import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqType
 import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams

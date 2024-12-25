@@ -2,23 +2,25 @@ package com.elementary.tasks.reminder.create
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.BuildParams
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.views.PrefsView
 import com.elementary.tasks.databinding.ActivityConfigureReminderCreatorBinding
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.visibleGone
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 
 @Deprecated("Replaced by new Builder")
 class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBinding>() {
 
+  private val prefs by inject<Prefs>()
   private val googleTasksAuthManager by inject<GoogleTasksAuthManager>()
-  private val config: ReminderCreatorConfig = prefs.reminderCreatorParams
+  private val config: ReminderCreatorConfig by lazy { prefs.reminderCreatorParams }
 
   override fun inflateBinding() = ActivityConfigureReminderCreatorBinding.inflate(layoutInflater)
 
@@ -62,7 +64,7 @@ class ConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBindin
       config.setTuneExtraPickerEnabled(it)
     }
 
-    binding.ledParam.visibleGone(Module.isPro)
+    binding.ledParam.visibleGone(BuildParams.isPro)
     initParam(binding.ledParam, config.isLedPickerEnabled()) {
       config.setLedPickerEnabled(it)
     }

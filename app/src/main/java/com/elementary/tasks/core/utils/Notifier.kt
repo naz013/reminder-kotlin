@@ -11,27 +11,30 @@ import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.WidgetUtils
-import com.elementary.tasks.core.data.invokeSuspend
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
-import com.elementary.tasks.core.os.PendingIntentWrapper
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import com.github.naz013.ui.common.theme.ThemeProvider
 import org.threeten.bp.LocalDateTime
 import java.util.Calendar
 
@@ -41,7 +44,8 @@ class Notifier(
   private val dateTimeManager: DateTimeManager,
   private val systemServiceProvider: SystemServiceProvider,
   private val reminderRepository: ReminderRepository,
-  private val birthdayRepository: BirthdayRepository
+  private val birthdayRepository: BirthdayRepository,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun createChannels() {
@@ -255,9 +259,9 @@ class Notifier(
       remoteViews.setTextViewText(R.id.text, context.getString(R.string.no_events))
       remoteViews.setViewVisibility(R.id.featured, View.GONE)
     }
-    WidgetUtils.setIcon(remoteViews, R.drawable.ic_fluent_clock_alarm, R.id.notificationAdd)
-    WidgetUtils.setIcon(remoteViews, R.drawable.ic_fluent_note, R.id.noteAdd)
-    WidgetUtils.setIcon(remoteViews, R.drawable.ic_fluent_alert, R.id.bellIcon)
+    setIcon(remoteViews, R.drawable.ic_fluent_clock_alarm, R.id.notificationAdd)
+    setIcon(remoteViews, R.drawable.ic_fluent_note, R.id.noteAdd)
+    setIcon(remoteViews, R.drawable.ic_fluent_alert, R.id.bellIcon)
 
     remoteViews.setInt(
       R.id.notificationBg,
@@ -268,6 +272,10 @@ class Notifier(
     remoteViews.setTextColor(R.id.featured, colorOnPrimary)
     remoteViews.setTextColor(R.id.text, colorOnPrimary)
     notify(PermanentReminderReceiver.PERM_ID, builder.build())
+  }
+
+  private fun setIcon(rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {
+    rv.setImageViewResource(viewId, iconId)
   }
 
   fun showBirthdayPermanent() {
@@ -314,7 +322,7 @@ class Notifier(
     return if (birthday.ignoreYear) {
       date + " | " + birthday.name
     } else {
-      date + " | " + birthday.name + " | " + dateTimeManager.getAgeFormatted(birthday.date)
+      date + " | " + birthday.name + " | " + modelDateTimeFormatter.getAgeFormatted(birthday.date)
     }
   }
 

@@ -3,11 +3,11 @@ package com.elementary.tasks.calendar.data
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.calendar.EventsCursor
-import com.elementary.tasks.core.utils.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.android.ContextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -117,10 +117,10 @@ class DayLiveData(
   }
 
   private fun birthdayColor(): Int {
-    return ThemeProvider.colorBirthdayCalendar(context.themedContext, prefs)
+    return ThemeProvider.colorBirthdayCalendar(context.themedContext, prefs.birthdayColor)
   }
 
   private fun reminderColor(): Int {
-    return ThemeProvider.colorReminderCalendar(context.themedContext, prefs)
+    return ThemeProvider.colorReminderCalendar(context.themedContext, prefs.reminderColor)
   }
 }

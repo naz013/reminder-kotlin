@@ -14,7 +14,7 @@ import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleReplyBinding

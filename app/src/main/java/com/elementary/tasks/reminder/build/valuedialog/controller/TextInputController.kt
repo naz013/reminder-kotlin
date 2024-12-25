@@ -9,20 +9,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
-import com.github.naz013.feature.common.android.gone
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.core.utils.ui.readText
-import com.github.naz013.feature.common.android.singleClick
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.BuilderItemSummaryBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
+import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.singleClick
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 
 class TextInputController(
   builderItem: BuilderItem<String>,

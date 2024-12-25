@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.github.naz013.analytics.AnalyticsEventSender
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.arch.CurrentStateHolder
-import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.navigation.FragmentCallback
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.ui.common.activity.LightThemedActivity
 import org.koin.android.ext.android.inject
 
 abstract class BaseNavigationFragment<B : ViewBinding> :
@@ -34,7 +34,7 @@ abstract class BaseNavigationFragment<B : ViewBinding> :
 
   protected fun moveBack() {
     val activity = activity
-    if (activity is ThemedActivity) {
+    if (activity is LightThemedActivity) {
       activity.invokeBackPress()
     } else {
       activity?.onBackPressedDispatcher?.onBackPressed()

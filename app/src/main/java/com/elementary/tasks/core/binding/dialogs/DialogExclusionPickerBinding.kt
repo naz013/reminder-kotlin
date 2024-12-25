@@ -6,7 +6,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.ToggleButton
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.Binding
+import com.github.naz013.ui.common.view.Binding
 
 class DialogExclusionPickerBinding(view: View) : Binding(view) {
   val radioGroup: RadioGroup by bindView(R.id.radioGroup)

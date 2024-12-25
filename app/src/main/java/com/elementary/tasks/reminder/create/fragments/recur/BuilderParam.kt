@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.create.fragments.recur
 
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParamType
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqType
+import com.github.naz013.icalendar.RecurParamType
 
 data class BuilderParam<T>(
   val recurParamType: RecurParamType,

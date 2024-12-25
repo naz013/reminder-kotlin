@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.formatter
 
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 
 class ApplicationFormatter(
   private val packageManagerWrapper: PackageManagerWrapper

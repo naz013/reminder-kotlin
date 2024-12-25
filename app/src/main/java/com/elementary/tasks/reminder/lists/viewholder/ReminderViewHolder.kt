@@ -4,10 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.inflater
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderNewBinding
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
 import com.elementary.tasks.reminder.lists.data.UiReminderList

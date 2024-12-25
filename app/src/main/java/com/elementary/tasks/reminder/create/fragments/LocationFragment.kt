@@ -6,22 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.github.naz013.feature.common.android.fadeInAnimation
-import com.github.naz013.feature.common.android.fadeOutAnimation
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.isVisible
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.common.Module
+import com.github.naz013.common.Permissions
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.fadeInAnimation
+import com.github.naz013.ui.common.view.fadeOutAnimation
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.isVisible
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.gms.maps.model.LatLng
 
 class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {

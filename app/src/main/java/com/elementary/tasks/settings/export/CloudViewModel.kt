@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class CloudViewModel(
   private val dispatcherProvider: DispatcherProvider,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTaskRepository: GoogleTaskRepository
@@ -28,7 +28,7 @@ class CloudViewModel(
       googleTaskRepository.deleteAll()
       googleTaskListRepository.deleteAll()
       withUIContext {
-        updatesHelper.updateTasksWidget()
+        appWidgetUpdater.updateScheduleWidget()
         isLoading.postValue(false)
       }
     }
@@ -40,7 +40,7 @@ class CloudViewModel(
       syncAllGoogleTaskLists()
       withUIContext {
         isLoading.postValue(false)
-        updatesHelper.updateTasksWidget()
+        appWidgetUpdater.updateScheduleWidget()
       }
     }
   }

@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services.action.reminder
 
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.cancel.ReminderCancelHandlerQ
@@ -10,7 +10,7 @@ import com.elementary.tasks.core.services.action.reminder.process.ReminderHandle
 import com.elementary.tasks.core.services.action.reminder.process.ReminderHandlerSilent
 import com.elementary.tasks.core.services.action.reminder.snooze.ReminderSnoozeHandlerQ
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
 
 class ReminderHandlerFactory(

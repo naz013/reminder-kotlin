@@ -1,23 +1,25 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
-import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class DateTimeInjector(
   private val dateTimeManager: DateTimeManager,
-  private val iCalDateTimeInjector: ICalDateTimeInjector
+  private val iCalDateTimeInjector: ICalDateTimeInjector,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   operator fun invoke(
@@ -53,25 +55,25 @@ class DateTimeInjector(
       }
 
       type.isTimer() && reminder.after != 0L -> {
-        dateTimeManager.generateNextTimer(reminder, true)
+        modelDateTimeFormatter.generateNextTimer(reminder, true)
       }
 
       type.isByWeekday() && IntervalUtil.isWeekday(reminder.weekdays) && time != null -> {
         reminder.eventTime =
           dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-        dateTimeManager.getNextWeekdayTime(reminder)
+        modelDateTimeFormatter.getNextWeekdayTime(reminder)
       }
 
       type.isMonthly() && time != null -> {
         reminder.eventTime =
           dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-        dateTimeManager.getNewNextMonthDayTime(reminder)
+        modelDateTimeFormatter.getNewNextMonthDayTime(reminder)
       }
 
       type.isYearly() && time != null -> {
         reminder.eventTime =
           dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-        dateTimeManager.getNextYearDayTime(reminder)
+        modelDateTimeFormatter.getNextYearDayTime(reminder)
       }
 
       type.isGpsType() -> {

@@ -200,7 +200,7 @@
 
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/scanButton"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="match_parent"

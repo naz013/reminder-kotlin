@@ -15,9 +15,9 @@ import com.elementary.tasks.calendar.dayview.DayPagerItem
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver

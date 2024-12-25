@@ -3,17 +3,17 @@ package com.elementary.tasks.notes.list
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.TextProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
@@ -39,7 +39,7 @@ class NotesViewModel(
   private val noteImageRepository: NoteImageRepository,
   private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
   private val notifier: Notifier,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -84,7 +84,7 @@ class NotesViewModel(
       note.archived = true
       noteRepository.save(note)
 
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
 
       notesData.refresh()
 
@@ -92,7 +92,7 @@ class NotesViewModel(
       postCommand(Commands.UPDATED)
 
       withUIContext {
-        updatesHelper.updateNotesWidget()
+        appWidgetUpdater.updateNotesWidget()
       }
     }
   }
@@ -136,7 +136,7 @@ class NotesViewModel(
       noteRepository.delete(note.key)
       noteRepository.deleteImageForNote(note.key)
       noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
 
       notesData.refresh()
 
@@ -144,7 +144,7 @@ class NotesViewModel(
       postCommand(Commands.DELETED)
 
       withUIContext {
-        updatesHelper.updateNotesWidget()
+        appWidgetUpdater.updateNotesWidget()
       }
     }
   }
@@ -167,7 +167,7 @@ class NotesViewModel(
       note.color = color
       note.updatedAt = DateTimeManager.gmtDateTime
       noteRepository.save(note)
-      workerLauncher.startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, note.key)
+      workerLauncher.startWork(NoteSingleBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
 
       notesData.refresh()
 
@@ -175,7 +175,7 @@ class NotesViewModel(
       postCommand(Commands.SAVED)
 
       withUIContext {
-        updatesHelper.updateNotesWidget()
+        appWidgetUpdater.updateNotesWidget()
       }
     }
   }

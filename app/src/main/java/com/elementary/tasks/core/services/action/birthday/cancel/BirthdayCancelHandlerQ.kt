@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.services.action.birthday.cancel
 
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.services.action.ActionHandler
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.domain.Birthday
 import com.github.naz013.repository.BirthdayRepository
@@ -16,7 +16,7 @@ class BirthdayCancelHandlerQ(
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,
   private val workerLauncher: WorkerLauncher,
-  private val updatesHelper: UpdatesHelper
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : ActionHandler<Birthday> {
 
   override suspend fun handle(data: Birthday) {
@@ -28,8 +28,8 @@ class BirthdayCancelHandlerQ(
     )
     notifier.showBirthdayPermanent()
     notifier.cancel(data.uniqueId)
-    workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, data.uuId)
-    updatesHelper.updateWidgets()
-    updatesHelper.updateCalendarWidget()
+    workerLauncher.startWork(SingleBackupWorker::class.java, IntentKeys.INTENT_ID, data.uuId)
+    appWidgetUpdater.updateAllWidgets()
+    appWidgetUpdater.updateCalendarWidget()
   }
 }

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_fluent_dismiss"
+                app:navigationIconTint="?colorOnSurface"
+                app:title="@string/note"
+                app:titleCentered="true" />
+
+            <com.github.naz013.ui.common.view.gradient.UiGradientFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                app:gradientFrameLayout_cornerRadius="0dp"
+                app:gradientFrameLayout_endColor="?colorTertiary"
+                app:gradientFrameLayout_startColor="?colorPrimary">
+
+                <ImageView
+                    android:id="@+id/note_preview"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"
+                    android:layout_gravity="center" />
+
+            </com.github.naz013.ui.common.view.gradient.UiGradientFrameLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/text_size" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/fontSizeBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:stepSize="1"
+                android:value="16"
+                android:valueFrom="6"
+                android:valueTo="250"
+                app:labelBehavior="floating"
+                app:tickVisible="false" />
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/text_color" />
+
+            <com.github.naz013.colorslider.ColorSlider
+                android:id="@+id/textColorSlider"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp" />
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/text_opacity" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/textOpacityBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:stepSize="1"
+                android:valueFrom="0"
+                android:valueTo="100"
+                app:labelBehavior="floating"
+                app:tickVisible="false" />
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/widget_note_horizontal_alignment" />
+
+            <RadioGroup
+                android:id="@+id/horGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/horLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_note_left" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/horCenter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/widget_note_center" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/horRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_note_right" />
+
+            </RadioGroup>
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/widget_note_vertical_alignment" />
+
+            <RadioGroup
+                android:id="@+id/verGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/verTop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_note_top" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/verCenter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/widget_note_center" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/verBottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_note_bottom" />
+
+            </RadioGroup>
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/foreground_color" />
+
+            <com.github.naz013.colorslider.ColorSlider
+                android:id="@+id/overlayColorSlider"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp" />
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/foreground_opacity" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/overlayOpacityBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:stepSize="1"
+                android:valueFrom="0"
+                android:valueTo="100"
+                app:labelBehavior="floating"
+                app:tickVisible="false" />
+
+            <TextView
+                style="@style/UiComponentSectionLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/notes" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
+                android:visibility="visible"
+                tools:itemCount="5"
+                tools:listitem="@layout/list_item_widget_note_selectable" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabSave"
+        style="@style/UiComponentExtendedFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="16dp"
+        android:text="@string/save"
+        android:textAllCaps="true"
+        android:visibility="visible"
+        app:icon="@drawable/ic_fluent_checkmark" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

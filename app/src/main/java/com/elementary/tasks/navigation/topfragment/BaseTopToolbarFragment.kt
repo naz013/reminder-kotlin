@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.github.naz013.ui.common.view.applyTopInsets
 import com.elementary.tasks.databinding.FragmentBaseToolbarBinding
 
 abstract class BaseTopToolbarFragment<B : ViewBinding> :

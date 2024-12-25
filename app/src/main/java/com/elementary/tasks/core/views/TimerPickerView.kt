@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.databinding.ViewTimerPickerBinding
 import com.github.naz013.logging.Logger
 

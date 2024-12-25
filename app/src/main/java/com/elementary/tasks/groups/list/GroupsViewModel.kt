@@ -6,7 +6,7 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.observeTable
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
@@ -47,7 +47,7 @@ class GroupsViewModel(
       postCommand(Commands.DELETED)
       workerLauncher.startWork(
         GroupDeleteBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminderGroup.groupUuId
       )
     }
@@ -66,7 +66,7 @@ class GroupsViewModel(
       reminderGroupRepository.save(reminderGroup.copy(groupColor = color))
       workerLauncher.startWork(
         GroupSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminderGroup.groupUuId
       )
       withUIContext { postInProgress(false) }

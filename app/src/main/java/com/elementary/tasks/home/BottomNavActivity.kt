@@ -17,20 +17,30 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.GlobalAction
 import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
+import com.elementary.tasks.navigation.ActivityNavigator
 import com.elementary.tasks.navigation.FragmentCallback
+import com.elementary.tasks.navigation.NavigationConsumer
+import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.SearchableFragmentCallback
 import com.elementary.tasks.navigation.SearchableFragmentQueryObserver
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
 import com.elementary.tasks.voice.ConversationViewModel
+import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DeepLinkDestination
+import com.github.naz013.navigation.Destination
+import com.github.naz013.navigation.FragmentDayView
+import com.github.naz013.navigation.FragmentSettings
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,6 +52,8 @@ class BottomNavActivity :
   SearchableFragmentCallback {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
+  private val navigationObservable by inject<NavigationObservable>()
+  private val prefs by inject<Prefs>()
   private val viewModel by viewModel<ConversationViewModel>()
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
   private lateinit var navController: NavController
@@ -50,6 +62,14 @@ class BottomNavActivity :
   private var currentResumedFragment: BaseNavigationFragment<*>? = null
   private var fragmentSearchView: SearchView? = null
   private var searchableFragmentQueryObserver: SearchableFragmentQueryObserver? = null
+
+  private val navigationConsumer = object : NavigationConsumer {
+    override fun consume(destination: Destination) {
+      if (destination is ActivityDestination) {
+        ActivityNavigator(this@BottomNavActivity).navigate(destination)
+      }
+    }
+  }
 
   override fun inflateBinding() = ActivityBottomNavBinding.inflate(layoutInflater)
 
@@ -65,22 +85,30 @@ class BottomNavActivity :
     binding.bottomNavigation.setupWithNavController(navController)
 
     if (intent.action == Intent.ACTION_VIEW) {
-      when (intent.getIntExtra(ARG_DEST, Dest.DAY_VIEW)) {
-        Dest.DAY_VIEW -> {
+      val deepLinkDestination = intent.readParcelable(
+        DeepLinkDestination.KEY,
+        DeepLinkDestination::class.java
+      )
+      when (deepLinkDestination) {
+        is FragmentDayView -> {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
-            .setArguments(intent.extras)
+            .setArguments(deepLinkDestination.extras)
             .setDestination(R.id.dayViewFragment)
             .createTaskStackBuilder()
             .startActivities()
         }
 
-        Dest.SETTINGS -> {
+        is FragmentSettings -> {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setDestination(R.id.settingsFragment)
             .createTaskStackBuilder()
             .startActivities()
+        }
+
+        else -> {
+          Logger.e("BottomNavActivity", "Unknown deep link destination: $deepLinkDestination")
         }
       }
     }
@@ -90,11 +118,13 @@ class BottomNavActivity :
 
   override fun onResume() {
     super.onResume()
+    navigationObservable.subscribe(navigationConsumer)
     buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
   }
 
   override fun onPause() {
     super.onPause()
+    navigationObservable.unsubscribe(navigationConsumer)
     buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
     fragmentSearchView?.takeIf { it.isShowing }?.also {
       it.clearText()
@@ -199,14 +229,5 @@ class BottomNavActivity :
     }
 
     fragmentSearchView = searchView
-  }
-
-  companion object {
-    const val ARG_DEST = "arg_dest"
-
-    object Dest {
-      const val DAY_VIEW = 0
-      const val SETTINGS = 1
-    }
   }
 }

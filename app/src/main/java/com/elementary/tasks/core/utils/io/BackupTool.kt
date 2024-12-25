@@ -6,7 +6,7 @@ import androidx.annotation.Keep
 import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.cloud.completables.ReminderCompletable
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.github.naz013.domain.Birthday

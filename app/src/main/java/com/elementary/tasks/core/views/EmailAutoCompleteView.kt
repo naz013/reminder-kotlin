@@ -12,7 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.readString
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext

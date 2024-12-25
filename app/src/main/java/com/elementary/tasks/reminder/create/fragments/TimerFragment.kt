@@ -9,15 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiUsedTimeList
 import com.elementary.tasks.core.utils.bindProperty
-import com.github.naz013.feature.common.minusMillis
-import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.inflater
-import com.github.naz013.feature.common.android.visible
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.core.views.TimerPickerView
@@ -25,7 +19,13 @@ import com.elementary.tasks.databinding.FragmentReminderTimerBinding
 import com.elementary.tasks.databinding.ListItemUsedTimeBinding
 import com.elementary.tasks.reminder.create.fragments.timer.UiUsedTimeListDiffCallback
 import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
+import com.github.naz013.common.datetime.minusMillis
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
@@ -80,7 +80,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     reminder.eventCount = 0
     reminder.recurDataObject = null
 
-    val startTime = dateTimeManager.generateNextTimer(reminder, true)
+    val startTime = modelDateTimeFormatter.generateNextTimer(reminder, true)
     Logger.d("EVENT_TIME ${dateTimeManager.logDateTime(startTime)}")
 
     if (!validBefore(startTime, reminder)) {

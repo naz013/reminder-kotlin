@@ -4,24 +4,29 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.livedata.nullObserve
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.nullObserve
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
+  private val appWidgetUpdater by inject<AppWidgetUpdater>()
+  private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getId()) }
 
   override fun inflateBinding() = ActivityCreateTaskListBinding.inflate(layoutInflater)
@@ -52,7 +57,7 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
     initViewModel()
   }
 
-  private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+  private fun getId(): String = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
@@ -160,7 +165,7 @@ class GoogleTaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() 
 
   override fun onDestroy() {
     super.onDestroy()
-    updatesHelper.updateTasksWidget()
+    appWidgetUpdater.updateScheduleWidget()
   }
 
   override fun handleBackPress(): Boolean {

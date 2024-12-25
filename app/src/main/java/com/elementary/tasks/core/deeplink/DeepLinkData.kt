@@ -1,14 +1,10 @@
 package com.elementary.tasks.core.deeplink
 
-import android.os.Parcelable
+import com.github.naz013.ui.common.activity.DeepLinkData
 import kotlinx.parcelize.Parcelize
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-
-sealed class DeepLinkData(
-  val intentKey: IntentKey
-) : Parcelable
 
 @Parcelize
 data class ReminderDatetimeTypeDeepLinkData(
@@ -28,8 +24,16 @@ data class GoogleTaskDateTimeDeepLinkData(
 ) : DeepLinkData(IntentKey.GOOGLE_TASK_DATE_TIME)
 
 // Name structure, first word: prefix, second and others: parameters
-enum class IntentKey(val value: String) {
-  REMINDER_DATETIME_TYPE("reminder_datetime_type"),
-  BIRTHDAY_DATE("birthday_date"),
-  GOOGLE_TASK_DATE_TIME("google_task_date_time")
+object IntentKey {
+  const val REMINDER_DATETIME_TYPE = "reminder_datetime_type"
+  const val BIRTHDAY_DATE = "birthday_date"
+  const val GOOGLE_TASK_DATE_TIME = "google_task_date_time"
+
+  fun keys(): List<String> {
+    return listOf(
+      REMINDER_DATETIME_TYPE,
+      BIRTHDAY_DATE,
+      GOOGLE_TASK_DATE_TIME
+    )
+  }
 }

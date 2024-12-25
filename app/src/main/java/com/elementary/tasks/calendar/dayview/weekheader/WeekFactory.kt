@@ -1,7 +1,7 @@
 package com.elementary.tasks.calendar.dayview.weekheader
 
-import com.elementary.tasks.core.protocol.StartDayOfWeekProtocol
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import org.threeten.bp.LocalDate
 

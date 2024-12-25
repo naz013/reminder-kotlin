@@ -9,8 +9,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.ui.common.view.ViewUtils
 
 class FeedbackFragment : BaseWebViewFragment() {
 
@@ -99,7 +99,7 @@ class FeedbackFragment : BaseWebViewFragment() {
     val emailIntent = Intent(Intent.ACTION_SEND)
     emailIntent.type = "plain/text"
     emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("feedback.cray@gmail.com"))
-    if (Module.isPro) {
+    if (BuildParams.isPro) {
       emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reminder PRO")
     } else {
       emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reminder")

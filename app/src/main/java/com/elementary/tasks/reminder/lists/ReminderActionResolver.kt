@@ -4,10 +4,10 @@ import android.content.Context
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.os.Permissions
-import com.github.naz013.feature.common.android.startActivity
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
@@ -123,13 +123,13 @@ class ReminderActionResolver(
 
   private fun editReminder(id: String) {
     reminderBuilderLauncher.openLogged(context) {
-      putExtra(Constants.INTENT_ID, id)
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 
   private fun previewReminder(id: String) {
     context.startActivity(ReminderPreviewActivity::class.java) {
-      putExtra(Constants.INTENT_ID, id)
+      putExtra(IntentKeys.INTENT_ID, id)
     }
   }
 }

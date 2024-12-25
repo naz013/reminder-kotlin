@@ -12,17 +12,13 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
-import com.elementary.tasks.core.utils.Module
-import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.github.naz013.feature.common.android.singleClick
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.ActivityReminderBuilderBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.build.adapter.BuilderAdapter
@@ -31,6 +27,13 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialog
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogCallback
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
+import com.github.naz013.common.Module
+import com.github.naz013.common.Permissions
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.view.singleClick
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -41,9 +44,12 @@ class BuildReminderActivity :
 
   private val viewModel by viewModel<BuildReminderViewModel>()
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
+  private val prefs by inject<Prefs>()
+  private val dialogues by inject<Dialogues>()
   private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
     viewModel.processVoiceResult(it)
   }
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
   private val builderAdapter = BuilderAdapter(
     onItemClickListener = { position, item ->
       viewModel.onItemEditedClicked(position, item.builderItem)
@@ -162,14 +168,14 @@ class BuildReminderActivity :
     }
     viewModel.askPermissions.nonNullObserve(this) {
       it.getContentIfNotHandled()?.also { list ->
-        permissionFlow.askPermissions(list) {
+        permissionFlowDelegate.permissionFlow.askPermissions(list) {
           viewModel.onPermissionsGranted()
         }
       }
     }
     viewModel.askEditPermissions.nonNullObserve(this) {
       it.getContentIfNotHandled()?.also { list ->
-        permissionFlow.askPermissions(list) {
+        permissionFlowDelegate.permissionFlow.askPermissions(list) {
           viewModel.onEditPermissionsGranted()
         }
       }
@@ -245,7 +251,9 @@ class BuildReminderActivity :
 
   private fun askNotificationPermissionIfNeeded() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { askCopySaving() }
+      permissionFlowDelegate.permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+        askCopySaving()
+      }
     } else {
       askCopySaving()
     }

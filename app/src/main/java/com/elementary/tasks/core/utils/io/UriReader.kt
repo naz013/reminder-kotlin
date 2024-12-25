@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Birthday
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 
 class UriReader(
   private val contextProvider: ContextProvider

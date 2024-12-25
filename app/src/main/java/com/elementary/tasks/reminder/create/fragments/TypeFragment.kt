@@ -9,25 +9,15 @@ import android.text.TextUtils
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.copyExtra
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
@@ -42,7 +32,18 @@ import com.elementary.tasks.core.views.RepeatLimitView
 import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.core.views.TuneExtraView
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime
@@ -53,6 +54,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   protected val dateTimeManager by inject<DateTimeManager>()
   protected val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  protected val modelDateTimeFormatter by inject<ModelDateTimeFormatter>()
   private val contactPicker = ContactPicker(this) { actionView?.number = it.phone }
 
   lateinit var iFace: ReminderInterface
@@ -217,7 +219,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
 
       is LedPickerView -> {
-        if (Module.isPro) {
+        if (BuildParams.isPro) {
           view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
           view.bindProperty(iFace.state.reminder.color) { color ->
             iFace.state.reminder.color = color
@@ -292,7 +294,7 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       }
 
       is LedPickerView -> {
-        if (Module.isPro) {
+        if (BuildParams.isPro) {
           view.visibleGone(prefs.reminderCreatorParams.isLedPickerEnabled())
         } else {
           view.gone()

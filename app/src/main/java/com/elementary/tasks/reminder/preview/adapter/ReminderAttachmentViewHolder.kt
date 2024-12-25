@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import coil.load
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewAttachmentBinding
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.AttachmentType
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewAttachment

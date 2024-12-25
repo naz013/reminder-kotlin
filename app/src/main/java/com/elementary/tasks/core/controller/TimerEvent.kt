@@ -1,16 +1,17 @@
 package com.elementary.tasks.core.controller
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
 class TimerEvent(
@@ -20,10 +21,11 @@ class TimerEvent(
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper,
+  appWidgetUpdater: AppWidgetUpdater,
   textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
-  googleTaskRepository: GoogleTaskRepository
+  googleTaskRepository: GoogleTaskRepository,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) : RepeatableEventManager(
   reminder,
   reminderRepository,
@@ -31,7 +33,7 @@ class TimerEvent(
   googleCalendarUtils,
   notifier,
   jobScheduler,
-  updatesHelper,
+  appWidgetUpdater,
   textProvider,
   dateTimeManager,
   googleTaskRepository
@@ -117,6 +119,6 @@ class TimerEvent(
   }
 
   override fun calculateTime(isNew: Boolean): LocalDateTime {
-    return dateTimeManager.generateNextTimer(reminder, isNew)
+    return modelDateTimeFormatter.generateNextTimer(reminder, isNew)
   }
 }

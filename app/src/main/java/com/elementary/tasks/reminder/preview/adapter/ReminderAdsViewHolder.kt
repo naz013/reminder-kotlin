@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.utils.Module
-import com.github.naz013.feature.common.android.inflater
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewAdsBinding
 
 class ReminderAdsViewHolder(
@@ -17,7 +17,7 @@ class ReminderAdsViewHolder(
   private val adsProvider = AdsProvider()
 
   init {
-    if (!Module.isPro && AdsProvider.hasAds()) {
+    if (!BuildParams.isPro && AdsProvider.hasAds()) {
       adsProvider.showNativeBanner(
         binding.adsHolder,
         AdsProvider.REMINDER_PREVIEW_BANNER_ID,

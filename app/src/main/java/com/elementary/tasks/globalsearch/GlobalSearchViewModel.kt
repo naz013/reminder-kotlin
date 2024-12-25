@@ -3,7 +3,7 @@ package com.elementary.tasks.globalsearch
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity

@@ -40,7 +40,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp">
 
-                <com.elementary.tasks.core.views.FixedTextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/taskSummary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/applicationCheck"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
@@ -78,7 +78,7 @@
                     android:layout_weight="1"
                     android:text="@string/application" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/browserCheck"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
@@ -128,7 +128,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp">
 
-                <com.elementary.tasks.core.views.FixedTextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/urlField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

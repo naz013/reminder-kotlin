@@ -6,10 +6,10 @@ import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
@@ -53,7 +53,7 @@ class BirthdaySettingsViewModel(
         birthdayRepository.delete(birthday.uuId)
         workerLauncher.startWork(
           BirthdayDeleteBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           birthday.uuId
         )
       }

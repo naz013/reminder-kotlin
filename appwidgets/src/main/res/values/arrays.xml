@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="widget_colors">
+        <item>@android:color/transparent</item>
+        <item>@color/pureWhite20</item>
+        <item>@color/pureWhite40</item>
+        <item>@color/pureWhite60</item>
+        <item>@color/pureWhite</item>
+        <item>@color/lightBg1</item>
+        <item>@color/lightBg2</item>
+        <item>@color/lightBg3</item>
+        <item>@color/lightBg4</item>
+        <item>@color/darkBg1</item>
+        <item>@color/darkBg2</item>
+        <item>@color/darkBg3</item>
+        <item>@color/darkBg4</item>
+        <item>@color/pureBlack</item>
+    </integer-array>
+</resources>

@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.work
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
@@ -11,7 +11,7 @@ import kotlinx.coroutines.Job
 
 class SyncWorker(
   private val syncManagers: SyncManagers,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val syncOperationsFactory: SyncOperationsFactory
 ) {
 
@@ -40,8 +40,8 @@ class SyncWorker(
         syncOperationsFactory(storage, SyncOperationType.FULL, true)
       ).process()
       withUIContext {
-        updatesHelper.updateWidgets()
-        updatesHelper.updateNotesWidget()
+        appWidgetUpdater.updateAllWidgets()
+        appWidgetUpdater.updateNotesWidget()
         onEnd?.invoke()
       }
       mJob = null

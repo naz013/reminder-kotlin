@@ -19,7 +19,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsTroubleshootingBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel

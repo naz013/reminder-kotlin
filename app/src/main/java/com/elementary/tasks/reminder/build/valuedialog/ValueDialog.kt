@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.BottomSheetValueSelectorBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueController

@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.github.naz013.feature.common.android.dp2px
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.domain.Reminder
+import com.github.naz013.ui.common.fragment.dp2px
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get

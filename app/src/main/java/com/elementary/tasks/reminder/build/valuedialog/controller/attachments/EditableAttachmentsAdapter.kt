@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.ListItemBuilderAttachmentFileBinding
 
 class EditableAttachmentsAdapter(

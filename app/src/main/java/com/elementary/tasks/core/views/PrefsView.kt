@@ -13,10 +13,10 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PrefsViewBinding
-import com.elementary.tasks.core.utils.Module
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.transparent
-import com.github.naz013.feature.common.android.visible
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visible
 import com.github.naz013.logging.Logger
 
 class PrefsView : RelativeLayout {
@@ -214,7 +214,7 @@ class PrefsView : RelativeLayout {
         View.GONE
       }
     } else if (isForPro) {
-      if (Module.isPro) {
+      if (BuildParams.isPro) {
         View.VISIBLE
       } else {
         View.GONE

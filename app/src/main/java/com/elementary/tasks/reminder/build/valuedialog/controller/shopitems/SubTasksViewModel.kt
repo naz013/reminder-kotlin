@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.shopitems
 
 import androidx.lifecycle.MutableLiveData
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent

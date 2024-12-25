@@ -4,11 +4,11 @@ import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
-import com.elementary.tasks.core.utils.ThemeProvider
-import com.elementary.tasks.core.utils.ui.ViewUtils
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -25,7 +25,10 @@ class UiGoogleTaskListAdapter(
       text = googleTask.title,
       notes = googleTask.notes,
       dueDate = getDue(googleTask.dueDate),
-      statusIcon = createIcon(googleTask.status == GoogleTask.TASKS_COMPLETE, getColor(googleTaskList)),
+      statusIcon = createIcon(
+        isChecked = googleTask.status == GoogleTask.TASKS_COMPLETE,
+        color = getColor(googleTaskList)
+      ),
       taskListColor = getColor(googleTaskList),
       reminderId = googleTask.uuId
     )

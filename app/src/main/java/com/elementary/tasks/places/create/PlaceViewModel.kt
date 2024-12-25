@@ -4,24 +4,24 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
-import com.github.naz013.feature.common.android.ContextProvider
-import com.elementary.tasks.core.utils.Constants
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
+import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Place
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.common.ContextProvider
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -52,7 +52,6 @@ class PlaceViewModel(
     private set
   var isFromFile: Boolean = false
     private set
-  var isLogged = false
   private var isEdited: Boolean = false
 
   init {
@@ -82,7 +81,7 @@ class PlaceViewModel(
         place.id = UUID.randomUUID().toString()
       }
       placeRepository.save(place)
-      workerLauncher.startWork(PlaceSingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
+      workerLauncher.startWork(PlaceSingleBackupWorker::class.java, IntentKeys.INTENT_ID, place.id)
       Logger.logEvent("Place saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -120,7 +119,7 @@ class PlaceViewModel(
         return@launch
       }
       placeRepository.delete(place.id)
-      workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
+      workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, place.id)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

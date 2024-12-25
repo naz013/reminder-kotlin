@@ -1,7 +1,7 @@
 package com.elementary.tasks.notes.preview.reminders
 
 import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 
 class ReminderToUiNoteAttachedReminder(
   private val dateTimeManager: DateTimeManager

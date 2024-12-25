@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -11,11 +11,11 @@ import com.elementary.tasks.core.data.ui.UiShareData
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.github.naz013.feature.common.android.TextProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -49,7 +49,7 @@ class ReminderPreviewViewModel(
   private val workerLauncher: WorkerLauncher,
   private val uiReminderPreviewDataAdapter: UiReminderPreviewDataAdapter,
   private val backupTool: BackupTool,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
@@ -161,10 +161,10 @@ class ReminderPreviewViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.save(reminder)
-      updatesHelper.updateTasksWidget()
+      appWidgetUpdater.updateScheduleWidget()
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminder.uuId
       )
       postInProgress(false)
@@ -191,7 +191,7 @@ class ReminderPreviewViewModel(
     } else {
       workerLauncher.startWork(
         ReminderSingleBackupWorker::class.java,
-        Constants.INTENT_ID,
+        IntentKeys.INTENT_ID,
         reminder.uuId
       )
       postInProgress(false)
@@ -245,7 +245,7 @@ class ReminderPreviewViewModel(
             googleCalendarUtils.deleteEvents(reminder.uuId)
             workerLauncher.startWork(
               ReminderDeleteBackupWorker::class.java,
-              Constants.INTENT_ID,
+              IntentKeys.INTENT_ID,
               reminder.uuId
             )
             Commands.DELETED
@@ -257,7 +257,7 @@ class ReminderPreviewViewModel(
             googleCalendarUtils.deleteEvents(reminder.uuId)
             workerLauncher.startWork(
               ReminderDeleteBackupWorker::class.java,
-              Constants.INTENT_ID,
+              IntentKeys.INTENT_ID,
               reminder.uuId
             )
           }
@@ -275,7 +275,7 @@ class ReminderPreviewViewModel(
         reminderRepository.save(it)
         workerLauncher.startWork(
           ReminderSingleBackupWorker::class.java,
-          Constants.INTENT_ID,
+          IntentKeys.INTENT_ID,
           it.uuId
         )
         Commands.DELETED

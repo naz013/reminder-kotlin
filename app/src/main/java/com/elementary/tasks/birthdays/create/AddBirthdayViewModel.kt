@@ -4,17 +4,17 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.os.IntentDataHolder
-import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -40,7 +40,7 @@ class AddBirthdayViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
   private val uriReader: UriReader,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val intentDataHolder: IntentDataHolder,
   private val uiBirthdayDateFormatter: UiBirthdayDateFormatter
 ) : BaseProgressViewModel(dispatcherProvider) {
@@ -70,7 +70,7 @@ class AddBirthdayViewModel(
   }
 
   fun onIntent() {
-    intentDataHolder.get(Constants.INTENT_ITEM, Birthday::class.java)?.run {
+    intentDataHolder.get(IntentKeys.INTENT_ITEM, Birthday::class.java)?.run {
       Logger.logEvent("Birthday loaded from intent")
       onBirthdayLoaded(this)
       isFromFile = true
@@ -143,9 +143,9 @@ class AddBirthdayViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       birthdayRepository.delete(id)
       notifier.showBirthdayPermanent()
-      updatesHelper.updateTasksWidget()
-      updatesHelper.updateBirthdaysWidget()
-      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, id)
+      appWidgetUpdater.updateScheduleWidget()
+      appWidgetUpdater.updateBirthdaysWidget()
+      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, id)
       Logger.i("Deleting the birthday with id: $id")
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -175,9 +175,9 @@ class AddBirthdayViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       birthdayRepository.save(birthday)
       notifier.showBirthdayPermanent()
-      updatesHelper.updateBirthdaysWidget()
-      updatesHelper.updateTasksWidget()
-      workerLauncher.startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+      appWidgetUpdater.updateBirthdaysWidget()
+      appWidgetUpdater.updateScheduleWidget()
+      workerLauncher.startWork(SingleBackupWorker::class.java, IntentKeys.INTENT_ID, birthday.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

@@ -8,19 +8,19 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.os.ContextSwitcher
-import com.github.naz013.feature.common.android.finishWith
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.github.naz013.ui.common.activity.LightThemedActivity
+import com.github.naz013.ui.common.activity.finishWith
+import com.github.naz013.ui.common.login.LoginApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("CustomSplashScreen")
-class SplashScreenActivity : ThemedActivity() {
+class SplashScreenActivity : LightThemedActivity() {
 
   private val viewModel by viewModel<SplashViewModel>()
   private val contextSwitcher by inject<ContextSwitcher>()
@@ -40,7 +40,8 @@ class SplashScreenActivity : ThemedActivity() {
     viewModel.openHome.observe(this) {
       enableShortcuts()
       if (it) {
-        finishWith(PinLoginActivity::class.java)
+        startActivity(LoginApi.authIntent(this))
+        finish()
       } else {
         finishWith(BottomNavActivity::class.java)
       }

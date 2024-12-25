@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.github.naz013.feature.common.android.inflater
+import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewSubTaskBinding
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewSubTask
 

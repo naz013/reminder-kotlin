@@ -2,31 +2,35 @@ package com.elementary.tasks.dayview.weekheader
 
 import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimePreferences
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDate
+import java.util.Locale
 
 class WeekFactoryTest {
 
   private lateinit var prefs: Prefs
+  private lateinit var dateTimePreferences: DateTimePreferences
   private lateinit var dateTimeManager: DateTimeManager
   private lateinit var weekFactory: WeekFactory
 
   @Before
   fun setUp() {
     prefs = mockk()
-    every { prefs.appLanguage }.returns(1)
+    every { prefs.appLanguage } returns 1
+
+    dateTimePreferences = mockk()
+    every { dateTimePreferences.locale } returns Locale.US
 
     dateTimeManager = DateTimeManager(
-      prefs = prefs,
-      textProvider = mockk(),
-      language = mockk(),
-      nowDateTimeProvider = mockk()
+      nowDateTimeProvider = mockk(),
+      dateTimePreferences = dateTimePreferences
     )
     weekFactory = WeekFactory(prefs, dateTimeManager)
   }

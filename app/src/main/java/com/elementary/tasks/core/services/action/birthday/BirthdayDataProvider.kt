@@ -2,10 +2,10 @@ package com.elementary.tasks.core.services.action.birthday
 
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 
 class BirthdayDataProvider(
   private val textProvider: TextProvider,
@@ -24,7 +24,7 @@ class BirthdayDataProvider(
 
   fun getLedColor(): Int {
     var ledColor = LED.getLED(prefs.ledColor)
-    if (Module.isPro && !prefs.isBirthdayGlobalEnabled) {
+    if (BuildParams.isPro && !prefs.isBirthdayGlobalEnabled) {
       ledColor = LED.getLED(prefs.birthdayLedColor)
     }
     return ledColor
@@ -43,7 +43,7 @@ class BirthdayDataProvider(
   }
 
   fun getAppName(): String {
-    return if (Module.isPro) {
+    return if (BuildParams.isPro) {
       textProvider.getText(R.string.app_name_pro)
     } else {
       textProvider.getText(R.string.app_name)

@@ -2,7 +2,7 @@ package com.elementary.tasks.googletasks
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
@@ -24,7 +24,7 @@ import java.io.IOException
 class GoogleTasksViewModel(
   private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,
-  private val updatesHelper: UpdatesHelper,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
@@ -116,7 +116,7 @@ class GoogleTasksViewModel(
         postInProgress(false)
         postCommand(Commands.UPDATED)
         withUIContext {
-          updatesHelper.updateTasksWidget()
+          appWidgetUpdater.updateScheduleWidget()
         }
       } catch (e: IOException) {
         postInProgress(false)

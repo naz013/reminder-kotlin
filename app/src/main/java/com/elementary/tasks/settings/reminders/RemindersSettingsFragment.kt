@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.github.naz013.feature.common.android.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalTime
 
@@ -48,7 +48,7 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
   }
 
   private fun initBuilderType() {
-    binding.defaultBuilderPrefs.visibleGone(prefs.canChangeBuilder || Module.isDebug)
+    binding.defaultBuilderPrefs.visibleGone(prefs.canChangeBuilder || BuildParams.isDebug)
     binding.defaultBuilderPrefs.setOnClickListener { showBuilderTypeDialog() }
     showBuilderType()
   }

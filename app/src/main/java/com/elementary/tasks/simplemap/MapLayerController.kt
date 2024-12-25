@@ -2,9 +2,9 @@ package com.elementary.tasks.simplemap
 
 import android.view.View
 import com.elementary.tasks.R
-import com.github.naz013.feature.common.android.gone
-import com.github.naz013.feature.common.android.isVisible
-import com.github.naz013.feature.common.android.visible
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.isVisible
+import com.github.naz013.ui.common.view.visible
 import com.google.android.gms.maps.GoogleMap
 
 class MapLayerController(

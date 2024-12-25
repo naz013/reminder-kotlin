@@ -14,13 +14,14 @@ import androidx.lifecycle.LifecycleOwner
 import coil.request.ImageRequest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.os.Permissions
 import com.elementary.tasks.core.os.datapicker.CameraPhotoPicker
 import com.elementary.tasks.core.os.datapicker.MultiPicturePicker
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ViewUrlFieldBinding
+import com.github.naz013.common.Module
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

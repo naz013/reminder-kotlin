@@ -3,7 +3,7 @@ package com.elementary.tasks.core.fragments
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.utils.ThemeProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions

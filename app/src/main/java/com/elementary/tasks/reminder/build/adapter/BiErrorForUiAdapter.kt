@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.build.adapter
 import android.content.Context
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.BuilderItemError
 

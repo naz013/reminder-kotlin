@@ -2,7 +2,7 @@ package com.elementary.tasks.whatsnew
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.elementary.tasks.core.os.PackageManagerWrapper
+import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.logging.Logger
 

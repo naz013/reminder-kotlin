@@ -5,10 +5,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ui.Dialogues
-import com.elementary.tasks.pin.PinLoginActivity
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.ui.common.login.LoginApi
 
 class BirthdayResolver(
   private val dialogAction: () -> Dialogues,
@@ -44,14 +44,14 @@ class BirthdayResolver(
   }
 
   private fun openBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(view.context, BirthdayPreviewActivity::class.java) {
-      putExtra(Constants.INTENT_ID, birthday.uuId)
+    LoginApi.openLogged(view.context, BirthdayPreviewActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, birthday.uuId)
     }
   }
 
   private fun editBirthday(view: View, birthday: UiBirthdayList) {
-    PinLoginActivity.openLogged(view.context, AddBirthdayActivity::class.java) {
-      putExtra(Constants.INTENT_ID, birthday.uuId)
+    LoginApi.openLogged(view.context, AddBirthdayActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, birthday.uuId)
     }
   }
 }

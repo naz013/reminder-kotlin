@@ -28,6 +28,7 @@ val calendarModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }

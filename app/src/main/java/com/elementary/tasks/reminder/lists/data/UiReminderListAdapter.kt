@@ -12,18 +12,18 @@ import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
-import com.elementary.tasks.core.os.ColorProvider
-import com.elementary.tasks.core.os.UnitsConverter
+import com.github.naz013.ui.common.theme.ColorProvider
+import com.github.naz013.ui.common.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
-import com.github.naz013.feature.common.android.adjustAlpha
+import com.github.naz013.common.TextProvider
+import com.github.naz013.ui.common.adjustAlpha
 
 class UiReminderListAdapter(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,

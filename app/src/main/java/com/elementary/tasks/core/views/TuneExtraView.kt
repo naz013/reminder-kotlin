@@ -9,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
 import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.fromReminder
-import com.elementary.tasks.core.utils.ui.Dialogues
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ViewTuneExtraBinding
 
 class TuneExtraView : LinearLayout {

@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.minusMillis
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.databinding.FragmentReminderYearBinding
+import com.github.naz013.common.datetime.minusMillis
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -66,7 +66,7 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     reminder.recurDataObject = null
 
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(getDateTime())
-    val startTime = dateTimeManager.getNextYearDayTime(reminder)
+    val startTime = modelDateTimeFormatter.getNextYearDayTime(reminder)
 
     if (reminder.remindBefore > 0 &&
       !dateTimeManager.isCurrent(startTime.minusMillis(reminder.remindBefore))

@@ -5,26 +5,26 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.datetime.recurrence.ByDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByHourRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMinuteRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByMonthRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.BySetPosRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByWeekNumberRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.ByYearDayRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.CountRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.Day
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.FreqType
-import com.elementary.tasks.core.utils.datetime.recurrence.IntervalRecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurParam
-import com.elementary.tasks.core.utils.datetime.recurrence.WeekStartRecurParam
+import com.github.naz013.common.Module
+import com.github.naz013.icalendar.ByDayRecurParam
+import com.github.naz013.icalendar.ByHourRecurParam
+import com.github.naz013.icalendar.ByMinuteRecurParam
+import com.github.naz013.icalendar.ByMonthDayRecurParam
+import com.github.naz013.icalendar.ByMonthRecurParam
+import com.github.naz013.icalendar.BySetPosRecurParam
+import com.github.naz013.icalendar.ByWeekNumberRecurParam
+import com.github.naz013.icalendar.ByYearDayRecurParam
+import com.github.naz013.icalendar.CountRecurParam
+import com.github.naz013.icalendar.Day
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqRecurParam
+import com.github.naz013.icalendar.FreqType
+import com.github.naz013.icalendar.IntervalRecurParam
+import com.github.naz013.icalendar.RecurParam
+import com.github.naz013.icalendar.WeekStartRecurParam
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.BuilderModifier
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
@@ -98,8 +98,8 @@ abstract class BuilderItem<T> {
   abstract val biType: BiType
   abstract val biGroup: BiGroup
   open val isEnabled: Boolean = true
-  open val minSdk: Int = Module.minSdk
-  open val maxSdk: Int = Module.maxSdk
+  open val minSdk: Int = Module.MIN_SDK
+  open val maxSdk: Int = Module.MAX_SDK
   open val constraints: List<BiConstraint<*>> = constraints { }
 }
 

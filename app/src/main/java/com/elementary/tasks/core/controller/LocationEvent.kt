@@ -2,14 +2,14 @@ package com.elementary.tasks.core.controller
 
 import android.content.Context
 import android.text.TextUtils
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.invokeSuspend
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.Module
+import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.Reminder
 import com.github.naz013.repository.ReminderRepository
@@ -22,9 +22,9 @@ class LocationEvent(
   private val context: Context,
   notifier: Notifier,
   private val jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper,
+  appWidgetUpdater: AppWidgetUpdater,
   private val dateTimeManager: DateTimeManager
-) : EventManager(reminder, reminderRepository, prefs, notifier, updatesHelper) {
+) : EventManager(reminder, reminderRepository, prefs, notifier, appWidgetUpdater) {
 
   override val isActive: Boolean
     get() = reminder.isActive

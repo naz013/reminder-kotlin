@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.databinding.ActivityVoiceHelpBinding
+import com.github.naz013.ui.common.activity.BindingActivity
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
+import java.util.Locale
 
 class VoiceHelpActivity : BindingActivity<ActivityVoiceHelpBinding>() {
 
+  private val prefs by inject<Prefs>()
   private val viewModel by viewModel<VoiceHelpViewModel>()
 
   override fun inflateBinding() = ActivityVoiceHelpBinding.inflate(layoutInflater)

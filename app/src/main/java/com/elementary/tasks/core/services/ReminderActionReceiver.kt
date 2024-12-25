@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
-import com.elementary.tasks.core.utils.Constants
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
 
@@ -15,7 +15,7 @@ class ReminderActionReceiver : BaseBroadcast() {
   override fun onReceive(context: Context, intent: Intent?) {
     if (intent != null) {
       val action = intent.action
-      val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+      val id = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
       Logger.d("onReceive: $action, id=$id")
       if (action != null && id.isNotEmpty()) {
         when {

@@ -2,8 +2,8 @@ package com.elementary.tasks.reminder.build.formatter.ical
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.recurrence.UtcDateTime
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.icalendar.UtcDateTime
 import com.elementary.tasks.reminder.build.formatter.Formatter
 
 class UtcDateFormatter(

@@ -50,9 +50,8 @@ material = "1.12.0"
 
 kotlinx-coroutines = "1.9.0"
 
-koin-android = "3.5.6"
+koin = "3.5.6"
 koin-android-ext = "3.0.2"
-koin-androidx-workmanager = "3.5.6"
 
 circleimageview = "3.1.0"
 retrofit = "2.11.0"
@@ -97,9 +96,10 @@ androidx-uiautomator = "2.3.0"
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 
-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin-android" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-android-ext = { group = "io.insert-koin", name = "koin-android-ext", version.ref = "koin-android-ext" }
-koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin-androidx-workmanager" }
+koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
 
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx-recyclerview" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "androidx-multidex" }

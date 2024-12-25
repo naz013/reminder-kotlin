@@ -16,7 +16,7 @@ object LED {
   private const val TEAL = -0xff6978
 
   fun getLED(code: Int): Int {
-    if (!Module.isPro) {
+    if (!BuildParams.isPro) {
       return BLUE
     }
     return when (code) {

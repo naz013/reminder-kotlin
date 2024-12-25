@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.formatter.ical
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.datetime.recurrence.DayValue
+import com.github.naz013.icalendar.DayValue
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 

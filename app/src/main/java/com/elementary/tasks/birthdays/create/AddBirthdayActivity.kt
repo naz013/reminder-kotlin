@@ -6,28 +6,31 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.elementary.tasks.core.os.Permissions
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
-import com.elementary.tasks.core.utils.Constants
-import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.github.naz013.feature.common.android.applyBottomInsets
-import com.github.naz013.feature.common.android.applyTopInsets
-import com.github.naz013.feature.common.android.gone
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.listenScrollableView
 import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.feature.common.android.visible
-import com.github.naz013.feature.common.android.visibleInvisible
 import com.elementary.tasks.core.views.ContactPickerView
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleInvisible
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -37,6 +40,10 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private val viewModel by viewModel<AddBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  private val prefs by inject<Prefs>()
+  private val dialogues by inject<Dialogues>()
+
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
 
@@ -74,7 +81,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
       binding.contactCheck.visible()
       binding.contactCheck.setOnCheckedChangeListener { _, isChecked ->
         if (isChecked && !prefs.isTelephonyAllowed) return@setOnCheckedChangeListener
-        permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+        permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_CONTACTS) {
           viewModel.onContactAttached(isChecked)
         }
       }
@@ -133,13 +140,13 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     viewModel.load()
     when {
       intent.data != null -> {
-        permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
+        permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
           intent.data?.let { viewModel.onFile(it) }
         }
       }
 
-      intent.hasExtra(Constants.INTENT_ITEM) -> viewModel.onIntent()
-      intent.getBooleanExtra(Constants.INTENT_DEEP_LINK, false) -> {
+      intent.hasExtra(IntentKeys.INTENT_ITEM) -> viewModel.onIntent()
+      intent.getBooleanExtra(IntentKeys.INTENT_DEEP_LINK, false) -> {
         runCatching {
           val parser = DeepLinkDataParser()
           when (val deepLinkData = parser.readDeepLinkData(intent)) {
@@ -158,7 +165,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
     }
   }
 
-  private fun idFromIntent(): String = intentString(Constants.INTENT_ID)
+  private fun idFromIntent(): String = intentString(IntentKeys.INTENT_ID)
 
   private fun initViewModel() {
     viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
@@ -211,7 +218,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
         binding.pickContactView.showError(R.string.you_dont_insert_number)
         return
       }
-      permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+      permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_CONTACTS) {
         viewModel.save(contact, number, newId, binding.yearCheck.isChecked)
       }
       return

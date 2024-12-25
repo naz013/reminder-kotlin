@@ -4,8 +4,8 @@ import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
-import com.elementary.tasks.core.os.PackageManagerWrapper
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
@@ -65,7 +65,7 @@ import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.domain.reminder.BiType
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.NoteRepository

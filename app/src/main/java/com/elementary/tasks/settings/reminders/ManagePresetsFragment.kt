@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.visibleGone
+import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentManagePresetsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel

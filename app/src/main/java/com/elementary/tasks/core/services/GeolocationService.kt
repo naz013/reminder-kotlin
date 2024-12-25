@@ -11,7 +11,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.services.usecase.CheckLocationReminderUseCase
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -90,7 +89,7 @@ class GeolocationService : Service() {
 
   private fun showDefaultNotification() {
     val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
-    if (Module.isPro) {
+    if (com.elementary.tasks.core.utils.BuildParams.isPro) {
       builder.setContentText(getString(R.string.app_name_pro))
     } else {
       builder.setContentText(getString(R.string.app_name))

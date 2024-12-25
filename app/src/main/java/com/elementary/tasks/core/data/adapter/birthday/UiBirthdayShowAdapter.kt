@@ -1,17 +1,17 @@
 package com.elementary.tasks.core.data.adapter.birthday
 
-import com.github.naz013.domain.Birthday
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
-import com.elementary.tasks.core.os.contacts.ContactsReader
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.domain.Birthday
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 
 class UiBirthdayShowAdapter(
-  private val dateTimeManager: DateTimeManager,
-  private val contactsReader: ContactsReader
+  private val contactsReader: ContactsReader,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   fun convert(birthday: Birthday): UiBirthdayShow {
-    val ageFormatted = dateTimeManager.getAgeFormatted(birthday.date)
+    val ageFormatted = modelDateTimeFormatter.getAgeFormatted(birthday.date)
       .takeIf { !birthday.ignoreYear }
     val number = if (birthday.contactId == 0L || birthday.number.isEmpty()) {
       contactsReader.getNumber(birthday.name)

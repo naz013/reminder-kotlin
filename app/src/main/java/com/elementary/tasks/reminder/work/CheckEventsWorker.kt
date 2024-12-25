@@ -5,7 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.utils.EventImportProcessor
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.feature.common.coroutine.DispatcherProvider

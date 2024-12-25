@@ -1,17 +1,17 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
-import com.elementary.tasks.core.data.invokeSuspend
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository
 
@@ -22,11 +22,11 @@ abstract class RepeatableEventManager(
   private val googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   private val jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper,
+  appWidgetUpdater: AppWidgetUpdater,
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val googleTaskRepository: GoogleTaskRepository
-) : EventManager(reminder, reminderRepository, prefs, notifier, updatesHelper) {
+) : EventManager(reminder, reminderRepository, prefs, notifier, appWidgetUpdater) {
 
   protected fun enableReminder() {
     jobScheduler.scheduleReminder(reminder)

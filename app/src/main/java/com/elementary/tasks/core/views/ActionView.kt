@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.os.Permissions
+import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ViewActionBinding
 import com.github.naz013.logging.Logger

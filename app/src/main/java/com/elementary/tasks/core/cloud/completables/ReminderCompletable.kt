@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.cloud.completables
 
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.groups.GroupsUtil
 import com.github.naz013.domain.Reminder
 import com.github.naz013.repository.ReminderGroupRepository

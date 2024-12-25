@@ -3,35 +3,31 @@ package com.elementary.tasks.places.create
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.domain.Place
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
-import com.elementary.tasks.core.os.Permissions
-import com.elementary.tasks.core.os.datapicker.LoginLauncher
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Constants
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.android.applyTopInsets
+import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
+import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.Place
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.view.applyTopInsets
 import com.google.android.gms.maps.model.LatLng
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
 
+  private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
+  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
   private var googleMap: SimpleMapFragment? = null
-  private val loginLauncher = LoginLauncher(this) {
-    if (!it) {
-      finish()
-    } else {
-      viewModel.isLogged = true
-    }
-  }
 
   override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
 
@@ -77,17 +73,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
       .commit()
 
     loadPlace()
-
-    if (savedInstanceState == null) {
-      viewModel.isLogged = intentBoolean(PinLoginActivity.ARG_LOGGED)
-    }
-  }
-
-  override fun onStart() {
-    super.onStart()
-    if (prefs.hasPinCode && !viewModel.isLogged) {
-      loginLauncher.askLogin()
-    }
   }
 
   private fun initActionBar() {
@@ -133,15 +118,17 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
     }
   }
 
-  private fun getId(): String = intentString(Constants.INTENT_ID)
+  private fun getId(): String = intentString(IntentKeys.INTENT_ID)
 
   private fun loadPlace() {
     initViewModel()
     if (intent.data != null) {
-      permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
-    } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+      permissionFlowDelegate.with {
+        askPermission(Permissions.READ_EXTERNAL) { readUri() }
+      }
+    } else if (intent.hasExtra(IntentKeys.INTENT_ITEM)) {
       runCatching {
-        viewModel.loadFromIntent(intentSerializable(Constants.INTENT_ITEM, Place::class.java))
+        viewModel.loadFromIntent(intentSerializable(IntentKeys.INTENT_ITEM, Place::class.java))
       }
     }
   }
@@ -209,5 +196,9 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
         animate = true
       )
     }
+  }
+
+  override fun requireLogin(): Boolean {
+    return true
   }
 }

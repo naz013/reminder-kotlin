@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller.datetime
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractValueAndTypeController
 

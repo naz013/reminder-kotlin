@@ -1,16 +1,17 @@
 package com.elementary.tasks.core.controller
 
-import com.elementary.tasks.core.appwidgets.UpdatesHelper
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.datetime.plusMillis
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.android.TextProvider
-import com.github.naz013.feature.common.plusMillis
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
 class MonthlyEvent(
@@ -20,10 +21,11 @@ class MonthlyEvent(
   googleCalendarUtils: GoogleCalendarUtils,
   notifier: Notifier,
   jobScheduler: JobScheduler,
-  updatesHelper: UpdatesHelper,
+  appWidgetUpdater: AppWidgetUpdater,
   textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
-  googleTaskRepository: GoogleTaskRepository
+  googleTaskRepository: GoogleTaskRepository,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) : RepeatableEventManager(
   reminder,
   reminderRepository,
@@ -31,7 +33,7 @@ class MonthlyEvent(
   googleCalendarUtils,
   notifier,
   jobScheduler,
-  updatesHelper,
+  appWidgetUpdater,
   textProvider,
   dateTimeManager,
   googleTaskRepository
@@ -63,7 +65,7 @@ class MonthlyEvent(
   override fun skip(): Boolean {
     reminder.delay = 0
     if (canSkip()) {
-      val time = dateTimeManager.getNewNextMonthDayTime(
+      val time = modelDateTimeFormatter.getNewNextMonthDayTime(
         reminder,
         dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000L)
           ?: LocalDateTime.now()
@@ -92,7 +94,7 @@ class MonthlyEvent(
       disable()
     } else {
       if (!dateTimeManager.isCurrent(reminder.eventTime)) {
-        val time = dateTimeManager.getNewNextMonthDayTime(
+        val time = modelDateTimeFormatter.getNewNextMonthDayTime(
           reminder,
           dateTimeManager.fromGmtToLocal(reminder.eventTime)?.plusMillis(1000L)
             ?: LocalDateTime.now()
@@ -119,6 +121,6 @@ class MonthlyEvent(
   }
 
   override fun calculateTime(isNew: Boolean): LocalDateTime {
-    return dateTimeManager.getNewNextMonthDayTime(reminder)
+    return modelDateTimeFormatter.getNewNextMonthDayTime(reminder)
   }
 }

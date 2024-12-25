@@ -5,7 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker

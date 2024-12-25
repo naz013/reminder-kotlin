@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalByDayBuilderItem
 import com.elementary.tasks.reminder.build.ICalByHourBuilderItem
@@ -31,7 +31,7 @@ import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericListIntForm
 import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormatter
 import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 import com.github.naz013.domain.reminder.BiType
-import com.github.naz013.feature.common.android.ContextProvider
+import com.github.naz013.common.ContextProvider
 
 class BiFactoryICal(
   contextProvider: ContextProvider,

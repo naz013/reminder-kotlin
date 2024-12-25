@@ -2,7 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.app.AlarmManager
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger

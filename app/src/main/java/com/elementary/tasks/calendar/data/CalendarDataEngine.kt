@@ -10,20 +10,21 @@ import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.Configs
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.elementary.tasks.core.utils.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceDateTimeTag
-import com.elementary.tasks.core.utils.datetime.recurrence.RecurrenceManager
-import com.elementary.tasks.core.utils.datetime.recurrence.TagType
-import com.github.naz013.feature.common.livedata.getNonNullList
-import com.github.naz013.feature.common.plusMillis
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.datetime.plusMillis
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.getNonNullList
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurrenceDateTimeTag
+import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -41,10 +42,11 @@ class CalendarDataEngine(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val recurrenceManager: RecurrenceManager,
+  private val ICalendarApi: ICalendarApi,
   private val dispatcherProvider: DispatcherProvider,
   private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
-  private val tableChangeListenerFactory: TableChangeListenerFactory
+  private val tableChangeListenerFactory: TableChangeListenerFactory,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   private val scope: CoroutineScope = CoroutineScope(Job())
@@ -357,7 +359,7 @@ class CalendarDataEngine(
     dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
   ) {
     val dates = runCatching {
-      recurrenceManager.parseObject(reminder.recurDataObject)
+      ICalendarApi.parseObject(reminder.recurDataObject)
     }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
 
     val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
@@ -400,7 +402,7 @@ class CalendarDataEngine(
     var localItem = reminder
     var fromTime = eventTime
     do {
-      dateTime = dateTimeManager.getNewNextMonthDayTime(
+      dateTime = modelDateTimeFormatter.getNewNextMonthDayTime(
         reminder = localItem,
         fromTime = fromTime
       )

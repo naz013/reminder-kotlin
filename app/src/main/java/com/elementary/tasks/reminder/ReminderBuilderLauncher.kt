@@ -3,12 +3,12 @@ package com.elementary.tasks.reminder
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.elementary.tasks.core.deeplink.DeepLinkData
-import com.github.naz013.feature.common.android.intentForClass
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.ui.common.context.intentForClass
+import com.github.naz013.ui.common.login.LoginApi
 
 class ReminderBuilderLauncher(private val prefs: Prefs) {
 
@@ -24,13 +24,13 @@ class ReminderBuilderLauncher(private val prefs: Prefs) {
   }
 
   fun openLogged(context: Context, builder: Intent.() -> Unit) {
-    PinLoginActivity.openLogged(context, getActivityClass(), builder)
+    LoginApi.openLogged(context, getActivityClass(), builder)
   }
 
   fun toggleBuilder(activity: Activity) {
     prefs.useLegacyBuilder = !prefs.useLegacyBuilder
     PENDING_INTENT_CLASS = getActivityClass()
-    PinLoginActivity.openLogged(activity, getActivityClass()) { }
+    LoginApi.openLogged(activity, getActivityClass()) { }
     activity.finish()
   }
 
@@ -39,7 +39,7 @@ class ReminderBuilderLauncher(private val prefs: Prefs) {
     deepLinkData: DeepLinkData,
     builder: Intent.() -> Unit
   ) {
-    PinLoginActivity.openLogged(context, getActivityClass(), deepLinkData, builder)
+    LoginApi.openLogged(context, getActivityClass(), deepLinkData, builder)
   }
 
   fun getActivityClass(): Class<*> {

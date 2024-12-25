@@ -8,12 +8,16 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appwidgets.buttons.VoiceWidgetDialog
-import com.github.naz013.feature.common.android.intentForClass
-import com.github.naz013.feature.common.android.toast
-import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.voice.VoiceWidgetDialog
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.voice.ConversationActivity
+import com.github.naz013.common.intent.ActivityLauncherCreator
+import com.github.naz013.common.intent.FragmentLauncherCreator
+import com.github.naz013.common.intent.IntentPicker
+import com.github.naz013.common.intent.LauncherCreator
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.context.intentForClass
+import com.github.naz013.ui.common.locale.Language
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

@@ -2,6 +2,7 @@ package com.elementary.tasks.core.deeplink
 
 import android.content.Intent
 import android.os.Build
+import com.github.naz013.ui.common.activity.DeepLinkData
 
 class DeepLinkDataParser {
 
@@ -16,11 +17,11 @@ class DeepLinkDataParser {
   ): DeepLinkData? {
     val key = findKey(intent) ?: return null
     val clazz = deepLinkDataMap[key] ?: return null
-    return readParcelable(intent, key.value, clazz)
+    return readParcelable(intent, key, clazz)
   }
 
-  private fun findKey(intent: Intent): IntentKey? {
-    return deepLinkDataMap.keys.firstOrNull { intent.hasExtra(it.value) }
+  private fun findKey(intent: Intent): String? {
+    return deepLinkDataMap.keys.firstOrNull { intent.hasExtra(it) }
   }
 
   private fun <T : DeepLinkData> readParcelable(

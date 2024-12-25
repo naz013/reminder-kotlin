@@ -2,10 +2,10 @@ package com.elementary.tasks.core.services.action.reminder
 
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.android.TextProvider
+import com.github.naz013.common.TextProvider
 
 class ReminderDataProvider(
   private val textProvider: TextProvider,
@@ -13,7 +13,7 @@ class ReminderDataProvider(
 ) {
 
   fun getLedColor(reminderColor: Int): Int? {
-    return if (Module.isPro && prefs.isLedEnabled) {
+    return if (BuildParams.isPro && prefs.isLedEnabled) {
       if (reminderColor != -1) {
         reminderColor
       } else {
@@ -37,7 +37,7 @@ class ReminderDataProvider(
   }
 
   fun getAppName(): String {
-    return if (Module.isPro) {
+    return if (BuildParams.isPro) {
       textProvider.getText(R.string.app_name_pro)
     } else {
       textProvider.getText(R.string.app_name)
