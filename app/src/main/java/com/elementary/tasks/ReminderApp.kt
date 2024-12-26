@@ -31,7 +31,6 @@ import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.reminder.reminderModule
-import com.elementary.tasks.voice.voiceModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
@@ -107,7 +106,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           calendarModule,
           searchModule,
           homeModule,
-          voiceModule,
           googleTaskModule,
           workModule,
           noteModule,

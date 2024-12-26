@@ -410,17 +410,6 @@
             android:name=".reminder.create.fragments.recur.preset.PresetSelectionActivity"
             android:exported="false" />
         <activity
-            android:name=".core.dialogs.VoiceHelpActivity"
-            android:excludeFromRecents="true"
-            android:exported="false" />
-        <activity
-            android:name=".core.dialogs.VoiceResultDialog"
-            android:excludeFromRecents="true"
-            android:exported="false" />
-        <activity
-            android:name=".voice.ConversationActivity"
-            android:exported="false" />
-        <activity
             android:name=".reminder.create.ConfigureActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
@@ -451,16 +440,6 @@
             android:enabled="true"
             android:foregroundServiceType="location"
             android:permission="android.permission.FOREGROUND_SERVICE_LOCATION" />
-
-        <activity
-            android:name=".voice.VoiceWidgetDialog"
-            android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="true"
-            android:exported="true">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

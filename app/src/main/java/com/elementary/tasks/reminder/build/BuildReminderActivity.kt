@@ -15,9 +15,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
-import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.ActivityReminderBuilderBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
@@ -27,9 +25,9 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialog
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogCallback
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
-import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
@@ -46,9 +44,6 @@ class BuildReminderActivity :
   private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   private val prefs by inject<Prefs>()
   private val dialogues by inject<Dialogues>()
-  private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
-    viewModel.processVoiceResult(it)
-  }
   private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
   private val builderAdapter = BuilderAdapter(
     onItemClickListener = { position, item ->
@@ -123,11 +118,6 @@ class BuildReminderActivity :
           true
         }
 
-        R.id.action_voice -> {
-          openRecognizer()
-          true
-        }
-
         R.id.action_delete -> {
           deleteReminder()
           true
@@ -153,9 +143,8 @@ class BuildReminderActivity :
 
   private fun updateMenu() {
     val menu = binding.toolbar.menu
-    menu[0].isVisible = Module.hasMicrophone(this)
-    menu[2].isVisible = viewModel.canRemove
-    menu[4].isVisible = prefs.canChangeBuilder
+    menu[1].isVisible = viewModel.canRemove
+    menu[3].isVisible = prefs.canChangeBuilder
   }
 
   private fun initViewModel() {
@@ -222,10 +211,6 @@ class BuildReminderActivity :
         binding.forecastIconView.setImageResource(prediction.icon)
       }
     }
-  }
-
-  private fun openRecognizer() {
-    voiceRecognitionLauncher.recognize(true)
   }
 
   private fun closeScreen() {

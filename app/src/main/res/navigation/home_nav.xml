@@ -220,13 +220,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_voiceSettingsFragment"
-            app:destination="@id/voiceSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
             android:id="@+id/action_settingsFragment_to_testsFragment"
             app:destination="@id/testsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -495,39 +488,6 @@
         android:name="com.elementary.tasks.settings.NoteSettingsFragment"
         android:label="@string/notes"
         tools:layout="@layout/fragment_settings_notes" />
-    <fragment
-        android:id="@+id/voiceSettingsFragment"
-        android:name="com.elementary.tasks.settings.voice.VoiceSettingsFragment"
-        android:label="@string/voice_control"
-        tools:layout="@layout/fragment_settings_voice">
-        <action
-            android:id="@+id/action_voiceSettingsFragment_to_timeOfDayFragment"
-            app:destination="@id/timeOfDayFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_voiceSettingsFragment_to_helpFragment2"
-            app:destination="@id/voiceHelpFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="reminderapp.com/settings" />
-    </fragment>
-    <fragment
-        android:id="@+id/timeOfDayFragment"
-        android:name="com.elementary.tasks.settings.voice.TimeOfDayFragment"
-        android:label="@string/time"
-        tools:layout="@layout/fragment_settings_time_of_day" />
-    <fragment
-        android:id="@+id/voiceHelpFragment"
-        android:name="com.elementary.tasks.settings.voice.HelpFragment"
-        android:label="@string/help"
-        tools:layout="@layout/fragment_settings_web_view" />
     <fragment
         android:id="@+id/testsFragment"
         android:name="com.elementary.tasks.settings.TestsFragment"

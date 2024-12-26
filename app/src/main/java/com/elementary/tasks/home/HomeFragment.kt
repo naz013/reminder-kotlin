@@ -14,7 +14,6 @@ import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.globalsearch.ActivityNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
@@ -34,7 +33,6 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.common.Module
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.nonNullObserve
@@ -56,7 +54,6 @@ class HomeFragment :
   PrefsObserver,
   WhatsNewManager.Listener {
 
-  private val buttonObservable by inject<GlobalButtonObservable>()
   private val featureManager by inject<FeatureManager>()
   private val whatsNewManager by inject<WhatsNewManager>()
   private val searchViewModel by viewModel<GlobalSearchViewModel>()
@@ -110,10 +107,6 @@ class HomeFragment :
     binding.searchBar.inflateMenu(R.menu.fragment_home)
     binding.searchBar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {
-        R.id.action_voice -> {
-          buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
-          true
-        }
 
         R.id.action_settings -> {
           safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
@@ -122,9 +115,6 @@ class HomeFragment :
 
         else -> false
       }
-    }
-    binding.searchBar.menu.also { menu ->
-      menu.getItem(0)?.isVisible = Module.hasMicrophone(requireContext())
     }
     searchableFragmentCallback?.setSearchViewParams(
       binding.searchBar.id,

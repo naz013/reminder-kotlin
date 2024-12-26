@@ -5,23 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
-import com.elementary.tasks.R
 import com.elementary.tasks.calendar.BaseCalendarFragment
 import com.elementary.tasks.calendar.dayview.pager.DayPagerAdapter
 import com.elementary.tasks.calendar.dayview.weekheader.WeekAdapter
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.databinding.FragmentDayViewBinding
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
 
 class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
 
-  private val buttonObservable by inject<GlobalButtonObservable>()
   lateinit var dayPagerAdapter: DayPagerAdapter
   private val datePageChangeListener = DatePageChangeListener()
   private val weekViewModel by viewModel<WeekViewModel>()
@@ -45,16 +41,6 @@ class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.weekGridView.adapter = weekAdapter
-
-    addMenu(R.menu.fragment_day_view, { menuItem ->
-      when (menuItem.itemId) {
-        R.id.action_voice -> {
-          buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
-          true
-        }
-        else -> false
-      }
-    })
     binding.fab.setOnClickListener { tryToShowActionDialog() }
     initPager()
     initViewModel()

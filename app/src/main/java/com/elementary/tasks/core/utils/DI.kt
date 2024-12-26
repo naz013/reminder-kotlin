@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import com.backdoor.engine.Recognizer
 import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
-import com.elementary.tasks.core.analytics.VoiceAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
@@ -31,7 +29,6 @@ import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
 import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.elementary.tasks.core.dialogs.VoiceHelpViewModel
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
@@ -49,7 +46,6 @@ import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.params.ThemePreferencesImpl
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
@@ -73,7 +69,6 @@ import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.calendar.EventsImportViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
-import com.elementary.tasks.settings.voice.TimesViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
@@ -86,7 +81,6 @@ import com.github.naz013.ui.common.theme.ThemePreferences
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
-import org.threeten.bp.ZoneId
 
 val workerModule = module {
   worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
@@ -125,8 +119,6 @@ val viewModelModule = module {
   viewModel { CloudViewModel(get(), get(), get(), get(), get()) }
   viewModel { ReminderStateViewModel(get(), get()) }
 
-  viewModel { TimesViewModel(get(), get()) }
-
   viewModel {
     SplashViewModel(
       get(),
@@ -142,7 +134,6 @@ val viewModelModule = module {
       get()
     )
   }
-  viewModel { VoiceHelpViewModel(get(), get()) }
 
   viewModel { TroubleshootingViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { EventsImportViewModel(get(), get(), get(), get(), get()) }
@@ -187,9 +178,7 @@ val utilModule = module {
   factory { UriReader(get()) }
   single { BackupTool(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   factory { GoogleCalendarUtils(get(), get(), get(), get()) }
-  factory { providesRecognizer(get()) }
   single { CacheUtil(get(), get()) }
-  single { GlobalButtonObservable() }
 
   factory { SyncManagers(get(), get(), get(), get()) }
 
@@ -234,7 +223,6 @@ val utilModule = module {
 
   single { initializeAnalytics(get(), get()) }
   factory { ReminderAnalyticsTracker(get()) }
-  factory { VoiceAnalyticsTracker(get()) }
 
   single { FeatureManager(get()) }
   factory { GroupsUtil(get(), get(), get(), get()) }
@@ -255,17 +243,3 @@ val utilModule = module {
     LocationTracker(listener, get(), get(), get())
   }
 }
-
-fun providesRecognizer(prefs: Prefs) =
-  Recognizer.Builder()
-    .setLocale(com.backdoor.engine.misc.Locale.EN)
-    .setTimes(
-      listOf(
-        prefs.morningTime,
-        prefs.noonTime,
-        prefs.eveningTime,
-        prefs.nightTime
-      )
-    )
-    .setTimeZone(ZoneId.systemDefault().id)
-    .build()

@@ -3,7 +3,6 @@ package com.elementary.tasks.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -17,10 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.ui.GlobalAction
-import com.elementary.tasks.core.utils.ui.GlobalButtonObservable
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.ActivityNavigator
@@ -31,7 +27,6 @@ import com.elementary.tasks.navigation.SearchableFragmentCallback
 import com.elementary.tasks.navigation.SearchableFragmentQueryObserver
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
-import com.elementary.tasks.voice.ConversationViewModel
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.ActivityDestination
@@ -43,19 +38,14 @@ import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BottomNavActivity :
   BindingActivity<ActivityBottomNavBinding>(),
   FragmentCallback,
-  GlobalAction,
   SearchableFragmentCallback {
 
-  private val buttonObservable by inject<GlobalButtonObservable>()
   private val navigationObservable by inject<NavigationObservable>()
   private val prefs by inject<Prefs>()
-  private val viewModel by viewModel<ConversationViewModel>()
-  private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) { processResult(it) }
   private lateinit var navController: NavController
   private val adsProvider = AdsProvider()
 
@@ -119,13 +109,11 @@ class BottomNavActivity :
   override fun onResume() {
     super.onResume()
     navigationObservable.subscribe(navigationConsumer)
-    buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
   }
 
   override fun onPause() {
     super.onPause()
     navigationObservable.unsubscribe(navigationConsumer)
-    buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
     fragmentSearchView?.takeIf { it.isShowing }?.also {
       it.clearText()
       it.hide()
@@ -153,22 +141,10 @@ class BottomNavActivity :
     imm?.hideSoftInputFromWindow(token, 0)
   }
 
-  private fun processResult(matches: List<String>) {
-    if (matches.isNotEmpty()) {
-      viewModel.parseResults(matches, false, this)
-    }
-  }
-
   override fun onDestroy() {
     super.onDestroy()
     if (prefs.isBackupEnabled && prefs.isSettingsBackupEnabled) {
       BackupSettingsWorker.schedule(this)
-    }
-  }
-
-  override fun invoke(view: View, action: GlobalButtonObservable.Action) {
-    if (action == GlobalButtonObservable.Action.VOICE) {
-      voiceRecognitionLauncher.recognize(false)
     }
   }
 
