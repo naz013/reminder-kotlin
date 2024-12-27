@@ -29,11 +29,10 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
     binding.tabLayout.addOnTabSelectedListener(
       object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
-          Logger.d("onTabSelected: $tab")
+          Logger.d(TAG, "On tab changed: $tab")
           when (tab?.position) {
             0 -> {
               addFragment(RemindersFragment())
@@ -51,7 +50,6 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
         }
 
         override fun onTabReselected(tab: TabLayout.Tab?) {
-          Logger.d("onTabReselected: $tab")
         }
       }
     )
@@ -66,12 +64,22 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
   }
 
   private fun addFragment(fragment: BaseSubEventsFragment<*>) {
-    childFragmentManager.beginTransaction()
-      .replace(R.id.fragment_container, fragment)
-      .commit()
+    if (childFragmentManager.isStateSaved) {
+      childFragmentManager.beginTransaction()
+        .replace(R.id.fragment_container, fragment)
+        .commitAllowingStateLoss()
+    } else {
+      childFragmentManager.beginTransaction()
+        .replace(R.id.fragment_container, fragment)
+        .commit()
+    }
   }
 
   override fun getTitle(): String {
     return getString(R.string.events)
+  }
+
+  companion object {
+    private const val TAG = "HomeEventsFragment"
   }
 }
