@@ -19,7 +19,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Reminder"
 include(":app")
-include(":voice-engine-ktx")
 include(":logging")
 include(":logging-api")
 include(":repository")

@@ -8,18 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.login.LoginLauncher
 import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.Module
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.login.LoginLauncher
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
 
 class SettingsFragment :
@@ -117,9 +117,6 @@ class SettingsFragment :
     }
     binding.otherSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
-    }
-    binding.voiceSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToVoiceSettingsFragment())
     }
     binding.notesSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())

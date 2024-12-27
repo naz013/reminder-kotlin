@@ -182,7 +182,6 @@ fun getDate(): String {
 
 dependencies {
   implementation(project(":domain"))
-  implementation(project(":voice-engine-ktx"))
   implementation(project(":logging-api"))
   implementation(project(":repository-api"))
   implementation(project(":logging"))

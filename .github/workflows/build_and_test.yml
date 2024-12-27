@@ -42,16 +42,6 @@ jobs:
         fail_on_error: true
         ktlint_version: 0.47.1
 
-    - name: Run tests for Voice module
-      run: ./gradlew :voice-engine-ktx:test
-
-    - name: Upload Voice module Test results
-      uses: actions/upload-artifact@v4
-      if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
-      with:
-        name: voice_reports
-        path: voice-engine-ktx/build/test-results # path to where the xml test results are stored
-
     - name: Upload iCalendar module Test results
       uses: actions/upload-artifact@v4
       if: ${{ always() }} # IMPORTANT: Upload reports regardless of status

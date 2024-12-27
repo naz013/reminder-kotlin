@@ -7,9 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
@@ -17,12 +15,7 @@ import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.icalendar.ICalendarApi
-import com.github.naz013.icalendar.RecurrenceRuleTag
-import com.github.naz013.icalendar.TagType
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
@@ -45,23 +38,29 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHold
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
-import com.elementary.tasks.voice.VoiceCommandProcessor
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
-import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurrenceRuleTag
+import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
@@ -101,7 +100,6 @@ class BuildReminderViewModel(
   private val reminderPredictionCalculator: ReminderPredictionCalculator,
   private val uriReader: UriReader,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val voiceCommandProcessor: VoiceCommandProcessor,
   private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider
@@ -187,26 +185,6 @@ class BuildReminderViewModel(
       builderItemsLogic.setAll(used.filter { biFilter(it) })
 
       updateSelector()
-    }
-  }
-
-  fun processVoiceResult(matches: List<String>) {
-    Logger.d("processVoiceResult: $matches")
-    viewModelScope.launch(dispatcherProvider.default()) {
-      when (val result = voiceCommandProcessor(matches)) {
-        is VoiceCommandProcessor.ProcessResult.ReminderSuccess -> {
-          editReminder(result.reminder)
-          isEdited = false
-          original = null
-        }
-
-        is VoiceCommandProcessor.ProcessResult.TextSuccess -> {
-          addSummaryItemToBuilder(result.text)
-        }
-
-        is VoiceCommandProcessor.ProcessResult.Error -> {
-        }
-      }
     }
   }
 

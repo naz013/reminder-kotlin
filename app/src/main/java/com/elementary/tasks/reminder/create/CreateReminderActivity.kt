@@ -17,17 +17,13 @@ import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.os.datapicker.UriPicker
-import com.elementary.tasks.core.os.datapicker.VoiceRecognitionLauncher
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.reminder.create.fragments.ApplicationFragment
@@ -42,20 +38,21 @@ import com.elementary.tasks.reminder.create.fragments.TypeFragment
 import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
 import com.elementary.tasks.reminder.create.fragments.recur.RecurFragment
-import com.elementary.tasks.voice.ConversationViewModel
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.context.startActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.snackbar.Snackbar
-import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -70,14 +67,9 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
-  private val conversationViewModel by viewModel<ConversationViewModel>()
   private val stateViewModel by viewModel<ReminderStateViewModel>()
 
   private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
-
-  private val voiceRecognitionLauncher = VoiceRecognitionLauncher(this) {
-    processVoiceResult(it)
-  }
   private val uriPicker = UriPicker(this)
 
   private var fragment: TypeFragment<*>? = null
@@ -390,10 +382,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     frag.onGroupUpdate(item)
   }
 
-  private fun openRecognizer() {
-    voiceRecognitionLauncher.recognize(true)
-  }
-
   private fun replaceFragment(fragment: TypeFragment<*>) {
     runCatching {
       supportFragmentManager.beginTransaction()
@@ -407,11 +395,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
     when (item.itemId) {
       R.id.action_add -> {
         askNotificationPermissionIfNeeded()
-        return true
-      }
-
-      R.id.action_voice -> {
-        openRecognizer()
         return true
       }
 
@@ -515,21 +498,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.activity_create_reminder, menu)
-    menu[0].isVisible = Module.hasMicrophone(this)
-    menu[2].isVisible = isEditing && !stateViewModel.isFromFile
+    menu[1].isVisible = isEditing && !stateViewModel.isFromFile
     return true
-  }
-
-  private fun processVoiceResult(matches: List<String>) {
-    if (matches.isNotEmpty()) {
-      val model = conversationViewModel.findResults(matches)
-      if (model != null) {
-        editReminder(model, false)
-      } else {
-        val text = matches[0]
-        fragment?.onVoiceAction(StringUtils.capitalize(text))
-      }
-    }
   }
 
   private fun handleSendText(intent: Intent) {
