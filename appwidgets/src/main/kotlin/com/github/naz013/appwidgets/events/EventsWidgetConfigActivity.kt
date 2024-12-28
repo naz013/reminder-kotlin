@@ -9,6 +9,8 @@ import com.github.naz013.appwidgets.BaseWidgetConfigActivity
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.databinding.ActivityWidgetCurrentTasksConfigBinding
+import com.github.naz013.feature.common.coroutine.invokeSuspend
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.context.colorOf
 import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
@@ -134,14 +136,16 @@ internal class EventsWidgetConfigActivity :
   }
 
   private fun readIntent() {
-    val intent = intent
     val extras = intent.extras
+    Logger.d(TAG, "Read intent extras: ${extras?.keySet()?.toList()}")
     if (extras != null) {
       widgetID = extras.getInt(
         AppWidgetManager.EXTRA_APPWIDGET_ID,
         AppWidgetManager.INVALID_APPWIDGET_ID
       )
     }
+
+    Logger.d(TAG, "Edit events widget with id: $widgetID")
 
     prefsProvider = EventsWidgetPrefsProvider(this, widgetID)
 
@@ -171,7 +175,7 @@ internal class EventsWidgetConfigActivity :
     builder.setView(b.root)
     builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
       dialogInterface.dismiss()
-      savePrefs()
+      invokeSuspend { savePrefs() }
     }
     builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
     val dialog = builder.create()
@@ -179,16 +183,20 @@ internal class EventsWidgetConfigActivity :
     Dialogues.setFullWidthDialog(dialog, this)
   }
 
-  private fun savePrefs() {
+  private suspend fun savePrefs() {
     prefsProvider.setHeaderBackground(binding.bgColorSlider.selectedItem)
     prefsProvider.setItemBackground(binding.listItemBgColorSlider.selectedItem)
     prefsProvider.setTextSize(textSize.toFloat())
 
     analyticsEventSender.send(WidgetUsedEvent(Widget.EVENTS))
 
-    val appWidgetManager = AppWidgetManager.getInstance(this)
-    EventsWidget.updateWidget(this, appWidgetManager, prefsProvider)
+    appWidgetUpdater.updateEventsWidget(widgetID)
+
     setResult(RESULT_OK, resultValue)
     finish()
+  }
+
+  companion object {
+    private const val TAG = "EventsWidgetConfigActivity"
   }
 }

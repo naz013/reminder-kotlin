@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.ktlint)
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -16,12 +17,16 @@ android {
   }
   buildFeatures {
     viewBinding = true
+    compose = true
   }
   buildTypes {
     release {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -70,6 +75,15 @@ dependencies {
   implementation(libs.androidx.lifecycle.livedata.ktx)
 
   implementation(libs.threetenbp)
+
+  implementation(libs.glance.appwidget)
+  implementation(libs.glance.material3)
+
+  implementation(platform(libs.compose.bom))
+  implementation(libs.compose.material3)
+
+  debugImplementation(libs.glance.preview)
+  debugImplementation(libs.glance.appwidget.preview)
 }
 
 ktlint {

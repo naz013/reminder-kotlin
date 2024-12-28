@@ -193,7 +193,7 @@ class BuildReminderActivity :
       binding.savePresetViewHolder.visibleGone(it)
     }
     viewModel.canSave.nonNullObserve(this) {
-      binding.toolbar.menu[1].isEnabled = it
+      binding.toolbar.menu[0].isEnabled = it
     }
     viewModel.handleDeepLink(intent)
   }

@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners android:radius="@dimen/home_screen_widget_corner_radius" />
-    <gradient android:startColor="#33ffffff"
-        android:endColor="#1AFFFFFF"
+    <gradient android:startColor="#40FFFFFF"
+        android:endColor="#26FFFFFF"
         android:type="linear"/>
 </shape>

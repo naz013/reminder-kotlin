@@ -51,6 +51,12 @@ dependencies {
 
   implementation(libs.threetenbp)
 
+  implementation(platform(libs.compose.bom))
+  implementation(libs.compose.material3)
+
+  debugImplementation(libs.compose.ui.test.manifest)
+  debugImplementation(libs.compose.ui.tooling.preview)
+
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.mockk)

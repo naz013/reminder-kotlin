@@ -8,7 +8,9 @@ import com.github.naz013.ui.common.activity.BindingActivity
 import org.koin.android.ext.android.inject
 
 internal abstract class BaseWidgetConfigActivity<B : ViewBinding> : BindingActivity<B>() {
+
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
+  protected val appWidgetUpdater by inject<AppWidgetUpdater>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()

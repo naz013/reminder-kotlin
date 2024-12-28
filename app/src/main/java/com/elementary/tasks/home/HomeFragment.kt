@@ -107,7 +107,6 @@ class HomeFragment :
     binding.searchBar.inflateMenu(R.menu.fragment_home)
     binding.searchBar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {
-
         R.id.action_settings -> {
           safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
           true

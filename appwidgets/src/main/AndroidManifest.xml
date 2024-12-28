@@ -110,6 +110,18 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".events.EventsGlanceAppWidgetReceiver"
+            android:exported="true"
+            android:label="@string/active_reminders">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/reminders_widget_metadata" />
+        </receiver>
+
         <activity
             android:name="com.github.naz013.appwidgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
@@ -120,24 +132,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
-        <receiver
-            android:name="com.github.naz013.appwidgets.events.EventsWidget"
-            android:exported="true"
-            android:label="@string/active_reminders">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="justreminder.LOCATION_CHANGED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/reminders_widget_metadata" />
-        </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.events.EventsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
             android:name="com.github.naz013.appwidgets.birthdays.BirthdaysWidgetConfigActivity"
