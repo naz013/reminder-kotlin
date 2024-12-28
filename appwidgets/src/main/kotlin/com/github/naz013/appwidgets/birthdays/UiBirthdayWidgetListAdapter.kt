@@ -20,10 +20,6 @@ internal class UiBirthdayWidgetListAdapter(
       birthdayDate = birthdayDate,
       birthday = birthday
     )
-    val remainingTime = modelDateTimeFormatter.getBirthdayRemaining(
-      futureBirthdayDateTime = futureBirthday,
-      ignoreYear = birthday.ignoreYear
-    )
     val ageAndBirthdayDate = if (birthday.ignoreYear) {
       birthDate
     } else {
@@ -34,7 +30,6 @@ internal class UiBirthdayWidgetListAdapter(
     return UiBirthdayWidgetList(
       uuId = birthday.uuId,
       name = birthday.name,
-      remainingTimeFormatted = remainingTime,
       millis = dateTimeManager.toMillis(futureBirthday),
       ageFormattedAndBirthdayDate = ageAndBirthdayDate
     )

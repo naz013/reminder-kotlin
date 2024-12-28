@@ -33,8 +33,6 @@
 
     <dimen name="pin_digit_icon_size">32dp</dimen>
 
-    <dimen name="home_screen_widget_corner_radius">10dp</dimen>
-
     <dimen name="default_corner_radius">5dp</dimen>
     <dimen name="default_content_padding">8dp</dimen>
     <dimen name="carousel_image_width">172dp</dimen>

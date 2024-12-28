@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.ColorInt
@@ -96,13 +95,6 @@ internal class BirthdaysFactory(
 
     rv.setTextViewText(R.id.nameView, birthday.name)
     rv.setTextViewText(R.id.ageBirthDateView, birthday.ageFormattedAndBirthdayDate)
-
-    if (birthday.remainingTimeFormatted == null) {
-      rv.setViewVisibility(R.id.leftTimeView, View.GONE)
-    } else {
-      rv.setTextViewText(R.id.leftTimeView, birthday.remainingTimeFormatted)
-      rv.setViewVisibility(R.id.leftTimeView, View.VISIBLE)
-    }
 
     val data = WidgetIntentProtocol(
       mapOf<String, Any?>(

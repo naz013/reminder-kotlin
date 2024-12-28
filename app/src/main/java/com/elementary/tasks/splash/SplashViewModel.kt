@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.data.CalendarDataEngine
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
@@ -14,7 +13,9 @@ import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
+import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import kotlinx.coroutines.launch
@@ -30,7 +31,8 @@ class SplashViewModel(
   private val groupsUtil: GroupsUtil,
   private val noteImageMigration: NoteImageMigration,
   private val presetInitProcessor: PresetInitProcessor,
-  private val calendarDataEngine: CalendarDataEngine
+  private val calendarDataEngine: CalendarDataEngine,
+  private val appWidgetPreviewUpdater: AppWidgetPreviewUpdater
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
@@ -51,6 +53,7 @@ class SplashViewModel(
       initPrefs()
       checkIfAppUpdated()
       checkDb()
+      appWidgetPreviewUpdater.updateEventsWidgetPreview()
       withUIContext {
         if (prefs.isSbNotificationEnabled) {
           notifier.sendShowReminderPermanent()
