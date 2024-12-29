@@ -20,23 +20,26 @@ jobs:
         distribution: 'adopt'
         cache: gradle
 
-    - name: Extract version name
+    - name: Extract existing version code
       run: |
         # Extract version number from branch name
         version_name=${GITHUB_REF#refs/heads/release/}
 
+        # Get existing version code from build.gradle
+        version_code=$(grep "versionCode = " app/build.gradle.kts | awk '{print $2}' | tr -d '\n')
+
+        # Increment existing version code by 1
+        version_code=$((version_code + 1))
+
         # Set environment variable for later use
         echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
-
-    - name: Get app version code
-      id: get_version
-      uses: eriknyk/android-get-app-version-action@v1.0.1
+        echo "VERSION_CODE=$version_code" >> $GITHUB_ENV
 
     - name: Increase version code and change version name
       uses: chkfung/android-version-actions@v1.2.2
       with:
         gradlePath: app/build.gradle.kts
-        versionCode: ${{ steps.get_version.outputs.nextVersionCode }}
+        versionCode: ${{ env.VERSION_CODE }}
         versionName: ${{ env.VERSION_NAME }}
 
     - name: Commit and push changes
