@@ -26,7 +26,7 @@ jobs:
         version_name=${GITHUB_REF#refs/heads/release/}
 
         # Get existing version code from build.gradle
-        version_code=$(grep "versionCode" app/build.gradle | awk '{print $2}' | tr -d '\n')
+        version_code=$(grep -o -E 'versionCode = [[:digit:]\.]+' app/build.gradle.kts | grep -o -E '[[:digit:]\.]+')
 
         # Increment existing version code by 1
         version_code=$((version_code + 1))
@@ -36,11 +36,11 @@ jobs:
         echo "VERSION_CODE=$version_code" >> $GITHUB_ENV
 
     - name: Increase version code and change version name
-      run: |
-        # Update build.gradle with new version code and name
-        echo "${{ env.VERSION_CODE }} - ${{ env.VERSION_NAME }}"
-        sed -i "s/versionCode [0-9]\+/versionCode ${{ env.VERSION_CODE }}/g" app/build.gradle
-        sed -i "s/versionName \"[^\"]*\"/versionName \"${{ env.VERSION_NAME }}\"/g" app/build.gradle
+      uses: chkfung/android-version-actions@v1.2.2
+      with:
+        gradlePath: app/build.gradle.kts
+        versionCode: ${{ env.VERSION_CODE }}
+        versionName: ${{ env.VERSION_NAME }}
 
     - name: Commit and push changes
       run: |
@@ -111,4 +111,3 @@ jobs:
         packageName: com.cray.software.justreminderpro
         releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
         track: alpha
-        changesNotSentForReview: true
