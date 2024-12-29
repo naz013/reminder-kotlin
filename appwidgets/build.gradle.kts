@@ -78,9 +78,12 @@ dependencies {
 
   implementation(libs.glance.appwidget)
   implementation(libs.glance.material3)
+  implementation(libs.glance.preview)
+  implementation(libs.glance.appwidget.preview)
 
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.material3)
+  implementation(libs.compose.ui.tooling.preview)
 
   debugImplementation(libs.glance.preview)
   debugImplementation(libs.glance.appwidget.preview)
