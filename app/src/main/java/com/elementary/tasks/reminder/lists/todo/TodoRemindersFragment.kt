@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
@@ -83,7 +84,7 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     }
 
     binding.fab.setOnClickListener {
-      reminderBuilderLauncher.openLogged(requireContext()) { }
+      reminderBuilderLauncher.openDeepLink(requireContext(), ReminderTodoTypeDeepLinkData)
     }
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))

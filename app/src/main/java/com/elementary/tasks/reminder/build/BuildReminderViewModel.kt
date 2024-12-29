@@ -15,6 +15,7 @@ import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.withUIContext
@@ -369,6 +370,12 @@ class BuildReminderViewModel(
           }
         }
 
+        is ReminderTodoTypeDeepLinkData -> {
+          Logger.i(TAG, "Handle reminder todo Deep Link")
+          addSubTasksItemToBuilder()
+          updateSelector()
+        }
+
         else -> {}
       }
     }
@@ -442,6 +449,19 @@ class BuildReminderViewModel(
     intent.getStringExtra(Intent.EXTRA_TEXT)?.let { string ->
       addSummaryItemToBuilder(string)
       updateSelector()
+    }
+  }
+
+  private fun addSubTasksItemToBuilder() {
+    val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUB_TASKS }
+    Logger.i(TAG, "Add Sub tasks builder item")
+    if (itemIndex == -1) {
+      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUB_TASKS }
+        ?.let { it as SubTasksBuilderItem }
+        ?.also { builderItemsLogic.addNew(it) }
+    } else {
+      val item = builderItemsLogic.getUsed()[itemIndex] as? SubTasksBuilderItem ?: return
+      builderItemsLogic.update(itemIndex, item)
     }
   }
 

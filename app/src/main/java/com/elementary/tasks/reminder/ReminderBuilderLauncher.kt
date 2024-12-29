@@ -37,7 +37,7 @@ class ReminderBuilderLauncher(private val prefs: Prefs) {
   fun openDeepLink(
     context: Context,
     deepLinkData: DeepLinkData,
-    builder: Intent.() -> Unit
+    builder: Intent.() -> Unit = { }
   ) {
     LoginApi.openLogged(context, getActivityClass(), deepLinkData, builder)
   }
