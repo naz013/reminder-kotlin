@@ -26,7 +26,9 @@ jobs:
         version_name=${GITHUB_REF#refs/heads/release/}
 
         # Get existing version code from build.gradle
-        version_code=$(grep "versionCode" app/build.gradle | awk '{print $2}' | tr -d '\n')
+        version_code=$(grep "versionCode" app/build.gradle.kts | awk '{print $2}' | tr -d '\n')
+
+        echo "Extracted version code = ${{version_code}}"
 
         # Increment existing version code by 1
         version_code=$((version_code + 1))
@@ -37,10 +39,10 @@ jobs:
 
     - name: Increase version code and change version name
       run: |
-        # Update build.gradle with new version code and name
+        # Update build.gradle.kts with new version code and name
         echo "${{ env.VERSION_CODE }} - ${{ env.VERSION_NAME }}"
-        sed -i "s/versionCode [0-9]\+/versionCode ${{ env.VERSION_CODE }}/g" app/build.gradle
-        sed -i "s/versionName \"[^\"]*\"/versionName \"${{ env.VERSION_NAME }}\"/g" app/build.gradle
+        sed -i "s/versionCode = [0-9]\+/versionCode ${{ env.VERSION_CODE }}/g" app/build.gradle.kts
+        sed -i "s/versionName = \"[^\"]*\"/versionName \"${{ env.VERSION_NAME }}\"/g" app/build.gradle.kts
 
     - name: Commit and push changes
       run: |
