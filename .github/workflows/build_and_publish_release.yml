@@ -28,10 +28,15 @@ jobs:
         # Set environment variable for later use
         echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
 
+    - name: Get app version code
+      id: get_version
+      uses: eriknyk/android-get-app-version-action@v1.0.1
+
     - name: Increase version code and change version name
       uses: chkfung/android-version-actions@v1.2.2
       with:
         gradlePath: app/build.gradle.kts
+        versionCode: ${{ steps.get_version.outputs.nextVersionCode }}
         versionName: ${{ env.VERSION_NAME }}
 
     - name: Commit and push changes
