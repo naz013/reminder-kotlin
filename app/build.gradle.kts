@@ -10,6 +10,7 @@ plugins {
   alias(libs.plugins.crashlytics.gradle)
   alias(libs.plugins.google.services)
   alias(libs.plugins.ktlint)
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -31,6 +32,7 @@ android {
   buildFeatures {
     viewBinding = true
     buildConfig = true
+    compose = true
   }
 
   val propsFile = file("${rootProject.rootDir}/keystore.properties")
@@ -137,6 +139,9 @@ android {
         signingConfig = signingConfigs["debugApp"]
       }
     }
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -281,6 +286,12 @@ dependencies {
 
   implementation(libs.slf4j.api)
   implementation(libs.logback.android)
+
+  implementation(platform(libs.compose.bom))
+  implementation(libs.compose.material3)
+
+  debugImplementation(libs.compose.ui.test.manifest)
+  debugImplementation(libs.compose.ui.tooling.preview)
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
