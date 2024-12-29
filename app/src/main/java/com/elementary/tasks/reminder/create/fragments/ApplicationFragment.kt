@@ -6,17 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
-import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
-import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
+import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
+import com.github.naz013.common.Module
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.domain.Reminder
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
-import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
-import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 
 class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBinding>() {
@@ -115,7 +115,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 

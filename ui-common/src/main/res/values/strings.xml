@@ -850,4 +850,6 @@
 
     <string name="foreground_service_location">Foreground Location Service</string>
     <string name="foreground_service_location_explanation">To allow the application to be fully functional, it requires to access your Location from the Foreground Service</string>
+    <string name="legacy_builder_removal_alert">🚀 Deprecation Alert! 🚀</string>
+    <string name="legacy_builder_removal_message">Heads-up! In the upcoming update, we\'ll be saying goodbye to the Legacy Reminder Builder. This decision will allow us to focus on improving the New Builder and overall performance.</string>
 </resources>

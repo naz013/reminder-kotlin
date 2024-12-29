@@ -13,7 +13,7 @@ import com.elementary.tasks.core.data.ui.UiUsedTimeList
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.core.views.TimerPickerView
 import com.elementary.tasks.databinding.FragmentReminderTimerBinding
 import com.elementary.tasks.databinding.ListItemUsedTimeBinding
@@ -123,7 +123,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 

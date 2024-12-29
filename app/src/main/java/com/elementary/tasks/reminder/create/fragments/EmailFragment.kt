@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.onChanged
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding
+import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 
 class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
@@ -88,7 +88,7 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 

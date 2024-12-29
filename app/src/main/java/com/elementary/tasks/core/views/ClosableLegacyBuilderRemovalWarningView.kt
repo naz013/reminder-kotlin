@@ -5,12 +5,12 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.ViewLegacyBuilderToggleBinding
+import com.elementary.tasks.databinding.ViewLegacyBuilderRemovalBinding
 import org.koin.core.component.KoinComponent
 
-class ClosableLegacyBuilderWarningView : FrameLayout, KoinComponent {
+class ClosableLegacyBuilderRemovalWarningView : FrameLayout, KoinComponent {
 
-  private lateinit var binding: ViewLegacyBuilderToggleBinding
+  private lateinit var binding: ViewLegacyBuilderRemovalBinding
   var onTryClicked: (() -> Unit)? = null
   var onCloseClicked: (() -> Unit)? = null
 
@@ -31,8 +31,8 @@ class ClosableLegacyBuilderWarningView : FrameLayout, KoinComponent {
   }
 
   private fun init(context: Context, attrs: AttributeSet?) {
-    View.inflate(context, R.layout.view_legacy_builder_toggle, this)
-    binding = ViewLegacyBuilderToggleBinding.bind(this)
+    View.inflate(context, R.layout.view_legacy_builder_removal, this)
+    binding = ViewLegacyBuilderRemovalBinding.bind(this)
 
     binding.tryButton.setOnClickListener { onTryClicked?.invoke() }
     binding.closeButton.setOnClickListener { onCloseClicked?.invoke() }

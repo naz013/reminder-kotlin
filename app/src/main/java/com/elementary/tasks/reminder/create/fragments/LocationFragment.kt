@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.github.naz013.common.Module
@@ -191,7 +191,7 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 

@@ -112,6 +112,7 @@ object PrefsConstants {
   const val CAN_CHANGE_BUILDER = "can_change_builder"
   const val USE_LEGACY_BUILDER = "use_legacy_builder"
   const val SHOW_LEGACY_BUILDER_WARNING = "show_legacy_builder_warning"
+  const val SHOW_LEGACY_BUILDER_REMOVAL_WARNING = "show_legacy_builder_removal_warning"
 
   // birthdays reminder notification constants
   const val BIRTHDAY_USE_GLOBAL = "use_global"

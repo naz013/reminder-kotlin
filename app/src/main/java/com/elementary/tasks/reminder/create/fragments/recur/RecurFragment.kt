@@ -10,16 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.icalendar.Day
-import com.github.naz013.icalendar.DayValue
-import com.github.naz013.icalendar.FreqType
-import com.github.naz013.icalendar.RecurParamType
-import com.github.naz013.icalendar.UtcDateTime
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.views.ActionView
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.common.ValueSliderView
 import com.elementary.tasks.databinding.DialogRecurDayAdvancedBinding
@@ -37,6 +32,11 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.icalendar.Day
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqType
+import com.github.naz013.icalendar.RecurParamType
+import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.view.gone
@@ -163,7 +163,7 @@ class RecurFragment : RepeatableTypeFragment<FragmentReminderRecurBinding>() {
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 
