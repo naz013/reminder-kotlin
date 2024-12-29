@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 321
-    versionName = "9.4.1"
+    versionCode 1
+    versionName "9.5.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
