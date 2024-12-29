@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import java.util.Objects
 
+@Deprecated("Use new builder screen")
 class PresetDiffCallback : DiffUtil.ItemCallback<UiPresetList>() {
 
   override fun areItemsTheSame(oldItem: UiPresetList, newItem: UiPresetList): Boolean {

@@ -6,11 +6,19 @@ class AuthPreferencesImpl(
   private val prefs: Prefs
 ) : AuthPreferences {
   override val shufflePinView: Boolean
-    get() = prefs.shufflePinView
+    get() {
+      return prefs.shufflePinView
+    }
   override val useFingerprint: Boolean
-    get() = prefs.useFingerprint
+    get() {
+      return prefs.useFingerprint
+    }
   override val hasPinCode: Boolean
-    get() = prefs.hasPinCode
+    get() {
+      return prefs.hasPinCode
+    }
   override val pinCode: String
-    get() = prefs.pinCode
+    get() {
+      return prefs.pinCode
+    }
 }

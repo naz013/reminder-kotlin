@@ -172,7 +172,6 @@ val dataFlowRepositoryModule = module {
 }
 
 val utilModule = module {
-  single { Prefs(get()) }
   factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
   single { ReminderExplanationVisibility(get()) }
   single { MemoryUtil() }
@@ -202,6 +201,7 @@ val utilModule = module {
 
   factory { RecurEventManager(get()) }
 
+  single { Prefs(get()) }
   single { RemotePrefs(get(), get(), get(), get()) }
   single { ThemePreferencesImpl(get()) as ThemePreferences }
   single { LocalePreferencesImpl(get()) as LocalePreferences }
