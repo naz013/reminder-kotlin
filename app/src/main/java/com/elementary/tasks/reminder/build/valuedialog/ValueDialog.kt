@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.BottomSheetValueSelectorBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueController
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerParent
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.android.ext.android.inject
@@ -37,11 +37,13 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
 
   override fun onCancel(dialog: DialogInterface) {
     super.onCancel(dialog)
+    Logger.d(TAG, "Value dialog cancelled")
     save()
   }
 
   override fun onDismiss(dialog: DialogInterface) {
     super.onDismiss(dialog)
+    Logger.d(TAG, "Value dialog dismissed")
     save()
   }
 
@@ -61,6 +63,10 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     savedInstanceState: Bundle?
   ): View {
     binding = BottomSheetValueSelectorBinding.inflate(inflater, container, false)
+
+    dialog?.setCancelable(true)
+    dialog?.setCanceledOnTouchOutside(true)
+
     return binding.root
   }
 
@@ -83,7 +89,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     }
     binding.buttonsHolder.gone()
 
-    Logger.d("onViewCreated: position=${getPosition()}")
+    Logger.d("Value dialog created, position: ${getPosition()}")
     dataHolder.data?.also { builderItem ->
       binding.titleView.text = builderItem.title
       binding.descriptionView.text = builderItem.description
@@ -101,6 +107,11 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     }
 
     updateBehavior()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    Logger.d(TAG, "Value dialog destroyed")
   }
 
   private fun save() {

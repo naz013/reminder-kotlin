@@ -68,7 +68,6 @@ import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -173,7 +172,7 @@ class BuildReminderViewModel(
   }
 
   fun onConfigurationChanged() {
-    Logger.d("BuildReminderVM: onConfigurationChanged")
+    Logger.d(TAG, "On configuration changed")
     viewModelScope.launch(dispatcherProvider.default()) {
       val used = builderItemsLogic.getUsed()
 
@@ -189,20 +188,20 @@ class BuildReminderViewModel(
   }
 
   fun onPermissionsGranted() {
-    Logger.i("Granted permission")
+    Logger.i(TAG, "Permissions granted")
     saveReminder(requestedNewId)
   }
 
   fun saveReminder(newId: Boolean) {
     postInProgress(true)
-    Logger.i("Start reminder saving, use new ID = $newId")
+    Logger.i(TAG, "Start reminder saving, use new ID = $newId")
     viewModelScope.launch(dispatcherProvider.default()) {
       val builderItems = builderItemsLogic.getUsed().toMutableList()
-      Logger.d("saveReminder: builderItems=$builderItems")
-      Logger.i("Number of builder items = ${builderItems.size}")
+      Logger.d(TAG, "saveReminder: builderItems=$builderItems")
+      Logger.i(TAG, "Number of builder items = ${builderItems.size}")
 
       val allValid = builderItems.all { it.modifier.isCorrect() }
-      Logger.i("Are all builder items valid = $allValid")
+      Logger.i(TAG, "Are all builder items valid = $allValid")
 
       if (!allValid) {
         postInProgress(false)
@@ -211,14 +210,14 @@ class BuildReminderViewModel(
 
       val permissionResult = permissionValidator(builderItems)
       if (permissionResult is PermissionValidator.Result.Failure) {
-        Logger.i("Not all permissions granted. Request for = ${permissionResult.permissions}")
+        Logger.i(TAG, "Not all permissions granted. Request for = ${permissionResult.permissions}")
         requestedNewId = newId
         _askPermissions.postValue(Event(permissionResult.permissions))
         postInProgress(false)
         return@launch
       }
 
-      Logger.i("All permissions granted")
+      Logger.i(TAG, "All permissions granted")
 
       if (!hasGroupBuilderItem(builderItems)) {
         getGroupBuilderItem()?.also {
@@ -229,7 +228,7 @@ class BuildReminderViewModel(
       val reminder = original ?: Reminder()
       when (val buildResult = biToReminderAdapter(reminder, builderItems, newId)) {
         is BiToReminderAdapter.BuildResult.Success -> {
-          Logger.i("Reminder build success")
+          Logger.i(TAG, "Reminder build success")
 
           saveAndStartReminder(buildResult.reminder, isEdit = isEdited)
 
@@ -241,7 +240,7 @@ class BuildReminderViewModel(
         }
 
         is BiToReminderAdapter.BuildResult.Error -> {
-          Logger.i("Reminder build failed with error = ${buildResult.error}")
+          Logger.i(TAG, "Reminder build failed with error = ${buildResult.error}")
         }
       }
       postInProgress(false)
@@ -249,7 +248,7 @@ class BuildReminderViewModel(
   }
 
   fun handleDeepLink(intent: Intent?) {
-    Logger.i("handleDeepLink: $intent")
+    Logger.i(TAG, "Handle reminder Deep Link: $intent")
     if (intent == null) {
       return
     }
@@ -258,17 +257,17 @@ class BuildReminderViewModel(
       val action = intent.action
       when {
         action == Intent.ACTION_SEND && "text/plain" == intent.type -> {
-          Logger.i("Handle reminder text Deep Link")
+          Logger.i(TAG, "Handle reminder text Deep Link")
           handleSendText(intent)
         }
 
         intent.data != null -> {
-          Logger.i("Handle reminder file Deep Link")
+          Logger.i(TAG, "Handle reminder file Deep Link")
           readFromIntent(intent.data)
         }
 
         intent.hasExtra(IntentKeys.INTENT_ITEM) -> {
-          Logger.i("Handle reminder object Deep Link")
+          Logger.i(TAG, "Handle reminder object Deep Link")
           readObjectFromIntent(intent)
         }
 
@@ -277,7 +276,7 @@ class BuildReminderViewModel(
         }
 
         !intentId.isNullOrEmpty() -> {
-          Logger.i("Handle reminder ID Deep Link")
+          Logger.i(TAG, "Handle reminder ID Deep Link")
           editReminderIfNeeded(intentId)
         }
       }
@@ -297,7 +296,7 @@ class BuildReminderViewModel(
   }
 
   fun onEditPermissionsGranted() {
-    Logger.i("On builder item edit Permission granted")
+    Logger.i(TAG, "On builder item edit Permission granted")
     viewModelScope.launch(dispatcherProvider.default()) {
       updateSelector()
     }
@@ -306,7 +305,7 @@ class BuildReminderViewModel(
   }
 
   fun onItemEditedClicked(position: Int, builderItem: BuilderItem<*>) {
-    Logger.i("On builder item edit clicked, type = ${builderItem.biType}")
+    Logger.i(TAG, "On builder item edit clicked, type = ${builderItem.biType}")
     val pair = position to builderItem
     val permissions = builderItem.constraints.filterIsInstance<PermissionConstraint>()
     if (permissions.isNotEmpty()) {
@@ -325,7 +324,7 @@ class BuildReminderViewModel(
   }
 
   fun addItem(builderItem: BuilderItem<*>) {
-    Logger.i("Add builder item, type = ${builderItem.biType}")
+    Logger.i(TAG, "Add builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItemsLogic.addNew(builderItem)
 
@@ -337,7 +336,7 @@ class BuildReminderViewModel(
   }
 
   fun removeItem(position: Int, builderItem: BuilderItem<*>) {
-    Logger.i("Remove builder item, type = ${builderItem.biType}")
+    Logger.i(TAG, "Remove builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItem.modifier.setDefault()
       builderItemsLogic.update(position, builderItem)
@@ -347,7 +346,7 @@ class BuildReminderViewModel(
   }
 
   fun updateValue(position: Int, builderItem: BuilderItem<*>) {
-    Logger.i("Update VALUE for builder item, type = ${builderItem.biType}")
+    Logger.i(TAG, "Update VALUE for builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItemsLogic.update(position, builderItem)
       updateSelector()
@@ -363,7 +362,7 @@ class BuildReminderViewModel(
       when (val deepLinkData = parser.readDeepLinkData(intent)) {
         is ReminderDatetimeTypeDeepLinkData -> {
           if (deepLinkData.type == Reminder.BY_DATE) {
-            Logger.i("Handle reminder date/time Deep Link")
+            Logger.i(TAG, "Handle reminder date/time Deep Link")
             addDateItemToBuilder(deepLinkData.dateTime.toLocalDate())
             addTimeItemToBuilder(deepLinkData.dateTime.toLocalTime())
             updateSelector()
@@ -377,7 +376,7 @@ class BuildReminderViewModel(
 
   private fun addDateItemToBuilder(date: LocalDate) {
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.DATE }
-    Logger.i("Add Date builder item")
+    Logger.i(TAG, "Add Date builder item")
     if (itemIndex == -1) {
       builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.DATE }
         ?.let { it as DateBuilderItem }
@@ -392,7 +391,7 @@ class BuildReminderViewModel(
 
   private fun addTimeItemToBuilder(time: LocalTime) {
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.TIME }
-    Logger.i("Add Time builder item")
+    Logger.i(TAG, "Add Time builder item")
     if (itemIndex == -1) {
       builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.TIME }
         ?.let { it as TimeBuilderItem }
@@ -432,7 +431,7 @@ class BuildReminderViewModel(
         }
       }
     } catch (e: Throwable) {
-      Logger.e("readFromIntent: ${e.message}")
+      Logger.e(TAG, "readFromIntent: ${e.message}")
     }
   }
 
@@ -448,7 +447,7 @@ class BuildReminderViewModel(
 
   private fun addSummaryItemToBuilder(text: String) {
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUMMARY }
-    Logger.i("Add Summary builder item")
+    Logger.i(TAG, "Add Summary builder item")
     if (itemIndex == -1) {
       builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUMMARY }
         ?.let { it as SummaryBuilderItem }
@@ -470,7 +469,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun editReminder(reminder: Reminder) {
-    Logger.i("Edit reminder, id = ${reminder.uuId}")
+    Logger.i(TAG, "Edit reminder, id = ${reminder.uuId}")
 
     isEdited = true
     original = reminder
@@ -480,7 +479,7 @@ class BuildReminderViewModel(
     }
 
     val builderItems = reminderToBiDecomposer(reminder)
-    Logger.d("editReminder: builderItems=$builderItems")
+    Logger.d(TAG, "editReminder: builderItems=$builderItems")
 
     if (builderItems.isNotEmpty()) {
       builderItemsLogic.setAll(builderItems)
@@ -495,7 +494,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun useBuilderPreset(preset: RecurPreset) {
-    Logger.i("Use reminder builder preset")
+    Logger.i(TAG, "Use reminder builder preset")
     val items = builderPresetToBiAdapter(preset)
     if (items.isNotEmpty()) {
       builderItemsLogic.setAll(items)
@@ -505,7 +504,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun useRecurPreset(preset: RecurPreset) {
-    Logger.i("Use reminder RECUR preset")
+    Logger.i(TAG, "Use reminder RECUR preset")
     val params = runCatching { ICalendarApi.parseObject(preset.recurObject) }.getOrNull()
       ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
       ?.params
@@ -555,7 +554,7 @@ class BuildReminderViewModel(
       .flatten()
       .toSet()
 
-    Logger.d("updateSelector: errors=${errors.toList()}")
+    Logger.d(TAG, "updateSelector: errors=${errors.toList()}")
 
     val uiSelectorItems = uiSelectorItemsAdapter.calculateStates(
       builderItemsLogic.getUsed(),
@@ -581,10 +580,10 @@ class BuildReminderViewModel(
 
   private suspend fun updateBuilderState() {
     val builderItems = builderItemsLogic.getUsed().toMutableList()
-    Logger.d("updateBuilderState: builderItems=$builderItems")
+    Logger.d(TAG, "updateBuilderState: builderItems=$builderItems")
 
     val allValid = builderItems.all { it.modifier.isCorrect() }
-    Logger.d("updateBuilderState: allValid=$allValid")
+    Logger.d(TAG, "updateBuilderState: allValid=$allValid")
 
     if (!allValid) {
       return
@@ -612,7 +611,7 @@ class BuildReminderViewModel(
         )
         _canSaveAsPreset.postValue(false)
         _canSave.postValue(false)
-        Logger.d("updateBuilderState: build failed ${buildResult.error}")
+        Logger.d(TAG, "updateBuilderState: build failed ${buildResult.error}")
       }
     }
   }
@@ -632,7 +631,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun savePreset(items: List<BuilderItem<*>>) {
-    Logger.i("Save new preset")
+    Logger.i(TAG, "Save new preset")
     val preset = RecurPreset(
       recurObject = "",
       name = presetName,
@@ -647,43 +646,41 @@ class BuildReminderViewModel(
   }
 
   private suspend fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
-    runBlocking {
-      Logger.i("saveAndStartReminder: save START")
-      if (reminder.groupUuId == "") {
-        val group = reminderGroupRepository.defaultGroup()
-        if (group != null) {
-          reminder.groupColor = group.groupColor
-          reminder.groupTitle = group.groupTitle
-          reminder.groupUuId = group.groupUuId
-        }
+    Logger.i(TAG, "Start reminder saving, id = ${reminder.uuId}")
+    if (reminder.groupUuId.isEmpty()) {
+      val group = reminderGroupRepository.defaultGroup()
+      if (group != null) {
+        reminder.groupColor = group.groupColor
+        reminder.groupTitle = group.groupTitle
+        reminder.groupUuId = group.groupUuId
       }
-      reminderRepository.save(reminder)
-      if (!isEdit) {
-        if (Reminder.isGpsType(reminder.type)) {
-          val places = reminder.places
-          if (places.isNotEmpty()) {
-            placeRepository.save(places[0])
-          }
-        }
-      }
-      eventControlFactory.getController(reminder).justStart()
-      Logger.i("saveAndStartReminder: save DONE")
-
-      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-      reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
-      Logger.logEvent("Reminder saved, type = ${reminder.type}")
     }
+    reminderRepository.save(reminder)
+    if (!isEdit) {
+      if (Reminder.isGpsType(reminder.type)) {
+        val places = reminder.places
+        if (places.isNotEmpty()) {
+          placeRepository.save(places[0])
+        }
+      }
+    }
+    eventControlFactory.getController(reminder).justStart()
+    Logger.i(TAG, "Reminder saved, id = ${reminder.uuId}")
+
+    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
+    reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
+    Logger.i(TAG, "Reminder saved, type = ${reminder.type}")
     backupReminder(reminder.uuId)
   }
 
   private suspend fun pauseReminder(reminder: Reminder) {
-    Logger.i("Pause reminder")
+    Logger.i(TAG, "Pause reminder, id = ${reminder.uuId}")
     isPaused = true
     eventControlFactory.getController(reminder).pause()
   }
 
   private fun resumeReminder(reminder: Reminder) {
-    Logger.i("Resume reminder")
+    Logger.i(TAG, "Resume reminder, id = ${reminder.uuId}")
     viewModelScope.launch(dispatcherProvider.default()) {
       eventControlFactory.getController(reminder).resume()
     }
@@ -696,7 +693,7 @@ class BuildReminderViewModel(
       return
     }
 
-    Logger.i("Move reminder to Archive")
+    Logger.i(TAG, "Move reminder to Archive, id = ${reminder.uuId}")
 
     withResultSuspend {
       reminder.isRemoved = true
@@ -714,7 +711,7 @@ class BuildReminderViewModel(
       return
     }
 
-    Logger.i("Delete reminder")
+    Logger.i(TAG, "Delete reminder, id = ${reminder.uuId}")
 
     if (showMessage) {
       withResultSuspend {
@@ -743,7 +740,11 @@ class BuildReminderViewModel(
   }
 
   private fun backupReminder(uuId: String) {
-    Logger.i("Schedule reminder backup work")
+    Logger.i(TAG, "Schedule reminder backup work")
     workerLauncher.startWork(ReminderSingleBackupWorker::class.java, IntentKeys.INTENT_ID, uuId)
+  }
+
+  companion object {
+    private const val TAG = "BuildReminderViewModel"
   }
 }

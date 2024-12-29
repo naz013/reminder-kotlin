@@ -1,20 +1,22 @@
 package com.elementary.tasks.reminder.build.selectordialog
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.view.gone
 import com.elementary.tasks.core.utils.ui.onTabSelected
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.github.naz013.ui.common.view.visibleGone
-import com.github.naz013.ui.common.view.visibleInvisible
 import com.elementary.tasks.databinding.BottomSheetBuilderSelectorBinding
 import com.elementary.tasks.reminder.build.selectordialog.params.SelectorAdapter
 import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetAdapter
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.ui.common.view.visibleInvisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -23,22 +25,25 @@ class SelectorDialog : BottomSheetDialogFragment() {
   private val viewModel by viewModel<SelectorDialogViewModel>()
 
   private val selectorAdapter = SelectorAdapter { _, item ->
-    callback?.onBuilderItemAdd(item.builderItem)
     dismiss()
+    callback?.onBuilderItemAdd(item.builderItem)
+    Logger.i(TAG, "Selected builder item: $item")
   }
   private val presetAdapter = PresetAdapter(
     canDelete = false,
     onItemClickListener = {
-      callback?.onPresetSelected(it)
       dismiss()
+      callback?.onPresetSelected(it)
+      Logger.i(TAG, "Selected general preset: $it")
     },
     onItemDeleteListener = { }
   )
   private val recurPresetAdapter = PresetAdapter(
     canDelete = false,
     onItemClickListener = {
-      callback?.onPresetSelected(it)
       dismiss()
+      callback?.onPresetSelected(it)
+      Logger.i(TAG, "Selected recur preset: $it")
     },
     onItemDeleteListener = { }
   )
@@ -59,6 +64,10 @@ class SelectorDialog : BottomSheetDialogFragment() {
     savedInstanceState: Bundle?
   ): View {
     binding = BottomSheetBuilderSelectorBinding.inflate(inflater, container, false)
+
+    dialog?.setCancelable(true)
+    dialog?.setCanceledOnTouchOutside(true)
+
     return binding.root
   }
 
@@ -117,6 +126,26 @@ class SelectorDialog : BottomSheetDialogFragment() {
         binding.itemsListView.adapter = recurPresetAdapter
       }
     }
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    Logger.d(TAG, "Selector dialog created")
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    Logger.d(TAG, "Selector dialog destroyed")
+  }
+
+  override fun onDismiss(dialog: DialogInterface) {
+    super.onDismiss(dialog)
+    Logger.d(TAG, "Selector dialog dismissed")
+  }
+
+  override fun onCancel(dialog: DialogInterface) {
+    super.onCancel(dialog)
+    Logger.d(TAG, "Selector dialog cancelled")
   }
 
   companion object {

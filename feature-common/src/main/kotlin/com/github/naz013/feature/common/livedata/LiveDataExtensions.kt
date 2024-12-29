@@ -26,6 +26,14 @@ fun <T> LiveData<T>.nonNullObserve(owner: LifecycleOwner, observer: Observer<T>)
   }
 }
 
+fun <T> LiveData<out Event<T>?>.observeEvent(owner: LifecycleOwner, observer: Observer<T>) {
+  this.observe(owner) {
+    it?.getContentIfNotHandled()?.also { value ->
+      observer.onChanged(value)
+    }
+  }
+}
+
 fun <T> LiveData<out T?>.nullObserve(owner: LifecycleOwner, observer: Observer<T>) {
   this.observe(owner) { o: T? ->
     if (o != null) {
