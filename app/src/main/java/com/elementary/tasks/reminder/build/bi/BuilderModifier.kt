@@ -1,14 +1,14 @@
 package com.elementary.tasks.reminder.build.bi
 
 import android.util.Patterns
-import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.ShopItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -206,6 +206,7 @@ class GroupModifier(
   override fun putInto(reminder: Reminder) {
     reminder.groupUuId = storage.value?.id ?: initValue?.id ?: ""
     reminder.groupColor = storage.value?.color ?: initValue?.color ?: 0
+    reminder.groupTitle = storage.value?.title ?: initValue?.title ?: ""
   }
 }
 

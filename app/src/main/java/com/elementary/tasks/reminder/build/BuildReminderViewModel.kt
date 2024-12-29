@@ -221,8 +221,12 @@ class BuildReminderViewModel(
       Logger.i(TAG, "All permissions granted")
 
       if (!hasGroupBuilderItem(builderItems)) {
+        Logger.i(TAG, "Does not have group builder item")
         getGroupBuilderItem()?.also {
+          Logger.i(TAG, "Add group builder item")
           builderItems.add(it)
+        } ?: run {
+          Logger.i(TAG, "Group builder item not found")
         }
       }
 
@@ -666,9 +670,13 @@ class BuildReminderViewModel(
   }
 
   private suspend fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
-    Logger.i(TAG, "Start reminder saving, id = ${reminder.uuId}")
+    Logger.i(
+      TAG,
+      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupUuId}"
+    )
     if (reminder.groupUuId.isEmpty()) {
       val group = reminderGroupRepository.defaultGroup()
+      Logger.i(TAG, "Reminder does not have a group, get default = $group")
       if (group != null) {
         reminder.groupColor = group.groupColor
         reminder.groupTitle = group.groupTitle

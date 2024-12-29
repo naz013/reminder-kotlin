@@ -280,7 +280,9 @@ internal data class ReminderEntity(
       allDay = allDay,
       description = description,
       builderScheme = builderScheme,
-      version = version
+      version = version,
+      groupTitle = groupTitle,
+      groupColor = groupColor
     )
   }
 }
