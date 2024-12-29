@@ -10,15 +10,15 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visibleGone
 
 class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
 
@@ -103,7 +103,7 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 

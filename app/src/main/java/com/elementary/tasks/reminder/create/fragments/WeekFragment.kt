@@ -10,7 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.views.ActionView
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.databinding.FragmentReminderWeekdaysBinding
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
@@ -124,7 +124,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     )
   }
 
-  override fun getLegacyMessageView(): ClosableLegacyBuilderWarningView {
+  override fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView {
     return binding.legacyBuilderWarningView
   }
 

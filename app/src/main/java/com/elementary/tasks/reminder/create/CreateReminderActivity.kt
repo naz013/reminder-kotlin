@@ -97,6 +97,11 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    setSupportActionBar(binding.toolbar)
+    supportActionBar?.setDisplayShowTitleEnabled(false)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    supportActionBar?.setHomeButtonEnabled(true)
+    supportActionBar?.setDisplayShowHomeEnabled(true)
 
     hasLocation = Module.hasLocation(this)
     isTablet = resources.getBoolean(R.bool.is_tablet)

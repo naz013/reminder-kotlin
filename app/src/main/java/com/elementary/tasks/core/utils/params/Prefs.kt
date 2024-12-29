@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
-import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.SuperUtil
+import com.github.naz013.common.Module
 import com.github.naz013.domain.font.FontParams
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
@@ -55,6 +55,10 @@ class Prefs(
   var showLegacyBuilderWarning: Boolean
     get() = getBoolean(PrefsConstants.SHOW_LEGACY_BUILDER_WARNING, def = true)
     set(value) = putBoolean(PrefsConstants.SHOW_LEGACY_BUILDER_WARNING, value)
+
+  var showLegacyBuilderRemovalWarning: Boolean
+    get() = getBoolean(PrefsConstants.SHOW_LEGACY_BUILDER_REMOVAL_WARNING, def = true)
+    set(value) = putBoolean(PrefsConstants.SHOW_LEGACY_BUILDER_REMOVAL_WARNING, value)
 
   var useLegacyBuilder: Boolean
     get() = getBoolean(PrefsConstants.USE_LEGACY_BUILDER, def = false)

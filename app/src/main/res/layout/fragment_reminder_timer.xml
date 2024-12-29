@@ -23,7 +23,7 @@
                 android:layout_marginRight="16dp"
                 app:text="@string/reminder_by_timer_explanations" />
 
-            <com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+            <com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
                 android:id="@+id/legacyBuilderWarningView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

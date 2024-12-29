@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.AttachmentView
 import com.elementary.tasks.core.views.BeforePickerView
-import com.elementary.tasks.core.views.ClosableLegacyBuilderWarningView
+import com.elementary.tasks.core.views.ClosableLegacyBuilderRemovalWarningView
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.ExportToCalendarView
 import com.elementary.tasks.core.views.ExportToGoogleTasksView
@@ -87,19 +87,19 @@ abstract class TypeFragment<B : ViewBinding> : BindingFragment<B>() {
       explanationVisibility.shouldShowExplanation(getExplanationVisibilityType())
     )
     getLegacyMessageView().run {
-      visibleGone(prefs.showLegacyBuilderWarning)
+      visibleGone(prefs.showLegacyBuilderRemovalWarning)
       onTryClicked = {
         reminderBuilderLauncher.toggleBuilder(requireActivity())
       }
       onCloseClicked = {
-        prefs.showLegacyBuilderWarning = false
+        prefs.showLegacyBuilderRemovalWarning = false
         gone()
       }
     }
     setCloseListenerToExplanationView(getExplanationVisibilityHideClickListener())
   }
 
-  protected abstract fun getLegacyMessageView(): ClosableLegacyBuilderWarningView
+  protected abstract fun getLegacyMessageView(): ClosableLegacyBuilderRemovalWarningView
 
   protected abstract fun getDynamicViews(): List<View>
 

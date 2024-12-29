@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="@string/builder_upgrade_alert"
+                    android:text="@string/legacy_builder_removal_alert"
                     android:textAppearance="?textAppearanceTitleSmall"
                     android:textStyle="bold" />
 
@@ -46,14 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/builder_upgrade_message"
-                android:textAppearance="?textAppearanceLabelLarge" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/builder_deprecation_message"
+                android:text="@string/legacy_builder_removal_message"
                 android:textAppearance="?textAppearanceLabelLarge"
                 android:textStyle="bold" />
 
