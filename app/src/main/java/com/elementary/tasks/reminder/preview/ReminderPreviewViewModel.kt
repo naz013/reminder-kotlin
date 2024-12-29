@@ -133,13 +133,14 @@ class ReminderPreviewViewModel(
   private fun loadReminder() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminderGroup = reminderGroupRepository.getById(reminder.groupUuId)
 
       val type = UiReminderType(reminder.type)
 
       canCopy = type.isBase(UiReminderType.Base.DATE)
       canDelete = reminder.isRemoved
 
-      val data = uiReminderPreviewDataAdapter.create(reminder).toMutableList()
+      val data = uiReminderPreviewDataAdapter.create(reminder, reminderGroup).toMutableList()
       _reminderData.postValue(data)
 
       noteRepository.getById(reminder.noteId)?.let { noteToUiReminderPreviewNote(it) }

@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.preview.data
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
@@ -13,17 +12,18 @@ import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
-import com.github.naz013.ui.common.theme.ColorProvider
-import com.github.naz013.ui.common.UnitsConverter
 import com.elementary.tasks.core.text.UiTextDecoration
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.reminder.Icons
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.ui.common.UnitsConverter
+import com.github.naz013.ui.common.theme.ColorProvider
 import java.util.Locale
 
 class UiReminderPreviewDataAdapter(
@@ -34,12 +34,15 @@ class UiReminderPreviewDataAdapter(
   private val colorProvider: ColorProvider,
   private val unitsConverter: UnitsConverter,
   private val attachmentToUiReminderPreviewAttachment: AttachmentToUiReminderPreviewAttachment
-) : UiAdapter<Reminder, List<UiReminderPreviewData>> {
+) {
 
-  override fun create(data: Reminder): List<UiReminderPreviewData> {
+  fun create(
+    data: Reminder,
+    group: ReminderGroup?
+  ): List<UiReminderPreviewData> {
     val type = UiReminderType(data.type)
     return addStatus(data) +
-      addDetails(data) +
+      addDetails(data, group) +
       addTargetInfo(data) +
       addAttachments(data) +
       addSubTasks(data, type) +
@@ -256,7 +259,8 @@ class UiReminderPreviewDataAdapter(
   }
 
   private fun addDetails(
-    data: Reminder
+    data: Reminder,
+    group: ReminderGroup?
   ): List<UiReminderPreviewData> {
     return listOfNotNull(
       UiReminderPreviewHeader(
@@ -293,13 +297,21 @@ class UiReminderPreviewDataAdapter(
           icon = UiIcon(Icons.DESCRIPTION, colorProvider.getColorOnBackground())
         )
       }
-    ) + addDueInfo(data) + addExtraInfo(data)
+    ) + addDueInfo(data) + addExtraInfo(data, group)
   }
 
-  private fun addExtraInfo(data: Reminder): List<UiReminderPreviewData> {
+  private fun addExtraInfo(
+    data: Reminder,
+    group: ReminderGroup?
+  ): List<UiReminderPreviewData> {
+    val uiGroup = if (group != null) {
+      uiGroupListAdapter.convert(group)
+    } else {
+      uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle)
+    }
     return listOfNotNull(
       getNormalTextElement(
-        text = uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle).title,
+        text = uiGroup.title,
         icon = Icons.GROUP
       ),
       getNormalTextElement(uiReminderCommonAdapter.getPriorityTitle(data.priority), Icons.PRIORITY),
