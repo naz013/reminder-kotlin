@@ -10,9 +10,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.FragmentActivity
 import com.github.naz013.common.Module
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
@@ -28,7 +28,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
 
-abstract class LightThemedActivity : FragmentActivity() {
+abstract class LightThemedActivity : AppCompatActivity() {
 
   private val themeProvider by inject<ThemeProvider>()
   private val themePreferences by inject<ThemePreferences>()
@@ -45,7 +45,10 @@ abstract class LightThemedActivity : FragmentActivity() {
   }
 
   private val uiHandler = Handler(Looper.getMainLooper())
-  protected val isDarkMode = themeProvider.isDark
+  protected val isDarkMode: Boolean
+    get() {
+      return themeProvider.isDark
+    }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -65,8 +68,8 @@ abstract class LightThemedActivity : FragmentActivity() {
       }
     } else {
       onBackPressedDispatcher.addCallback(
-        owner = this,
-        onBackPressedCallback = object : OnBackPressedCallback(true) {
+        this,
+        object : OnBackPressedCallback(true) {
           override fun handleOnBackPressed() {
             invokeBackPress()
           }

@@ -6,17 +6,27 @@ class ThemePreferencesImpl(
   private val prefs: Prefs
 ) : ThemePreferences {
   override val nightMode: Int
-    get() = prefs.nightMode
+    get() {
+      return prefs.nightMode
+    }
 
   override val mapStyle: Int
-    get() = prefs.mapStyle
+    get() {
+      return prefs.mapStyle
+    }
 
   override val useDynamicColors: Boolean
-    get() = prefs.useDynamicColors
+    get() {
+      return prefs.useDynamicColors
+    }
 
   override val birthdayColor: Int
-    get() = prefs.birthdayColor
+    get() {
+      return prefs.birthdayColor
+    }
 
   override val notePalette: Int
-    get() = prefs.notePalette
+    get() {
+      return prefs.notePalette
+    }
 }

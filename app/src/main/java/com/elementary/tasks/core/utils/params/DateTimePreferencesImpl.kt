@@ -8,9 +8,15 @@ class DateTimePreferencesImpl(
   private val prefs: Prefs
 ) : DateTimePreferences {
   override val is24HourFormat: Boolean
-    get() = prefs.is24HourFormat
+    get() {
+      return prefs.is24HourFormat
+    }
   override val birthdayTime: String
-    get() = prefs.birthdayTime
+    get() {
+      return prefs.birthdayTime
+    }
   override val locale: Locale
-    get() = Language.getScreenLanguage(prefs.appLanguage)
+    get() {
+      return Language.getScreenLanguage(prefs.appLanguage)
+    }
 }

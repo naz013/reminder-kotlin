@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.github.naz013.ui.common.view.visibleInvisible
 import com.elementary.tasks.databinding.ListItemRecurPresetBinding
 
+@Deprecated("Use new builder screen")
 class PresetAdapter(
   private val canDelete: Boolean = true,
   private val onItemClickListener: (UiPresetList) -> Unit,

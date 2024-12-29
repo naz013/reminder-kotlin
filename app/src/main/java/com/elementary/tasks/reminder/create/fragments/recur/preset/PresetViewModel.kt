@@ -10,6 +10,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.RecurPresetRepository
 import kotlinx.coroutines.launch
 
+@Deprecated("Use new builder screen")
 class PresetViewModel(
   dispatcherProvider: DispatcherProvider,
   private val uiPresetListAdapter: UiPresetListAdapter,

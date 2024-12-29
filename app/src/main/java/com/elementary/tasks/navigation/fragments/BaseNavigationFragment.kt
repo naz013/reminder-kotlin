@@ -20,7 +20,10 @@ abstract class BaseNavigationFragment<B : ViewBinding> :
 
   protected val currentStateHolder by inject<CurrentStateHolder>()
   protected val prefs = currentStateHolder.preferences
-  protected val isDark = currentStateHolder.theme.isDark
+  protected val isDark: Boolean
+    get() {
+      return currentStateHolder.theme.isDark
+    }
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
   protected val themeProvider = currentStateHolder.theme
 

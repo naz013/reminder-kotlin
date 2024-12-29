@@ -22,6 +22,7 @@ import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ActivityRecurPresetListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@Deprecated("Use new builder screen")
 class PresetSelectionActivity : BindingActivity<ActivityRecurPresetListBinding>() {
 
   private val viewModel by viewModel<PresetViewModel>()
@@ -70,6 +71,7 @@ class PresetSelectionActivity : BindingActivity<ActivityRecurPresetListBinding>(
   }
 }
 
+@Deprecated("Use new builder screen")
 class PresetPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
   private val resultCallback: (String) -> Unit
