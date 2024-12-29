@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--Material 3 custom colors -->
+
+    <attr name="colorCustomColor" format="color" />
+    <attr name="colorOnCustomColor" format="color" />
+    <attr name="colorCustomColorContainer" format="color" />
+    <attr name="colorOnCustomColorContainer" format="color" />
+
     <declare-styleable name="UiGradientFrameLayout">
         <attr name="gradientFrameLayout_startColor" format="color" />
         <attr name="gradientFrameLayout_centerColor" format="color" />

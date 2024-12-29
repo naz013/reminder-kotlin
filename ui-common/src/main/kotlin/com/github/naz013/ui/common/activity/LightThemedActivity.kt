@@ -52,10 +52,6 @@ abstract class LightThemedActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
-    if (themePreferences.useDynamicColors) {
-      DynamicColors.applyToActivityIfAvailable(this)
-    }
     if (savedInstanceState == null) {
       loginStateViewModel.isLogged = isLogged()
     }
@@ -96,6 +92,22 @@ abstract class LightThemedActivity : AppCompatActivity() {
     }
     if (requireLogin() && authPreferences.hasPinCode && !loginStateViewModel.isLogged) {
       loginLauncher.askLogin()
+    }
+  }
+
+  override fun onResume() {
+    super.onResume()
+    AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
+    if (themePreferences.useDynamicColors) {
+      DynamicColors.applyToActivityIfAvailable(this)
+    }
+  }
+
+  override fun onRestart() {
+    super.onRestart()
+    AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
+    if (themePreferences.useDynamicColors) {
+      DynamicColors.applyToActivityIfAvailable(this)
     }
   }
 

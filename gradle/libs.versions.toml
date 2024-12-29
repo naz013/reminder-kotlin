@@ -39,6 +39,7 @@ androidx-dynamicanimation-ktx = "1.0.0-alpha03"
 androidx-work-runtime = "2.10.0"
 androidx-work-runtime-ktx = "2.10.0"
 androidx-localbroadcastmanager = "1.1.0"
+androidx-activity-compose = "1.9.3"
 
 glance = "1.1.1"
 compose-bom = "2024.12.01"
@@ -124,6 +125,8 @@ glance-material3 = { group = "androidx.glance", name = "glance-material3", versi
 glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glance" }
 glance-appwidget-preview = { group = "androidx.glance", name = "glance-appwidget-preview", version.ref = "glance" }
 
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
+
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 compose-animation-animation = { module = "androidx.compose.animation:animation" }
 compose-foundation-foundation = { module = "androidx.compose.foundation:foundation" }
@@ -139,6 +142,8 @@ compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 compose-ui-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-util = { module = "androidx.compose.ui:util" }
+compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 
 androidx-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "androidx-lifecycle-extensions" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }

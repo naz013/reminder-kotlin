@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.ktlint)
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -16,12 +17,16 @@ android {
   }
   buildFeatures {
     viewBinding = true
+    compose = true
   }
   buildTypes {
     release {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -53,9 +58,12 @@ dependencies {
 
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.material3)
+  implementation(libs.compose.foundation.foundation)
+  implementation(libs.compose.ui.tooling.preview)
+  implementation(libs.androidx.activity.compose)
 
   debugImplementation(libs.compose.ui.test.manifest)
-  debugImplementation(libs.compose.ui.tooling.preview)
+  debugImplementation(libs.compose.ui.tooling)
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)

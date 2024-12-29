@@ -28,7 +28,7 @@ class Dialogues(
     propertyDialog(context, selectionList, onOk, onCancel).show()
   }
 
-  fun propertyDialog(
+  private fun propertyDialog(
     context: Context,
     selectionList: SelectionList,
     onOk: (position: Int) -> Unit,
