@@ -36,6 +36,9 @@ object Logger {
     if (loggingEnabled) {
       loggerProvider?.info(message)
     }
+    if (reportingEnabled) {
+      firebaseLogger?.logEvent(message)
+    }
   }
 
   fun w(tag: String, message: String) {
@@ -64,11 +67,17 @@ object Logger {
     if (loggingEnabled) {
       loggerProvider?.error(message, t)
     }
+    if (reportingEnabled) {
+      firebaseLogger?.logEvent(message)
+    }
   }
 
   fun e(message: String) {
     if (loggingEnabled) {
       loggerProvider?.error(message)
+    }
+    if (reportingEnabled) {
+      firebaseLogger?.logEvent(message)
     }
   }
 

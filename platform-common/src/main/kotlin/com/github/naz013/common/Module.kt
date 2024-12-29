@@ -8,7 +8,7 @@ import com.github.naz013.common.playservices.PlayServices
 object Module {
 
   val CURRENT_SDK: Int = Build.VERSION.SDK_INT
-  const val MIN_SDK: Int = Build.VERSION_CODES.O
+  const val MIN_SDK: Int = Build.VERSION_CODES.Q
   const val MAX_SDK: Int = Build.VERSION_CODES.VANILLA_ICE_CREAM
 
   val is15: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM

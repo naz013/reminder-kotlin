@@ -27,6 +27,7 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
 import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.singleClick
@@ -155,25 +156,19 @@ class BuildReminderActivity :
       binding.scrollView.visibleGone(it.isNotEmpty())
       binding.emptyView.visibleGone(it.isEmpty())
     }
-    viewModel.askPermissions.nonNullObserve(this) {
-      it.getContentIfNotHandled()?.also { list ->
-        permissionFlowDelegate.permissionFlow.askPermissions(list) {
-          viewModel.onPermissionsGranted()
-        }
+    viewModel.askPermissions.observeEvent(this) { list ->
+      permissionFlowDelegate.permissionFlow.askPermissions(list) {
+        viewModel.onPermissionsGranted()
       }
     }
-    viewModel.askEditPermissions.nonNullObserve(this) {
-      it.getContentIfNotHandled()?.also { list ->
-        permissionFlowDelegate.permissionFlow.askPermissions(list) {
-          viewModel.onEditPermissionsGranted()
-        }
+    viewModel.askEditPermissions.observeEvent(this) { list ->
+      permissionFlowDelegate.permissionFlow.askPermissions(list) {
+        viewModel.onEditPermissionsGranted()
       }
     }
-    viewModel.showEditDialog.nonNullObserve(this) {
-      it.getContentIfNotHandled()?.also { pair ->
-        ValueDialog.newInstance(pair.first)
-          .show(supportFragmentManager, ValueDialog.TAG)
-      }
+    viewModel.showEditDialog.observeEvent(this) { pair ->
+      ValueDialog.newInstance(pair.first)
+        .show(supportFragmentManager, ValueDialog.TAG)
     }
     viewModel.result.observe(this) { commands ->
       if (commands != null) {
