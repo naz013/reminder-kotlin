@@ -29,7 +29,7 @@ jobs:
         echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
 
     - name: Increase version code and change version name
-      uses: DoubleSymmetry/android-version-actions@v1.3
+      uses: chkfung/android-version-actions@v1.2.2
       with:
         gradlePath: app/build.gradle.kts
         versionName: ${{ env.VERSION_NAME }}
