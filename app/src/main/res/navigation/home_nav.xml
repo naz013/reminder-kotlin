@@ -18,9 +18,6 @@
             app:popEnterAnim="@anim/fragment_wait"
             app:popExitAnim="@anim/fragment_slide_bottom" />
         <action
-            android:id="@+id/action_actionHome_to_addBirthdayActivity"
-            app:destination="@id/addBirthdayActivity" />
-        <action
             android:id="@+id/action_actionHome_to_cloudDrives"
             app:destination="@+id/fragmentCloudDrives"
             app:enterAnim="@anim/fragment_slide_top"
@@ -34,6 +31,12 @@
             app:exitAnim="@anim/fragment_wait"
             app:popEnterAnim="@anim/fragment_wait"
             app:popExitAnim="@anim/fragment_slide_bottom" />
+        <action
+            android:id="@+id/action_actionHome_to_editBirthdayFragment"
+            app:destination="@id/editBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_previewBirthdayFragment"
+            app:destination="@id/previewBirthdayFragment" />
     </fragment>
 
     <fragment
@@ -47,14 +50,14 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_actionNotes_to_noteSettingsFragment"
             app:destination="@id/noteSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -76,6 +79,12 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_actionCalendar_to_editBirthdayFragment"
+            app:destination="@id/editBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionCalendar_to_previewBirthdayFragment"
+            app:destination="@id/previewBirthdayFragment" />
     </fragment>
 
     <fragment
@@ -110,18 +119,6 @@
         android:name="com.elementary.tasks.reminder.lists.removed.ArchiveFragment"
         android:label="@string/trash"
         tools:layout="@layout/fragment_trash" />
-    <activity
-        android:id="@+id/addBirthdayActivity"
-        android:name="com.elementary.tasks.birthdays.create.AddBirthdayActivity"
-        android:label="@string/add_birthday"
-        tools:layout="@layout/activity_add_birthday">
-        <argument
-            android:name="item_id"
-            app:argType="string" />
-        <argument
-            android:name="arg_logged"
-            app:argType="boolean" />
-    </activity>
     <fragment
         android:id="@+id/dayViewFragment"
         android:name="com.elementary.tasks.calendar.dayview.WeekViewFragment"
@@ -133,6 +130,12 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="reminderapp.com/calendar/{date}" />
+        <action
+            android:id="@+id/action_dayViewFragment_to_editBirthdayFragment"
+            app:destination="@id/editBirthdayFragment" />
+        <action
+            android:id="@+id/action_dayViewFragment_to_previewBirthdayFragment"
+            app:destination="@id/previewBirthdayFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
@@ -533,18 +536,35 @@
             android:id="@+id/action_actionEvents_to_archiveFragment"
             app:destination="@id/archiveFragment" />
         <action
-            android:id="@+id/action_actionEvents_to_addBirthdayActivity"
-            app:destination="@id/addBirthdayActivity" />
-        <action
             android:id="@+id/action_actionEvents_to_remindersSettingsFragment"
             app:destination="@id/remindersSettingsFragment" />
         <action
             android:id="@+id/action_actionEvents_to_birthdaySettingsFragment"
             app:destination="@id/birthdaySettingsFragment" />
+        <action
+            android:id="@+id/action_actionEvents_to_editBirthdayFragment"
+            app:destination="@id/editBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionEvents_to_previewBirthdayFragment"
+            app:destination="@id/previewBirthdayFragment" />
     </fragment>
     <fragment
         android:id="@+id/managePresetsFragment"
         android:name="com.elementary.tasks.settings.reminders.ManagePresetsFragment"
         android:label="@string/recur_presets"
         tools:layout="@layout/fragment_manage_presets" />
+    <fragment
+        android:id="@+id/editBirthdayFragment"
+        android:name="com.elementary.tasks.birthdays.create.EditBirthdayFragment"
+        android:label="@string/add_birthday"
+        tools:layout="@layout/fragment_edit_birthday" />
+    <fragment
+        android:id="@+id/previewBirthdayFragment"
+        android:name="com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_birthday_preview">
+        <action
+            android:id="@+id/action_previewBirthdayFragment_to_editBirthdayFragment"
+            app:destination="@id/editBirthdayFragment" />
+    </fragment>
 </navigation>

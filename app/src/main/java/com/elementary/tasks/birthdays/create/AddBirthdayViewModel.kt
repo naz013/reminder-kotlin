@@ -1,6 +1,7 @@
 package com.elementary.tasks.birthdays.create
 
 import android.net.Uri
+import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
@@ -9,6 +10,8 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
+import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
+import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.os.IntentDataHolder
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.intent.IntentKeys
@@ -61,6 +64,8 @@ class AddBirthdayViewModel(
   var isFromFile = false
   var selectedDate: LocalDate = dateTimeManager.getCurrentDate()
 
+  fun hasId(): Boolean = id.isNotEmpty()
+
   fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val birthday = birthdayRepository.getById(id) ?: return@launch
@@ -75,6 +80,21 @@ class AddBirthdayViewModel(
       onBirthdayLoaded(this)
       isFromFile = true
       findSame(uuId)
+    }
+  }
+
+  fun onDeepLink(bundle: Bundle) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val parser = DeepLinkDataParser()
+      when (val deepLinkData = parser.readDeepLinkData(bundle)) {
+        is BirthdayDateDeepLinkData -> {
+          onDateChanged(deepLinkData.date)
+        }
+
+        else -> {
+          onDateChanged(LocalDate.now())
+        }
+      }
     }
   }
 

@@ -1,14 +1,15 @@
 package com.elementary.tasks.globalsearch
 
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
+import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.RecentQuery
 import com.github.naz013.domain.RecentQueryTarget
 import com.github.naz013.domain.RecentQueryType
@@ -51,20 +52,62 @@ class GlobalSearchViewModel(
   private fun createAction(searchResult: SearchResult): NavigationAction? {
     return when (searchResult) {
       is ObjectSearchResult -> {
-        ActivityNavigation(
-          clazz = searchResult.objectType.toTargetClass(),
-          objectId = searchResult.objectId
-        )
+        searchResult.navigationAction()
       }
 
       is RecentObjectSearchResult -> {
-        ActivityNavigation(
-          clazz = searchResult.objectType.toTargetClass(),
-          objectId = searchResult.objectId
-        )
+        searchResult.navigationAction()
       }
 
       is RecentSearchResult -> null
+    }
+  }
+
+  private fun RecentObjectSearchResult.navigationAction(): NavigationAction? {
+    val clazz = objectType.toTargetClass()
+    return if (clazz.isFragment()) {
+      clazz.destinationId()?.let {
+        FragmentNavigation(
+          id = it,
+          objectId = objectId
+        )
+      }
+    } else {
+      ActivityNavigation(
+        clazz = clazz,
+        objectId = objectId
+      )
+    }
+  }
+
+  private fun ObjectSearchResult.navigationAction(): NavigationAction? {
+    val clazz = objectType.toTargetClass()
+    return if (clazz.isFragment()) {
+      clazz.destinationId()?.let {
+        FragmentNavigation(
+          id = it,
+          objectId = objectId
+        )
+      }
+    } else {
+      ActivityNavigation(
+        clazz = clazz,
+        objectId = objectId
+      )
+    }
+  }
+
+  private fun Class<*>.isFragment(): Boolean {
+    return this == PreviewBirthdayFragment::class.java
+  }
+
+  private fun Class<*>.destinationId(): Int? {
+    return when {
+      this == PreviewBirthdayFragment::class.java -> {
+        R.id.previewBirthdayFragment
+      }
+
+      else -> null
     }
   }
 
@@ -131,7 +174,7 @@ class GlobalSearchViewModel(
       ObjectType.PLACE -> CreatePlaceActivity::class.java
       ObjectType.GOOGLE_TASK -> GoogleTaskPreviewActivity::class.java
       ObjectType.NOTE -> NotePreviewActivity::class.java
-      ObjectType.BIRTHDAY -> BirthdayPreviewActivity::class.java
+      ObjectType.BIRTHDAY -> PreviewBirthdayFragment::class.java
       ObjectType.REMINDER -> ReminderPreviewActivity::class.java
     }
   }

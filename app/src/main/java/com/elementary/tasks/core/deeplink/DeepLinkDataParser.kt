@@ -2,6 +2,7 @@ package com.elementary.tasks.core.deeplink
 
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import com.github.naz013.ui.common.activity.DeepLinkData
 
 class DeepLinkDataParser {
@@ -21,8 +22,20 @@ class DeepLinkDataParser {
     return readParcelable(intent, key, clazz)
   }
 
+  fun readDeepLinkData(
+    bundle: Bundle
+  ): DeepLinkData? {
+    val key = findKey(bundle) ?: return null
+    val clazz = deepLinkDataMap[key] ?: return null
+    return readParcelable(bundle, key, clazz)
+  }
+
   private fun findKey(intent: Intent): String? {
     return deepLinkDataMap.keys.firstOrNull { intent.hasExtra(it) }
+  }
+
+  private fun findKey(bundle: Bundle): String? {
+    return deepLinkDataMap.keys.firstOrNull { bundle.containsKey(it) }
   }
 
   private fun <T : DeepLinkData> readParcelable(
@@ -34,6 +47,18 @@ class DeepLinkDataParser {
       intent.getParcelableExtra(key, clazz)
     } else {
       intent.getParcelableExtra(key) as? T
+    }
+  }
+
+  private fun <T : DeepLinkData> readParcelable(
+    bundle: Bundle,
+    key: String,
+    clazz: Class<T>
+  ): T? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      bundle.getParcelable(key, clazz)
+    } else {
+      bundle.getParcelable(key) as? T
     }
   }
 }

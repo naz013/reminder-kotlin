@@ -17,4 +17,14 @@ data class FragmentDayView(
 ) : DeepLinkDestination()
 
 @Parcelize
+data class FragmentEditBirthday(
+  val extras: Bundle
+) : DeepLinkDestination()
+
+@Parcelize
+data class FragmentViewBirthday(
+  val extras: Bundle
+) : DeepLinkDestination()
+
+@Parcelize
 data object FragmentSettings : DeepLinkDestination()

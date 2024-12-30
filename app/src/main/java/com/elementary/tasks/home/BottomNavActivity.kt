@@ -33,7 +33,9 @@ import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.FragmentDayView
+import com.github.naz013.navigation.FragmentEditBirthday
 import com.github.naz013.navigation.FragmentSettings
+import com.github.naz013.navigation.FragmentViewBirthday
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
@@ -66,7 +68,10 @@ class BottomNavActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    Logger.d("onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}")
+    Logger.d(
+      "BottomNavActivity",
+      "onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}"
+    )
 
     val navHostFragment =
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
@@ -93,6 +98,24 @@ class BottomNavActivity :
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setDestination(R.id.settingsFragment)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
+        is FragmentEditBirthday -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.editBirthdayFragment)
+            .setArguments(deepLinkDestination.extras)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
+        is FragmentViewBirthday -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.previewBirthdayFragment)
+            .setArguments(deepLinkDestination.extras)
             .createTaskStackBuilder()
             .startActivities()
         }
