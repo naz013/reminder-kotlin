@@ -36,6 +36,8 @@ class BirthdayPreviewViewModel(
 
   var canShowAnimation: Boolean = true
 
+  fun hasId(): Boolean = id.isNotEmpty()
+
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
     load()

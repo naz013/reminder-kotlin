@@ -1,13 +1,14 @@
 package com.elementary.tasks.core.arch
 
 import android.content.ContentResolver
+import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.groups.create.CreateGroupActivity
+import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
@@ -19,9 +20,12 @@ import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.note.OldNote
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.DeepLinkDestination
+import com.github.naz013.navigation.FragmentEditBirthday
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.context.intentForClass
+import com.github.naz013.ui.common.context.startActivity
 import org.koin.android.ext.android.inject
 
 class IntentActivity : LightThemedActivity() {
@@ -71,7 +75,17 @@ class IntentActivity : LightThemedActivity() {
           is Birthday -> {
             if (any.isValid()) {
               intentDataHolder.putData(IntentKeys.INTENT_ITEM, any)
-              startActivity(intentForClass(AddBirthdayActivity::class.java))
+              startActivity(BottomNavActivity::class.java) {
+                action = Intent.ACTION_VIEW
+                putExtra(
+                  DeepLinkDestination.KEY,
+                  FragmentEditBirthday(
+                    Bundle().apply {
+                      putExtra(IntentKeys.INTENT_DEEP_LINK, true)
+                    }
+                  )
+                )
+              }
             } else {
               toast(getString(R.string.unsupported_file_format))
             }

@@ -333,29 +333,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".birthdays.create.AddBirthdayActivity"
-            android:exported="true"
-            android:label="@string/add_birthday"
-            android:windowSoftInputMode="stateUnchanged">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="file" />
-                <data android:host="*" />
-                <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".notes.preview.ImagePreviewActivity"
             android:exported="false" />
         <activity
@@ -382,9 +359,6 @@
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".reminder.preview.ReminderPreviewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".birthdays.preview.BirthdayPreviewActivity"
             android:exported="false" />
         <activity
             android:name=".googletasks.preview.GoogleTaskPreviewActivity"

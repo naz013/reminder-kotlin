@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.fragments
 
 import android.content.Context
+import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
@@ -8,6 +9,7 @@ import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.navigation.FragmentCallback
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import org.koin.android.ext.android.inject
 
@@ -63,7 +65,15 @@ abstract class BaseNavigationFragment<B : ViewBinding> :
     try {
       findNavController().navigate(function())
     } catch (e: Throwable) {
-      e.printStackTrace()
+      Logger.e("BaseNavigationFragment", "Navigation error, safeNavigation()", e)
+    }
+  }
+
+  override fun navigate(block: NavController.() -> Unit) {
+    try {
+      findNavController().block()
+    } catch (e: Throwable) {
+      Logger.e("BaseNavigationFragment", "Navigation error, navigate()", e)
     }
   }
 }
