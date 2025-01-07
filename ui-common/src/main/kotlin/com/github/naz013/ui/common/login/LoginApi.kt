@@ -3,7 +3,7 @@ package com.github.naz013.ui.common.login
 import android.content.Context
 import android.content.Intent
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.intentForClass
 import com.github.naz013.ui.common.context.startActivity

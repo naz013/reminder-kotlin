@@ -6,7 +6,7 @@ import android.content.Intent
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.ui.common.context.intentForClass
 import com.github.naz013.ui.common.login.LoginApi
 

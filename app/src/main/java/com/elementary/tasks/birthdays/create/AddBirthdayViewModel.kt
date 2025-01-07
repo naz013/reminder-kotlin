@@ -5,28 +5,28 @@ import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.elementary.tasks.core.os.IntentDataHolder
-import com.github.naz013.common.contacts.ContactsReader
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -44,7 +44,7 @@ class AddBirthdayViewModel(
   private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
   private val uriReader: UriReader,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val intentDataHolder: IntentDataHolder,
+  private val intentDataReader: IntentDataReader,
   private val uiBirthdayDateFormatter: UiBirthdayDateFormatter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
@@ -75,7 +75,7 @@ class AddBirthdayViewModel(
   }
 
   fun onIntent() {
-    intentDataHolder.get(IntentKeys.INTENT_ITEM, Birthday::class.java)?.run {
+    intentDataReader.get(IntentKeys.INTENT_ITEM, Birthday::class.java)?.run {
       Logger.logEvent("Birthday loaded from intent")
       onBirthdayLoaded(this)
       isFromFile = true
