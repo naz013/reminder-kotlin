@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.ActivityClass
+import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.activity.LightThemedActivity
@@ -43,7 +43,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.HOME -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.Main,
+            screen = DestinationScreen.Main,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true,
@@ -54,7 +54,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.ADD_REMINDER -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.ReminderCreate,
+            screen = DestinationScreen.ReminderCreate,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true
@@ -64,7 +64,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.REMINDER_PREVIEW -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.ReminderPreview,
+            screen = DestinationScreen.ReminderPreview,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true
@@ -74,7 +74,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.ADD_BIRTHDAY -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.BirthdayCreate,
+            screen = DestinationScreen.BirthdayCreate,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true,
@@ -85,7 +85,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.BIRTHDAY_PREVIEW -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.BirthdayPreview,
+            screen = DestinationScreen.BirthdayPreview,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true,
@@ -96,7 +96,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.ADD_NOTE -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.NoteCreate,
+            screen = DestinationScreen.NoteCreate,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true
@@ -106,7 +106,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       Direction.NOTE_PREVIEW -> {
         navigator.navigate(
           ActivityDestination(
-            activityClass = ActivityClass.NotePreview,
+            screen = DestinationScreen.NotePreview,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true
@@ -119,7 +119,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
         if (action == TasksIntentKeys.CREATE) {
           navigator.navigate(
             ActivityDestination(
-              activityClass = ActivityClass.GoogleTaskCreate,
+              screen = DestinationScreen.GoogleTaskCreate,
               extras = bundle,
               flags = Intent.FLAG_ACTIVITY_NEW_TASK,
               isLoggedIn = true
@@ -128,7 +128,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
         } else {
           navigator.navigate(
             ActivityDestination(
-              activityClass = ActivityClass.GoogleTaskPreview,
+              screen = DestinationScreen.GoogleTaskPreview,
               extras = bundle,
               flags = Intent.FLAG_ACTIVITY_NEW_TASK,
               isLoggedIn = true

@@ -37,6 +37,10 @@ android {
 
 dependencies {
   implementation(project(":logging-api"))
+  implementation(libs.koin.android)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.androidx.test.core)
 }
 
 ktlint {

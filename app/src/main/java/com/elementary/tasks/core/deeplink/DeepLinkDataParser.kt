@@ -3,7 +3,7 @@ package com.elementary.tasks.core.deeplink
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.navigation.DeepLinkData
 
 class DeepLinkDataParser {
 
