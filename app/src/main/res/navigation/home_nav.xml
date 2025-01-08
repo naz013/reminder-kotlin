@@ -493,9 +493,13 @@
         tools:layout="@layout/fragment_settings_notes" />
     <fragment
         android:id="@+id/testsFragment"
-        android:name="com.elementary.tasks.settings.TestsFragment"
+        android:name="com.elementary.tasks.settings.test.TestsFragment"
         android:label="Tests"
-        tools:layout="@layout/fragment_settings_tests" />
+        tools:layout="@layout/fragment_settings_tests" >
+        <action
+            android:id="@+id/action_testsFragment_to_objectExportTestFragment"
+            app:destination="@id/objectExportTestFragment" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentProVersion"
         android:name="com.elementary.tasks.settings.FragmentProVersion"
@@ -567,4 +571,8 @@
             android:id="@+id/action_previewBirthdayFragment_to_editBirthdayFragment"
             app:destination="@id/editBirthdayFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/objectExportTestFragment"
+        android:name="com.elementary.tasks.settings.test.ObjectExportTestFragment"
+        android:label="ObjectExportTestFragment" />
 </navigation>

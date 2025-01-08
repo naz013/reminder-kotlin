@@ -5,13 +5,10 @@ import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
-import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
-import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.applyBottomInsets
@@ -24,8 +21,6 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<CreateGroupViewModel> { parametersOf(getId()) }
-
-  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
 
@@ -98,22 +93,9 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
   }
 
   private fun loadGroup() {
-    if (intent.data != null) {
-      permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_EXTERNAL) { readUri() }
-    } else if (intent.hasExtra(IntentKeys.INTENT_ITEM)) {
-      runCatching {
-        viewModel.loadFromIntent(
-          intentSerializable(
-            IntentKeys.INTENT_ITEM,
-            ReminderGroup::class.java
-          )
-        )
-      }
+    if (intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false)) {
+      viewModel.loadFromIntent()
     }
-  }
-
-  private fun readUri() {
-    intent.data?.let { viewModel.loadFromFile(it) }
   }
 
   private fun initViewModel() {

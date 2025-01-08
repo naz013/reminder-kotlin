@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -18,18 +17,10 @@ import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
-import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.common.TextProvider
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.create.images.ImageDecoder
@@ -39,16 +30,26 @@ import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.note.OldNote
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -76,7 +77,8 @@ class CreateNoteViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiNoteEditAdapter: UiNoteEditAdapter,
   private val noteImageRepository: NoteImageRepository,
-  private val noteToOldNoteConverter: NoteToOldNoteConverter
+  private val noteToOldNoteConverter: NoteToOldNoteConverter,
+  private val intentDataReader: IntentDataReader
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -181,8 +183,10 @@ class CreateNoteViewModel(
     }
   }
 
-  fun onNoteReceivedFromIntent(noteWithImages: NoteWithImages?) {
-    noteWithImages?.also { onNoteLoaded(it) }
+  fun onNoteReceivedFromIntent() {
+    intentDataReader.get(IntentKeys.INTENT_ITEM, NoteWithImages::class.java)?.run {
+      onNoteLoaded(this)
+    }
   }
 
   private fun onNoteLoaded(noteWithImages: NoteWithImages) {

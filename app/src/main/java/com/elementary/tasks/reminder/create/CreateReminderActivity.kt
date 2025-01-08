@@ -47,6 +47,7 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.activity.toast
@@ -65,6 +66,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
   private val dateTimeManager by inject<DateTimeManager>()
   private val dialogues by inject<Dialogues>()
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
+  private val intentDataReader by inject<IntentDataReader>()
 
   private val viewModel by viewModel<EditReminderViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<ReminderStateViewModel>()
@@ -178,11 +180,10 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(),
         readFromIntent()
       }
 
-      intent.hasExtra(IntentKeys.INTENT_ITEM) -> {
-        runCatching {
-          val reminder =
-            intentSerializable(IntentKeys.INTENT_ITEM, Reminder::class.java) ?: Reminder()
-          editReminder(reminder, false, fromFile = true)
+      intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false) -> {
+        intentDataReader.get(IntentKeys.INTENT_ITEM, Reminder::class.java)?.run {
+          Logger.logEvent("Reminder loaded from intent")
+          editReminder(this, false, fromFile = true)
         }
       }
 
