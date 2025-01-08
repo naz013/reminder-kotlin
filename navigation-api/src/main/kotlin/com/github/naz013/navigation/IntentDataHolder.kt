@@ -9,7 +9,9 @@ internal class IntentDataHolder : IntentDataWriter, IntentDataReader {
 
   @Suppress("UNCHECKED_CAST")
   override fun <T : Any> get(key: String, clazz: Class<T>): T? {
-    return map[key]?.takeIf { it.javaClass == clazz } as? T
+    return (map[key]?.takeIf { it.javaClass == clazz } as? T).also {
+      remove(key)
+    }
   }
 
   override fun hasKey(key: String): Boolean {
