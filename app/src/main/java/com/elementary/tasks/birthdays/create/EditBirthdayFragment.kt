@@ -193,15 +193,10 @@ class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() 
   }
 
   private fun checkIntent() {
+    Logger.i(TAG, "Received args: ${arguments?.keySet()?.toList()}")
     val bundle = arguments ?: return
     when {
-//      arguments?.data != null -> {
-//        permissionFlowDelegate.permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-//          intent.data?.let { viewModel.onFile(it) }
-//        }
-//      }
-
-      bundle.containsKey(IntentKeys.INTENT_ITEM) -> viewModel.onIntent()
+      bundle.getBoolean(IntentKeys.INTENT_ITEM, false) -> viewModel.onIntent()
       bundle.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) -> viewModel.onDeepLink(bundle)
       idFromIntent().isEmpty() -> viewModel.onDateChanged(LocalDate.now())
     }

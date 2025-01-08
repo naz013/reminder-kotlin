@@ -1,27 +1,23 @@
 package com.elementary.tasks.places.create
 
-import android.content.ContentResolver
-import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
-import com.github.naz013.common.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
-import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.common.ContextProvider
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -33,8 +29,8 @@ class PlaceViewModel(
   private val placeRepository: PlaceRepository,
   private val dateTimeManager: DateTimeManager,
   private val uiPlaceEditAdapter: UiPlaceEditAdapter,
-  private val contextProvider: ContextProvider,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val intentDataReader: IntentDataReader
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _place = mutableLiveDataOf<UiPlaceEdit>()
@@ -88,24 +84,12 @@ class PlaceViewModel(
     }
   }
 
-  fun loadFromUri(uri: Uri) {
+  fun loadFromIntent() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      runCatching {
-        if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-          val any = MemoryUtil.readFromUri(contextProvider.context, uri, FileConfig.FILE_NAME_PLACE)
-          if (any != null && any is Place) {
-            onPlaceLoaded(any)
-          }
-        }
+      intentDataReader.get(IntentKeys.INTENT_ITEM, Place::class.java)?.run {
+        onPlaceLoaded(this)
+        findSame(this.id)
       }
-    }
-  }
-
-  fun loadFromIntent(place: Place?) {
-    if (place == null) return
-    viewModelScope.launch(dispatcherProvider.default()) {
-      onPlaceLoaded(place)
-      findSame(place.id)
     }
   }
 

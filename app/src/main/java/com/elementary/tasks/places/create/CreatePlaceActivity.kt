@@ -5,17 +5,14 @@ import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
-import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.elementary.tasks.simplemap.SimpleMapFragment
-import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.Place
-import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.view.applyTopInsets
 import com.google.android.gms.maps.model.LatLng
 import org.koin.android.ext.android.inject
@@ -26,7 +23,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
 
   private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
-  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
   private var googleMap: SimpleMapFragment? = null
 
   override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
@@ -122,19 +118,9 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
 
   private fun loadPlace() {
     initViewModel()
-    if (intent.data != null) {
-      permissionFlowDelegate.with {
-        askPermission(Permissions.READ_EXTERNAL) { readUri() }
-      }
-    } else if (intent.hasExtra(IntentKeys.INTENT_ITEM)) {
-      runCatching {
-        viewModel.loadFromIntent(intentSerializable(IntentKeys.INTENT_ITEM, Place::class.java))
-      }
+    if (intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false)) {
+      viewModel.loadFromIntent()
     }
-  }
-
-  private fun readUri() {
-    intent.data?.let { viewModel.loadFromUri(it) }
   }
 
   private fun showPlace(place: UiPlaceEdit) {
