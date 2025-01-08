@@ -28,3 +28,8 @@ data class ViewBirthdayScreen(
 
 @Parcelize
 data object SettingsScreen : DeepLinkDestination()
+
+@Parcelize
+data class EditGroupScreen(
+  val extras: Bundle
+) : DeepLinkDestination()

@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_actionHome_to_previewBirthdayFragment"
             app:destination="@id/previewBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_editGroupFragment"
+            app:destination="@id/editGroupFragment" />
     </fragment>
 
     <fragment
@@ -104,7 +107,11 @@
         android:id="@+id/groupsFragment"
         android:name="com.elementary.tasks.groups.list.GroupsFragment"
         android:label="@string/groups"
-        tools:layout="@layout/fragment_groups" />
+        tools:layout="@layout/fragment_groups" >
+        <action
+            android:id="@+id/action_groupsFragment_to_editGroupFragment"
+            app:destination="@id/editGroupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.elementary.tasks.navigation.fragments.MapFragment"
@@ -575,4 +582,9 @@
         android:id="@+id/objectExportTestFragment"
         android:name="com.elementary.tasks.settings.test.ObjectExportTestFragment"
         android:label="ObjectExportTestFragment" />
+    <fragment
+        android:id="@+id/editGroupFragment"
+        android:name="com.elementary.tasks.groups.create.EditGroupFragment"
+        tools:layout="@layout/fragment_edit_group"
+        android:label="@string/create_group" />
 </navigation>

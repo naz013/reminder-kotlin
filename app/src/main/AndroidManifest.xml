@@ -242,13 +242,6 @@
         </activity>
 
         <activity
-            android:name=".groups.create.CreateGroupActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/create_group"
-            android:windowSoftInputMode="stateUnchanged" />
-
-        <activity
             android:name=".places.create.CreatePlaceActivity"
             android:configChanges="keyboardHidden"
             android:exported="true"

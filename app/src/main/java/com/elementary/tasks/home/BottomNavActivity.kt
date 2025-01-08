@@ -33,6 +33,7 @@ import com.github.naz013.navigation.DayViewScreen
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.EditBirthdayScreen
+import com.github.naz013.navigation.EditGroupScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.ui.common.activity.BindingActivity
@@ -114,6 +115,15 @@ class BottomNavActivity :
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setDestination(R.id.previewBirthdayFragment)
+            .setArguments(deepLinkDestination.extras)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
+        is EditGroupScreen -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.editGroupFragment)
             .setArguments(deepLinkDestination.extras)
             .createTaskStackBuilder()
             .startActivities()
