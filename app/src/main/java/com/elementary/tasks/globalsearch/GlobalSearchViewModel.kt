@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
+import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment
 import com.elementary.tasks.groups.create.EditGroupFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.EditPlaceFragment
@@ -100,7 +100,8 @@ class GlobalSearchViewModel(
   private fun Class<*>.isFragment(): Boolean {
     return this == PreviewBirthdayFragment::class.java ||
       this == EditGroupFragment::class.java ||
-      this == EditPlaceFragment::class.java
+      this == EditPlaceFragment::class.java ||
+      this == PreviewGoogleTaskFragment::class.java
   }
 
   private fun Class<*>.destinationId(): Int? {
@@ -115,6 +116,10 @@ class GlobalSearchViewModel(
 
       this == EditPlaceFragment::class.java -> {
         R.id.editPlaceFragment
+      }
+
+      this == PreviewGoogleTaskFragment::class.java -> {
+        R.id.previewGoogleTaskFragment
       }
 
       else -> null
@@ -182,7 +187,7 @@ class GlobalSearchViewModel(
     return when (this) {
       ObjectType.GROUP -> EditGroupFragment::class.java
       ObjectType.PLACE -> EditPlaceFragment::class.java
-      ObjectType.GOOGLE_TASK -> GoogleTaskPreviewActivity::class.java
+      ObjectType.GOOGLE_TASK -> PreviewGoogleTaskFragment::class.java
       ObjectType.NOTE -> NotePreviewActivity::class.java
       ObjectType.BIRTHDAY -> PreviewBirthdayFragment::class.java
       ObjectType.REMINDER -> ReminderPreviewActivity::class.java

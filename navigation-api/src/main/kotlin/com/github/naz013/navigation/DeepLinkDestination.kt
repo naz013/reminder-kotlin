@@ -38,3 +38,8 @@ data class EditGroupScreen(
 data class EditPlaceScreen(
   val extras: Bundle
 ) : DeepLinkDestination()
+
+@Parcelize
+data class ViewGoogleTaskScreen(
+  val extras: Bundle
+) : DeepLinkDestination()

@@ -2,48 +2,80 @@ package com.elementary.tasks.googletasks.preview
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.ui.common.Dialogues
-import com.elementary.tasks.databinding.ActivityGoogleTaskPreviewBinding
+import com.elementary.tasks.databinding.FragmentGoogleTaskPreviewBinding
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.login.LoginApi
-import com.github.naz013.ui.common.view.applyBottomInsets
-import com.github.naz013.ui.common.view.applyBottomInsetsMargin
-import com.github.naz013.ui.common.view.applyTopInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
 import com.github.naz013.usecase.googletasks.TasksIntentKeys
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBinding>() {
+class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewBinding>() {
 
-  private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<GoogleTaskPreviewViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
 
-  override fun inflateBinding() = ActivityGoogleTaskPreviewBinding.inflate(layoutInflater)
+  private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
+
+  override fun getTitle(): String {
+    return getString(R.string.details)
+  }
+
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentGoogleTaskPreviewBinding {
+    return FragmentGoogleTaskPreviewBinding.inflate(inflater, container, false)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    Logger.i(TAG, "Opening the Google Task preview screen for id: ${idFromIntent()}")
+  }
 
-    binding.scrollView.applyBottomInsets()
-    binding.buttonComplete.applyBottomInsetsMargin()
-    initTopAppBar()
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     binding.buttonComplete.setOnClickListener { viewModel.onComplete() }
+
     loadAds()
+
+    addMenu(
+      menuRes = R.menu.fragment_google_task_preview,
+      onMenuItemListener = { menuItem ->
+        return@addMenu when (menuItem.itemId) {
+          R.id.action_edit -> {
+            editGoogleTask()
+            true
+          }
+
+          R.id.action_delete -> {
+            dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
+              if (it) viewModel.onDelete()
+            }
+            true
+          }
+
+          else -> false
+        }
+      }
+    )
+
     initViewModel()
   }
 
@@ -56,30 +88,8 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     }
   }
 
-  private fun initTopAppBar() {
-    binding.appBar.applyTopInsets()
-    binding.toolbar.setOnMenuItemClickListener { menuItem ->
-      return@setOnMenuItemClickListener when (menuItem.itemId) {
-        R.id.action_edit -> {
-          editGoogleTask()
-          true
-        }
-
-        R.id.action_delete -> {
-          dialogues.askConfirmation(this, getString(R.string.delete)) {
-            if (it) viewModel.onDelete()
-          }
-          true
-        }
-
-        else -> false
-      }
-    }
-    binding.toolbar.setNavigationOnClickListener { finish() }
-  }
-
   private fun editGoogleTask() {
-    LoginApi.openLogged(this, GoogleTaskActivity::class.java) {
+    LoginApi.openLogged(requireContext(), GoogleTaskActivity::class.java) {
       putExtra(IntentKeys.INTENT_ID, idFromIntent())
       putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
     }
@@ -90,14 +100,12 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     func(value != null)
   }
 
-  private fun idFromIntent() = intentString(IntentKeys.INTENT_ID)
-
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.googleTask.nonNullObserve(this) { showGoogleTask(it) }
     viewModel.result.nonNullObserve(this) {
       when (it) {
-        Commands.DELETED -> finishAfterTransition()
+        Commands.DELETED -> moveBack()
         else -> {
         }
       }
@@ -148,5 +156,7 @@ class GoogleTaskPreviewActivity : BindingActivity<ActivityGoogleTaskPreviewBindi
     }
   }
 
-  override fun requireLogin() = true
+  companion object {
+    private const val TAG = "EditBirthdayFragment"
+  }
 }

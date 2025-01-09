@@ -15,12 +15,10 @@ import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
@@ -36,6 +34,7 @@ import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
@@ -251,8 +250,13 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun openTask(taskId: String) {
-    LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, taskId)
+    navigate {
+      navigate(
+        R.id.previewGoogleTaskFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, taskId)
+        }
+      )
     }
   }
 

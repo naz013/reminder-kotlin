@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation
 
 import android.content.Context
 import android.os.Bundle
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -15,6 +14,7 @@ import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
+import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.login.LoginApi
 
@@ -63,6 +63,13 @@ class ActivityNavigationDispatcher(
         }
       }
 
+      DestinationScreen.GoogleTaskPreview -> {
+        val deepLinkDestination = ViewGoogleTaskScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
       else -> bundle
     }
   }
@@ -75,7 +82,7 @@ class ActivityNavigationDispatcher(
       DestinationScreen.NoteCreate -> CreateNoteActivity::class.java
       DestinationScreen.BirthdayPreview -> BottomNavActivity::class.java
       DestinationScreen.BirthdayCreate -> BottomNavActivity::class.java
-      DestinationScreen.GoogleTaskPreview -> GoogleTaskPreviewActivity::class.java
+      DestinationScreen.GoogleTaskPreview -> BottomNavActivity::class.java
       DestinationScreen.GoogleTaskCreate -> GoogleTaskActivity::class.java
       DestinationScreen.Main -> BottomNavActivity::class.java
     }
