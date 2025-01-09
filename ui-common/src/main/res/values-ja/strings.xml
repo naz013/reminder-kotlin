@@ -610,7 +610,6 @@
     <string name="foreground_service">フォアグラウンド サービス</string>
     <string name="foreground_service_explanation">アプリケーションを完全に機能させるには、フォアグラウンド サービスのアクセス許可が必要です</string>
     <string name="background_location">背景の場所</string>
-    <string name="background_location_explanation">アクティブな場所のリマインダーがあるときにあなたを追跡するには、アプリケーションにはバックグラウンドの場所へのアクセス許可が必要です</string>
     <string name="failed_to_start_voice_recognition">音声認識の開始に失敗しました</string>
     <string name="failed_to_send_note">メモの送信に失敗しました</string>
     <string name="shuffle_digits">桁をシャッフルする</string>

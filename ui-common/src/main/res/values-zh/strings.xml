@@ -610,7 +610,6 @@
     <string name="foreground_service">前台服務</string>
     <string name="foreground_service_explanation">為了讓應用程序發揮全部功能，它需要前台服務權限</string>
     <string name="background_location">背景位置</string>
-    <string name="background_location_explanation">要在您有活動位置提醒時跟踪您，應用程序需要後台位置權限</string>
     <string name="failed_to_start_voice_recognition">啟動語音識別失敗</string>
     <string name="failed_to_send_note">無法發送備註</string>
     <string name="shuffle_digits">隨機數字</string>

@@ -530,7 +530,6 @@
     <string name="foreground_service">Служба переднього плану</string>
     <string name="foreground_service_explanation">Щоб програма була повністю функціональною, їй потрібен дозвіл Foreground Service</string>
     <string name="background_location">Розташування у фоновому режимі</string>
-    <string name="background_location_explanation">Щоб стежити за вами, коли у вас є активні нагадування про місцезнаходження, програмі потрібен дозвіл на фонове місцезнаходження</string>
     <string name="failed_to_start_voice_recognition">Не вдалося запустити розпізнавання голосу</string>
     <string name="failed_to_send_note">Не вдалося надіслати нотатку</string>
     <string name="shuffle_digits">Перетасувати цифри</string>

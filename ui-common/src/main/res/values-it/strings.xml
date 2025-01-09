@@ -610,7 +610,6 @@
     <string name="foreground_service">Servizio in primo piano</string>
     <string name="foreground_service_explanation">Per consentire all\'applicazione di essere completamente funzionante, è necessaria l\'autorizzazione del servizio in primo piano</string>
     <string name="background_location">Posizione di sfondo</string>
-    <string name="background_location_explanation">Per rintracciarti quando hai promemoria sulla posizione attivi, l\'applicazione richiede l\'autorizzazione alla posizione in background</string>
     <string name="failed_to_start_voice_recognition">Impossibile avviare il riconoscimento vocale</string>
     <string name="failed_to_send_note">Impossibile inviare la nota</string>
     <string name="shuffle_digits">Mescola le cifre</string>

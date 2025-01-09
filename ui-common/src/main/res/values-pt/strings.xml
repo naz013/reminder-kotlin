@@ -610,7 +610,6 @@
     <string name="foreground_service">Serviço de primeiro plano</string>
     <string name="foreground_service_explanation">Para permitir que o aplicativo seja totalmente funcional, ele requer permissão de serviço de primeiro plano</string>
     <string name="background_location">Localização de fundo</string>
-    <string name="background_location_explanation">Para rastreá-lo quando você tiver lembretes de localização ativos, o aplicativo requer permissão de localização em segundo plano</string>
     <string name="failed_to_start_voice_recognition">Falha ao iniciar o reconhecimento de voz</string>
     <string name="failed_to_send_note">Falha ao enviar Nota</string>
     <string name="shuffle_digits">Dígitos aleatórios</string>
