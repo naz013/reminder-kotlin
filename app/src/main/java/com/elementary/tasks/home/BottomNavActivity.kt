@@ -37,6 +37,7 @@ import com.github.naz013.navigation.EditGroupScreen
 import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
+import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
@@ -134,6 +135,15 @@ class BottomNavActivity :
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setDestination(R.id.editPlaceFragment)
+            .setArguments(deepLinkDestination.extras)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
+        is ViewGoogleTaskScreen -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.previewGoogleTaskFragment)
             .setArguments(deepLinkDestination.extras)
             .createTaskStackBuilder()
             .startActivities()

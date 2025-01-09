@@ -18,7 +18,6 @@ import com.elementary.tasks.globalsearch.FragmentNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
 import com.elementary.tasks.globalsearch.NavigationAction
 import com.elementary.tasks.globalsearch.adapter.SearchAdapter
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.scheduleview.HeaderTimeType
 import com.elementary.tasks.home.scheduleview.ScheduleAdapter
@@ -74,8 +73,13 @@ class HomeFragment :
       }
     },
     onGoogleTaskClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewGoogleTaskFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     },
     onBirthdayClickListener = { _, id ->

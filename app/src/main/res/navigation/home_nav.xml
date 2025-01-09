@@ -102,6 +102,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_actionGoogle_to_previewGoogleTaskFragment"
+            app:destination="@id/previewGoogleTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupsFragment"
@@ -152,6 +155,9 @@
         <argument
             android:name="arg_id"
             app:argType="string" />
+        <action
+            android:id="@+id/action_taskListFragment_to_previewGoogleTaskFragment"
+            app:destination="@id/previewGoogleTaskFragment" />
     </fragment>
 
     <fragment
@@ -580,4 +586,13 @@
         android:name="com.elementary.tasks.places.create.EditPlaceFragment"
         tools:layout="@layout/fragment_edit_place"
         android:label="@string/new_place" />
+    <fragment
+        android:id="@+id/previewGoogleTaskFragment"
+        tools:layout="@layout/fragment_google_task_preview"
+        android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"
+        android:label="@string/details" >
+        <argument
+            android:name="item_id"
+            app:argType="string" />
+    </fragment>
 </navigation>

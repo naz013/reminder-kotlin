@@ -15,10 +15,8 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
 import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
@@ -30,6 +28,7 @@ import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.visible
@@ -170,7 +169,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
     adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
       override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
         when (actions) {
-          ListActions.EDIT -> if (t != null) openTask(t.id)
+          ListActions.OPEN -> if (t != null) openTask(t.id)
           ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
           else -> {
           }
@@ -190,9 +189,10 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   }
 
   private fun openTask(taskId: String) {
-    LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, taskId)
-      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
+    navigate {
+      navigate(
+        TaskListFragmentDirections.actionTaskListFragmentToPreviewGoogleTaskFragment(taskId)
+      )
     }
   }
 
