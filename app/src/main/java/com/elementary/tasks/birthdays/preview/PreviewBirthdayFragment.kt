@@ -1,49 +1,54 @@
 package com.elementary.tasks.birthdays.preview
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
-import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.ui.common.Dialogues
-import com.elementary.tasks.databinding.ActivityBirthdayPreviewBinding
+import com.elementary.tasks.databinding.FragmentBirthdayPreviewBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.ui.common.login.LoginApi
-import com.github.naz013.ui.common.view.applyBottomInsets
-import com.github.naz013.ui.common.view.applyBottomInsetsMargin
-import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>() {
+class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBinding>() {
 
-  private val dialogues by inject<Dialogues>()
   private val viewModel by viewModel<BirthdayPreviewViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
-  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
-  override fun inflateBinding() = ActivityBirthdayPreviewBinding.inflate(layoutInflater)
+  private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
+
+  override fun getTitle(): String {
+    return getString(R.string.details)
+  }
+
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentBirthdayPreviewBinding {
+    return FragmentBirthdayPreviewBinding.inflate(inflater, container, false)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    binding.buttonsView.applyBottomInsetsMargin()
-    binding.scrollView.applyBottomInsets()
-    initTopAppBar()
+    Logger.i(TAG, "Opening the birthday preview screen for id: ${idFromIntent()}")
+  }
 
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     binding.buttonCall.setOnClickListener { tryToMakeCall() }
     binding.buttonSms.setOnClickListener { tryToSendSms() }
     binding.buttonsView.gone()
@@ -52,7 +57,39 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
 
     loadAds()
 
+    addMenu(
+      menuRes = R.menu.fragment_birthday_preview,
+      onMenuItemListener = { menuItem ->
+        return@addMenu when (menuItem.itemId) {
+          R.id.action_edit -> {
+            editBirthday()
+            true
+          }
+
+          R.id.action_delete -> {
+            dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
+              if (it) viewModel.deleteBirthday()
+            }
+            true
+          }
+
+          else -> false
+        }
+      }
+    )
+
     initViewModel()
+  }
+
+  private fun editBirthday() {
+    navigate {
+      navigate(
+        R.id.editBirthdayFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, idFromIntent())
+        }
+      )
+    }
   }
 
   private fun loadAds() {
@@ -66,38 +103,14 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
 
   private fun tryToMakeCall() {
     val number = viewModel.birthday.value?.number ?: return
-    permissionFlowDelegate.with {
-      askPermission(Permissions.CALL_PHONE) {
-        TelephonyUtil.makeCall(number, this@BirthdayPreviewActivity)
-      }
+    permissionFlow.askPermission(Permissions.CALL_PHONE) {
+      TelephonyUtil.makeCall(number, requireContext())
     }
   }
 
   private fun tryToSendSms() {
     val number = viewModel.birthday.value?.number ?: return
-    TelephonyUtil.sendSms(number, this)
-  }
-
-  private fun initTopAppBar() {
-    binding.appBar.applyTopInsets()
-    binding.toolbar.setOnMenuItemClickListener { menuItem ->
-      return@setOnMenuItemClickListener when (menuItem.itemId) {
-        R.id.action_edit -> {
-          editBirthday()
-          true
-        }
-
-        R.id.action_delete -> {
-          dialogues.askConfirmation(this, getString(R.string.delete)) {
-            if (it) viewModel.deleteBirthday()
-          }
-          true
-        }
-
-        else -> false
-      }
-    }
-    binding.toolbar.setNavigationOnClickListener { finish() }
+    TelephonyUtil.sendSms(number, requireContext())
   }
 
   private fun showTextIfNotNull(
@@ -160,25 +173,19 @@ class BirthdayPreviewActivity : BindingActivity<ActivityBirthdayPreviewBinding>(
     }
   }
 
-  private fun idFromIntent(): String = intentString(IntentKeys.INTENT_ID)
-
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
     viewModel.result.nonNullObserve(this) {
       when (it) {
-        Commands.DELETED -> finishAfterTransition()
+        Commands.DELETED -> moveBack()
         else -> {
         }
       }
     }
   }
 
-  private fun editBirthday() {
-    LoginApi.openLogged(this, AddBirthdayActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, idFromIntent())
-    }
+  companion object {
+    private const val TAG = "PreviewBirthdayFragment"
   }
-
-  override fun requireLogin() = true
 }

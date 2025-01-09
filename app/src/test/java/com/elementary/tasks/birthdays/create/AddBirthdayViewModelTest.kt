@@ -2,18 +2,18 @@ package com.elementary.tasks.birthdays.create
 
 import android.net.Uri
 import com.elementary.tasks.BaseTest
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.os.IntentDataHolder
-import com.github.naz013.common.contacts.ContactsReader
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.BirthdayRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -36,7 +36,7 @@ class AddBirthdayViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>()
   private val uriReader = mockk<UriReader>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>()
-  private val intentDataHolder = mockk<IntentDataHolder>()
+  private val intentDataReader = mockk<IntentDataReader>()
 
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
 
@@ -56,7 +56,7 @@ class AddBirthdayViewModelTest : BaseTest() {
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
       uriReader = uriReader,
       appWidgetUpdater = appWidgetUpdater,
-      intentDataHolder = intentDataHolder,
+      intentDataReader = intentDataReader,
       uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager)
     )
   }
@@ -163,7 +163,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
-    every { intentDataHolder.get(any(), Birthday::class.java) }.returns(birthdayObject)
+    every { intentDataReader.get(any(), Birthday::class.java) }.returns(birthdayObject)
 
     viewModel.birthday.observeForever { }
     viewModel.formattedDate.observeForever { }
@@ -205,7 +205,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
     every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
 
-    every { intentDataHolder.get(any(), Birthday::class.java) }.returns(birthdayObject)
+    every { intentDataReader.get(any(), Birthday::class.java) }.returns(birthdayObject)
 
     viewModel.birthday.observeForever { }
     viewModel.formattedDate.observeForever { }

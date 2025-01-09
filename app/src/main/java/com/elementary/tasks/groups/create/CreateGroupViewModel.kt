@@ -1,30 +1,26 @@
 package com.elementary.tasks.groups.create
 
-import android.content.ContentResolver
-import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.IdProvider
-import com.github.naz013.common.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.common.ContextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.ReminderGroupRepository
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -35,10 +31,10 @@ class CreateGroupViewModel(
   private val workerLauncher: WorkerLauncher,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
-  private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiGroupEditAdapter: UiGroupEditAdapter,
-  private val idProvider: IdProvider
+  private val idProvider: IdProvider,
+  private val intentDataReader: IntentDataReader
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _reminderGroup = mutableLiveDataOf<UiGroupEdit>()
@@ -60,24 +56,12 @@ class CreateGroupViewModel(
     sliderPosition = position
   }
 
-  fun loadFromFile(uri: Uri) {
+  fun loadFromIntent() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      runCatching {
-        if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-          val any = MemoryUtil.readFromUri(contextProvider.context, uri, FileConfig.FILE_NAME_GROUP)
-          if (any != null && any is ReminderGroup) {
-            onLoaded(any)
-            findSame(any.groupUuId)
-          }
-        }
+      intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java)?.run {
+        onLoaded(this)
+        findSame(this.groupUuId)
       }
-    }
-  }
-
-  fun loadFromIntent(group: ReminderGroup?) {
-    if (group != null) {
-      onLoaded(group)
-      findSame(group.groupUuId)
     }
   }
 

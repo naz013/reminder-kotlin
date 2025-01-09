@@ -25,8 +25,8 @@ import com.elementary.tasks.core.work.workModule
 import com.elementary.tasks.globalsearch.searchModule
 import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.home.homeModule
-import com.elementary.tasks.navigation.ActivityNavigator
 import com.elementary.tasks.navigation.NavigationConsumer
+import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.notes.noteModule
@@ -38,7 +38,9 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
+import com.github.naz013.navigation.navigationApiModule
 import com.github.naz013.repository.repositoryModule
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
@@ -59,8 +61,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
 
   private val navigationConsumer = object : NavigationConsumer {
     override fun consume(destination: Destination) {
-      if (destination is ActivityDestination) {
-        ActivityNavigator(this@ReminderApp).navigate(destination)
+      if (destination is ActivityDestination || destination is DataDestination) {
+        get<NavigationDispatcherFactory>().create(destination).dispatch(destination)
       } else {
         com.github.naz013.logging.Logger.i("App", "Unknown destination: $destination")
       }
@@ -120,7 +122,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           birthdaysUseCaseModule,
           remindersUseCaseModule,
           notesUseCaseModule,
-          iCalendarModule
+          iCalendarModule,
+          navigationApiModule
         )
       )
     }

@@ -19,7 +19,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
@@ -32,12 +31,9 @@ import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.common.uri.UriUtil
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.utils.ui.readText
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.core.utils.ui.trimmedText
@@ -47,20 +43,23 @@ import com.elementary.tasks.notes.create.images.ImagesGridAdapter
 import com.elementary.tasks.notes.create.images.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.domain.font.FontParams
-import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.adjustAlpha
 import com.github.naz013.ui.common.context.colorOf
 import com.github.naz013.ui.common.context.startActivity
 import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.applyTopInsets
 import com.github.naz013.ui.common.view.gone
@@ -438,16 +437,8 @@ class CreateNoteActivity :
       }
 
       else -> {
-        if (intent.data != null) {
-          permissionFlowDelegate.with {
-            askPermission(Permissions.READ_EXTERNAL) { loadNoteFromFile() }
-          }
-        } else if (intent.hasExtra(IntentKeys.INTENT_ITEM)) {
-          runCatching {
-            viewModel.onNoteReceivedFromIntent(
-              intentSerializable(IntentKeys.INTENT_ITEM, NoteWithImages::class.java)
-            )
-          }
+        if (intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false)) {
+          viewModel.onNoteReceivedFromIntent()
         }
       }
     }

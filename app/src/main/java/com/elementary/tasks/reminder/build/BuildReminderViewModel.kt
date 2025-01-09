@@ -1,8 +1,6 @@
 package com.elementary.tasks.reminder.build
 
-import android.content.ContentResolver
 import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -17,7 +15,6 @@ import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.io.UriReader
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.build.bi.BiComparator
@@ -45,7 +42,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -53,7 +49,6 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
-import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -63,6 +58,7 @@ import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderGroupRepository
@@ -94,15 +90,15 @@ class BuildReminderViewModel(
   private val biFilter: BiFilter,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
-  private val ICalendarApi: ICalendarApi,
+  private val iCalendarApi: ICalendarApi,
   private val recurParamsToBiAdapter: RecurParamsToBiAdapter,
   private val builderPresetToBiAdapter: BuilderPresetToBiAdapter,
   private val reminderPredictionCalculator: ReminderPredictionCalculator,
-  private val uriReader: UriReader,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
+  private val intentDataReader: IntentDataReader
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -266,14 +262,9 @@ class BuildReminderViewModel(
           handleSendText(intent)
         }
 
-        intent.data != null -> {
-          Logger.i(TAG, "Handle reminder file Deep Link")
-          readFromIntent(intent.data)
-        }
-
-        intent.hasExtra(IntentKeys.INTENT_ITEM) -> {
+        intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false) -> {
           Logger.i(TAG, "Handle reminder object Deep Link")
-          readObjectFromIntent(intent)
+          readObjectFromIntent()
         }
 
         intent.getBooleanExtra(IntentKeys.INTENT_DEEP_LINK, false) -> {
@@ -415,34 +406,14 @@ class BuildReminderViewModel(
     }
   }
 
-  private suspend fun readObjectFromIntent(intent: Intent) {
+  private suspend fun readObjectFromIntent() {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
-    runCatching {
-      val reminder = intent.readSerializable(IntentKeys.INTENT_ITEM, Reminder::class.java)
-      if (reminder != null) {
-        isFromFile = true
-        editReminder(reminder)
-      }
-    }
-  }
-
-  private suspend fun readFromIntent(uri: Uri?) {
-    while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
-    }
-    if (uri == null) return
-    try {
-      if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-        val any = uriReader.readObject(uri, FileConfig.FILE_NAME_REMINDER)
-        if (any != null && any is Reminder) {
-          isFromFile = true
-          editReminder(any)
-        }
-      }
-    } catch (e: Throwable) {
-      Logger.e(TAG, "readFromIntent: ${e.message}")
+    intentDataReader.get(IntentKeys.INTENT_ITEM, Reminder::class.java)?.run {
+      Logger.logEvent("Reminder loaded from intent")
+      isFromFile = true
+      editReminder(this)
     }
   }
 
@@ -529,7 +500,7 @@ class BuildReminderViewModel(
 
   private suspend fun useRecurPreset(preset: RecurPreset) {
     Logger.i(TAG, "Use reminder RECUR preset")
-    val params = runCatching { ICalendarApi.parseObject(preset.recurObject) }.getOrNull()
+    val params = runCatching { iCalendarApi.parseObject(preset.recurObject) }.getOrNull()
       ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
       ?.params
       ?.let { recurParamsToBiAdapter(it) }

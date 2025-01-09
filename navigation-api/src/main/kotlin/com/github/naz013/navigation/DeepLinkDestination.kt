@@ -12,9 +12,19 @@ sealed class DeepLinkDestination : Parcelable {
 }
 
 @Parcelize
-data class FragmentDayView(
+data class DayViewScreen(
   val extras: Bundle
 ) : DeepLinkDestination()
 
 @Parcelize
-data object FragmentSettings : DeepLinkDestination()
+data class EditBirthdayScreen(
+  val extras: Bundle
+) : DeepLinkDestination()
+
+@Parcelize
+data class ViewBirthdayScreen(
+  val extras: Bundle
+) : DeepLinkDestination()
+
+@Parcelize
+data object SettingsScreen : DeepLinkDestination()

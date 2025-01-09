@@ -6,21 +6,13 @@ import android.content.Intent
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.github.naz013.ui.common.activity.DeepLinkData
-import com.github.naz013.ui.common.context.intentForClass
+import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.ui.common.login.LoginApi
 
 class ReminderBuilderLauncher(private val prefs: Prefs) {
 
   init {
     PENDING_INTENT_CLASS = getActivityClass()
-  }
-
-  fun openNotLogged(context: Context, builder: Intent.() -> Unit) {
-    val intent = context.intentForClass(getActivityClass()).apply {
-      builder(this)
-    }
-    context.startActivity(intent)
   }
 
   fun openLogged(context: Context, builder: Intent.() -> Unit) {

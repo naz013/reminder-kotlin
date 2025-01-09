@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -15,13 +16,14 @@ import com.elementary.tasks.calendar.dayview.DayPagerItem
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 
 class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
@@ -33,7 +35,23 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
   private val dayEventsAdapter = DayEventsAdapter(isDark = themeProvider.isDark)
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
-    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
+    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) },
+    birthdayEditAction = {
+      findNavController().navigate(
+        R.id.editBirthdayFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, it.uuId)
+        }
+      )
+    },
+    birthdayOpenAction = {
+      findNavController().navigate(
+        R.id.previewBirthdayFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, it.uuId)
+        }
+      )
+    }
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
@@ -74,6 +92,7 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
           is BirthdayEventModel -> {
             birthdayResolver.resolveAction(view, t.model, actions)
           }
+
           is ReminderEventModel -> {
             reminderResolver.resolveAction(view, t.model, actions)
           }

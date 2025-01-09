@@ -8,19 +8,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
@@ -32,7 +31,27 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
   private val systemServiceProvider by inject<SystemServiceProvider>()
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
-    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) }
+    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) },
+    birthdayEditAction = {
+      navigate {
+        navigate(
+          R.id.editBirthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.uuId)
+          }
+        )
+      }
+    },
+    birthdayOpenAction = {
+      navigate {
+        navigate(
+          R.id.previewBirthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.uuId)
+          }
+        )
+      }
+    }
   )
   private val mAdapter = BirthdaysRecyclerAdapter()
   private val searchMenuHandler = SearchMenuHandler(
@@ -60,7 +79,7 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
   }
 
   private fun addNew() {
-    withContext { LoginApi.openLogged(it, AddBirthdayActivity::class.java) }
+    navigate { navigate(R.id.editBirthdayFragment) }
   }
 
   private fun initViewModel() {

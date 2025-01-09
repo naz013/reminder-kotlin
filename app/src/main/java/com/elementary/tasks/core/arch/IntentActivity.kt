@@ -3,15 +3,8 @@ package com.elementary.tasks.core.arch
 import android.content.ContentResolver
 import android.os.Bundle
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.os.IntentDataHolder
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.places.create.CreatePlaceActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
@@ -19,16 +12,16 @@ import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.note.OldNote
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.DataDestination
+import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.toast
-import com.github.naz013.ui.common.context.intentForClass
 import org.koin.android.ext.android.inject
 
 class IntentActivity : LightThemedActivity() {
 
   private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
-  private val intentDataHolder by inject<IntentDataHolder>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
+  private val navigator by inject<Navigator>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -36,20 +29,30 @@ class IntentActivity : LightThemedActivity() {
     val data = intent.data ?: return
     val scheme = data.scheme
 
-    Logger.d("onCreate: $data, $scheme")
+    Logger.i(TAG, "Incoming intent with data: $data, scheme: $scheme")
 
     if (ContentResolver.SCHEME_CONTENT == scheme) {
       val any = MemoryUtil.readFromUri(this, data)
-      Logger.d("getPlace: $any")
       if (any != null) {
+        Logger.i(TAG, "Parsed object: $any")
         when (any) {
           is Place -> {
             if (any.isValid()) {
-              startActivity(
-                intentForClass(CreatePlaceActivity::class.java)
-                  .putExtra(IntentKeys.INTENT_ITEM, any)
-              )
+              Logger.i(TAG, "Place is valid")
+              navigator.navigate(DataDestination(any))
             } else {
+              Logger.i(TAG, "Place is NOT invalid, reason: ${any.getInvalidReason()}")
+              toast(getString(R.string.unsupported_file_format))
+            }
+            finish()
+          }
+
+          is NoteWithImages -> {
+            if (any.isValid()) {
+              Logger.i(TAG, "Note is valid")
+              navigator.navigate(DataDestination(any))
+            } else {
+              Logger.i(TAG, "Note is NOT valid")
               toast(getString(R.string.unsupported_file_format))
             }
             finish()
@@ -58,11 +61,10 @@ class IntentActivity : LightThemedActivity() {
           is OldNote -> {
             val noteWithImages = noteToOldNoteConverter.toNote(any)
             if (noteWithImages != null) {
-              startActivity(
-                intentForClass(CreateNoteActivity::class.java)
-                  .putExtra(IntentKeys.INTENT_ITEM, noteWithImages)
-              )
+              Logger.i(TAG, "OLD Note is valid")
+              navigator.navigate(DataDestination(noteWithImages))
             } else {
+              Logger.i(TAG, "OLD Note is Null")
               toast(getString(R.string.unsupported_file_format))
             }
             finish()
@@ -70,9 +72,10 @@ class IntentActivity : LightThemedActivity() {
 
           is Birthday -> {
             if (any.isValid()) {
-              intentDataHolder.putData(IntentKeys.INTENT_ITEM, any)
-              startActivity(intentForClass(AddBirthdayActivity::class.java))
+              Logger.i(TAG, "Birthday is valid")
+              navigator.navigate(DataDestination(any))
             } else {
+              Logger.i(TAG, "Birthday is NOT valid, reason: ${any.getInvalidReason()}")
               toast(getString(R.string.unsupported_file_format))
             }
             finish()
@@ -80,10 +83,10 @@ class IntentActivity : LightThemedActivity() {
 
           is Reminder -> {
             if (any.isValid()) {
-              reminderBuilderLauncher.openNotLogged(this) {
-                putExtra(IntentKeys.INTENT_ITEM, any)
-              }
+              Logger.i(TAG, "Reminder is valid")
+              navigator.navigate(DataDestination(any))
             } else {
+              Logger.i(TAG, "Reminder is NOT valid, reason: ${any.getInvalidReason()}")
               toast(getString(R.string.unsupported_file_format))
             }
             finish()
@@ -91,49 +94,90 @@ class IntentActivity : LightThemedActivity() {
 
           is ReminderGroup -> {
             if (any.isValid()) {
-              startActivity(
-                intentForClass(CreateGroupActivity::class.java)
-                  .putExtra(IntentKeys.INTENT_ITEM, any)
-              )
+              Logger.i(TAG, "Group is valid")
+              navigator.navigate(DataDestination(any))
             } else {
+              Logger.i(TAG, "Group is NOT valid, reason: ${any.getInvalidReason()}")
               toast(getString(R.string.unsupported_file_format))
             }
             finish()
           }
 
           else -> {
+            Logger.i(TAG, "Parsed object is not supported: ${any.javaClass.simpleName}")
             toast(getString(R.string.unsupported_file_format))
             finish()
           }
         }
       } else {
+        Logger.i(TAG, "Parsed object is NULL")
         toast(getString(R.string.unsupported_file_format))
         finish()
       }
     } else {
+      Logger.i(TAG, "Unsupported scheme: $scheme")
       toast(getString(R.string.unsupported_file_format))
       finish()
     }
   }
-}
 
-private fun ReminderGroup.isValid(): Boolean {
-  return groupTitle.isNotBlank() && groupUuId.isNotEmpty()
-}
+  private fun NoteWithImages.isValid(): Boolean {
+    val nt = note
+    return nt != null && nt.key.isNotEmpty()
+  }
 
-private fun Place.isValid(): Boolean {
-  return latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
-}
+  private fun ReminderGroup.isValid(): Boolean {
+    return groupTitle.isNotBlank() && groupUuId.isNotEmpty()
+  }
 
-fun NoteWithImages.isValid(): Boolean {
-  val nt = note
-  return nt != null && nt.key.isNotEmpty()
-}
+  private fun ReminderGroup.getInvalidReason(): String {
+    return when {
+      groupUuId.isBlank() -> "UUID is blank"
+      groupTitle.isBlank() -> "Title is blank"
+      else -> ""
+    }
+  }
 
-private fun Reminder.isValid(): Boolean {
-  return summary.isNotBlank() && type > 0 && groupUuId.isNotBlank()
-}
+  private fun Place.isValid(): Boolean {
+    return latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
+  }
 
-private fun Birthday.isValid(): Boolean {
-  return name.isNotBlank() && date.isNotBlank() && key.isNotBlank() && day > 0
+  private fun Place.getInvalidReason(): String {
+    return when {
+      latitude == 0.0 -> "Latitude is 0"
+      longitude == 0.0 -> "Longitude is 0"
+      name.isBlank() -> "Name is blank"
+      else -> ""
+    }
+  }
+
+  private fun Reminder.isValid(): Boolean {
+    return type > 0 && groupUuId.isNotBlank()
+  }
+
+  private fun Reminder.getInvalidReason(): String {
+    return when {
+      type <= 0 -> "Type is not supported"
+      groupUuId.isBlank() -> "Group UUID is blank"
+      else -> ""
+    }
+  }
+
+  private fun Birthday.isValid(): Boolean {
+    return name.isNotBlank() && date.isNotBlank() && uuId.isNotBlank() && day > 0
+  }
+
+  private fun Birthday.getInvalidReason(): String {
+    return when {
+      name.isBlank() -> "Name is blank"
+      date.isBlank() -> "Date is blank"
+      uuId.isBlank() -> "Key is blank"
+      day == 0 -> "Day is 0"
+      else -> ""
+    }
+  }
+
+  companion object {
+    private const val TAG = "IntentActivity"
+  }
 }
