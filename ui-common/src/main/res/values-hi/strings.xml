@@ -610,7 +610,6 @@
     <string name="foreground_service">अग्रभूमि सेवा</string>
     <string name="foreground_service_explanation">एप्लिकेशन को पूरी तरह कार्यात्मक होने देने के लिए, उसे फ़ोरग्राउंड सेवा की अनुमति की आवश्यकता होती है</string>
     <string name="background_location">पृष्ठभूमि स्थान</string>
-    <string name="background_location_explanation">आपके पास सक्रिय स्थान अनुस्मारक होने पर आपको ट्रैक करने के लिए, एप्लिकेशन को पृष्ठभूमि स्थान अनुमति की आवश्यकता होती है</string>
     <string name="failed_to_start_voice_recognition">ध्वनि पहचान प्रारंभ करने में विफल</string>
     <string name="failed_to_send_note">नोट भेजने में विफल</string>
     <string name="shuffle_digits">अंकों में फेरबदल करें</string>

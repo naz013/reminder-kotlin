@@ -530,7 +530,6 @@
     <string name="foreground_service">Service de premier plan</string>
     <string name="foreground_service_explanation">Pour permettre à l\'application d\'être pleinement fonctionnelle, elle nécessite l\'autorisation du service de premier plan</string>
     <string name="background_location">Emplacement d\'arrière-plan</string>
-    <string name="background_location_explanation">Pour vous suivre lorsque vous avez des rappels de localisation actifs, l\'application nécessite une autorisation de localisation en arrière-plan</string>
     <string name="failed_to_start_voice_recognition">Impossible de démarrer la reconnaissance vocale</string>
     <string name="failed_to_send_note">Échec de l\'envoi de la note</string>
     <string name="shuffle_digits">Mélanger les chiffres</string>
