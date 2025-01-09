@@ -99,8 +99,8 @@ jobs:
         serviceAccountJson: service_account.json
         packageName: com.cray.software.justreminder
         releaseFiles: ${{ steps.sign-free.outputs.signedReleaseFile }}
-        track: alpha
-        changesNotSentForReview: true
+        track: production
+#        changesNotSentForReview: true
 
     - name: Sign Pro AAB
       id: sign-pro
@@ -118,4 +118,4 @@ jobs:
         serviceAccountJson: service_account.json
         packageName: com.cray.software.justreminderpro
         releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
-        track: alpha
+        track: production
