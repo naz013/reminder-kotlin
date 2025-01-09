@@ -54,6 +54,10 @@ class PlaceViewModel(
     load()
   }
 
+  fun hasId(): Boolean {
+    return id.isNotEmpty()
+  }
+
   fun hasLatLng(): Boolean {
     return lat != 0.0 && lng != 0.0
   }

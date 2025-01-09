@@ -242,13 +242,6 @@
         </activity>
 
         <activity
-            android:name=".places.create.CreatePlaceActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/new_place"
-            android:windowSoftInputMode="stateUnchanged" />
-
-        <activity
             android:name=".notes.create.CreateNoteActivity"
             android:configChanges="keyboardHidden"
             android:exported="true"
