@@ -72,6 +72,13 @@ jobs:
       id: buildRelease
       run: ./gradlew bundleRelease
 
+    - name: Save signed aab
+      uses: actions/upload-artifact@v4
+      if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+      with:
+        name: signed-aab
+        path: app/build/outputs/bundle
+
     - name: Create service_account.json
       id: create-service-account
       run: echo '${{ secrets.SERVICE_ACCOUT_JSON }}' > service_account.json
@@ -92,7 +99,8 @@ jobs:
         serviceAccountJson: service_account.json
         packageName: com.cray.software.justreminder
         releaseFiles: ${{ steps.sign-free.outputs.signedReleaseFile }}
-        track: alpha
+        track: production
+#        changesNotSentForReview: true
 
     - name: Sign Pro AAB
       id: sign-pro
@@ -110,4 +118,4 @@ jobs:
         serviceAccountJson: service_account.json
         packageName: com.cray.software.justreminderpro
         releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
-        track: alpha
+        track: production
