@@ -29,7 +29,7 @@ import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
-import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate

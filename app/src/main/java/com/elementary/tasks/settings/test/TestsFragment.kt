@@ -1,14 +1,14 @@
-package com.elementary.tasks.settings
+package com.elementary.tasks.settings.test
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
+import com.github.naz013.domain.Reminder
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
@@ -24,6 +24,9 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen(true) }
     binding.birthdayNoNumber.setOnClickListener { openBirthdayScreen() }
     binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
+    binding.objectExport.setOnClickListener {
+      safeNavigation(TestsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
+    }
   }
 
   private fun openReminderScreen() {

@@ -6,12 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.navigation.ActivityClass
+import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.ui.common.activity.DeepLinkData
+import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.ui.common.context.intentForClass
 import com.github.naz013.ui.common.context.startActivity
 import com.github.naz013.ui.common.databinding.ActivityPinLoginBinding
@@ -71,7 +71,7 @@ internal class PinLoginActivity :
   private fun openApplication() {
     navigator.navigate(
       ActivityDestination(
-        activityClass = ActivityClass.Main
+        screen = DestinationScreen.Main
       )
     )
     finish()

@@ -19,9 +19,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
-import com.elementary.tasks.navigation.ActivityNavigator
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.NavigationConsumer
+import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.SearchableFragmentCallback
 import com.elementary.tasks.navigation.SearchableFragmentQueryObserver
@@ -29,11 +29,12 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DayViewScreen
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
-import com.github.naz013.navigation.FragmentDayView
-import com.github.naz013.navigation.FragmentSettings
+import com.github.naz013.navigation.EditBirthdayScreen
+import com.github.naz013.navigation.SettingsScreen
+import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
@@ -46,6 +47,8 @@ class BottomNavActivity :
 
   private val navigationObservable by inject<NavigationObservable>()
   private val prefs by inject<Prefs>()
+  private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
+
   private lateinit var navController: NavController
   private val adsProvider = AdsProvider()
 
@@ -55,9 +58,7 @@ class BottomNavActivity :
 
   private val navigationConsumer = object : NavigationConsumer {
     override fun consume(destination: Destination) {
-      if (destination is ActivityDestination) {
-        ActivityNavigator(this@BottomNavActivity).navigate(destination)
-      }
+      navigationDispatcherFactory.create(destination).dispatch(destination)
     }
   }
 
@@ -66,7 +67,10 @@ class BottomNavActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    Logger.d("onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}")
+    Logger.d(
+      "BottomNavActivity",
+      "onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}"
+    )
 
     val navHostFragment =
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
@@ -80,7 +84,7 @@ class BottomNavActivity :
         DeepLinkDestination::class.java
       )
       when (deepLinkDestination) {
-        is FragmentDayView -> {
+        is DayViewScreen -> {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setArguments(deepLinkDestination.extras)
@@ -89,10 +93,28 @@ class BottomNavActivity :
             .startActivities()
         }
 
-        is FragmentSettings -> {
+        is SettingsScreen -> {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setDestination(R.id.settingsFragment)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
+        is EditBirthdayScreen -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.editBirthdayFragment)
+            .setArguments(deepLinkDestination.extras)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
+        is ViewBirthdayScreen -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.previewBirthdayFragment)
+            .setArguments(deepLinkDestination.extras)
             .createTaskStackBuilder()
             .startActivities()
         }

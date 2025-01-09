@@ -1,6 +1,6 @@
 package com.github.naz013.navigation
 
-enum class ActivityClass {
+enum class DestinationScreen {
   ReminderPreview,
   BirthdayPreview,
   NotePreview,

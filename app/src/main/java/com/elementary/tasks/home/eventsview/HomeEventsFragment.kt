@@ -29,6 +29,7 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    Logger.d(TAG, "On view created")
     binding.tabLayout.addOnTabSelectedListener(
       object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -57,10 +58,21 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
+    Logger.d(TAG, "On attach")
     Handler(Looper.getMainLooper()).postDelayed(
       { addFragment(RemindersFragment()) },
       250
     )
+  }
+
+  override fun onResume() {
+    super.onResume()
+    Logger.d(TAG, "On resume")
+  }
+
+  override fun onPause() {
+    super.onPause()
+    Logger.d(TAG, "On pause")
   }
 
   private fun addFragment(fragment: BaseSubEventsFragment<*>) {

@@ -1,12 +1,11 @@
 package com.elementary.tasks.core.cloud.converters
 
-import com.elementary.tasks.core.arch.isValid
+import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.note.OldImageFile
 import com.github.naz013.domain.note.OldNote
-import com.elementary.tasks.core.data.repository.NoteImageRepository
 import java.util.UUID
 
 class NoteToOldNoteConverter(
@@ -53,5 +52,10 @@ class NoteToOldNoteConverter(
       fontSize = note.fontSize,
       archived = note.archived
     )
+  }
+
+  private fun NoteWithImages.isValid(): Boolean {
+    val nt = note
+    return nt != null && nt.key.isNotEmpty()
   }
 }

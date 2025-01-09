@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.birthdays.preview.BirthdayPreviewActivity
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
@@ -16,6 +14,7 @@ import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.PrefsObserver
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.globalsearch.ActivityNavigation
+import com.elementary.tasks.globalsearch.FragmentNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
 import com.elementary.tasks.globalsearch.NavigationAction
 import com.elementary.tasks.globalsearch.adapter.SearchAdapter
@@ -80,8 +79,13 @@ class HomeFragment :
       }
     },
     onBirthdayClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), BirthdayPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewBirthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     }
   )
@@ -186,8 +190,14 @@ class HomeFragment :
 
   private fun openBirthdayCreateScreen() {
     val deepLinkData = BirthdayDateDeepLinkData(LocalDate.now())
-    withActivity {
-      LoginApi.openLogged(it, AddBirthdayActivity::class.java, deepLinkData) { }
+    navigate {
+      navigate(
+        R.id.editBirthdayFragment,
+        Bundle().apply {
+          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+          putParcelable(deepLinkData.intentKey, deepLinkData)
+        }
+      )
     }
   }
 
@@ -280,6 +290,17 @@ class HomeFragment :
       is ActivityNavigation -> {
         startActivity(navigationAction.clazz) {
           putExtra(IntentKeys.INTENT_ID, navigationAction.objectId)
+        }
+      }
+
+      is FragmentNavigation -> {
+        navigate {
+          navigate(
+            navigationAction.id,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, navigationAction.objectId)
+            }
+          )
         }
       }
     }
