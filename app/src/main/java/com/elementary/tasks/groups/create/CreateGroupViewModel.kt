@@ -52,6 +52,10 @@ class CreateGroupViewModel(
 
   private var localGroup: ReminderGroup? = null
 
+  fun hasId(): Boolean {
+    return id.isNotEmpty()
+  }
+
   fun onPositionChanged(position: Int) {
     sliderPosition = position
   }

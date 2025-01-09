@@ -5,7 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
-import com.elementary.tasks.groups.create.CreateGroupActivity
+import com.elementary.tasks.groups.create.EditGroupFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
@@ -98,13 +98,18 @@ class GlobalSearchViewModel(
   }
 
   private fun Class<*>.isFragment(): Boolean {
-    return this == PreviewBirthdayFragment::class.java
+    return this == PreviewBirthdayFragment::class.java ||
+      this == EditGroupFragment::class.java
   }
 
   private fun Class<*>.destinationId(): Int? {
     return when {
       this == PreviewBirthdayFragment::class.java -> {
         R.id.previewBirthdayFragment
+      }
+
+      this == EditGroupFragment::class.java -> {
+        R.id.editGroupFragment
       }
 
       else -> null
@@ -170,7 +175,7 @@ class GlobalSearchViewModel(
 
   private fun ObjectType.toTargetClass(): Class<*> {
     return when (this) {
-      ObjectType.GROUP -> CreateGroupActivity::class.java
+      ObjectType.GROUP -> EditGroupFragment::class.java
       ObjectType.PLACE -> CreatePlaceActivity::class.java
       ObjectType.GOOGLE_TASK -> GoogleTaskPreviewActivity::class.java
       ObjectType.NOTE -> NotePreviewActivity::class.java

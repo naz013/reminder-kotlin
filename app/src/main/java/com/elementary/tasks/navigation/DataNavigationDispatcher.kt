@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
@@ -18,6 +17,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditBirthdayScreen
+import com.github.naz013.navigation.EditGroupScreen
 import com.github.naz013.navigation.intent.IntentDataWriter
 import com.github.naz013.ui.common.context.buildIntent
 
@@ -64,7 +64,21 @@ class DataNavigationDispatcher(
         }
       }
 
-      is Reminder, is ReminderGroup, is NoteWithImages, is Place -> {
+      is ReminderGroup -> {
+        Bundle().apply {
+          putParcelable(
+            DeepLinkDestination.KEY,
+            EditGroupScreen(
+              Bundle().apply {
+                putBoolean(IntentKeys.INTENT_ITEM, true)
+                putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+              }
+            )
+          )
+        }
+      }
+
+      is Reminder, is NoteWithImages, is Place -> {
         Bundle().apply {
           putBoolean(IntentKeys.INTENT_ITEM, true)
         }
@@ -80,7 +94,7 @@ class DataNavigationDispatcher(
 
   private fun getAction(data: Any): String? {
     return when (data) {
-      is Birthday -> Intent.ACTION_VIEW
+      is Birthday, is ReminderGroup -> Intent.ACTION_VIEW
       else -> null
     }
   }
@@ -89,7 +103,7 @@ class DataNavigationDispatcher(
     return when (data) {
       is Birthday -> BottomNavActivity::class.java
       is Reminder -> BuildReminderActivity::class.java
-      is ReminderGroup -> CreateGroupActivity::class.java
+      is ReminderGroup -> BottomNavActivity::class.java
       is NoteWithImages -> CreateNoteActivity::class.java
       is Place -> CreatePlaceActivity::class.java
       else -> null
