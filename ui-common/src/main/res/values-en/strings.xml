@@ -611,7 +611,6 @@
     <string name="foreground_service">Foreground Service</string>
     <string name="foreground_service_explanation">To allow application be fully functional, it requires Foreground Service permission</string>
     <string name="background_location">Background Location</string>
-    <string name="background_location_explanation">To track You when You have active location reminders, application requires Background Location permission</string>
     <string name="failed_to_start_voice_recognition">Failed to start voice recognition</string>
     <string name="failed_to_send_note">Failed to send Note</string>
     <string name="shuffle_digits">Shuffle digits</string>

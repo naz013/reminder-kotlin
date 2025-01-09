@@ -610,7 +610,6 @@
     <string name="foreground_service">Ön Plan Hizmeti</string>
     <string name="foreground_service_explanation">Uygulamanın tamamen işlevsel olmasına izin vermek için Ön Plan Hizmeti izni gerekir</string>
     <string name="background_location">Arka Plan Konumu</string>
-    <string name="background_location_explanation">Aktif konum hatırlatıcılarınız olduğunda sizi izlemek için, uygulama Arka Plan Konumu izni gerektirir</string>
     <string name="failed_to_start_voice_recognition">Ses tanıma başlatılamadı</string>
     <string name="failed_to_send_note">Not gönderilemedi</string>
     <string name="shuffle_digits">Rakamları karıştır</string>

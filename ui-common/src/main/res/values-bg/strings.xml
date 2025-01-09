@@ -610,7 +610,6 @@
     <string name="foreground_service">Услуга на преден план</string>
     <string name="foreground_service_explanation">За да може приложението да бъде напълно функционално, то изисква разрешение за Foreground Service</string>
     <string name="background_location">Фоново местоположение</string>
-    <string name="background_location_explanation">За да ви проследява, когато имате активни напомняния за местоположение, приложението изисква разрешение за фоново местоположение</string>
     <string name="failed_to_start_voice_recognition">Неуспешно стартиране на гласовото разпознаване</string>
     <string name="failed_to_send_note">Неуспешно изпращане на бележка</string>
     <string name="shuffle_digits">Разбъркване на цифри</string>

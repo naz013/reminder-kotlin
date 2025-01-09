@@ -530,7 +530,6 @@
     <string name="foreground_service">Servicio de primer plano</string>
     <string name="foreground_service_explanation">Para permitir que la aplicación sea completamente funcional, requiere el permiso de servicio de primer plano</string>
     <string name="background_location">Ubicación de fondo</string>
-    <string name="background_location_explanation">Para rastrearlo cuando tiene recordatorios de ubicación activos, la aplicación requiere el permiso de ubicación en segundo plano</string>
     <string name="failed_to_start_voice_recognition">No se pudo iniciar el reconocimiento de voz</string>
     <string name="failed_to_send_note">No se pudo enviar la nota</string>
     <string name="shuffle_digits">Mezclar dígitos</string>

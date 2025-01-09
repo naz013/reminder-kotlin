@@ -610,7 +610,6 @@
     <string name="foreground_service">포그라운드 서비스</string>
     <string name="foreground_service_explanation">애플리케이션이 완전히 작동하려면 포그라운드 서비스 권한이 필요합니다.</string>
     <string name="background_location">배경 위치</string>
-    <string name="background_location_explanation">활성 위치 알림이 있을 때 사용자를 추적하려면 애플리케이션에 백그라운드 위치 권한이 필요합니다.</string>
     <string name="failed_to_start_voice_recognition">음성 인식을 시작하지 못했습니다.</string>
     <string name="failed_to_send_note">메모를 보내지 못했습니다.</string>
     <string name="shuffle_digits">숫자 섞기</string>

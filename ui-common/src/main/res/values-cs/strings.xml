@@ -610,7 +610,6 @@
     <string name="foreground_service">Služba popředí</string>
     <string name="foreground_service_explanation">Aby byla aplikace plně funkční, vyžaduje oprávnění služby popředí</string>
     <string name="background_location">Umístění pozadí</string>
-    <string name="background_location_explanation">Aby vás mohla sledovat, když máte aktivní připomenutí polohy, aplikace vyžaduje oprávnění Poloha na pozadí</string>
     <string name="failed_to_start_voice_recognition">Rozpoznávání hlasu se nepodařilo spustit</string>
     <string name="failed_to_send_note">Odeslání poznámky se nezdařilo</string>
     <string name="shuffle_digits">Zamíchat číslice</string>

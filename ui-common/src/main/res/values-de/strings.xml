@@ -530,7 +530,6 @@
     <string name="foreground_service">Vordergrunddienst</string>
     <string name="foreground_service_explanation">Damit die Anwendung voll funktionsfähig ist, ist eine Foreground Service-Berechtigung erforderlich</string>
     <string name="background_location">Hintergrund-Standort</string>
-    <string name="background_location_explanation">Um Sie zu verfolgen, wenn Sie aktive Standorterinnerungen haben, benötigt die Anwendung die Berechtigung zum Hintergrundstandort</string>
     <string name="failed_to_start_voice_recognition">Spracherkennung konnte nicht gestartet werden</string>
     <string name="failed_to_send_note">Hinweis konnte nicht gesendet werden</string>
     <string name="shuffle_digits">Ziffern mischen</string>

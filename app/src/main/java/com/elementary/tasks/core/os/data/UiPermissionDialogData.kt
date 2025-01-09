@@ -66,7 +66,7 @@ data class UiPermissionDialogData(
     val BACKGROUND_LOCATION = UiPermissionDialogData(
       Permissions.BACKGROUND_LOCATION,
       R.string.background_location,
-      R.string.background_location_explanation
+      R.string.bg_location_message
     )
     val FOREGROUND_SERVICE = UiPermissionDialogData(
       Permissions.FOREGROUND_SERVICE,

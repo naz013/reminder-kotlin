@@ -530,7 +530,6 @@
     <string name="foreground_service">Usługa pierwszoplanowa</string>
     <string name="foreground_service_explanation">Aby aplikacja była w pełni funkcjonalna, wymaga uprawnień Usługi pierwszoplanowej</string>
     <string name="background_location">Lokalizacja w tle</string>
-    <string name="background_location_explanation">Aby śledzić Cię, gdy masz aktywne przypomnienia o lokalizacji, aplikacja wymaga uprawnień Lokalizacja w tle</string>
     <string name="failed_to_start_voice_recognition">Nie udało się uruchomić rozpoznawania głosu</string>
     <string name="failed_to_send_note">Nie udało się wysłać notatki</string>
     <string name="shuffle_digits">Przetasuj cyfry</string>

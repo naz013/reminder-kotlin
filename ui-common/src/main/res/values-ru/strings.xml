@@ -610,7 +610,6 @@
     <string name="foreground_service">Служба переднего плана</string>
     <string name="foreground_service_explanation">Чтобы приложение могло быть полностью функциональным, ему требуется разрешение службы переднего плана.</string>
     <string name="background_location">Фоновое местоположение</string>
-    <string name="background_location_explanation">Чтобы отслеживать вас, когда у вас есть напоминания об активном местоположении, приложению требуется разрешение на фоновое местоположение.</string>
     <string name="failed_to_start_voice_recognition">Не удалось запустить распознавание голоса</string>
     <string name="failed_to_send_note">Не удалось отправить заметку</string>
     <string name="shuffle_digits">Перемешать цифры</string>

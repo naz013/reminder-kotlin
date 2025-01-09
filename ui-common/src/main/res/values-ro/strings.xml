@@ -610,7 +610,6 @@
     <string name="foreground_service">Serviciul de prim plan</string>
     <string name="foreground_service_explanation">Pentru a permite ca aplicația să fie pe deplin funcțională, necesită permisiunea serviciului de prim plan</string>
     <string name="background_location">Locație de fundal</string>
-    <string name="background_location_explanation">Pentru a vă urmări când aveți mementouri de locație active, aplicația necesită permisiunea Locație în fundal</string>
     <string name="failed_to_start_voice_recognition">Nu s-a pornit recunoașterea vocală</string>
     <string name="failed_to_send_note">Nu s-a putut trimite nota</string>
     <string name="shuffle_digits">Amestecă cifrele</string>
