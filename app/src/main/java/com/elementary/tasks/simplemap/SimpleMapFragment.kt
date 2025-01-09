@@ -158,23 +158,6 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   }
 
   fun addMarker(
-    latLng: com.github.naz013.domain.place.LatLng,
-    title: String? = null,
-    clear: Boolean = true,
-    animate: Boolean = true
-  ) {
-    val old = LatLng(latLng.latitude, latLng.longitude)
-    addMarker(
-      markerState = (markerState ?: createMarkerState(latLng = old)).copy(
-        title = title ?: geocodeAddress(old),
-        latLng = old
-      ),
-      clearMap = clear,
-      animate = animate
-    )
-  }
-
-  fun addMarker(
     latLng: LatLng,
     title: String?,
     markerStyle: Int,

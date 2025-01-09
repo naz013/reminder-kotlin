@@ -34,6 +34,7 @@ import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGroupScreen
+import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.ui.common.activity.BindingActivity
@@ -129,6 +130,15 @@ class BottomNavActivity :
             .startActivities()
         }
 
+        is EditPlaceScreen -> {
+          NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.home_nav)
+            .setDestination(R.id.editPlaceFragment)
+            .setArguments(deepLinkDestination.extras)
+            .createTaskStackBuilder()
+            .startActivities()
+        }
+
         else -> {
           Logger.e("BottomNavActivity", "Unknown deep link destination: $deepLinkDestination")
         }
@@ -181,10 +191,10 @@ class BottomNavActivity :
   }
 
   override fun handleBackPress(): Boolean {
-    Logger.d("handleBackPress: $currentResumedFragment")
+    Logger.i("NavActivity", "Handle back press, current fragment: $currentResumedFragment")
     if (currentResumedFragment is HomeFragment) {
       finishAffinity()
-    } else {
+    } else if (currentResumedFragment?.canGoBack() == true) {
       navController.popBackStack()
     }
     return true

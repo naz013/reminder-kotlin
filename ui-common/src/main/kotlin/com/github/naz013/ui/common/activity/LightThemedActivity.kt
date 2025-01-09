@@ -82,6 +82,7 @@ abstract class LightThemedActivity : AppCompatActivity() {
   }
 
   fun invokeBackPress() {
+    Logger.i("LightThemedActivity", "Back pressed from callback")
     if (!handleBackPress()) finish()
   }
 

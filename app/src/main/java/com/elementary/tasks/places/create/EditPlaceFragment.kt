@@ -1,36 +1,54 @@
 package com.elementary.tasks.places.create
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
+import com.elementary.tasks.databinding.FragmentEditPlaceBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.ui.common.activity.toast
-import com.github.naz013.ui.common.view.applyTopInsets
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.fragment.toast
 import com.google.android.gms.maps.model.LatLng
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
+class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
 
-  private val dialogues by inject<Dialogues>()
-  private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
+  private val viewModel by viewModel<PlaceViewModel> { parametersOf(idFromIntent()) }
   private var googleMap: SimpleMapFragment? = null
 
-  override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
+  private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
+
+  override fun getTitle(): String {
+    return if (viewModel.hasId()) {
+      getString(R.string.edit_place)
+    } else {
+      getString(R.string.new_place)
+    }
+  }
+
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentEditPlaceBinding {
+    return FragmentEditPlaceBinding.inflate(inflater, container, false)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    initActionBar()
+    Logger.i(TAG, "Opening the place screen for id: ${idFromIntent()}")
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     googleMap = SimpleMapFragment.newInstance(
       SimpleMapFragment.MapParams(
         isPlaces = false,
@@ -63,42 +81,43 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
       }
     }
 
-    supportFragmentManager.beginTransaction()
+    childFragmentManager.beginTransaction()
       .replace(R.id.fragment_container, googleMap!!)
-      .addToBackStack(null)
       .commit()
 
+    addMenu(
+      menuRes = R.menu.fragment_edit_place,
+      onMenuItemListener = { menuItem ->
+        return@addMenu when (menuItem.itemId) {
+          R.id.action_add -> {
+            askCopySaving()
+            true
+          }
+
+          R.id.action_delete -> {
+            dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
+              if (it) {
+                viewModel.deletePlace()
+              }
+            }
+            true
+          }
+
+          else -> false
+        }
+      },
+      menuModifier = { menu ->
+        menu.getItem(1).isVisible = viewModel.canDelete
+      }
+    )
+
+    initViewModel()
     loadPlace()
   }
 
-  private fun initActionBar() {
-    binding.appBar.applyTopInsets()
-    binding.toolbar.setNavigationOnClickListener { finish() }
-    binding.toolbar.setOnMenuItemClickListener { menuItem ->
-      when (menuItem.itemId) {
-        R.id.action_add -> {
-          askCopySaving()
-          true
-        }
-
-        R.id.action_delete -> {
-          dialogues.askConfirmation(this, getString(R.string.delete)) {
-            if (it) {
-              viewModel.deletePlace()
-            }
-          }
-          true
-        }
-
-        else -> false
-      }
-    }
-    updateMenu()
-  }
-
-  private fun updateMenu() {
-    binding.toolbar.menu.also {
-      it.getItem(1).isVisible = viewModel.canDelete
+  private fun loadPlace() {
+    if (arguments?.getBoolean(IntentKeys.INTENT_ITEM, false) == true) {
+      viewModel.loadFromIntent()
     }
   }
 
@@ -107,27 +126,17 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
     viewModel.place.nonNullObserve(this) { showPlace(it) }
     viewModel.result.nonNullObserve(this) {
       when (it) {
-        Commands.SAVED, Commands.DELETED -> finish()
+        Commands.SAVED, Commands.DELETED -> moveBack()
         else -> {
         }
       }
     }
   }
 
-  private fun getId(): String = intentString(IntentKeys.INTENT_ID)
-
-  private fun loadPlace() {
-    initViewModel()
-    if (intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false)) {
-      viewModel.loadFromIntent()
-    }
-  }
-
   private fun showPlace(place: UiPlaceEdit) {
-    binding.toolbar.title = getString(R.string.edit_place)
     binding.placeName.setText(place.name)
     showPlaceOnMap(place)
-    updateMenu()
+    invalidateOptionsMenu()
   }
 
   private fun savePlace(newId: Boolean = false) {
@@ -148,7 +157,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
   private fun askCopySaving() {
     if (viewModel.hasLatLng()) {
       if (viewModel.isFromFile && viewModel.hasSameInDb) {
-        dialogues.getMaterialDialog(this)
+        dialogues.getMaterialDialog(requireContext())
           .setMessage(R.string.same_place_message)
           .setPositiveButton(R.string.keep) { dialogInterface, _ ->
             dialogInterface.dismiss()
@@ -184,7 +193,13 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>() {
     }
   }
 
-  override fun requireLogin(): Boolean {
-    return true
+  override fun canGoBack(): Boolean {
+    val canCloseMap = googleMap?.onBackPressed()
+    Logger.i(TAG, "Map can be closed: $canCloseMap")
+    return canCloseMap == true
+  }
+
+  companion object {
+    private const val TAG = "EditGroupFragment"
   }
 }

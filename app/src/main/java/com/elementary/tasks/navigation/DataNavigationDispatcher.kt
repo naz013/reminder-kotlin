@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
@@ -18,6 +17,7 @@ import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGroupScreen
+import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.intent.IntentDataWriter
 import com.github.naz013.ui.common.context.buildIntent
 
@@ -78,7 +78,21 @@ class DataNavigationDispatcher(
         }
       }
 
-      is Reminder, is NoteWithImages, is Place -> {
+      is Place -> {
+        Bundle().apply {
+          putParcelable(
+            DeepLinkDestination.KEY,
+            EditPlaceScreen(
+              Bundle().apply {
+                putBoolean(IntentKeys.INTENT_ITEM, true)
+                putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+              }
+            )
+          )
+        }
+      }
+
+      is Reminder, is NoteWithImages -> {
         Bundle().apply {
           putBoolean(IntentKeys.INTENT_ITEM, true)
         }
@@ -105,7 +119,7 @@ class DataNavigationDispatcher(
       is Reminder -> BuildReminderActivity::class.java
       is ReminderGroup -> BottomNavActivity::class.java
       is NoteWithImages -> CreateNoteActivity::class.java
-      is Place -> CreatePlaceActivity::class.java
+      is Place -> BottomNavActivity::class.java
       else -> null
     }
   }

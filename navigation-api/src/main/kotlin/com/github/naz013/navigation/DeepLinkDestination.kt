@@ -33,3 +33,8 @@ data object SettingsScreen : DeepLinkDestination()
 data class EditGroupScreen(
   val extras: Bundle
 ) : DeepLinkDestination()
+
+@Parcelize
+data class EditPlaceScreen(
+  val extras: Bundle
+) : DeepLinkDestination()

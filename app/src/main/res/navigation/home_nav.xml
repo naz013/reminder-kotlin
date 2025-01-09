@@ -396,21 +396,9 @@
         android:label="@string/places"
         tools:layout="@layout/fragment_places">
         <action
-            android:id="@+id/action_placesFragment_to_createPlaceActivity"
-            app:destination="@id/createPlaceActivity" />
+            android:id="@+id/action_placesFragment_to_editPlaceFragment"
+            app:destination="@id/editPlaceFragment" />
     </fragment>
-    <activity
-        android:id="@+id/createPlaceActivity"
-        android:name="com.elementary.tasks.places.create.CreatePlaceActivity"
-        android:label="@string/new_place"
-        tools:layout="@layout/activity_create_place">
-        <argument
-            android:name="item_id"
-            app:argType="string" />
-        <argument
-            android:name="arg_logged"
-            app:argType="boolean" />
-    </activity>
     <navigation
         android:id="@+id/navigation2"
         app:startDestination="@id/otherSettingsFragment">
@@ -587,4 +575,9 @@
         android:name="com.elementary.tasks.groups.create.EditGroupFragment"
         tools:layout="@layout/fragment_edit_group"
         android:label="@string/create_group" />
+    <fragment
+        android:id="@+id/editPlaceFragment"
+        android:name="com.elementary.tasks.places.create.EditPlaceFragment"
+        tools:layout="@layout/fragment_edit_place"
+        android:label="@string/new_place" />
 </navigation>
