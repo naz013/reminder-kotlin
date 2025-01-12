@@ -3,14 +3,16 @@ package com.elementary.tasks.reminder.preview.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.text.applyStyles
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewMapBinding
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewMap
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.inflater
 import com.google.android.gms.maps.model.LatLng
 
 class ReminderMapViewHolder(
@@ -26,6 +28,8 @@ class ReminderMapViewHolder(
   private var places: List<UiReminderPlace>? = null
 
   init {
+    Logger.d(TAG, "Going to show map")
+
     val simpleMapFragment = SimpleMapFragment.newInstance(
       SimpleMapFragment.MapParams(
         isTouch = false,
@@ -49,9 +53,8 @@ class ReminderMapViewHolder(
     }
 
     fragmentManager.beginTransaction()
-      .replace(binding.mapContainer.id, simpleMapFragment)
-      .addToBackStack(null)
-      .commit()
+      .replace(R.id.map_container, simpleMapFragment)
+      .commitAllowingStateLoss()
 
     this.mapFragment = simpleMapFragment
   }
@@ -80,5 +83,9 @@ class ReminderMapViewHolder(
     places.firstOrNull()?.run {
       mapFragment?.moveCamera(latLng(), 0, 0, 0, 0)
     }
+  }
+
+  companion object {
+    private const val TAG = "ReminderMapViewHolder"
   }
 }

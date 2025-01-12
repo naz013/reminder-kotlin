@@ -17,7 +17,6 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
-import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDetails
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.appwidgets.AppWidgetUpdater
@@ -27,6 +26,7 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
@@ -72,11 +72,8 @@ class PreviewReminderViewModel(
   private val _sharedFile = mutableLiveDataOf<UiShareData>()
   val sharedFile = _sharedFile.toLiveData()
 
-  private val _reminder = mutableLiveDataOf<UiReminderPreviewDetails>()
-  val reminder = _reminder.toLiveData()
-
   private val _reminderData = mutableLiveDataOf<List<UiReminderPreviewData>>()
-  val reminderData = _reminderData.toLiveData()
+  val reminderData = _reminderData.toSingleEvent()
 
   var canCopy = false
     private set
@@ -210,10 +207,9 @@ class PreviewReminderViewModel(
   }
 
   fun copyReminder(time: LocalTime) {
-    val reminderId = reminder.value?.id ?: return
-    Logger.i(TAG, "Copying reminder, id: $reminderId, time: $time")
+    Logger.i(TAG, "Copying reminder, id: $id, time: $time")
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.getById(reminderId)?.also { reminder ->
+      reminderRepository.getById(id)?.also { reminder ->
         postInProgress(true)
         runBlocking {
           if (reminder.groupUuId == "") {
@@ -245,10 +241,9 @@ class PreviewReminderViewModel(
   }
 
   fun deleteReminder(showMessage: Boolean) {
-    val reminderId = reminder.value?.id ?: return
-    Logger.i(TAG, "Deleting reminder, id: $reminderId")
+    Logger.i(TAG, "Deleting reminder, id: $id")
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.getById(reminderId)?.also { reminder ->
+      reminderRepository.getById(id)?.also { reminder ->
         if (showMessage) {
           withResultSuspend {
             eventControlFactory.getController(reminder).disable()
@@ -278,10 +273,9 @@ class PreviewReminderViewModel(
   }
 
   fun moveToTrash() {
-    val reminderId = reminder.value?.id ?: return
-    Logger.i(TAG, "Moving reminder to trash, id: $reminderId")
+    Logger.i(TAG, "Moving reminder to trash, id: $id")
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.getById(reminderId)?.also {
+      reminderRepository.getById(id)?.also {
         it.isRemoved = true
         eventControlFactory.getController(it).disable()
         reminderRepository.save(it)
@@ -296,9 +290,8 @@ class PreviewReminderViewModel(
   }
 
   fun shareReminder() {
-    val reminderId = reminder.value?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.getById(reminderId)?.let {
+      reminderRepository.getById(id)?.let {
         UiShareData(
           file = backupTool.reminderToFile(it),
           name = it.summary

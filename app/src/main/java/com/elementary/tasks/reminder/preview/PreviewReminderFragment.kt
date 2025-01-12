@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.preview
 
-import android.app.ActivityOptions
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,7 +23,6 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.fragment.intentForClass
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.login.LoginApi
@@ -40,7 +37,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
 
-  private lateinit var adapter: ReminderPreviewDataAdapter
+  private var adapter: ReminderPreviewDataAdapter? = null
 
   override fun getTitle(): String {
     return getString(R.string.details)
@@ -59,13 +56,14 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
     Logger.i(TAG, "Opening the reminder preview screen for id: ${viewModel.id}")
   }
 
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    Logger.d(TAG, "On view created, fragment manager: $parentFragmentManager")
     adapter = ReminderPreviewDataAdapter(
-      fragmentManager = childFragmentManager,
+      fragmentManager = parentFragmentManager,
       prefs = prefs,
       onToggleClicked = { viewModel.switchClick() },
-      onMapClick = { openFullMap(it) },
+      onMapClick = { openFullMap() },
       subTaskCheckClick = { viewModel.onSubTaskChecked(it) },
       subTaskRemoveClick = { viewModel.onSubTaskRemoved(it) },
       noteClick = { openNote(it) },
@@ -74,11 +72,8 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       googleCalendarClick = { openCalendar(it) },
       googleRemoveClick = { viewModel.deleteEvent(it) }
     )
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    initViews()
+    binding.dataListView.layoutManager = LinearLayoutManager(context)
+    binding.dataListView.adapter = adapter
 
     addMenu(
       menuRes = R.menu.fragment_reminder_preview,
@@ -115,11 +110,21 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
     initViewModel()
   }
 
+  override fun onStop() {
+    super.onStop()
+    Logger.d(TAG, "Stopped")
+    adapter?.submitList(emptyList())
+    adapter = null
+  }
+
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.reminderData.nonNullObserve(this) {
-      adapter.submitList(it)
-      invalidateOptionsMenu()
+      if (isAdded) {
+        Logger.d(TAG, "Reminder data updated")
+        adapter?.submitList(it)
+        invalidateOptionsMenu()
+      }
     }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
@@ -227,19 +232,15 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
     viewModel.copyReminder(time)
   }
 
-  private fun initViews() {
-    binding.dataListView.layoutManager = LinearLayoutManager(context)
-    binding.dataListView.adapter = adapter
-  }
-
-  private fun openFullMap(view: View) {
-    val options = ActivityOptions.makeSceneTransitionAnimation(activity, view, "map")
-    startActivity(
-      intentForClass(FullscreenMapActivity::class.java).apply {
-        putExtra(IntentKeys.INTENT_ID, viewModel.id)
-      },
-      options.toBundle()
-    )
+  private fun openFullMap() {
+    navigate {
+      navigate(
+        R.id.fullscreenMapFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, viewModel.id)
+        }
+      )
+    }
   }
 
   companion object {
