@@ -5,7 +5,6 @@ import com.elementary.tasks.R
 import com.github.naz013.icalendar.RecurParamType
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.github.naz013.domain.reminder.BiType
-import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
 
 class BiTypeForUiAdapter(
   private val context: Context,

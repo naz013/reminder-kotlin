@@ -1,27 +1,15 @@
-package com.elementary.tasks.reminder.create.fragments.recur.adapter
+package com.elementary.tasks.reminder.build.adapter
 
 import com.elementary.tasks.R
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.TextProvider
 import com.github.naz013.icalendar.Day
 import com.github.naz013.icalendar.DayValue
 import com.github.naz013.icalendar.FreqType
 import com.github.naz013.icalendar.RecurParamType
-import com.github.naz013.icalendar.UtcDateTime
-import com.elementary.tasks.reminder.create.fragments.recur.BuilderParam
-import com.github.naz013.common.TextProvider
 
 class ParamToTextAdapter(
-  private val textProvider: TextProvider,
-  private val dateTimeManager: DateTimeManager
+  private val textProvider: TextProvider
 ) {
-
-  fun createTextWithValues(param: BuilderParam<*>): String {
-    return "${getTypeText(param.recurParamType)}: ${getValueText(param.value)}"
-  }
-
-  fun createText(param: BuilderParam<*>): String {
-    return getTypeText(param.recurParamType)
-  }
 
   fun getTypeText(recurParamType: RecurParamType): String {
     return when (recurParamType) {
@@ -39,43 +27,6 @@ class ParamToTextAdapter(
       RecurParamType.BYSETPOS -> textProvider.getText(R.string.recur_set_pos)
       RecurParamType.WEEKSTART -> textProvider.getText(R.string.recur_week_start)
     }
-  }
-
-  private fun getValueText(value: Any?): String {
-    if (value == null) return ""
-
-    return when (value) {
-      is FreqType -> getFreqText(value)
-      is Int -> getIntText(value)
-      is UtcDateTime -> getDateTimeText(value)
-      is List<*> -> getListText(value)
-      is DayValue -> getDayText(value)
-      else -> value.toString()
-    }
-  }
-
-  private fun getListText(list: List<*>): String {
-    return list.joinToString(",") {
-      when (it) {
-        is Int -> getIntText(it)
-        is DayValue -> getDayText(it)
-        else -> it.toString()
-      }
-    }
-  }
-
-  private fun getDateTimeText(utcDateTime: UtcDateTime): String {
-    return utcDateTime.dateTime?.let {
-      dateTimeManager.getFullDateTime(it)
-    } ?: textProvider.getText(R.string.recur_not_set)
-  }
-
-  private fun getIntText(int: Int): String {
-    return int.toString()
-  }
-
-  private fun getDayText(dayValue: DayValue): String {
-    return dayValue.value
   }
 
   fun getDayFullText(dayValue: DayValue): String {

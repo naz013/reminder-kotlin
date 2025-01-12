@@ -7,7 +7,7 @@ import com.github.naz013.ui.common.context.startActivity
 import com.elementary.tasks.databinding.BuilderItemTimeBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
-import com.elementary.tasks.reminder.create.fragments.recur.RecurHelpActivity
+import com.elementary.tasks.reminder.recur.RecurHelpActivity
 import org.threeten.bp.LocalTime
 
 class ICalTimeController(

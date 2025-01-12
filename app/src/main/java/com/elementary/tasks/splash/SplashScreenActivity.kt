@@ -11,7 +11,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.finishWith
 import com.github.naz013.ui.common.login.LoginApi
@@ -23,7 +23,6 @@ class SplashScreenActivity : LightThemedActivity() {
 
   private val viewModel by viewModel<SplashViewModel>()
   private val contextSwitcher by inject<ContextSwitcher>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     // Handle the splash screen transition.
@@ -57,7 +56,7 @@ class SplashScreenActivity : LightThemedActivity() {
         .setIntents(
           arrayOf(
             Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-            Intent(Intent.ACTION_VIEW).setClass(this, reminderBuilderLauncher.getActivityClass())
+            Intent(Intent.ACTION_VIEW).setClass(this,BuildReminderActivity::class.java)
           )
         )
         .build()

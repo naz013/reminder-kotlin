@@ -8,7 +8,7 @@ import com.elementary.tasks.core.views.common.ValueSliderView
 import com.elementary.tasks.databinding.BuilderItemRepeatLimitBinding
 import com.elementary.tasks.reminder.build.ICalIntBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
-import com.elementary.tasks.reminder.create.fragments.recur.RecurHelpActivity
+import com.elementary.tasks.reminder.recur.RecurHelpActivity
 
 class ICalIntController(
   builderItem: ICalIntBuilderItem

@@ -4,18 +4,18 @@ import android.content.Context
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
-import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.ui.common.Dialogues
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.login.LoginApi
 
 class ReminderActionResolver(
   private val context: Context,
   private val dialogues: Dialogues,
-  private val reminderBuilderLauncher: ReminderBuilderLauncher,
   private val permissionFlow: PermissionFlow,
   private val deleteAction: (id: String) -> Unit,
   private val toggleAction: (id: String) -> Unit,
@@ -122,7 +122,7 @@ class ReminderActionResolver(
   }
 
   private fun editReminder(id: String) {
-    reminderBuilderLauncher.openLogged(context) {
+    LoginApi.openLogged(context, BuildReminderActivity::class.java) {
       putExtra(IntentKeys.INTENT_ID, id)
     }
   }

@@ -11,7 +11,7 @@ import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentManagePresetsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
-import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetAdapter
+import com.elementary.tasks.reminder.build.preset.PresetAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ManagePresetsFragment : BaseSettingsFragment<FragmentManagePresetsBinding>() {

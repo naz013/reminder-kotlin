@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.create.fragments.recur
+package com.elementary.tasks.reminder.recur
 
 import android.annotation.SuppressLint
 import android.os.Bundle

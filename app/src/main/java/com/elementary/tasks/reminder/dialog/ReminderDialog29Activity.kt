@@ -26,25 +26,26 @@ import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.colorOf
 import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
@@ -62,7 +63,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val jobScheduler by inject<JobScheduler>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val contactsReader by inject<ContactsReader>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   private val prefs by inject<Prefs>()
   private val dialogues by inject<Dialogues>()
   private val notifier by inject<Notifier>()
@@ -505,7 +505,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun editReminder() {
     discardNotification(id)
     doActions({ it.disable() }, {
-      reminderBuilderLauncher.openLogged(this) {
+      LoginApi.openLogged(this, BuildReminderActivity::class.java) {
         putExtra(IntentKeys.INTENT_ID, it.uuId)
       }
       finish()

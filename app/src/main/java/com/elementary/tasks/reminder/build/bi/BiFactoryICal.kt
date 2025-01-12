@@ -29,7 +29,7 @@ import com.elementary.tasks.reminder.build.formatter.ical.ICalFreqFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericIntFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericListIntFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormatter
-import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.common.ContextProvider
 

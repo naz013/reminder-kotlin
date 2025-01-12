@@ -18,7 +18,6 @@ import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.ActivityReminderBuilderBinding
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.build.adapter.BuilderAdapter
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialog
@@ -42,7 +41,6 @@ class BuildReminderActivity :
   ValueDialogCallback {
 
   private val viewModel by viewModel<BuildReminderViewModel>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   private val prefs by inject<Prefs>()
   private val dialogues by inject<Dialogues>()
   private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
@@ -129,11 +127,6 @@ class BuildReminderActivity :
           true
         }
 
-        R.id.action_legacy_builder -> {
-          reminderBuilderLauncher.toggleBuilder(this)
-          true
-        }
-
         else -> false
       }
     }
@@ -145,7 +138,6 @@ class BuildReminderActivity :
   private fun updateMenu() {
     val menu = binding.toolbar.menu
     menu[1].isVisible = viewModel.canRemove
-    menu[3].isVisible = prefs.canChangeBuilder
   }
 
   private fun initViewModel() {

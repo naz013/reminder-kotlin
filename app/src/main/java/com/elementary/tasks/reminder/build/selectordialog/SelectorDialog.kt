@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.ui.onTabSelected
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.BottomSheetBuilderSelectorBinding
 import com.elementary.tasks.reminder.build.selectordialog.params.SelectorAdapter
-import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetAdapter
+import com.elementary.tasks.reminder.build.preset.PresetAdapter
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.gone

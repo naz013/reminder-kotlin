@@ -4,6 +4,7 @@ import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiValueForUiAdapter
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFactoryICal
 import com.elementary.tasks.reminder.build.bi.BiFilter
@@ -62,10 +63,6 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogViewMode
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
-import com.elementary.tasks.reminder.create.EditReminderViewModel
-import com.elementary.tasks.reminder.create.fragments.recur.RecurBuilderViewModel
-import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
-import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetViewModel
 import com.elementary.tasks.reminder.dialog.ReminderViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
@@ -84,9 +81,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val reminderModule = module {
-  viewModel { RecurBuilderViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { PresetViewModel(get(), get(), get()) }
-
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get()) }
@@ -155,25 +149,10 @@ val reminderModule = module {
 
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get()) }
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get(), get()) }
-  viewModel { (id: String) ->
-    EditReminderViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
 
   factory { UriToAttachmentFileAdapter(get()) }
 
-  factory { ParamToTextAdapter(get(), get()) }
+  factory { ParamToTextAdapter(get()) }
 
   factory { BuilderItemsHolder() }
   factory { BuilderItemsLogic(get()) }
@@ -280,8 +259,6 @@ val reminderModule = module {
   factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
 
   factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
-
-  single { ReminderBuilderLauncher(get()) }
 
   factory { ShopItemsFormatter(get()) }
 

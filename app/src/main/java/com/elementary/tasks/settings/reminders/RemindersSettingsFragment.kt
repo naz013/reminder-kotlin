@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.common.datetime.DateTimeManager
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalTime
 
@@ -35,7 +33,6 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     initTimesPrefs()
     initActionPrefs()
     initIgnorePrefs()
-    initBuilderType()
     initPresets()
   }
 
@@ -45,52 +42,6 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
         RemindersSettingsFragmentDirections.actionRemindersSettingsFragmentToManagePresetsFragment()
       }
     }
-  }
-
-  private fun initBuilderType() {
-    binding.defaultBuilderPrefs.visibleGone(prefs.canChangeBuilder || BuildParams.isDebug)
-    binding.defaultBuilderPrefs.setOnClickListener { showBuilderTypeDialog() }
-    showBuilderType()
-  }
-
-  private fun showBuilderTypeDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(getString(R.string.reminder_builder))
-      mItemSelect = if (prefs.useLegacyBuilder) {
-        1
-      } else {
-        0
-      }
-      builder.setSingleChoiceItems(builderTypeList(), mItemSelect) { _, which ->
-        mItemSelect = which
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        prefs.useLegacyBuilder = mItemSelect == 1
-        showBuilderType()
-        dialog.dismiss()
-      }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
-    }
-  }
-
-  private fun builderTypeList(): Array<String> {
-    return arrayOf(
-      getString(R.string.default_string),
-      getString(R.string.legacy)
-    )
-  }
-
-  private fun showBuilderType() {
-    val type = if (prefs.useLegacyBuilder) {
-      getString(R.string.legacy)
-    } else {
-      getString(R.string.default_string)
-    }
-    binding.defaultBuilderPrefs.setDetailText(type)
   }
 
   private fun initIgnorePrefs() {

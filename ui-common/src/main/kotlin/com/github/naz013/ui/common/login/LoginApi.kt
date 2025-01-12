@@ -10,8 +10,8 @@ import com.github.naz013.ui.common.context.startActivity
 
 object LoginApi {
 
-  internal const val ARG_BACK = "arg_back"
-  internal const val ARG_LOGGED = "arg_logged"
+  private const val ARG_BACK = "arg_back"
+  private const val ARG_LOGGED = "arg_logged"
 
   fun Intent.isLogged(): Boolean {
     return getBooleanExtra(PinLoginActivity.ARG_LOGGED, false)
@@ -33,7 +33,7 @@ object LoginApi {
     context: Context,
     clazz: Class<*>,
     deepLinkData: DeepLinkData,
-    builder: Intent.() -> Unit
+    builder: Intent.() -> Unit = { }
   ) {
     val intent = context.intentForClass(clazz).apply {
       builder(this)

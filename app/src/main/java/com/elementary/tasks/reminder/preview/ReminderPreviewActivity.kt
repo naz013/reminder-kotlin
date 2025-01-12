@@ -17,7 +17,7 @@ import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -28,6 +28,7 @@ import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyTopInsets
 import org.koin.android.ext.android.inject
@@ -40,7 +41,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   private val dialogues by inject<Dialogues>()
   private val prefs by inject<Prefs>()
 
@@ -132,7 +132,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun editReminder() {
-    reminderBuilderLauncher.openLogged(this) {
+    LoginApi.openLogged(this, BuildReminderActivity::class.java) {
       putExtra(IntentKeys.INTENT_ID, getId())
     }
   }

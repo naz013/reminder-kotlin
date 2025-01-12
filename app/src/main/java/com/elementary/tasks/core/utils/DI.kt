@@ -61,8 +61,6 @@ import com.elementary.tasks.places.create.PlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
-import com.elementary.tasks.reminder.create.ReminderStateViewModel
-import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -114,10 +112,8 @@ val viewModelModule = module {
 
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
-  viewModel { UsedTimeViewModel(get(), get(), get(), get()) }
 
   viewModel { CloudViewModel(get(), get(), get(), get(), get()) }
-  viewModel { ReminderStateViewModel(get(), get()) }
 
   viewModel {
     SplashViewModel(

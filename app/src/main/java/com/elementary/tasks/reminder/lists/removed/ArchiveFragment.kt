@@ -12,7 +12,6 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
@@ -28,13 +27,11 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val reminderResolver by lazy {
     ReminderActionResolver(
       context = requireContext(),
       dialogues = dialogues,
-      reminderBuilderLauncher = reminderBuilderLauncher,
       permissionFlow = permissionFlow,
       toggleAction = { },
       deleteAction = { viewModel.deleteReminder(it) },

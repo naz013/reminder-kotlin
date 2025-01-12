@@ -323,12 +323,6 @@
             android:text="Switch"
             android:textColor="?colorOnBackground" />
 
-        <com.elementary.tasks.core.views.ClosableTooltipView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:text="Tooltip" />
-
         <com.google.android.material.chip.Chip
             style="@style/Widget.Material3.Chip.Input.Elevated"
             android:layout_width="match_parent"
