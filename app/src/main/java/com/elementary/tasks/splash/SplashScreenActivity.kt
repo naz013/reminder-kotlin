@@ -56,7 +56,7 @@ class SplashScreenActivity : LightThemedActivity() {
         .setIntents(
           arrayOf(
             Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-            Intent(Intent.ACTION_VIEW).setClass(this,BuildReminderActivity::class.java)
+            Intent(Intent.ACTION_VIEW).setClass(this, BuildReminderActivity::class.java)
           )
         )
         .build()

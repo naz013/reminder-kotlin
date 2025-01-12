@@ -38,7 +38,11 @@ internal data class RecurPresetEntity(
   @SerializedName("useCount")
   val useCount: Int,
   @SerializedName("description")
-  val description: String?
+  val description: String?,
+  @SerializedName("isDefault")
+  val isDefault: Boolean,
+  @SerializedName("recurItemsToAdd")
+  val recurItemsToAdd: String?
 ) {
 
   constructor(recurPreset: RecurPreset) : this(
@@ -49,7 +53,9 @@ internal data class RecurPresetEntity(
     createdAt = recurPreset.createdAt,
     builderScheme = recurPreset.builderScheme,
     useCount = recurPreset.useCount,
-    description = recurPreset.description
+    description = recurPreset.description,
+    isDefault = recurPreset.isDefault,
+    recurItemsToAdd = recurPreset.recurItemsToAdd
   )
 
   fun toDomain(): RecurPreset {
@@ -61,7 +67,9 @@ internal data class RecurPresetEntity(
       createdAt = createdAt,
       builderScheme = builderScheme,
       useCount = useCount,
-      description = description
+      description = description,
+      isDefault = isDefault,
+      recurItemsToAdd = recurItemsToAdd
     )
   }
 }

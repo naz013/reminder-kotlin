@@ -55,6 +55,7 @@ import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurParamType
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
@@ -500,7 +501,10 @@ class BuildReminderViewModel(
 
   private suspend fun useRecurPreset(preset: RecurPreset) {
     Logger.i(TAG, "Use reminder RECUR preset")
-    val params = runCatching { iCalendarApi.parseObject(preset.recurObject) }.getOrNull()
+
+    val recurObject = preset.recurObject
+
+    val params = runCatching { iCalendarApi.parseObject(recurObject) }.getOrNull()
       ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
       ?.params
       ?.let { recurParamsToBiAdapter(it) }
@@ -517,9 +521,78 @@ class BuildReminderViewModel(
 
       summaryBuilderItem?.also { builderItemsLogic.addNew(it) }
 
+      val usedItemsMap = builderItemsLogic.getUsed().map {
+        it.biType to it
+      }.toMap()
+
+      if (preset.isDefault) {
+        Logger.d(TAG, "Trying to add runtime params to builder: ${preset.recurItemsToAdd}")
+        getRuntimeParams(preset.recurItemsToAdd).forEach { biType ->
+          if (!usedItemsMap.containsKey(biType)) {
+            biFactory.create(biType).also { builderItemsLogic.addNew(it) }
+          }
+        }
+      }
+
       analyticsEventSender.send(PresetUsed(PresetAction.USE))
       updateSelector()
     }
+  }
+
+  private fun getRuntimeParams(paramsToAdd: String?): List<BiType> {
+    val params = paramsToAdd?.split(";") ?: emptyList()
+    val result = mutableListOf<BiType>()
+
+    params.forEach {
+      result.addAll(getTagTypeParams(runCatching { TagType.fromValue(it) }.getOrNull()))
+      result.addAll(
+        getRecurParamTypeParams(runCatching { RecurParamType.fromValue(it) }.getOrNull())
+      )
+    }
+
+    return result
+  }
+
+  private fun getRecurParamTypeParams(recurParamType: RecurParamType?): List<BiType> {
+    val result = mutableListOf<BiType>()
+    when (recurParamType) {
+      RecurParamType.BYHOUR -> {
+        result.add(BiType.ICAL_BYHOUR)
+      }
+
+      RecurParamType.BYMINUTE -> {
+        result.add(BiType.ICAL_BYMINUTE)
+      }
+
+      RecurParamType.BYDAY -> {
+        result.add(BiType.ICAL_BYDAY)
+      }
+
+      RecurParamType.BYMONTH -> {
+        result.add(BiType.ICAL_BYMONTH)
+      }
+
+      else -> {}
+    }
+    return result
+  }
+
+  private fun getTagTypeParams(tagType: TagType?): List<BiType> {
+    val result = mutableListOf<BiType>()
+    when (tagType) {
+      TagType.DTSTART -> {
+        result.add(BiType.ICAL_START_DATE)
+        result.add(BiType.ICAL_START_TIME)
+      }
+
+      TagType.DTEND -> {
+        result.add(BiType.ICAL_UNTIL_DATE)
+        result.add(BiType.ICAL_UNTIL_TIME)
+      }
+
+      else -> {}
+    }
+    return result
   }
 
   private fun loadPresets() {
@@ -634,7 +707,9 @@ class BuildReminderViewModel(
       createdAt = dateTimeManager.getCurrentDateTime(),
       useCount = 1,
       builderScheme = builderItemsToBuilderPresetAdapter(items),
-      description = null
+      description = null,
+      isDefault = false,
+      recurItemsToAdd = null
     )
     recurPresetRepository.save(preset)
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))

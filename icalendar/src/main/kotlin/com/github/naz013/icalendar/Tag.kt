@@ -121,5 +121,11 @@ enum class TagType(val value: String) {
 
   RRULE("RRULE"),
 
-  VERSION("VERSION")
+  VERSION("VERSION");
+
+  companion object {
+    fun fromValue(value: String): TagType {
+      return entries.first { it.value == value }
+    }
+  }
 }
