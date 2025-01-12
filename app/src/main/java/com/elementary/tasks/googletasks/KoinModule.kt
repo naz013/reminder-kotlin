@@ -1,8 +1,9 @@
 package com.elementary.tasks.googletasks
 
+import android.os.Bundle
 import com.elementary.tasks.googletasks.list.TaskListViewModel
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewViewModel
-import com.elementary.tasks.googletasks.task.GoogleTaskViewModel
+import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskViewModel
+import com.elementary.tasks.googletasks.task.EditGoogleTaskViewModel
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListViewModel
 import com.elementary.tasks.googletasks.usecase.GoogleTaskListFactory
 import com.elementary.tasks.googletasks.usecase.db.DeleteGoogleTaskList
@@ -32,10 +33,9 @@ val googleTaskModule = module {
       get()
     )
   }
-  viewModel { (id: String) ->
-    GoogleTaskViewModel(
-      id,
-      get(),
+  viewModel { (arguments: Bundle?) ->
+    EditGoogleTaskViewModel(
+      arguments,
       get(),
       get(),
       get(),
@@ -50,7 +50,7 @@ val googleTaskModule = module {
     )
   }
   viewModel { (id: String) ->
-    GoogleTaskPreviewViewModel(
+    PreviewGoogleTaskViewModel(
       id,
       get(),
       get(),

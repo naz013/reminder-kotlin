@@ -27,17 +27,11 @@ import com.elementary.tasks.navigation.SearchableFragmentCallback
 import com.elementary.tasks.navigation.SearchableFragmentQueryObserver
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
+import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.DayViewScreen
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
-import com.github.naz013.navigation.EditBirthdayScreen
-import com.github.naz013.navigation.EditGroupScreen
-import com.github.naz013.navigation.EditPlaceScreen
-import com.github.naz013.navigation.SettingsScreen
-import com.github.naz013.navigation.ViewBirthdayScreen
-import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
@@ -70,10 +64,9 @@ class BottomNavActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    Logger.d(
-      "BottomNavActivity",
-      "onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}"
-    )
+    Logger.i(TAG, "Starting with action: ${intent.action}")
+    Logger.i(TAG, "Starting with data: ${intent.data}")
+    Logger.i(TAG, "Starting with extras: ${intent.extras?.keySet()?.toList()}")
 
     val navHostFragment =
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
@@ -86,72 +79,35 @@ class BottomNavActivity :
         DeepLinkDestination.KEY,
         DeepLinkDestination::class.java
       )
-      when (deepLinkDestination) {
-        is DayViewScreen -> {
+      Logger.i(TAG, "Deep link destination: $deepLinkDestination")
+      deepLinkDestination
+        ?.let { ScreenDestinationIdResolver().resolve(deepLinkDestination) }
+        ?.also {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setArguments(deepLinkDestination.extras)
-            .setDestination(R.id.dayViewFragment)
+            .setDestination(it)
             .createTaskStackBuilder()
             .startActivities()
         }
-
-        is SettingsScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.settingsFragment)
-            .createTaskStackBuilder()
-            .startActivities()
+    } else if (ShortcutDestination.hasShortcut(intent.extras)) {
+      val shortcut = ShortcutDestination.getShortcut(intent.extras)
+      val destinationId = when (shortcut) {
+        ShortcutDestination.Shortcut.GoogleTask -> {
+          R.id.editGoogleTaskFragment
         }
 
-        is EditBirthdayScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.editBirthdayFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-
-        is ViewBirthdayScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.previewBirthdayFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-
-        is EditGroupScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.editGroupFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-
-        is EditPlaceScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.editPlaceFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-
-        is ViewGoogleTaskScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.previewGoogleTaskFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-
-        else -> {
-          Logger.e("BottomNavActivity", "Unknown deep link destination: $deepLinkDestination")
-        }
+        ShortcutDestination.Shortcut.Reminder -> TODO()
+        ShortcutDestination.Shortcut.Note -> TODO()
+        null -> null
+      }
+      destinationId?.also {
+        NavDeepLinkBuilder(this)
+          .setGraph(R.navigation.home_nav)
+          .setArguments(intent.extras)
+          .setDestination(it)
+          .createTaskStackBuilder()
+          .startActivities()
       }
     }
 
@@ -257,5 +213,9 @@ class BottomNavActivity :
     }
 
     fragmentSearchView = searchView
+  }
+
+  companion object {
+    private const val TAG = "BottomNavActivity"
   }
 }

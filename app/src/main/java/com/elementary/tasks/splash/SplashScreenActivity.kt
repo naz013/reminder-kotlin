@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextSwitcher
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
@@ -76,6 +75,9 @@ class SplashScreenActivity : LightThemedActivity() {
         .build()
 
       if (viewModel.isGoogleTasksEnabled) {
+        val bundle = ShortcutDestination.createBundle(
+          shortcut = ShortcutDestination.Shortcut.GoogleTask
+        )
         val shortcut3 = ShortcutInfo.Builder(this, "id.google.tasks")
           .setShortLabel(getString(R.string.add_google_task))
           .setLongLabel(getString(R.string.add_google_task))
@@ -83,9 +85,8 @@ class SplashScreenActivity : LightThemedActivity() {
           .setIntents(
             arrayOf(
               Intent(Intent.ACTION_MAIN)
-                .setClass(this, BottomNavActivity::class.java),
-              Intent(Intent.ACTION_VIEW)
-                .setClass(this, GoogleTaskActivity::class.java)
+                .setClass(this, BottomNavActivity::class.java)
+                .putExtras(bundle)
             )
           )
           .build()

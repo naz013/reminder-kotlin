@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/activity_create_task"
+            app:menu="@menu/fragment_google_task_edit"
             app:navigationIcon="@drawable/ic_builder_arrow_left"
             app:navigationIconTint="?colorOnSurface"
             app:title="Components page" />

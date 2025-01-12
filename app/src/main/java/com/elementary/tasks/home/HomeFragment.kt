@@ -18,7 +18,6 @@ import com.elementary.tasks.globalsearch.FragmentNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
 import com.elementary.tasks.globalsearch.NavigationAction
 import com.elementary.tasks.globalsearch.adapter.SearchAdapter
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.scheduleview.HeaderTimeType
 import com.elementary.tasks.home.scheduleview.ScheduleAdapter
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
@@ -40,7 +39,6 @@ import com.github.naz013.ui.common.view.applyTopInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -185,10 +183,14 @@ class HomeFragment :
       date = LocalDate.now(),
       time = time
     )
-    withActivity {
-      LoginApi.openLogged(it, GoogleTaskActivity::class.java, deepLinkData) {
-        putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
-      }
+    navigate {
+      navigate(
+        R.id.editGoogleTaskFragment,
+        Bundle().apply {
+          putParcelable(deepLinkData.intentKey, deepLinkData)
+          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+        }
+      )
     }
   }
 

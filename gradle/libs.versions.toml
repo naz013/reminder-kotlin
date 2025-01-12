@@ -5,7 +5,7 @@ targetSdk = "35"
 kotlinTargetJvm = "17"
 
 # Plugins
-agp = "8.7.3"
+agp = "8.8.0"
 kotlin = "2.1.0"
 google-services = "4.4.2"
 navigation-safeargs = "2.8.5"

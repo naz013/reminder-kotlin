@@ -19,7 +19,6 @@ import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.github.naz013.analytics.Screen
@@ -32,14 +31,12 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.isColorDark
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -154,11 +151,13 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
 
   private fun addNewTask() {
     val defId = viewModel.defTaskList.value?.listId ?: return
-    withContext {
-      LoginApi.openLogged(it, GoogleTaskActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, defId)
-        putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
-      }
+    navigate {
+      navigate(
+        R.id.editGoogleTaskFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, defId)
+        }
+      )
     }
   }
 

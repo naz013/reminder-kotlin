@@ -18,7 +18,7 @@ import org.koin.core.parameter.parametersOf
 
 class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
 
-  private val viewModel by viewModel<CreateGroupViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<EditGroupViewModel> { parametersOf(idFromIntent()) }
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 

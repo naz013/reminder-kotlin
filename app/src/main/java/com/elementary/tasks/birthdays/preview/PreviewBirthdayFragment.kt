@@ -25,7 +25,7 @@ import org.koin.core.parameter.parametersOf
 
 class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBinding>() {
 
-  private val viewModel by viewModel<BirthdayPreviewViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<PreviewBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""

@@ -25,7 +25,7 @@ import com.github.naz013.repository.ReminderGroupRepository
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class CreateGroupViewModel(
+class EditGroupViewModel(
   private val id: String,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,

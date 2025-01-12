@@ -13,9 +13,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.RandomRequestCode
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.WidgetUtils
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 
 internal class TasksWidget : AppWidgetProvider() {
 
@@ -44,12 +42,7 @@ internal class TasksWidget : AppWidgetProvider() {
       rv.setInt(R.id.headerBg, "setBackgroundResource", WidgetUtils.newWidgetBg(headerBgColor))
 
       val createTaskIntent = AppWidgetActionActivity.createIntent(context).apply {
-        val data = WidgetIntentProtocol(
-          mapOf<String, Any?>(
-            Pair(IntentKeys.INTENT_ID, ""),
-            Pair(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
-          )
-        )
+        val data = WidgetIntentProtocol(mapOf())
         putExtra(AppWidgetActionActivity.DATA, data)
         putExtra(AppWidgetActionActivity.DIRECTION, Direction.GOOGLE_TASK)
       }

@@ -20,7 +20,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.launch
 
-class BirthdayPreviewViewModel(
+class PreviewBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
   dispatcherProvider: DispatcherProvider,

@@ -12,27 +12,24 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyTopInsets
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -103,10 +100,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun onGoogleTaskClicked(id: String) {
-    LoginApi.openLogged(this, GoogleTaskActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
-      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
-    }
+    // TODO Move to Edit Google Task fragment
+//    LoginApi.openLogged(this, GoogleTaskActivity::class.java) {
+//      putExtra(IntentKeys.INTENT_ID, id)
+//      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
+//    }
   }
 
   private fun openNote(id: String) {
