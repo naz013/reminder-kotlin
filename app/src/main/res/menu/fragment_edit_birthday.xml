@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/ic_fluent_checkmark"
+        android:icon="@drawable/ic_fluent_save"
         android:title="@string/save"
         app:iconTint="?colorTertiary"
         app:showAsAction="ifRoom" />
