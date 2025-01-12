@@ -32,6 +32,7 @@ import com.github.naz013.repository.migrations.MIGRATION_11_12
 import com.github.naz013.repository.migrations.MIGRATION_12_13
 import com.github.naz013.repository.migrations.MIGRATION_13_14
 import com.github.naz013.repository.migrations.MIGRATION_14_15
+import com.github.naz013.repository.migrations.MIGRATION_15_16
 import com.github.naz013.repository.migrations.MIGRATION_1_2
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
@@ -57,7 +58,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RecurPresetEntity::class,
     RecentQueryEntity::class
   ],
-  version = 15,
+  version = 16,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -96,7 +97,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_11_12,
             MIGRATION_12_13,
             MIGRATION_13_14,
-            MIGRATION_14_15
+            MIGRATION_14_15,
+            MIGRATION_15_16
           )
           .allowMainThreadQueries()
           .build()
