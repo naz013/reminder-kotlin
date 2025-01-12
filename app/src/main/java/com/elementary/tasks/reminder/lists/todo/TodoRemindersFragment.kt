@@ -18,6 +18,7 @@ import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
@@ -44,7 +45,17 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
       permissionFlow = permissionFlow,
       toggleAction = { viewModel.toggleReminder(it) },
       deleteAction = { viewModel.moveToTrash(it) },
-      skipAction = { viewModel.skip(it) }
+      skipAction = { viewModel.skip(it) },
+      openAction = {
+        navigate {
+          navigate(
+            R.id.previewReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      }
     )
   }
 

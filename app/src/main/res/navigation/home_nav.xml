@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_actionHome_to_editGroupFragment"
             app:destination="@id/editGroupFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_previewReminderFragment"
+            app:destination="@id/previewReminderFragment" />
     </fragment>
 
     <fragment
@@ -113,7 +116,7 @@
         android:id="@+id/groupsFragment"
         android:name="com.elementary.tasks.groups.list.GroupsFragment"
         android:label="@string/groups"
-        tools:layout="@layout/fragment_groups" >
+        tools:layout="@layout/fragment_groups">
         <action
             android:id="@+id/action_groupsFragment_to_editGroupFragment"
             app:destination="@id/editGroupFragment" />
@@ -149,6 +152,9 @@
         <action
             android:id="@+id/action_dayViewFragment_to_previewBirthdayFragment"
             app:destination="@id/previewBirthdayFragment" />
+        <action
+            android:id="@+id/action_dayViewFragment_to_previewReminderFragment"
+            app:destination="@id/previewReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
@@ -505,7 +511,7 @@
         android:id="@+id/testsFragment"
         android:name="com.elementary.tasks.settings.test.TestsFragment"
         android:label="Tests"
-        tools:layout="@layout/fragment_settings_tests" >
+        tools:layout="@layout/fragment_settings_tests">
         <action
             android:id="@+id/action_testsFragment_to_objectExportTestFragment"
             app:destination="@id/objectExportTestFragment" />
@@ -561,6 +567,9 @@
         <action
             android:id="@+id/action_actionEvents_to_previewBirthdayFragment"
             app:destination="@id/previewBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionEvents_to_previewReminderFragment"
+            app:destination="@id/previewReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/managePresetsFragment"
@@ -588,18 +597,18 @@
     <fragment
         android:id="@+id/editGroupFragment"
         android:name="com.elementary.tasks.groups.create.EditGroupFragment"
-        tools:layout="@layout/fragment_edit_group"
-        android:label="@string/create_group" />
+        android:label="@string/create_group"
+        tools:layout="@layout/fragment_edit_group" />
     <fragment
         android:id="@+id/editPlaceFragment"
         android:name="com.elementary.tasks.places.create.EditPlaceFragment"
-        tools:layout="@layout/fragment_edit_place"
-        android:label="@string/new_place" />
+        android:label="@string/new_place"
+        tools:layout="@layout/fragment_edit_place" />
     <fragment
         android:id="@+id/previewGoogleTaskFragment"
-        tools:layout="@layout/fragment_google_task_preview"
         android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"
-        android:label="@string/details" >
+        android:label="@string/details"
+        tools:layout="@layout/fragment_google_task_preview">
         <argument
             android:name="item_id"
             app:argType="string" />
@@ -610,11 +619,16 @@
     <fragment
         android:id="@+id/editGoogleTaskFragment"
         android:name="com.elementary.tasks.googletasks.task.EditGoogleTaskFragment"
-        tools:layout="@layout/fragment_google_task_edit"
-        android:label="@string/edit_task" />
+        android:label="@string/edit_task"
+        tools:layout="@layout/fragment_google_task_edit" />
     <fragment
         android:id="@+id/editGoogleTaskListFragment"
         android:name="com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListFragment"
-        tools:layout="@layout/fragment_google_task_list_edit"
-        android:label="@string/new_tasks_list" />
+        android:label="@string/new_tasks_list"
+        tools:layout="@layout/fragment_google_task_list_edit" />
+    <fragment
+        android:id="@+id/previewReminderFragment"
+        android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_reminder_preview" />
 </navigation>

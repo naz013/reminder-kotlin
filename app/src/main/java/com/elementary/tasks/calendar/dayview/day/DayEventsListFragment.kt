@@ -55,7 +55,15 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
     dialogAction = { dialogues },
     toggleAction = { },
     deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
-    skipAction = { reminder -> viewModel.skip(reminder) }
+    skipAction = { reminder -> viewModel.skip(reminder) },
+    openAction = {
+      findNavController().navigate(
+        R.id.previewReminderFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, it.id)
+        }
+      )
+    }
   )
   private var dayPagerItem: DayPagerItem? = null
 

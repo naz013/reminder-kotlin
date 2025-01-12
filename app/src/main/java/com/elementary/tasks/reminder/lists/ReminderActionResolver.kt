@@ -6,11 +6,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.context.startActivity
 import com.github.naz013.ui.common.login.LoginApi
 
 class ReminderActionResolver(
@@ -19,7 +17,8 @@ class ReminderActionResolver(
   private val permissionFlow: PermissionFlow,
   private val deleteAction: (id: String) -> Unit,
   private val toggleAction: (id: String) -> Unit,
-  private val skipAction: (id: String) -> Unit
+  private val skipAction: (id: String) -> Unit,
+  private val openAction: (id: String) -> Unit
 ) {
 
   fun resolveItemClick(
@@ -128,8 +127,6 @@ class ReminderActionResolver(
   }
 
   private fun previewReminder(id: String) {
-    context.startActivity(ReminderPreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
-    }
+    openAction(id)
   }
 }

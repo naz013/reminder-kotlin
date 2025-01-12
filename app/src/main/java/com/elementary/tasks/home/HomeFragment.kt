@@ -26,7 +26,6 @@ import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.build.BuildReminderActivity
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -57,8 +56,13 @@ class HomeFragment :
   private val viewModel by viewModel<ScheduleHomeViewModel>()
   private val scheduleAdapter = ScheduleAdapter(
     onReminderClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), ReminderPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewReminderFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     },
     onHeaderClickListener = { _, time ->

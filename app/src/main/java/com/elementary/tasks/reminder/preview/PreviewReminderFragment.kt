@@ -1,19 +1,21 @@
 package com.elementary.tasks.reminder.preview
 
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
+import com.elementary.tasks.databinding.FragmentReminderPreviewBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
@@ -23,70 +25,112 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.ui.common.activity.toast
-import com.github.naz013.ui.common.context.buildIntent
-import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.fragment.intentForClass
+import com.github.naz013.ui.common.fragment.startActivity
+import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.login.LoginApi
-import com.github.naz013.ui.common.view.applyBottomInsets
-import com.github.naz013.ui.common.view.applyTopInsets
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalTime
 
-class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>() {
+class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBinding>() {
 
-  private val viewModel by viewModel<ReminderPreviewViewModel> { parametersOf(getId()) }
+  private val viewModel by viewModel<PreviewReminderViewModel> { parametersOf(arguments) }
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
-  private val dialogues by inject<Dialogues>()
-  private val prefs by inject<Prefs>()
 
-  private val adapter = ReminderPreviewDataAdapter(
-    fragmentManager = supportFragmentManager,
-    prefs = prefs,
-    onToggleClicked = { viewModel.switchClick() },
-    onMapClick = { openFullMap(it) },
-    subTaskCheckClick = { viewModel.onSubTaskChecked(it) },
-    subTaskRemoveClick = { viewModel.onSubTaskRemoved(it) },
-    noteClick = { openNote(it) },
-    noteImageClick = { imageId, note -> onNoteImageClicked(imageId, note) },
-    googleTaskClick = { onGoogleTaskClicked(it) },
-    googleCalendarClick = { openCalendar(it) },
-    googleRemoveClick = { viewModel.deleteEvent(it) }
-  )
+  private lateinit var adapter: ReminderPreviewDataAdapter
 
-  override fun inflateBinding() = ActivityReminderPreviewBinding.inflate(layoutInflater)
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
-    super.onCreate(savedInstanceState)
-    binding.dataListView.applyBottomInsets()
-    initTopAppBar()
-    initViews()
-    initViewModel()
+  override fun getTitle(): String {
+    return getString(R.string.details)
   }
 
-  private fun getId() = intentString(IntentKeys.INTENT_ID)
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentReminderPreviewBinding {
+    return FragmentReminderPreviewBinding.inflate(inflater, container, false)
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    Logger.i(TAG, "Opening the reminder preview screen for id: ${viewModel.id}")
+  }
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    adapter = ReminderPreviewDataAdapter(
+      fragmentManager = childFragmentManager,
+      prefs = prefs,
+      onToggleClicked = { viewModel.switchClick() },
+      onMapClick = { openFullMap(it) },
+      subTaskCheckClick = { viewModel.onSubTaskChecked(it) },
+      subTaskRemoveClick = { viewModel.onSubTaskRemoved(it) },
+      noteClick = { openNote(it) },
+      noteImageClick = { imageId, note -> onNoteImageClicked(imageId, note) },
+      googleTaskClick = { onGoogleTaskClicked(it) },
+      googleCalendarClick = { openCalendar(it) },
+      googleRemoveClick = { viewModel.deleteEvent(it) }
+    )
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    initViews()
+
+    addMenu(
+      menuRes = R.menu.fragment_reminder_preview,
+      onMenuItemListener = { menuItem ->
+        return@addMenu when (menuItem.itemId) {
+          R.id.action_delete -> {
+            removeReminder()
+            true
+          }
+
+          R.id.action_make_copy -> {
+            makeCopy()
+            true
+          }
+
+          R.id.action_share -> {
+            shareReminder()
+            true
+          }
+
+          R.id.action_edit -> {
+            editReminder()
+            true
+          }
+
+          else -> false
+        }
+      },
+      menuModifier = { menu ->
+        menu.getItem(2)?.isVisible = viewModel.canCopy
+      }
+    )
+
+    initViewModel()
+  }
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.reminderData.nonNullObserve(this) {
       adapter.submitList(it)
-      updateMenu()
+      invalidateOptionsMenu()
     }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
-        Commands.DELETED -> closeWindow()
+        Commands.DELETED -> moveBack()
         Commands.FAILED -> toast(getString(R.string.reminder_is_outdated), Toast.LENGTH_SHORT)
         else -> {
         }
       }
     }
     viewModel.sharedFile.nonNullObserve(this) {
-      TelephonyUtil.sendFile(this, it)
+      TelephonyUtil.sendFile(requireContext(), it)
     }
   }
 
@@ -100,11 +144,14 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun onGoogleTaskClicked(id: String) {
-    // TODO Move to Edit Google Task fragment
-//    LoginApi.openLogged(this, GoogleTaskActivity::class.java) {
-//      putExtra(IntentKeys.INTENT_ID, id)
-//      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
-//    }
+    navigate {
+      navigate(
+        R.id.editGoogleTaskFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, id)
+        }
+      )
+    }
   }
 
   private fun openNote(id: String) {
@@ -132,18 +179,18 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun editReminder() {
-    LoginApi.openLogged(this, BuildReminderActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, getId())
+    LoginApi.openLogged(requireContext(), BuildReminderActivity::class.java) {
+      putExtra(IntentKeys.INTENT_ID, viewModel.id)
     }
   }
 
   private fun removeReminder() {
     if (!viewModel.canDelete) {
-      dialogues.askConfirmation(this, getString(R.string.move_to_trash)) {
+      dialogues.askConfirmation(requireContext(), getString(R.string.move_to_trash)) {
         if (it) viewModel.moveToTrash()
       }
     } else {
-      dialogues.askConfirmation(this, getString(R.string.delete)) {
+      dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
         if (it) viewModel.deleteReminder(true)
       }
     }
@@ -151,10 +198,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   private fun makeCopy() {
     showDialog()
-  }
-
-  private fun closeWindow() {
-    postUi { finishAfterTransition() }
   }
 
   private fun showDialog() {
@@ -171,7 +214,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         time = time.plusMinutes(30)
       }
     } while (isRunning)
-    val builder = dialogues.getMaterialDialog(this)
+    val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(R.string.choose_time)
     builder.setItems(times.toTypedArray()) { dialog, which ->
       dialog.dismiss()
@@ -181,59 +224,25 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun saveCopy(time: LocalTime) {
-    Logger.d("saveCopy: $time")
     viewModel.copyReminder(time)
   }
 
   private fun initViews() {
-    binding.dataListView.layoutManager = LinearLayoutManager(this)
+    binding.dataListView.layoutManager = LinearLayoutManager(context)
     binding.dataListView.adapter = adapter
   }
 
   private fun openFullMap(view: View) {
-    val options = ActivityOptions.makeSceneTransitionAnimation(this, view, "map")
+    val options = ActivityOptions.makeSceneTransitionAnimation(activity, view, "map")
     startActivity(
-      buildIntent(FullscreenMapActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, getId())
+      intentForClass(FullscreenMapActivity::class.java).apply {
+        putExtra(IntentKeys.INTENT_ID, viewModel.id)
       },
       options.toBundle()
     )
   }
 
-  private fun initTopAppBar() {
-    binding.appBar.applyTopInsets()
-    binding.toolbar.setOnMenuItemClickListener { menuItem ->
-      return@setOnMenuItemClickListener when (menuItem.itemId) {
-        R.id.action_delete -> {
-          removeReminder()
-          true
-        }
-
-        R.id.action_make_copy -> {
-          makeCopy()
-          true
-        }
-
-        R.id.action_share -> {
-          shareReminder()
-          true
-        }
-
-        R.id.action_edit -> {
-          editReminder()
-          true
-        }
-
-        else -> false
-      }
-    }
-    binding.toolbar.setNavigationOnClickListener { closeWindow() }
-    updateMenu()
-  }
-
-  private fun updateMenu() {
-    binding.toolbar.menu.also { menu ->
-      menu.getItem(2)?.isVisible = viewModel.canCopy
-    }
+  companion object {
+    private const val TAG = "PreviewReminderFragment"
   }
 }
