@@ -4,5 +4,8 @@ import org.koin.dsl.module
 
 val googleTasksUseCaseModule = module {
   factory { GetAllGoogleTaskListsUseCase(get()) }
+  factory { GetGoogleTaskListByIdUseCase(get()) }
+
   factory { GetAllGoogleTasksUseCase(get()) }
+  factory { GetGoogleTaskByIdUseCase(get()) }
 }

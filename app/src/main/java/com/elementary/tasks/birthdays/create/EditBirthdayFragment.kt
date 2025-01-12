@@ -27,7 +27,7 @@ import org.threeten.bp.LocalDate
 
 class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() {
 
-  private val viewModel by viewModel<AddBirthdayViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<EditBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""

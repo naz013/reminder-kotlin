@@ -105,6 +105,9 @@
         <action
             android:id="@+id/action_actionGoogle_to_previewGoogleTaskFragment"
             app:destination="@id/previewGoogleTaskFragment" />
+        <action
+            android:id="@+id/action_actionGoogle_to_editGoogleTaskListFragment"
+            app:destination="@id/editGoogleTaskListFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupsFragment"
@@ -158,6 +161,12 @@
         <action
             android:id="@+id/action_taskListFragment_to_previewGoogleTaskFragment"
             app:destination="@id/previewGoogleTaskFragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_editGoogleTaskFragment"
+            app:destination="@id/editGoogleTaskFragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_editGoogleTaskListFragment"
+            app:destination="@id/editGoogleTaskListFragment" />
     </fragment>
 
     <fragment
@@ -594,5 +603,18 @@
         <argument
             android:name="item_id"
             app:argType="string" />
+        <action
+            android:id="@+id/action_previewGoogleTaskFragment_to_editGoogleTaskFragment"
+            app:destination="@id/editGoogleTaskFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editGoogleTaskFragment"
+        android:name="com.elementary.tasks.googletasks.task.EditGoogleTaskFragment"
+        tools:layout="@layout/fragment_google_task_edit"
+        android:label="@string/edit_task" />
+    <fragment
+        android:id="@+id/editGoogleTaskListFragment"
+        android:name="com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListFragment"
+        tools:layout="@layout/fragment_google_task_list_edit"
+        android:label="@string/new_tasks_list" />
 </navigation>

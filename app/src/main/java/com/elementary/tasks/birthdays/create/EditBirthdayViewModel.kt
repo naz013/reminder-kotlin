@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
-class AddBirthdayViewModel(
+class EditBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
   dispatcherProvider: DispatcherProvider,

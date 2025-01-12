@@ -12,22 +12,19 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.databinding.FragmentGoogleTaskPreviewBinding
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewBinding>() {
 
-  private val viewModel by viewModel<GoogleTaskPreviewViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<PreviewGoogleTaskViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
@@ -89,9 +86,13 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
   }
 
   private fun editGoogleTask() {
-    LoginApi.openLogged(requireContext(), GoogleTaskActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, idFromIntent())
-      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
+    navigate {
+      navigate(
+        R.id.editGoogleTaskFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, idFromIntent())
+        }
+      )
     }
   }
 
@@ -157,6 +158,6 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
   }
 
   companion object {
-    private const val TAG = "EditBirthdayFragment"
+    private const val TAG = "PreviewGoogleTaskFragment"
   }
 }

@@ -24,9 +24,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.threeten.bp.LocalDate
 
-class AddBirthdayViewModelTest : BaseTest() {
+class EditBirthdayViewModelTest : BaseTest() {
 
-  private lateinit var viewModel: AddBirthdayViewModel
+  private lateinit var viewModel: EditBirthdayViewModel
 
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val workerLauncher = mockk<WorkerLauncher>()
@@ -44,7 +44,7 @@ class AddBirthdayViewModelTest : BaseTest() {
     super.setUp()
     every { dateTimeManager.getCurrentDate() }.returns(LocalDate.now())
 
-    viewModel = AddBirthdayViewModel(
+    viewModel = EditBirthdayViewModel(
       id = ID,
       birthdayRepository = birthdayRepository,
       dispatcherProvider = mockDispatcherProvider(),

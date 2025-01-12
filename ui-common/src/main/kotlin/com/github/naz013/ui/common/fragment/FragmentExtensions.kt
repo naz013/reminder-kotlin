@@ -1,6 +1,9 @@
 package com.github.naz013.ui.common.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.os.IBinder
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
@@ -28,4 +31,30 @@ fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
 
 fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(requireContext(), message, duration).show()
+}
+
+fun Fragment.argumentsString(key: String): String? {
+  return arguments?.getString(key)
+}
+
+fun Fragment.argumentsString(key: String, default: String): String {
+  return arguments?.getString(key, default) ?: default
+}
+
+fun Fragment.argumentsBoolean(key: String): Boolean? {
+  return arguments?.getBoolean(key)
+}
+
+fun Fragment.argumentsBoolean(key: String, default: Boolean): Boolean {
+  return arguments?.getBoolean(key, default) ?: default
+}
+
+fun Fragment.hideKeyboard(token: IBinder? = null) {
+  val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+  if (token == null) {
+    val currentToken = activity?.window?.currentFocus?.windowToken
+    currentToken?.let { imm?.hideSoftInputFromWindow(token, 0) }
+  } else {
+    imm?.hideSoftInputFromWindow(token, 0)
+  }
 }

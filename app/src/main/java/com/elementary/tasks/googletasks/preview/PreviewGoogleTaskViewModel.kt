@@ -20,7 +20,7 @@ import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import kotlinx.coroutines.launch
 
-class GoogleTaskPreviewViewModel(
+class PreviewGoogleTaskViewModel(
   private val id: String,
   private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,

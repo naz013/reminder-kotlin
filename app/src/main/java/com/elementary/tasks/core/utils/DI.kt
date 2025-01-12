@@ -51,7 +51,7 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.groups.create.CreateGroupViewModel
+import com.elementary.tasks.groups.create.EditGroupViewModel
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
@@ -98,7 +98,7 @@ val viewModelModule = module {
   viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { (id: String) ->
-    CreateGroupViewModel(
+    EditGroupViewModel(
       id,
       get(),
       get(),

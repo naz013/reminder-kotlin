@@ -19,7 +19,6 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetAllGoogleTasksUseCase
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -126,8 +125,7 @@ internal class TasksFactory(
 
     val data = WidgetIntentProtocol(
       mapOf<String, Any?>(
-        Pair(IntentKeys.INTENT_ID, task.taskId),
-        Pair(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
+        Pair(IntentKeys.INTENT_ID, task.taskId)
       )
     )
 

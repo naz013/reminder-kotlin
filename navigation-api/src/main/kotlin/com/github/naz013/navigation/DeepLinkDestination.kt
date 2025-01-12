@@ -2,9 +2,12 @@ package com.github.naz013.navigation
 
 import android.os.Bundle
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 sealed class DeepLinkDestination : Parcelable {
+
+  abstract val extras: Bundle?
 
   companion object {
     const val KEY = "deep_link_destination"
@@ -13,33 +16,41 @@ sealed class DeepLinkDestination : Parcelable {
 
 @Parcelize
 data class DayViewScreen(
-  val extras: Bundle
+  override val extras: Bundle
 ) : DeepLinkDestination()
 
 @Parcelize
 data class EditBirthdayScreen(
-  val extras: Bundle
+  override val extras: Bundle
 ) : DeepLinkDestination()
 
 @Parcelize
 data class ViewBirthdayScreen(
-  val extras: Bundle
+  override val extras: Bundle
 ) : DeepLinkDestination()
 
 @Parcelize
-data object SettingsScreen : DeepLinkDestination()
+data object SettingsScreen : DeepLinkDestination() {
+  @IgnoredOnParcel
+  override val extras: Bundle? = null
+}
 
 @Parcelize
 data class EditGroupScreen(
-  val extras: Bundle
+  override val extras: Bundle
 ) : DeepLinkDestination()
 
 @Parcelize
 data class EditPlaceScreen(
-  val extras: Bundle
+  override val extras: Bundle
 ) : DeepLinkDestination()
 
 @Parcelize
 data class ViewGoogleTaskScreen(
-  val extras: Bundle
+  override val extras: Bundle
+) : DeepLinkDestination()
+
+@Parcelize
+data class EditGoogleTaskScreen(
+  override val extras: Bundle
 ) : DeepLinkDestination()
