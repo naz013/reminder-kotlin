@@ -11,7 +11,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.finishWith
 import com.github.naz013.ui.common.login.LoginApi
@@ -49,17 +48,22 @@ class SplashScreenActivity : LightThemedActivity() {
   private fun enableShortcuts() {
     val shortcutManager = getSystemService(ShortcutManager::class.java)
     if (shortcutManager != null) {
-      val shortcut = ShortcutInfo.Builder(this, "id.reminder")
-        .setShortLabel(getString(R.string.add_reminder_menu))
-        .setLongLabel(getString(R.string.add_reminder_menu))
-        .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
-        .setIntents(
-          arrayOf(
-            Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-            Intent(Intent.ACTION_VIEW).setClass(this, BuildReminderActivity::class.java)
-          )
+      val shortcut = run {
+        val bundle = ShortcutDestination.createBundle(
+          shortcut = ShortcutDestination.Shortcut.Reminder
         )
-        .build()
+        ShortcutInfo.Builder(this, "id.reminder")
+          .setShortLabel(getString(R.string.add_reminder_menu))
+          .setLongLabel(getString(R.string.add_reminder_menu))
+          .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
+          .setIntents(
+            arrayOf(
+              Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java)
+                .putExtras(bundle)
+            )
+          )
+          .build()
+      }
 
       val shortcut2 = ShortcutInfo.Builder(this, "id.note")
         .setShortLabel(getString(R.string.add_note))

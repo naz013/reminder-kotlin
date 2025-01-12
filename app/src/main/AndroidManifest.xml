@@ -118,6 +118,19 @@
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity
+            android:name=".core.arch.CreateReminderIntentActivity"
+            android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/new_reminder"
+            android:windowSoftInputMode="stateUnchanged">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".core.arch.IntentActivity"
             android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
@@ -219,19 +232,6 @@
                     tools:ignore="AppLinkUrlError" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.bi2" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".reminder.build.BuildReminderActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/new_reminder"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
 

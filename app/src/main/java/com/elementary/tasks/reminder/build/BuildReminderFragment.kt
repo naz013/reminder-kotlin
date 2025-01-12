@@ -1,23 +1,17 @@
 package com.elementary.tasks.reminder.build
 
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.view.ViewGroup.MarginLayoutParams
-import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.get
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.elementary.tasks.databinding.ActivityReminderBuilderBinding
+import com.elementary.tasks.databinding.FragmentReminderBuilderBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.build.adapter.BuilderAdapter
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialog
@@ -27,23 +21,20 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
 import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
-class BuildReminderActivity :
-  BindingActivity<ActivityReminderBuilderBinding>(),
+class BuildReminderFragment :
+  BaseToolbarFragment<FragmentReminderBuilderBinding>(),
   SelectorDialogCallback,
   ValueDialogCallback {
 
-  private val viewModel by viewModel<BuildReminderViewModel>()
-  private val prefs by inject<Prefs>()
-  private val dialogues by inject<Dialogues>()
-  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
+  private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
+
   private val builderAdapter = BuilderAdapter(
     onItemClickListener = { position, item ->
       viewModel.onItemEditedClicked(position, item.builderItem)
@@ -56,47 +47,30 @@ class BuildReminderActivity :
     viewModel.onConfigurationChanged()
   }
 
-  override fun inflateBinding() = ActivityReminderBuilderBinding.inflate(layoutInflater)
+  override fun getTitle(): String {
+    return ""
+  }
 
-  override fun requireLogin() = true
-
-  private var paddingApplied = false
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentReminderBuilderBinding {
+    return FragmentReminderBuilderBinding.inflate(inflater, container, false)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    initToolbar()
+    Logger.i(TAG, "Opening the reminder edit screen for id: ${viewModel.id}")
+  }
 
-    ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
-      val insets = windowInsets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      if (!paddingApplied) {
-        paddingApplied = true
-        binding.appBar.updatePadding(
-          top = binding.appBar.paddingTop + insets.top
-        )
-        binding.builderList.updatePadding(
-          bottom = binding.builderList.paddingBottom + insets.bottom
-        )
-        binding.addButton.updateLayoutParams<MarginLayoutParams> {
-          bottomMargin += insets.bottom
-          rightMargin += insets.right
-        }
-        binding.emptyArrowIconView.updateLayoutParams<MarginLayoutParams> {
-          bottomMargin += insets.bottom
-          rightMargin += insets.right
-        }
-      }
-      WindowInsetsCompat.CONSUMED
-    }
-
-    binding.builderList.layoutManager = LinearLayoutManager(this)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    binding.builderList.layoutManager = LinearLayoutManager(context)
     binding.builderList.adapter = builderAdapter
 
     binding.addButton.singleClick {
-      SelectorDialog().show(supportFragmentManager, SelectorDialog.TAG)
+      SelectorDialog().show(parentFragmentManager, SelectorDialog.TAG)
     }
 
     binding.saveAsPresetCheck.setOnCheckedChangeListener { _, isChecked ->
@@ -106,68 +80,64 @@ class BuildReminderActivity :
       viewModel.presetName = it ?: ""
     }
 
-    initViewModel()
-  }
+    addMenu(
+      menuRes = R.menu.fragment_reminder_builder,
+      onMenuItemListener = { menuItem ->
+        return@addMenu when (menuItem.itemId) {
+          R.id.action_add -> {
+            askNotificationPermissionIfNeeded()
+            true
+          }
 
-  private fun initToolbar() {
-    binding.toolbar.setOnMenuItemClickListener { item ->
-      return@setOnMenuItemClickListener when (item.itemId) {
-        R.id.action_add -> {
-          askNotificationPermissionIfNeeded()
-          true
+          R.id.action_delete -> {
+            deleteReminder()
+            true
+          }
+
+          R.id.action_configure -> {
+            builderConfigureLauncher.configure()
+            true
+          }
+
+          else -> false
         }
-
-        R.id.action_delete -> {
-          deleteReminder()
-          true
-        }
-
-        R.id.action_configure -> {
-          builderConfigureLauncher.configure()
-          true
-        }
-
-        else -> false
+      },
+      menuModifier = { menu ->
+        menu.getItem(0)?.isEnabled = viewModel.canSave.value ?: false
+        menu.getItem(1)?.isVisible = viewModel.canRemove
       }
-    }
-    binding.toolbar.setNavigationOnClickListener {
-      closeScreen()
-    }
-  }
+    )
 
-  private fun updateMenu() {
-    val menu = binding.toolbar.menu
-    menu[1].isVisible = viewModel.canRemove
+    initViewModel()
   }
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.builderItems.nonNullObserve(this) {
-      updateMenu()
+    viewModel.builderItems.nonNullObserve(viewLifecycleOwner) {
+      invalidateOptionsMenu()
       builderAdapter.submitList(it)
       binding.scrollView.visibleGone(it.isNotEmpty())
       binding.emptyView.visibleGone(it.isEmpty())
     }
-    viewModel.askPermissions.observeEvent(this) { list ->
-      permissionFlowDelegate.permissionFlow.askPermissions(list) {
+    viewModel.askPermissions.observeEvent(viewLifecycleOwner) { list ->
+      permissionFlow.askPermissions(list) {
         viewModel.onPermissionsGranted()
       }
     }
-    viewModel.askEditPermissions.observeEvent(this) { list ->
-      permissionFlowDelegate.permissionFlow.askPermissions(list) {
+    viewModel.askEditPermissions.observeEvent(viewLifecycleOwner) { list ->
+      permissionFlow.askPermissions(list) {
         viewModel.onEditPermissionsGranted()
       }
     }
-    viewModel.showEditDialog.observeEvent(this) { pair ->
+    viewModel.showEditDialog.observeEvent(viewLifecycleOwner) { pair ->
       ValueDialog.newInstance(pair.first)
-        .show(supportFragmentManager, ValueDialog.TAG)
+        .show(parentFragmentManager, ValueDialog.TAG)
     }
-    viewModel.result.observe(this) { commands ->
+    viewModel.result.observe(viewLifecycleOwner) { commands ->
       if (commands != null) {
         when (commands) {
           Commands.DELETED, Commands.SAVED -> {
-            setResult(Activity.RESULT_OK)
-            finish()
+            moveBack()
           }
 
           else -> {
@@ -175,14 +145,11 @@ class BuildReminderActivity :
         }
       }
     }
-    viewModel.showPrediction.nonNullObserve(this) { showPredictionState(it) }
-    viewModel.canSaveAsPreset.nonNullObserve(this) {
+    viewModel.showPrediction.nonNullObserve(viewLifecycleOwner) { showPredictionState(it) }
+    viewModel.canSaveAsPreset.nonNullObserve(viewLifecycleOwner) {
       binding.savePresetViewHolder.visibleGone(it)
     }
-    viewModel.canSave.nonNullObserve(this) {
-      binding.toolbar.menu[0].isEnabled = it
-    }
-    viewModel.handleDeepLink(intent)
+    viewModel.canSave.nonNullObserve(viewLifecycleOwner) { invalidateOptionsMenu() }
   }
 
   private fun showPredictionState(prediction: ReminderPrediction) {
@@ -192,6 +159,7 @@ class BuildReminderActivity :
         binding.forecastTextView.text = prediction.message
         binding.forecastIconView.setImageResource(prediction.icon)
       }
+
       is ReminderPrediction.FailedPrediction -> {
         binding.forecastViewHolder.visible()
         binding.forecastTextView.text = prediction.message
@@ -200,20 +168,15 @@ class BuildReminderActivity :
     }
   }
 
-  private fun closeScreen() {
-    setResult(Activity.RESULT_OK)
-    finish()
-  }
-
   private fun deleteReminder() {
     if (viewModel.isRemoved) {
-      dialogues.askConfirmation(this, getString(R.string.delete)) {
+      dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
         if (it) {
           viewModel.deleteReminder(true)
         }
       }
     } else {
-      dialogues.askConfirmation(this, getString(R.string.move_to_trash)) {
+      dialogues.askConfirmation(requireContext(), getString(R.string.move_to_trash)) {
         if (it) {
           viewModel.moveToTrash()
         }
@@ -223,7 +186,7 @@ class BuildReminderActivity :
 
   private fun askNotificationPermissionIfNeeded() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      permissionFlowDelegate.permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
         askCopySaving()
       }
     } else {
@@ -233,7 +196,7 @@ class BuildReminderActivity :
 
   private fun askCopySaving() {
     if (viewModel.isFromFile && viewModel.hasSameInDb) {
-      dialogues.getMaterialDialog(this)
+      dialogues.getMaterialDialog(requireContext())
         .setMessage(R.string.same_reminder_message)
         .setPositiveButton(R.string.keep) { dialogInterface, _ ->
           dialogInterface.dismiss()
@@ -267,5 +230,9 @@ class BuildReminderActivity :
 
   override fun onValueChanged(position: Int, builderItem: BuilderItem<*>) {
     viewModel.updateValue(position, builderItem)
+  }
+
+  companion object {
+    private const val TAG = "BuildReminderFragment"
   }
 }

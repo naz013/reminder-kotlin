@@ -59,3 +59,8 @@ data class EditGoogleTaskScreen(
 data class ViewReminderScreen(
   override val extras: Bundle
 ) : DeepLinkDestination()
+
+@Parcelize
+data class EditReminderScreen(
+  override val extras: Bundle
+) : DeepLinkDestination()

@@ -8,6 +8,7 @@ import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGoogleTaskScreen
 import com.github.naz013.navigation.EditGroupScreen
 import com.github.naz013.navigation.EditPlaceScreen
+import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
@@ -27,6 +28,7 @@ class ScreenDestinationIdResolver {
       is ViewGoogleTaskScreen -> R.id.previewGoogleTaskFragment
       is EditGoogleTaskScreen -> R.id.editGoogleTaskFragment
       is ViewReminderScreen -> R.id.previewReminderFragment
+      is EditReminderScreen -> R.id.buildReminderFragment
     }
   }
 }

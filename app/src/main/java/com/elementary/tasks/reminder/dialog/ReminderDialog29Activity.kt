@@ -31,7 +31,6 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
@@ -40,12 +39,14 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DestinationScreen
+import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.colorOf
 import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
@@ -66,6 +67,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val prefs by inject<Prefs>()
   private val dialogues by inject<Dialogues>()
   private val notifier by inject<Notifier>()
+  private val navigator by inject<Navigator>()
   private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
@@ -505,9 +507,17 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun editReminder() {
     discardNotification(id)
     doActions({ it.disable() }, {
-      LoginApi.openLogged(this, BuildReminderActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, it.uuId)
-      }
+      navigator.navigate(
+        ActivityDestination(
+          screen = DestinationScreen.ReminderCreate,
+          extras = Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.uuId)
+          },
+          flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+          isLoggedIn = true,
+          action = Intent.ACTION_VIEW
+        )
+      )
       finish()
     })
   }

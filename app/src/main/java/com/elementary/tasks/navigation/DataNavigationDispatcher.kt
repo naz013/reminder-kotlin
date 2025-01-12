@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
@@ -18,6 +17,7 @@ import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGroupScreen
 import com.github.naz013.navigation.EditPlaceScreen
+import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.intent.IntentDataWriter
 import com.github.naz013.ui.common.context.buildIntent
 
@@ -92,7 +92,21 @@ class DataNavigationDispatcher(
         }
       }
 
-      is Reminder, is NoteWithImages -> {
+      is Reminder -> {
+        Bundle().apply {
+          putParcelable(
+            DeepLinkDestination.KEY,
+            EditReminderScreen(
+              Bundle().apply {
+                putBoolean(IntentKeys.INTENT_ITEM, true)
+                putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+              }
+            )
+          )
+        }
+      }
+
+      is NoteWithImages -> {
         Bundle().apply {
           putBoolean(IntentKeys.INTENT_ITEM, true)
         }
@@ -108,7 +122,7 @@ class DataNavigationDispatcher(
 
   private fun getAction(data: Any): String? {
     return when (data) {
-      is Birthday, is ReminderGroup -> Intent.ACTION_VIEW
+      is Birthday, is ReminderGroup, is Place, is Reminder -> Intent.ACTION_VIEW
       else -> null
     }
   }
@@ -116,7 +130,7 @@ class DataNavigationDispatcher(
   private fun getClass(data: Any): Class<*>? {
     return when (data) {
       is Birthday -> BottomNavActivity::class.java
-      is Reminder -> BuildReminderActivity::class.java
+      is Reminder -> BottomNavActivity::class.java
       is ReminderGroup -> BottomNavActivity::class.java
       is NoteWithImages -> CreateNoteActivity::class.java
       is Place -> BottomNavActivity::class.java

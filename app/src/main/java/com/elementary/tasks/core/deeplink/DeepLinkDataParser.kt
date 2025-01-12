@@ -11,7 +11,8 @@ class DeepLinkDataParser {
     Pair(IntentKey.REMINDER_DATETIME_TYPE, ReminderDatetimeTypeDeepLinkData::class.java),
     Pair(IntentKey.REMINDER_TODO_TYPE, ReminderTodoTypeDeepLinkData::class.java),
     Pair(IntentKey.BIRTHDAY_DATE, BirthdayDateDeepLinkData::class.java),
-    Pair(IntentKey.GOOGLE_TASK_DATE_TIME, GoogleTaskDateTimeDeepLinkData::class.java)
+    Pair(IntentKey.GOOGLE_TASK_DATE_TIME, GoogleTaskDateTimeDeepLinkData::class.java),
+    Pair(IntentKey.REMINDER_TEXT, ReminderTextDeepLinkData::class.java)
   )
 
   fun readDeepLinkData(

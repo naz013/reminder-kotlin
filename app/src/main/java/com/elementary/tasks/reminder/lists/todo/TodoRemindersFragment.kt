@@ -12,7 +12,6 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
@@ -24,7 +23,6 @@ import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
@@ -50,6 +48,16 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
         navigate {
           navigate(
             R.id.previewReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      },
+      editAction = {
+        navigate {
+          navigate(
+            R.id.buildReminderFragment,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
             }
@@ -94,11 +102,16 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     }
 
     binding.fab.setOnClickListener {
-      LoginApi.openLogged(
-        requireContext(),
-        BuildReminderActivity::class.java,
-        ReminderTodoTypeDeepLinkData
-      )
+      val deepLinkData = ReminderTodoTypeDeepLinkData
+      navigate {
+        navigate(
+          R.id.buildReminderFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          }
+        )
+      }
     }
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))

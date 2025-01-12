@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_actionHome_to_previewReminderFragment"
             app:destination="@id/previewReminderFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
     </fragment>
 
     <fragment
@@ -570,6 +573,9 @@
         <action
             android:id="@+id/action_actionEvents_to_previewReminderFragment"
             app:destination="@id/previewReminderFragment" />
+        <action
+            android:id="@+id/action_actionEvents_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/managePresetsFragment"
@@ -634,10 +640,18 @@
         <action
             android:id="@+id/action_previewReminderFragment_to_fullscreenMapFragment"
             app:destination="@id/fullscreenMapFragment" />
+        <action
+            android:id="@+id/action_previewReminderFragment_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/fullscreenMapFragment"
         android:name="com.elementary.tasks.reminder.preview.FullscreenMapFragment"
         tools:layout="@layout/fragment_reminder_fullscreen_map"
         android:label="@string/map" />
+    <fragment
+        android:id="@+id/buildReminderFragment"
+        android:name="com.elementary.tasks.reminder.build.BuildReminderFragment"
+        tools:layout="@layout/fragment_reminder_builder"
+        android:label="@string/new_reminder" />
 </navigation>
