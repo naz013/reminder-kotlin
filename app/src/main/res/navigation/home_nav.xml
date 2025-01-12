@@ -630,5 +630,14 @@
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"
         android:label="@string/details"
-        tools:layout="@layout/fragment_reminder_preview" />
+        tools:layout="@layout/fragment_reminder_preview" >
+        <action
+            android:id="@+id/action_previewReminderFragment_to_fullscreenMapFragment"
+            app:destination="@id/fullscreenMapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullscreenMapFragment"
+        android:name="com.elementary.tasks.reminder.preview.FullscreenMapFragment"
+        tools:layout="@layout/fragment_reminder_fullscreen_map"
+        android:label="@string/map" />
 </navigation>

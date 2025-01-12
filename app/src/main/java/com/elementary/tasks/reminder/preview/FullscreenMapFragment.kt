@@ -1,49 +1,50 @@
 package com.elementary.tasks.reminder.preview
 
 import android.os.Bundle
-import android.transition.Explode
-import android.view.MenuItem
-import android.view.Window
-import androidx.activity.enableEdgeToEdge
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.domain.Reminder
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.livedata.nullObserve
-import com.github.naz013.ui.common.view.applyBottomInsetsMargin
-import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
+import com.elementary.tasks.databinding.FragmentReminderFullscreenMapBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.livedata.nullObserve
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
+class FullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFullscreenMapBinding>() {
 
+  private val viewModel by viewModel<FullScreenMapViewModel> { parametersOf(arguments) }
   private var simpleMapFragment: SimpleMapFragment? = null
-  private val viewModel by viewModel<FullScreenMapViewModel> { parametersOf(getId()) }
 
-  private var reminder: Reminder? = null
-  private var placeIndex = 0
-
-  override fun inflateBinding() = ActivityFullscreenMapBinding.inflate(layoutInflater)
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentReminderFullscreenMapBinding {
+    return FragmentReminderFullscreenMapBinding.inflate(inflater, container, false)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    with(window) {
-      requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-      exitTransition = Explode()
-    }
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    Logger.i(TAG, "Opening the Map for reminder with id: ${viewModel.id}")
+  }
 
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     binding.mapButton.applyBottomInsetsMargin()
     binding.mapButton.setOnClickListener {
-      val reminder = reminder ?: return@setOnClickListener
-      if (placeIndex < reminder.places.size - 1) {
-        placeIndex++
+      val reminder = viewModel.reminder.value ?: return@setOnClickListener
+      if (viewModel.placeIndex < reminder.places.size - 1) {
+        viewModel.placeIndex++
       } else {
-        placeIndex = 0
+        viewModel.placeIndex = 0
       }
-      val place = reminder.places[placeIndex]
+      val place = reminder.places[viewModel.placeIndex]
       val lat = place.latitude
       val lon = place.longitude
       simpleMapFragment?.moveCamera(pos = LatLng(lat, lon))
@@ -52,11 +53,9 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
     initViewModel()
   }
 
-  private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
-
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.reminder.nullObserve(this) { showInfo(it) }
+    viewModel.reminder.nullObserve(this) { initMap() }
   }
 
   private fun showMapData(reminder: Reminder) {
@@ -80,21 +79,6 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
     }
   }
 
-  private fun showInfo(reminder: Reminder) {
-    this.reminder = reminder
-    initMap()
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      android.R.id.home -> {
-        finishAfterTransition()
-        return true
-      }
-    }
-    return super.onOptionsItemSelected(item)
-  }
-
   private fun initMap() {
     val googleMap = SimpleMapFragment.newInstance(
       SimpleMapFragment.MapParams(
@@ -110,7 +94,7 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
     )
     googleMap.customButtonCallback = object : SimpleMapFragment.CustomButtonCallback {
       override fun onButtonClicked(buttonId: Int) {
-        finishAfterTransition()
+        moveBack()
       }
     }
     googleMap.mapCallback = object : SimpleMapFragment.MapCallback {
@@ -118,20 +102,27 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>() {
       }
 
       override fun onMapReady() {
-        reminder?.also { showMapData(it) }
+        simpleMapFragment?.applyInsets()
+        viewModel.reminder.value?.also {
+          showMapData(it)
+        }
       }
     }
 
-    supportFragmentManager.beginTransaction()
+    childFragmentManager.beginTransaction()
       .replace(binding.mapContainer.id, googleMap)
-      .addToBackStack(null)
       .commit()
 
     this.simpleMapFragment = googleMap
   }
 
-  override fun handleBackPress(): Boolean {
-    finishAfterTransition()
-    return true
+  override fun canGoBack(): Boolean {
+    val canCloseMap = simpleMapFragment?.onBackPressed()
+    Logger.i(TAG, "Map can be closed: $canCloseMap")
+    return canCloseMap == true
+  }
+
+  companion object {
+    private const val TAG = "FullscreenMapFragment"
   }
 }
