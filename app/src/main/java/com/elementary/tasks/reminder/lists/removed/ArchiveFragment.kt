@@ -46,6 +46,16 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
             }
           )
         }
+      },
+      editAction = {
+        navigate {
+          navigate(
+            R.id.buildReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
       }
     )
   }

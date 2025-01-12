@@ -25,7 +25,6 @@ import com.elementary.tasks.home.scheduleview.ScheduleModel
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -178,7 +177,15 @@ class HomeFragment :
       type = Reminder.BY_DATE,
       dateTime = dateTime
     )
-    LoginApi.openLogged(requireContext(), BuildReminderActivity::class.java, deepLinkData)
+    navigate {
+      navigate(
+        R.id.buildReminderFragment,
+        Bundle().apply {
+          putParcelable(deepLinkData.intentKey, deepLinkData)
+          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+        }
+      )
+    }
   }
 
   private fun openGoogleTaskCreateScreen(time: LocalTime?) {

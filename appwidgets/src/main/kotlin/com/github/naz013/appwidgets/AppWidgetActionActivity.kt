@@ -56,7 +56,8 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
             screen = DestinationScreen.ReminderCreate,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-            isLoggedIn = true
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
           )
         )
       }

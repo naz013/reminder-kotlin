@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build
 
-import android.content.Intent
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.withUIContext
@@ -70,6 +71,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 class BuildReminderViewModel(
+  private val arguments: Bundle?,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
@@ -123,6 +125,8 @@ class BuildReminderViewModel(
   private val _canSave = mutableLiveDataOf<Boolean>()
   val canSave = _canSave.toSingleEvent()
 
+  var id: String = ""
+    private set
   var hasSameInDb: Boolean = false
   var isFromFile: Boolean = false
   private var isEdited: Boolean = false
@@ -162,6 +166,7 @@ class BuildReminderViewModel(
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
     reminderAnalyticsTracker.startTracking()
+    handleDeepLink(arguments)
   }
 
   override fun onCleared() {
@@ -249,32 +254,26 @@ class BuildReminderViewModel(
     }
   }
 
-  fun handleDeepLink(intent: Intent?) {
-    Logger.i(TAG, "Handle reminder Deep Link: $intent")
-    if (intent == null) {
+  private fun handleDeepLink(bundle: Bundle?) {
+    Logger.i(TAG, "Handle reminder Deep Link: $bundle")
+    if (bundle == null) {
       return
     }
+    id = bundle.getString(IntentKeys.INTENT_ID) ?: ""
     viewModelScope.launch(dispatcherProvider.default()) {
-      val intentId = intent.getStringExtra(IntentKeys.INTENT_ID)
-      val action = intent.action
       when {
-        action == Intent.ACTION_SEND && "text/plain" == intent.type -> {
-          Logger.i(TAG, "Handle reminder text Deep Link")
-          handleSendText(intent)
-        }
-
-        intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false) -> {
+        bundle.getBoolean(IntentKeys.INTENT_ITEM, false) -> {
           Logger.i(TAG, "Handle reminder object Deep Link")
           readObjectFromIntent()
         }
 
-        intent.getBooleanExtra(IntentKeys.INTENT_DEEP_LINK, false) -> {
-          readDeepLink(intent)
+        bundle.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) -> {
+          readDeepLink(bundle)
         }
 
-        !intentId.isNullOrEmpty() -> {
+        id.isNotEmpty() -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
-          editReminderIfNeeded(intentId)
+          editReminderIfNeeded(id)
         }
       }
     }
@@ -350,13 +349,13 @@ class BuildReminderViewModel(
     }
   }
 
-  private suspend fun readDeepLink(intent: Intent) {
+  private suspend fun readDeepLink(bundle: Bundle) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
     runCatching {
       val parser = DeepLinkDataParser()
-      when (val deepLinkData = parser.readDeepLinkData(intent)) {
+      when (val deepLinkData = parser.readDeepLinkData(bundle)) {
         is ReminderDatetimeTypeDeepLinkData -> {
           if (deepLinkData.type == Reminder.BY_DATE) {
             Logger.i(TAG, "Handle reminder date/time Deep Link")
@@ -369,6 +368,12 @@ class BuildReminderViewModel(
         is ReminderTodoTypeDeepLinkData -> {
           Logger.i(TAG, "Handle reminder todo Deep Link")
           addSubTasksItemToBuilder()
+          updateSelector()
+        }
+
+        is ReminderTextDeepLinkData -> {
+          Logger.i(TAG, "Handle reminder text Deep Link")
+          addSummaryItemToBuilder(deepLinkData.text)
           updateSelector()
         }
 
@@ -415,16 +420,6 @@ class BuildReminderViewModel(
       Logger.logEvent("Reminder loaded from intent")
       isFromFile = true
       editReminder(this)
-    }
-  }
-
-  private suspend fun handleSendText(intent: Intent) {
-    while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
-    }
-    intent.getStringExtra(Intent.EXTRA_TEXT)?.let { string ->
-      addSummaryItemToBuilder(string)
-      updateSelector()
     }
   }
 

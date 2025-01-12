@@ -24,7 +24,6 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
 import com.elementary.tasks.notes.preview.reminders.AttachedRemindersAdapter
 import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
@@ -125,9 +124,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editReminder(id: String) {
-    LoginApi.openLogged(this, BuildReminderActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
-    }
+    // TODO Add navigation to fragment
+//    LoginApi.openLogged(this, BuildReminderActivity::class.java) {
+//      putExtra(IntentKeys.INTENT_ID, id)
+//    }
   }
 
   override fun onDestroy() {

@@ -17,7 +17,6 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -25,7 +24,6 @@ import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.login.LoginApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -184,8 +182,13 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
   }
 
   private fun editReminder() {
-    LoginApi.openLogged(requireContext(), BuildReminderActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, viewModel.id)
+    navigate {
+      navigate(
+        R.id.buildReminderFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, viewModel.id)
+        }
+      )
     }
   }
 

@@ -97,7 +97,10 @@ class BottomNavActivity :
           R.id.editGoogleTaskFragment
         }
 
-        ShortcutDestination.Shortcut.Reminder -> TODO()
+        ShortcutDestination.Shortcut.Reminder -> {
+          R.id.buildReminderFragment
+        }
+
         ShortcutDestination.Shortcut.Note -> TODO()
         null -> null
       }

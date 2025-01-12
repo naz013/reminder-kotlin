@@ -63,6 +63,14 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
           putString(IntentKeys.INTENT_ID, it.id)
         }
       )
+    },
+    editAction = {
+      findNavController().navigate(
+        R.id.buildReminderFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, it.id)
+        }
+      )
     }
   )
   private var dayPagerItem: DayPagerItem? = null

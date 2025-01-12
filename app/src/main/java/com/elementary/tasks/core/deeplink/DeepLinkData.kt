@@ -16,6 +16,11 @@ data class ReminderDatetimeTypeDeepLinkData(
 data object ReminderTodoTypeDeepLinkData : DeepLinkData(IntentKey.REMINDER_TODO_TYPE)
 
 @Parcelize
+data class ReminderTextDeepLinkData(
+  val text: String
+) : DeepLinkData(IntentKey.REMINDER_TEXT)
+
+@Parcelize
 data class BirthdayDateDeepLinkData(
   val date: LocalDate
 ) : DeepLinkData(IntentKey.BIRTHDAY_DATE)
@@ -30,6 +35,7 @@ data class GoogleTaskDateTimeDeepLinkData(
 object IntentKey {
   const val REMINDER_DATETIME_TYPE = "reminder_datetime_type"
   const val REMINDER_TODO_TYPE = "reminder_todo_type"
+  const val REMINDER_TEXT = "reminder_text"
   const val BIRTHDAY_DATE = "birthday_date"
   const val GOOGLE_TASK_DATE_TIME = "google_task_date_time"
 }

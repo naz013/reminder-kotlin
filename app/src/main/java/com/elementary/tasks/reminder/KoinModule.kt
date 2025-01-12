@@ -89,8 +89,9 @@ val reminderModule = module {
 
   viewModel { ManagePresetsViewModel(get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
-  viewModel {
+  viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
+      arguments,
       get(),
       get(),
       get(),

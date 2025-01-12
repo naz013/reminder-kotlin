@@ -5,13 +5,13 @@ import android.os.Bundle
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGoogleTaskScreen
+import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.navigation.ViewReminderScreen
@@ -84,6 +84,13 @@ class ActivityNavigationDispatcher(
         }
       }
 
+      DestinationScreen.ReminderCreate -> {
+        val deepLinkDestination = EditReminderScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
       else -> bundle
     }
   }
@@ -91,7 +98,7 @@ class ActivityNavigationDispatcher(
   private fun getClass(destinationScreen: DestinationScreen): Class<*> {
     return when (destinationScreen) {
       DestinationScreen.ReminderPreview -> BottomNavActivity::class.java
-      DestinationScreen.ReminderCreate -> BuildReminderActivity::class.java
+      DestinationScreen.ReminderCreate -> BottomNavActivity::class.java
       DestinationScreen.NotePreview -> NotePreviewActivity::class.java
       DestinationScreen.NoteCreate -> CreateNoteActivity::class.java
       DestinationScreen.BirthdayPreview -> BottomNavActivity::class.java
