@@ -17,13 +17,11 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
-import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.ui.common.fragment.dp2px
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
@@ -91,8 +89,13 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private fun editListClick() {
     viewModel.currentTaskList?.also {
-      startActivity(GoogleTaskListActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, it.listId)
+      navigate {
+        navigate(
+          R.id.editGoogleTaskListFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.listId)
+          }
+        )
       }
     }
   }

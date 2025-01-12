@@ -281,11 +281,6 @@
             android:name=".notes.preview.NotePreviewActivity"
             android:exported="false" />
         <activity
-            android:name=".googletasks.tasklist.GoogleTaskListActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="false"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
             android:name=".reminder.dialog.ReminderDialog29Activity"
             android:excludeFromRecents="true"
             android:exported="false" />

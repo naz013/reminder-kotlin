@@ -19,7 +19,6 @@ import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
-import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -29,7 +28,6 @@ import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.dp2px
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
@@ -87,7 +85,7 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
         {
           when (it.itemId) {
             R.id.action_add -> {
-              startActivity(GoogleTaskListActivity::class.java)
+              navigate { navigate(R.id.editGoogleTaskListFragment) }
             }
           }
           true

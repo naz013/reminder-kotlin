@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.elementary.tasks.googletasks.list.TaskListViewModel
 import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskViewModel
 import com.elementary.tasks.googletasks.task.EditGoogleTaskViewModel
-import com.elementary.tasks.googletasks.tasklist.GoogleTaskListViewModel
+import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListViewModel
 import com.elementary.tasks.googletasks.usecase.GoogleTaskListFactory
 import com.elementary.tasks.googletasks.usecase.db.DeleteGoogleTaskList
 import com.elementary.tasks.googletasks.usecase.db.DeleteGoogleTasks
@@ -22,9 +22,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val googleTaskModule = module {
-  viewModel { (listId: String) ->
-    GoogleTaskListViewModel(
-      listId,
+  viewModel { (arguments: Bundle?) ->
+    EditGoogleTaskListViewModel(
+      arguments,
       get(),
       get(),
       get(),
@@ -36,6 +36,7 @@ val googleTaskModule = module {
   viewModel { (arguments: Bundle?) ->
     EditGoogleTaskViewModel(
       arguments,
+      get(),
       get(),
       get(),
       get(),
