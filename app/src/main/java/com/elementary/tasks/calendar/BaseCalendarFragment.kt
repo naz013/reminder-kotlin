@@ -9,11 +9,12 @@ import com.elementary.tasks.calendar.monthview.DayBottomSheetDialog
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
+import com.github.naz013.ui.common.login.LoginApi
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDate
@@ -23,7 +24,6 @@ import org.threeten.bp.LocalTime
 abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>() {
 
   protected val dateTimeManager by inject<DateTimeManager>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   protected var date: LocalDate = LocalDate.now()
   private var mDialog: AlertDialog? = null
@@ -54,7 +54,6 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
-    reminderBuilderLauncher = reminderBuilderLauncher,
     toggleAction = { },
     deleteAction = { },
     skipAction = { }
@@ -78,7 +77,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
         dateTime = LocalDateTime.of(date, LocalTime.now())
       )
       withActivity {
-        reminderBuilderLauncher.openDeepLink(it, deepLinkData) { }
+        LoginApi.openLogged(it, BuildReminderActivity::class.java, deepLinkData)
       }
     }
   }

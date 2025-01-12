@@ -1,15 +1,5 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.icalendar.DateTimeStartTag
-import com.github.naz013.icalendar.RecurParam
-import com.github.naz013.icalendar.ICalendarApi
-import com.github.naz013.icalendar.RecurrenceRuleTag
-import com.github.naz013.icalendar.RuleMap
-import com.github.naz013.icalendar.Tag
-import com.github.naz013.icalendar.TagType
-import com.github.naz013.icalendar.UntilRecurParam
-import com.github.naz013.icalendar.UtcDateTime
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalBuilderItem
 import com.elementary.tasks.reminder.build.ICalStartDateBuilderItem
@@ -17,9 +7,18 @@ import com.elementary.tasks.reminder.build.ICalStartTimeBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import com.elementary.tasks.reminder.create.fragments.recur.EventData
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.icalendar.DateTimeStartTag
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurParam
+import com.github.naz013.icalendar.RecurrenceRuleTag
+import com.github.naz013.icalendar.RuleMap
+import com.github.naz013.icalendar.Tag
+import com.github.naz013.icalendar.TagType
+import com.github.naz013.icalendar.UntilRecurParam
+import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
 

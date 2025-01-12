@@ -22,9 +22,4 @@
         android:title="@string/configure"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_legacy_builder"
-        android:title="@string/builder_switch_to_legacy_builder"
-        app:showAsAction="never" />
-
 </menu>

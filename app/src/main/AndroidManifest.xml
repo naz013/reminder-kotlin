@@ -221,12 +221,6 @@
                 <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".reminder.create.CreateReminderActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/new_reminder"
-            android:windowSoftInputMode="stateUnchanged" />
 
         <activity
             android:name=".reminder.build.BuildReminderActivity"
@@ -307,14 +301,7 @@
             android:name=".other.PrivacyPolicyActivity"
             android:exported="false" />
         <activity
-            android:name=".reminder.create.fragments.recur.RecurHelpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".reminder.create.fragments.recur.preset.PresetSelectionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".reminder.create.ConfigureActivity"
-            android:excludeFromRecents="true"
+            android:name=".reminder.recur.RecurHelpActivity"
             android:exported="false" />
         <activity
             android:name=".reminder.build.BuilderConfigureActivity"

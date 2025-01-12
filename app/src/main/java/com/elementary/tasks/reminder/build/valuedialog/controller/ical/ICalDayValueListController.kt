@@ -6,8 +6,8 @@ import com.github.naz013.icalendar.Day
 import com.github.naz013.icalendar.DayValue
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractSelectableArrayController
-import com.elementary.tasks.reminder.create.fragments.recur.RecurHelpActivity
-import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.recur.RecurHelpActivity
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 
 class ICalDayValueListController(
   builderItem: BuilderItem<List<DayValue>>,

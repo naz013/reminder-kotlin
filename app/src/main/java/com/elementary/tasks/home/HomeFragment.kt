@@ -25,7 +25,7 @@ import com.elementary.tasks.home.scheduleview.ScheduleModel
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
@@ -53,7 +53,6 @@ class HomeFragment :
   private val featureManager by inject<FeatureManager>()
   private val whatsNewManager by inject<WhatsNewManager>()
   private val searchViewModel by viewModel<GlobalSearchViewModel>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val viewModel by viewModel<ScheduleHomeViewModel>()
   private val scheduleAdapter = ScheduleAdapter(
@@ -175,7 +174,7 @@ class HomeFragment :
       type = Reminder.BY_DATE,
       dateTime = dateTime
     )
-    reminderBuilderLauncher.openDeepLink(requireContext(), deepLinkData) { }
+    LoginApi.openLogged(requireContext(), BuildReminderActivity::class.java, deepLinkData)
   }
 
   private fun openGoogleTaskCreateScreen(time: LocalTime?) {

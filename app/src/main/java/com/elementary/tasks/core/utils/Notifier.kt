@@ -22,7 +22,7 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
@@ -187,10 +187,10 @@ class Notifier(
     } else {
       builder.priority = NotificationCompat.PRIORITY_MIN
     }
-    val resultIntent = Intent(context, ReminderBuilderLauncher.PENDING_INTENT_CLASS)
+    val resultIntent = Intent(context, BuildReminderActivity::class.java)
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     val stackBuilder = TaskStackBuilder.create(context)
-    stackBuilder.addParentStack(ReminderBuilderLauncher.PENDING_INTENT_CLASS)
+    stackBuilder.addParentStack(BuildReminderActivity::class.java)
     stackBuilder.addNextIntentWithParentStack(resultIntent)
     val resultPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)

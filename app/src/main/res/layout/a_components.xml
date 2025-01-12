@@ -39,12 +39,6 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <com.elementary.tasks.core.views.ClosableTooltipView
-                android:layout_width="match_parent"
-                android:layout_marginTop="16dp"
-                app:text="@string/reminder_email_explanations"
-                android:layout_height="wrap_content" />
-
             <com.google.android.material.chip.Chip
                 style="@style/Widget.Material3.Chip.Input.Elevated"
                 android:layout_width="match_parent"

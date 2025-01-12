@@ -17,7 +17,6 @@ import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentEventsListBinding
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.ReminderResolver
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
@@ -30,7 +29,6 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
   private val themeProvider by inject<ThemeProvider>()
   private val viewModel by inject<DayViewModel>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val dayEventsAdapter = DayEventsAdapter(isDark = themeProvider.isDark)
   private val birthdayResolver = BirthdayResolver(
@@ -55,7 +53,6 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
   )
   private val reminderResolver = ReminderResolver(
     dialogAction = { dialogues },
-    reminderBuilderLauncher = reminderBuilderLauncher,
     toggleAction = { },
     deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
     skipAction = { reminder -> viewModel.skip(reminder) }

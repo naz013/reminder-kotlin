@@ -18,18 +18,18 @@ import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
 import com.elementary.tasks.notes.preview.reminders.AttachedRemindersAdapter
 import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
+import com.elementary.tasks.reminder.build.BuildReminderActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.context.colorOf
@@ -59,7 +59,6 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   )
 
   private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   private val dialogues by inject<Dialogues>()
 
   private val uiHandler = Handler(Looper.getMainLooper())
@@ -126,7 +125,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editReminder(id: String) {
-    reminderBuilderLauncher.openLogged(this) {
+    LoginApi.openLogged(this, BuildReminderActivity::class.java) {
       putExtra(IntentKeys.INTENT_ID, id)
     }
   }
