@@ -15,6 +15,7 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.ui.common.fragment.dp2px
@@ -35,7 +36,17 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
       permissionFlow = permissionFlow,
       toggleAction = { },
       deleteAction = { viewModel.deleteReminder(it) },
-      skipAction = { }
+      skipAction = { },
+      openAction = {
+        navigate {
+          navigate(
+            R.id.previewReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      }
     )
   }
 

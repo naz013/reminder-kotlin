@@ -21,7 +21,7 @@ import org.koin.core.parameter.parametersOf
 
 class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
 
-  private val viewModel by viewModel<PlaceViewModel> { parametersOf(idFromIntent()) }
+  private val viewModel by viewModel<EditPlaceViewModel> { parametersOf(idFromIntent()) }
   private var googleMap: SimpleMapFragment? = null
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
@@ -147,7 +147,7 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
       return
     }
     viewModel.savePlace(
-      PlaceViewModel.SavePlaceData(
+      EditPlaceViewModel.SavePlaceData(
         name = name,
         newId = newId
       )

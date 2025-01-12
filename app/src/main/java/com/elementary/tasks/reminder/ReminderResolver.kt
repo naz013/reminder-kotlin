@@ -5,17 +5,16 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.reminder.build.BuildReminderActivity
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.context.startActivity
 import com.github.naz013.ui.common.login.LoginApi
 
 class ReminderResolver(
   private val dialogAction: () -> Dialogues,
   private val deleteAction: (reminder: UiReminderListData) -> Unit,
   private val toggleAction: (reminder: UiReminderListData) -> Unit,
-  private val skipAction: (reminder: UiReminderListData) -> Unit
+  private val skipAction: (reminder: UiReminderListData) -> Unit,
+  private val openAction: (reminder: UiReminderListData) -> Unit
 ) {
 
   fun resolveAction(view: View, reminder: UiReminderListData, listActions: ListActions) {
@@ -29,7 +28,7 @@ class ReminderResolver(
     } else {
       when (listActions) {
         ListActions.MORE -> showActionDialog(view, reminder)
-        ListActions.OPEN -> previewReminder(view, reminder)
+        ListActions.OPEN -> previewReminder(reminder)
         ListActions.SWITCH -> toggleAction.invoke(reminder)
         else -> {
         }
@@ -46,7 +45,7 @@ class ReminderResolver(
     )
     Dialogues.showPopup(view, { item ->
       when (item) {
-        0 -> previewReminder(view, reminder)
+        0 -> previewReminder(reminder)
         1 -> editReminder(view, reminder)
         2 -> askConfirmation(view, items[item]) {
           if (it) deleteAction.invoke(reminder)
@@ -73,7 +72,7 @@ class ReminderResolver(
     }
     Dialogues.showPopup(view, { item ->
       when (item) {
-        0 -> previewReminder(view, reminder)
+        0 -> previewReminder(reminder)
         1 -> editReminder(view, reminder)
         2 -> askConfirmation(view, items[item]) {
           if (it) deleteAction.invoke(reminder)
@@ -96,11 +95,7 @@ class ReminderResolver(
     }
   }
 
-  private fun previewReminder(view: View, reminder: UiReminderListData) {
-    view.context.run {
-      startActivity(ReminderPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, reminder.id)
-      }
-    }
+  private fun previewReminder(reminder: UiReminderListData) {
+    openAction(reminder)
   }
 }

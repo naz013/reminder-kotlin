@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder
 
+import android.os.Bundle
 import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
@@ -75,7 +76,7 @@ import com.elementary.tasks.reminder.preview.EventToUiReminderPreview
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogleTask
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
-import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
+import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -123,9 +124,9 @@ val reminderModule = module {
     )
   }
 
-  viewModel { (id: String) ->
-    ReminderPreviewViewModel(
-      id,
+  viewModel { (arguments: Bundle?) ->
+    PreviewReminderViewModel(
+      arguments,
       get(),
       get(),
       get(),

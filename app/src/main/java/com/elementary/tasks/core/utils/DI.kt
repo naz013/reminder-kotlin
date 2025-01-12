@@ -57,7 +57,7 @@ import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.places.create.PlaceViewModel
+import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
@@ -93,7 +93,18 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    EditPlaceViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
 
   viewModel { (id: String) ->
     EditGroupViewModel(

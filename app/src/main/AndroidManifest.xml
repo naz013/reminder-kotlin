@@ -284,9 +284,6 @@
             android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".reminder.preview.ReminderPreviewActivity"
-            android:exported="false" />
-        <activity
             android:name=".reminder.preview.FullscreenMapActivity"
             android:excludeFromRecents="true"
             android:exported="false" />

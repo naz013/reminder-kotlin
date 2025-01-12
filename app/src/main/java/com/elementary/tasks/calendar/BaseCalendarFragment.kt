@@ -56,7 +56,17 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
     dialogAction = { dialogues },
     toggleAction = { },
     deleteAction = { },
-    skipAction = { }
+    skipAction = { },
+    openAction = {
+      navigate {
+        navigate(
+          R.id.previewReminderFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.id)
+          }
+        )
+      }
+    }
   )
 
   protected fun showActionDialog() {

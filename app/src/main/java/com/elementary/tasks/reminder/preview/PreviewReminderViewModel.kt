@@ -1,9 +1,9 @@
 package com.elementary.tasks.reminder.preview
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
@@ -11,14 +11,8 @@ import com.elementary.tasks.core.data.ui.UiShareData
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BackupTool
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData
@@ -26,7 +20,14 @@ import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDetails
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
@@ -40,8 +41,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-class ReminderPreviewViewModel(
-  private val id: String,
+class PreviewReminderViewModel(
+  arguments: Bundle?,
   private val reminderRepository: ReminderRepository,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
@@ -81,6 +82,12 @@ class ReminderPreviewViewModel(
     private set
   var canDelete = false
     private set
+  var id: String = ""
+    private set
+
+  init {
+    id = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
+  }
 
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
@@ -93,12 +100,10 @@ class ReminderPreviewViewModel(
       val subTasks = reminder.shoppings.toMutableList()
       val index = subTasks.indexOfFirst { it.uuId == subTaskId }
 
-      Logger.d("onSubTaskRemoved: id=$subTaskId, subTasks=$subTasks")
-
       if (index != -1) {
         subTasks.removeAt(index)
 
-        Logger.d("onSubTaskRemoved: save subTasks=$subTasks")
+        Logger.i(TAG, "Subtask removed, at index: $index, id: $subTaskId")
 
         saveReminder(reminder.copy(shoppings = subTasks.toList()))
         loadReminder()
@@ -160,6 +165,7 @@ class ReminderPreviewViewModel(
 
   private fun saveReminder(reminder: Reminder) {
     postInProgress(true)
+    Logger.i(TAG, "Saving reminder, id: ${reminder.uuId}")
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.save(reminder)
       appWidgetUpdater.updateScheduleWidget()
@@ -175,6 +181,7 @@ class ReminderPreviewViewModel(
   }
 
   fun deleteEvent(eventItem: UiCalendarEventList) {
+    Logger.i(TAG, "Deleting calendar event, id: ${eventItem.id}")
     viewModelScope.launch(dispatcherProvider.default()) {
       if (eventItem.localId.isNotBlank()) {
         calendarEventRepository.delete(eventItem.localId)
@@ -186,6 +193,7 @@ class ReminderPreviewViewModel(
 
   private suspend fun toggleReminder(reminder: Reminder) {
     postInProgress(true)
+    Logger.i(TAG, "Toggling reminder, id: ${reminder.uuId}")
     if (!eventControlFactory.getController(reminder).onOff()) {
       postInProgress(false)
       postCommand(Commands.OUTDATED)
@@ -203,6 +211,7 @@ class ReminderPreviewViewModel(
 
   fun copyReminder(time: LocalTime) {
     val reminderId = reminder.value?.id ?: return
+    Logger.i(TAG, "Copying reminder, id: $reminderId, time: $time")
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(reminderId)?.also { reminder ->
         postInProgress(true)
@@ -237,6 +246,7 @@ class ReminderPreviewViewModel(
 
   fun deleteReminder(showMessage: Boolean) {
     val reminderId = reminder.value?.id ?: return
+    Logger.i(TAG, "Deleting reminder, id: $reminderId")
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(reminderId)?.also { reminder ->
         if (showMessage) {
@@ -269,6 +279,7 @@ class ReminderPreviewViewModel(
 
   fun moveToTrash() {
     val reminderId = reminder.value?.id ?: return
+    Logger.i(TAG, "Moving reminder to trash, id: $reminderId")
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(reminderId)?.also {
         it.isRemoved = true
@@ -293,9 +304,13 @@ class ReminderPreviewViewModel(
           name = it.summary
         )
       }?.also {
-        Logger.d("shareReminder: $it")
+        Logger.i(TAG, "Sharing reminder ${it.name}")
         _sharedFile.postValue(it)
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "PreviewReminderViewModel"
   }
 }

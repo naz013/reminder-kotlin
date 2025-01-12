@@ -11,6 +11,7 @@ import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
+import com.github.naz013.navigation.ViewReminderScreen
 
 class ScreenDestinationIdResolver {
 
@@ -25,6 +26,7 @@ class ScreenDestinationIdResolver {
       is EditPlaceScreen -> R.id.editPlaceFragment
       is ViewGoogleTaskScreen -> R.id.previewGoogleTaskFragment
       is EditGoogleTaskScreen -> R.id.editGoogleTaskFragment
+      is ViewReminderScreen -> R.id.previewReminderFragment
     }
   }
 }

@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class PlaceViewModel(
+class EditPlaceViewModel(
   private val id: String,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
