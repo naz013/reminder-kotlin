@@ -6,7 +6,7 @@ import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.list.archived.ArchivedNotesViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.notes.preview.NotePreviewViewModel
+import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.NoteSingleBackupWorker
@@ -75,7 +75,7 @@ val noteModule = module {
     )
   }
   viewModel { (id: String) ->
-    NotePreviewViewModel(
+    PreviewNoteViewModel(
       id,
       get(),
       get(),

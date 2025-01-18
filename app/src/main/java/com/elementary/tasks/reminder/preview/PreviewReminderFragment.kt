@@ -16,7 +16,6 @@ import com.elementary.tasks.databinding.FragmentReminderPreviewBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -158,8 +157,11 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
   }
 
   private fun openNote(id: String) {
-    startActivity(NotePreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
+    navigate {
+      navigate(
+        R.id.previewNoteFragment,
+        Bundle().apply { putString(IntentKeys.INTENT_ID, id) }
+      )
     }
   }
 

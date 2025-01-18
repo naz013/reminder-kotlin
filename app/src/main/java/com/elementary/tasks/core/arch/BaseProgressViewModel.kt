@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.Commands
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 open class BaseProgressViewModel(
   protected val dispatcherProvider: DispatcherProvider
@@ -21,7 +21,7 @@ open class BaseProgressViewModel(
   val isInProgress = _isInProgress.toLiveData()
 
   private val _error = mutableLiveDataOf<String>()
-  val error = _error.toLiveData()
+  val error = _error.toSingleEvent()
 
   protected fun postInProgress(isInProgress: Boolean) {
     _isInProgress.postValue(isInProgress)
@@ -33,17 +33,6 @@ open class BaseProgressViewModel(
 
   protected fun postError(error: String) {
     _error.postValue(error)
-  }
-
-  protected fun withResult(doWork: ((error: String) -> Unit) -> Commands) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      postInProgress(true)
-      val commands = runBlocking {
-        doWork.invoke { postError(it) }
-      }
-      postInProgress(false)
-      postCommand(commands)
-    }
   }
 
   protected fun withProgressSuspend(doWork: suspend ((error: String) -> Unit) -> Unit) {

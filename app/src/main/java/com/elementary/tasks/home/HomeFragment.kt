@@ -23,7 +23,6 @@ import com.elementary.tasks.home.scheduleview.ScheduleAdapter
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleModel
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
-import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
@@ -32,7 +31,6 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.ui.common.fragment.startActivity
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.applyTopInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
@@ -68,8 +66,13 @@ class HomeFragment :
       showEventTypeSelectionDialog(time)
     },
     onNoteClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), NotePreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewNoteFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     },
     onGoogleTaskClickListener = { _, id ->

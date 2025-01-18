@@ -1,11 +1,10 @@
 package com.elementary.tasks.notes.preview
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.enableEdgeToEdge
+import android.view.ViewGroup
 import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
@@ -14,12 +13,12 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
-import com.elementary.tasks.databinding.ActivityNotePreviewBinding
+import com.elementary.tasks.databinding.FragmentNotePreviewBinding
+import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
 import com.elementary.tasks.notes.preview.reminders.AttachedRemindersAdapter
@@ -28,16 +27,14 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.ui.common.activity.toast
-import com.github.naz013.ui.common.context.colorOf
-import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.fragment.colorOf
+import com.github.naz013.ui.common.fragment.startActivity
+import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.ViewUtils
-import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyTopInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
@@ -47,39 +44,42 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
 
-class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
+class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>() {
 
-  private var isBgDark = false
-
+  private val imagesSingleton by inject<ImagesSingleton>()
+  private val viewModel by viewModel<PreviewNoteViewModel> { parametersOf(idFromIntent()) }
+  private val adsProvider = AdsProvider()
   private val adapter = ImagesCarouselAdapter()
   private val attachedRemindersAdapter = AttachedRemindersAdapter(
     onEdit = { editReminder(it.id) },
     onDetach = { viewModel.detachReminder(it.id) }
   )
 
-  private val viewModel by viewModel<NotePreviewViewModel> { parametersOf(getId()) }
-  private val dialogues by inject<Dialogues>()
+  private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
-  private val uiHandler = Handler(Looper.getMainLooper())
-
-  private val imagesSingleton by inject<ImagesSingleton>()
-  private val adsProvider = AdsProvider()
-  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
-
-  override fun inflateBinding() = ActivityNotePreviewBinding.inflate(layoutInflater)
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): FragmentNotePreviewBinding {
+    return FragmentNotePreviewBinding.inflate(inflater, container, false)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    viewModel.isBgDark = isDark
+    Logger.i(TAG, "Opening the note preview screen for id: ${Logger.data(idFromIntent())}")
+  }
 
-    binding.scrollView.applyBottomInsets()
-    isBgDark = isDarkMode
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     initActionBar()
     updateTextColors()
     initImagesList()
     initReminderCard()
     initViewModel()
     loadAds()
+    initViewModel()
   }
 
   private fun loadAds() {
@@ -97,7 +97,27 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
   }
 
-  private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
+  override fun onDestroy() {
+    super.onDestroy()
+    adsProvider.destroy()
+    adapter.actionsListener = null
+  }
+
+  override fun onPause() {
+    super.onPause()
+    viewModel.getStatusBarColor()?.also {
+      activity?.window?.statusBarColor = it
+      activity?.window?.navigationBarColor = it
+    }
+  }
+
+  override fun onResume() {
+    super.onResume()
+    viewModel.note.value?.backgroundColor?.also {
+      activity?.window?.statusBarColor = it
+      activity?.window?.navigationBarColor = it
+    }
+  }
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
@@ -105,7 +125,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     viewModel.reminders.nonNullObserve(this) { showReminders(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       when (commands) {
-        Commands.DELETED -> closeWindow()
+        Commands.DELETED -> moveBack()
         else -> {
         }
       }
@@ -116,7 +136,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private fun initReminderCard() {
     binding.attachedRemindersList.layoutManager = LinearLayoutManager(
-      this,
+      context,
       LinearLayoutManager.HORIZONTAL,
       false
     )
@@ -124,16 +144,14 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editReminder(id: String) {
-    // TODO Add navigation to fragment
-//    LoginApi.openLogged(this, BuildReminderActivity::class.java) {
-//      putExtra(IntentKeys.INTENT_ID, id)
-//    }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    adsProvider.destroy()
-    adapter.actionsListener = null
+    navigate {
+      navigate(
+        R.id.buildReminderFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, id)
+        }
+      )
+    }
   }
 
   private fun initImagesList() {
@@ -163,7 +181,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   private fun initActionBar() {
     binding.appBar.applyTopInsets()
     binding.toolbar.title = ""
-    binding.toolbar.setNavigationOnClickListener { closeWindow() }
+    binding.toolbar.setNavigationOnClickListener { moveBack() }
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {
         R.id.action_share -> {
@@ -199,8 +217,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun updateIcons() {
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
-    binding.toolbar.tintOverflowButton(isBgDark)
+    binding.toolbar.navigationIcon = ViewUtils.backIcon(requireContext(), viewModel.isBgDark)
+    binding.toolbar.tintOverflowButton(viewModel.isBgDark)
   }
 
   private fun updateMenu(isArchived: Boolean = false) {
@@ -210,8 +228,20 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
       getString(R.string.notes_move_to_archive)
     }
     binding.toolbar.menu.also { menu ->
-      ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_fluent_edit, isBgDark)
-      ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_fluent_heart, isBgDark)
+      ViewUtils.tintMenuIcon(
+        requireContext(),
+        menu,
+        0,
+        R.drawable.ic_fluent_edit,
+        viewModel.isBgDark
+      )
+      ViewUtils.tintMenuIcon(
+        requireContext(),
+        menu,
+        1,
+        R.drawable.ic_fluent_heart,
+        viewModel.isBgDark
+      )
       menu[3].setTitle(archiveActionTitle)
       menu[1].isVisible = !isArchived
       menu[2].isVisible = !isArchived
@@ -219,35 +249,29 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun editNote() {
-    LoginApi.openLogged(this, CreateNoteActivity::class.java) {
+    LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java) {
       putExtra(IntentKeys.INTENT_ID, viewModel.key)
     }
   }
 
   private fun moveToStatus() {
     val uiNotePreview = viewModel.note.value ?: return
-    permissionFlowDelegate.with {
-      askPermission(Permissions.POST_NOTIFICATION) {
-        viewModel.showNoteInNotification(uiNotePreview.id)
-      }
+    permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+      viewModel.showNoteInNotification(uiNotePreview.id)
     }
   }
 
-  override fun handleBackPress(): Boolean {
-    closeWindow()
-    return true
-  }
-
   private fun showNote(uiNotePreview: UiNotePreview) {
+    viewModel.saveStatusBarColor(activity?.window?.statusBarColor ?: -1)
     showImages(uiNotePreview.images)
     binding.noteText.text = uiNotePreview.text
     binding.noteText.typeface = uiNotePreview.typeface
     binding.noteText.setTextSize(TypedValue.COMPLEX_UNIT_SP, uiNotePreview.textSize)
-    window.statusBarColor = uiNotePreview.backgroundColor
-    window.navigationBarColor = uiNotePreview.backgroundColor
+    activity?.window?.statusBarColor = uiNotePreview.backgroundColor
+    activity?.window?.navigationBarColor = uiNotePreview.backgroundColor
     binding.windowBackground.setBackgroundColor(uiNotePreview.backgroundColor)
-    isBgDark = if (uiNotePreview.opacity.isAlmostTransparent()) {
-      isDarkMode
+    viewModel.isBgDark = if (uiNotePreview.opacity.isAlmostTransparent()) {
+      isDark
     } else {
       uiNotePreview.backgroundColor.isColorDark()
     }
@@ -257,7 +281,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun updateTextColors() {
-    val textColor = if (isBgDark) {
+    val textColor = if (viewModel.isBgDark) {
       colorOf(R.color.pureWhite)
     } else {
       colorOf(R.color.pureBlack)
@@ -283,24 +307,20 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
   }
 
   private fun sendNote(note: NoteWithImages, file: File) {
-    if (isFinishing) return
+    if (isDetached) return
     if (!file.exists() || !file.canRead()) {
       showErrorSending()
       return
     }
-    TelephonyUtil.sendNote(file, this, note.note?.summary)
+    TelephonyUtil.sendNote(file, requireContext(), note.note?.summary)
   }
 
   private fun showErrorSending() {
     toast(R.string.error_sending)
   }
 
-  private fun closeWindow() {
-    uiHandler.post { finishAfterTransition() }
-  }
-
   private fun showDeleteDialog() {
-    val builder = dialogues.getMaterialDialog(this)
+    val builder = dialogues.getMaterialDialog(requireContext())
     builder.setMessage(getString(R.string.delete_this_note))
     builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
       dialog.dismiss()
@@ -308,5 +328,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
     }
     builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
     builder.create().show()
+  }
+
+  companion object {
+    private const val TAG = "PreviewNoteFragment"
   }
 }
