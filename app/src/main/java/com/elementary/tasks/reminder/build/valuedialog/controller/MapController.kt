@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder.build.valuedialog.controller
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.R
 import com.github.naz013.domain.Place
 import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.databinding.BuilderItemMapBinding
@@ -52,7 +53,7 @@ class MapController(
     }
 
     parentFragment.childFragmentManager.beginTransaction()
-      .replace(binding.mapFrameView.id, simpleMapFragment)
+      .replace(R.id.map_frame_view, simpleMapFragment)
       .addToBackStack(null)
       .commit()
 
