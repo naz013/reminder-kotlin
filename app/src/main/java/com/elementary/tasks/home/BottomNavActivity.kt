@@ -161,7 +161,7 @@ class BottomNavActivity :
   }
 
   override fun handleBackPress(): Boolean {
-    Logger.i("NavActivity", "Handle back press, current fragment: $currentResumedFragment")
+    Logger.i(TAG, "Handle back press, current fragment: $currentResumedFragment")
     if (currentResumedFragment is HomeFragment) {
       finishAffinity()
     } else if (currentResumedFragment?.canGoBack() == true) {
@@ -183,8 +183,16 @@ class BottomNavActivity :
     adapter: RecyclerView.Adapter<*>,
     observer: SearchableFragmentQueryObserver
   ) {
+    Logger.i(TAG, "Add the Search view $anchorId")
     this.searchableFragmentQueryObserver = observer
     initSearchView(anchorId, hint, adapter)
+  }
+
+  override fun removeSearchView() {
+    Logger.i(TAG, "Removing the Search view $fragmentSearchView")
+    fragmentSearchView?.also {
+      binding.container.removeView(it)
+    }
   }
 
   private fun initSearchView(

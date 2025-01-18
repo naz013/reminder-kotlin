@@ -10,6 +10,7 @@ interface SearchableFragmentCallback {
     adapter: RecyclerView.Adapter<*>,
     observer: SearchableFragmentQueryObserver
   )
+  fun removeSearchView()
 }
 
 interface SearchableFragmentQueryObserver {
