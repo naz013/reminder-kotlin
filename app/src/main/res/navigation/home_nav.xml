@@ -46,9 +46,6 @@
         <action
             android:id="@+id/action_actionHome_to_buildReminderFragment"
             app:destination="@id/buildReminderFragment" />
-        <action
-            android:id="@+id/action_actionHome_to_previewNoteFragment"
-            app:destination="@id/previewNoteFragment" />
     </fragment>
 
     <fragment

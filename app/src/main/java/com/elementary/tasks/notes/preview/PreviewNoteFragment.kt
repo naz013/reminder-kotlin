@@ -67,6 +67,7 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    viewModel.saveStatusBarColor(activity?.window?.statusBarColor ?: -1)
     viewModel.isBgDark = isDark
     Logger.i(TAG, "Opening the note preview screen for id: ${Logger.data(idFromIntent())}")
   }
@@ -262,7 +263,6 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
   }
 
   private fun showNote(uiNotePreview: UiNotePreview) {
-    viewModel.saveStatusBarColor(activity?.window?.statusBarColor ?: -1)
     showImages(uiNotePreview.images)
     binding.noteText.text = uiNotePreview.text
     binding.noteText.typeface = uiNotePreview.typeface
