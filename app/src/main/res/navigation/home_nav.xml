@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_actionHome_to_buildReminderFragment"
             app:destination="@id/buildReminderFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_previewNoteFragment"
+            app:destination="@id/previewNoteFragment" />
     </fragment>
 
     <fragment
@@ -67,6 +70,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_actionNotes_to_previewNoteFragment"
+            app:destination="@id/previewNoteFragment" />
     </fragment>
 
     <fragment
@@ -543,7 +549,11 @@
         android:id="@+id/archivedNotesFragment"
         android:name="com.elementary.tasks.notes.list.archived.ArchivedNotesFragment"
         android:label="@string/notes_archive"
-        tools:layout="@layout/fragment_notes" />
+        tools:layout="@layout/fragment_notes" >
+        <action
+            android:id="@+id/action_archivedNotesFragment_to_previewNoteFragment"
+            app:destination="@id/previewNoteFragment" />
+    </fragment>
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
@@ -654,4 +664,13 @@
         android:name="com.elementary.tasks.reminder.build.BuildReminderFragment"
         tools:layout="@layout/fragment_reminder_builder"
         android:label="@string/new_reminder" />
+    <fragment
+        android:id="@+id/previewNoteFragment"
+        android:name="com.elementary.tasks.notes.preview.PreviewNoteFragment"
+        tools:layout="@layout/fragment_note_preview"
+        android:label="@string/details" >
+        <action
+            android:id="@+id/action_previewNoteFragment_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
+    </fragment>
 </navigation>

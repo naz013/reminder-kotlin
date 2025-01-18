@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
-            app:menu="@menu/activity_preview_note"
+            app:menu="@menu/fragment_note_preview"
             app:navigationIcon="@drawable/ic_builder_arrow_left" />
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.preview
 
+import androidx.annotation.ColorInt
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -9,13 +10,8 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
-import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.io.BackupTool
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
@@ -25,14 +21,20 @@ import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.TextProvider
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-class NotePreviewViewModel(
+class PreviewNoteViewModel(
   val key: String,
   dispatcherProvider: DispatcherProvider,
   private val workerLauncher: WorkerLauncher,
@@ -49,7 +51,7 @@ class NotePreviewViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
-  val sharedFile = _sharedFile.toLiveData()
+  val sharedFile = _sharedFile.toSingleEvent()
 
   private val _note = mutableLiveDataOf<UiNotePreview>()
   val note = _note.toLiveData()
@@ -58,6 +60,24 @@ class NotePreviewViewModel(
   val reminders = _reminders.toLiveData()
 
   var hasSameInDb: Boolean = false
+  var isBgDark: Boolean = false
+  private var initStatusBarColor: Int = -1
+  private var statusBarColorSaved: Boolean = false
+
+  @ColorInt
+  fun getStatusBarColor(): Int? {
+    return if (statusBarColorSaved) {
+      initStatusBarColor.takeIf { it != -1 }
+    } else {
+      null
+    }
+  }
+
+  fun saveStatusBarColor(@ColorInt color: Int) {
+    if (statusBarColorSaved) return
+    initStatusBarColor = color
+    statusBarColorSaved = true
+  }
 
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
