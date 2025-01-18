@@ -87,4 +87,14 @@ object Logger {
       firebaseLogger?.logEvent(event)
     }
   }
+
+  fun data(value: String?): String {
+    return if (value == null) {
+      "Null"
+    } else if (value.isEmpty()) {
+      "Empty"
+    } else {
+      value
+    }
+  }
 }

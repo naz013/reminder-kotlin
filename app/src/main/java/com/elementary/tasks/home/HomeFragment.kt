@@ -123,12 +123,6 @@ class HomeFragment :
         else -> false
       }
     }
-    searchableFragmentCallback?.setSearchViewParams(
-      R.id.search_bar,
-      getString(R.string.search_everywhere),
-      searchAdapter,
-      this
-    )
 
     binding.globalAddButton.setOnClickListener { showEventTypeSelectionDialog(null) }
 
@@ -239,12 +233,19 @@ class HomeFragment :
 
   override fun onResume() {
     super.onResume()
+    searchableFragmentCallback?.setSearchViewParams(
+      R.id.search_bar,
+      getString(R.string.search_everywhere),
+      searchAdapter,
+      this
+    )
     prefs.addObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.addObserver(PrefsConstants.USER_LOGGED, this)
   }
 
   override fun onPause() {
     super.onPause()
+    searchableFragmentCallback?.removeSearchView()
     prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
   }

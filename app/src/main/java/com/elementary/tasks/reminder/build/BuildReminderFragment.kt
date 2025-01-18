@@ -16,8 +16,10 @@ import com.elementary.tasks.reminder.build.adapter.BuilderAdapter
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialog
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogCallback
+import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogCommunicator
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
+import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCommunicator
 import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
@@ -61,7 +63,9 @@ class BuildReminderFragment :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Logger.i(TAG, "Opening the reminder edit screen for id: ${viewModel.id}")
+    Logger.i(TAG, "Opening the reminder edit screen for id: ${Logger.data(viewModel.id)}")
+    SelectorDialogCommunicator.addCallback(this)
+    ValueDialogCommunicator.addCallback(this)
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
