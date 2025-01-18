@@ -3,6 +3,7 @@ package com.elementary.tasks.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -191,6 +192,10 @@ class BottomNavActivity :
     hint: String,
     adapter: RecyclerView.Adapter<*>
   ) {
+    if (findViewById<View>(anchorId) == null) {
+      Logger.i(TAG, "Can't find anchor with id: $anchorId, skipping search view initialization")
+      return
+    }
     val searchView = SearchView(this)
     searchView.hint = hint
     searchView.layoutParams = CoordinatorLayout.LayoutParams(binding.container.layoutParams).apply {

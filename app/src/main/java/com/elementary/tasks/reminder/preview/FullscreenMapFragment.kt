@@ -110,7 +110,7 @@ class FullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFullscreenM
     }
 
     childFragmentManager.beginTransaction()
-      .replace(binding.mapContainer.id, googleMap)
+      .replace(R.id.map_container, googleMap)
       .commit()
 
     this.simpleMapFragment = googleMap

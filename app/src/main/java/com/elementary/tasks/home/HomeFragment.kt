@@ -124,7 +124,7 @@ class HomeFragment :
       }
     }
     searchableFragmentCallback?.setSearchViewParams(
-      binding.searchBar.id,
+      R.id.search_bar,
       getString(R.string.search_everywhere),
       searchAdapter,
       this
