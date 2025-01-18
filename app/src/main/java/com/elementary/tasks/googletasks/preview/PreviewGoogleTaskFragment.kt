@@ -43,7 +43,7 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Logger.i(TAG, "Opening the Google Task preview screen for id: ${idFromIntent()}")
+    Logger.i(TAG, "Opening the Google Task preview screen for id: ${Logger.data(idFromIntent())}")
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -150,7 +150,6 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
     binding.buttonComplete.visibleGone(!googleTask.isCompleted)
 
     if (!googleTask.isCompleted) {
-      binding.completedDateView.gone()
       binding.statusView.text = getString(R.string.not_completed)
     } else {
       binding.statusView.text = getString(R.string.completed)
