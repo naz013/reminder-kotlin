@@ -1,41 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/progressView"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarView"
-        tools:visibility="visible">
-
-        <androidx.core.widget.ContentLoadingProgressBar
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:progressTint="?colorTertiary" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/progressMessageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:textAppearance="?textAppearanceTitleLarge"
-            android:textColor="?colorOnSurface"
-            tools:text="@string/please_wait" />
-
-    </LinearLayout>
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indeterminateAnimationType="disjoint"
+        app:indicatorColor="?colorSecondary"
+        app:trackThickness="4dp" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"

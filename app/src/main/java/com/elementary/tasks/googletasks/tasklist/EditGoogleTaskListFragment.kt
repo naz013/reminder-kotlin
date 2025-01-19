@@ -16,8 +16,10 @@ import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.menu.enableOrDisableItem
+import com.github.naz013.ui.common.menu.showOrHideItem
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.ui.common.view.visibleInvisible
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -50,8 +52,7 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.progressMessageView.text = getString(R.string.please_wait)
-    updateProgress(false)
+    onProgressChanged(false)
 
     binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(requireContext()))
     binding.colorSlider.setSelectorColorResource(
@@ -83,7 +84,11 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
         }
       },
       menuModifier = { menu ->
-        menu.getItem(1).isVisible = viewModel.canDelete()
+        menu.showOrHideItem(R.id.action_delete, viewModel.canDelete())
+
+        val isInProgress = viewModel.isInProgress.value ?: false
+        menu.enableOrDisableItem(R.id.action_delete, !isInProgress)
+        menu.enableOrDisableItem(R.id.action_add, !isInProgress)
       }
     )
 
@@ -99,7 +104,7 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
 
   private fun initViewModel() {
     viewModel.googleTaskList.nonNullObserve(this) { showTaskList(it) }
-    viewModel.isInProgress.nonNullObserve(this) { updateProgress(it) }
+    viewModel.isInProgress.nonNullObserve(this) { onProgressChanged(it) }
     viewModel.result.nonNullObserve(this) { commands ->
       if (commands == Commands.DELETED || commands == Commands.SAVED) {
         moveBack()
@@ -125,8 +130,12 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
     invalidateOptionsMenu()
   }
 
-  private fun updateProgress(b: Boolean) {
-    binding.progressView.visibleGone(b)
+  private fun onProgressChanged(isInProgress: Boolean) {
+    binding.progressBar.visibleInvisible(isInProgress)
+    binding.colorSlider.isEnabled = !isInProgress
+    binding.editField.isEnabled = !isInProgress
+    binding.defaultCheck.isEnabled = !isInProgress
+    invalidateOptionsMenu()
   }
 
   private fun saveTaskList() {
@@ -135,21 +144,11 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
       binding.nameLayout.showError(R.string.must_be_not_empty)
       return
     }
-    var isNew = false
-    val item = (viewModel.editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
-      title = listName
-      color = binding.colorSlider.selectedItem
-      updated = System.currentTimeMillis()
-    }
-    if (binding.defaultCheck.isChecked) {
-      item.def = 1
-    }
-
-    if (isNew) {
-      viewModel.newGoogleTaskList(item)
-    } else {
-      viewModel.updateGoogleTaskList(item)
-    }
+    viewModel.save(
+      listName = listName,
+      color = binding.colorSlider.selectedItem,
+      isDefault = binding.defaultCheck.isChecked
+    )
   }
 
   private fun deleteDialog() {

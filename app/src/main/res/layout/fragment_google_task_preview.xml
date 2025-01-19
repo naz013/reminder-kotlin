@@ -6,16 +6,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="ifContentScrolls">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:indeterminateAnimationType="disjoint"
+            app:indicatorColor="?colorSecondary"
+            app:trackThickness="4dp" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="ifContentScrolls">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -23,227 +33,234 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/taskTitleViewBlock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_fluent_text"
-                        app:tint="?colorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/taskTitleView"
+                    <LinearLayout
+                        android:id="@+id/taskTitleViewBlock"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceTitleLarge"
-                        android:textColor="?colorPrimary"
-                        android:textStyle="bold"
-                        tools:text="Test" />
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_fluent_text"
+                            app:tint="?colorPrimary" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/taskTitleView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceTitleLarge"
+                            android:textColor="?colorPrimary"
+                            android:textStyle="bold"
+                            tools:text="Test" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/taskNotesViewBlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_fluent_note"
+                            app:tint="?colorOnBackground" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/taskNotesView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="5dp"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground"
+                            tools:text="Some note" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/listNameViewBlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/listNameIconView"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_fluent_list"
+                            app:tint="?colorOnBackground" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/listNameView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground"
+                            tools:text="Work tasks" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/dueDateViewBlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_builder_by_monthday"
+                            app:tint="?colorOnBackground" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/dueDateView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground"
+                            tools:text="25 December 2023" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/createdDateViewBlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_builder_google_calendar_add"
+                            app:tint="?colorOnBackground" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/createdDateView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground"
+                            tools:text="25 December 2023" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/completedDateViewBlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_fluent_calendar_checkmark"
+                            app:tint="?colorOnBackground" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/completedDateView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground"
+                            tools:text="25 December 2023" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@null"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_fluent_flag"
+                            app:tint="?colorOnBackground" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/statusView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="?colorOnBackground"
+                            tools:text="@string/completed" />
+
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/taskNotesViewBlock"
+                    android:id="@+id/ads_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_fluent_note"
-                        app:tint="?colorOnBackground" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/taskNotesView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="5dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="Some note" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/listNameViewBlock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/listNameIconView"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_fluent_list"
-                        app:tint="?colorOnBackground" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/listNameView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="Work tasks" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/dueDateViewBlock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_builder_by_monthday"
-                        app:tint="?colorOnBackground" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/dueDateView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="25 December 2023" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/createdDateViewBlock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_builder_google_calendar_add"
-                        app:tint="?colorOnBackground" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/createdDateView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="25 December 2023" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/completedDateViewBlock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_fluent_calendar_checkmark"
-                        app:tint="?colorOnBackground" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/completedDateView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="25 December 2023" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_fluent_flag"
-                        app:tint="?colorOnBackground" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/statusView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textColor="?colorOnBackground"
-                        tools:text="@string/completed" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp" />
+                    android:orientation="vertical" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/ads_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="vertical" />
+        </androidx.core.widget.NestedScrollView>
 
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/buttonComplete"
@@ -257,18 +274,6 @@
         android:textAllCaps="true"
         android:visibility="gone"
         app:icon="@drawable/ic_fluent_checkmark"
-        tools:visibility="visible" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:padding="72dp"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/new_loading_animation"
         tools:visibility="visible" />
 
 </FrameLayout>

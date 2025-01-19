@@ -16,9 +16,8 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.ui.common.view.visibleInvisible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -70,6 +69,11 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
 
           else -> false
         }
+      },
+      menuModifier = { menu ->
+        val isInProgress = viewModel.isInProgress.value ?: false
+        menu.findItem(R.id.action_delete)?.isEnabled = !isInProgress
+        menu.findItem(R.id.action_edit)?.isEnabled = !isInProgress
       }
     )
 
@@ -112,13 +116,9 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
       }
     }
     viewModel.isInProgress.nonNullObserve(this) {
-      if (it) {
-        binding.animationView.visible()
-        binding.animationView.playAnimation()
-      } else {
-        binding.animationView.gone()
-        binding.animationView.cancelAnimation()
-      }
+      binding.progressBar.visibleInvisible(it)
+      binding.buttonComplete.isEnabled = !it
+      invalidateOptionsMenu()
     }
   }
 
@@ -154,6 +154,10 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
     } else {
       binding.statusView.text = getString(R.string.completed)
     }
+  }
+
+  override fun canGoBack(): Boolean {
+    return viewModel.isInProgress.value?.not() ?: true
   }
 
   companion object {

@@ -99,7 +99,25 @@ class EditGoogleTaskListViewModel(
     }
   }
 
-  fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
+  fun save(listName: String, color: Int, isDefault: Boolean) {
+    var isNew = false
+    val item = (editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
+      this.title = listName
+      this.color = color
+      this.updated = System.currentTimeMillis()
+    }
+    if (isDefault) {
+      item.def = 1
+    }
+
+    if (isNew) {
+      newGoogleTaskList(item)
+    } else {
+      updateGoogleTaskList(item)
+    }
+  }
+
+  private fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
     postInProgress(true)
     Logger.i(
       TAG,
@@ -112,19 +130,21 @@ class EditGoogleTaskListViewModel(
           googleTaskListRepository.save(it)
         }
       }
-      googleTasksApi.saveTasksList(googleTaskList.title, googleTaskList.color)?.let {
-        googleTaskListRepository.save(it)
-        analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
-        postInProgress(false)
-        postCommand(Commands.SAVED)
-      } ?: run {
+      googleTasksApi.saveTasksList(googleTaskList.title, googleTaskList.color)
+        ?.apply { this.def = googleTaskList.def }
+        ?.let {
+          googleTaskListRepository.save(it)
+          analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
+          postInProgress(false)
+          postCommand(Commands.SAVED)
+        } ?: run {
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
     }
   }
 
-  fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
+  private fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
     postInProgress(true)
     Logger.i(TAG, "Updating Google Task List (${googleTaskList.listId})")
     viewModelScope.launch(dispatcherProvider.default()) {
