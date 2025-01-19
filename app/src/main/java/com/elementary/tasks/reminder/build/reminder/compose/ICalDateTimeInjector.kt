@@ -17,15 +17,19 @@ class ICalDateTimeInjector(
     processedBuilderItems: ProcessedBuilderItems
   ): LocalDateTime? {
     val eventData = iCalDateTimeCalculator(processedBuilderItems) ?: return null
-    Logger.d("invoke: eventData = $eventData")
+    Logger.d(TAG, "Calculated eventData = $eventData")
 
     val startTime = eventData.startDateTime
-    Logger.d("invoke: startTime = $startTime, recurObject = ${eventData.recurObject}")
+    Logger.d(TAG, "Selected startTime = $startTime, recurObject = ${eventData.recurObject}")
 
     reminder.recurDataObject = eventData.recurObject
     reminder.eventTime = dateTimeManager.getGmtFromDateTime(startTime)
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
 
     return eventData.startDateTime
+  }
+
+  companion object {
+    private const val TAG = "ICalDateTimeInjector"
   }
 }

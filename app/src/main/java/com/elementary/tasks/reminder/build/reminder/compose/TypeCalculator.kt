@@ -1,9 +1,9 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 
 class TypeCalculator(
@@ -40,11 +40,18 @@ class TypeCalculator(
       val hasLocationIn = itemsMap[BiType.ARRIVING_COORDINATES] != null
       val hasLocationOut = itemsMap[BiType.LEAVING_COORDINATES] != null
       val hasICalRecur = processedBuilderItems.groupMap.containsKey(BiGroup.ICAL)
+      val hasDate = itemsMap[BiType.DATE] != null
+      val hasTime = itemsMap[BiType.TIME] != null
+      val hasLocationDelay = itemsMap[BiType.LOCATION_DELAY_DATE] != null ||
+        itemsMap[BiType.LOCATION_DELAY_TIME] != null
 
       when {
         hasLocationIn -> Reminder.BY_LOCATION + actionCalculator(itemsMap)
         hasLocationOut -> Reminder.BY_OUT + actionCalculator(itemsMap)
+        hasLocationDelay -> Reminder.BY_LOCATION + actionCalculator(itemsMap)
         hasICalRecur -> Reminder.BY_RECUR + actionCalculator(itemsMap)
+        hasDate -> Reminder.BY_DATE + actionCalculator(itemsMap)
+        hasTime -> Reminder.BY_DATE + actionCalculator(itemsMap)
         hasShop -> Reminder.BY_DATE_SHOP
         else -> {
           0
@@ -54,8 +61,7 @@ class TypeCalculator(
       0
     }
 
-    Logger.d("mainType: $mainType")
-
+    Logger.i(TAG, "Calculated type = $mainType")
     return mainType
   }
 
@@ -65,5 +71,9 @@ class TypeCalculator(
 
   private fun isAllFalse(vararg booleans: Boolean): Boolean {
     return booleans.none { it }
+  }
+
+  companion object {
+    private const val TAG = "TypeCalculator"
   }
 }

@@ -1,80 +1,83 @@
 package com.elementary.tasks.reminder.build.adapter
 
-import android.content.Context
 import com.elementary.tasks.R
-import com.github.naz013.icalendar.RecurParamType
 import com.elementary.tasks.reminder.build.bi.BiGroup
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.icalendar.RecurParamType
 
 class BiTypeForUiAdapter(
-  private val context: Context,
+  private val textProvider: TextProvider,
   private val paramToTextAdapter: ParamToTextAdapter
 ) {
 
   fun getUiString(biType: BiType): String {
     return when (biType) {
-      BiType.DATE -> context.getString(R.string.builder_date)
-      BiType.TIME -> context.getString(R.string.time)
-      BiType.SUMMARY -> context.getString(R.string.builder_summary)
-      BiType.DESCRIPTION -> context.getString(R.string.builder_details)
-      BiType.DAY_OF_YEAR -> context.getString(R.string.builder_day_of_year)
-      BiType.DAY_OF_MONTH -> context.getString(R.string.day_of_month)
-      BiType.DAYS_OF_WEEK -> context.getString(R.string.builder_days_of_week)
-      BiType.COUNTDOWN_TIMER -> context.getString(R.string.builder_countdown)
-      BiType.COUNTDOWN_TIMER_EXCLUSION -> context.getString(R.string.builder_countdown_exclusion)
-      BiType.GROUP -> context.getString(R.string.group)
-      BiType.BEFORE_TIME -> context.getString(R.string.before_time)
-      BiType.REPEAT_TIME -> context.getString(R.string.repeat)
-      BiType.REPEAT_INTERVAL -> context.getString(R.string.builder_repeat_interval)
-      BiType.REPEAT_LIMIT -> context.getString(R.string.repeat_limit)
-      BiType.PRIORITY -> context.getString(R.string.priority)
-      BiType.LED_COLOR -> context.getString(R.string.led_color)
-      BiType.ATTACHMENTS -> context.getString(R.string.builder_attachments)
-      BiType.PHONE_CALL -> context.getString(R.string.make_call)
-      BiType.SMS -> context.getString(R.string.send_sms)
-      BiType.GOOGLE_TASK_LIST -> context.getString(R.string.add_to_google_tasks)
-      BiType.GOOGLE_CALENDAR -> context.getString(R.string.add_to_calendar)
-      BiType.GOOGLE_CALENDAR_DURATION -> context.getString(R.string.event_duration)
-      BiType.EMAIL -> context.getString(R.string.e_mail)
-      BiType.LINK -> context.getString(R.string.builder_web_address)
-      BiType.EMAIL_SUBJECT -> context.getString(R.string.subject)
-      BiType.APPLICATION -> context.getString(R.string.application)
-      BiType.OTHER_PARAMS -> context.getString(R.string.builder_additional_parameters)
-      BiType.SUB_TASKS -> context.getString(R.string.builder_sub_tasks)
+      BiType.DATE -> textProvider.getString(R.string.builder_date)
+      BiType.TIME -> textProvider.getString(R.string.time)
+      BiType.SUMMARY -> textProvider.getString(R.string.builder_summary)
+      BiType.DESCRIPTION -> textProvider.getString(R.string.builder_details)
+      BiType.DAY_OF_YEAR -> textProvider.getString(R.string.builder_day_of_year)
+      BiType.DAY_OF_MONTH -> textProvider.getString(R.string.day_of_month)
+      BiType.DAYS_OF_WEEK -> textProvider.getString(R.string.builder_days_of_week)
+      BiType.COUNTDOWN_TIMER -> textProvider.getString(R.string.builder_countdown)
+      BiType.COUNTDOWN_TIMER_EXCLUSION -> {
+        textProvider.getString(R.string.builder_countdown_exclusion)
+      }
+
+      BiType.GROUP -> textProvider.getString(R.string.group)
+      BiType.BEFORE_TIME -> textProvider.getString(R.string.before_time)
+      BiType.REPEAT_TIME -> textProvider.getString(R.string.repeat)
+      BiType.REPEAT_INTERVAL -> textProvider.getString(R.string.builder_repeat_interval)
+      BiType.REPEAT_LIMIT -> textProvider.getString(R.string.repeat_limit)
+      BiType.PRIORITY -> textProvider.getString(R.string.priority)
+      BiType.LED_COLOR -> textProvider.getString(R.string.led_color)
+      BiType.ATTACHMENTS -> textProvider.getString(R.string.builder_attachments)
+      BiType.PHONE_CALL -> textProvider.getString(R.string.make_call)
+      BiType.SMS -> textProvider.getString(R.string.send_sms)
+      BiType.GOOGLE_TASK_LIST -> textProvider.getString(R.string.add_to_google_tasks)
+      BiType.GOOGLE_CALENDAR -> textProvider.getString(R.string.add_to_calendar)
+      BiType.GOOGLE_CALENDAR_DURATION -> textProvider.getString(R.string.event_duration)
+      BiType.EMAIL -> textProvider.getString(R.string.e_mail)
+      BiType.LINK -> textProvider.getString(R.string.builder_web_address)
+      BiType.EMAIL_SUBJECT -> textProvider.getString(R.string.subject)
+      BiType.APPLICATION -> textProvider.getString(R.string.application)
+      BiType.OTHER_PARAMS -> textProvider.getString(R.string.builder_additional_parameters)
+      BiType.SUB_TASKS -> textProvider.getString(R.string.builder_sub_tasks)
       BiType.ARRIVING_COORDINATES -> {
-        context.getString(R.string.builder_arriving_destination)
+        textProvider.getString(R.string.builder_arriving_destination)
       }
 
       BiType.LEAVING_COORDINATES -> {
-        context.getString(R.string.builder_leaving_place)
+        textProvider.getString(R.string.builder_leaving_place)
       }
 
       BiType.LOCATION_DELAY_DATE -> {
-        context.getString(R.string.builder_delay_date)
+        textProvider.getString(R.string.builder_delay_date)
       }
 
       BiType.LOCATION_DELAY_TIME -> {
-        context.getString(R.string.builder_delay_time)
+        textProvider.getString(R.string.builder_delay_time)
       }
 
       BiType.ICAL_START_TIME -> {
-        iCalendarPrefix() + " " + context.getString(R.string.builder_start_time)
+        iCalendarPrefix() + " " + textProvider.getString(R.string.builder_start_time)
       }
 
       BiType.ICAL_START_DATE -> {
-        iCalendarPrefix() + " " + context.getString(R.string.builder_start_date)
+        iCalendarPrefix() + " " + textProvider.getString(R.string.builder_start_date)
       }
 
       BiType.ICAL_UNTIL_DATE -> {
-        iCalendarPrefix() + " " + context.getString(R.string.builder_until_date)
+        iCalendarPrefix() + " " + textProvider.getString(R.string.builder_until_date)
       }
 
       BiType.ICAL_UNTIL_TIME -> {
-        iCalendarPrefix() + " " + context.getString(R.string.builder_until_time)
+        iCalendarPrefix() + " " + textProvider.getString(R.string.builder_until_time)
       }
 
       BiType.NOTE -> {
-        context.getString(R.string.note)
+        textProvider.getString(R.string.note)
       }
 
       else -> {
@@ -89,7 +92,7 @@ class BiTypeForUiAdapter(
   }
 
   private fun iCalendarPrefix(): String {
-    return context.getString(R.string.builder_icalendar)
+    return textProvider.getString(R.string.builder_icalendar)
   }
 
   private fun BiType.toRecurParamType(): RecurParamType? {

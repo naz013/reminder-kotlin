@@ -16,7 +16,7 @@ internal class UiReminderWidgetListAdapter(
 
   fun create(data: Reminder): DateSorted {
     return when {
-      Reminder.isKind(data.type, Reminder.SHOPPING) -> {
+      data.readType().hasSubTasks() -> {
         val due = getDue(data)
         UiReminderWidgetShopList(
           uuId = data.uuId,
