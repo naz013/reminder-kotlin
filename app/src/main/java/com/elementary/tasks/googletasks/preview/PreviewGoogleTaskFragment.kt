@@ -84,7 +84,7 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
     if (!BuildParams.isPro && AdsProvider.hasAds()) {
       adsProvider.showBanner(
         binding.adsHolder,
-        AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID
+        AdsProvider.GOOGLE_TASKS_PREVIEW_BANNER_ID
       )
     }
   }

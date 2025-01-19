@@ -100,7 +100,6 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
 
   override fun onDestroy() {
     super.onDestroy()
-    adsProvider.destroy()
     adapter.actionsListener = null
   }
 
