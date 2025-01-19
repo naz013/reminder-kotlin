@@ -19,7 +19,10 @@ import com.github.naz013.feature.common.livedata.nullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.menu.enableOrDisableItem
+import com.github.naz013.ui.common.menu.showOrHideItem
 import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.ui.common.view.visibleInvisible
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -54,9 +57,6 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     initFields()
-
-    binding.progressMessageView.text = getString(R.string.please_wait)
-
     addMenu(
       menuRes = R.menu.fragment_google_task_edit,
       onMenuItemListener = { menuItem ->
@@ -65,20 +65,28 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
             deleteDialog()
             true
           }
+
           R.id.action_move -> {
             doIfPossible { selectList(true) }
             true
           }
+
           R.id.action_add -> {
             doIfPossible { saveTask() }
             true
           }
+
           else -> false
         }
       },
       menuModifier = { menu ->
-        menu.getItem(1).isVisible = viewModel.editedTask != null
-        menu.getItem(2).isVisible = viewModel.editedTask != null
+        menu.showOrHideItem(R.id.action_delete, viewModel.editedTask != null)
+        menu.showOrHideItem(R.id.action_move, viewModel.editedTask != null)
+
+        val isInProgress = viewModel.isInProgress.value ?: false
+        menu.enableOrDisableItem(R.id.action_delete, !isInProgress)
+        menu.enableOrDisableItem(R.id.action_move, !isInProgress)
+        menu.enableOrDisableItem(R.id.action_add, !isInProgress)
       }
     )
 
@@ -93,9 +101,7 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
   }
 
   private fun initViewModel() {
-    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) {
-      binding.progressView.visibleGone(it)
-    }
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { onProgressChanged(it) }
     viewModel.result.nonNullObserve(viewLifecycleOwner) { commands ->
       when (commands) {
         Commands.SAVED, Commands.DELETED -> moveBack()
@@ -110,6 +116,15 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
     viewModel.toast.nonNullObserve(viewLifecycleOwner) { toast(it) }
 
     lifecycle.addObserver(viewModel)
+  }
+
+  private fun onProgressChanged(isInProgress: Boolean) {
+    binding.progressBar.visibleInvisible(isInProgress)
+    binding.listText.isEnabled = !isInProgress
+    binding.dateField.isEnabled = !isInProgress
+    binding.timeField.isEnabled = !isInProgress
+    binding.editField.isEnabled = !isInProgress
+    invalidateOptionsMenu()
   }
 
   private fun showTaskList(googleTaskList: GoogleTaskList) {
@@ -282,6 +297,10 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
     } else {
       f.invoke()
     }
+  }
+
+  override fun canGoBack(): Boolean {
+    return viewModel.isInProgress.value?.not() ?: true
   }
 
   companion object {

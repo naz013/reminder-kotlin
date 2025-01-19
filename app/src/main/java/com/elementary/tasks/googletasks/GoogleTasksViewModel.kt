@@ -2,13 +2,13 @@ package com.elementary.tasks.googletasks
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
@@ -58,7 +58,10 @@ class GoogleTasksViewModel(
         uiGoogleTaskListAdapter.convert(it, map[it.listId])
       }
 
-      _defTaskList.postValue(googleTaskLists.firstOrNull { it.isDefault() })
+      val defTaskList = googleTaskLists.firstOrNull { it.isDefault() }
+        ?: googleTaskLists.firstOrNull()
+
+      defTaskList?.also { _defTaskList.postValue(it) }
       _googleTaskLists.postValue(googleTaskLists)
       _allGoogleTasks.postValue(googleTasks)
     }
