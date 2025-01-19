@@ -23,19 +23,19 @@ import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
 
 class ICalDateTimeCalculator(
-  private val ICalendarApi: ICalendarApi,
+  private val iCalendarApi: ICalendarApi,
   private val dateTimeManager: DateTimeManager
 ) {
 
   operator fun invoke(processedBuilderItems: ProcessedBuilderItems): EventData? {
-    Logger.d("invoke: $processedBuilderItems")
+    Logger.d(TAG, "Start calculation with processedBuilderItems = $processedBuilderItems")
 
     val iCalParams = processedBuilderItems.groupMap[BiGroup.ICAL]
       ?.takeIf { it.isNotEmpty() }
       ?.associateBy { it.biType }
       ?: return null
 
-    Logger.d("invoke: iCalParams = $iCalParams")
+    Logger.d(TAG, "iCalParams = $iCalParams")
 
     val startDate = iCalParams.readValue(
       BiType.ICAL_START_DATE,
@@ -48,27 +48,28 @@ class ICalDateTimeCalculator(
 
     val startDateTime = LocalDateTime.of(startDate, startTime)
 
-    Logger.d("invoke: startDateTime = $startDateTime")
+    Logger.d(TAG, "Calculated startDateTime = $startDateTime")
 
     val ruleMap = createRuleMap(startDateTime, iCalParams)
 
-    Logger.d("invoke: ruleMap = $ruleMap")
+    Logger.d(TAG, "Generated ruleMap = $ruleMap")
 
     val recurObject = runCatching {
-      ICalendarApi.createObject(ruleMap)
+      iCalendarApi.createObject(ruleMap)
     }.getOrNull() ?: return null
 
-    Logger.d("invoke: recurObject = $recurObject")
+    Logger.i(TAG, "Generated recurObject = $recurObject")
 
-    val dates = runCatching { ICalendarApi.generate(ruleMap) }.getOrNull() ?: emptyList()
+    val dates = runCatching { iCalendarApi.generate(ruleMap) }.getOrNull() ?: emptyList()
 
-    Logger.d("invoke: dates = $dates")
+    Logger.d(TAG, "Generated dates = $dates")
 
     val position = findPosition(dates)
 
-    Logger.d("invoke: position = $position")
+    Logger.i(TAG, "Calculated position = $position")
 
     return dates[position].dateTime?.let {
+      Logger.i(TAG, "Calculated next event date time = $it")
       EventData(
         startDateTime = it,
         recurObject = recurObject
@@ -113,7 +114,7 @@ class ICalDateTimeCalculator(
       null
     }
 
-    Logger.d("invoke: untilDateTime = $untilDateTime")
+    Logger.d(TAG, "Found untilDateTime = $untilDateTime")
 
     untilDateTime?.also {
       recurParams.add(UntilRecurParam(UtcDateTime(untilDateTime)))
@@ -162,5 +163,9 @@ class ICalDateTimeCalculator(
       ?.let { it as? B }
       ?.modifier
       ?.getValue()
+  }
+
+  companion object {
+    private const val TAG = "ICalDateTimeCalculator"
   }
 }

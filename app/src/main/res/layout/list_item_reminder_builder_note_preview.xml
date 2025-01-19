@@ -113,13 +113,13 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/remove_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:padding="4dp"
+            android:padding="12dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_builder_clear"
             app:tint="?colorOnSurface" />

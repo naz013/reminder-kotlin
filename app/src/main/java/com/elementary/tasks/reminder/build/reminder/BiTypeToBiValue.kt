@@ -2,18 +2,18 @@
 
 package com.elementary.tasks.reminder.build.reminder
 
-import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.github.naz013.icalendar.DayValue
-import com.github.naz013.icalendar.FreqType
-import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.threeten.bp.LocalDate
@@ -22,7 +22,6 @@ import org.threeten.bp.LocalTime
 class BiTypeToBiValue {
 
   operator fun <V> invoke(biType: BiType, value: String): V? {
-    println("BiTypeToBiValueClass: in = $value, type = $biType")
     if (value.isEmpty()) return null
     return when (biType) {
       BiType.DATE,

@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.github.naz013.domain.reminder.BuilderSchemeItem
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.EmptyState
 import com.elementary.tasks.reminder.build.ErrorState
@@ -11,8 +9,9 @@ import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
 import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.BuilderSchemeItem
 import com.github.naz013.logging.Logger
-import java.util.UUID
 
 class BiToReminderAdapter(
   private val builderStateCalculator: BuilderStateCalculator,
@@ -24,24 +23,17 @@ class BiToReminderAdapter(
 
   operator fun invoke(
     reminder: Reminder,
-    items: List<BuilderItem<*>>,
-    newId: Boolean
+    items: List<BuilderItem<*>>
   ): BuildResult {
     val processedBuilderItems = ProcessedBuilderItems(items)
-    val itemsMap = processedBuilderItems.typeMap
 
     val type = typeCalculator(processedBuilderItems)
-    Logger.d("invoke: type=$type")
-
-    val builderState = builderStateCalculator(type, itemsMap)
-    Logger.d("invoke: builderState=$builderState")
-
+    val builderState = builderStateCalculator(type)
     if (builderState is EmptyState || builderState is ErrorState) {
       return BuildResult.Error("State is not valid")
     }
 
     reminder.type = type
-
     items.forEach {
       it.modifier.putInto(reminder)
     }
@@ -51,15 +43,11 @@ class BiToReminderAdapter(
 
     when (val validationResult = reminderValidator(reminder)) {
       is ReminderValidator.ValidationResult.Failed -> {
-        Logger.d("invoke: reminder not valid cause = ${validationResult.error}")
+        Logger.d("Reminder not valid cause = ${validationResult.error}")
         return BuildResult.Error("Reminder is not valid")
       }
       else -> {
       }
-    }
-
-    if (newId) {
-      reminder.uuId = UUID.randomUUID().toString()
     }
 
     reminder.builderScheme = items.mapIndexed { index, builderItem ->
@@ -67,12 +55,16 @@ class BiToReminderAdapter(
     }
     reminder.version = Reminder.Version.V3
 
-    Logger.d("invoke: new reminder=$reminder")
+    Logger.d(TAG, "New reminder = $reminder")
     return BuildResult.Success(reminder)
   }
 
   sealed class BuildResult {
     data class Success(val reminder: Reminder) : BuildResult()
     data class Error(val error: String) : BuildResult()
+  }
+
+  companion object {
+    private const val TAG = "BiToReminderAdapter"
   }
 }

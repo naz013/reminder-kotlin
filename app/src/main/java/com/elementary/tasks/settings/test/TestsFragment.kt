@@ -33,7 +33,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     Reminder().apply {
       this.summary = "Test"
       this.target = "16546848"
-      this.type = Reminder.BY_DATE_CALL
+      this.type = Reminder.BY_DATE + 1
       this.useGlobal = true
     }.also {
       ReminderDialog29Activity.mockTest(requireContext(), it)

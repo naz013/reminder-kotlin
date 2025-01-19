@@ -5,6 +5,7 @@ import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiValueForUiAdapter
+import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFactoryICal
@@ -23,6 +24,7 @@ import com.elementary.tasks.reminder.build.logic.BuilderItemsHolder
 import com.elementary.tasks.reminder.build.logic.BuilderItemsLogic
 import com.elementary.tasks.reminder.build.logic.UiBuilderItemsAdapter
 import com.elementary.tasks.reminder.build.logic.UiSelectorItemsAdapter
+import com.elementary.tasks.reminder.build.logic.builderstate.BuilderErrorFinder
 import com.elementary.tasks.reminder.build.logic.builderstate.BuilderStateCalculator
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BiValueToBuilderSchemeValue
@@ -92,6 +94,7 @@ val reminderModule = module {
   viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
       arguments,
+      get(),
       get(),
       get(),
       get(),
@@ -212,6 +215,9 @@ val reminderModule = module {
 
   factory { BiToReminderAdapter(get(), get(), get(), get(), get()) }
 
+  factory { BuilderErrorFinder(get(), get(), get(), get(), get()) }
+  factory { BuilderErrorToTextAdapter(get(), get()) }
+
   factory { RecurParamsToBiAdapter(get()) }
 
   factory { ReminderValidator(get(), get(), get()) }
@@ -256,7 +262,7 @@ val reminderModule = module {
   factory { BuilderItemsToBuilderPresetAdapter(get()) }
   factory { BiValueToBuilderSchemeValue(get()) }
 
-  factory { ReminderPredictionCalculator(get(), get()) }
+  factory { ReminderPredictionCalculator(get(), get(), get()) }
 
   factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
 

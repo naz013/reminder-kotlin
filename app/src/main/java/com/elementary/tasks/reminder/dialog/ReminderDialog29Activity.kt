@@ -258,7 +258,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.timeBlock.gone()
     }
 
-    if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
+    if (reminder.readType().hasCallAction()) {
       contactPhoto.visible()
       val conID = contactsReader.getIdFromNumber(reminder.target)
 
@@ -287,7 +287,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.buttonAction.text = getString(R.string.make_call)
       binding.buttonAction.visibleGone(prefs.isTelephonyAllowed)
       binding.container.visible()
-    } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
+    } else if (reminder.readType().hasSmsAction()) {
       contactPhoto.visibility = View.VISIBLE
       val conID = contactsReader.getIdFromNumber(reminder.target)
       val name = contactsReader.getNameFromNumber(reminder.target)
@@ -317,7 +317,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.buttonAction.contentDescription = getString(R.string.acc_button_send_message)
 
       binding.container.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
+    } else if (reminder.readType().hasEmailAction()) {
       binding.remText.setText(R.string.e_mail)
       val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
         contactsReader.getIdFromMail(reminder.target)
@@ -352,7 +352,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.send)
       binding.buttonAction.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
+    } else if (reminder.readType().hasApplicationAction()) {
       val packageManager = packageManager
       var applicationInfo: ApplicationInfo? = null
       try {
@@ -373,7 +373,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.open)
       binding.buttonAction.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)) {
+    } else if (reminder.readType().hasLinkAction()) {
       val label = summary + "\n\n" + reminder.target
       binding.remText.text = summary
       binding.remText.contentDescription = label
@@ -382,7 +382,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.open)
       binding.buttonAction.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP)) {
+    } else if (reminder.readType().hasSubTasks()) {
       binding.remText.text = summary
       binding.remText.contentDescription = summary
       binding.contactBlock.transparent()
@@ -398,7 +398,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     moreActionParams.canStartAgain = Reminder.isBase(reminder.type, Reminder.BY_TIME)
     moreActionParams.canCancel = canSkip()
 
-    if (!Reminder.isGpsType(reminder.type)) {
+    if (!reminder.readType().isGpsType()) {
       moreActionParams.canSnooze = true
     }
   }
@@ -549,7 +549,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     discardNotification(id)
     doActions({ it.next() }, {
       when {
-        Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS()
+        it.readType().hasSmsAction() -> sendSMS()
         isAppType -> openApplication(it)
         Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
           context = this,
@@ -561,7 +561,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
         else -> makeCall()
       }
-      if (!Reminder.isKind(it.type, Reminder.Kind.SMS)) {
+      if (!it.readType().hasSmsAction()) {
         finish()
       }
     })

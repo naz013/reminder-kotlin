@@ -60,8 +60,6 @@ internal class ICalendarApiImpl(
     // UTC date time
     val dateTime = DateTime(TimeZone.getDefault(), startDateTime)
 
-    println(dateTime)
-
     val rule = RecurrenceRule(rrule.buildValueString())
     val set = RecurrenceSet(dateTime, RuleInstances(rule))
     val iterator = set.iterator()

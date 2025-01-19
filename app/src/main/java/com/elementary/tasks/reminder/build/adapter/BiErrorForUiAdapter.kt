@@ -3,9 +3,9 @@ package com.elementary.tasks.reminder.build.adapter
 import android.content.Context
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
+import com.elementary.tasks.reminder.build.bi.BuilderItemError
 import com.github.naz013.common.Permissions
 import com.github.naz013.domain.reminder.BiType
-import com.elementary.tasks.reminder.build.bi.BuilderItemError
 
 class BiErrorForUiAdapter(
   private val context: Context,
@@ -15,12 +15,7 @@ class BiErrorForUiAdapter(
   fun getUiString(errors: List<BuilderItemError>): String {
     if (errors.isEmpty()) return ""
     val errorsStr = errors.joinToString("\n") { getErrorMessage(it) }
-    val errorsLabelStr = context.resources.getQuantityString(
-      R.plurals.x_errors,
-      errors.size,
-      errors.size
-    )
-    return "$errorsLabelStr\n" + errorsStr
+    return errorsStr
   }
 
   private fun getErrorMessage(error: BuilderItemError): String {

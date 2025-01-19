@@ -18,6 +18,7 @@ import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiComparator
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFilter
@@ -25,6 +26,7 @@ import com.elementary.tasks.reminder.build.bi.constraint.PermissionConstraint
 import com.elementary.tasks.reminder.build.logic.BuilderItemsLogic
 import com.elementary.tasks.reminder.build.logic.UiBuilderItemsAdapter
 import com.elementary.tasks.reminder.build.logic.UiSelectorItemsAdapter
+import com.elementary.tasks.reminder.build.logic.builderstate.BuilderErrorFinder
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
@@ -43,7 +45,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.PresetType
@@ -69,6 +70,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+import java.util.UUID
 
 class BuildReminderViewModel(
   private val arguments: Bundle?,
@@ -100,8 +102,9 @@ class BuildReminderViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val textProvider: TextProvider,
-  private val intentDataReader: IntentDataReader
+  private val intentDataReader: IntentDataReader,
+  private val builderErrorFinder: BuilderErrorFinder,
+  private val builderErrorToTextAdapter: BuilderErrorToTextAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -233,9 +236,13 @@ class BuildReminderViewModel(
       }
 
       val reminder = original ?: Reminder()
-      when (val buildResult = biToReminderAdapter(reminder, builderItems, newId)) {
+      when (val buildResult = biToReminderAdapter(reminder, builderItems)) {
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Reminder build success")
+
+          if (newId) {
+            reminder.uuId = UUID.randomUUID().toString()
+          }
 
           saveAndStartReminder(buildResult.reminder, isEdit = isEdited)
 
@@ -610,9 +617,9 @@ class BuildReminderViewModel(
     }
     _builderItems.postValue(usedItems)
 
-    val errors = usedItems.asSequence().filter { it.state is UiLitBuilderItemState.ErrorState }
+    val errors = usedItems.asSequence().filter { it.state is UiListBuilderItemState.ErrorState }
       .map { it.state }
-      .map { it as UiLitBuilderItemState.ErrorState }
+      .map { it as UiListBuilderItemState.ErrorState }
       .map { it.errors }
       .flatten()
       .toSet()
@@ -658,7 +665,7 @@ class BuildReminderViewModel(
     }
 
     val reminder = Reminder()
-    when (val buildResult = biToReminderAdapter(reminder, builderItems, false)) {
+    when (val buildResult = biToReminderAdapter(reminder, builderItems)) {
       is BiToReminderAdapter.BuildResult.Success -> {
         _showPrediction.postValue(reminderPredictionCalculator(reminder))
         _canSaveAsPreset.postValue(true)
@@ -669,12 +676,12 @@ class BuildReminderViewModel(
         _showPrediction.postValue(
           ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_error_circle,
-            message = textProvider.getText(R.string.builder_error_create_reminder)
+            message = builderErrorToTextAdapter(builderErrorFinder(reminder, builderItems))
           )
         )
         _canSaveAsPreset.postValue(false)
         _canSave.postValue(false)
-        Logger.d(TAG, "updateBuilderState: build failed ${buildResult.error}")
+        Logger.i(TAG, "Failed to update builder state with error = ${buildResult.error}")
       }
     }
   }

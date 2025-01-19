@@ -16,11 +16,19 @@ class TextProvider(initContext: Context) {
     }
   }
 
-  fun getText(@StringRes id: Int): String {
+  fun getString(@StringRes id: Int): String {
     return context.getString(id)
   }
 
-  fun getText(@StringRes id: Int, vararg args: Any): String {
+  fun getText(@StringRes id: Int): String {
+    return getString(id)
+  }
+
+  fun getString(@StringRes id: Int, vararg args: Any): String {
     return context.getString(id, *args)
+  }
+
+  fun getText(@StringRes id: Int, vararg args: Any): String {
+    return getString(id, *args)
   }
 }
