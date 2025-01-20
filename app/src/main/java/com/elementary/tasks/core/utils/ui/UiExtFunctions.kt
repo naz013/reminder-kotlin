@@ -1,26 +1,24 @@
 package com.elementary.tasks.core.utils.ui
 
 import android.annotation.SuppressLint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.context.colorOf
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.visibleGone
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.TextInputLayout
@@ -29,16 +27,13 @@ fun AppCompatEditText.onTextChanged(f: (String?) -> Unit): TextWatcher {
   return doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
 }
 
-fun Toolbar.tintOverflowButton(isDark: Boolean): Boolean {
-  val overflowIcon = overflowIcon ?: return false
+fun MaterialToolbar.tintOverflowButton(isDark: Boolean) {
   val color = if (isDark) {
     context.colorOf(R.color.whitePrimary)
   } else {
     context.colorOf(R.color.pureBlack)
   }
-  val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
-  overflowIcon.colorFilter = colorFilter
-  return true
+  setOverflowIcon(ViewUtils.tintIcon(context, R.drawable.ic_fluent_more_vertical, color))
 }
 
 @SuppressLint("ClickableViewAccessibility")
@@ -86,8 +81,6 @@ fun TextInputLayout.showError(message: String) {
 }
 
 fun AppCompatEditText.trimmedText() = text.toString().trim()
-
-fun AutoCompleteTextView.trimmedText() = text.toString().trim()
 
 fun AppCompatTextView.text() = text.toString()
 

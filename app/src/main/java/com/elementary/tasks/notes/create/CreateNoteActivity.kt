@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
@@ -140,7 +141,7 @@ class CreateNoteActivity :
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     binding.appBar.applyTopInsets()
-    binding.bottomBar.applyBottomInsetsMargin()
+    binding.bottomBarInnerSpace.applyBottomInsetsMargin()
 
     tabController = TabController(
       tabs = listOf(
@@ -466,7 +467,7 @@ class CreateNoteActivity :
       updateDarkness(it)
       updateBackground(it)
       updateTextColors()
-      updateIcons()
+      updateBottomBarIcons(it.first)
       updateMenu()
     }
     viewModel.timeFormatted.nonNullObserve(this) {
@@ -490,7 +491,10 @@ class CreateNoteActivity :
       updateDarkness(pair, it)
       updateBackground(pair, it)
       updateTextColors()
-      updateIcons()
+      updateBottomBarIcons(
+        colorIndex = binding.colorSlider.selectedItem,
+        palette = it
+      )
       updateMenu()
     }
     viewModel.note.nonNullObserve(this) { showNote(it) }
@@ -539,51 +543,60 @@ class CreateNoteActivity :
         else -> false
       }
     }
-    updateIcons()
+    updateBottomBarIcons(binding.colorSlider.selectedItem)
     updateMenu()
   }
 
   private fun updateMenu() {
+    Logger.i(TAG, "Update toolbar colors, isBgDark: $isBgDark")
     binding.toolbar.menu.also { menu ->
       ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_fluent_checkmark, isBgDark)
       ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_fluent_share_android, isBgDark)
       menu.getItem(2).isVisible = viewModel.isNoteEdited && !viewModel.isFromFile
       ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_fluent_delete, isBgDark)
     }
+    binding.toolbar.setNavigationIconTint(ViewUtils.tintIconColor(this, isBgDark))
+    binding.toolbar.tintOverflowButton(isBgDark)
   }
 
-  private fun updateIcons() {
-    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
-    binding.toolbar.tintOverflowButton(isBgDark)
+  private fun updateBottomBarIcons(colorIndex: Int, palette: Int = palette()) {
+    val isNoteColorDark = themeProvider.getNoteLightColor(
+      code = colorIndex,
+      opacity = 100,
+      palette = palette
+    ).isColorDark()
     binding.voiceInputMic.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_builder_mic_on, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_builder_mic_on, isNoteColorDark)
     )
     binding.voiceInputStop.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_recording_stop, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_recording_stop, isNoteColorDark)
     )
     binding.voiceSpeakAnimation.imageTintList = ColorStateList.valueOf(
-      ViewUtils.tintIconColor(this, isBgDark)
+      ViewUtils.tintIconColor(this, isNoteColorDark)
     )
-
     binding.colorButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_color_background, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_color_background, isNoteColorDark)
     )
     binding.imageButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_image, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_image, isNoteColorDark)
     )
     binding.reminderButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_alert, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_alert, isNoteColorDark)
     )
     binding.fontButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_text, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_text, isNoteColorDark)
     )
     binding.paletteButton.setImageDrawable(
-      ViewUtils.tintIcon(this, R.drawable.ic_fluent_settings, isBgDark)
+      ViewUtils.tintIcon(this, R.drawable.ic_fluent_settings, isNoteColorDark)
     )
-  }
 
-  private fun loadNoteFromFile() {
-    intent.data?.let { viewModel.loadFromFile(it) }
+    val selectorTint = ColorStateList.valueOf(
+      ViewUtils.tintIconColor(this, isNoteColorDark)
+    )
+    TextViewCompat.setCompoundDrawableTintList(binding.fontStyleView, selectorTint)
+    binding.colorSelectorView.backgroundTintList = selectorTint
+    binding.reminderSelectorView.backgroundTintList = selectorTint
+    binding.fontSelectorView.backgroundTintList = selectorTint
   }
 
   private fun showNote(uiNoteEdit: UiNoteEdit) {
@@ -596,7 +609,7 @@ class CreateNoteActivity :
     updateDarkness(pair)
     updateBackground(pair)
     updateTextColors()
-    updateIcons()
+    updateBottomBarIcons(uiNoteEdit.colorPosition, uiNoteEdit.colorPalette)
     updateMenu()
   }
 
@@ -900,6 +913,10 @@ class CreateNoteActivity :
     STARTED,
     SPEAKING,
     STOPPED
+  }
+
+  companion object {
+    private const val TAG = "CreateNoteActivity"
   }
 }
 
