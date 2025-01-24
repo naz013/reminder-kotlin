@@ -26,7 +26,6 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
@@ -73,7 +72,7 @@ class PreviewReminderViewModel(
   val sharedFile = _sharedFile.toLiveData()
 
   private val _reminderData = mutableLiveDataOf<List<UiReminderPreviewData>>()
-  val reminderData = _reminderData.toSingleEvent()
+  val reminderData = _reminderData.toLiveData()
 
   var canCopy = false
     private set

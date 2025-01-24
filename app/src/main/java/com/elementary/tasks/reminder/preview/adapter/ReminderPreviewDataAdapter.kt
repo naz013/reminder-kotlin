@@ -88,7 +88,8 @@ class ReminderPreviewDataAdapter(
             getItem(position).let { it as? UiReminderPreviewNote }?.also {
               noteImageClick(imageId, it.note)
             }
-          }
+          },
+          allowMore = false
         )
       }
 

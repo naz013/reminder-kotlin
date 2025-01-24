@@ -16,7 +16,8 @@ class NoteViewHolder(
   parent: ViewGroup,
   private val common: UiNoteListAdapterCommon = UiNoteListAdapterCommon(),
   private val listener: ((View, Int, ListActions) -> Unit)?,
-  private val imageClickListener: ((View, position: Int, imageId: Int) -> Unit)?
+  private val imageClickListener: ((View, position: Int, imageId: Int) -> Unit)?,
+  allowMore: Boolean = true
 ) : HolderBinding<ListItemNoteBinding>(
   ListItemNoteBinding.inflate(parent.inflater(), parent, false)
 ) {
@@ -34,6 +35,7 @@ class NoteViewHolder(
     binding.buttonMore.setOnClickListener {
       listener?.invoke(it, bindingAdapterPosition, ListActions.MORE)
     }
+    hasMore = allowMore
     updateMore()
   }
 
