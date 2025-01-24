@@ -21,6 +21,7 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -127,7 +128,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private fun initViewModel() {
     viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) { showResult(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { showResult(it) }
     viewModel.tasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
     viewModel.taskList.nonNullObserve(viewLifecycleOwner) { showGoogleTaskList(it) }
     lifecycle.addObserver(viewModel)

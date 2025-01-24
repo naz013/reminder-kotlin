@@ -26,7 +26,6 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
@@ -73,7 +72,7 @@ class PreviewReminderViewModel(
   val sharedFile = _sharedFile.toLiveData()
 
   private val _reminderData = mutableLiveDataOf<List<UiReminderPreviewData>>()
-  val reminderData = _reminderData.toSingleEvent()
+  val reminderData = _reminderData.toLiveData()
 
   var canCopy = false
     private set
@@ -240,33 +239,20 @@ class PreviewReminderViewModel(
     }
   }
 
-  fun deleteReminder(showMessage: Boolean) {
+  fun deleteReminder() {
     Logger.i(TAG, "Deleting reminder, id: $id")
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(id)?.also { reminder ->
-        if (showMessage) {
-          withResultSuspend {
-            eventControlFactory.getController(reminder).disable()
-            reminderRepository.delete(reminder.uuId)
-            googleCalendarUtils.deleteEvents(reminder.uuId)
-            workerLauncher.startWork(
-              ReminderDeleteBackupWorker::class.java,
-              IntentKeys.INTENT_ID,
-              reminder.uuId
-            )
-            Commands.DELETED
-          }
-        } else {
-          withProgressSuspend {
-            eventControlFactory.getController(reminder).disable()
-            reminderRepository.delete(reminder.uuId)
-            googleCalendarUtils.deleteEvents(reminder.uuId)
-            workerLauncher.startWork(
-              ReminderDeleteBackupWorker::class.java,
-              IntentKeys.INTENT_ID,
-              reminder.uuId
-            )
-          }
+        withResultSuspend {
+          eventControlFactory.getController(reminder).disable()
+          reminderRepository.delete(reminder.uuId)
+          googleCalendarUtils.deleteEvents(reminder.uuId)
+          workerLauncher.startWork(
+            ReminderDeleteBackupWorker::class.java,
+            IntentKeys.INTENT_ID,
+            reminder.uuId
+          )
+          Commands.DELETED
         }
       }
     }
@@ -284,7 +270,7 @@ class PreviewReminderViewModel(
           IntentKeys.INTENT_ID,
           it.uuId
         )
-        Commands.DELETED
+        postCommand(Commands.DELETED)
       }
     }
   }

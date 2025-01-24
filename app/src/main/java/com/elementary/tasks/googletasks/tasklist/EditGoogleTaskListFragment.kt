@@ -13,6 +13,7 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
@@ -103,9 +104,9 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
   }
 
   private fun initViewModel() {
-    viewModel.googleTaskList.nonNullObserve(this) { showTaskList(it) }
-    viewModel.isInProgress.nonNullObserve(this) { onProgressChanged(it) }
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.googleTaskList.nonNullObserve(viewLifecycleOwner) { showTaskList(it) }
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { onProgressChanged(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
       if (commands == Commands.DELETED || commands == Commands.SAVED) {
         moveBack()
       }

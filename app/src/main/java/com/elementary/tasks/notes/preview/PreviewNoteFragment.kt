@@ -27,6 +27,7 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.colorOf
 import com.github.naz013.ui.common.fragment.startActivity
@@ -121,17 +122,18 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.note.nonNullObserve(this) { showNote(it) }
-    viewModel.reminders.nonNullObserve(this) { showReminders(it) }
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.note.nonNullObserve(viewLifecycleOwner) { showNote(it) }
+    viewModel.reminders.nonNullObserve(viewLifecycleOwner) { showReminders(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
+      Logger.d(TAG, "Received command: $commands")
       when (commands) {
         Commands.DELETED -> moveBack()
         else -> {
         }
       }
     }
-    viewModel.error.nonNullObserve(this) { showErrorSending() }
-    viewModel.sharedFile.nonNullObserve(this) { sendNote(it.first, it.second) }
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { showErrorSending() }
+    viewModel.sharedFile.nonNullObserve(viewLifecycleOwner) { sendNote(it.first, it.second) }
   }
 
   private fun initReminderCard() {

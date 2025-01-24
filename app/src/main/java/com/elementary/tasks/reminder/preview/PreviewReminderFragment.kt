@@ -20,6 +20,7 @@ import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
@@ -116,14 +117,14 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.reminderData.nonNullObserve(this) {
+    viewModel.reminderData.nonNullObserve(viewLifecycleOwner) {
       if (isAdded) {
         Logger.d(TAG, "Reminder data updated")
         adapter?.submitList(it)
         invalidateOptionsMenu()
       }
     }
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
       when (commands) {
         Commands.DELETED -> moveBack()
         Commands.FAILED -> toast(getString(R.string.reminder_is_outdated), Toast.LENGTH_SHORT)
@@ -131,7 +132,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         }
       }
     }
-    viewModel.sharedFile.nonNullObserve(this) {
+    viewModel.sharedFile.nonNullObserve(viewLifecycleOwner) {
       TelephonyUtil.sendFile(requireContext(), it)
     }
   }
@@ -201,7 +202,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       }
     } else {
       dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
-        if (it) viewModel.deleteReminder(true)
+        if (it) viewModel.deleteReminder()
       }
     }
   }

@@ -6,7 +6,7 @@ import com.elementary.tasks.reminder.build.ErrorState
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
 import com.github.naz013.domain.Reminder
@@ -18,7 +18,7 @@ class BuilderErrorFinder(
   private val reminderValidator: ReminderValidator,
   private val typeCalculator: TypeCalculator,
   private val dateTimeInjector: DateTimeInjector,
-  private val reminderCleaner: ReminderCleaner
+  private val reminderDateTimeCleaner: ReminderDateTimeCleaner
 ) {
 
   operator fun invoke(
@@ -38,7 +38,7 @@ class BuilderErrorFinder(
     reminder.type = type
     items.forEach { it.modifier.putInto(reminder) }
 
-    reminderCleaner(reminder)
+    reminderDateTimeCleaner(reminder)
     dateTimeInjector(reminder, processedBuilderItems)
 
     when (reminderValidator(reminder)) {

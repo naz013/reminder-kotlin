@@ -236,7 +236,7 @@ class BuildReminderViewModel(
       }
 
       val reminder = original ?: Reminder()
-      when (val buildResult = biToReminderAdapter(reminder, builderItems)) {
+      when (val buildResult = biToReminderAdapter(reminder, builderItems, isEdited)) {
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Reminder build success")
 
@@ -665,7 +665,7 @@ class BuildReminderViewModel(
     }
 
     val reminder = Reminder()
-    when (val buildResult = biToReminderAdapter(reminder, builderItems)) {
+    when (val buildResult = biToReminderAdapter(reminder, builderItems, false)) {
       is BiToReminderAdapter.BuildResult.Success -> {
         _showPrediction.postValue(reminderPredictionCalculator(reminder))
         _canSaveAsPreset.postValue(true)

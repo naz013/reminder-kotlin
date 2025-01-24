@@ -37,7 +37,7 @@ import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
@@ -210,7 +210,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun initViewModel() {
     Logger.d("initViewModel: ${getId()}")
     viewModel.reminder.observeForever(mReminderObserver)
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.resultEvent.observeEvent(this) { commands ->
       when (commands) {
         Commands.DELETED -> {
         }

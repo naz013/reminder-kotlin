@@ -20,6 +20,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.fragment.toast
@@ -122,11 +123,11 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
 
   private fun initViewModel() {
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
-    viewModel.error.nonNullObserve(viewLifecycleOwner) {
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) {
       Logger.d("initViewModel: onError -> $it")
       toast(it)
     }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       if (it == Commands.OUTDATED) {
         remindersAdapter.notifyItemChanged(mPosition)
         toast(R.string.reminder_is_outdated)
