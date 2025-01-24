@@ -41,8 +41,9 @@ import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.compose.ActionCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
+import com.elementary.tasks.reminder.build.reminder.compose.EditedReminderDataCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.ICalDateTimeInjector
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.decompose.ActionDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDateDecomposer
@@ -213,7 +214,7 @@ val reminderModule = module {
   factory { TypeCalculator(get()) }
   factory { ActionCalculator() }
 
-  factory { BiToReminderAdapter(get(), get(), get(), get(), get()) }
+  factory { BiToReminderAdapter(get(), get(), get(), get(), get(), get()) }
 
   factory { BuilderErrorFinder(get(), get(), get(), get(), get()) }
   factory { BuilderErrorToTextAdapter(get(), get()) }
@@ -231,7 +232,8 @@ val reminderModule = module {
 
   factory { DateTimeInjector(get(), get(), get()) }
   factory { ICalDateTimeInjector(get(), get()) }
-  factory { ReminderCleaner() }
+  factory { ReminderDateTimeCleaner() }
+  factory { EditedReminderDataCleaner() }
 
   factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
 

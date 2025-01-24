@@ -202,7 +202,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       }
     } else {
       dialogues.askConfirmation(requireContext(), getString(R.string.delete)) {
-        if (it) viewModel.deleteReminder(true)
+        if (it) viewModel.deleteReminder()
       }
     }
   }

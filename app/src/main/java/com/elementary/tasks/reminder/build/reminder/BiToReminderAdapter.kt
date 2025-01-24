@@ -6,7 +6,8 @@ import com.elementary.tasks.reminder.build.ErrorState
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.build.logic.builderstate.BuilderStateCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
+import com.elementary.tasks.reminder.build.reminder.compose.EditedReminderDataCleaner
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
 import com.github.naz013.domain.Reminder
@@ -18,12 +19,14 @@ class BiToReminderAdapter(
   private val reminderValidator: ReminderValidator,
   private val typeCalculator: TypeCalculator,
   private val dateTimeInjector: DateTimeInjector,
-  private val reminderCleaner: ReminderCleaner
+  private val reminderDateTimeCleaner: ReminderDateTimeCleaner,
+  private val editedReminderDataCleaner: EditedReminderDataCleaner
 ) {
 
   operator fun invoke(
     reminder: Reminder,
-    items: List<BuilderItem<*>>
+    items: List<BuilderItem<*>>,
+    isEdited: Boolean
   ): BuildResult {
     val processedBuilderItems = ProcessedBuilderItems(items)
 
@@ -33,12 +36,16 @@ class BiToReminderAdapter(
       return BuildResult.Error("State is not valid")
     }
 
+    if (isEdited) {
+      editedReminderDataCleaner(reminder, processedBuilderItems)
+    }
+
     reminder.type = type
     items.forEach {
       it.modifier.putInto(reminder)
     }
 
-    reminderCleaner(reminder)
+    reminderDateTimeCleaner(reminder)
     dateTimeInjector(reminder, processedBuilderItems)
 
     when (val validationResult = reminderValidator(reminder)) {

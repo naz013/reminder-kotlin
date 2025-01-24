@@ -4,7 +4,7 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 
-class ReminderCleaner {
+class ReminderDateTimeCleaner {
 
   operator fun invoke(reminder: Reminder) {
     val type = UiReminderType(reminder.type)

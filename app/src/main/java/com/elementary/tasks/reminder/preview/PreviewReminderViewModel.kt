@@ -239,33 +239,20 @@ class PreviewReminderViewModel(
     }
   }
 
-  fun deleteReminder(showMessage: Boolean) {
+  fun deleteReminder() {
     Logger.i(TAG, "Deleting reminder, id: $id")
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(id)?.also { reminder ->
-        if (showMessage) {
-          withResultSuspend {
-            eventControlFactory.getController(reminder).disable()
-            reminderRepository.delete(reminder.uuId)
-            googleCalendarUtils.deleteEvents(reminder.uuId)
-            workerLauncher.startWork(
-              ReminderDeleteBackupWorker::class.java,
-              IntentKeys.INTENT_ID,
-              reminder.uuId
-            )
-            Commands.DELETED
-          }
-        } else {
-          withProgressSuspend {
-            eventControlFactory.getController(reminder).disable()
-            reminderRepository.delete(reminder.uuId)
-            googleCalendarUtils.deleteEvents(reminder.uuId)
-            workerLauncher.startWork(
-              ReminderDeleteBackupWorker::class.java,
-              IntentKeys.INTENT_ID,
-              reminder.uuId
-            )
-          }
+        withResultSuspend {
+          eventControlFactory.getController(reminder).disable()
+          reminderRepository.delete(reminder.uuId)
+          googleCalendarUtils.deleteEvents(reminder.uuId)
+          workerLauncher.startWork(
+            ReminderDeleteBackupWorker::class.java,
+            IntentKeys.INTENT_ID,
+            reminder.uuId
+          )
+          Commands.DELETED
         }
       }
     }
@@ -283,7 +270,7 @@ class PreviewReminderViewModel(
           IntentKeys.INTENT_ID,
           it.uuId
         )
-        Commands.DELETED
+        postCommand(Commands.DELETED)
       }
     }
   }
