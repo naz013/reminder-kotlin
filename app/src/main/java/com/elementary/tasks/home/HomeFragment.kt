@@ -18,17 +18,12 @@ import com.elementary.tasks.globalsearch.FragmentNavigation
 import com.elementary.tasks.globalsearch.GlobalSearchViewModel
 import com.elementary.tasks.globalsearch.NavigationAction
 import com.elementary.tasks.globalsearch.adapter.SearchAdapter
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.scheduleview.HeaderTimeType
 import com.elementary.tasks.home.scheduleview.ScheduleAdapter
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleModel
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
-import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.other.PrivacyPolicyActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -36,12 +31,10 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.ui.common.fragment.startActivity
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.view.applyTopInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -56,26 +49,40 @@ class HomeFragment :
   private val featureManager by inject<FeatureManager>()
   private val whatsNewManager by inject<WhatsNewManager>()
   private val searchViewModel by viewModel<GlobalSearchViewModel>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val viewModel by viewModel<ScheduleHomeViewModel>()
   private val scheduleAdapter = ScheduleAdapter(
     onReminderClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), ReminderPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewReminderFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     },
     onHeaderClickListener = { _, time ->
       showEventTypeSelectionDialog(time)
     },
     onNoteClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), NotePreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewNoteFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     },
     onGoogleTaskClickListener = { _, id ->
-      LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, id)
+      navigate {
+        navigate(
+          R.id.previewGoogleTaskFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, id)
+          }
+        )
       }
     },
     onBirthdayClickListener = { _, id ->
@@ -119,12 +126,6 @@ class HomeFragment :
         else -> false
       }
     }
-    searchableFragmentCallback?.setSearchViewParams(
-      binding.searchBar.id,
-      getString(R.string.search_everywhere),
-      searchAdapter,
-      this
-    )
 
     binding.globalAddButton.setOnClickListener { showEventTypeSelectionDialog(null) }
 
@@ -173,7 +174,15 @@ class HomeFragment :
       type = Reminder.BY_DATE,
       dateTime = dateTime
     )
-    reminderBuilderLauncher.openDeepLink(requireContext(), deepLinkData) { }
+    navigate {
+      navigate(
+        R.id.buildReminderFragment,
+        Bundle().apply {
+          putParcelable(deepLinkData.intentKey, deepLinkData)
+          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+        }
+      )
+    }
   }
 
   private fun openGoogleTaskCreateScreen(time: LocalTime?) {
@@ -181,10 +190,14 @@ class HomeFragment :
       date = LocalDate.now(),
       time = time
     )
-    withActivity {
-      LoginApi.openLogged(it, GoogleTaskActivity::class.java, deepLinkData) {
-        putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
-      }
+    navigate {
+      navigate(
+        R.id.editGoogleTaskFragment,
+        Bundle().apply {
+          putParcelable(deepLinkData.intentKey, deepLinkData)
+          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+        }
+      )
     }
   }
 
@@ -223,12 +236,19 @@ class HomeFragment :
 
   override fun onResume() {
     super.onResume()
+    searchableFragmentCallback?.setSearchViewParams(
+      R.id.search_bar,
+      getString(R.string.search_everywhere),
+      searchAdapter,
+      this
+    )
     prefs.addObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.addObserver(PrefsConstants.USER_LOGGED, this)
   }
 
   override fun onPause() {
     super.onPause()
+    searchableFragmentCallback?.removeSearchView()
     prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
   }

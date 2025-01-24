@@ -851,4 +851,7 @@
     <string name="foreground_service_location_explanation">To allow the application to be fully functional, it requires to access your Location from the Foreground Service</string>
     <string name="legacy_builder_removal_alert">🚀 Deprecation Alert! 🚀</string>
     <string name="legacy_builder_removal_message">Heads-up! In the upcoming update, we\'ll be saying goodbye to the Legacy Reminder Builder. This decision will allow us to focus on improving the New Builder and overall performance.</string>
+    <string name="please_add_x_to_create_reminder">Please, add the %s to create a reminder</string>
+    <string name="please_add_the_following_items_x">Please add the following items: %s, to create a reminder</string>
+    <string name="and_will_be_repeated_at">And will be repeated at:\n</string>
 </resources>

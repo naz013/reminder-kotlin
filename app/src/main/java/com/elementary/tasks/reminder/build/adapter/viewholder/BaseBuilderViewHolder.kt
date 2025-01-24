@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.UiBuilderItem
-import com.elementary.tasks.reminder.build.UiLitBuilderItemState
+import com.elementary.tasks.reminder.build.UiListBuilderItemState
 
 abstract class BaseBuilderViewHolder<V : ViewBinding, D : UiBuilderItem>(
   viewCreator: () -> V,
@@ -24,17 +24,17 @@ abstract class BaseBuilderViewHolder<V : ViewBinding, D : UiBuilderItem>(
     setIcon(uiListBuilderItem.builderItem.iconRes)
 
     when (uiListBuilderItem.state) {
-      is UiLitBuilderItemState.EmptyState -> {
+      is UiListBuilderItemState.EmptyState -> {
         setStateBadge(R.drawable.builder_badge_state_empty)
         hideError()
       }
 
-      is UiLitBuilderItemState.DoneState -> {
+      is UiListBuilderItemState.DoneState -> {
         setStateBadge(R.drawable.builder_badge_state_ok)
         hideError()
       }
 
-      is UiLitBuilderItemState.ErrorState -> {
+      is UiListBuilderItemState.ErrorState -> {
         setStateBadge(R.drawable.builder_badge_state_error)
         showError(uiListBuilderItem.errorText)
       }

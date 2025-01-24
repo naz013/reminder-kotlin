@@ -12,14 +12,15 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.fragment.toast
@@ -33,7 +34,6 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
 
   private val systemServiceProvider by inject<SystemServiceProvider>()
   private val viewModel by viewModel<ActiveTodoRemindersViewModel>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private var mPosition: Int = 0
 
@@ -41,11 +41,30 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     ReminderActionResolver(
       context = requireContext(),
       dialogues = dialogues,
-      reminderBuilderLauncher = reminderBuilderLauncher,
       permissionFlow = permissionFlow,
       toggleAction = { viewModel.toggleReminder(it) },
       deleteAction = { viewModel.moveToTrash(it) },
-      skipAction = { viewModel.skip(it) }
+      skipAction = { viewModel.skip(it) },
+      openAction = {
+        navigate {
+          navigate(
+            R.id.previewReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      },
+      editAction = {
+        navigate {
+          navigate(
+            R.id.buildReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      }
     )
   }
 
@@ -84,7 +103,16 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     }
 
     binding.fab.setOnClickListener {
-      reminderBuilderLauncher.openDeepLink(requireContext(), ReminderTodoTypeDeepLinkData)
+      val deepLinkData = ReminderTodoTypeDeepLinkData
+      navigate {
+        navigate(
+          R.id.buildReminderFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          }
+        )
+      }
     }
 
     analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
@@ -95,11 +123,11 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
 
   private fun initViewModel() {
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
-    viewModel.error.nonNullObserve(viewLifecycleOwner) {
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) {
       Logger.d("initViewModel: onError -> $it")
       toast(it)
     }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       if (it == Commands.OUTDATED) {
         remindersAdapter.notifyItemChanged(mPosition)
         toast(R.string.reminder_is_outdated)

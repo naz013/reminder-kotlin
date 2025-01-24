@@ -1,9 +1,12 @@
 package com.elementary.tasks.reminder
 
+import android.os.Bundle
 import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiValueForUiAdapter
+import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFactoryICal
 import com.elementary.tasks.reminder.build.bi.BiFilter
@@ -21,6 +24,7 @@ import com.elementary.tasks.reminder.build.logic.BuilderItemsHolder
 import com.elementary.tasks.reminder.build.logic.BuilderItemsLogic
 import com.elementary.tasks.reminder.build.logic.UiBuilderItemsAdapter
 import com.elementary.tasks.reminder.build.logic.UiSelectorItemsAdapter
+import com.elementary.tasks.reminder.build.logic.builderstate.BuilderErrorFinder
 import com.elementary.tasks.reminder.build.logic.builderstate.BuilderStateCalculator
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BiValueToBuilderSchemeValue
@@ -37,8 +41,9 @@ import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.compose.ActionCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
+import com.elementary.tasks.reminder.build.reminder.compose.EditedReminderDataCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.ICalDateTimeInjector
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderCleaner
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
 import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.decompose.ActionDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDateDecomposer
@@ -62,10 +67,6 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogViewMode
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
-import com.elementary.tasks.reminder.create.EditReminderViewModel
-import com.elementary.tasks.reminder.create.fragments.recur.RecurBuilderViewModel
-import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
-import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetViewModel
 import com.elementary.tasks.reminder.dialog.ReminderViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
@@ -78,15 +79,12 @@ import com.elementary.tasks.reminder.preview.EventToUiReminderPreview
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogleTask
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
-import com.elementary.tasks.reminder.preview.ReminderPreviewViewModel
+import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val reminderModule = module {
-  viewModel { RecurBuilderViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { PresetViewModel(get(), get(), get()) }
-
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get()) }
@@ -94,8 +92,10 @@ val reminderModule = module {
 
   viewModel { ManagePresetsViewModel(get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
-  viewModel {
+  viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
+      arguments,
+      get(),
       get(),
       get(),
       get(),
@@ -129,9 +129,9 @@ val reminderModule = module {
     )
   }
 
-  viewModel { (id: String) ->
-    ReminderPreviewViewModel(
-      id,
+  viewModel { (arguments: Bundle?) ->
+    PreviewReminderViewModel(
+      arguments,
       get(),
       get(),
       get(),
@@ -154,26 +154,11 @@ val reminderModule = module {
   }
 
   viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get()) }
-  viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get(), get()) }
-  viewModel { (id: String) ->
-    EditReminderViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
+  viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
 
   factory { UriToAttachmentFileAdapter(get()) }
 
-  factory { ParamToTextAdapter(get(), get()) }
+  factory { ParamToTextAdapter(get()) }
 
   factory { BuilderItemsHolder() }
   factory { BuilderItemsLogic(get()) }
@@ -229,7 +214,10 @@ val reminderModule = module {
   factory { TypeCalculator(get()) }
   factory { ActionCalculator() }
 
-  factory { BiToReminderAdapter(get(), get(), get(), get(), get()) }
+  factory { BiToReminderAdapter(get(), get(), get(), get(), get(), get()) }
+
+  factory { BuilderErrorFinder(get(), get(), get(), get(), get()) }
+  factory { BuilderErrorToTextAdapter(get(), get()) }
 
   factory { RecurParamsToBiAdapter(get()) }
 
@@ -244,7 +232,8 @@ val reminderModule = module {
 
   factory { DateTimeInjector(get(), get(), get()) }
   factory { ICalDateTimeInjector(get(), get()) }
-  factory { ReminderCleaner() }
+  factory { ReminderDateTimeCleaner() }
+  factory { EditedReminderDataCleaner() }
 
   factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
 
@@ -275,13 +264,11 @@ val reminderModule = module {
   factory { BuilderItemsToBuilderPresetAdapter(get()) }
   factory { BiValueToBuilderSchemeValue(get()) }
 
-  factory { ReminderPredictionCalculator(get(), get()) }
+  factory { ReminderPredictionCalculator(get(), get(), get()) }
 
   factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
 
   factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
-
-  single { ReminderBuilderLauncher(get()) }
 
   factory { ShopItemsFormatter(get()) }
 

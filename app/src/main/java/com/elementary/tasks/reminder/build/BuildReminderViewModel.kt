@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build
 
-import android.content.Intent
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -13,10 +13,12 @@ import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiComparator
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFilter
@@ -24,6 +26,7 @@ import com.elementary.tasks.reminder.build.bi.constraint.PermissionConstraint
 import com.elementary.tasks.reminder.build.logic.BuilderItemsLogic
 import com.elementary.tasks.reminder.build.logic.UiBuilderItemsAdapter
 import com.elementary.tasks.reminder.build.logic.UiSelectorItemsAdapter
+import com.elementary.tasks.reminder.build.logic.builderstate.BuilderErrorFinder
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
@@ -42,7 +45,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.PresetType
@@ -55,6 +57,7 @@ import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurParamType
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
@@ -67,8 +70,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+import java.util.UUID
 
 class BuildReminderViewModel(
+  private val arguments: Bundle?,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
@@ -97,8 +102,9 @@ class BuildReminderViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val textProvider: TextProvider,
-  private val intentDataReader: IntentDataReader
+  private val intentDataReader: IntentDataReader,
+  private val builderErrorFinder: BuilderErrorFinder,
+  private val builderErrorToTextAdapter: BuilderErrorToTextAdapter
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -122,6 +128,8 @@ class BuildReminderViewModel(
   private val _canSave = mutableLiveDataOf<Boolean>()
   val canSave = _canSave.toSingleEvent()
 
+  var id: String = ""
+    private set
   var hasSameInDb: Boolean = false
   var isFromFile: Boolean = false
   private var isEdited: Boolean = false
@@ -161,6 +169,7 @@ class BuildReminderViewModel(
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
     reminderAnalyticsTracker.startTracking()
+    handleDeepLink(arguments)
   }
 
   override fun onCleared() {
@@ -227,9 +236,13 @@ class BuildReminderViewModel(
       }
 
       val reminder = original ?: Reminder()
-      when (val buildResult = biToReminderAdapter(reminder, builderItems, newId)) {
+      when (val buildResult = biToReminderAdapter(reminder, builderItems, isEdited)) {
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Reminder build success")
+
+          if (newId) {
+            reminder.uuId = UUID.randomUUID().toString()
+          }
 
           saveAndStartReminder(buildResult.reminder, isEdit = isEdited)
 
@@ -248,32 +261,26 @@ class BuildReminderViewModel(
     }
   }
 
-  fun handleDeepLink(intent: Intent?) {
-    Logger.i(TAG, "Handle reminder Deep Link: $intent")
-    if (intent == null) {
+  private fun handleDeepLink(bundle: Bundle?) {
+    Logger.i(TAG, "Handle reminder Deep Link: $bundle")
+    if (bundle == null) {
       return
     }
+    id = bundle.getString(IntentKeys.INTENT_ID) ?: ""
     viewModelScope.launch(dispatcherProvider.default()) {
-      val intentId = intent.getStringExtra(IntentKeys.INTENT_ID)
-      val action = intent.action
       when {
-        action == Intent.ACTION_SEND && "text/plain" == intent.type -> {
-          Logger.i(TAG, "Handle reminder text Deep Link")
-          handleSendText(intent)
-        }
-
-        intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false) -> {
+        bundle.getBoolean(IntentKeys.INTENT_ITEM, false) -> {
           Logger.i(TAG, "Handle reminder object Deep Link")
           readObjectFromIntent()
         }
 
-        intent.getBooleanExtra(IntentKeys.INTENT_DEEP_LINK, false) -> {
-          readDeepLink(intent)
+        bundle.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) -> {
+          readDeepLink(bundle)
         }
 
-        !intentId.isNullOrEmpty() -> {
+        id.isNotEmpty() -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
-          editReminderIfNeeded(intentId)
+          editReminderIfNeeded(id)
         }
       }
     }
@@ -349,13 +356,13 @@ class BuildReminderViewModel(
     }
   }
 
-  private suspend fun readDeepLink(intent: Intent) {
+  private suspend fun readDeepLink(bundle: Bundle) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
     runCatching {
       val parser = DeepLinkDataParser()
-      when (val deepLinkData = parser.readDeepLinkData(intent)) {
+      when (val deepLinkData = parser.readDeepLinkData(bundle)) {
         is ReminderDatetimeTypeDeepLinkData -> {
           if (deepLinkData.type == Reminder.BY_DATE) {
             Logger.i(TAG, "Handle reminder date/time Deep Link")
@@ -368,6 +375,12 @@ class BuildReminderViewModel(
         is ReminderTodoTypeDeepLinkData -> {
           Logger.i(TAG, "Handle reminder todo Deep Link")
           addSubTasksItemToBuilder()
+          updateSelector()
+        }
+
+        is ReminderTextDeepLinkData -> {
+          Logger.i(TAG, "Handle reminder text Deep Link")
+          addSummaryItemToBuilder(deepLinkData.text)
           updateSelector()
         }
 
@@ -414,16 +427,6 @@ class BuildReminderViewModel(
       Logger.logEvent("Reminder loaded from intent")
       isFromFile = true
       editReminder(this)
-    }
-  }
-
-  private suspend fun handleSendText(intent: Intent) {
-    while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
-    }
-    intent.getStringExtra(Intent.EXTRA_TEXT)?.let { string ->
-      addSummaryItemToBuilder(string)
-      updateSelector()
     }
   }
 
@@ -500,7 +503,10 @@ class BuildReminderViewModel(
 
   private suspend fun useRecurPreset(preset: RecurPreset) {
     Logger.i(TAG, "Use reminder RECUR preset")
-    val params = runCatching { iCalendarApi.parseObject(preset.recurObject) }.getOrNull()
+
+    val recurObject = preset.recurObject
+
+    val params = runCatching { iCalendarApi.parseObject(recurObject) }.getOrNull()
       ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
       ?.params
       ?.let { recurParamsToBiAdapter(it) }
@@ -517,9 +523,78 @@ class BuildReminderViewModel(
 
       summaryBuilderItem?.also { builderItemsLogic.addNew(it) }
 
+      val usedItemsMap = builderItemsLogic.getUsed().map {
+        it.biType to it
+      }.toMap()
+
+      if (preset.isDefault) {
+        Logger.d(TAG, "Trying to add runtime params to builder: ${preset.recurItemsToAdd}")
+        getRuntimeParams(preset.recurItemsToAdd).forEach { biType ->
+          if (!usedItemsMap.containsKey(biType)) {
+            biFactory.create(biType).also { builderItemsLogic.addNew(it) }
+          }
+        }
+      }
+
       analyticsEventSender.send(PresetUsed(PresetAction.USE))
       updateSelector()
     }
+  }
+
+  private fun getRuntimeParams(paramsToAdd: String?): List<BiType> {
+    val params = paramsToAdd?.split(";") ?: emptyList()
+    val result = mutableListOf<BiType>()
+
+    params.forEach {
+      result.addAll(getTagTypeParams(runCatching { TagType.fromValue(it) }.getOrNull()))
+      result.addAll(
+        getRecurParamTypeParams(runCatching { RecurParamType.fromValue(it) }.getOrNull())
+      )
+    }
+
+    return result
+  }
+
+  private fun getRecurParamTypeParams(recurParamType: RecurParamType?): List<BiType> {
+    val result = mutableListOf<BiType>()
+    when (recurParamType) {
+      RecurParamType.BYHOUR -> {
+        result.add(BiType.ICAL_BYHOUR)
+      }
+
+      RecurParamType.BYMINUTE -> {
+        result.add(BiType.ICAL_BYMINUTE)
+      }
+
+      RecurParamType.BYDAY -> {
+        result.add(BiType.ICAL_BYDAY)
+      }
+
+      RecurParamType.BYMONTH -> {
+        result.add(BiType.ICAL_BYMONTH)
+      }
+
+      else -> {}
+    }
+    return result
+  }
+
+  private fun getTagTypeParams(tagType: TagType?): List<BiType> {
+    val result = mutableListOf<BiType>()
+    when (tagType) {
+      TagType.DTSTART -> {
+        result.add(BiType.ICAL_START_DATE)
+        result.add(BiType.ICAL_START_TIME)
+      }
+
+      TagType.DTEND -> {
+        result.add(BiType.ICAL_UNTIL_DATE)
+        result.add(BiType.ICAL_UNTIL_TIME)
+      }
+
+      else -> {}
+    }
+    return result
   }
 
   private fun loadPresets() {
@@ -542,9 +617,9 @@ class BuildReminderViewModel(
     }
     _builderItems.postValue(usedItems)
 
-    val errors = usedItems.asSequence().filter { it.state is UiLitBuilderItemState.ErrorState }
+    val errors = usedItems.asSequence().filter { it.state is UiListBuilderItemState.ErrorState }
       .map { it.state }
-      .map { it as UiLitBuilderItemState.ErrorState }
+      .map { it as UiListBuilderItemState.ErrorState }
       .map { it.errors }
       .flatten()
       .toSet()
@@ -601,12 +676,12 @@ class BuildReminderViewModel(
         _showPrediction.postValue(
           ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_error_circle,
-            message = textProvider.getText(R.string.builder_error_create_reminder)
+            message = builderErrorToTextAdapter(builderErrorFinder(reminder, builderItems))
           )
         )
         _canSaveAsPreset.postValue(false)
         _canSave.postValue(false)
-        Logger.d(TAG, "updateBuilderState: build failed ${buildResult.error}")
+        Logger.i(TAG, "Failed to update builder state with error = ${buildResult.error}")
       }
     }
   }
@@ -634,7 +709,9 @@ class BuildReminderViewModel(
       createdAt = dateTimeManager.getCurrentDateTime(),
       useCount = 1,
       builderScheme = builderItemsToBuilderPresetAdapter(items),
-      description = null
+      description = null,
+      isDefault = false,
+      recurItemsToAdd = null
     )
     recurPresetRepository.save(preset)
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))

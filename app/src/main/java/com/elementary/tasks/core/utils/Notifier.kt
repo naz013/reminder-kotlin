@@ -8,6 +8,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -21,8 +22,8 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
+import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
@@ -31,6 +32,8 @@ import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.DeepLinkDestination
+import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
@@ -187,10 +190,12 @@ class Notifier(
     } else {
       builder.priority = NotificationCompat.PRIORITY_MIN
     }
-    val resultIntent = Intent(context, ReminderBuilderLauncher.PENDING_INTENT_CLASS)
+    val resultIntent = Intent(context, BottomNavActivity::class.java)
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      .setAction(Intent.ACTION_VIEW)
+      .putExtra(DeepLinkDestination.KEY, EditReminderScreen(Bundle()))
     val stackBuilder = TaskStackBuilder.create(context)
-    stackBuilder.addParentStack(ReminderBuilderLauncher.PENDING_INTENT_CLASS)
+    stackBuilder.addParentStack(BottomNavActivity::class.java)
     stackBuilder.addNextIntentWithParentStack(resultIntent)
     val resultPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)

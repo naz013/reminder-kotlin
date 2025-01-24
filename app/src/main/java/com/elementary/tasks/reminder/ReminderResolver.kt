@@ -3,32 +3,30 @@ package com.elementary.tasks.reminder
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListData
-import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.ListActions
 import com.github.naz013.ui.common.Dialogues
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 
 class ReminderResolver(
   private val dialogAction: () -> Dialogues,
-  private val reminderBuilderLauncher: ReminderBuilderLauncher,
   private val deleteAction: (reminder: UiReminderListData) -> Unit,
   private val toggleAction: (reminder: UiReminderListData) -> Unit,
-  private val skipAction: (reminder: UiReminderListData) -> Unit
+  private val skipAction: (reminder: UiReminderListData) -> Unit,
+  private val openAction: (reminder: UiReminderListData) -> Unit,
+  private val editAction: (reminder: UiReminderListData) -> Unit
 ) {
 
   fun resolveAction(view: View, reminder: UiReminderListData, listActions: ListActions) {
     if (reminder.status.removed) {
       when (listActions) {
         ListActions.MORE -> showDeletedActionDialog(view, reminder)
-        ListActions.OPEN -> editReminder(view, reminder)
+        ListActions.OPEN -> editReminder(reminder)
         else -> {
         }
       }
     } else {
       when (listActions) {
         ListActions.MORE -> showActionDialog(view, reminder)
-        ListActions.OPEN -> previewReminder(view, reminder)
+        ListActions.OPEN -> previewReminder(reminder)
         ListActions.SWITCH -> toggleAction.invoke(reminder)
         else -> {
         }
@@ -45,8 +43,8 @@ class ReminderResolver(
     )
     Dialogues.showPopup(view, { item ->
       when (item) {
-        0 -> previewReminder(view, reminder)
-        1 -> editReminder(view, reminder)
+        0 -> previewReminder(reminder)
+        1 -> editReminder(reminder)
         2 -> askConfirmation(view, items[item]) {
           if (it) deleteAction.invoke(reminder)
         }
@@ -72,8 +70,8 @@ class ReminderResolver(
     }
     Dialogues.showPopup(view, { item ->
       when (item) {
-        0 -> previewReminder(view, reminder)
-        1 -> editReminder(view, reminder)
+        0 -> previewReminder(reminder)
+        1 -> editReminder(reminder)
         2 -> askConfirmation(view, items[item]) {
           if (it) deleteAction.invoke(reminder)
         }
@@ -87,19 +85,11 @@ class ReminderResolver(
     dialogAction.invoke().askConfirmation(view.context, title, onAction)
   }
 
-  private fun editReminder(view: View, reminder: UiReminderListData) {
-    view.context.run {
-      reminderBuilderLauncher.openLogged(this) {
-        putExtra(IntentKeys.INTENT_ID, reminder.id)
-      }
-    }
+  private fun editReminder(reminder: UiReminderListData) {
+    editAction(reminder)
   }
 
-  private fun previewReminder(view: View, reminder: UiReminderListData) {
-    view.context.run {
-      startActivity(ReminderPreviewActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, reminder.id)
-      }
-    }
+  private fun previewReminder(reminder: UiReminderListData) {
+    openAction(reminder)
   }
 }

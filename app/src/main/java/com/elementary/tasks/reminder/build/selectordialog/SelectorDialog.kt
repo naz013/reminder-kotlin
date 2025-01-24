@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build.selectordialog
 
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.core.utils.ui.onTabSelected
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.BottomSheetBuilderSelectorBinding
+import com.elementary.tasks.reminder.build.preset.PresetAdapter
 import com.elementary.tasks.reminder.build.selectordialog.params.SelectorAdapter
-import com.elementary.tasks.reminder.create.fragments.recur.preset.PresetAdapter
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.gone
@@ -26,14 +25,14 @@ class SelectorDialog : BottomSheetDialogFragment() {
 
   private val selectorAdapter = SelectorAdapter { _, item ->
     dismiss()
-    callback?.onBuilderItemAdd(item.builderItem)
+    SelectorDialogCommunicator.onBuilderItemAdd(item.builderItem)
     Logger.i(TAG, "Selected builder item: $item")
   }
   private val presetAdapter = PresetAdapter(
     canDelete = false,
     onItemClickListener = {
       dismiss()
-      callback?.onPresetSelected(it)
+      SelectorDialogCommunicator.onPresetSelected(it)
       Logger.i(TAG, "Selected general preset: $it")
     },
     onItemDeleteListener = { }
@@ -42,21 +41,13 @@ class SelectorDialog : BottomSheetDialogFragment() {
     canDelete = false,
     onItemClickListener = {
       dismiss()
-      callback?.onPresetSelected(it)
+      SelectorDialogCommunicator.onPresetSelected(it)
       Logger.i(TAG, "Selected recur preset: $it")
     },
     onItemDeleteListener = { }
   )
 
   private lateinit var binding: BottomSheetBuilderSelectorBinding
-  private var callback: SelectorDialogCallback? = null
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    runCatching {
-      callback = context as? SelectorDialogCallback
-    }
-  }
 
   override fun onCreateView(
     inflater: LayoutInflater,

@@ -5,45 +5,38 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.Commands
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 open class BaseProgressViewModel(
   protected val dispatcherProvider: DispatcherProvider
 ) : ViewModel(), DefaultLifecycleObserver {
 
-  private val _result = mutableLiveDataOf<Commands>()
-  val result = _result.toLiveData()
+  private val _resultEvent = mutableLiveDataOf<Event<Commands>>()
+  val resultEvent = _resultEvent.toLiveData()
 
   private val _isInProgress = mutableLiveDataOf<Boolean>()
   val isInProgress = _isInProgress.toLiveData()
 
-  private val _error = mutableLiveDataOf<String>()
-  val error = _error.toLiveData()
+  private val _errorEvent = mutableLiveDataOf<Event<String>>()
+  val errorEvent = _errorEvent.toLiveData()
 
   protected fun postInProgress(isInProgress: Boolean) {
+    Logger.d(TAG, "Post in progress: $isInProgress")
     _isInProgress.postValue(isInProgress)
   }
 
   protected fun postCommand(commands: Commands) {
-    _result.postValue(commands)
+    Logger.d(TAG, "Post command: $commands")
+    _resultEvent.postValue(Event(commands))
   }
 
   protected fun postError(error: String) {
-    _error.postValue(error)
-  }
-
-  protected fun withResult(doWork: ((error: String) -> Unit) -> Commands) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      postInProgress(true)
-      val commands = runBlocking {
-        doWork.invoke { postError(it) }
-      }
-      postInProgress(false)
-      postCommand(commands)
-    }
+    Logger.e(TAG, "Post error: $error")
+    _errorEvent.postValue(Event(error))
   }
 
   protected fun withProgressSuspend(doWork: suspend ((error: String) -> Unit) -> Unit) {
@@ -61,5 +54,9 @@ open class BaseProgressViewModel(
       postInProgress(false)
       postCommand(commands)
     }
+  }
+
+  companion object {
+    private const val TAG = "BaseProgressViewModel"
   }
 }

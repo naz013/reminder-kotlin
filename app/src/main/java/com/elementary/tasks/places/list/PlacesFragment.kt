@@ -11,19 +11,21 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.ui.common.fragment.toast
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
+import com.elementary.tasks.databinding.FragmentPlacesBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.databinding.FragmentPlacesBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -71,7 +73,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun addPlace() {
-    safeNavigation(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity("", true))
+    navigate { navigate(R.id.editPlaceFragment) }
   }
 
   private fun initViewModel() {
@@ -80,7 +82,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
       binding.recyclerView.smoothScrollToPosition(0)
       refreshView(places.size)
     }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> {
           toast(R.string.deleted)
@@ -144,8 +146,13 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun openPlace(place: UiPlaceList) {
-    safeNavigation {
-      PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true)
+    navigate {
+      navigate(
+        R.id.editPlaceFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, place.id)
+        }
+      )
     }
   }
 

@@ -164,7 +164,9 @@ class BuilderPresetsGenerateUseCase(
       createdAt = LocalDateTime.now(),
       useCount = 0,
       builderScheme = scheme,
-      description = null
+      description = null,
+      isDefault = false,
+      recurItemsToAdd = null
     )
   }
 

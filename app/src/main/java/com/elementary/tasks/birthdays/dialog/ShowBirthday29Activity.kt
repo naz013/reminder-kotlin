@@ -17,6 +17,7 @@ import com.elementary.tasks.tests.TestObjects
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.activity.toast
@@ -59,7 +60,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityDialogBirthdayBinding>() 
 
   private fun initViewModel() {
     viewModel.birthday.nonNullObserve(this) { showBirthday(it) }
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.resultEvent.observeEvent(this) { commands ->
       when (commands) {
         Commands.SAVED -> finish()
         else -> {

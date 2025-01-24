@@ -15,26 +15,21 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
-import com.elementary.tasks.googletasks.tasklist.GoogleTaskListActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.fragment.dp2px
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.isColorDark
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -95,8 +90,13 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private fun editListClick() {
     viewModel.currentTaskList?.also {
-      startActivity(GoogleTaskListActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, it.listId)
+      navigate {
+        navigate(
+          R.id.editGoogleTaskListFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.listId)
+          }
+        )
       }
     }
   }
@@ -115,16 +115,20 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
 
   private fun addNewTask() {
     viewModel.currentTaskList?.also {
-      LoginApi.openLogged(requireContext(), GoogleTaskActivity::class.java) {
-        putExtra(IntentKeys.INTENT_ID, it.listId)
-        putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.CREATE)
+      navigate {
+        navigate(
+          R.id.editGoogleTaskFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_LIST_ID, it.listId)
+          }
+        )
       }
     }
   }
 
   private fun initViewModel() {
     viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { updateProgress(it) }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) { showResult(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { showResult(it) }
     viewModel.tasks.nonNullObserve(viewLifecycleOwner) { showTasks(it) }
     viewModel.taskList.nonNullObserve(viewLifecycleOwner) { showGoogleTaskList(it) }
     lifecycle.addObserver(viewModel)
@@ -170,7 +174,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
     adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
       override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
         when (actions) {
-          ListActions.EDIT -> if (t != null) openTask(t.id)
+          ListActions.OPEN -> if (t != null) openTask(t.id)
           ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
           else -> {
           }
@@ -190,9 +194,10 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   }
 
   private fun openTask(taskId: String) {
-    LoginApi.openLogged(requireContext(), GoogleTaskPreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, taskId)
-      putExtra(TasksIntentKeys.INTENT_ACTION, TasksIntentKeys.EDIT)
+    navigate {
+      navigate(
+        TaskListFragmentDirections.actionTaskListFragmentToPreviewGoogleTaskFragment(taskId)
+      )
     }
   }
 

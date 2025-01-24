@@ -10,17 +10,15 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.databinding.FragmentGroupsBinding
-import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,7 +46,7 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
   }
 
   private fun addGroup() {
-    LoginApi.openLogged(requireContext(), CreateGroupActivity::class.java)
+    navigate { navigate(R.id.editGroupFragment) }
   }
 
   private fun initViewModel() {
@@ -137,9 +135,10 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
   }
 
   private fun editGroup(id: String) {
-    LoginApi.openLogged(requireContext(), CreateGroupActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
+    val bundle = Bundle().apply {
+      putString(IntentKeys.INTENT_ID, id)
     }
+    navigate { navigate(R.id.editGroupFragment, bundle) }
   }
 
   override fun getTitle(): String = getString(R.string.groups)

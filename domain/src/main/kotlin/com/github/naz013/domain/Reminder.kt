@@ -1,6 +1,7 @@
 package com.github.naz013.domain
 
 import com.github.naz013.domain.reminder.BuilderSchemeItem
+import com.github.naz013.domain.reminder.ReminderType
 import com.github.naz013.domain.reminder.ShopItem
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -215,9 +216,8 @@ data class Reminder(
     return !isGpsType(type) && harRepeat
   }
 
-  object Kind {
-    const val SMS = 2
-    const val CALL = 1
+  fun readType(): ReminderType {
+    return ReminderType(type)
   }
 
   object Action {
@@ -238,28 +238,17 @@ data class Reminder(
   companion object {
     const val DEFAULT_VERSION = Version.V2
 
-    const val REMINDER = 0
-    const val SHOPPING = 1
-
     const val BY_DATE = 10
-    const val BY_DATE_CALL = 11
-    const val BY_DATE_SMS = 12
     const val BY_DATE_APP = 13
     const val BY_DATE_LINK = 14
     const val BY_DATE_SHOP = 15
     const val BY_DATE_EMAIL = 16
     const val BY_TIME = 20
-    const val BY_TIME_CALL = 21
-    const val BY_TIME_SMS = 22
     const val BY_WEEK = 30
-    const val BY_WEEK_CALL = 31
-    const val BY_WEEK_SMS = 32
     const val BY_LOCATION = 40
     const val BY_LOCATION_CALL = 41
     const val BY_LOCATION_SMS = 42
     const val BY_MONTH = 60
-    const val BY_MONTH_CALL = 61
-    const val BY_MONTH_SMS = 62
     const val BY_OUT = 70
     const val BY_OUT_CALL = 71
     const val BY_OUT_SMS = 72
@@ -273,11 +262,7 @@ data class Reminder(
     @Deprecated("Removed after 9.3.1")
     const val BY_PLACES_SMS = 82
     const val BY_DAY_OF_YEAR = 90
-    const val BY_DAY_OF_YEAR_CALL = 91
-    const val BY_DAY_OF_YEAR_SMS = 92
     const val BY_RECUR = 100
-    const val BY_RECUR_CALL = 101
-    const val BY_RECUR_SMS = 102
 
     fun gpsTypes(): IntArray {
       return intArrayOf(

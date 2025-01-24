@@ -18,6 +18,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
 import com.github.naz013.ui.common.fragment.toast
@@ -149,7 +150,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
   }
 
   private fun initViewModel() {
-    viewModel.result.nonNullObserve(viewLifecycleOwner) { commands ->
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
       when (commands) {
         Commands.DELETED -> {
         }
@@ -158,7 +159,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
         }
       }
     }
-    viewModel.isInProgress.nonNullObserve(this) {
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) {
       if (it) {
         binding.progressMessageView.text = getString(R.string.please_wait)
         binding.scanButton.isEnabled = false
@@ -168,7 +169,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
         binding.scanButton.isEnabled = true
       }
     }
-    viewModel.error.nonNullObserve(this) { toast(it) }
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { toast(it) }
   }
 
   private fun initPriority() {

@@ -88,7 +88,7 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ical.ICalTimeC
 import com.elementary.tasks.reminder.build.valuedialog.controller.ical.ICalWeekStartController
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksController
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
-import com.elementary.tasks.reminder.create.fragments.recur.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import org.threeten.bp.LocalDate

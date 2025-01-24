@@ -26,21 +26,23 @@ import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DestinationScreen
+import com.github.naz013.navigation.Navigator
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.colorOf
@@ -62,10 +64,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val jobScheduler by inject<JobScheduler>()
   private val dateTimeManager by inject<DateTimeManager>()
   private val contactsReader by inject<ContactsReader>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
   private val prefs by inject<Prefs>()
   private val dialogues by inject<Dialogues>()
   private val notifier by inject<Notifier>()
+  private val navigator by inject<Navigator>()
   private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
 
   private var shoppingAdapter = ShopListRecyclerAdapter()
@@ -208,7 +210,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun initViewModel() {
     Logger.d("initViewModel: ${getId()}")
     viewModel.reminder.observeForever(mReminderObserver)
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.resultEvent.observeEvent(this) { commands ->
       when (commands) {
         Commands.DELETED -> {
         }
@@ -256,7 +258,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.timeBlock.gone()
     }
 
-    if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
+    if (reminder.readType().hasCallAction()) {
       contactPhoto.visible()
       val conID = contactsReader.getIdFromNumber(reminder.target)
 
@@ -285,7 +287,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.buttonAction.text = getString(R.string.make_call)
       binding.buttonAction.visibleGone(prefs.isTelephonyAllowed)
       binding.container.visible()
-    } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
+    } else if (reminder.readType().hasSmsAction()) {
       contactPhoto.visibility = View.VISIBLE
       val conID = contactsReader.getIdFromNumber(reminder.target)
       val name = contactsReader.getNameFromNumber(reminder.target)
@@ -315,7 +317,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.buttonAction.contentDescription = getString(R.string.acc_button_send_message)
 
       binding.container.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
+    } else if (reminder.readType().hasEmailAction()) {
       binding.remText.setText(R.string.e_mail)
       val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
         contactsReader.getIdFromMail(reminder.target)
@@ -350,7 +352,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.send)
       binding.buttonAction.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
+    } else if (reminder.readType().hasApplicationAction()) {
       val packageManager = packageManager
       var applicationInfo: ApplicationInfo? = null
       try {
@@ -371,7 +373,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.open)
       binding.buttonAction.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)) {
+    } else if (reminder.readType().hasLinkAction()) {
       val label = summary + "\n\n" + reminder.target
       binding.remText.text = summary
       binding.remText.contentDescription = label
@@ -380,7 +382,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       binding.contactBlock.visible()
       binding.buttonAction.text = getString(R.string.open)
       binding.buttonAction.visible()
-    } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP)) {
+    } else if (reminder.readType().hasSubTasks()) {
       binding.remText.text = summary
       binding.remText.contentDescription = summary
       binding.contactBlock.transparent()
@@ -396,7 +398,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     moreActionParams.canStartAgain = Reminder.isBase(reminder.type, Reminder.BY_TIME)
     moreActionParams.canCancel = canSkip()
 
-    if (!Reminder.isGpsType(reminder.type)) {
+    if (!reminder.readType().isGpsType()) {
       moreActionParams.canSnooze = true
     }
   }
@@ -505,9 +507,17 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private fun editReminder() {
     discardNotification(id)
     doActions({ it.disable() }, {
-      reminderBuilderLauncher.openLogged(this) {
-        putExtra(IntentKeys.INTENT_ID, it.uuId)
-      }
+      navigator.navigate(
+        ActivityDestination(
+          screen = DestinationScreen.ReminderCreate,
+          extras = Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.uuId)
+          },
+          flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+          isLoggedIn = true,
+          action = Intent.ACTION_VIEW
+        )
+      )
       finish()
     })
   }
@@ -539,7 +549,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     discardNotification(id)
     doActions({ it.next() }, {
       when {
-        Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS()
+        it.readType().hasSmsAction() -> sendSMS()
         isAppType -> openApplication(it)
         Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
           context = this,
@@ -551,7 +561,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
         else -> makeCall()
       }
-      if (!Reminder.isKind(it.type, Reminder.Kind.SMS)) {
+      if (!it.readType().hasSmsAction()) {
         finish()
       }
     })

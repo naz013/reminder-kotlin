@@ -6,14 +6,14 @@ import com.elementary.tasks.reminder.build.bi.BuilderItemError
 sealed class UiBuilderItem {
   abstract val key: Any
   abstract val builderItem: BuilderItem<*>
-  abstract val state: UiLitBuilderItemState
+  abstract val state: UiListBuilderItemState
   abstract val value: String
   abstract val errorText: String
 }
 
 data class UiListBuilderItem(
   override val builderItem: BuilderItem<*>,
-  override val state: UiLitBuilderItemState,
+  override val state: UiListBuilderItemState,
   override val value: String,
   override val errorText: String
 ) : UiBuilderItem() {
@@ -22,7 +22,7 @@ data class UiListBuilderItem(
 
 data class UiListNoteBuilderItem(
   override val builderItem: NoteBuilderItem,
-  override val state: UiLitBuilderItemState,
+  override val state: UiListBuilderItemState,
   override val value: String,
   override val errorText: String,
   val noteData: UiNoteList?
@@ -30,10 +30,10 @@ data class UiListNoteBuilderItem(
   override val key: Any = builderItem.biType
 }
 
-sealed class UiLitBuilderItemState {
-  data object EmptyState : UiLitBuilderItemState()
-  data object DoneState : UiLitBuilderItemState()
+sealed class UiListBuilderItemState {
+  data object EmptyState : UiListBuilderItemState()
+  data object DoneState : UiListBuilderItemState()
   data class ErrorState(
     val errors: List<BuilderItemError>
-  ) : UiLitBuilderItemState()
+  ) : UiListBuilderItemState()
 }

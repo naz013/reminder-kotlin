@@ -4,11 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
-import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.places.create.CreatePlaceActivity
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment
+import com.elementary.tasks.groups.create.EditGroupFragment
+import com.elementary.tasks.notes.preview.PreviewNoteFragment
+import com.elementary.tasks.places.create.EditPlaceFragment
+import com.elementary.tasks.reminder.preview.PreviewReminderFragment
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.RecentQuery
 import com.github.naz013.domain.RecentQueryTarget
@@ -98,13 +98,38 @@ class GlobalSearchViewModel(
   }
 
   private fun Class<*>.isFragment(): Boolean {
-    return this == PreviewBirthdayFragment::class.java
+    return this == PreviewBirthdayFragment::class.java ||
+      this == EditGroupFragment::class.java ||
+      this == EditPlaceFragment::class.java ||
+      this == PreviewGoogleTaskFragment::class.java ||
+      this == PreviewReminderFragment::class.java ||
+      this == PreviewNoteFragment::class.java
   }
 
   private fun Class<*>.destinationId(): Int? {
     return when {
       this == PreviewBirthdayFragment::class.java -> {
         R.id.previewBirthdayFragment
+      }
+
+      this == EditGroupFragment::class.java -> {
+        R.id.editGroupFragment
+      }
+
+      this == EditPlaceFragment::class.java -> {
+        R.id.editPlaceFragment
+      }
+
+      this == PreviewGoogleTaskFragment::class.java -> {
+        R.id.previewGoogleTaskFragment
+      }
+
+      this == PreviewReminderFragment::class.java -> {
+        R.id.previewReminderFragment
+      }
+
+      this == PreviewNoteFragment::class.java -> {
+        R.id.previewNoteFragment
       }
 
       else -> null
@@ -170,12 +195,12 @@ class GlobalSearchViewModel(
 
   private fun ObjectType.toTargetClass(): Class<*> {
     return when (this) {
-      ObjectType.GROUP -> CreateGroupActivity::class.java
-      ObjectType.PLACE -> CreatePlaceActivity::class.java
-      ObjectType.GOOGLE_TASK -> GoogleTaskPreviewActivity::class.java
-      ObjectType.NOTE -> NotePreviewActivity::class.java
+      ObjectType.GROUP -> EditGroupFragment::class.java
+      ObjectType.PLACE -> EditPlaceFragment::class.java
+      ObjectType.GOOGLE_TASK -> PreviewGoogleTaskFragment::class.java
+      ObjectType.NOTE -> PreviewNoteFragment::class.java
       ObjectType.BIRTHDAY -> PreviewBirthdayFragment::class.java
-      ObjectType.REMINDER -> ReminderPreviewActivity::class.java
+      ObjectType.REMINDER -> PreviewReminderFragment::class.java
     }
   }
 }

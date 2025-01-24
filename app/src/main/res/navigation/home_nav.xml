@@ -37,6 +37,15 @@
         <action
             android:id="@+id/action_actionHome_to_previewBirthdayFragment"
             app:destination="@id/previewBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_editGroupFragment"
+            app:destination="@id/editGroupFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_previewReminderFragment"
+            app:destination="@id/previewReminderFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
     </fragment>
 
     <fragment
@@ -58,6 +67,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_actionNotes_to_previewNoteFragment"
+            app:destination="@id/previewNoteFragment" />
     </fragment>
 
     <fragment
@@ -99,12 +111,22 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_actionGoogle_to_previewGoogleTaskFragment"
+            app:destination="@id/previewGoogleTaskFragment" />
+        <action
+            android:id="@+id/action_actionGoogle_to_editGoogleTaskListFragment"
+            app:destination="@id/editGoogleTaskListFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupsFragment"
         android:name="com.elementary.tasks.groups.list.GroupsFragment"
         android:label="@string/groups"
-        tools:layout="@layout/fragment_groups" />
+        tools:layout="@layout/fragment_groups">
+        <action
+            android:id="@+id/action_groupsFragment_to_editGroupFragment"
+            app:destination="@id/editGroupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.elementary.tasks.navigation.fragments.MapFragment"
@@ -136,6 +158,9 @@
         <action
             android:id="@+id/action_dayViewFragment_to_previewBirthdayFragment"
             app:destination="@id/previewBirthdayFragment" />
+        <action
+            android:id="@+id/action_dayViewFragment_to_previewReminderFragment"
+            app:destination="@id/previewReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
@@ -145,6 +170,15 @@
         <argument
             android:name="arg_id"
             app:argType="string" />
+        <action
+            android:id="@+id/action_taskListFragment_to_previewGoogleTaskFragment"
+            app:destination="@id/previewGoogleTaskFragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_editGoogleTaskFragment"
+            app:destination="@id/editGoogleTaskFragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_editGoogleTaskListFragment"
+            app:destination="@id/editGoogleTaskListFragment" />
     </fragment>
 
     <fragment
@@ -389,21 +423,9 @@
         android:label="@string/places"
         tools:layout="@layout/fragment_places">
         <action
-            android:id="@+id/action_placesFragment_to_createPlaceActivity"
-            app:destination="@id/createPlaceActivity" />
+            android:id="@+id/action_placesFragment_to_editPlaceFragment"
+            app:destination="@id/editPlaceFragment" />
     </fragment>
-    <activity
-        android:id="@+id/createPlaceActivity"
-        android:name="com.elementary.tasks.places.create.CreatePlaceActivity"
-        android:label="@string/new_place"
-        tools:layout="@layout/activity_create_place">
-        <argument
-            android:name="item_id"
-            app:argType="string" />
-        <argument
-            android:name="arg_logged"
-            app:argType="boolean" />
-    </activity>
     <navigation
         android:id="@+id/navigation2"
         app:startDestination="@id/otherSettingsFragment">
@@ -495,7 +517,7 @@
         android:id="@+id/testsFragment"
         android:name="com.elementary.tasks.settings.test.TestsFragment"
         android:label="Tests"
-        tools:layout="@layout/fragment_settings_tests" >
+        tools:layout="@layout/fragment_settings_tests">
         <action
             android:id="@+id/action_testsFragment_to_objectExportTestFragment"
             app:destination="@id/objectExportTestFragment" />
@@ -524,7 +546,11 @@
         android:id="@+id/archivedNotesFragment"
         android:name="com.elementary.tasks.notes.list.archived.ArchivedNotesFragment"
         android:label="@string/notes_archive"
-        tools:layout="@layout/fragment_notes" />
+        tools:layout="@layout/fragment_notes" >
+        <action
+            android:id="@+id/action_archivedNotesFragment_to_previewNoteFragment"
+            app:destination="@id/previewNoteFragment" />
+    </fragment>
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
@@ -551,6 +577,12 @@
         <action
             android:id="@+id/action_actionEvents_to_previewBirthdayFragment"
             app:destination="@id/previewBirthdayFragment" />
+        <action
+            android:id="@+id/action_actionEvents_to_previewReminderFragment"
+            app:destination="@id/previewReminderFragment" />
+        <action
+            android:id="@+id/action_actionEvents_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/managePresetsFragment"
@@ -575,4 +607,67 @@
         android:id="@+id/objectExportTestFragment"
         android:name="com.elementary.tasks.settings.test.ObjectExportTestFragment"
         android:label="ObjectExportTestFragment" />
+    <fragment
+        android:id="@+id/editGroupFragment"
+        android:name="com.elementary.tasks.groups.create.EditGroupFragment"
+        android:label="@string/create_group"
+        tools:layout="@layout/fragment_edit_group" />
+    <fragment
+        android:id="@+id/editPlaceFragment"
+        android:name="com.elementary.tasks.places.create.EditPlaceFragment"
+        android:label="@string/new_place"
+        tools:layout="@layout/fragment_edit_place" />
+    <fragment
+        android:id="@+id/previewGoogleTaskFragment"
+        android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_google_task_preview">
+        <argument
+            android:name="item_id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_previewGoogleTaskFragment_to_editGoogleTaskFragment"
+            app:destination="@id/editGoogleTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGoogleTaskFragment"
+        android:name="com.elementary.tasks.googletasks.task.EditGoogleTaskFragment"
+        android:label="@string/edit_task"
+        tools:layout="@layout/fragment_google_task_edit" />
+    <fragment
+        android:id="@+id/editGoogleTaskListFragment"
+        android:name="com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListFragment"
+        android:label="@string/new_tasks_list"
+        tools:layout="@layout/fragment_google_task_list_edit" />
+    <fragment
+        android:id="@+id/previewReminderFragment"
+        android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_reminder_preview" >
+        <action
+            android:id="@+id/action_previewReminderFragment_to_fullscreenMapFragment"
+            app:destination="@id/fullscreenMapFragment" />
+        <action
+            android:id="@+id/action_previewReminderFragment_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullscreenMapFragment"
+        android:name="com.elementary.tasks.reminder.preview.FullscreenMapFragment"
+        tools:layout="@layout/fragment_reminder_fullscreen_map"
+        android:label="@string/map" />
+    <fragment
+        android:id="@+id/buildReminderFragment"
+        android:name="com.elementary.tasks.reminder.build.BuildReminderFragment"
+        tools:layout="@layout/fragment_reminder_builder"
+        android:label="@string/new_reminder" />
+    <fragment
+        android:id="@+id/previewNoteFragment"
+        android:name="com.elementary.tasks.notes.preview.PreviewNoteFragment"
+        tools:layout="@layout/fragment_note_preview"
+        android:label="@string/details" >
+        <action
+            android:id="@+id/action_previewNoteFragment_to_buildReminderFragment"
+            app:destination="@id/buildReminderFragment" />
+    </fragment>
 </navigation>

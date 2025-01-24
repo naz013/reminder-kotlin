@@ -4,22 +4,19 @@ import android.content.Context
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
-import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.ui.common.Dialogues
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.Dialogues
 
 class ReminderActionResolver(
   private val context: Context,
   private val dialogues: Dialogues,
-  private val reminderBuilderLauncher: ReminderBuilderLauncher,
   private val permissionFlow: PermissionFlow,
   private val deleteAction: (id: String) -> Unit,
   private val toggleAction: (id: String) -> Unit,
-  private val skipAction: (id: String) -> Unit
+  private val skipAction: (id: String) -> Unit,
+  private val openAction: (id: String) -> Unit,
+  private val editAction: (id: String) -> Unit
 ) {
 
   fun resolveItemClick(
@@ -122,14 +119,10 @@ class ReminderActionResolver(
   }
 
   private fun editReminder(id: String) {
-    reminderBuilderLauncher.openLogged(context) {
-      putExtra(IntentKeys.INTENT_ID, id)
-    }
+    editAction(id)
   }
 
   private fun previewReminder(id: String) {
-    context.startActivity(ReminderPreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
-    }
+    openAction(id)
   }
 }

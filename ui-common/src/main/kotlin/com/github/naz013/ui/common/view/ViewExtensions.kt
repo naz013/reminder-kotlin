@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import com.github.naz013.ui.common.context.dp2px
 
 fun View.getSize(block: (width: Int, height: Int) -> Unit) {
@@ -174,6 +175,24 @@ fun View.applyTopInsets(
       /* right = */ v.paddingRight,
       /* bottom = */ v.paddingBottom
     )
+    insets
+  }
+}
+
+fun View.applyTopInsetsMargin(
+  @DimenRes topExtraRes: Int = -1
+) {
+  val margin = if (topExtraRes != -1) {
+    context.resources.getDimensionPixelSize(topExtraRes)
+  } else {
+    0
+  }
+  ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+    val innerPadding = insets.getInsets(
+      WindowInsetsCompat.Type.systemBars() or
+        WindowInsetsCompat.Type.displayCutout()
+    )
+    v.applyMarginsPx(top = v.marginTop + margin + innerPadding.top)
     insets
   }
 }

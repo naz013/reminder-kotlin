@@ -15,7 +15,7 @@
         app:elevation="0dp"
         app:liftOnScroll="false">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -130,7 +130,6 @@
                                 android:contentDescription="@string/acc_type_by_voice"
                                 android:scaleType="centerInside"
                                 app:srcCompat="@drawable/ic_builder_mic_on"
-                                app:tint="?colorOnSurface"
                                 tools:visibility="gone" />
 
                             <androidx.appcompat.widget.AppCompatImageView
@@ -445,6 +444,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/bottom_bar_inner_space"
                     android:layout_width="match_parent"
                     android:layout_height="16dp" />
             </LinearLayout>

@@ -118,6 +118,19 @@
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity
+            android:name=".core.arch.CreateReminderIntentActivity"
+            android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/new_reminder"
+            android:windowSoftInputMode="stateUnchanged">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".core.arch.IntentActivity"
             android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
@@ -221,39 +234,6 @@
                 <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".reminder.create.CreateReminderActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/new_reminder"
-            android:windowSoftInputMode="stateUnchanged" />
-
-        <activity
-            android:name=".reminder.build.BuildReminderActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/new_reminder"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".groups.create.CreateGroupActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/create_group"
-            android:windowSoftInputMode="stateUnchanged" />
-
-        <activity
-            android:name=".places.create.CreatePlaceActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:label="@string/new_place"
-            android:windowSoftInputMode="stateUnchanged" />
 
         <activity
             android:name=".notes.create.CreateNoteActivity"
@@ -292,19 +272,6 @@
             android:name=".notes.preview.ImagePreviewActivity"
             android:exported="false" />
         <activity
-            android:name=".notes.preview.NotePreviewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".googletasks.tasklist.GoogleTaskListActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="false"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
-            android:name=".googletasks.task.GoogleTaskActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="false"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
             android:name=".reminder.dialog.ReminderDialog29Activity"
             android:excludeFromRecents="true"
             android:exported="false" />
@@ -313,16 +280,6 @@
             android:excludeFromRecents="true"
             android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
-        <activity
-            android:name=".reminder.preview.ReminderPreviewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".googletasks.preview.GoogleTaskPreviewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".reminder.preview.FullscreenMapActivity"
-            android:excludeFromRecents="true"
-            android:exported="false" />
         <activity
             android:name=".birthdays.dialog.ShowBirthday29Activity"
             android:excludeFromRecents="true"
@@ -334,14 +291,7 @@
             android:name=".other.PrivacyPolicyActivity"
             android:exported="false" />
         <activity
-            android:name=".reminder.create.fragments.recur.RecurHelpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".reminder.create.fragments.recur.preset.PresetSelectionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".reminder.create.ConfigureActivity"
-            android:excludeFromRecents="true"
+            android:name=".reminder.recur.RecurHelpActivity"
             android:exported="false" />
         <activity
             android:name=".reminder.build.BuilderConfigureActivity"

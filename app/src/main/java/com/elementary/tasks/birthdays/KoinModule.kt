@@ -1,10 +1,10 @@
 package com.elementary.tasks.birthdays
 
-import com.elementary.tasks.birthdays.create.AddBirthdayViewModel
+import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
 import com.elementary.tasks.birthdays.create.UiBirthdayDateFormatter
 import com.elementary.tasks.birthdays.dialog.ShowBirthdayViewModel
 import com.elementary.tasks.birthdays.list.BirthdaysViewModel
-import com.elementary.tasks.birthdays.preview.BirthdayPreviewViewModel
+import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
@@ -30,7 +30,7 @@ val birthdaysModule = module {
     )
   }
   viewModel { (id: String) ->
-    AddBirthdayViewModel(
+    EditBirthdayViewModel(
       id,
       get(),
       get(),
@@ -48,7 +48,7 @@ val birthdaysModule = module {
   }
   viewModel { BirthdaysViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { BirthdayPreviewViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { PreviewBirthdayViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   worker { BirthdayDeleteBackupWorker(get(), get(), get(), get()) }
   worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get()) }

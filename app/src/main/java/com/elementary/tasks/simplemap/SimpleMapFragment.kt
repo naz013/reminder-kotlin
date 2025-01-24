@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
@@ -73,6 +75,8 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   private lateinit var mapLayerController: MapLayerController
   private lateinit var recentPlacesController: RecentPlacesController
 
+  private var insets: WindowInsetsCompat? = null
+
   private val mapReadyCallback = OnMapReadyCallback { googleMap ->
     internalMap = googleMap
     isMapReady = true
@@ -121,6 +125,11 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+      this.insets = insets
+      insets
+    }
+
     initMarkerStyleController(view)
     initMarkerRadiusController(view)
     initMapLayerController(view)
@@ -141,6 +150,22 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     initPlacesViewModel()
   }
 
+  fun applyInsets() {
+    Logger.d(TAG, "Applying insets, insets = $insets")
+    insets?.run {
+      val innerPadding = this.getInsets(
+        WindowInsetsCompat.Type.statusBars() or
+          WindowInsetsCompat.Type.displayCutout()
+      )
+      binding.buttonContainer.setPadding(
+        /* left = */ binding.buttonContainer.paddingLeft,
+        /* top = */ binding.buttonContainer.paddingTop + innerPadding.top,
+        /* right = */ binding.buttonContainer.paddingRight,
+        /* bottom = */ binding.buttonContainer.paddingBottom
+      )
+    }
+  }
+
   fun addMarker(
     latLng: LatLng,
     title: String? = null,
@@ -151,23 +176,6 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       markerState = (markerState ?: createMarkerState(latLng = latLng)).copy(
         title = title ?: geocodeAddress(latLng),
         latLng = latLng
-      ),
-      clearMap = clear,
-      animate = animate
-    )
-  }
-
-  fun addMarker(
-    latLng: com.github.naz013.domain.place.LatLng,
-    title: String? = null,
-    clear: Boolean = true,
-    animate: Boolean = true
-  ) {
-    val old = LatLng(latLng.latitude, latLng.longitude)
-    addMarker(
-      markerState = (markerState ?: createMarkerState(latLng = old)).copy(
-        title = title ?: geocodeAddress(old),
-        latLng = old
       ),
       clearMap = clear,
       animate = animate
@@ -789,6 +797,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
   companion object {
 
+    private const val TAG = "SimpleMapFragment"
     private const val KEY_PARAMS = "key_params"
 
     fun newInstance(mapParams: MapParams): SimpleMapFragment {

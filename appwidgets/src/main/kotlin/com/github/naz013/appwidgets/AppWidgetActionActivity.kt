@@ -6,12 +6,11 @@ import android.os.Bundle
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.context.intentForClass
-import com.github.naz013.usecase.googletasks.TasksIntentKeys
 import org.koin.android.ext.android.inject
 
 internal class AppWidgetActionActivity : LightThemedActivity() {
@@ -36,9 +35,6 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
     Logger.d("AppWidgetActionActivity", "Received data = $data")
     val id = data?.extra?.get(IntentKeys.INTENT_ID) as? String
     val bundle = intent.extras ?: Bundle()
-    if (id != null) {
-      bundle.putString(IntentKeys.INTENT_ID, id)
-    }
     when (direction) {
       Direction.HOME -> {
         navigator.navigate(
@@ -57,17 +53,22 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
             screen = DestinationScreen.ReminderCreate,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-            isLoggedIn = true
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
           )
         )
       }
       Direction.REMINDER_PREVIEW -> {
+        if (id != null) {
+          bundle.putString(IntentKeys.INTENT_ID, id)
+        }
         navigator.navigate(
           ActivityDestination(
             screen = DestinationScreen.ReminderPreview,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-            isLoggedIn = true
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
           )
         )
       }
@@ -83,6 +84,9 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
         )
       }
       Direction.BIRTHDAY_PREVIEW -> {
+        if (id != null) {
+          bundle.putString(IntentKeys.INTENT_ID, id)
+        }
         navigator.navigate(
           ActivityDestination(
             screen = DestinationScreen.BirthdayPreview,
@@ -104,34 +108,39 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
         )
       }
       Direction.NOTE_PREVIEW -> {
+        if (id != null) {
+          bundle.putString(IntentKeys.INTENT_ID, id)
+        }
         navigator.navigate(
           ActivityDestination(
             screen = DestinationScreen.NotePreview,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-            isLoggedIn = true
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
           )
         )
       }
       Direction.GOOGLE_TASK -> {
-        val action = data?.extra?.get(TasksIntentKeys.INTENT_ACTION) as? String ?: return
-        bundle.putString(TasksIntentKeys.INTENT_ACTION, action)
-        if (action == TasksIntentKeys.CREATE) {
+        if (id.isNullOrEmpty()) {
           navigator.navigate(
             ActivityDestination(
               screen = DestinationScreen.GoogleTaskCreate,
               extras = bundle,
               flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-              isLoggedIn = true
+              isLoggedIn = true,
+              action = Intent.ACTION_VIEW
             )
           )
         } else {
+          bundle.putString(IntentKeys.INTENT_ID, id)
           navigator.navigate(
             ActivityDestination(
               screen = DestinationScreen.GoogleTaskPreview,
               extras = bundle,
               flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-              isLoggedIn = true
+              isLoggedIn = true,
+              action = Intent.ACTION_VIEW
             )
           )
         }

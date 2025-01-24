@@ -5,7 +5,7 @@ import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.UiBuilderItem
 import com.elementary.tasks.reminder.build.UiListBuilderItem
 import com.elementary.tasks.reminder.build.UiListNoteBuilderItem
-import com.elementary.tasks.reminder.build.UiLitBuilderItemState
+import com.elementary.tasks.reminder.build.UiListBuilderItemState
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiValueForUiAdapter
 import com.elementary.tasks.reminder.build.bi.BuilderItemConstraints
@@ -27,10 +27,10 @@ class UiBuilderItemsAdapter(
       val builderItemConstraints = BuilderItemConstraints(it.constraints)
       val errors = getErrors(builderItemConstraints, processedBuilderItems)
       val state = when {
-        errors.isNotEmpty() || !it.modifier.isCorrect() -> UiLitBuilderItemState.ErrorState(errors)
-        it.modifier.getValue() == null -> UiLitBuilderItemState.EmptyState
-        it.modifier.isCorrect() -> UiLitBuilderItemState.DoneState
-        else -> UiLitBuilderItemState.EmptyState
+        errors.isNotEmpty() || !it.modifier.isCorrect() -> UiListBuilderItemState.ErrorState(errors)
+        it.modifier.getValue() == null -> UiListBuilderItemState.EmptyState
+        it.modifier.isCorrect() -> UiListBuilderItemState.DoneState
+        else -> UiListBuilderItemState.EmptyState
       }
       toUi(
         builderItem = it,
@@ -64,7 +64,7 @@ class UiBuilderItemsAdapter(
 
   private fun toUi(
     builderItem: BuilderItem<*>,
-    state: UiLitBuilderItemState,
+    state: UiListBuilderItemState,
     value: String,
     errorText: String
   ): UiBuilderItem {

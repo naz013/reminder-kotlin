@@ -12,12 +12,13 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
@@ -28,17 +29,35 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   private val reminderResolver by lazy {
     ReminderActionResolver(
       context = requireContext(),
       dialogues = dialogues,
-      reminderBuilderLauncher = reminderBuilderLauncher,
       permissionFlow = permissionFlow,
       toggleAction = { },
       deleteAction = { viewModel.deleteReminder(it) },
-      skipAction = { }
+      skipAction = { },
+      openAction = {
+        navigate {
+          navigate(
+            R.id.previewReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      },
+      editAction = {
+        navigate {
+          navigate(
+            R.id.buildReminderFragment,
+            Bundle().apply {
+              putString(IntentKeys.INTENT_ID, it)
+            }
+          )
+        }
+      }
     )
   }
 
@@ -88,7 +107,7 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private fun initViewModel() {
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> Toast.makeText(
           requireContext(),

@@ -257,7 +257,9 @@ class DefaultPresetsGenerateUseCase(
       createdAt = LocalDateTime.now(),
       useCount = 0,
       builderScheme = scheme,
-      description = description
+      description = description,
+      isDefault = true,
+      recurItemsToAdd = null
     )
   }
 

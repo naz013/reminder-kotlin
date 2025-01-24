@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.apps.SelectApplicationActivity
 import com.github.naz013.common.intent.ActivityLauncherCreator
 import com.github.naz013.common.intent.FragmentLauncherCreator
-import com.github.naz013.ui.common.context.intentForClass
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.IntentPicker
 import com.github.naz013.common.intent.LauncherCreator
+import com.github.naz013.ui.common.context.intentForClass
 
 class ApplicationPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
@@ -32,7 +32,7 @@ class ApplicationPicker private constructor(
     resultCallback: (String) -> Unit
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
-  fun pickApplication() {
+  private fun pickApplication() {
     launch(getIntent())
   }
 

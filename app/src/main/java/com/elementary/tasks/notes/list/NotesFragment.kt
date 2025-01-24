@@ -16,9 +16,7 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.github.naz013.ui.common.view.ViewUtils
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.core.views.recyclerview.StaggeredSpaceItemDecoration
 import com.elementary.tasks.databinding.FragmentNotesBinding
@@ -26,7 +24,6 @@ import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.Permissions
@@ -34,12 +31,14 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.context.startActivity
 import com.github.naz013.ui.common.fragment.dp2px
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.login.LoginApi
+import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
@@ -165,7 +164,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
         hideProgress()
       }
     }
-    viewModel.error.nonNullObserve(viewLifecycleOwner) { showErrorSending() }
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { showErrorSending() }
   }
 
   private fun sendNote(note: NoteWithImages, file: File) {
@@ -321,8 +320,13 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
   override fun getTitle(): String = getString(R.string.notes)
 
   private fun previewNote(id: String?) {
-    startActivity(NotePreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, id)
+    navigate {
+      navigate(
+        R.id.previewNoteFragment,
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, id)
+        }
+      )
     }
   }
 

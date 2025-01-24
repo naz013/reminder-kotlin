@@ -7,19 +7,15 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.media.AudioManager
 import android.net.Uri
-import android.provider.Settings
 import android.util.Base64
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.services.GeolocationService
-import com.github.naz013.ui.common.Dialogues
-import com.elementary.tasks.reminder.create.fragments.ReminderInterface
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -87,46 +83,6 @@ object SuperUtil {
     } else {
       Logger.d("isDoNotDisturbEnabled: false")
       false
-    }
-  }
-
-  fun checkNotificationPermission(activity: Context): Boolean {
-    val notificationManager =
-      activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    return notificationManager.isNotificationPolicyAccessGranted
-  }
-
-  fun askNotificationPermission(activity: Activity, dialogues: Dialogues) {
-    val builder = dialogues.getMaterialDialog(activity)
-    builder.setMessage(R.string.for_correct_work_of_application)
-    builder.setPositiveButton(R.string.grant) { dialog, _ ->
-      dialog.dismiss()
-      val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-      try {
-        activity.startActivity(intent)
-      } catch (ignored: ActivityNotFoundException) {
-      }
-    }
-    builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-    builder.create().show()
-  }
-
-  fun checkLocationEnable(context: Context): Boolean {
-    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val isGPSEnabled = locationManager
-      .isProviderEnabled(LocationManager.GPS_PROVIDER)
-    val isNetworkEnabled = locationManager
-      .isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-    return !(!isGPSEnabled && !isNetworkEnabled)
-  }
-
-  fun showLocationAlert(context: Context, callbacks: ReminderInterface) {
-    callbacks.showSnackbar(
-      context.getString(R.string.gps_not_enabled),
-      context.getString(R.string.action_settings)
-    ) {
-      val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-      context.startActivity(intent)
     }
   }
 

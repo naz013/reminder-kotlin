@@ -2,19 +2,19 @@ package com.elementary.tasks.navigation
 
 import android.content.Context
 import android.os.Bundle
-import com.elementary.tasks.googletasks.preview.GoogleTaskPreviewActivity
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.reminder.build.BuildReminderActivity
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.EditBirthdayScreen
+import com.github.naz013.navigation.EditGoogleTaskScreen
+import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
+import com.github.naz013.navigation.ViewGoogleTaskScreen
+import com.github.naz013.navigation.ViewNoteScreen
+import com.github.naz013.navigation.ViewReminderScreen
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.login.LoginApi
 
@@ -63,20 +63,55 @@ class ActivityNavigationDispatcher(
         }
       }
 
+      DestinationScreen.GoogleTaskPreview -> {
+        val deepLinkDestination = ViewGoogleTaskScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
+      DestinationScreen.GoogleTaskCreate -> {
+        val deepLinkDestination = EditGoogleTaskScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
+      DestinationScreen.ReminderPreview -> {
+        val deepLinkDestination = ViewReminderScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
+      DestinationScreen.ReminderCreate -> {
+        val deepLinkDestination = EditReminderScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
+      DestinationScreen.NotePreview -> {
+        val deepLinkDestination = ViewNoteScreen(bundle)
+        Bundle(bundle).apply {
+          putParcelable(DeepLinkDestination.KEY, deepLinkDestination)
+        }
+      }
+
       else -> bundle
     }
   }
 
   private fun getClass(destinationScreen: DestinationScreen): Class<*> {
     return when (destinationScreen) {
-      DestinationScreen.ReminderPreview -> ReminderPreviewActivity::class.java
-      DestinationScreen.ReminderCreate -> BuildReminderActivity::class.java
-      DestinationScreen.NotePreview -> NotePreviewActivity::class.java
+      DestinationScreen.ReminderPreview -> BottomNavActivity::class.java
+      DestinationScreen.ReminderCreate -> BottomNavActivity::class.java
+      DestinationScreen.NotePreview -> BottomNavActivity::class.java
       DestinationScreen.NoteCreate -> CreateNoteActivity::class.java
       DestinationScreen.BirthdayPreview -> BottomNavActivity::class.java
       DestinationScreen.BirthdayCreate -> BottomNavActivity::class.java
-      DestinationScreen.GoogleTaskPreview -> GoogleTaskPreviewActivity::class.java
-      DestinationScreen.GoogleTaskCreate -> GoogleTaskActivity::class.java
+      DestinationScreen.GoogleTaskPreview -> BottomNavActivity::class.java
+      DestinationScreen.GoogleTaskCreate -> BottomNavActivity::class.java
       DestinationScreen.Main -> BottomNavActivity::class.java
     }
   }

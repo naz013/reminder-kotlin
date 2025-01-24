@@ -51,18 +51,16 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.groups.create.CreateGroupViewModel
+import com.elementary.tasks.groups.create.EditGroupViewModel
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.places.create.PlaceViewModel
+import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
 import com.elementary.tasks.places.work.PlaceSingleBackupWorker
-import com.elementary.tasks.reminder.create.ReminderStateViewModel
-import com.elementary.tasks.reminder.create.fragments.timer.UsedTimeViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
@@ -95,10 +93,21 @@ val workerModule = module {
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) -> PlaceViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String) ->
+    EditPlaceViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
 
   viewModel { (id: String) ->
-    CreateGroupViewModel(
+    EditGroupViewModel(
       id,
       get(),
       get(),
@@ -114,10 +123,8 @@ val viewModelModule = module {
 
   viewModel { SelectApplicationViewModel(get(), get()) }
   viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
-  viewModel { UsedTimeViewModel(get(), get(), get(), get()) }
 
   viewModel { CloudViewModel(get(), get(), get(), get(), get()) }
-  viewModel { ReminderStateViewModel(get(), get()) }
 
   viewModel {
     SplashViewModel(

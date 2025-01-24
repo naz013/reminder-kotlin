@@ -3,6 +3,7 @@ package com.elementary.tasks.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -27,14 +28,11 @@ import com.elementary.tasks.navigation.SearchableFragmentCallback
 import com.elementary.tasks.navigation.SearchableFragmentQueryObserver
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
+import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.DayViewScreen
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
-import com.github.naz013.navigation.EditBirthdayScreen
-import com.github.naz013.navigation.SettingsScreen
-import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.ui.common.activity.BindingActivity
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.search.SearchView
@@ -67,10 +65,9 @@ class BottomNavActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    Logger.d(
-      "BottomNavActivity",
-      "onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}"
-    )
+    Logger.i(TAG, "Starting with action: ${intent.action}")
+    Logger.i(TAG, "Starting with data: ${intent.data}")
+    Logger.i(TAG, "Starting with extras: ${intent.extras?.keySet()?.toList()}")
 
     val navHostFragment =
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
@@ -83,45 +80,38 @@ class BottomNavActivity :
         DeepLinkDestination.KEY,
         DeepLinkDestination::class.java
       )
-      when (deepLinkDestination) {
-        is DayViewScreen -> {
+      Logger.i(TAG, "Deep link destination: $deepLinkDestination")
+      deepLinkDestination
+        ?.let { ScreenDestinationIdResolver().resolve(deepLinkDestination) }
+        ?.also {
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
             .setArguments(deepLinkDestination.extras)
-            .setDestination(R.id.dayViewFragment)
+            .setDestination(it)
             .createTaskStackBuilder()
             .startActivities()
         }
-
-        is SettingsScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.settingsFragment)
-            .createTaskStackBuilder()
-            .startActivities()
+    } else if (ShortcutDestination.hasShortcut(intent.extras)) {
+      val shortcut = ShortcutDestination.getShortcut(intent.extras)
+      val destinationId = when (shortcut) {
+        ShortcutDestination.Shortcut.GoogleTask -> {
+          R.id.editGoogleTaskFragment
         }
 
-        is EditBirthdayScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.editBirthdayFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
+        ShortcutDestination.Shortcut.Reminder -> {
+          R.id.buildReminderFragment
         }
 
-        is ViewBirthdayScreen -> {
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setDestination(R.id.previewBirthdayFragment)
-            .setArguments(deepLinkDestination.extras)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-
-        else -> {
-          Logger.e("BottomNavActivity", "Unknown deep link destination: $deepLinkDestination")
-        }
+        ShortcutDestination.Shortcut.Note -> TODO()
+        null -> null
+      }
+      destinationId?.also {
+        NavDeepLinkBuilder(this)
+          .setGraph(R.navigation.home_nav)
+          .setArguments(intent.extras)
+          .setDestination(it)
+          .createTaskStackBuilder()
+          .startActivities()
       }
     }
 
@@ -171,10 +161,10 @@ class BottomNavActivity :
   }
 
   override fun handleBackPress(): Boolean {
-    Logger.d("handleBackPress: $currentResumedFragment")
+    Logger.i(TAG, "Handle back press, current fragment: $currentResumedFragment")
     if (currentResumedFragment is HomeFragment) {
       finishAffinity()
-    } else {
+    } else if (currentResumedFragment?.canGoBack() == true) {
       navController.popBackStack()
     }
     return true
@@ -193,8 +183,16 @@ class BottomNavActivity :
     adapter: RecyclerView.Adapter<*>,
     observer: SearchableFragmentQueryObserver
   ) {
+    Logger.i(TAG, "Add the Search view $anchorId")
     this.searchableFragmentQueryObserver = observer
     initSearchView(anchorId, hint, adapter)
+  }
+
+  override fun removeSearchView() {
+    Logger.i(TAG, "Removing the Search view $fragmentSearchView")
+    fragmentSearchView?.also {
+      binding.container.removeView(it)
+    }
   }
 
   private fun initSearchView(
@@ -202,6 +200,10 @@ class BottomNavActivity :
     hint: String,
     adapter: RecyclerView.Adapter<*>
   ) {
+    if (findViewById<View>(anchorId) == null) {
+      Logger.i(TAG, "Can't find anchor with id: $anchorId, skipping search view initialization")
+      return
+    }
     val searchView = SearchView(this)
     searchView.hint = hint
     searchView.layoutParams = CoordinatorLayout.LayoutParams(binding.container.layoutParams).apply {
@@ -227,5 +229,9 @@ class BottomNavActivity :
     }
 
     fragmentSearchView = searchView
+  }
+
+  companion object {
+    private const val TAG = "BottomNavActivity"
   }
 }

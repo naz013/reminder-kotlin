@@ -2,6 +2,7 @@ package com.github.naz013.appwidgets.events
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
@@ -16,9 +17,9 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
@@ -34,8 +35,6 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
-import androidx.glance.preview.ExperimentalGlancePreviewApi
-import androidx.glance.preview.Preview
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -94,17 +93,29 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     }
 
   override suspend fun provideGlance(context: Context, id: GlanceId) {
+    val configIntent = Intent(context, EventsWidgetConfigActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
     provideContent {
       GlanceAppWidgetTheme {
-        EventsContent(currentState())
+        EventsContent(
+          state = currentState(),
+          configIntent = configIntent,
+          viewIntent = viewIntent
+        )
       }
     }
   }
 
   @Composable
   private fun EventsContent(
+    modifier: GlanceModifier = GlanceModifier,
     state: EventsAppWidgetState,
-    modifier: GlanceModifier = GlanceModifier
+    configIntent: Intent,
+    viewIntent: Intent
   ) {
     Column(
       modifier = modifier.fillMaxSize()
@@ -136,8 +147,9 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .padding(8.dp)
             .cornerRadius(16.dp)
             .clickable(
-              onClick = actionStartActivity<EventsWidgetConfigActivity>(
-                actionParametersOf(widgetIdKey to state.widgetId)
+              onClick = actionStartActivity(
+                intent = configIntent,
+                parameters = actionParametersOf(widgetIdKey to state.widgetId)
               )
             ),
           provider = ImageProvider(R.drawable.ic_fluent_settings),
@@ -156,8 +168,9 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .padding(8.dp)
             .cornerRadius(16.dp)
             .clickable(
-              onClick = actionStartActivity<AppWidgetActionActivity>(
-                actionParametersOf(directionKey to Direction.ADD_REMINDER)
+              onClick = actionStartActivity(
+                intent = viewIntent,
+                parameters = actionParametersOf(directionKey to Direction.ADD_REMINDER)
               )
             ),
           provider = ImageProvider(R.drawable.ic_fluent_add),
@@ -178,7 +191,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             data = state.items[index],
             itemBackgroundColor = state.itemBackgroundColor,
             itemContrastColor = state.itemContrastColor,
-            itemTextSize = state.itemTextSize
+            itemTextSize = state.itemTextSize,
+            viewIntent = viewIntent
           )
         }
       }
@@ -190,7 +204,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     data: DateSorted,
     itemBackgroundColor: Int,
     itemContrastColor: Color,
-    itemTextSize: TextUnit
+    itemTextSize: TextUnit,
+    viewIntent: Intent
   ) {
     val colorProvider = ColorProvider(
       day = itemContrastColor,
@@ -204,7 +219,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             data = data,
             itemBackgroundColor = itemBackgroundColor,
             itemContrastColor = colorProvider,
-            itemTextSize = itemTextSize
+            itemTextSize = itemTextSize,
+            viewIntent = viewIntent
           )
         }
 
@@ -213,7 +229,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             data = data,
             itemBackgroundColor = itemBackgroundColor,
             itemContrastColor = colorProvider,
-            itemTextSize = itemTextSize
+            itemTextSize = itemTextSize,
+            viewIntent = viewIntent
           )
         }
 
@@ -222,7 +239,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             data = data,
             itemBackgroundColor = itemBackgroundColor,
             itemContrastColor = colorProvider,
-            itemTextSize = itemTextSize
+            itemTextSize = itemTextSize,
+            viewIntent = viewIntent
           )
         }
       }
@@ -234,15 +252,17 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     data: UiBirthdayWidgetList,
     itemBackgroundColor: Int,
     itemContrastColor: ColorProvider,
-    itemTextSize: TextUnit
+    itemTextSize: TextUnit,
+    viewIntent: Intent
   ) {
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)
         .roundedBackground(itemBackgroundColor)
         .clickable(
-          onClick = actionStartActivity<AppWidgetActionActivity>(
-            actionParametersOf(
+          onClick = actionStartActivity(
+            intent = viewIntent,
+            parameters = actionParametersOf(
               directionKey to Direction.BIRTHDAY_PREVIEW,
               dataKey to createData(data.uuId)
             )
@@ -290,15 +310,17 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     data: UiReminderWidgetList,
     itemBackgroundColor: Int,
     itemContrastColor: ColorProvider,
-    itemTextSize: TextUnit
+    itemTextSize: TextUnit,
+    viewIntent: Intent
   ) {
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)
         .roundedBackground(itemBackgroundColor)
         .clickable(
-          onClick = actionStartActivity<AppWidgetActionActivity>(
-            actionParametersOf(
+          onClick = actionStartActivity(
+            intent = viewIntent,
+            parameters = actionParametersOf(
               directionKey to Direction.REMINDER_PREVIEW,
               dataKey to createData(data.uuId)
             )
@@ -346,15 +368,17 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     data: UiReminderWidgetShopList,
     itemBackgroundColor: Int,
     itemContrastColor: ColorProvider,
-    itemTextSize: TextUnit
+    itemTextSize: TextUnit,
+    viewIntent: Intent
   ) {
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)
         .roundedBackground(itemBackgroundColor)
         .clickable(
-          onClick = actionStartActivity<AppWidgetActionActivity>(
-            actionParametersOf(
+          onClick = actionStartActivity(
+            intent = viewIntent,
+            parameters = actionParametersOf(
               directionKey to Direction.REMINDER_PREVIEW,
               dataKey to createData(data.uuId)
             )
@@ -446,27 +470,6 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         Pair(IntentKeys.INTENT_ID, id)
       )
     )
-  }
-
-  @OptIn(ExperimentalGlancePreviewApi::class)
-  @Preview
-  @Composable
-  private fun EventsContentPreview() {
-    GlanceAppWidgetTheme {
-      EventsContent(
-        modifier = GlanceModifier.width(320.dp),
-        state = EventsAppWidgetState(
-          widgetId = 0,
-          headerText = "27 December 2024",
-          headerBackgroundColor = 6,
-          headerContrastColor = Color.Black,
-          itemBackgroundColor = 6,
-          itemContrastColor = Color.Black,
-          itemTextSize = 18.sp,
-          items = emptyList()
-        )
-      )
-    }
   }
 
   companion object {

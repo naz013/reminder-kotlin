@@ -1,13 +1,13 @@
 package com.elementary.tasks.core.data.adapter.preset
 
 import com.elementary.tasks.core.data.adapter.UiAdapter
-import com.github.naz013.domain.RecurPreset
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
+import com.github.naz013.domain.RecurPreset
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.TagType
 
 class UiPresetListAdapter(
-  private val ICalendarApi: ICalendarApi
+  private val iCalendarApi: ICalendarApi
 ) : UiAdapter<RecurPreset, UiPresetList> {
 
   override fun create(data: RecurPreset): UiPresetList {
@@ -19,7 +19,7 @@ class UiPresetListAdapter(
   }
 
   private fun getDescription(data: RecurPreset): String {
-    val rrule = runCatching { ICalendarApi.parseObject(data.recurObject) }
+    val rrule = runCatching { iCalendarApi.parseObject(data.recurObject) }
       .getOrNull()
       ?.map?.values?.firstOrNull { it.tagType == TagType.RRULE }
       ?.buildString()

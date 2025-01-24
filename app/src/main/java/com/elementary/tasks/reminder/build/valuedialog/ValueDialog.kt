@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build.valuedialog
 
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,16 +23,8 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
   private val controllerFactory by inject<ValueControllerFactory>()
 
   private lateinit var binding: BottomSheetValueSelectorBinding
-  private var callback: ValueDialogCallback? = null
   private var controller: ValueController? = null
   private var lifecycleDispatcher: ValueDialogLifecycleDispatcher? = null
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    runCatching {
-      callback = context as? ValueDialogCallback
-    }
-  }
 
   override fun onCancel(dialog: DialogInterface) {
     super.onCancel(dialog)
@@ -116,7 +107,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
 
   private fun save() {
     controller?.getItem()?.also {
-      callback?.onValueChanged(getPosition(), it)
+      ValueDialogCommunicator.onValueChanged(getPosition(), it)
     }
   }
 
@@ -130,7 +121,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
   }
 
   override fun onValueChanged(builderItem: BuilderItem<*>) {
-    callback?.onValueChanged(getPosition(), builderItem)
+    ValueDialogCommunicator.onValueChanged(getPosition(), builderItem)
   }
 
   override fun getState(): ValueDialogState {

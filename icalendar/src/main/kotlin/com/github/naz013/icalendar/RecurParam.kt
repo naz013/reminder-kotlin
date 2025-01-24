@@ -211,7 +211,13 @@ enum class RecurParamType(val value: String) {
   BYYEARDAY("BYYEARDAY"), // 1,100,200
   BYWEEKNO("BYWEEKNO"), // 20
   WEEKSTART("WKST"), // MO, TU, WE, TH, FR, SA, and SU
-  BYSETPOS("BYSETPOS") // 1 to 366 or -366 to -1
+  BYSETPOS("BYSETPOS"); // 1 to 366 or -366 to -1
+
+  companion object {
+    fun fromValue(value: String): RecurParamType {
+      return entries.first { it.value == value }
+    }
+  }
 }
 
 enum class Day(val value: String) {

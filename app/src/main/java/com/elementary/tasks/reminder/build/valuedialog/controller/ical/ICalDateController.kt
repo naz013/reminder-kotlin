@@ -2,13 +2,12 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.ical
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.context.startActivity
 import com.elementary.tasks.databinding.BuilderItemDateBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
-import com.elementary.tasks.reminder.create.fragments.recur.RecurHelpActivity
+import com.elementary.tasks.reminder.recur.RecurHelpActivity
 import org.threeten.bp.LocalDate
 
 class ICalDateController(

@@ -9,10 +9,8 @@ import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextSwitcher
-import com.elementary.tasks.googletasks.task.GoogleTaskActivity
 import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.ReminderBuilderLauncher
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.finishWith
 import com.github.naz013.ui.common.login.LoginApi
@@ -24,7 +22,6 @@ class SplashScreenActivity : LightThemedActivity() {
 
   private val viewModel by viewModel<SplashViewModel>()
   private val contextSwitcher by inject<ContextSwitcher>()
-  private val reminderBuilderLauncher by inject<ReminderBuilderLauncher>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     // Handle the splash screen transition.
@@ -51,17 +48,22 @@ class SplashScreenActivity : LightThemedActivity() {
   private fun enableShortcuts() {
     val shortcutManager = getSystemService(ShortcutManager::class.java)
     if (shortcutManager != null) {
-      val shortcut = ShortcutInfo.Builder(this, "id.reminder")
-        .setShortLabel(getString(R.string.add_reminder_menu))
-        .setLongLabel(getString(R.string.add_reminder_menu))
-        .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
-        .setIntents(
-          arrayOf(
-            Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-            Intent(Intent.ACTION_VIEW).setClass(this, reminderBuilderLauncher.getActivityClass())
-          )
+      val shortcut = run {
+        val bundle = ShortcutDestination.createBundle(
+          shortcut = ShortcutDestination.Shortcut.Reminder
         )
-        .build()
+        ShortcutInfo.Builder(this, "id.reminder")
+          .setShortLabel(getString(R.string.add_reminder_menu))
+          .setLongLabel(getString(R.string.add_reminder_menu))
+          .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
+          .setIntents(
+            arrayOf(
+              Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java)
+                .putExtras(bundle)
+            )
+          )
+          .build()
+      }
 
       val shortcut2 = ShortcutInfo.Builder(this, "id.note")
         .setShortLabel(getString(R.string.add_note))
@@ -76,6 +78,9 @@ class SplashScreenActivity : LightThemedActivity() {
         .build()
 
       if (viewModel.isGoogleTasksEnabled) {
+        val bundle = ShortcutDestination.createBundle(
+          shortcut = ShortcutDestination.Shortcut.GoogleTask
+        )
         val shortcut3 = ShortcutInfo.Builder(this, "id.google.tasks")
           .setShortLabel(getString(R.string.add_google_task))
           .setLongLabel(getString(R.string.add_google_task))
@@ -83,9 +88,8 @@ class SplashScreenActivity : LightThemedActivity() {
           .setIntents(
             arrayOf(
               Intent(Intent.ACTION_MAIN)
-                .setClass(this, BottomNavActivity::class.java),
-              Intent(Intent.ACTION_VIEW)
-                .setClass(this, GoogleTaskActivity::class.java)
+                .setClass(this, BottomNavActivity::class.java)
+                .putExtras(bundle)
             )
           )
           .build()
