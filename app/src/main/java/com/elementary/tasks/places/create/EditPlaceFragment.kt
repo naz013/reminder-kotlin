@@ -13,6 +13,7 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.toast
 import com.google.android.gms.maps.model.LatLng
@@ -123,8 +124,8 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.place.nonNullObserve(this) { showPlace(it) }
-    viewModel.result.nonNullObserve(this) {
+    viewModel.place.nonNullObserve(viewLifecycleOwner) { showPlace(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.SAVED, Commands.DELETED -> moveBack()
         else -> {

@@ -50,6 +50,7 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.BindingActivity
@@ -498,7 +499,7 @@ class CreateNoteActivity :
       updateMenu()
     }
     viewModel.note.nonNullObserve(this) { showNote(it) }
-    viewModel.result.nonNullObserve(this) { commands ->
+    viewModel.resultEvent.observeEvent(this) { commands ->
       Logger.d("initViewModel: $commands")
       when (commands) {
         Commands.DELETED, Commands.SAVED -> {
@@ -512,7 +513,7 @@ class CreateNoteActivity :
       }
     }
     viewModel.noteToShare.nonNullObserve(this) { sendNote(it.second, it.first) }
-    viewModel.error.nonNullObserve(this) { toast(it) }
+    viewModel.errorEvent.observeEvent(this) { toast(it) }
     viewModel.parsedText.nonNullObserve(this) { setText(it) }
     lifecycle.addObserver(viewModel)
   }

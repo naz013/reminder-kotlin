@@ -31,6 +31,7 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.context.startActivity
@@ -163,7 +164,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
         hideProgress()
       }
     }
-    viewModel.error.nonNullObserve(viewLifecycleOwner) { showErrorSending() }
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { showErrorSending() }
   }
 
   private fun sendNote(note: NoteWithImages, file: File) {

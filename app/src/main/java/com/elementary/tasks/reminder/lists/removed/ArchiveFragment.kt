@@ -18,6 +18,7 @@ import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
@@ -106,7 +107,7 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private fun initViewModel() {
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> Toast.makeText(
           requireContext(),

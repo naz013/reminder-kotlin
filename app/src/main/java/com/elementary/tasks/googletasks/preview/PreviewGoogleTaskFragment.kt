@@ -15,6 +15,7 @@ import com.elementary.tasks.databinding.FragmentGoogleTaskPreviewBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.visibleGone
 import com.github.naz013.ui.common.view.visibleInvisible
@@ -107,15 +108,15 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
 
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.googleTask.nonNullObserve(this) { showGoogleTask(it) }
-    viewModel.result.nonNullObserve(this) {
+    viewModel.googleTask.nonNullObserve(viewLifecycleOwner) { showGoogleTask(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> moveBack()
         else -> {
         }
       }
     }
-    viewModel.isInProgress.nonNullObserve(this) {
+    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) {
       binding.progressBar.visibleInvisible(it)
       binding.buttonComplete.isEnabled = !it
       invalidateOptionsMenu()

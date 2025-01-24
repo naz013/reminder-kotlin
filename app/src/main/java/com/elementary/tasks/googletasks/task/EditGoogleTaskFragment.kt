@@ -16,6 +16,7 @@ import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.nullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
@@ -102,7 +103,7 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
 
   private fun initViewModel() {
     viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { onProgressChanged(it) }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) { commands ->
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
       when (commands) {
         Commands.SAVED, Commands.DELETED -> moveBack()
         else -> {

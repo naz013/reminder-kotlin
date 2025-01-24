@@ -19,6 +19,7 @@ import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.view.ViewUtils
@@ -81,7 +82,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
       binding.recyclerView.smoothScrollToPosition(0)
       refreshView(places.size)
     }
-    viewModel.result.nonNullObserve(viewLifecycleOwner) {
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.DELETED -> {
           toast(R.string.deleted)

@@ -11,6 +11,7 @@ import com.elementary.tasks.databinding.FragmentEditGroupBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -95,8 +96,8 @@ class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.reminderGroup.nonNullObserve(this) { showGroup(it) }
-    viewModel.result.nonNullObserve(this) {
+    viewModel.reminderGroup.nonNullObserve(viewLifecycleOwner) { showGroup(it) }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
         Commands.SAVED, Commands.DELETED -> moveBack()
         else -> {

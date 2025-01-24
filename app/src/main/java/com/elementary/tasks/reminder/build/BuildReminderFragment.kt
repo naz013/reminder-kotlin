@@ -137,15 +137,13 @@ class BuildReminderFragment :
       ValueDialog.newInstance(pair.first)
         .show(parentFragmentManager, ValueDialog.TAG)
     }
-    viewModel.result.observe(viewLifecycleOwner) { commands ->
-      if (commands != null) {
-        when (commands) {
-          Commands.DELETED, Commands.SAVED -> {
-            moveBack()
-          }
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
+      when (commands) {
+        Commands.DELETED, Commands.SAVED -> {
+          moveBack()
+        }
 
-          else -> {
-          }
+        else -> {
         }
       }
     }
