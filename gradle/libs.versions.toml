@@ -63,7 +63,7 @@ retrofit = "2.11.0"
 gson = "2.11.0"
 jsr305 = "3.0.2"
 okhttp3-logging-interceptor = "5.0.0-alpha.14"
-dropbox-core-sdk = "5.4.6"
+dropbox-core-sdk = "7.0.0"
 lib-recur = "0.17.1"
 commons-lang3 = "3.17.0"
 threetenbp = "1.7.0"
@@ -186,6 +186,7 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 jsr305 = { group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3-logging-interceptor" }
 dropbox-core-sdk = { group = "com.dropbox.core", name = "dropbox-core-sdk", version.ref = "dropbox-core-sdk" }
+dropbox-android-sdk = { group = "com.dropbox.core", name = "dropbox-android-sdk", version.ref = "dropbox-core-sdk" }
 lib-recur = { group = "org.dmfs", name = "lib-recur", version.ref = "lib-recur" }
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 threetenbp = { group = "org.threeten", name = "threetenbp", version.ref = "threetenbp" }
