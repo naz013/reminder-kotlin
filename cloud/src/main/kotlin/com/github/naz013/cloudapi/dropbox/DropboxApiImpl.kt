@@ -93,7 +93,7 @@ internal class DropboxApiImpl(
       val files = mutableListOf<CloudFile>()
       for (f in result.entries) {
         val cloudFile = CloudFile(
-          id = f.previewUrl,
+          id = f.previewUrl ?: "",
           name = f.name,
           folder = folder
         )

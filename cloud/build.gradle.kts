@@ -52,6 +52,7 @@ dependencies {
   implementation(libs.gson)
   implementation(libs.threetenbp)
   implementation(libs.dropbox.core.sdk)
+  implementation(libs.dropbox.android.sdk)
   implementation(libs.okhttp3.logging.interceptor)
 
   testImplementation(libs.junit)

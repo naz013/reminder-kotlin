@@ -1,12 +1,12 @@
 package com.elementary.tasks.core.cloud
 
 import com.elementary.tasks.core.cloud.completables.Completable
-import com.github.naz013.cloudapi.legacy.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
 import com.github.naz013.cloudapi.CloudFileApi
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.cloudapi.legacy.Convertible
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -21,24 +21,44 @@ class DataFlow<T>(
   private val dateTimeManager by inject<DateTimeManager>()
 
   suspend fun backup(id: String) {
-    val item = repository.get(id) ?: return
+    val item = repository.get(id) ?: run {
+      Logger.w(TAG, "Item with id = $id not found")
+      return
+    }
     backup(item)
   }
 
   suspend fun backup(item: T) {
-    val stream = convertible.toOutputStream(item) ?: return
+    val stream = convertible.toOutputStream(item) ?: run {
+      Logger.w(TAG, "Item stream is null")
+      return
+    }
     val metadata = convertible.metadata(item)
-    storage.backup(stream, metadata)
-    Logger.i("Backed up file with ext = ${metadata.fileExt} and id = ${metadata.id}")
+    val millis = System.currentTimeMillis()
+    Logger.i(TAG, "Backup file with ext = ${metadata.fileExt} and id = ${metadata.id}")
+    storage.saveFile(stream, metadata)
+    val duration = System.currentTimeMillis() - millis
+    Logger.i(
+      TAG,
+      "Backed up file with ext = ${metadata.fileExt} and id = ${metadata.id} in $duration ms"
+    )
   }
 
   suspend fun restore(id: String, type: IndexTypes) {
     val fileName = fileName(id, type)
     if (id.isEmpty() || fileName.isEmpty()) {
+      Logger.w(TAG, "Id or file name is empty, id = $id")
       return
     }
-    val inputStream = storage.restore(fileName) ?: return
-    val item = convertible.convert(inputStream) ?: return
+    val millis = System.currentTimeMillis()
+    val inputStream = storage.getFile(fileName) ?: run {
+      Logger.w(TAG, "Input stream is null, id = $id")
+      return
+    }
+    val item = convertible.convert(inputStream) ?: run {
+      Logger.w(TAG, "Item is null, id = $id")
+      return
+    }
     val localItem = repository.get(id)
     val metadata = convertible.metadata(item)
     val needUpdate = if (localItem != null) {
@@ -47,8 +67,12 @@ class DataFlow<T>(
     } else {
       true
     }
+    val duration = System.currentTimeMillis() - millis
     if (needUpdate) {
-      Logger.i("Saved remote file with ext = ${metadata.fileExt} and id = $id")
+      Logger.i(
+        TAG,
+        "Saved remote file with ext = ${metadata.fileExt} and id = $id, in $duration ms"
+      )
       repository.insert(item)
       completable?.action(item)
     }
@@ -57,9 +81,11 @@ class DataFlow<T>(
   suspend fun delete(id: String, type: IndexTypes) {
     val fileName = fileName(id, type)
     if (id.isEmpty() || fileName.isEmpty()) {
+      Logger.w(TAG, "Id or file name is empty, id = $id")
       return
     }
-    Logger.i("Delete file with type = $type and id = $id")
+    Logger.i(TAG, "Going to delete file with ext = $fileName, id = $id")
+    val millis = System.currentTimeMillis()
     runCatching {
       val t = repository.get(id)
       if (t != null) {
@@ -67,7 +93,9 @@ class DataFlow<T>(
         repository.delete(t)
       }
     }
-    storage.delete(fileName)
+    storage.deleteFile(fileName)
+    val duration = System.currentTimeMillis() - millis
+    Logger.i(TAG, "Deleted file with ext = $fileName, id = $id in $duration ms")
   }
 
   private fun fileName(id: String, type: IndexTypes): String {
@@ -84,5 +112,9 @@ class DataFlow<T>(
       IndexTypes.TYPE_PLACE -> FileConfig.FILE_NAME_PLACE
       IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
     }
+  }
+
+  companion object {
+    private const val TAG = "DataFlow"
   }
 }
