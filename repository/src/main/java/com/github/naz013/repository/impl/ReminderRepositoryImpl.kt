@@ -31,7 +31,7 @@ internal class ReminderRepositoryImpl(
       active = true,
       removed = false
     ).filterNot {
-      Reminder.gpsTypes().contains(it.type)
+      Reminder.gpsTypes().contains(it.reminder.type)
     }.map { it.toDomain() }
   }
 

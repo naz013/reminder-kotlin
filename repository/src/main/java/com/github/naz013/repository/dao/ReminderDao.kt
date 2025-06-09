@@ -6,132 +6,105 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.github.naz013.repository.entity.ReminderEntity
-
-private const val byIdQuery = """
-    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-    FROM Reminder AS reminder
-    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-    WHERE reminder.uuId=:id"""
+import com.github.naz013.repository.entity.ReminderWithGroupEntity
 
 @Dao
 internal interface ReminderDao {
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE LOWER(Reminder.summary) LIKE '%' || :query || '%'
-        ORDER BY reminder.isActive DESC, reminder.eventTime ASC"""
+    """SELECT * FROM Reminder
+        WHERE LOWER(summary) LIKE '%' || :query || '%'
+        ORDER BY isActive DESC, eventTime ASC"""
   )
-  fun search(query: String): List<ReminderEntity>
+  fun search(query: String): List<ReminderWithGroupEntity>
 
   @Query("SELECT * FROM Reminder")
   fun getAll(): List<ReminderEntity>
 
   @Transaction
-  @Query(byIdQuery)
-  fun getById(id: String): ReminderEntity?
+  @Query("SELECT * FROM Reminder WHERE uuId=:id")
+  fun getById(id: String): ReminderWithGroupEntity?
+
+  @Transaction
+  @Query("SELECT * FROM Reminder WHERE noteId=:key")
+  fun getByNoteKey(key: String): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """
-    SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-    FROM Reminder AS reminder
-    JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-    WHERE reminder.noteId=:key"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        AND LOWER(summary) LIKE '%' || :query || '%'
+        ORDER BY isActive DESC, eventTime ASC"""
   )
-  fun getByNoteKey(key: String): List<ReminderEntity>
+  fun searchBySummaryAndRemovedStatus(query: String, removed: Boolean = false): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        AND LOWER(Reminder.summary) LIKE '%' || :query || '%'
-        ORDER BY reminder.isActive DESC, reminder.eventTime ASC"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        ORDER BY isActive DESC, eventTime ASC"""
   )
-  fun searchBySummaryAndRemovedStatus(query: String, removed: Boolean = false): List<ReminderEntity>
+  fun getByRemovedStatus(removed: Boolean = false): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        ORDER BY reminder.isActive DESC, reminder.eventTime ASC"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        AND isActive=:active"""
   )
-  fun getByRemovedStatus(removed: Boolean = false): List<ReminderEntity>
+  fun getAll(active: Boolean, removed: Boolean): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        AND reminder.isActive=:active"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        AND eventTime!=''
+        AND eventTime>=:fromTime
+        AND eventTime<:toTime"""
   )
-  fun getAll(active: Boolean, removed: Boolean): List<ReminderEntity>
+  fun getActiveInRange(removed: Boolean, fromTime: String, toTime: String): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        AND reminder.eventTime!=''
-        AND reminder.eventTime>=:fromTime
-        AND reminder.eventTime<:toTime"""
-  )
-  fun getActiveInRange(removed: Boolean, fromTime: String, toTime: String): List<ReminderEntity>
-
-  @Transaction
-  @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        AND reminder.isActive=:active
-        AND reminder.eventTime!=''
-        AND reminder.eventTime>=:fromTime
-        AND reminder.eventTime<:toTime"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        AND isActive=:active
+        AND eventTime!=''
+        AND eventTime>=:fromTime
+        AND eventTime<:toTime"""
   )
   fun getAllTypesInRange(
     active: Boolean,
     removed: Boolean,
     fromTime: String,
     toTime: String
-  ): List<ReminderEntity>
+  ): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        AND reminder.isActive=:active
-        AND reminder.type IN (:types)"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        AND isActive=:active
+        AND type IN (:types)"""
   )
-  fun getAllTypes(active: Boolean, removed: Boolean, types: IntArray): List<ReminderEntity>
+  fun getAllTypes(active: Boolean, removed: Boolean, types: IntArray): List<ReminderWithGroupEntity>
 
   @Transaction
   @Query(
-    """SELECT reminder.*, g.groupTitle, g.groupUuId, g.groupColor
-        FROM Reminder AS reminder
-        JOIN ReminderGroup AS g ON reminder.groupUuId = g.groupUuId
-        WHERE reminder.isRemoved=:removed
-        AND reminder.isActive=:active
-        AND reminder.type IN (:types)
-        AND LOWER(Reminder.summary) LIKE '%' || :query || '%'
-        ORDER BY reminder.isActive DESC, reminder.eventTime ASC"""
+    """SELECT * FROM Reminder
+        WHERE isRemoved=:removed
+        AND isActive=:active
+        AND type IN (:types)
+        AND LOWER(summary) LIKE '%' || :query || '%'
+        ORDER BY isActive DESC, eventTime ASC"""
   )
   fun searchBySummaryAllTypes(
     query: String,
     active: Boolean,
     removed: Boolean,
     types: IntArray
-  ): List<ReminderEntity>
+  ): List<ReminderWithGroupEntity>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(reminder: ReminderEntity)

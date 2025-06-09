@@ -4,7 +4,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
@@ -13,13 +12,14 @@ import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
-import com.github.naz013.ui.common.theme.ColorProvider
-import com.github.naz013.ui.common.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
-import com.github.naz013.common.TextProvider
-import com.github.naz013.ui.common.adjustAlpha
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.Reminder
+import com.github.naz013.ui.common.UnitsConverter
+import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.common.theme.ColorProvider
 
 class UiReminderScheduleListAdapter(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,
@@ -49,12 +49,12 @@ class UiReminderScheduleListAdapter(
 
   private fun createGroupBadge(
     reminder: Reminder
-  ): UiTextElement {
+  ): UiTextElement? {
     return uiGroupListAdapter.convert(
       reminder.groupUuId,
       reminder.groupColor,
       reminder.groupTitle
-    ).let {
+    )?.let {
       UiTextElement(
         text = it.title,
         textFormat = UiTextFormat(
