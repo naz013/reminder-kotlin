@@ -18,7 +18,6 @@ internal class TableChangeListenerImpl(
     override fun onReceive(context: Context, intent: Intent) {
       val intentTable = intent.getStringExtra(TableChangeAction.TABLE)
       if (intentTable != null && intentTable == table.tableName) {
-        Logger.i("Table change detected for table: ${table.tableName}")
         onChanged()
       }
     }
