@@ -310,10 +310,12 @@ class UiReminderPreviewDataAdapter(
       uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle)
     }
     return listOfNotNull(
-      getNormalTextElement(
-        text = uiGroup.title,
-        icon = Icons.GROUP
-      ),
+      uiGroup?.let {
+        getNormalTextElement(
+          text = it.title,
+          icon = Icons.GROUP
+        )
+      },
       getNormalTextElement(uiReminderCommonAdapter.getPriorityTitle(data.priority), Icons.PRIORITY),
       getNormalTextElement(data.uuId, Icons.ID)
     )

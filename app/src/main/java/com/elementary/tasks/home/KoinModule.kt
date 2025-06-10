@@ -1,5 +1,6 @@
 package com.elementary.tasks.home
 
+import com.elementary.tasks.home.eventsview.HomeEventsViewModel
 import com.elementary.tasks.home.scheduleview.ReminderGoogleTaskLiveData
 import com.elementary.tasks.home.scheduleview.ReminderNoteLiveData
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
@@ -22,5 +23,9 @@ val homeModule = module {
 
   viewModel {
     ScheduleHomeViewModel(get(), get(), get())
+  }
+
+  viewModel {
+    HomeEventsViewModel()
   }
 }

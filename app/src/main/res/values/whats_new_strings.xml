@@ -3,8 +3,9 @@
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
         \n
-        ⭐ Remove Voice control;\n
-        🐞 Fix the search on the Home screen;\n
+        ✅ Add option for automatically add summary field when create the reminder;\n
+        🐞 Fix events tab behavior;\n
+        🐞 Fix event item on the home screen;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">

@@ -2,8 +2,6 @@ package com.elementary.tasks.home.eventsview
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +14,11 @@ import com.elementary.tasks.reminder.lists.todo.TodoRemindersFragment
 import com.github.naz013.logging.Logger
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
+
+  private val viewModel by viewModel<HomeEventsViewModel>()
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -33,17 +34,8 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
     binding.tabLayout.addOnTabSelectedListener(
       object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
-          Logger.d(TAG, "On tab changed: $tab")
-          when (tab?.position) {
-            0 -> {
-              addFragment(RemindersFragment())
-            }
-            1 -> {
-              addFragment(TodoRemindersFragment())
-            }
-            2 -> {
-              addFragment(BirthdaysFragment())
-            }
+          tab?.also {
+            viewModel.onTabSelected(getSelectedTab(it))
           }
         }
 
@@ -54,15 +46,31 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
         }
       }
     )
+
+    viewModel.selectedTab.observe(viewLifecycleOwner) { onTabChanged(it) }
+    lifecycle.addObserver(viewModel)
+  }
+
+  private fun onTabChanged(selectedTab: HomeEventsViewModel.SelectedTab?) {
+    selectedTab ?: return
+    Logger.d(TAG, "On tab changed: $selectedTab")
+    binding.tabLayout.getTabAt(getTabPosition(selectedTab))?.select()
+    when (selectedTab) {
+      HomeEventsViewModel.SelectedTab.Reminders -> {
+        addFragment(RemindersFragment())
+      }
+      HomeEventsViewModel.SelectedTab.Todo -> {
+        addFragment(TodoRemindersFragment())
+      }
+      HomeEventsViewModel.SelectedTab.Birthdays -> {
+        addFragment(BirthdaysFragment())
+      }
+    }
   }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     Logger.d(TAG, "On attach")
-    Handler(Looper.getMainLooper()).postDelayed(
-      { addFragment(RemindersFragment()) },
-      250
-    )
   }
 
   override fun onResume() {
@@ -89,6 +97,23 @@ class HomeEventsFragment : BaseTopToolbarFragment<FragmentHomeEventsBinding>() {
 
   override fun getTitle(): String {
     return getString(R.string.events)
+  }
+
+  private fun getSelectedTab(tab: TabLayout.Tab): HomeEventsViewModel.SelectedTab {
+    return when (tab.position) {
+      0 -> HomeEventsViewModel.SelectedTab.Reminders
+      1 -> HomeEventsViewModel.SelectedTab.Todo
+      2 -> HomeEventsViewModel.SelectedTab.Birthdays
+      else -> HomeEventsViewModel.SelectedTab.Reminders
+    }
+  }
+
+  private fun getTabPosition(selectedTab: HomeEventsViewModel.SelectedTab): Int {
+    return when (selectedTab) {
+      HomeEventsViewModel.SelectedTab.Reminders -> 0
+      HomeEventsViewModel.SelectedTab.Todo -> 1
+      HomeEventsViewModel.SelectedTab.Birthdays -> 2
+    }
   }
 
   companion object {

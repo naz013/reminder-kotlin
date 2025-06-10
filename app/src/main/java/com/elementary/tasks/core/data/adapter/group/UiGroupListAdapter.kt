@@ -3,11 +3,11 @@ package com.elementary.tasks.core.data.adapter.group
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.github.naz013.domain.ReminderGroup
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.theme.ThemeProvider
 
 class UiGroupListAdapter(
   private val contextProvider: ContextProvider
@@ -27,12 +27,13 @@ class UiGroupListAdapter(
     )
   }
 
-  fun convert(id: String, colorPosition: Int, title: String?): UiGroupList {
+  fun convert(id: String, colorPosition: Int, title: String?): UiGroupList? {
+    if (title.isNullOrBlank()) return null
     val groupColor = ThemeProvider.themedColor(contextProvider.themedContext, colorPosition)
     return UiGroupList(
       id = id,
       color = groupColor,
-      title = title ?: "",
+      title = title,
       colorPosition = colorPosition,
       contrastColor = getContrastColor(groupColor)
     )

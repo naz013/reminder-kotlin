@@ -8,6 +8,7 @@ import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.withContext
 
 class ReminderSingleBackupWorker(
@@ -19,8 +20,9 @@ class ReminderSingleBackupWorker(
 
   override suspend fun doWork(): Result {
     val uuId = inputData.getString(IntentKeys.INTENT_ID) ?: ""
+    Logger.i(TAG, "Start reminder backup with id = $uuId")
     if (uuId.isNotEmpty()) {
-      withContext(dispatcherProvider.default()) {
+      withContext(dispatcherProvider.io()) {
         DataFlow(
           syncManagers.repositoryManager.reminderDataFlowRepository,
           syncManagers.converterManager.reminderConverter,
@@ -30,5 +32,9 @@ class ReminderSingleBackupWorker(
       }
     }
     return Result.success()
+  }
+
+  companion object {
+    private const val TAG = "ReminderSingleBackupWorker"
   }
 }

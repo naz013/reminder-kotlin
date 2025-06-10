@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
 import com.github.naz013.common.TextProvider
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderRepository
 
@@ -69,6 +70,7 @@ abstract class RepeatableEventManager(
   }
 
   override fun resume(): Boolean {
+    Logger.d("RepeatableEventManager", "Resume reminder, id: ${reminder.uuId}")
     if (reminder.isActive) {
       enableReminder()
     }
@@ -76,12 +78,14 @@ abstract class RepeatableEventManager(
   }
 
   override fun pause(): Boolean {
+    Logger.d("RepeatableEventManager", "Pause reminder, id: ${reminder.uuId}")
     notifier.cancel(reminder.uniqueId)
     jobScheduler.cancelReminder(reminder.uniqueId)
     return true
   }
 
   override fun disable(): Boolean {
+    Logger.d("RepeatableEventManager", "Disable reminder, id: ${reminder.uuId}")
     reminder.isActive = false
     if (prefs.moveCompleted) {
       reminder.isRemoved = true
@@ -92,6 +96,7 @@ abstract class RepeatableEventManager(
   }
 
   override fun setDelay(delay: Int) {
+    Logger.d("RepeatableEventManager", "Set delay reminder, id: ${reminder.uuId}")
     jobScheduler.scheduleReminderDelay(delay, reminder.uuId, reminder.uniqueId)
   }
 }

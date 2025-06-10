@@ -103,6 +103,10 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
     initParam(binding.sendEmailParam, config.isSendEmailEnabled()) {
       config.setSendEmailEnabled(it)
     }
+
+    initParam(binding.summaryParam, config.isAutoAddSummary()) {
+      config.setAutoAddSummary(it)
+    }
   }
 
   private fun initParam(prefsView: PrefsView, enabled: Boolean, onClick: (Boolean) -> Unit) {
