@@ -125,6 +125,7 @@ val reminderModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }

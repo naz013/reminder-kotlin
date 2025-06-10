@@ -152,6 +152,14 @@ data class ReminderCreatorConfig(private val value: String) {
     updateBitAndByte(2, SEND_EMAIL_BIT, enabled)
   }
 
+  fun isAutoAddSummary(): Boolean {
+    return bytes.isBitSet(3, AUTO_ADD_SUMMARY)
+  }
+
+  fun setAutoAddSummary(enabled: Boolean) {
+    updateBitAndByte(3, AUTO_ADD_SUMMARY, enabled)
+  }
+
   private fun updateBitAndByte(byte: Int, bit: Int, enabled: Boolean) {
     if (enabled) {
       bytes.setBit(byte, bit)
@@ -196,5 +204,8 @@ data class ReminderCreatorConfig(private val value: String) {
     private const val OPEN_APP_BIT = 2
     private const val OPEN_LINK_BIT = 3
     private const val SEND_EMAIL_BIT = 4
+
+    // fourth byte
+    private const val AUTO_ADD_SUMMARY = 0
   }
 }

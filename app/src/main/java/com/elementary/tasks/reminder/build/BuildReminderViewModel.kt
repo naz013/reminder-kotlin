@@ -16,6 +16,7 @@ import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
@@ -104,7 +105,8 @@ class BuildReminderViewModel(
   private val dateTimeManager: DateTimeManager,
   private val intentDataReader: IntentDataReader,
   private val builderErrorFinder: BuilderErrorFinder,
-  private val builderErrorToTextAdapter: BuilderErrorToTextAdapter
+  private val builderErrorToTextAdapter: BuilderErrorToTextAdapter,
+  private val prefs: Prefs
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -368,6 +370,7 @@ class BuildReminderViewModel(
             Logger.i(TAG, "Handle reminder date/time Deep Link")
             addDateItemToBuilder(deepLinkData.dateTime.toLocalDate())
             addTimeItemToBuilder(deepLinkData.dateTime.toLocalTime())
+            addEmptySummaryItemToBuilderIfNeeded()
             updateSelector()
           }
         }
@@ -375,6 +378,7 @@ class BuildReminderViewModel(
         is ReminderTodoTypeDeepLinkData -> {
           Logger.i(TAG, "Handle reminder todo Deep Link")
           addSubTasksItemToBuilder()
+          addEmptySummaryItemToBuilderIfNeeded()
           updateSelector()
         }
 
@@ -439,6 +443,24 @@ class BuildReminderViewModel(
         ?.also { builderItemsLogic.addNew(it) }
     } else {
       val item = builderItemsLogic.getUsed()[itemIndex] as? SubTasksBuilderItem ?: return
+      builderItemsLogic.update(itemIndex, item)
+    }
+  }
+
+  private fun addEmptySummaryItemToBuilderIfNeeded() {
+    if (prefs.reminderCreatorParams.isAutoAddSummary().not()) {
+      return
+    }
+    val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUMMARY }
+    Logger.i(TAG, "Add Empty Summary builder item")
+    if (itemIndex == -1) {
+      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUMMARY }
+        ?.let { it as SummaryBuilderItem }
+        ?.apply { modifier.update("") }
+        ?.also { builderItemsLogic.addNew(it) }
+    } else {
+      val item = builderItemsLogic.getUsed()[itemIndex] as? SummaryBuilderItem ?: return
+      item.modifier.update("")
       builderItemsLogic.update(itemIndex, item)
     }
   }
