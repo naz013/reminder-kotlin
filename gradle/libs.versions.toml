@@ -5,22 +5,22 @@ targetSdk = "36"
 kotlinTargetJvm = "17"
 
 # Plugins
-agp = "8.10.1"
-kotlin = "2.1.21"
-google-services = "4.4.2"
-navigation-safeargs = "2.9.0"
-crashlytics-gradle = "3.0.4"
-ktlint = "12.3.0"
-ksp = "2.1.21-2.0.1"
+agp = "8.13.0"
+kotlin = "2.2.20"
+google-services = "4.4.3"
+navigation-safeargs = "2.9.5"
+crashlytics-gradle = "3.0.6"
+ktlint = "13.1.0"
+ksp = "2.2.20-2.0.3"
 kotlinCompilerExtensionVersion = "1.5.15"
 
 # Libraries
-firebase-bom = "33.15.0"
+firebase-bom = "34.3.0"
 
 play-services-location = "21.3.0"
 play-services-maps = "19.2.0"
-play-services-auth = "21.3.0"
-play-services-ads = "24.3.0"
+play-services-auth = "21.4.0"
+play-services-ads = "24.6.0"
 user-messaging-platform = "3.2.0"
 
 androidx-recyclerview = "1.4.0"
@@ -30,46 +30,46 @@ androidx-swiperefreshlayout = "1.1.0"
 androidx-viewpager2 = "1.1.0"
 androidx-biometric = "1.1.0"
 androidx-splashscreen = "1.0.1"
-androidx-core-ktx = "1.16.0"
-androidx-fragment-ktx = "1.8.8"
-androidx-activity-ktx = "1.10.1"
+androidx-core-ktx = "1.17.0"
+androidx-fragment-ktx = "1.8.9"
+androidx-activity-ktx = "1.11.0"
 androidx-collection-ktx = "1.5.0"
 androidx-palette-ktx = "1.0.0"
 androidx-dynamicanimation-ktx = "1.1.0"
-androidx-work-runtime = "2.10.1"
-androidx-work-runtime-ktx = "2.10.1"
+androidx-work-runtime = "2.10.5"
+androidx-work-runtime-ktx = "2.10.5"
 androidx-localbroadcastmanager = "1.1.0"
-androidx-activity-compose = "1.10.1"
+androidx-activity-compose = "1.11.0"
 
 glance = "1.1.1"
-compose-bom = "2025.06.00"
+compose-bom = "2025.09.01"
 
 androidx-lifecycle-extensions = "2.2.0"
-androidx-lifecycle = "2.9.1"
+androidx-lifecycle = "2.9.4"
 
-androidx-room = "2.7.1"
+androidx-room = "2.8.1"
 
-androidx-navigation = "2.9.0"
+androidx-navigation = "2.9.5"
 
-material = "1.12.0"
+material = "1.13.0"
 
 kotlinx-coroutines = "1.10.2"
 
-koin = "3.5.6"
+koin = "4.1.1"
 koin-android-ext = "3.0.2"
 
 circleimageview = "3.1.0"
 retrofit = "3.0.0"
-gson = "2.13.1"
+gson = "2.13.2"
 jsr305 = "3.0.2"
-okhttp3-logging-interceptor = "5.0.0-alpha.16"
+okhttp3-logging-interceptor = "5.1.0"
 dropbox-core-sdk = "7.0.0"
 lib-recur = "0.17.1"
-commons-lang3 = "3.17.0"
-threetenbp = "1.7.1"
+commons-lang3 = "3.19.0"
+threetenbp = "1.7.2"
 colorslider = "2.0.6"
 android-calendar-ext = "1.0.4"
-lottie = "6.6.6"
+lottie = "6.6.10"
 photoview = "2.3.0"
 sheets = "2.3.1"
 coil = "2.7.0"
@@ -80,21 +80,21 @@ logback-android = "3.0.0"
 google-api-services-calendar = "v3-rev20230406-2.0.0"
 google-api-services-tasks = "v1-rev20230401-2.0.0"
 google-api-services-drive = "v3-rev20230423-2.0.0"
-google-http-client-gson = "1.47.0"
-google-api-client-android = "2.8.0"
+google-http-client-gson = "2.0.1"
+google-api-client-android = "2.8.1"
 
 # Testing
 junit = "4.13.2"
-mockk = "1.14.2"
-robolectric = "4.14.1"
-mockito-core = "5.18.0"
+mockk = "1.14.6"
+robolectric = "4.16"
+mockito-core = "5.20.0"
 mockito-kotlin = "2.2.0"
-logback-classic = "1.5.18"
-androidx-test-core = "1.6.1"
+logback-classic = "1.5.19"
+androidx-test-core = "1.7.0"
 androidx-core-testing = "2.2.0"
-androidx-test-runner = "1.6.2"
-androidx-test-rules = "1.6.1"
-androidx-espresso-core = "3.6.1"
+androidx-test-runner = "1.7.0"
+androidx-test-rules = "1.7.0"
+androidx-espresso-core = "3.7.0"
 androidx-uiautomator = "2.3.0"
 
 [libraries]
@@ -166,8 +166,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }

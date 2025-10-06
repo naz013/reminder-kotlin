@@ -28,8 +28,8 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlinOptions {
-    jvmTarget = libs.versions.kotlinTargetJvm.get()
+  kotlin {
+    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
   }
 
   sourceSets["main"].java {
@@ -42,7 +42,7 @@ dependencies {
   implementation(project(":logging-api"))
   implementation(libs.androidx.core.ktx)
   implementation(platform(libs.firebase.bom))
-  implementation(libs.firebase.analytics.ktx)
+  implementation(libs.firebase.analytics)
 }
 
 ktlint {
