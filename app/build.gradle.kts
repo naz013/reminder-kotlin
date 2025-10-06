@@ -147,8 +147,8 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlinOptions {
-    jvmTarget = libs.versions.kotlinTargetJvm.get()
+  kotlin {
+    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
   }
   @Suppress("UnstableApiUsage")
   testOptions {
@@ -251,7 +251,7 @@ dependencies {
 
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.crashlytics)
-  implementation(libs.firebase.auth.ktx)
+  implementation(libs.firebase.auth)
   implementation(libs.firebase.config)
 
   implementation(libs.play.services.location)
@@ -270,7 +270,9 @@ dependencies {
   implementation(libs.lib.recur)
   implementation(libs.commons.lang3)
   implementation(libs.colorslider)
-  implementation(libs.android.calendar.ext)
+  implementation(libs.android.calendar.ext) {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+  }
   implementation(libs.lottie)
   implementation(libs.photoview)
   implementation(libs.sheets.core)

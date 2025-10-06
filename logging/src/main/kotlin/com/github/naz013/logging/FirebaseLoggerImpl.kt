@@ -1,7 +1,7 @@
 package com.github.naz013.logging
 
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 
 internal class FirebaseLoggerImpl : FirebaseLogger {
   override fun logEvent(event: String) {
