@@ -312,7 +312,7 @@ class ThemeProvider(
     return ContextCompat.getColor(context, colorRes)
   }
 
-  data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
+  data class Marker(@param:ColorRes val fillColor: Int, @param:ColorRes val strokeColor: Int)
 
   companion object {
     const val NOTE_COLORS = 20

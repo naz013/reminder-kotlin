@@ -5,7 +5,7 @@
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Settings"</string>
     <string name="copyright">2025 © Nazar Sukhovych</string>
-    <string name="cant_access_location_services">I can not get access to the location services!</string>
+    <string name="cant_access_location_services">I cannot get access to the location services!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Satellite</string>
     <string name="terrain">Terrain</string>
@@ -160,7 +160,7 @@
     <string name="add_birthday">Add birthday</string>
     <string name="active_reminders">Active reminders</string>
     <string name="events">Events</string>
-    <string name="must_be_not_empty">Must be not empty!</string>
+    <string name="must_be_not_empty">Must not be empty!</string>
     <string name="other_version_detected">Other application detected!</string>
     <string name="open">Open</string>
     <string name="syncing_groups">Syncing groups…</string>
@@ -187,14 +187,14 @@
     <string name="dist_x_km">"Distance %s km"</string>
     <string name="dist_x_mi">"Distance %s mi"</string>
     <string name="shopping_list_is_empty">Shopping list is empty!</string>
-    <string name="you_dont_select_any_day">You not select a day!</string>
-    <string name="you_dont_select_application">You don\'t select application!</string>
-    <string name="you_dont_insert_link">You don\'t insert link!</string>
-    <string name="you_dont_select_place">You don\'t select place!</string>
-    <string name="you_dont_insert_timer_time">You don\'t select a time for timer!</string>
+    <string name="you_dont_select_any_day">You did not select a day!</string>
+    <string name="you_dont_select_application">You didn\'t select an application!</string>
+    <string name="you_dont_insert_link">You didn\'t insert a link!</string>
+    <string name="you_dont_select_place">You didn\'t select a place!</string>
+    <string name="you_dont_insert_timer_time">You didn\'t select a time for the timer!</string>
     <string name="dark_orange">Dark orange</string>
     <string name="teal">Dark Green</string>
-    <string name="select_one_of_item">Select one of item!</string>
+    <string name="select_one_of_item">Select one item!</string>
     <string name="sunday">Sunday</string>
     <string name="monday">Monday</string>
     <string name="local">Memory card</string>
@@ -224,13 +224,13 @@
     <string name="no_date">No date</string>
     <string name="select_date">Select date</string>
     <string name="select_time">Select time</string>
-    <string name="this_is_same_list">This is same list!</string>
+    <string name="this_is_same_list">This is the same list!</string>
     <string name="choose_list">Choose list</string>
     <string name="delete_this_task">Delete this task?</string>
     <string name="delete_task">Delete task</string>
     <string name="move_to_another_list">Move to another list</string>
     <string name="edit_birthday">Edit birthday</string>
-    <string name="you_dont_select_any_calendar">You don\'t select a calendar!</string>
+    <string name="you_dont_select_any_calendar">You didn\'t select a calendar!</string>
     <string name="please_wait">Please wait…</string>
     <string name="no_events_found">No events found!</string>
     <string name="events_found">event(s) found</string>
@@ -243,11 +243,11 @@
     <string name="birthday">Birthday</string>
     <string name="permanent">Permanent</string>
     <string name="today">Today</string>
-    <string name="less_than_minute">Less than minute</string>
+    <string name="less_than_minute">Less than a minute</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="course_location">Approximate Location</string>
-    <string name="course_location_explanation">To access you location, application requires Approximate Location permission</string>
+    <string name="course_location_explanation">To access your location, the application requires Approximate Location permission</string>
     <string name="fine_location">Exact Location</string>
     <string name="fine_location_explanation">To access your precise location, the application requires Exact Location permission</string>
     <string name="call_phone">Call phone</string>
@@ -294,8 +294,8 @@
     <string name="e_mail">E-mail</string>
     <string name="subject">Subject</string>
     <string name="email_is_incorrect">E-mail is incorrect!</string>
-    <string name="you_dont_insert_number">You don\'t insert number!</string>
-    <string name="you_dont_insert_any_message">You don\'t insert a message!</string>
+    <string name="you_dont_insert_number">You didn\'t insert a number!</string>
+    <string name="you_dont_insert_any_message">You didn\'t insert a message!</string>
     <string name="xM">%sM</string>
     <string name="overdue">Overdue</string>
     <string name="search_place">Search place…</string>
@@ -312,8 +312,8 @@
     <string name="application_not_selected">Application not selected</string>
     <string name="refresh">Refresh</string>
     <string name="move_forward">Move forward</string>
-    <string name="move_backward">Return back</string>
-    <string name="could_not_launch_market">Couldn\'t launch market</string>
+    <string name="move_backward">Move back</string>
+    <string name="could_not_launch_market">Couldn\'t launch the market</string>
     <string name="all_permissions_are_enabled">All permissions are enabled</string>
     <string name="delete_this_reminder">Delete this reminder?</string>
     <string name="google_play_services_not_installed">Google Play Services not installed</string>
@@ -339,7 +339,7 @@
     <string name="seconds">seconds</string>
     <string name="_minutes">minutes</string>
     <string name="_hours">hours</string>
-    <string name="for_correct_work_of_application">For correct work of application you must grant notification permission</string>
+    <string name="for_correct_work_of_application">For the application to work correctly, you must grant notification permission</string>
     <string name="grant">Grant</string>
     <string name="remember_last_used_note_color">Remember last used color of note</string>
     <string name="color_saturation">Color saturation</string>
@@ -370,7 +370,7 @@
     <string name="yearly">Annually</string>
     <string name="location_tracking_service_running">Location tracking service running</string>
     <string name="application_language">Application language</string>
-    <string name="cant_find_app_for_that_file_type">Can\'t find an application that can open this file.</string>
+    <string name="cant_find_app_for_that_file_type">Can\'t find an application that can open this file type.</string>
     <string name="invalid_remind_before_parameter">Invalid \"remind before\" parameter</string>
     <string name="failed_to_load">Failed to load!</string>
     <string name="translators">Translators:</string>
@@ -382,7 +382,7 @@
     <string name="not_selected">Not selected</string>
     <string name="applications_not_found">Applications not found</string>
     <string name="leaving_place">Leaving the place</string>
-    <string name="entering_place">Arriving to place</string>
+    <string name="entering_place">Arriving at place</string>
     <string name="priority_lowest">Lowest</string>
     <string name="priority_low">Low</string>
     <string name="priority_normal">Normal</string>
@@ -854,4 +854,11 @@
     <string name="please_add_x_to_create_reminder">Please, add the %s to create a reminder</string>
     <string name="please_add_the_following_items_x">Please add the following items: %s, to create a reminder</string>
     <string name="and_will_be_repeated_at">And will be repeated at:\n</string>
+
+    <string name="do_not_add_summary_field_when_create_the_reminder">Do not add summary field when creating the reminder</string>
+    <string name="automatically_add_summary_field_when_create_the_reminder">Automatically add summary field when creating the reminder</string>
+    <string name="summary_field">Summary field</string>
+
+    <string name="voice_no_birthdays_found">No birthdays found</string>
+    <string name="voice_found">Found</string>
 </resources>

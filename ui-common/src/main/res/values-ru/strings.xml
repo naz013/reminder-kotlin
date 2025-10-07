@@ -394,7 +394,6 @@
     <string name="acc_add_image_to_reminder">Добавить изображение для напоминания</string>
     <string name="acc_add_reminder">Добавить напоминание</string>
     <string name="acc_change_text_font_style">Изменение стиля шрифта текста</string>
-    <string name="acc_stop">Стоп</string>
     <string name="acc_add">Добавить</string>
     <string name="acc_select_application">Выбрать приложение</string>
     <string name="acc_type_by_voice">Введите текст голосом</string>
