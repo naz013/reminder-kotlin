@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="do_not_add_summary_field_when_create_the_reminder">Do not add summary field when create the reminder</string>
-    <string name="automatically_add_summary_field_when_create_the_reminder">Automatically add summary field when create the reminder</string>
-    <string name="summary_field">Summary field</string>
-</resources>
