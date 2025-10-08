@@ -862,4 +862,5 @@
 
     <string name="voice_no_birthdays_found">Nebyly nalezeny žádné narozeniny</string>
     <string name="voice_found">Nalezeno</string>
+    <string name="repeat_once">Jednou</string>
 </resources>

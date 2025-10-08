@@ -861,4 +861,6 @@
     <string name="summary_field">सारांश फ़ील्ड</string>
 
     <string name="voice_no_birthdays_found">कोई जन्मदिन नहीं मिला</string>
+
+    <string name="repeat_once">एक बार</string>
 </resources>

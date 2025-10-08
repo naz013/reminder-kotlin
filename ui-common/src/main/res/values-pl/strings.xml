@@ -862,4 +862,5 @@
 
     <string name="voice_no_birthdays_found">Nie znaleziono urodzin</string>
     <string name="voice_found">Znaleziono</string>
+    <string name="repeat_once">Jeden raz</string>
 </resources>

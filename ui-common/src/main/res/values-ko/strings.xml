@@ -862,4 +862,5 @@
 
     <string name="voice_no_birthdays_found">생일을 찾을 수 없음</string>
     <string name="voice_found">찾음</string>
+    <string name="repeat_once">한 번</string>
 </resources>
