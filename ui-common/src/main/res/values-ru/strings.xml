@@ -4,7 +4,7 @@
     <string name="app_name">"Напоминания"</string>
     <string name="app_name_pro">"Напоминания ПРО"</string>
     <string name="action_settings">"Настройки"</string>
-    <string name="copyright">2024 ©️ Назар Сухович</string>
+    <string name="copyright">2025 ©️ Назар Сухович</string>
     <string name="cant_access_location_services">Я не могу получить доступ к услугам местоположения!</string>
     <string name="normal">Нормальная</string>
     <string name="satellite">Спутник</string>
@@ -394,7 +394,6 @@
     <string name="acc_add_image_to_reminder">Добавить изображение для напоминания</string>
     <string name="acc_add_reminder">Добавить напоминание</string>
     <string name="acc_change_text_font_style">Изменение стиля шрифта текста</string>
-    <string name="acc_stop">Стоп</string>
     <string name="acc_add">Добавить</string>
     <string name="acc_select_application">Выбрать приложение</string>
     <string name="acc_type_by_voice">Введите текст голосом</string>
@@ -759,4 +758,6 @@
     <string name="whats_new_banner_text">🚀 Приложение было обновлено 😻. Нажмите \"Подробности\" для подробной информации.</string>
     <string name="whats_new_details">Подробности</string>
     <string name="whats_new">Что нового</string>
+
+    <string name="repeat_once">Один раз</string>
 </resources>

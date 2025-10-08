@@ -31,7 +31,7 @@ internal data class NoteDrawableParams(
 ) {
 
   data class OverlayParams(
-    @ColorInt val color: Int = Color.GRAY
+    @param:ColorInt val color: Int = Color.GRAY
   )
 
   enum class HorizontalAlignment {

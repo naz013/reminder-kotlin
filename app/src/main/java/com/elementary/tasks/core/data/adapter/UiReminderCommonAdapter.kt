@@ -96,7 +96,10 @@ class UiReminderCommonAdapter(
       type.isBase(UiReminderType.Base.WEEKDAY) -> getRepeatString(data.weekdays)
       type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
       type.isBase(UiReminderType.Base.RECUR) -> textProvider.getText(R.string.recur_custom)
-      else -> IntervalUtil.getInterval(data.repeatInterval) { getIntervalPattern(it) }
+      else -> {
+        IntervalUtil.getInterval(data.repeatInterval) { getIntervalPattern(it) }
+          ?: textProvider.getText(R.string.repeat_once)
+      }
     }
     return UiReminderDueData(
       before = before,
@@ -170,7 +173,7 @@ class UiReminderCommonAdapter(
 
   private fun getIntervalPattern(type: IntervalUtil.PatternType): String {
     return when (type) {
-      IntervalUtil.PatternType.SECONDS -> "0"
+      IntervalUtil.PatternType.SECONDS -> ""
       IntervalUtil.PatternType.MINUTES -> textProvider.getText(R.string.x_min)
       IntervalUtil.PatternType.HOURS -> textProvider.getText(R.string.x_hours)
       IntervalUtil.PatternType.DAYS -> textProvider.getText(R.string.xD)
