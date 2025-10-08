@@ -163,3 +163,5 @@
   *;
 }
 -keepattributes RuntimeVisibleAnnotations
+
+-dontwarn org.koin.core.time.MeasureKt
