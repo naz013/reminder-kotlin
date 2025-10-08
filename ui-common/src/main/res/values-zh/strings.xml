@@ -862,4 +862,6 @@
 
     <string name="voice_no_birthdays_found">未找到生日</string>
     <string name="voice_found">找到</string>
+
+    <string name="repeat_once">仅一次</string>
 </resources>

@@ -78,15 +78,15 @@ object IntervalUtil {
     }
   }
 
-  fun getInterval(millis: Long, function: (PatternType) -> String): String {
+  fun getInterval(millis: Long, function: (PatternType) -> String): String? {
     var code = millis
     val tmp = millis / DateTimeManager.MINUTE
-    val interval: String
+    val interval: String?
     when {
       tmp > 1000 -> {
         code /= DateTimeManager.DAY
         interval = when (code) {
-          REPEAT_CODE_ONCE.toLong() -> "0"
+          REPEAT_CODE_ONCE.toLong() -> null
           INTERVAL_WEEK.toLong() -> String.format(function.invoke(PatternType.WEEKS), 1.toString())
           INTERVAL_TWO_WEEKS.toLong() -> String.format(
             function.invoke(PatternType.WEEKS),
@@ -115,7 +115,7 @@ object IntervalUtil {
       }
 
       else -> return if (tmp == 0L) {
-        "0"
+        null
       } else {
         String.format(function.invoke(PatternType.MINUTES), tmp.toString())
       }

@@ -862,4 +862,6 @@
 
     <string name="voice_no_birthdays_found">Днів народження не знайдено</string>
     <string name="voice_found">Знайдено</string>
+
+    <string name="repeat_once">Один раз</string>
 </resources>

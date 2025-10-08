@@ -281,7 +281,7 @@
     <string name="delete_completed_tasks">Изтрий завършените задачи</string>
     <string name="trash_cleared">Кошчето е изчистено</string>
     <string name="trash_is_empty">Кошчето е празно</string>
-    <string name="reminder_is_outdated">Напомнянето е остаряло, първо го редактирайте</string>
+    <string name="reminder_is_outdated">Напомнянето е остаряло, редактирайте го първо</string>
     <string name="everyday">Всеки ден</string>
     <string name="reminder">Напомняне</string>
     <string name="other">Друго</string>
@@ -862,4 +862,6 @@
 
     <string name="voice_no_birthdays_found">Не са намерени рождени дни</string>
     <string name="voice_found">Намерени</string>
+
+    <string name="repeat_once">Веднъж</string>
 </resources>

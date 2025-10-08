@@ -758,4 +758,6 @@
     <string name="whats_new_banner_text">🚀 Приложение было обновлено 😻. Нажмите \"Подробности\" для подробной информации.</string>
     <string name="whats_new_details">Подробности</string>
     <string name="whats_new">Что нового</string>
+
+    <string name="repeat_once">Один раз</string>
 </resources>

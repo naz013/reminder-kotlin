@@ -862,4 +862,6 @@
 
     <string name="voice_no_birthdays_found">Doğum günü bulunamadı</string>
     <string name="voice_found">Bulundu</string>
+
+    <string name="repeat_once">Bir kez</string>
 </resources>
