@@ -8,6 +8,19 @@
     <attr name="colorCustomColorContainer" format="color" />
     <attr name="colorOnCustomColorContainer" format="color" />
 
+    <attr name="cornerRadiusExtraSmall" format="dimension" />
+    <attr name="cornerRadiusSmall" format="dimension" />
+    <attr name="cornerRadiusMedium" format="dimension" />
+    <attr name="cornerRadiusLarge" format="dimension" />
+    <attr name="cornerRadiusExtraLarge" format="dimension" />
+
+    <attr name="selectableBackgroundNone" format="reference" />
+    <attr name="selectableBackgroundExtraSmall" format="reference" />
+    <attr name="selectableBackgroundSmall" format="reference" />
+    <attr name="selectableBackgroundMedium" format="reference" />
+    <attr name="selectableBackgroundLarge" format="reference" />
+    <attr name="selectableBackgroundExtraLarge" format="reference" />
+
     <declare-styleable name="UiGradientFrameLayout">
         <attr name="gradientFrameLayout_startColor" format="color" />
         <attr name="gradientFrameLayout_centerColor" format="color" />

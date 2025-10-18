@@ -6,6 +6,7 @@ import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.logging.Logger
 
 class BiFilter(
   private val locationFilter: LocationFilter,
@@ -13,9 +14,15 @@ class BiFilter(
 ) {
 
   operator fun invoke(item: BuilderItem<*>): Boolean {
-    return item.isEnabled && (!item.isForPro || (item.isForPro && BuildParams.isPro)) &&
-      Module.CURRENT_SDK in item.minSdk..item.maxSdk && locationFilter(item) &&
-      creatorConfigFilter(item)
+    val isEnabled = item.isEnabled
+    val isForPro = item.isForPro
+    val isProEnabled = !item.isForPro || (item.isForPro && BuildParams.isPro)
+    val isInSdkRange = Module.CURRENT_SDK in item.minSdk..item.maxSdk
+    val isLocationAllowed = locationFilter(item)
+    val isCreatorConfigAllowed = creatorConfigFilter(item)
+    return (isEnabled && isProEnabled && isInSdkRange && isLocationAllowed && isCreatorConfigAllowed).also {
+      Logger.d("BiFilter", "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed, isCreatorConfigAllowed=$isCreatorConfigAllowed")
+    }
   }
 }
 

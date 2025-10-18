@@ -15,7 +15,7 @@
         tools:itemCount="7"
         tools:listitem="@layout/list_item_day_view_weekday_grid" />
 
-    <com.elementary.tasks.core.calendar.InfiniteViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

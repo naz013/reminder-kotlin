@@ -6,16 +6,6 @@ class EventsCursor {
   private var events = mutableListOf<Event>()
   private var mPosition = 0
 
-  val nextWithoutMoving: Event?
-    get() {
-      val index = mPosition + 1
-      return if (index < events.size) {
-        events[index]
-      } else {
-        null
-      }
-    }
-
   val previousWithoutMoving: Event?
     get() {
       if (mPosition == 0) {
@@ -38,13 +28,6 @@ class EventsCursor {
       } else {
         null
       }
-    }
-
-  val last: Event?
-    get() = if (events.isNotEmpty()) {
-      events[events.size - 1]
-    } else {
-      null
     }
 
   constructor() {

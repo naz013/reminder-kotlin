@@ -2,6 +2,7 @@ package com.elementary.tasks.calendar.dayview.weekheader
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +47,8 @@ class WeekDayHolder(
   fun bind(weekDay: WeekDay) {
     binding.dayTextView.text = weekDay.date
     binding.weekdayTextView.text = weekDay.weekday.uppercase()
+    binding.eventIndicator.isVisible = weekDay.hasEvents
+    binding.root.isClickable = !weekDay.isSelected
     if (weekDay.isSelected) {
       binding.root.setBackgroundResource(R.drawable.weekday_selected_background)
     } else {
