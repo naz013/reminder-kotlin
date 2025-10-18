@@ -42,7 +42,7 @@ class CalendarDataEngine(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val ICalendarApi: ICalendarApi,
+  private val iCalendarApi: ICalendarApi,
   private val dispatcherProvider: DispatcherProvider,
   private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
   private val tableChangeListenerFactory: TableChangeListenerFactory,
@@ -171,7 +171,6 @@ class CalendarDataEngine(
     return resultList
   }
 
-  @MainThread
   fun hasAnyByDate(
     date: LocalDate,
     reminderMode: ReminderMode = ReminderMode.INCLUDE_FUTURE
@@ -395,7 +394,7 @@ class CalendarDataEngine(
     dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
   ) {
     val dates = runCatching {
-      ICalendarApi.parseObject(reminder.recurDataObject)
+      iCalendarApi.parseObject(reminder.recurDataObject)
     }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
 
     val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)

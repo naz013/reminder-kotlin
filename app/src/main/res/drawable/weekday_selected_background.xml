@@ -4,6 +4,6 @@
 
     <solid android:color="?colorSecondaryContainer" />
 
-    <corners android:radius="?cornerRadiusMedium" />
+    <corners android:radius="?attr/cornerRadiusMedium" />
 
 </shape>
