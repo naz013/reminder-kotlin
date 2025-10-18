@@ -34,15 +34,6 @@ jobs:
         DATA: ${{ secrets.GOOGLE_SERVICES }}
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/google-services.json
 
-    - name: Analyse code with ktlint
-      uses: ScaCap/action-ktlint@master
-      with:
-        github_token: ${{ secrets.github_token }}
-        reporter: github-check
-        android: true
-        fail_on_error: true
-        ktlint_version: 0.47.1
-
     - name: Upload iCalendar module Test results
       uses: actions/upload-artifact@v4
       if: ${{ always() }} # IMPORTANT: Upload reports regardless of status

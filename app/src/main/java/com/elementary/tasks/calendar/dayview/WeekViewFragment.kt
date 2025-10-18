@@ -4,32 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.elementary.tasks.calendar.BaseCalendarFragment
-import com.elementary.tasks.calendar.dayview.pager.DayPagerAdapter
 import com.elementary.tasks.calendar.dayview.weekheader.WeekAdapter
-import com.elementary.tasks.core.calendar.InfinitePagerAdapter
-import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
 
 class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
 
-  lateinit var dayPagerAdapter: DayPagerAdapter
-  private val datePageChangeListener = DatePageChangeListener()
-  private val weekViewModel by viewModel<WeekViewModel>()
+  private lateinit var pagerAdapter: InfiniteDayViewPagerAdapter
+  private var isUpdatingProgrammatically = false
 
-  private val weekAdapter = WeekAdapter { scrollPositions(it.localDate) }
+  private val viewModel by viewModel<WeekViewModel> { parametersOf(getDate()) }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    val bundle = arguments
-    if (bundle != null) {
-      date = dateTimeManager.fromMillis(WeekViewFragmentArgs.fromBundle(bundle).date).toLocalDate()
-    }
+  private val weekAdapter = WeekAdapter { viewModel.selectDate(it.localDate) }
+
+  private fun getDate(): LocalDate {
+    return arguments?.let {
+      dateTimeManager.fromMillis(WeekViewFragmentArgs.fromBundle(it).date).toLocalDate()
+    } ?: LocalDate.now()
   }
 
   override fun inflate(
@@ -40,127 +39,90 @@ class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    Logger.d(TAG, "On view created")
     binding.weekGridView.adapter = weekAdapter
     binding.fab.setOnClickListener { tryToShowActionDialog() }
+
     initPager()
     initViewModel()
-    loadData()
   }
 
   private fun tryToShowActionDialog() {
-    showActionDialog()
+    showActionDialog(viewModel.lastSelectedDate)
   }
 
   private fun initViewModel() {
-    weekViewModel.week.nonNullObserve(viewLifecycleOwner) { weekAdapter.submitList(it) }
+    lifecycle.addObserver(viewModel)
+    viewModel.state.nonNullObserve(viewLifecycleOwner) { onStateChanged(it) }
+    viewModel.moveToDate.observeEvent(viewLifecycleOwner) { updateDate(it, true) }
+  }
+
+  private fun onStateChanged(state: DayViewState) {
+    weekAdapter.submitList(state.days)
+    setTitle(state.title)
   }
 
   private fun initPager() {
-    dayPagerAdapter = DayPagerAdapter(childFragmentManager)
-    binding.pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
-  }
+    Logger.i(TAG, "Initializing pager, date: ${viewModel.initDate}, position: ${viewModel.lastPosition}")
 
-  private fun updateMenuTitles(): String {
-    val monthTitle = dateTimeManager.formatCalendarDate(date)
-    setTitle(monthTitle)
-    return monthTitle
-  }
+    pagerAdapter = InfiniteDayViewPagerAdapter(this, viewModel.initDate)
+    binding.pager.adapter = pagerAdapter
+    binding.pager.offscreenPageLimit = 1
 
-  override fun getTitle(): String = updateMenuTitles()
-
-  private fun loadData() {
-    showEvents(date)
-  }
-
-  private fun fromDate(date: LocalDate): DayPagerItem {
-    return DayPagerItem(date)
-  }
-
-  private fun scrollPositions(date: LocalDate) {
-    Logger.d("scrollPositions: date=$date")
-    datePageChangeListener.jumpToDate(date)
-  }
-
-  private fun showEvents(date: LocalDate) {
-    this.date = date
-    updateMenuTitles()
-
-    datePageChangeListener.setCurrentDateTime(date)
-    binding.pager.isEnabled = true
-    binding.pager.addOnPageChangeListener(datePageChangeListener)
-    binding.pager.currentItem = InfiniteViewPager.OFFSET + 1
-  }
-
-  private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {
-
-    var currentPage = InfiniteViewPager.OFFSET + 1
-      private set
-    private var currentDate: LocalDate = LocalDate.now()
-
-    fun jumpToDate(newDate: LocalDate) {
-      this.currentDate = newDate
-      refreshAdapters(currentPage)
-      date = newDate
-      updateMenuTitles()
-      weekViewModel.onDateSelected(date)
+    // Reduce sensitivity to make swiping smoother
+    try {
+      val recyclerView = binding.pager.getChildAt(0) as? RecyclerView
+      recyclerView?.overScrollMode = View.OVER_SCROLL_NEVER
+    } catch (e: Exception) {
+      Logger.e(TAG, "Failed to configure pager", e)
     }
 
-    fun setCurrentDateTime(date: LocalDate) {
-      this.currentDate = date
-    }
+    // Set initial position to center
+    binding.pager.setCurrentItem(viewModel.lastPosition, false)
 
-    private fun getNext(position: Int): Int {
-      return (position + 1) % NUMBER_OF_PAGES
-    }
+    // Listen for page changes
+    binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+      override fun onPageSelected(position: Int) {
+        super.onPageSelected(position)
 
-    private fun getPrevious(position: Int): Int {
-      return (position + 3) % NUMBER_OF_PAGES
-    }
-
-    fun getCurrent(position: Int): Int {
-      return position % NUMBER_OF_PAGES
-    }
-
-    override fun onPageScrollStateChanged(position: Int) {
-    }
-
-    override fun onPageScrolled(arg0: Int, arg1: Float, arg2: Int) {
-    }
-
-    private fun refreshAdapters(position: Int) {
-      val currentFragment = dayPagerAdapter.fragments[getCurrent(position)]
-      val prevFragment = dayPagerAdapter.fragments[getPrevious(position)]
-      val nextFragment = dayPagerAdapter.fragments[getNext(position)]
-      when {
-        position == currentPage -> {
-          currentFragment.setModel(fromDate(currentDate))
-          prevFragment.setModel(fromDate(currentDate.minusDays(1)))
-          nextFragment.setModel(fromDate(currentDate.plusDays(1)))
+        // Skip if we're updating programmatically
+        if (isUpdatingProgrammatically) {
+          Logger.d(TAG, "Skipping page selected - programmatic update")
+          return
         }
-        position > currentPage -> {
-          currentDate = currentDate.plusDays(1)
-          nextFragment.setModel(fromDate(currentDate.plusDays(1)))
-        }
-        else -> {
-          currentDate = currentDate.minusDays(1)
-          prevFragment.setModel(fromDate(currentDate.minusDays(1)))
-        }
+
+        // Calculate the date for this position
+        val newDate = pagerAdapter.getDateForPosition(position)
+        Logger.d(TAG, "Page selected: $position, date: $newDate")
+
+        viewModel.onDateSelected(newDate)
+        viewModel.updateLastPosition(position)
       }
-      currentPage = position
-    }
+    })
+  }
 
-    override fun onPageSelected(position: Int) {
-      Logger.d("onPageSelected: position=$position")
-      refreshAdapters(position)
-      val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
-      Logger.d("onPageSelected: item=$item")
-      date = item.date
-      updateMenuTitles()
-      weekViewModel.onDateSelected(date)
+  override fun getTitle(): String = viewModel.state.value?.title ?: ""
+
+  private fun updateDate(targetDate: LocalDate, smooth: Boolean) {
+    Logger.d(TAG, "Update date: $targetDate, smooth: $smooth")
+
+    // Calculate the position for this date
+    val targetPosition = pagerAdapter.getPositionForDate(targetDate)
+    Logger.d(TAG, "Target position: $targetPosition")
+
+    // Update pager position
+    isUpdatingProgrammatically = true
+    binding.pager.post {
+      binding.pager.setCurrentItem(targetPosition, smooth)
+      viewModel.updateLastPosition(targetPosition)
+      // Reset flag after a short delay to ensure the transition completes
+      binding.pager.postDelayed({
+        isUpdatingProgrammatically = false
+      }, 100)
     }
   }
 
   companion object {
-    private const val NUMBER_OF_PAGES = 4
+    private const val TAG = "WeekViewFragment"
   }
 }

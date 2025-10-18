@@ -163,7 +163,41 @@ class CalendarDataEngine(
       date = date.plusDays(1)
     }
 
+    Logger.d(
+      TAG,
+      "Get by date range: $dateStart - $dateEnd, found: ${resultList.size}, mode=$reminderMode"
+    )
+
     return resultList
+  }
+
+  @MainThread
+  fun hasAnyByDate(
+    date: LocalDate,
+    reminderMode: ReminderMode = ReminderMode.INCLUDE_FUTURE
+  ): Boolean {
+    if (state == EngineState.NONE || state == EngineState.INITIALIZING) {
+      return false
+    }
+    val birthdays = getNonNullList(dayBirthdayMap, date)
+    if (birthdays.isNotEmpty()) {
+      return true
+    }
+
+    val reminders: List<EventModel> = when (reminderMode) {
+      ReminderMode.DO_NOT_INCLUDE -> {
+        emptyList()
+      }
+
+      ReminderMode.INCLUDE -> {
+        getNonNullList(dayReminderMap, date)
+      }
+
+      ReminderMode.INCLUDE_FUTURE -> {
+        getNonNullList(dayReminderMap, date) + getNonNullList(dayFutureReminderMap, date)
+      }
+    }
+    return (birthdays + reminders).isNotEmpty()
   }
 
   private fun processData(
@@ -181,7 +215,9 @@ class CalendarDataEngine(
         async { mapBirthdays(birthdays) }
       )
       val duration = System.currentTimeMillis() - millis
-      Logger.d("processData: duration=$duration millis")
+
+      Logger.i(TAG, "Processed calendar data in $duration ms")
+
       state = EngineState.READY
       withContext(dispatcherProvider.main()) {
         calendarDataEngineBroadcast.sendEvent()
@@ -616,5 +652,9 @@ class CalendarDataEngine(
     INITIALIZING,
     READY,
     REFRESH
+  }
+
+  companion object {
+    private const val TAG = "CalendarDataEngine"
   }
 }

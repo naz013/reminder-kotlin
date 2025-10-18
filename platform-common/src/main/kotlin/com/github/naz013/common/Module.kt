@@ -3,19 +3,29 @@ package com.github.naz013.common
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.fragment.app.Fragment
 import com.github.naz013.common.playservices.PlayServices
 
 object Module {
 
   val CURRENT_SDK: Int = Build.VERSION.SDK_INT
   const val MIN_SDK: Int = Build.VERSION_CODES.Q
-  const val MAX_SDK: Int = Build.VERSION_CODES.VANILLA_ICE_CREAM
+  const val MAX_SDK: Int = Build.VERSION_CODES.BAKLAVA
 
+  val is16: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA
   val is15: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM
   val is14: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
   val is13: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
   val is12: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
   val is11: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+
+  fun isTablet(context: Context): Boolean {
+    val screenLayout = context.resources.configuration.screenLayout
+    val screenSize = screenLayout and android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
+    return screenSize >= android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE
+  }
+
+  fun Fragment.isTablet() = isTablet(requireContext())
 
   fun isChromeOs(context: Context) =
     context.packageManager.hasSystemFeature("org.chromium.arc.device_management")

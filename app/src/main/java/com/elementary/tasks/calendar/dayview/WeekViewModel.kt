@@ -1,22 +1,116 @@
 package com.elementary.tasks.calendar.dayview
 
-import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.calendar.data.CalendarDataEngineBroadcast
+import com.elementary.tasks.calendar.data.CalendarDataEngineBroadcastCallback
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.logging.Logger
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 
 class WeekViewModel(
+  startDate: LocalDate,
   dispatcherProvider: DispatcherProvider,
-  private val weekHeaderController: WeekHeaderController
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val weekHeaderController: WeekHeaderController,
+  private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
+  private val dateTimeManager: DateTimeManager,
+) : BaseProgressViewModel(dispatcherProvider), CalendarDataEngineBroadcastCallback {
 
-  private val _week = mutableLiveDataOf<List<WeekDay>>()
-  val week = _week.toLiveData()
+  private val _state = mutableLiveDataOf<DayViewState>()
+  val state = _state.toLiveData()
+
+  private val _moveToDate = mutableLiveEventOf<LocalDate>()
+  val moveToDate = _moveToDate.toLiveData()
+
+  val initDate = startDate
+  var lastSelectedDate: LocalDate = startDate
+    private set
+  var lastPosition: Int = InfiniteDayViewPagerAdapter.CENTER_POSITION
+    private set
+
+  init {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      Logger.i(TAG, "Initializing week view model with date $lastSelectedDate")
+
+      val state = stateForDate(lastSelectedDate)
+
+      withContext(dispatcherProvider.main()) {
+        _state.value = state
+        _moveToDate.value = Event(lastSelectedDate)
+      }
+    }
+  }
+
+  fun updateLastPosition(position: Int) {
+    lastPosition = position
+  }
+
+  fun selectDate(date: LocalDate) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      Logger.i(TAG, "Select date called with date: $date")
+
+      lastSelectedDate = date
+      val state = stateForDate(date)
+
+      withContext(dispatcherProvider.main()) {
+        _state.value = state
+        _moveToDate.value = Event(date)
+      }
+    }
+  }
 
   fun onDateSelected(date: LocalDate) {
-    _week.postValue(weekHeaderController.calculateWeek(date))
+    viewModelScope.launch(dispatcherProvider.default()) {
+      Logger.i(TAG, "On date selected: $date")
+
+      lastSelectedDate = date
+      val state = stateForDate(date)
+
+      withContext(dispatcherProvider.main()) {
+        _state.value = state
+      }
+    }
+  }
+
+  override fun onResume(owner: LifecycleOwner) {
+    super.onResume(owner)
+    Logger.d(TAG, "On resume, restoring last selected date $lastSelectedDate")
+    onDateSelected(lastSelectedDate)
+    calendarDataEngineBroadcast.observerEvent(
+      parent = this.toString(),
+      action = CalendarDataEngineBroadcast.EVENT_READY,
+      callback = this
+    )
+  }
+
+  override fun onPause(owner: LifecycleOwner) {
+    super.onPause(owner)
+    Logger.d(TAG, "On pause.")
+    calendarDataEngineBroadcast.removeObserver(this.toString())
+  }
+
+  override fun invoke() {
+    Logger.d(TAG, "Calendar data engine broadcast received.")
+    onDateSelected(lastSelectedDate)
+  }
+
+  private fun stateForDate(date: LocalDate): DayViewState {
+    return DayViewState(
+      title = dateTimeManager.formatCalendarDate(date),
+      days = weekHeaderController.calculateWeek(date)
+    )
+  }
+
+  companion object {
+    private const val TAG = "WeekViewModel"
   }
 }

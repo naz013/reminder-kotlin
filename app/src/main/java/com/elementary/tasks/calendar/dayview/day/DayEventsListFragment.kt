@@ -18,19 +18,39 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.reminder.ReminderResolver
+import com.github.naz013.common.Module.isTablet
 import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import org.threeten.bp.LocalDate
 
 class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
   private val themeProvider by inject<ThemeProvider>()
-  private val viewModel by inject<DayViewModel>()
+  private val viewModel by viewModel<DayViewModel> { parametersOf(getDate()) }
 
-  private val dayEventsAdapter = DayEventsAdapter(isDark = themeProvider.isDark)
+  private val dayEventsAdapter = DayEventsAdapter(
+    isDark = themeProvider.isDark,
+    eventListener = object : ActionsListener<EventModel> {
+      override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
+        if (t == null) return
+        when (t) {
+          is BirthdayEventModel -> {
+            birthdayResolver.resolveAction(view, t.model, actions)
+          }
+
+          is ReminderEventModel -> {
+            reminderResolver.resolveAction(view, t.model, actions)
+          }
+        }
+      }
+    }
+  )
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) },
@@ -73,21 +93,11 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
       )
     }
   )
-  private var dayPagerItem: DayPagerItem? = null
 
-  fun getModel(): DayPagerItem? = dayPagerItem
-
-  fun setModel(dayPagerItem: DayPagerItem) {
-    dayEventsAdapter.setData(listOf())
-    this.dayPagerItem = dayPagerItem
-    viewModel.onDateSelected(dayPagerItem.date)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    if (arguments != null) {
-      dayPagerItem = arguments?.getParcelable(ARGUMENT_PAGE_NUMBER) as DayPagerItem?
-    }
+  private fun getDate(): LocalDate {
+    return arguments?.readParcelable(ARGUMENT_PAGE_NUMBER, DayPagerItem::class.java)
+      ?.date
+      ?: LocalDate.now()
   }
 
   override fun inflate(
@@ -98,21 +108,7 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    dayEventsAdapter.setEventListener(object : ActionsListener<EventModel> {
-      override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
-        if (t == null) return
-        when (t) {
-          is BirthdayEventModel -> {
-            birthdayResolver.resolveAction(view, t.model, actions)
-          }
-
-          is ReminderEventModel -> {
-            reminderResolver.resolveAction(view, t.model, actions)
-          }
-        }
-      }
-    })
-    if (resources.getBoolean(R.bool.is_tablet)) {
+    if (isTablet()) {
       binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
         resources.getInteger(R.integer.num_of_cols),
         StaggeredGridLayoutManager.VERTICAL
@@ -124,9 +120,13 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
     reloadView()
 
+    initViewModel()
+  }
+
+  private fun initViewModel() {
+    lifecycle.addObserver(viewModel)
     viewModel.events.nonNullObserve(viewLifecycleOwner) {
-      Logger.d("nonNullObserve: $dayPagerItem, ${it.size}")
-      dayEventsAdapter.setData(it)
+      dayEventsAdapter.submitList(it)
       reloadView()
     }
   }
