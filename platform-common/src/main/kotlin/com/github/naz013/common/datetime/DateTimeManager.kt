@@ -10,6 +10,7 @@ import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import org.threeten.bp.temporal.ChronoUnit
 import java.util.Locale
 
@@ -72,20 +73,6 @@ class DateTimeManager(
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
   }
 
-  fun isAfterNow(gmt: String?): Boolean {
-    return try {
-      gmtToLocal(gmt, DateTimeFormatter.ofPattern(FIRE_DATE_PATTERN, Locale.US))
-        ?.isAfter(getCurrentDateTime()) ?: false
-    } catch (e: Throwable) {
-      false
-    }
-  }
-
-  fun getFireFormatted(gmt: String?): String? {
-    return gmtToLocal(gmt, DateTimeFormatter.ofPattern(FIRE_DATE_PATTERN, Locale.US))
-      ?.let { getDateTime(it) }
-  }
-
   private fun gmtToLocal(gmt: String?, formatter: DateTimeFormatter): LocalDateTime? {
     return if (gmt == null) {
       null
@@ -133,32 +120,6 @@ class DateTimeManager(
 
       from.hour > to.hour -> -1
       else -> 1
-    }
-  }
-
-  fun getMillisFromGmtVoiceEngine(dateTime: String?): Long {
-    if (dateTime.isNullOrEmpty()) return 0
-    return try {
-      ZonedDateTime.parse(
-        dateTime,
-        VOICE_ENGINE_GMT_DATE_FORMAT.withZone(GMT_ZONE_ID)
-      ).toInstant().toEpochMilli()
-    } catch (e: Exception) {
-      e.printStackTrace()
-      0
-    }
-  }
-
-  fun getFromGmtVoiceEngine(dateTime: String?): LocalDateTime? {
-    if (dateTime.isNullOrEmpty()) return null
-    return try {
-      ZonedDateTime.parse(
-        dateTime,
-        VOICE_ENGINE_GMT_DATE_FORMAT.withZone(GMT_ZONE_ID)
-      ).toLocalDateTime()
-    } catch (e: Exception) {
-      e.printStackTrace()
-      null
     }
   }
 
@@ -301,24 +262,6 @@ class DateTimeManager(
     return "${dateTime.dayOfMonth}|${dateTime.monthValue - 1}"
   }
 
-  fun getBirthdayDayMonthList(
-    start: LocalDateTime = getCurrentDateTime(),
-    duration: Int = 1
-  ): List<String> {
-    val list = mutableListOf<String>()
-    var dateTime: LocalDateTime
-    for (n in 0 until duration) {
-      dateTime = start.plusDays(n.toLong())
-      list.add("${dateTime.dayOfMonth}|${dateTime.monthValue - 1}")
-    }
-    Logger.d("getBirthdayDayMonthList: $list")
-    return list
-  }
-
-  fun getGmtDateTimeFromMillis(millis: Long): String {
-    return getGmtFromDateTime(fromMillis(millis))
-  }
-
   fun toLocalTime(time24: String?): LocalTime? {
     return try {
       LocalTime.parse(time24, TIME_24_FORMATTER)
@@ -380,41 +323,12 @@ class DateTimeManager(
     return time
   }
 
-  fun oldDayOfWeekToLocal(dayOfWeek: Int): Int {
-    // sunday = 1 - saturday = 7
-    return if (dayOfWeek == 1) {
-      DayOfWeek.SUNDAY.value
-    } else {
-      dayOfWeek - 1
-    }
-  }
-
   fun localDayOfWeekToOld(dayOfWeek: DayOfWeek): Int {
     // monday = 1 - sunday = 7
     return if (dayOfWeek == DayOfWeek.SUNDAY) {
       1
     } else {
       dayOfWeek.value + 1
-    }
-  }
-
-  fun getNextWeekdayTime(
-    startTime: LocalDateTime,
-    weekdays: List<Int>,
-    delay: Long
-  ): LocalDateTime {
-    var dateTime = startTime.withSecond(0)
-    return if (delay > 0) {
-      startTime.plusMinutes(delay)
-    } else {
-      val now = LocalDateTime.now()
-      while (true) {
-        if (weekdays[localDayOfWeekToOld(dateTime.dayOfWeek) - 1] == 1 && dateTime > now) {
-          break
-        }
-        dateTime = dateTime.plusDays(1)
-      }
-      dateTime
     }
   }
 
@@ -495,8 +409,6 @@ class DateTimeManager(
 
   private fun time12Formatter(): DateTimeFormatter = localizedDateFormatter("h:mm a")
 
-  fun simpleDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM")
-
   private fun dayMonthFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMMM")
 
   private fun headerDateFormatter(): DateTimeFormatter = localizedDateFormatter("d MMMM yyyy")
@@ -508,13 +420,13 @@ class DateTimeManager(
 
   private fun birthdaySearchDayMonth(): DateTimeFormatter = localizedDateFormatter("dd|MM")
 
-  private fun calendarFullDate(): DateTimeFormatter = localizedDateFormatter("MMMM dd, yyyy")
+  private fun calendarFullDate(): DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
 
   private fun calendarMonthYear(): DateTimeFormatter = localizedDateFormatter("MMMM yyyy")
 
   private fun shortWeekDay(): DateTimeFormatter = localizedDateFormatter("EEE")
 
-  private fun shortDay(): DateTimeFormatter = localizedDateFormatter("dd")
+  private fun shortDay(): DateTimeFormatter = localizedDateFormatter("d")
 
   private fun monthFormatter(): DateTimeFormatter = localizedDateFormatter("MMMM")
 
@@ -527,14 +439,10 @@ class DateTimeManager(
     const val WEEK: Long = DAY * 7
 
     private const val GMT = "GMT"
-    private val GMT_ZONE_ID = ZoneId.of(GMT)
 
     private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
-    private val VOICE_ENGINE_GMT_DATE_FORMAT =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
     private val GMT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
-    private const val FIRE_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"
     private val TIME_24_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.US)
     private val TIME_24_FORMATTER_SHORT = DateTimeFormatter.ofPattern("H[H]:m[m]", Locale.US)
 

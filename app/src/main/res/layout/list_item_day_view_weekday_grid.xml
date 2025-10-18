@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/weekday_selected_background"
-    android:foreground="?selectableItemBackground"
+    android:foreground="?selectableBackgroundMedium"
     android:gravity="center"
     android:orientation="vertical">
 

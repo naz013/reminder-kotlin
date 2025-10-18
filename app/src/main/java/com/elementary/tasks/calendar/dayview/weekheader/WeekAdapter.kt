@@ -48,6 +48,7 @@ class WeekDayHolder(
     binding.dayTextView.text = weekDay.date
     binding.weekdayTextView.text = weekDay.weekday.uppercase()
     binding.eventIndicator.isVisible = weekDay.hasEvents
+    binding.root.isClickable = !weekDay.isSelected
     if (weekDay.isSelected) {
       binding.root.setBackgroundResource(R.drawable.weekday_selected_background)
     } else {

@@ -7,6 +7,7 @@ import com.elementary.tasks.calendar.data.CalendarDataEngineBroadcastCallback
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.feature.common.capitalizeFirstLetter
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -105,7 +106,7 @@ class WeekViewModel(
 
   private fun stateForDate(date: LocalDate): DayViewState {
     return DayViewState(
-      title = dateTimeManager.formatCalendarDate(date),
+      title = dateTimeManager.formatCalendarDate(date).capitalizeFirstLetter(),
       days = weekHeaderController.calculateWeek(date)
     )
   }

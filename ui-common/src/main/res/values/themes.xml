@@ -91,5 +91,18 @@
         <item name="textAppearanceOverline">@style/TextAppearance.MyTheme.LabelMedium</item>
         <item name="textAppearanceCaption">@style/TextAppearance.MyTheme.BodySmall</item>
         <item name="textAppearanceButton">@style/TextAppearance.MyTheme.LabelLarge</item>
+
+        <item name="cornerRadiusExtraSmall">4dp</item>
+        <item name="cornerRadiusSmall">8dp</item>
+        <item name="cornerRadiusMedium">12dp</item>
+        <item name="cornerRadiusLarge">16dp</item>
+        <item name="cornerRadiusExtraLarge">28dp</item>
+
+        <item name="selectableBackgroundNone">@drawable/ripple_rounded_corners_none</item>
+        <item name="selectableBackgroundExtraSmall">@drawable/ripple_rounded_corners_extra_small</item>
+        <item name="selectableBackgroundSmall">@drawable/ripple_rounded_corners_small</item>
+        <item name="selectableBackgroundMedium">@drawable/ripple_rounded_corners_medium</item>
+        <item name="selectableBackgroundLarge">@drawable/ripple_rounded_corners_large</item>
+        <item name="selectableBackgroundExtraLarge">@drawable/ripple_rounded_corners_extra_large</item>
     </style>
 </resources>
