@@ -24,6 +24,7 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
@@ -73,6 +74,7 @@ class BuildReminderFragment :
     binding.builderList.layoutManager = LinearLayoutManager(context)
     binding.builderList.adapter = builderAdapter
 
+    binding.addButton.applyBottomInsets()
     binding.addButton.singleClick {
       SelectorDialog().show(parentFragmentManager, SelectorDialog.TAG)
     }

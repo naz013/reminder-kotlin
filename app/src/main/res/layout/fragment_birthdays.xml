@@ -6,44 +6,62 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin"
-        android:clipToPadding="false"
-        android:visibility="visible"
-        tools:itemCount="5"
-        tools:listitem="@layout/list_item_birthday" />
-
     <LinearLayout
-        android:id="@+id/emptyItem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:orientation="vertical">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animationView"
-            android:layout_width="@dimen/empty_animation_size"
-            android:layout_height="@dimen/empty_animation_size"
-            android:layout_gravity="center"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/empty_status" />
-
-        <TextView
-            android:id="@+id/emptyText"
+        <com.github.naz013.ui.common.view.MaterialSearchBar
+            android:id="@+id/birthday_search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
-            android:gravity="center|top"
-            android:text="@string/voice_no_birthdays_found"
-            android:textAppearance="?textAppearanceHeadlineSmall" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/search" />
+
+        <LinearLayout
+            android:id="@+id/emptyItem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="@dimen/empty_animation_size"
+                android:layout_height="@dimen/empty_animation_size"
+                android:layout_gravity="center"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/empty_status" />
+
+            <TextView
+                android:id="@+id/emptyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center|top"
+                android:text="@string/voice_no_birthdays_found"
+                android:textAppearance="?textAppearanceHeadlineSmall" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:clipToPadding="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="72dp"
+            android:visibility="visible"
+            tools:itemCount="5"
+            tools:listitem="@layout/list_item_birthday" />
 
     </LinearLayout>
 

@@ -4,21 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
-import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
+import com.elementary.tasks.reminder.lists.filter.FilterGroup
+import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialog
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
@@ -27,12 +29,10 @@ import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
 
-  private val systemServiceProvider by inject<SystemServiceProvider>()
   private val viewModel by viewModel<ActiveTodoRemindersViewModel>()
 
   private var mPosition: Int = 0
@@ -82,13 +82,6 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     }
   )
 
-  private val searchMenuHandler = SearchMenuHandler(
-    systemServiceProvider.provideSearchManager(),
-    R.string.search
-  ) {
-    viewModel.onSearchUpdate(it)
-  }
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -98,9 +91,14 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
-    addMenu(R.menu.fragment_reminders_todo, { true }) {
-      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
-    }
+    addMenu(R.menu.fragment_reminders_todo, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_filter -> {
+          viewModel.showFilters()
+        }
+      }
+      true
+    })
 
     binding.fab.setOnClickListener {
       val deepLinkData = ReminderTodoTypeDeepLinkData
@@ -115,13 +113,31 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
       }
     }
 
+    binding.reminderSearchBar.doAfterTextChanged {
+      viewModel.onSearchUpdate(it?.toString().orEmpty())
+    }
+
     analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
+
+    // Set up result listener for filter selection
+    setFragmentResultListener(ReminderFilterDialog.REQUEST_KEY) { _, result ->
+      viewModel.handleFilterResult(ReminderFilterDialog.getAppliedFiltersFromResult(result))
+    }
 
     initList()
     initViewModel()
   }
 
+  private fun showFilters(filters: List<FilterGroup>) {
+    val dialog = ReminderFilterDialog.newInstance(
+      filterGroups = filters,
+      title = getString(R.string.filter_reminders)
+    )
+    dialog.show(parentFragmentManager, "ReminderFilterDialog")
+  }
+
   private fun initViewModel() {
+    lifecycle.addObserver(viewModel)
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
     viewModel.errorEvent.observeEvent(viewLifecycleOwner) {
       Logger.d("initViewModel: onError -> $it")
@@ -132,6 +148,19 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
         remindersAdapter.notifyItemChanged(mPosition)
         toast(R.string.reminder_is_outdated)
       }
+    }
+    viewModel.showFilters.observeEvent(viewLifecycleOwner) { showFilters(it) }
+    viewModel.canFilter.observe(viewLifecycleOwner) { canFilter ->
+      updateFilterMenuIcon(canFilter == true)
+    }
+    viewModel.canSearch.observe(viewLifecycleOwner) { canSearch ->
+      binding.reminderSearchBar.visibleGone(canSearch == true)
+    }
+  }
+
+  private fun updateFilterMenuIcon(canFilter: Boolean) {
+    fragmentMenuController?.updateMenuItem(R.id.action_filter) {
+      isVisible = canFilter
     }
   }
 

@@ -14,7 +14,7 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseSubEventsFragment<B : ViewBinding> : BindingFragment<B>() {
 
-  private var fragmentMenuController: FragmentMenuController? = null
+  protected var fragmentMenuController: FragmentMenuController? = null
   private var fragmentNavigationController: FragmentNavigationController? = null
 
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
@@ -47,7 +47,7 @@ abstract class BaseSubEventsFragment<B : ViewBinding> : BindingFragment<B>() {
   protected fun addMenu(
     menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)?
+    menuModifier: ((Menu) -> Unit)? = null
   ) {
     fragmentMenuController?.addMenu(menuRes, onMenuItemListener, menuModifier)
   }
