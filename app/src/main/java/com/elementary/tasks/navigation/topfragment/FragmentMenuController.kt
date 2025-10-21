@@ -9,4 +9,11 @@ interface FragmentMenuController {
     onMenuItemListener: (MenuItem) -> Boolean,
     menuModifier: ((Menu) -> Unit)? = null
   )
+
+  fun removeMenu()
+
+  fun updateMenuItem(
+    itemId: Int,
+    modifier: MenuItem.() -> Unit
+  )
 }

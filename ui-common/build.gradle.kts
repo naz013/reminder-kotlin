@@ -60,6 +60,7 @@ dependencies {
   implementation(libs.compose.material3)
   implementation(libs.compose.foundation.foundation)
   implementation(libs.compose.ui.tooling.preview)
+  implementation(libs.compose.material.iconsext)
   implementation(libs.androidx.activity.compose)
 
   debugImplementation(libs.compose.ui.test.manifest)
