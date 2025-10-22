@@ -119,6 +119,9 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
         }
       }
     }
+    viewModel.isInProgress.observe(viewLifecycleOwner) {
+      binding.linearProgressIndicator.visibility = if (it == true) View.VISIBLE else View.INVISIBLE
+    }
   }
 
   override fun getTitle(): String = getString(R.string.reminders_archive)

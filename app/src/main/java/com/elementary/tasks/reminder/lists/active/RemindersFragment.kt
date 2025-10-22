@@ -160,6 +160,9 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
     viewModel.canSearch.observe(viewLifecycleOwner) { canSearch ->
       binding.reminderSearchBar.visibleGone(canSearch == true)
     }
+    viewModel.isInProgress.observe(viewLifecycleOwner) {
+      binding.linearProgressIndicator.visibility = if (it == true) View.VISIBLE else View.INVISIBLE
+    }
   }
 
   private fun updateFilterMenuIcon(canFilter: Boolean) {
