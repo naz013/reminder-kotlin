@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -40,6 +41,38 @@ fun PrimaryIconButton(
     content = {
       Icon(
         imageVector = icon,
+        contentDescription = contentDescription
+      )
+    }
+  )
+}
+
+@Composable
+fun PrimaryIconButton(
+  modifier: Modifier = Modifier,
+  icon: Painter,
+  contentDescription: String? = null,
+  color: Color = MaterialTheme.colorScheme.primaryContainer,
+  iconColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+  disabledColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+  disabledIconColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+  enabled: Boolean = true,
+  onClick: () -> Unit,
+) {
+  IconButton(
+    modifier = modifier,
+    onClick = onClick,
+    enabled = enabled,
+    colors = IconButtonDefaults.outlinedIconButtonColors(
+      containerColor = color,
+      contentColor = iconColor,
+      disabledContainerColor = disabledColor,
+      disabledContentColor = disabledIconColor
+    ),
+    shape = IconButtonDefaults.outlinedShape,
+    content = {
+      Icon(
+        painter = icon,
         contentDescription = contentDescription
       )
     }

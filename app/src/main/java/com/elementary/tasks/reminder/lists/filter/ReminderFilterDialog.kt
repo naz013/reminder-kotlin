@@ -9,15 +9,12 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -34,8 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.feature.common.android.readParcelable
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.ComposeBottomSheetDialogFragment
 import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
@@ -80,6 +80,23 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
     if (savedInstanceState == null) {
       viewModel.setFilterGroups(filterGroups)
     }
+
+    setupBottomSheet()
+  }
+
+  private fun setupBottomSheet() {
+    // Open the bottom sheet expanded having half screen height
+    dialog?.let { dlg ->
+      dlg.setOnShowListener { dialogInterface ->
+        val bottomSheetDialog = dialogInterface as BottomSheetDialog
+        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let { sheet ->
+          val behavior = BottomSheetBehavior.from(sheet)
+          behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+          behavior.peekHeight = resources.displayMetrics.heightPixels / 2
+        }
+      }
+    }
   }
 
   companion object {
@@ -118,7 +135,7 @@ fun FilterDialogContent(
 ) {
   Column(
     modifier = Modifier
-      .fillMaxWidth()
+      .fillMaxSize()
       .padding(16.dp)
   ) {
     // Header with action buttons
@@ -128,8 +145,8 @@ fun FilterDialogContent(
       verticalAlignment = Alignment.CenterVertically
     ) {
       PrimaryIconButton(
-        icon = Icons.Filled.Close,
-        contentDescription = stringResource(android.R.string.cancel),
+        icon = AppIcons.Clear,
+        contentDescription = stringResource(R.string.cancel),
         onClick = onDismiss,
         color = MaterialTheme.colorScheme.errorContainer,
         iconColor = MaterialTheme.colorScheme.onErrorContainer
@@ -145,7 +162,7 @@ fun FilterDialogContent(
       )
       Spacer(modifier = Modifier.width(8.dp))
       PrimaryIconButton(
-        icon = Icons.Filled.Check,
+        icon = AppIcons.Ok,
         contentDescription = stringResource(R.string.filters_apply),
         onClick = onApply,
         color = MaterialTheme.colorScheme.primaryContainer,

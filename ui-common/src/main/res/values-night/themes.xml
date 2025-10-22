@@ -104,5 +104,7 @@
         <item name="selectableBackgroundMedium">@drawable/ripple_rounded_corners_medium</item>
         <item name="selectableBackgroundLarge">@drawable/ripple_rounded_corners_large</item>
         <item name="selectableBackgroundExtraLarge">@drawable/ripple_rounded_corners_extra_large</item>
+
+        <item name="bottomSheetDialogTheme">@style/FullWidthBottomSheetDialog</item>
     </style>
 </resources>
