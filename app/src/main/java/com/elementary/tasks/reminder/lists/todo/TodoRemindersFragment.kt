@@ -91,14 +91,6 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
-    addMenu(R.menu.fragment_reminders_todo, { menuItem ->
-      when (menuItem.itemId) {
-        R.id.action_filter -> {
-          viewModel.showFilters()
-        }
-      }
-      true
-    })
 
     binding.fab.setOnClickListener {
       val deepLinkData = ReminderTodoTypeDeepLinkData
@@ -126,6 +118,18 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
 
     initList()
     initViewModel()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    addMenu(R.menu.fragment_reminders_todo, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_filter -> {
+          viewModel.showFilters()
+        }
+      }
+      true
+    })
   }
 
   private fun showFilters(filters: List<FilterGroup>) {

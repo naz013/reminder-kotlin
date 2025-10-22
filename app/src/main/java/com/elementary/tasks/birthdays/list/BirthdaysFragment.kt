@@ -76,6 +76,11 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
     analyticsEventSender.send(ScreenUsedEvent(Screen.BIRTHDAYS))
   }
 
+  override fun onResume() {
+    super.onResume()
+    removeMenu()
+  }
+
   private fun addNew() {
     navigate { navigate(R.id.editBirthdayFragment) }
   }
