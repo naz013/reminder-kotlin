@@ -122,4 +122,11 @@
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
+    <style name="FullWidthBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="android:maxWidth">1200dp</item>
+    </style>
+
+    <style name="FullWidthBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/FullWidthBottomSheet</item>
+    </style>
 </resources>
