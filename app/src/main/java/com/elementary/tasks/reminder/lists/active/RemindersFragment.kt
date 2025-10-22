@@ -90,6 +90,28 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
+    binding.fab.setOnClickListener {
+      navigate {
+        navigate(R.id.buildReminderFragment)
+      }
+    }
+
+    analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
+    binding.reminderSearchBar.doAfterTextChanged {
+      viewModel.onSearchUpdate(it?.toString().orEmpty())
+    }
+
+    initList()
+    initViewModel()
+
+    // Set up result listener for filter selection
+    setFragmentResultListener(ReminderFilterDialog.REQUEST_KEY) { _, result ->
+      viewModel.handleFilterResult(ReminderFilterDialog.getAppliedFiltersFromResult(result))
+    }
+  }
+
+  override fun onResume() {
+    super.onResume()
     addMenu(R.menu.fragment_reminders, { menuItem ->
       when (menuItem.itemId) {
         R.id.action_map -> {
@@ -115,25 +137,6 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
       }
       true
     })
-
-    binding.fab.setOnClickListener {
-      navigate {
-        navigate(R.id.buildReminderFragment)
-      }
-    }
-
-    analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
-    binding.reminderSearchBar.doAfterTextChanged {
-      viewModel.onSearchUpdate(it?.toString().orEmpty())
-    }
-
-    initList()
-    initViewModel()
-
-    // Set up result listener for filter selection
-    setFragmentResultListener(ReminderFilterDialog.REQUEST_KEY) { _, result ->
-      viewModel.handleFilterResult(ReminderFilterDialog.getAppliedFiltersFromResult(result))
-    }
   }
 
   private fun showFilters(filters: List<FilterGroup>) {

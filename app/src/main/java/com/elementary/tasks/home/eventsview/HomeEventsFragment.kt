@@ -7,6 +7,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.databinding.FragmentHomeEventsBinding
@@ -18,12 +21,14 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.view.applyTopInsets
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), FragmentMenuController {
 
   private val viewModel by viewModel<HomeEventsViewModel>()
   private var menuModifier: ((Menu) -> Unit)? = null
+  private lateinit var viewPagerAdapter: TabsPagerAdapter
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -37,6 +42,21 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
     super.onViewCreated(view, savedInstanceState)
     Logger.i(TAG, "On view created")
     binding.appBar.applyTopInsets()
+
+    viewPagerAdapter = TabsPagerAdapter(
+      this,
+      listOf(
+        RemindersFragment(),
+        TodoRemindersFragment(),
+        BirthdaysFragment()
+      )
+    )
+
+    binding.fragmentPager.apply {
+      adapter = viewPagerAdapter
+      isUserInputEnabled = false
+    }
+
     binding.tabLayout.addOnTabSelectedListener(
       object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -53,25 +73,21 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
       }
     )
 
-    viewModel.selectedTab.observe(viewLifecycleOwner) { onTabChanged(it) }
+    initViewModel()
+  }
+
+  private fun initViewModel() {
     lifecycle.addObserver(viewModel)
+    lifecycleScope.launch {
+      viewModel.selectedTab.collect { onTabChanged(it) }
+    }
   }
 
   private fun onTabChanged(selectedTab: HomeEventsViewModel.SelectedTab?) {
     selectedTab ?: return
     Logger.i(TAG, "On tab changed: $selectedTab")
     binding.tabLayout.getTabAt(getTabPosition(selectedTab))?.select()
-    when (selectedTab) {
-      HomeEventsViewModel.SelectedTab.Reminders -> {
-        addFragment(RemindersFragment())
-      }
-      HomeEventsViewModel.SelectedTab.Todo -> {
-        addFragment(TodoRemindersFragment())
-      }
-      HomeEventsViewModel.SelectedTab.Birthdays -> {
-        addFragment(BirthdaysFragment())
-      }
-    }
+    binding.fragmentPager.setCurrentItem(getTabPosition(selectedTab), false)
   }
 
   override fun onAttach(context: Context) {
@@ -87,18 +103,6 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
   override fun onPause() {
     super.onPause()
     Logger.d(TAG, "On pause")
-  }
-
-  private fun addFragment(fragment: BaseSubEventsFragment<*>) {
-    if (childFragmentManager.isStateSaved) {
-      childFragmentManager.beginTransaction()
-        .replace(R.id.fragment_container, fragment)
-        .commitAllowingStateLoss()
-    } else {
-      childFragmentManager.beginTransaction()
-        .replace(R.id.fragment_container, fragment)
-        .commit()
-    }
   }
 
   private fun getSelectedTab(tab: TabLayout.Tab): HomeEventsViewModel.SelectedTab {
@@ -145,6 +149,17 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
   ) {
     val menuItem = binding.toolbar.menu.findItem(itemId) ?: return
     modifier(menuItem)
+  }
+
+  private class TabsPagerAdapter(
+    fragment: Fragment,
+    private val tabFragments: List<Fragment>
+  ) : FragmentStateAdapter(fragment) {
+    override fun getItemCount(): Int = tabFragments.size
+
+    override fun createFragment(position: Int): Fragment {
+      return tabFragments[position]
+    }
   }
 
   companion object {

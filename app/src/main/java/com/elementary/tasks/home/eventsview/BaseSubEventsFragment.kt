@@ -51,4 +51,8 @@ abstract class BaseSubEventsFragment<B : ViewBinding> : BindingFragment<B>() {
   ) {
     fragmentMenuController?.addMenu(menuRes, onMenuItemListener, menuModifier)
   }
+
+  protected fun removeMenu() {
+    fragmentMenuController?.removeMenu()
+  }
 }
