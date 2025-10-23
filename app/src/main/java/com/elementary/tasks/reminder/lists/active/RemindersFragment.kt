@@ -16,7 +16,7 @@ import com.elementary.tasks.home.eventsview.HomeEventsFragmentDirections
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
-import com.elementary.tasks.reminder.lists.filter.FilterGroup
+import com.elementary.tasks.reminder.lists.filter.Filters
 import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialog
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -139,9 +139,10 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
     })
   }
 
-  private fun showFilters(filters: List<FilterGroup>) {
+  private fun showFilters(filters: Filters) {
+    Logger.i(TAG, "Showing filters: ${filters.filterGroups.size}")
     val dialog = ReminderFilterDialog.newInstance(
-      filterGroups = filters,
+      filters = filters,
       title = getString(R.string.filter_reminders)
     )
     dialog.show(parentFragmentManager, "ReminderFilterDialog")

@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.lists.filter
 
-import android.os.Build
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.layout.Arrangement
@@ -19,24 +19,31 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.feature.common.android.readParcelable
+import com.github.naz013.feature.common.livedata.observeEvent
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.ComposeBottomSheetDialogFragment
 import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 
 class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
 
@@ -54,34 +61,43 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
       onFilterToggle = { groupId, filterId ->
         viewModel.toggleFilter(groupId, filterId)
       },
-      onClearAll = { viewModel.clearAllFilters() },
-      onApply = {
-        val result = Bundle().apply {
-          val selectedFilters = viewModel.getSelectedFiltersMap()
-          val appliedFilters = AppliedFilters(selectedFilters)
-          putParcelable(APPLIED_FILTERS_KEY, appliedFilters)
-        }
-        parentFragmentManager.setFragmentResult(REQUEST_KEY, result)
-        dismiss()
+      onDateRangeChanged = { groupId, startDate, endDate ->
+        viewModel.dateRangeChanged(groupId, startDate, endDate)
       },
+      onClearAll = { viewModel.clearAllFilters() },
+      onApply = { viewModel.onApplyFilters() },
       onDismiss = { dismiss() }
     )
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    val filterGroups = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      arguments?.getParcelableArrayList(ARG_FILTER_GROUPS, FilterGroup::class.java)?.toList()
-    } else {
-      @Suppress("DEPRECATION")
-      arguments?.getParcelableArrayList<FilterGroup>(ARG_FILTER_GROUPS)?.toList()
-    } ?: emptyList()
+    Logger.i(TAG, "On view created.")
 
-    if (savedInstanceState == null) {
-      viewModel.setFilterGroups(filterGroups)
+    val filters = arguments?.readParcelable(ARG_FILTERS, Filters::class.java)
+
+    if (savedInstanceState == null && filters != null) {
+      viewModel.setFilters(filters)
     }
 
+    initViewModel()
+  }
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    Logger.i(TAG, "On attach.")
     setupBottomSheet()
+  }
+
+  private fun initViewModel() {
+    viewModel.applyFilters.observeEvent(viewLifecycleOwner) { appliedFilters ->
+      Logger.i(TAG, "Filters applied: ${appliedFilters.selectedFilters.size}")
+      val result = Bundle().apply {
+        putParcelable(APPLIED_FILTERS_KEY, appliedFilters)
+      }
+      parentFragmentManager.setFragmentResult(REQUEST_KEY, result)
+      dismiss()
+    }
   }
 
   private fun setupBottomSheet() {
@@ -100,7 +116,8 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
   }
 
   companion object {
-    private const val ARG_FILTER_GROUPS = "filter_groups"
+    private const val TAG = "ReminderFilterDialog"
+    private const val ARG_FILTERS = "filters"
     private const val ARG_TITLE = "dialog_title"
     const val REQUEST_KEY = "filter_dialog_request"
     private const val APPLIED_FILTERS_KEY = "applied_filters"
@@ -110,12 +127,12 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
     }
 
     fun newInstance(
-      filterGroups: List<FilterGroup>,
+      filters: Filters,
       title: String
     ): ReminderFilterDialog {
       return ReminderFilterDialog().apply {
         arguments = Bundle().apply {
-          putParcelableArrayList(ARG_FILTER_GROUPS, ArrayList(filterGroups))
+          putParcelable(ARG_FILTERS, filters)
           putString(ARG_TITLE, title)
         }
       }
@@ -127,8 +144,9 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
 @Composable
 fun FilterDialogContent(
   title: String,
-  filterGroups: List<FilterGroup>,
+  filterGroups: List<UiFilterGroup>,
   onFilterToggle: (groupId: String, filterId: String) -> Unit,
+  onDateRangeChanged: (groupId: String, startDate: LocalDate?, endDate: LocalDate?) -> Unit,
   onClearAll: () -> Unit,
   onApply: () -> Unit,
   onDismiss: () -> Unit
@@ -185,6 +203,9 @@ fun FilterDialogContent(
           group = group,
           onFilterToggle = { filterId ->
             onFilterToggle(group.id, filterId)
+          },
+          onDateRangeChanged = { startDate, endDate ->
+            onDateRangeChanged(group.id, startDate, endDate)
           }
         )
       }
@@ -195,8 +216,9 @@ fun FilterDialogContent(
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FilterGroupSection(
-  group: FilterGroup,
-  onFilterToggle: (String) -> Unit
+  group: UiFilterGroup,
+  onFilterToggle: (String) -> Unit,
+  onDateRangeChanged: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
 ) {
   Column(
     modifier = Modifier
@@ -209,156 +231,106 @@ fun FilterGroupSection(
       color = MaterialTheme.colorScheme.onSurface,
       modifier = Modifier.padding(bottom = 8.dp)
     )
-    FlowRow(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      group.filters.forEach { filter ->
-        FilterChip(
-          selected = filter.isSelected,
-          onClick = { onFilterToggle(filter.id) },
-          label = {
-            Text(
-              text = filter.label,
-              style = MaterialTheme.typography.labelLarge
+
+    when (val filter = group.filter) {
+      is UiReminderGroupFilter -> {
+        FlowRow(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          filter.chips.forEach { chip ->
+            FilterChip(
+              selected = chip.isSelected,
+              onClick = { onFilterToggle(chip.id) },
+              label = {
+                Text(
+                  text = chip.label,
+                  style = MaterialTheme.typography.labelLarge
+                )
+              }
             )
           }
+        }
+      }
+      is UiDateRangeFilter -> {
+        DateRangeFilterSection(
+          filter = filter,
+          onDateRangeChanged = onDateRangeChanged
         )
       }
     }
   }
 }
 
-// Preview functions
-@Preview(showBackground = true, name = "Filter Dialog - Empty")
 @Composable
-private fun FilterDialogContentPreview_Empty() {
-  MaterialTheme {
-    FilterDialogContent(
-      title = "Empty Filters",
-      filterGroups = emptyList(),
-      onFilterToggle = { _, _ -> },
-      onClearAll = { },
-      onApply = { },
-      onDismiss = { }
+fun DateRangeFilterSection(
+  filter: UiDateRangeFilter,
+  onDateRangeChanged: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
+) {
+  val dateFormatter = remember { DateTimeFormatter.ofPattern("yyyy-MM-dd") }
+
+  // Convert LocalDate to days since minDate for slider
+  val minDays = 0f
+  val maxDays = remember(filter.minDate, filter.maxDate) {
+    filter.minDate.until(filter.maxDate).days.toFloat()
+  }
+
+  val initialStartDays = remember(filter.startDate, filter.minDate) {
+    filter.startDate?.let { filter.minDate.until(it).days.toFloat() } ?: minDays
+  }
+
+  val initialEndDays = remember(filter.endDate, filter.minDate) {
+    filter.endDate?.let { filter.minDate.until(it).days.toFloat() } ?: maxDays
+  }
+
+  var sliderRange by remember(initialStartDays, initialEndDays) {
+    mutableStateOf(initialStartDays..initialEndDays)
+  }
+
+  Column(
+    modifier = Modifier.fillMaxWidth(),
+    verticalArrangement = Arrangement.spacedBy(8.dp)
+  ) {
+    // Display selected range
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+      Text(
+        text = filter.minDate.plusDays(sliderRange.start.toLong()).format(dateFormatter),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurface
+      )
+      Text(
+        text = filter.minDate.plusDays(sliderRange.endInclusive.toLong()).format(dateFormatter),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurface
+      )
+    }
+
+    // Range Slider
+    RangeSlider(
+      value = sliderRange,
+      onValueChange = { newRange ->
+        sliderRange = newRange
+      },
+      onValueChangeFinished = {
+        val startDate = if (sliderRange.start >= minDays) {
+          filter.minDate.plusDays(sliderRange.start.toLong())
+        } else {
+          null
+        }
+        val endDate = if (sliderRange.endInclusive <= maxDays) {
+          filter.minDate.plusDays(sliderRange.endInclusive.toLong())
+        } else {
+          null
+        }
+        onDateRangeChanged(startDate, endDate)
+      },
+      valueRange = minDays..maxDays,
+      modifier = Modifier.fillMaxWidth()
     )
   }
 }
 
-@Preview(showBackground = true, name = "Filter Dialog - Long title")
-@Composable
-private fun FilterDialogContentPreview_LongTitle() {
-  MaterialTheme {
-    FilterDialogContent(
-      title = "Very Long Filter Dialog Title to Test Text Wrapping",
-      filterGroups = emptyList(),
-      onFilterToggle = { _, _ -> },
-      onClearAll = { },
-      onApply = { },
-      onDismiss = { }
-    )
-  }
-}
-
-@Preview(showBackground = true, name = "Filter Dialog - With Data")
-@Composable
-private fun FilterDialogContentPreview_WithData() {
-  MaterialTheme {
-    FilterDialogContent(
-      title = "Filter Reminders",
-      filterGroups = listOf(
-        FilterGroup(
-          id = "status",
-          title = "Status",
-          filters = listOf(
-            Filter(id = "active", label = "Active", isSelected = true),
-            Filter(id = "completed", label = "Completed", isSelected = false),
-            Filter(id = "snoozed", label = "Snoozed", isSelected = true),
-            Filter(id = "paused", label = "Paused", isSelected = false)
-          )
-        ),
-        FilterGroup(
-          id = "priority",
-          title = "Priority",
-          filters = listOf(
-            Filter(id = "high", label = "High", isSelected = false),
-            Filter(id = "medium", label = "Medium", isSelected = true),
-            Filter(id = "low", label = "Low", isSelected = false)
-          )
-        ),
-        FilterGroup(
-          id = "type",
-          title = "Reminder Type",
-          filters = listOf(
-            Filter(id = "by_date", label = "By Date", isSelected = false),
-            Filter(id = "by_time", label = "By Time", isSelected = false),
-            Filter(id = "recurring", label = "Recurring", isSelected = false),
-            Filter(id = "location", label = "Location-based", isSelected = false),
-            Filter(id = "timer", label = "Timer", isSelected = false),
-            Filter(id = "weekday", label = "Weekday", isSelected = false)
-          )
-        )
-      ),
-      onFilterToggle = { _, _ -> },
-      onClearAll = { },
-      onApply = { },
-      onDismiss = { }
-    )
-  }
-}
-
-@Preview(showBackground = true, name = "Filter Dialog - All Selected")
-@Composable
-private fun FilterDialogContentPreview_AllSelected() {
-  MaterialTheme {
-    FilterDialogContent(
-      title = "All Filters Selected",
-      filterGroups = listOf(
-        FilterGroup(
-          id = "status",
-          title = "Status",
-          filters = listOf(
-            Filter(id = "active", label = "Active", isSelected = true),
-            Filter(id = "completed", label = "Completed", isSelected = true),
-            Filter(id = "snoozed", label = "Snoozed", isSelected = true)
-          )
-        ),
-        FilterGroup(
-          id = "priority",
-          title = "Priority",
-          filters = listOf(
-            Filter(id = "high", label = "High", isSelected = true),
-            Filter(id = "medium", label = "Medium", isSelected = true),
-            Filter(id = "low", label = "Low", isSelected = true)
-          )
-        )
-      ),
-      onFilterToggle = { _, _ -> },
-      onClearAll = { },
-      onApply = { },
-      onDismiss = { }
-    )
-  }
-}
-
-@Preview(showBackground = true, name = "Filter Group Section")
-@Composable
-private fun FilterGroupSectionPreview() {
-  MaterialTheme {
-    FilterGroupSection(
-      group = FilterGroup(
-        id = "type",
-        title = "Reminder Type",
-        filters = listOf(
-          Filter(id = "by_date", label = "By Date", isSelected = true),
-          Filter(id = "by_time", label = "By Time", isSelected = false),
-          Filter(id = "recurring", label = "Recurring", isSelected = true),
-          Filter(id = "location", label = "Location-based", isSelected = false),
-          Filter(id = "timer", label = "Timer", isSelected = false)
-        )
-      ),
-      onFilterToggle = { }
-    )
-  }
-}

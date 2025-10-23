@@ -867,4 +867,5 @@
     <string name="filters_apply">Apply filters</string>
     <string name="filters_reset">Reset filters</string>
     <string name="filter_reminders">Filter reminders</string>
+    <string name="date_range">Date range</string>
 </resources>
