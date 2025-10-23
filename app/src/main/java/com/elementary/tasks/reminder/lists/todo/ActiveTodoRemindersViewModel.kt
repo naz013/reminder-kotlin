@@ -7,14 +7,16 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.AppliedFilters
-import com.elementary.tasks.reminder.lists.filter.Filter
 import com.elementary.tasks.reminder.lists.filter.FilterGroup
-import com.elementary.tasks.reminder.lists.filter.group.ReminderGroupFilter
-import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilter
+import com.elementary.tasks.reminder.lists.filter.Filters
+import com.elementary.tasks.reminder.lists.filter.ReminderGroupAppliedFilter
+import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
+import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilterGroup
+import com.elementary.tasks.reminder.lists.filter.group.ReminderGroupFilterInstance
+import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.IntentKeys
@@ -47,7 +49,7 @@ class ActiveTodoRemindersViewModel(
   private val _events = mutableLiveDataOf<List<UiReminderEventsList>>()
   val events = _events.toLiveData()
 
-  private val _showFilters = mutableLiveEventOf<List<FilterGroup>>()
+  private val _showFilters = mutableLiveEventOf<Filters>()
   val showFilters = _showFilters.toLiveData()
 
   private val _canFilter = mutableLiveDataOf<Boolean>()
@@ -56,7 +58,7 @@ class ActiveTodoRemindersViewModel(
   private val _canSearch = mutableLiveDataOf<Boolean>()
   val canSearch = _canSearch.toLiveData()
 
-  private var appliedFilters: AppliedFilters? = null
+  private var appliedFilters: AppliedFilters = AppliedFilters()
   private var lastQuery: String = ""
   private var allFilters = listOf<FilterGroup>()
   private var reminders = listOf<Reminder>()
@@ -84,22 +86,30 @@ class ActiveTodoRemindersViewModel(
       return
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      val currentSelected = appliedFilters?.selectedFilters ?: emptyMap()
+      val currentSelected = appliedFilters.selectedFilters
       val filters = allFilters.map { group ->
-        val updatedFilters = group.filters.map { filter ->
-          val isSelected = currentSelected[group.id]?.contains(filter.id) == true
-          Filter(filter.id, filter.label, isSelected)
+        val appliedFilter = currentSelected[group.id]
+        when (group) {
+          is ReminderGroupFilterGroup -> {
+            ReminderGroupFilterGroup(
+              id = group.id,
+              title = group.title,
+              appliedFilter = appliedFilter as? ReminderGroupAppliedFilter,
+              filters = group.filters
+            )
+          }
+
+          else -> group
         }
-        FilterGroup(group.id, group.title, updatedFilters)
       }
       withContext(dispatcherProvider.main()) {
-        _showFilters.value = Event(filters)
+        _showFilters.value = Event(Filters(filters))
       }
     }
   }
 
   fun handleFilterResult(appliedFilters: AppliedFilters?) {
-    this.appliedFilters = appliedFilters
+    this.appliedFilters = appliedFilters ?: AppliedFilters()
     Logger.i(TAG, "Applied filters: $appliedFilters")
     viewModelScope.launch(dispatcherProvider.main()) {
       filterReminders()
@@ -187,14 +197,15 @@ class ActiveTodoRemindersViewModel(
 
   private suspend fun prepareFilters() {
     val filterGroups = mutableListOf<FilterGroup>()
-    val groups = groupRepository.getAll()
-      .map { Filter(it.groupUuId, it.groupTitle, false) }
-    if (groups.isNotEmpty()) {
+    val groupFilters = groupRepository.getAll()
+      .map { ReminderGroupFilter(it.groupUuId, it.groupTitle) }
+    if (groupFilters.isNotEmpty()) {
       filterGroups.add(
-        FilterGroup(
-          GROUP_FILTER_ID,
-          textProvider.getString(R.string.groups),
-          groups
+        ReminderGroupFilterGroup(
+          id = GROUP_FILTER_ID,
+          title = textProvider.getString(R.string.groups),
+          appliedFilter = null,
+          filters = groupFilters,
         )
       )
     }
@@ -206,7 +217,11 @@ class ActiveTodoRemindersViewModel(
 
   private suspend fun filterReminders() {
     val filtered = filterByGroups(
-      filterByQuery(reminders, lastQuery), appliedFilters?.selectedFilters?.get(GROUP_FILTER_ID)
+      reminders = filterByQuery(
+        reminders = reminders,
+        query = lastQuery
+      ),
+      groupIds = (appliedFilters.selectedFilters[GROUP_FILTER_ID] as? ReminderGroupAppliedFilter)?.selectedFilterIds
     )
     val uiLists = uiReminderListsAdapter.convert(filtered)
     withContext(dispatcherProvider.main()) {
@@ -214,17 +229,25 @@ class ActiveTodoRemindersViewModel(
     }
   }
 
-  private fun filterByGroups(reminders: List<Reminder>, groupIds: List<String>?): List<Reminder> {
+  private fun filterByGroups(reminders: List<Reminder>, groupIds: Set<String>?): List<Reminder> {
     if (groupIds.isNullOrEmpty()) return reminders
-    return reminders.filter(ReminderGroupFilter(groupIds)).also {
-      Logger.i(TAG, "Filtered by groups: ${it.size} items left, was: ${reminders.size}. Groups: ${groupIds.joinToString()}")
+    return reminders.filter(ReminderGroupFilterInstance(groupIds)).also {
+      Logger.i(
+        TAG,
+        "Filtered by groups: ${it.size} items left, was: ${reminders.size}. Groups: ${groupIds.joinToString()}"
+      )
     }
   }
 
   private fun filterByQuery(reminders: List<Reminder>, query: String): List<Reminder> {
     if (query.isBlank()) return reminders
-    return reminders.filter(ReminderQueryFilter(lastQuery)).also {
-      Logger.i(TAG, "Filtered by query: ${it.size} items left, was: ${reminders.size}. Query: ${Logger.private(query)}")
+    return reminders.filter(ReminderQueryFilterInstance(lastQuery)).also {
+      Logger.i(
+        TAG,
+        "Filtered by query: ${it.size} items left, was: ${reminders.size}. Query: ${
+          Logger.private(query)
+        }"
+      )
     }
   }
 

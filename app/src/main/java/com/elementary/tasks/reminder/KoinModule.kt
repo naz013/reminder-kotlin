@@ -87,7 +87,7 @@ import org.koin.dsl.module
 
 val reminderModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
-  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
 
@@ -287,5 +287,5 @@ val reminderModule = module {
   factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
   factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  viewModel { ReminderFilterDialogViewModel() }
+  viewModel { ReminderFilterDialogViewModel(get()) }
 }
