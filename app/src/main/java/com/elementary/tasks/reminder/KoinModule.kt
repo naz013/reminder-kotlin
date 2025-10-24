@@ -89,7 +89,7 @@ val reminderModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get()) }
+  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { ManagePresetsViewModel(get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
