@@ -864,4 +864,11 @@
     <string name="voice_found">Знайдено</string>
 
     <string name="repeat_once">Один раз</string>
+
+    <string name="filter">Фільтр</string>
+    <string name="filter_empty_name">Порожня назва</string>
+    <string name="filters_apply">Застосувати фільтри</string>
+    <string name="filters_reset">Скинути фільтри</string>
+    <string name="filter_reminders">Фільтрувати нагадування</string>
+    <string name="date_range">Діапазон дат</string>
 </resources>

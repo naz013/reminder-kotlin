@@ -863,4 +863,11 @@
     <string name="voice_no_birthdays_found">생일을 찾을 수 없음</string>
     <string name="voice_found">찾음</string>
     <string name="repeat_once">한 번</string>
+
+    <string name="filter">필터</string>
+    <string name="filter_empty_name">빈 이름</string>
+    <string name="filters_apply">필터 적용</string>
+    <string name="filters_reset">필터 재설정</string>
+    <string name="filter_reminders">알림을 필터링</string>
+    <string name="date_range">날짜 범위</string>
 </resources>

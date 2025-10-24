@@ -863,4 +863,11 @@
     <string name="voice_no_birthdays_found">Aucun anniversaire trouvé</string>
     <string name="voice_found">Trouvé</string>
     <string name="repeat_once">Une fois</string>
+
+    <string name="filter">Filtre</string>
+    <string name="filter_empty_name">Nom vide</string>
+    <string name="filters_apply">Appliquer les filtres</string>
+    <string name="filters_reset">Réinitialiser les filtres</string>
+    <string name="filter_reminders">Filtrer les rappels</string>
+    <string name="date_range">Plage de dates</string>
 </resources>
