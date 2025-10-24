@@ -161,6 +161,7 @@ class BuildReminderViewModel(
 
   override fun onDestroy(owner: LifecycleOwner) {
     super.onDestroy(owner)
+    Logger.i(TAG, "Destroying view model")
     if (isPaused && !isSaving) {
       original?.let { resumeReminder(it) }
     }
@@ -170,12 +171,14 @@ class BuildReminderViewModel(
 
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
+    Logger.i(TAG, "Creating view model")
     reminderAnalyticsTracker.startTracking()
     handleDeepLink(arguments)
   }
 
   override fun onCleared() {
     super.onCleared()
+    Logger.i(TAG, "View model cleared")
     selectorDialogDataHolder.selectorBuilderItems = emptyList()
   }
 
@@ -291,6 +294,8 @@ class BuildReminderViewModel(
   fun onPresetSelected(presetList: UiPresetList) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val preset = recurPresetRepository.getById(presetList.id) ?: return@launch
+
+      Logger.i(TAG, "On preset selected: ${preset.name}, type = ${preset.type}")
 
       if (preset.type == PresetType.BUILDER) {
         useBuilderPreset(preset)
@@ -483,6 +488,9 @@ class BuildReminderViewModel(
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
+
+      Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
+
       editReminder(reminder)
       pauseReminder(reminder)
     }
@@ -499,7 +507,8 @@ class BuildReminderViewModel(
     }
 
     val builderItems = reminderToBiDecomposer(reminder)
-    Logger.d(TAG, "editReminder: builderItems=$builderItems")
+
+    Logger.d(TAG, "Edit reminder with builder items: $builderItems")
 
     if (builderItems.isNotEmpty()) {
       builderItemsLogic.setAll(builderItems)
@@ -545,9 +554,7 @@ class BuildReminderViewModel(
 
       summaryBuilderItem?.also { builderItemsLogic.addNew(it) }
 
-      val usedItemsMap = builderItemsLogic.getUsed().map {
-        it.biType to it
-      }.toMap()
+      val usedItemsMap = builderItemsLogic.getUsed().associateBy { it.biType }
 
       if (preset.isDefault) {
         Logger.d(TAG, "Trying to add runtime params to builder: ${preset.recurItemsToAdd}")
@@ -637,6 +644,8 @@ class BuildReminderViewModel(
     val usedItems = builderItemsLogic.getUsed().let {
       uiBuilderItemsAdapter.calculateStates(it)
     }
+
+    Logger.d(TAG, "Update selector: usedItems=${usedItems.size}")
     _builderItems.postValue(usedItems)
 
     val errors = usedItems.asSequence().filter { it.state is UiListBuilderItemState.ErrorState }
@@ -646,12 +655,14 @@ class BuildReminderViewModel(
       .flatten()
       .toSet()
 
-    Logger.d(TAG, "updateSelector: errors=${errors.toList()}")
+    Logger.d(TAG, "Update selector: errors=$errors")
 
     val uiSelectorItems = uiSelectorItemsAdapter.calculateStates(
       builderItemsLogic.getUsed(),
       builderItemsLogic.getAvailable()
     )
+
+    Logger.d(TAG, "Update selector: uiSelectorItems=${uiSelectorItems.size}")
 
     updateBuilderState()
 
@@ -662,9 +673,13 @@ class BuildReminderViewModel(
 
   private fun initBuilder() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val allTypes = BiType.entries.map { biFactory.create(it) }
+      val allTypes = BiType.entries
+        .map { biFactory.create(it) }
         .filter { biFilter(it) }
         .sortedWith(BiComparator())
+
+      Logger.i(TAG, "Init builder with available types: ${allTypes.size}")
+
       builderItemsLogic.setAllAvailable(allTypes)
       updateSelector()
     }
@@ -672,17 +687,19 @@ class BuildReminderViewModel(
 
   private suspend fun updateBuilderState() {
     val builderItems = builderItemsLogic.getUsed().toMutableList()
-    Logger.d(TAG, "updateBuilderState: builderItems=$builderItems")
+    Logger.d(TAG, "Update builder state: builderItems=${builderItems.size}")
 
     val allValid = builderItems.all { it.modifier.isCorrect() }
-    Logger.d(TAG, "updateBuilderState: allValid=$allValid")
+    Logger.i(TAG, "Are all builder items valid = $allValid")
 
     if (!allValid) {
+      Logger.e(TAG, "Not all builder items are valid, skip updating builder state")
       return
     }
 
     val permissionResult = permissionValidator(builderItems)
     if (permissionResult is PermissionValidator.Result.Failure) {
+      Logger.i(TAG, "Not all permissions granted. Skip updating builder state")
       return
     }
 

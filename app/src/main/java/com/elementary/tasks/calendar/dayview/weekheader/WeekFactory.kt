@@ -1,5 +1,6 @@
 package com.elementary.tasks.calendar.dayview.weekheader
 
+import com.elementary.tasks.calendar.data.CalendarDataEngine
 import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -7,7 +8,8 @@ import org.threeten.bp.LocalDate
 
 class WeekFactory(
   private val prefs: Prefs,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val calendarDataEngine: CalendarDataEngine,
 ) {
 
   fun createWeek(date: LocalDate): List<WeekDay> {
@@ -21,6 +23,11 @@ class WeekFactory(
       date
     }
 
+    val reminderMode = calendarDataEngine.getReminderMode(
+      includeReminders = prefs.isRemindersInCalendarEnabled,
+      calculateFuture = prefs.isFutureEventEnabled
+    )
+
     return (0..6).toList().map {
       dt.plusDays(it.toLong())
     }.map {
@@ -28,7 +35,8 @@ class WeekFactory(
         localDate = it,
         weekday = dateTimeManager.formatCalendarWeekday(it),
         date = dateTimeManager.formatCalendarDay(it),
-        isSelected = it == date
+        isSelected = it == date,
+        hasEvents = calendarDataEngine.hasAnyByDate(date = it, reminderMode = reminderMode)
       )
     }
   }

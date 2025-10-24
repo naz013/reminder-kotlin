@@ -863,4 +863,11 @@
     <string name="voice_no_birthdays_found">कोई जन्मदिन नहीं मिला</string>
 
     <string name="repeat_once">एक बार</string>
+
+    <string name="filter">फ़िल्टर</string>
+    <string name="filter_empty_name">खाली नाम</string>
+    <string name="filters_apply">फ़िल्टर लागू करें</string>
+    <string name="filters_reset">फ़िल्टर रीसेट करें</string>
+    <string name="filter_reminders">रिमाइंडर फ़िल्टर करें</string>
+    <string name="date_range">तिथि सीमा</string>
 </resources>

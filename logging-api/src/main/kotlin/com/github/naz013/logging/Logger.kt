@@ -88,6 +88,18 @@ object Logger {
     }
   }
 
+  fun private(value: String?): String {
+    return if (value == null) {
+      "Null"
+    } else {
+      if (isDebug) {
+        value
+      } else {
+        "*****"
+      }
+    }
+  }
+
   fun data(value: String?): String {
     return if (value == null) {
       "Null"

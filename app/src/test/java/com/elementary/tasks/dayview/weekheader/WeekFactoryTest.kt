@@ -1,5 +1,6 @@
 package com.elementary.tasks.dayview.weekheader
 
+import com.elementary.tasks.calendar.data.CalendarDataEngine
 import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
 import com.elementary.tasks.core.utils.params.Prefs
@@ -19,11 +20,14 @@ class WeekFactoryTest {
   private lateinit var dateTimePreferences: DateTimePreferences
   private lateinit var dateTimeManager: DateTimeManager
   private lateinit var weekFactory: WeekFactory
+  private lateinit var calendarDataEngine: CalendarDataEngine
 
   @Before
   fun setUp() {
     prefs = mockk()
     every { prefs.appLanguage } returns 1
+    every { prefs.isRemindersInCalendarEnabled } returns false
+    every { prefs.isFutureEventEnabled } returns false
 
     dateTimePreferences = mockk()
     every { dateTimePreferences.locale } returns Locale.US
@@ -32,7 +36,12 @@ class WeekFactoryTest {
       nowDateTimeProvider = mockk(),
       dateTimePreferences = dateTimePreferences
     )
-    weekFactory = WeekFactory(prefs, dateTimeManager)
+
+    calendarDataEngine = mockk()
+    every { calendarDataEngine.getReminderMode(any(), any()) } returns CalendarDataEngine.ReminderMode.DO_NOT_INCLUDE
+    every { calendarDataEngine.hasAnyByDate(any(), any()) } returns false
+
+    weekFactory = WeekFactory(prefs, dateTimeManager, calendarDataEngine)
   }
 
   @Test
@@ -45,13 +54,13 @@ class WeekFactoryTest {
     println(weekdays)
 
     val expected = listOf(
-      WeekDay(weekday = "Sun", date = "20", isSelected = true, localDate = localDate),
-      WeekDay(weekday = "Mon", date = "21", isSelected = false, localDate = localDate.plusDays(1)),
-      WeekDay(weekday = "Tue", date = "22", isSelected = false, localDate = localDate.plusDays(2)),
-      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = localDate.plusDays(3)),
-      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = localDate.plusDays(4)),
-      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = localDate.plusDays(5)),
-      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = localDate.plusDays(6))
+      WeekDay(weekday = "Sun", date = "20", isSelected = true, localDate = localDate, hasEvents = false),
+      WeekDay(weekday = "Mon", date = "21", isSelected = false, localDate = localDate.plusDays(1), hasEvents = false),
+      WeekDay(weekday = "Tue", date = "22", isSelected = false, localDate = localDate.plusDays(2), hasEvents = false),
+      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = localDate.plusDays(3), hasEvents = false),
+      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = localDate.plusDays(4), hasEvents = false),
+      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = localDate.plusDays(5), hasEvents = false),
+      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = localDate.plusDays(6), hasEvents = false)
     )
 
     Assert.assertEquals(expected, weekdays)
@@ -68,13 +77,13 @@ class WeekFactoryTest {
     println(weekdays)
 
     val expected = listOf(
-      WeekDay(weekday = "Sun", date = "20", isSelected = false, localDate = startDate),
-      WeekDay(weekday = "Mon", date = "21", isSelected = false, localDate = startDate.plusDays(1)),
-      WeekDay(weekday = "Tue", date = "22", isSelected = true, localDate = startDate.plusDays(2)),
-      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = startDate.plusDays(3)),
-      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = startDate.plusDays(4)),
-      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = startDate.plusDays(5)),
-      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = startDate.plusDays(6))
+      WeekDay(weekday = "Sun", date = "20", isSelected = false, localDate = startDate, hasEvents = false),
+      WeekDay(weekday = "Mon", date = "21", isSelected = false, localDate = startDate.plusDays(1), hasEvents = false),
+      WeekDay(weekday = "Tue", date = "22", isSelected = true, localDate = startDate.plusDays(2), hasEvents = false),
+      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = startDate.plusDays(3), hasEvents = false),
+      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = startDate.plusDays(4), hasEvents = false),
+      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = startDate.plusDays(5), hasEvents = false),
+      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = startDate.plusDays(6), hasEvents = false)
     )
 
     Assert.assertEquals(expected, weekdays)
@@ -90,13 +99,13 @@ class WeekFactoryTest {
     println(weekdays)
 
     val expected = listOf(
-      WeekDay(weekday = "Mon", date = "21", isSelected = true, localDate = localDate),
-      WeekDay(weekday = "Tue", date = "22", isSelected = false, localDate = localDate.plusDays(1)),
-      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = localDate.plusDays(2)),
-      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = localDate.plusDays(3)),
-      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = localDate.plusDays(4)),
-      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = localDate.plusDays(5)),
-      WeekDay(weekday = "Sun", date = "27", isSelected = false, localDate = localDate.plusDays(6))
+      WeekDay(weekday = "Mon", date = "21", isSelected = true, localDate = localDate, hasEvents = false),
+      WeekDay(weekday = "Tue", date = "22", isSelected = false, localDate = localDate.plusDays(1), hasEvents = false),
+      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = localDate.plusDays(2), hasEvents = false),
+      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = localDate.plusDays(3), hasEvents = false),
+      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = localDate.plusDays(4), hasEvents = false),
+      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = localDate.plusDays(5), hasEvents = false),
+      WeekDay(weekday = "Sun", date = "27", isSelected = false, localDate = localDate.plusDays(6), hasEvents = false)
     )
 
     Assert.assertEquals(expected, weekdays)
@@ -113,13 +122,13 @@ class WeekFactoryTest {
     println(weekdays)
 
     val expected = listOf(
-      WeekDay(weekday = "Mon", date = "21", isSelected = false, localDate = startDate),
-      WeekDay(weekday = "Tue", date = "22", isSelected = true, localDate = startDate.plusDays(1)),
-      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = startDate.plusDays(2)),
-      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = startDate.plusDays(3)),
-      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = startDate.plusDays(4)),
-      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = startDate.plusDays(5)),
-      WeekDay(weekday = "Sun", date = "27", isSelected = false, localDate = startDate.plusDays(6))
+      WeekDay(weekday = "Mon", date = "21", isSelected = false, localDate = startDate, hasEvents = false),
+      WeekDay(weekday = "Tue", date = "22", isSelected = true, localDate = startDate.plusDays(1), hasEvents = false),
+      WeekDay(weekday = "Wed", date = "23", isSelected = false, localDate = startDate.plusDays(2), hasEvents = false),
+      WeekDay(weekday = "Thu", date = "24", isSelected = false, localDate = startDate.plusDays(3), hasEvents = false),
+      WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = startDate.plusDays(4), hasEvents = false),
+      WeekDay(weekday = "Sat", date = "26", isSelected = false, localDate = startDate.plusDays(5), hasEvents = false),
+      WeekDay(weekday = "Sun", date = "27", isSelected = false, localDate = startDate.plusDays(6), hasEvents = false)
     )
 
     Assert.assertEquals(expected, weekdays)

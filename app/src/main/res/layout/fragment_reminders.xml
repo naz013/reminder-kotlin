@@ -11,6 +11,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/linear_progress_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:indeterminate="true"
+            android:visibility="invisible" />
+
+        <com.github.naz013.ui.common.view.MaterialSearchBar
+            android:id="@+id/reminder_search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/search" />
+
         <LinearLayout
             android:id="@+id/emptyItem"
             android:layout_width="match_parent"
@@ -45,12 +62,11 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/list_margin"
-            android:layout_marginEnd="@dimen/list_margin"
+            android:layout_marginTop="16dp"
             android:clipToPadding="false"
             android:paddingStart="16dp"
-            android:paddingTop="8dp"
             android:paddingEnd="16dp"
+            android:paddingBottom="72dp"
             android:visibility="visible"
             tools:itemCount="5"
             tools:listitem="@layout/list_item_reminder_new" />

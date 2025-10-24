@@ -9,11 +9,14 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.view.applyTopInsets
 import com.elementary.tasks.databinding.FragmentBaseToolbarBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.topfragment.FragmentMenuController
+import com.github.naz013.ui.common.view.applyTopInsets
 
-abstract class BaseToolbarFragment<B : ViewBinding> : BaseNavigationFragment<B>() {
+abstract class BaseToolbarFragment<B : ViewBinding> :
+  BaseNavigationFragment<B>(),
+  FragmentMenuController {
 
   private lateinit var containerBinding: FragmentBaseToolbarBinding
   private var menuModifier: ((Menu) -> Unit)? = null
@@ -49,16 +52,18 @@ abstract class BaseToolbarFragment<B : ViewBinding> : BaseNavigationFragment<B>(
     containerBinding.toolbar.title = title
   }
 
+  @Deprecated("Use updateMenuItem instead")
   protected fun invalidateOptionsMenu() {
     menuModifier?.invoke(containerBinding.toolbar.menu)
   }
 
-  protected fun addMenu(
+  override fun addMenu(
     menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)? = null
+    menuModifier: ((Menu) -> Unit)?
   ) {
     this.menuModifier = menuModifier
+    containerBinding.toolbar.menu.clear()
     if (menuRes != null) {
       containerBinding.toolbar.inflateMenu(menuRes)
     }
@@ -66,5 +71,18 @@ abstract class BaseToolbarFragment<B : ViewBinding> : BaseNavigationFragment<B>(
     containerBinding.toolbar.setOnMenuItemClickListener {
       return@setOnMenuItemClickListener onMenuItemListener(it)
     }
+  }
+
+  override fun removeMenu() {
+    containerBinding.toolbar.menu.clear()
+    menuModifier = null
+  }
+
+  override fun updateMenuItem(
+    itemId: Int,
+    modifier: MenuItem.() -> Unit
+  ) {
+    val menuItem = containerBinding.toolbar.menu.findItem(itemId) ?: return
+    modifier(menuItem)
   }
 }

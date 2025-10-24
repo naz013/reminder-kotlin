@@ -1,5 +1,6 @@
 package com.elementary.tasks.calendar.dayview.day
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
@@ -9,16 +10,18 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderListData
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 
 class DayViewModel(
+  private val date: LocalDate,
   dispatcherProvider: DispatcherProvider,
   private val dayLiveData: DayLiveData,
   private val workerLauncher: WorkerLauncher,
@@ -29,7 +32,9 @@ class DayViewModel(
 
   val events: LiveData<List<EventModel>> = dayLiveData
 
-  fun onDateSelected(date: LocalDate) {
+  override fun onResume(owner: LifecycleOwner) {
+    super.onResume(owner)
+    Logger.d(TAG, "On resume, restoring last selected date $date")
     dayLiveData.onDateChanged(date)
   }
 
@@ -81,5 +86,9 @@ class DayViewModel(
         postCommand(Commands.FAILED)
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "DayViewModel"
   }
 }

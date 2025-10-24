@@ -42,7 +42,7 @@ class CalendarDataEngine(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val ICalendarApi: ICalendarApi,
+  private val iCalendarApi: ICalendarApi,
   private val dispatcherProvider: DispatcherProvider,
   private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
   private val tableChangeListenerFactory: TableChangeListenerFactory,
@@ -163,7 +163,40 @@ class CalendarDataEngine(
       date = date.plusDays(1)
     }
 
+    Logger.d(
+      TAG,
+      "Get by date range: $dateStart - $dateEnd, found: ${resultList.size}, mode=$reminderMode"
+    )
+
     return resultList
+  }
+
+  fun hasAnyByDate(
+    date: LocalDate,
+    reminderMode: ReminderMode = ReminderMode.INCLUDE_FUTURE
+  ): Boolean {
+    if (state == EngineState.NONE || state == EngineState.INITIALIZING) {
+      return false
+    }
+    val birthdays = getNonNullList(dayBirthdayMap, date)
+    if (birthdays.isNotEmpty()) {
+      return true
+    }
+
+    val reminders: List<EventModel> = when (reminderMode) {
+      ReminderMode.DO_NOT_INCLUDE -> {
+        emptyList()
+      }
+
+      ReminderMode.INCLUDE -> {
+        getNonNullList(dayReminderMap, date)
+      }
+
+      ReminderMode.INCLUDE_FUTURE -> {
+        getNonNullList(dayReminderMap, date) + getNonNullList(dayFutureReminderMap, date)
+      }
+    }
+    return (birthdays + reminders).isNotEmpty()
   }
 
   private fun processData(
@@ -181,7 +214,9 @@ class CalendarDataEngine(
         async { mapBirthdays(birthdays) }
       )
       val duration = System.currentTimeMillis() - millis
-      Logger.d("processData: duration=$duration millis")
+
+      Logger.i(TAG, "Processed calendar data in $duration ms")
+
       state = EngineState.READY
       withContext(dispatcherProvider.main()) {
         calendarDataEngineBroadcast.sendEvent()
@@ -359,7 +394,7 @@ class CalendarDataEngine(
     dayFutureReminderMap: MutableMap<LocalDate, MutableList<ReminderEventModel>>
   ) {
     val dates = runCatching {
-      ICalendarApi.parseObject(reminder.recurDataObject)
+      iCalendarApi.parseObject(reminder.recurDataObject)
     }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
 
     val baseTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
@@ -616,5 +651,9 @@ class CalendarDataEngine(
     INITIALIZING,
     READY,
     REFRESH
+  }
+
+  companion object {
+    private const val TAG = "CalendarDataEngine"
   }
 }

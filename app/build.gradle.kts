@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 332
-    versionName = "9.8.0"
+    versionCode = 335
+    versionName = "9.9.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
@@ -291,6 +291,10 @@ dependencies {
 
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.material3)
+  implementation(libs.compose.material.iconsext)
+  implementation(libs.compose.runtime.livedata)
+  implementation(libs.compose.foundation.foundation)
+  implementation(libs.compose.ui.ui)
 
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling.preview)

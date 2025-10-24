@@ -5,30 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
+import com.elementary.tasks.reminder.lists.filter.Filters
+import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialog
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.fragment.dp2px
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
   private val viewModel by viewModel<ArchiveRemindersViewModel>()
-  private val systemServiceProvider by inject<SystemServiceProvider>()
 
   private val reminderResolver by lazy {
     ReminderActionResolver(
@@ -74,11 +74,6 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
     }
   )
 
-  private val searchMenuHandler = SearchMenuHandler(
-    systemServiceProvider.provideSearchManager(),
-    R.string.search
-  ) { viewModel.onSearchUpdate(it) }
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -88,21 +83,40 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
+
+    binding.reminderSearchBar.doAfterTextChanged {
+      viewModel.onSearchUpdate(it?.toString().orEmpty())
+    }
+
     addMenu(R.menu.fragment_reminders_archive, { menuItem ->
       return@addMenu when (menuItem.itemId) {
         R.id.action_delete_all -> {
           viewModel.deleteAll()
           true
         }
-
-        else -> false
+        R.id.action_filter -> {
+          viewModel.showFilters()
+          true
+        }
+        else -> true
       }
-    }) {
-      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
-      it.getItem(1)?.isVisible = viewModel.hasEvents()
+    })
+
+    // Set up result listener for filter selection
+    setFragmentResultListener(ReminderFilterDialog.REQUEST_KEY) { _, result ->
+      viewModel.handleFilterResult(ReminderFilterDialog.getAppliedFiltersFromResult(result))
     }
+
     initList()
     initViewModel()
+  }
+
+  private fun showFilters(filters: Filters) {
+    val dialog = ReminderFilterDialog.newInstance(
+      filters = filters,
+      title = getString(R.string.filter_reminders)
+    )
+    dialog.show(parentFragmentManager, "ReminderFilterDialog")
   }
 
   private fun initViewModel() {
@@ -119,6 +133,32 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
         }
       }
     }
+    viewModel.showFilters.observeEvent(viewLifecycleOwner) { showFilters(it) }
+    viewModel.canFilter.observe(viewLifecycleOwner) { canFilter ->
+      updateFilterMenuItem(canFilter == true)
+    }
+    viewModel.canSearch.observe(viewLifecycleOwner) { canSearch ->
+      binding.reminderSearchBar.visibleGone(canSearch == true)
+    }
+    viewModel.isInProgress.observe(viewLifecycleOwner) {
+      binding.linearProgressIndicator.visibility = if (it == true) View.VISIBLE else View.INVISIBLE
+    }
+    viewModel.canDeleteAll.observe(viewLifecycleOwner) { canDeleteAll ->
+      updateDeleteAllMenuItem(canDeleteAll == true)
+    }
+    lifecycle.addObserver(viewModel)
+  }
+
+  private fun updateFilterMenuItem(canFilter: Boolean) {
+    updateMenuItem(R.id.action_filter) {
+      isVisible = canFilter
+    }
+  }
+
+  private fun updateDeleteAllMenuItem(canDeleteAll: Boolean) {
+    updateMenuItem(R.id.action_delete_all) {
+      isVisible = canDeleteAll
+    }
   }
 
   override fun getTitle(): String = getString(R.string.reminders_archive)
@@ -127,9 +167,6 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
     remindersAdapter.submitList(result)
     binding.recyclerView.smoothScrollToPosition(0)
     reloadView(result.size)
-    if (result.isEmpty()) {
-      invalidateOptionsMenu()
-    }
   }
 
   private fun initList() {

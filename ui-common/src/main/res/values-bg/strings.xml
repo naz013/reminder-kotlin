@@ -864,4 +864,11 @@
     <string name="voice_found">Намерени</string>
 
     <string name="repeat_once">Веднъж</string>
+
+    <string name="filter">Филтър</string>
+    <string name="filter_empty_name">Празно име</string>
+    <string name="filters_apply">Приложи филтрите</string>
+    <string name="filters_reset">Нулирай филтрите</string>
+    <string name="filter_reminders">Филтрирай напомнянията</string>
+    <string name="date_range">Диапазон от дати</string>
 </resources>

@@ -50,6 +50,7 @@ abstract class BaseTopToolbarFragment<B : ViewBinding> :
     containerBinding.toolbar.title = title
   }
 
+  @Deprecated("Use updateMenuItem instead")
   protected fun invalidateOptionsMenu() {
     menuModifier?.invoke(containerBinding.toolbar.menu)
   }
@@ -68,5 +69,18 @@ abstract class BaseTopToolbarFragment<B : ViewBinding> :
     containerBinding.toolbar.setOnMenuItemClickListener {
       return@setOnMenuItemClickListener onMenuItemListener(it)
     }
+  }
+
+  override fun removeMenu() {
+    containerBinding.toolbar.menu.clear()
+    menuModifier = null
+  }
+
+  override fun updateMenuItem(
+    itemId: Int,
+    modifier: MenuItem.() -> Unit
+  ) {
+    val menuItem = containerBinding.toolbar.menu.findItem(itemId) ?: return
+    modifier(menuItem)
   }
 }

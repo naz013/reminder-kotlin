@@ -6,6 +6,8 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.Px
@@ -15,6 +17,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import com.github.naz013.ui.common.context.dp2px
+
+fun EditText.showKeyboard() {
+  this.requestFocus()
+  val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+  imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
 
 fun View.getSize(block: (width: Int, height: Int) -> Unit) {
   addOnLayoutChangeListener(
