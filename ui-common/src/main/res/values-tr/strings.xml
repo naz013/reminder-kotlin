@@ -658,7 +658,7 @@
     <string name="recur_monthly_on_the_third_to_the_last_day_of_the_month">Ayın sondan üçüncü günü aylık</string>
     <string name="recur_monthly_on_the_2nd_and_15th_of_the_month_for_10_occurrences">10 tekrar için ayın 2. ve 15. günü aylık</string>
     <string name="recur_monthly_on_the_first_and_last_day_of_the_month_for_10_occurrences">10 tekrar için ayın ilk ve son günü aylık</string>
-    <string name="recur_every_18_months_on_the_10th_thru_15th_of_the_month_for_10_occurrences">10 tekrar için ayın 10-15 arası günlerde her 18 ayda bir</string>
+    <string name="recur_every_18_months_on_the_10th_thru_15th_of_the_month_for_10_occurrences">10 tekrar için ayın 10–15 arası günlerde her 18 ayda bir</string>
     <string name="recur_every_tuesday_every_other_month">İki ayda bir her Salı</string>
     <string name="recur_yearly_in_june_and_july_for_10_occurrences">10 tekrar için Haziran ve Temmuz aylarında yıllık</string>
     <string name="recur_every_other_year_on_january_february_and_march_for_10_occurrences">10 tekrar için Ocak, Şubat ve Mart aylarında iki yılda bir</string>
@@ -864,4 +864,11 @@
     <string name="voice_found">Bulundu</string>
 
     <string name="repeat_once">Bir kez</string>
+
+    <string name="filter">Filtre</string>
+    <string name="filter_empty_name">Boş ad</string>
+    <string name="filters_apply">Filtreleri uygula</string>
+    <string name="filters_reset">Filtreleri sıfırla</string>
+    <string name="filter_reminders">Hatırlatıcıları filtrele</string>
+    <string name="date_range">Tarih aralığı</string>
 </resources>

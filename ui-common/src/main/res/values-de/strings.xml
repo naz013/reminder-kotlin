@@ -638,7 +638,7 @@
     <string name="recur_rfc_5545_doc">RFC 5545 Dokumentation</string>
     <string name="recur_need_help">Hilfe benötigt?</string>
     <string name="recur_save_as_preset">Auch als Voreinstellung speichern</string>
-    <string name="recur_preset_name_hint">Name der Voreinstellung... (geben Sie einen aussagekräftigen Namen ein)</string>
+    <string name="recur_preset_name_hint">Name der Voreinstellung… (geben Sie einen aussagekräftigen Namen ein)</string>
     <string name="recur_no_presets">Keine Voreinstellungen</string>
     <string name="recur_advanced">Erweitert</string>
     <string name="recur_simplified">Vereinfacht</string>
@@ -696,7 +696,7 @@
     <string name="i_don_t_know_the_year">Ich kenne das Jahr nicht</string>
     <string name="reminder_title_all_day">Ganztägig</string>
     <string name="estimated_next_reminder">Geschätzte nächste Erinnerung</string>
-    <string name="search_everywhere">Überall suchen...</string>
+    <string name="search_everywhere">Überall suchen…</string>
     <string name="schedule">Zeitplan</string>
     <string name="schedule_noon">Mittag</string>
     <string name="schedule_you_have_done_everything_for_today">Sie haben heute alles erledigt. Drücken Sie \"+\", um neue Erinnerungen hinzuzufügen</string>
@@ -803,8 +803,8 @@
     <string name="builder_selector_tab_parameters">Parameter</string>
     <string name="builder_selector_tab_presets">@string/recur_presets</string>
     <string name="builder_selector_tab_recur_presets">iCalendar-Voreinstellungen</string>
-    <string name="builder_selector_tab_search_parameters">Parameter suchen...</string>
-    <string name="builder_selector_tab_search_presets">Voreinstellungen suchen...</string>
+    <string name="builder_selector_tab_search_parameters">Parameter suchen…</string>
+    <string name="builder_selector_tab_search_presets">Voreinstellungen suchen…</string>
     <string name="builder_scheduled_at">"Geplant für: "</string>
     <string name="builder_permanent_reminder_with_sub_tasks">Permanente Erinnerung mit Unteraufgaben</string>
     <string name="builder_will_start_tracking_immediately">Verfolgung beginnt sofort</string>
@@ -863,4 +863,11 @@
     <string name="voice_no_birthdays_found">Keine Geburtstage gefunden</string>
     <string name="voice_found">Gefunden</string>
     <string name="repeat_once">Einmal</string>
+
+    <string name="filter">Filter</string>
+    <string name="filter_empty_name">Leerer Name</string>
+    <string name="filters_apply">Filter anwenden</string>
+    <string name="filters_reset">Filter zurücksetzen</string>
+    <string name="filter_reminders">Erinnerungen filtern</string>
+    <string name="date_range">Datumsbereich</string>
 </resources>

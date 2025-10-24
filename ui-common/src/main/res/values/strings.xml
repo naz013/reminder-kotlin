@@ -862,6 +862,7 @@
     <string name="voice_no_birthdays_found">No birthdays found</string>
     <string name="voice_found">Found</string>
     <string name="repeat_once">Once</string>
+
     <string name="filter">Filter</string>
     <string name="filter_empty_name">Empty name</string>
     <string name="filters_apply">Apply filters</string>

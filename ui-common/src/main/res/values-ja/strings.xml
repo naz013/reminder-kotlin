@@ -863,4 +863,11 @@
     <string name="voice_no_birthdays_found">誕生日が見つかりません</string>
     <string name="voice_found">見つかりました</string>
     <string name="repeat_once">1回のみ</string>
+
+    <string name="filter">フィルター</string>
+    <string name="filter_empty_name">空の名前</string>
+    <string name="filters_apply">フィルターを適用</string>
+    <string name="filters_reset">フィルターをリセット</string>
+    <string name="filter_reminders">リマインダーを絞り込む</string>
+    <string name="date_range">日付範囲</string>
 </resources>

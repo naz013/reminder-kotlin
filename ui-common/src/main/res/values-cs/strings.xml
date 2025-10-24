@@ -863,4 +863,11 @@
     <string name="voice_no_birthdays_found">Nebyly nalezeny žádné narozeniny</string>
     <string name="voice_found">Nalezeno</string>
     <string name="repeat_once">Jednou</string>
+
+    <string name="filter">Filtr</string>
+    <string name="filter_empty_name">Prázdný název</string>
+    <string name="filters_apply">Použít filtry</string>
+    <string name="filters_reset">Resetovat filtry</string>
+    <string name="filter_reminders">Filtrování připomenutí</string>
+    <string name="date_range">Rozsah dat</string>
 </resources>
