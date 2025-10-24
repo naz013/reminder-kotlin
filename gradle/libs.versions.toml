@@ -7,7 +7,7 @@ kotlinTargetJvm = "17"
 # Plugins
 agp = "8.13.0"
 kotlin = "2.2.20"
-google-services = "4.4.3"
+google-services = "4.4.4"
 navigation-safeargs = "2.9.5"
 crashlytics-gradle = "3.0.6"
 ktlint = "13.1.0"
@@ -15,12 +15,12 @@ ksp = "2.2.20-2.0.3"
 kotlinCompilerExtensionVersion = "1.5.15"
 
 # Libraries
-firebase-bom = "34.3.0"
+firebase-bom = "34.4.0"
 
 play-services-location = "21.3.0"
 play-services-maps = "19.2.0"
 play-services-auth = "21.4.0"
-play-services-ads = "24.6.0"
+play-services-ads = "24.7.0"
 user-messaging-platform = "3.2.0"
 
 androidx-recyclerview = "1.4.0"
@@ -36,18 +36,20 @@ androidx-activity-ktx = "1.11.0"
 androidx-collection-ktx = "1.5.0"
 androidx-palette-ktx = "1.0.0"
 androidx-dynamicanimation-ktx = "1.1.0"
-androidx-work-runtime = "2.10.5"
-androidx-work-runtime-ktx = "2.10.5"
+androidx-work-runtime = "2.11.0"
+androidx-work-runtime-ktx = "2.11.0"
 androidx-localbroadcastmanager = "1.1.0"
 androidx-activity-compose = "1.11.0"
+androidx-compose-material3-adaptive-navigation-suite = "1.5.0-alpha06"
+androidx-compose-material3 = "1.4.0"
 
 glance = "1.1.1"
-compose-bom = "2025.09.01"
+compose-bom = "2025.10.01"
 
 androidx-lifecycle-extensions = "2.2.0"
 androidx-lifecycle = "2.9.4"
 
-androidx-room = "2.8.1"
+androidx-room = "2.8.3"
 
 androidx-navigation = "2.9.5"
 
@@ -62,7 +64,7 @@ circleimageview = "3.1.0"
 retrofit = "3.0.0"
 gson = "2.13.2"
 jsr305 = "3.0.2"
-okhttp3-logging-interceptor = "5.1.0"
+okhttp3-logging-interceptor = "5.2.1"
 dropbox-core-sdk = "7.0.0"
 lib-recur = "0.17.1"
 commons-lang3 = "3.19.0"
@@ -80,7 +82,7 @@ logback-android = "3.0.0"
 google-api-services-calendar = "v3-rev20230406-2.0.0"
 google-api-services-tasks = "v1-rev20230401-2.0.0"
 google-api-services-drive = "v3-rev20230423-2.0.0"
-google-http-client-gson = "2.0.1"
+google-http-client-gson = "2.0.2"
 google-api-client-android = "2.8.1"
 
 # Testing
@@ -89,7 +91,7 @@ mockk = "1.14.6"
 robolectric = "4.16"
 mockito-core = "5.20.0"
 mockito-kotlin = "2.2.0"
-logback-classic = "1.5.19"
+logback-classic = "1.5.20"
 androidx-test-core = "1.7.0"
 androidx-core-testing = "2.2.0"
 androidx-test-runner = "1.7.0"
@@ -145,6 +147,10 @@ compose-ui-util = { module = "androidx.compose.ui:util" }
 compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 
+#compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
+compose-material3-windowsizeclass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
+compose-material3-adaptive-navigation-suite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref = "androidx-compose-material3-adaptive-navigation-suite" }
+
 androidx-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "androidx-lifecycle-extensions" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-common-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "androidx-lifecycle" }
@@ -159,6 +165,8 @@ androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx"
 
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 
 androidx-localbroadcastmanager = { group = "androidx.localbroadcastmanager", name = "localbroadcastmanager", version.ref = "androidx-localbroadcastmanager" }
 

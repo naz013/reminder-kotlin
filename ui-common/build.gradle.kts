@@ -63,6 +63,12 @@ dependencies {
   implementation(libs.compose.material.iconsext)
   implementation(libs.androidx.activity.compose)
 
+  implementation(libs.compose.material3.windowsizeclass)
+  implementation(libs.compose.material3.adaptive.navigation.suite)
+
+  implementation(libs.androidx.navigation.runtime.ktx)
+  implementation(libs.androidx.navigation.compose)
+
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling)
 
