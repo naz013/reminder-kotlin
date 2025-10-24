@@ -50,6 +50,7 @@ abstract class BaseTopToolbarFragment<B : ViewBinding> :
     containerBinding.toolbar.title = title
   }
 
+  @Deprecated("Use updateMenuItem instead")
   protected fun invalidateOptionsMenu() {
     menuModifier?.invoke(containerBinding.toolbar.menu)
   }
