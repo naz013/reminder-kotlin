@@ -117,4 +117,10 @@ internal interface ReminderDao {
 
   @Query("DELETE FROM Reminder")
   fun deleteAll()
+
+  @Query("UPDATE Reminder SET syncState=:state WHERE uuId=:id")
+  fun updateSyncState(id: String, state: String)
+
+  @Query("SELECT uuId FROM Reminder WHERE syncState IN (:syncStates)")
+  fun getBySyncStates(syncStates: List<String>): List<String>
 }

@@ -6,6 +6,7 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.calendar.calendarModule
+import com.elementary.tasks.core.cloud.cloudModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
@@ -42,6 +43,7 @@ import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.navigationApiModule
 import com.github.naz013.repository.repositoryModule
+import com.github.naz013.sync.syncApiModule
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
@@ -123,7 +125,9 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           remindersUseCaseModule,
           notesUseCaseModule,
           iCalendarModule,
-          navigationApiModule
+          navigationApiModule,
+          cloudModule,
+          syncApiModule
         )
       )
     }

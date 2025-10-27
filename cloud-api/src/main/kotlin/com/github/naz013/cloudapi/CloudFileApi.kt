@@ -5,6 +5,7 @@ import com.github.naz013.cloudapi.legacy.DataChannel
 import com.github.naz013.cloudapi.legacy.Metadata
 import com.github.naz013.cloudapi.stream.CopyByteArrayStream
 import java.io.InputStream
+import java.io.OutputStream
 
 interface CloudFileApi {
   @Deprecated("Use saveFile() instead")
@@ -25,9 +26,14 @@ interface CloudFileApi {
   )
 
   suspend fun saveFile(stream: CopyByteArrayStream, metadata: Metadata)
-  suspend fun getFiles(folder: String, predicate: (CloudFile) -> Boolean = { true }): CloudFiles?
   suspend fun getFile(fileName: String): InputStream?
   suspend fun getFile(cloudFile: CloudFile): InputStream?
   suspend fun deleteFile(fileName: String): Boolean
   suspend fun removeAllData(): Boolean
+
+  val source: Source
+
+  suspend fun uploadFile(stream: InputStream, cloudFile: CloudFile): CloudFile
+  suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile?
+  suspend fun downloadFile(cloudFile: CloudFile): InputStream?
 }

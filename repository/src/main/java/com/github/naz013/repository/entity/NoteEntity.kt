@@ -3,6 +3,7 @@ package com.github.naz013.repository.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.util.Random
 import java.util.UUID
@@ -31,7 +32,11 @@ internal data class NoteEntity(
   @SerializedName("fontSize")
   val fontSize: Int = -1,
   @SerializedName("archived")
-  val archived: Boolean = false
+  val archived: Boolean = false,
+  @SerializedName("version")
+  val version: Long = 0L,
+  @SerializedName("syncState")
+  val syncState: String
 ) {
 
   constructor(note: Note) : this(
@@ -45,7 +50,9 @@ internal data class NoteEntity(
     updatedAt = note.updatedAt,
     opacity = note.opacity,
     fontSize = note.fontSize,
-    archived = note.archived
+    archived = note.archived,
+    version = note.version,
+    syncState = note.syncState.name
   )
 
   fun toDomain(): Note {
@@ -60,7 +67,9 @@ internal data class NoteEntity(
       updatedAt = updatedAt,
       opacity = opacity,
       fontSize = fontSize,
-      archived = archived
+      archived = archived,
+      version = version,
+      syncState = SyncState.valueOf(syncState)
     )
   }
 }

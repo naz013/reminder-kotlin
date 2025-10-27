@@ -3,7 +3,8 @@ package com.github.naz013.cloudapi.googledrive
 import android.content.Context
 import android.text.TextUtils
 import com.github.naz013.cloudapi.CloudFile
-import com.github.naz013.cloudapi.CloudFiles
+import com.github.naz013.cloudapi.CloudFileSearchParams
+import com.github.naz013.cloudapi.Source
 import com.github.naz013.cloudapi.legacy.Convertible
 import com.github.naz013.cloudapi.legacy.DataChannel
 import com.github.naz013.cloudapi.legacy.Metadata
@@ -80,34 +81,6 @@ internal class GoogleDriveApiImpl(
     } catch (e: Throwable) {
       Logger.e(TAG, "Failed to save file: ${e.message}")
     }
-  }
-
-  override suspend fun getFiles(folder: String, predicate: (CloudFile) -> Boolean): CloudFiles? {
-    if (!isInitialized) return null
-    if (folder.isEmpty()) return null
-    val files = mutableListOf<CloudFile>()
-    try {
-      val request = drive?.files()?.list()
-        ?.setSpaces("appDataFolder")
-        ?.setFields("nextPageToken, files(id, name)")
-        ?.setQ("mimeType = 'text/plain'")
-        ?: return null
-      do {
-        val filesResult = request.execute() ?: return null
-        val fileList = filesResult.files as ArrayList<File>
-        for (f in fileList) {
-          val cloudFile = CloudFile(f.id, f.name, folder)
-          if (predicate(cloudFile)) {
-            files.add(cloudFile)
-          }
-        }
-        request.pageToken = filesResult.nextPageToken
-      } while (request.pageToken != null)
-    } catch (e: Throwable) {
-      Logger.e(TAG, "Failed to get files: ${e.message}")
-      return null
-    }
-    return CloudFiles(files)
   }
 
   override suspend fun getFile(cloudFile: CloudFile): InputStream? {
@@ -284,6 +257,100 @@ internal class GoogleDriveApiImpl(
   @Deprecated("Use deleteFile() instead", ReplaceWith("deleteFile(fileName)"))
   override suspend fun delete(fileName: String) {
     deleteFile(fileName)
+  }
+
+  override val source: Source = Source.GoogleDrive
+
+  override suspend fun uploadFile(stream: InputStream, cloudFile: CloudFile): CloudFile {
+    if (!isInitialized) {
+      throw IllegalStateException("Google Drive is not initialized")
+    }
+    if (cloudFile.name.isEmpty()) {
+      throw IllegalArgumentException("File name is empty")
+    }
+    Logger.i(TAG, "Going to upload file: ${cloudFile.name}")
+    try {
+      deleteFile(cloudFile.name)
+      val fileMetadata = File().apply {
+        name = cloudFile.name
+        description = cloudFile.fileDescription
+        parents = PARENTS
+        version = cloudFile.version
+      }
+      val mediaContent = InputStreamContent("text/plain", stream)
+      var resultFile: File? = null
+      stream.use {
+        resultFile = drive?.files()?.create(fileMetadata, mediaContent)
+          ?.setFields("id")
+          ?.execute()
+      }
+      if (resultFile == null) {
+        throw IllegalStateException("File upload failed")
+      }
+      Logger.d(TAG, "File saved, file name ${cloudFile.name}")
+      return cloudFile.copy(
+        id = resultFile.id ?: throw IllegalStateException("Failed to get file ID after upload"),
+        lastModified = resultFile.modifiedTime?.value ?: 0L,
+        size = resultFile.size
+      )
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to save file: ${e.message}")
+      throw e
+    }
+  }
+
+  override suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile? {
+    if (!isInitialized) {
+      throw IllegalStateException("Google Drive is not initialized")
+    }
+    Logger.i(TAG, "Going to find file: ${searchParams.name}")
+    try {
+      val request = drive?.files()?.list()
+        ?.setSpaces("appDataFolder")
+        ?.setFields("nextPageToken, files(id, name)")
+        ?.setQ("mimeType = 'text/plain' and name contains '${searchParams.name}'")
+        ?: return null
+      do {
+        val filesResult = request.execute() ?: return null
+        val fileList = filesResult.files as ArrayList<File>
+        for (f in fileList) {
+          if (f.name == searchParams.name) {
+            return CloudFile(
+              id = f.id,
+              name = f.name,
+              fileDescription = f.description,
+              fileExtension = f.fileExtension,
+              lastModified = f.modifiedTime.value,
+              size = f.size,
+            )
+          }
+        }
+        request.pageToken = filesResult.nextPageToken
+      } while (request.pageToken != null)
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to find file: ${e.message}")
+
+    }
+    return null
+  }
+
+  override suspend fun downloadFile(cloudFile: CloudFile): InputStream? {
+    if (!isInitialized) {
+      throw IllegalStateException("Google Drive is not initialized")
+    }
+    if (cloudFile.name.isEmpty()) {
+      throw IllegalArgumentException("File name is empty")
+    }
+    if (cloudFile.id.isEmpty()) {
+      throw IllegalArgumentException("File ID is empty")
+    }
+    Logger.i(TAG, "Going to download file: ${cloudFile.name}")
+    try {
+      return drive?.files()?.get(cloudFile.id)?.executeMediaAsInputStream()
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to download file: ${e.message}")
+      throw e
+    }
   }
 
   override fun toString(): String {

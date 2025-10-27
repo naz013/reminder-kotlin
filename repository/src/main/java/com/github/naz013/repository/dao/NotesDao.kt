@@ -78,4 +78,10 @@ internal interface NotesDao {
 
   @Query("DELETE FROM ImageFile")
   fun deleteAllImages()
+
+  @Query("UPDATE Note SET syncState=:state WHERE `key`=:id")
+  fun updateSyncState(id: String, state: String)
+
+  @Query("SELECT `key` FROM Note WHERE syncState IN (:syncStates)")
+  fun getBySyncStates(syncStates: List<String>): List<String>
 }

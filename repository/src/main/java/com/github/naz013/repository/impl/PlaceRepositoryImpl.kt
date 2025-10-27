@@ -1,6 +1,7 @@
 package com.github.naz013.repository.impl
 
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.dao.PlacesDao
@@ -45,6 +46,17 @@ internal class PlaceRepositoryImpl(
   override suspend fun deleteAll() {
     Logger.d(TAG, "Delete all places")
     placesDao.deleteAll()
+    tableChangeNotifier.notify(table)
+  }
+
+  override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> {
+    Logger.d(TAG, "Get places by sync states: $syncStates")
+    return placesDao.getBySyncStates(syncStates.map { it.name })
+  }
+
+  override suspend fun updateSyncState(id: String, state: SyncState) {
+    Logger.d(TAG, "Update sync state for place id: $id to state: $state")
+    placesDao.updateSyncState(id, state.name)
     tableChangeNotifier.notify(table)
   }
 

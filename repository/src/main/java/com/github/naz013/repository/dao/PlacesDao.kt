@@ -26,4 +26,10 @@ internal interface PlacesDao {
 
   @Query("DELETE FROM Place")
   fun deleteAll()
+
+  @Query("UPDATE Place SET syncState=:state WHERE id=:id")
+  fun updateSyncState(id: String, state: String)
+
+  @Query("SELECT id FROM Place WHERE syncState IN (:syncStates)")
+  fun getBySyncStates(syncStates: List<String>): List<String>
 }

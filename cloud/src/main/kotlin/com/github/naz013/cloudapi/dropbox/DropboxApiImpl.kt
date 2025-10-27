@@ -10,6 +10,7 @@ import com.dropbox.core.v2.users.SpaceUsage
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFiles
 import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.cloudapi.Source
 import com.github.naz013.cloudapi.legacy.Convertible
 import com.github.naz013.cloudapi.legacy.DataChannel
 import com.github.naz013.cloudapi.legacy.Metadata
@@ -67,16 +68,16 @@ internal class DropboxApiImpl(
     Logger.d(TAG, "Saving file: ${metadata.fileName}, folder = $folder")
     val fis = ByteArrayInputStream(stream.toByteArray())
     try {
-      dbxClientV2?.files()?.uploadBuilder(folder + metadata.fileName)
+      val result = dbxClientV2?.files()?.uploadBuilder(folder + metadata.fileName)
         ?.withMode(WriteMode.OVERWRITE)
         ?.uploadAndFinish(fis) ?: return
 
       withContext(Dispatchers.IO) {
         fis.close()
-      }
-      withContext(Dispatchers.IO) {
         stream.close()
       }
+
+      dbxClientV2?.files().listRevisions(result.pathLower)
     } catch (e: Throwable) {
       Logger.e(TAG, "Failed to save file: ${e.message}")
     }
@@ -255,6 +256,8 @@ internal class DropboxApiImpl(
       Logger.e(TAG, "Failed to delete: ${e.message}")
     }
   }
+
+  override val source: Source = Source.Dropbox
 
   private fun folderFromFileName(fileName: String): String {
     if (fileName.isEmpty()) return REMINDER_FOLDER

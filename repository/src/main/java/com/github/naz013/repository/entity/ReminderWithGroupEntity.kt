@@ -73,7 +73,7 @@ internal data class ReminderWithGroupEntity(
       allDay = reminder.allDay,
       description = reminder.description,
       builderScheme = reminder.builderScheme,
-      version = reminder.version,
+      jsonSchemaVersion = reminder.jsonSchemaVersion,
       groupTitle = reminderGroup?.groupTitle,
       groupColor = reminderGroup?.groupColor ?: 0
     )

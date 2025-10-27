@@ -3,6 +3,7 @@ package com.github.naz013.repository.impl
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.dao.NotesDao
@@ -108,6 +109,17 @@ internal class NoteRepositoryImpl(
     Logger.d(TAG, "Delete all images")
     dao.deleteAllImages()
     tableChangeNotifier.notify(Table.ImageFile)
+  }
+
+  override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> {
+    Logger.d(TAG, "Get note ids by sync states: $syncStates")
+    return dao.getBySyncStates(syncStates.map { it.name })
+  }
+
+  override suspend fun updateSyncState(id: String, state: SyncState) {
+    Logger.d(TAG, "Update sync state for note id: $id to state: $state")
+    dao.updateSyncState(id, state.name)
+    tableChangeNotifier.notify(Table.Note)
   }
 
   companion object {

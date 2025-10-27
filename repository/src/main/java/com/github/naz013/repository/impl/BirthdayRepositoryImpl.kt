@@ -1,6 +1,7 @@
 package com.github.naz013.repository.impl
 
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.dao.BirthdaysDao
@@ -21,6 +22,12 @@ internal class BirthdayRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun updateSyncState(id: String, state: SyncState) {
+    Logger.d(TAG, "Updating sync state for birthday id: $id to state: $state")
+    birthdaysDao.updateSyncState(id, state.name)
+    tableChangeNotifier.notify(table)
+  }
+
   override suspend fun getById(id: String): Birthday? {
     Logger.d(TAG, "Getting birthday by id: $id")
     return birthdaysDao.getById(id)?.toDomain()
@@ -29,6 +36,11 @@ internal class BirthdayRepositoryImpl(
   override suspend fun getByDayMonth(day: Int, month: Int): List<Birthday> {
     Logger.d(TAG, "Getting birthdays by day: $day, month: $month")
     return birthdaysDao.getAll("$day|$month").map { it.toDomain() }
+  }
+
+  override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> {
+    Logger.d(TAG, "Getting birthdays by sync states: $syncStates")
+    return birthdaysDao.getBySyncStates(syncStates.map { it.name })
   }
 
   override suspend fun searchByName(query: String): List<Birthday> {

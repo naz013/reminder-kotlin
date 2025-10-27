@@ -1,5 +1,6 @@
 package com.github.naz013.domain
 
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.util.Random
 import java.util.UUID
@@ -30,5 +31,9 @@ data class Birthday(
   @SerializedName("updatedAt")
   val updatedAt: String? = null,
   @SerializedName("ignoreYear")
-  val ignoreYear: Boolean = false
+  val ignoreYear: Boolean = false,
+  @SerializedName("versionId")
+  var version: Long = 0L,
+  @Transient
+  val syncState: SyncState,
 )
