@@ -15,4 +15,5 @@ interface PlaceRepository {
 
   suspend fun updateSyncState(id: String, state: SyncState)
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
+  suspend fun getAllIds(): List<String>
 }

@@ -4,11 +4,12 @@ import com.dropbox.core.DbxException
 import com.dropbox.core.DbxRequestConfig
 import com.dropbox.core.http.OkHttp3Requestor
 import com.dropbox.core.v2.DbxClientV2
+import com.dropbox.core.v2.files.FileMetadata
 import com.dropbox.core.v2.files.WriteMode
 import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
 import com.github.naz013.cloudapi.CloudFile
-import com.github.naz013.cloudapi.CloudFiles
+import com.github.naz013.cloudapi.CloudFileSearchParams
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.cloudapi.legacy.Convertible
@@ -29,8 +30,107 @@ internal class DropboxApiImpl(
   private var dbxClientV2: DbxClientV2? = null
   private var isInitialized: Boolean = false
 
+  override val source: Source = Source.Dropbox
+
   init {
     initialize()
+  }
+
+  override suspend fun uploadFile(stream: InputStream, cloudFile: CloudFile): CloudFile {
+    if (!isInitialized) {
+      throw IllegalStateException("DropboxApi is not initialized")
+    }
+    val folder = folderFromExt(cloudFile.fileExtension)
+    Logger.d(TAG, "Saving file: ${cloudFile.name}, folder = $folder")
+    try {
+      deleteFile(cloudFile.name)
+      val result = dbxClientV2?.files()?.uploadBuilder(folder + cloudFile.name)
+        ?.withMode(WriteMode.OVERWRITE)
+        ?.uploadAndFinish(stream) ?: throw IllegalStateException("Upload failed")
+      stream.close()
+      return CloudFile(
+        id = result.id,
+        name = result.name,
+        size = result.size.toInt(),
+        lastModified = result.serverModified.time,
+        fileExtension = cloudFile.fileExtension,
+        rev = result.rev
+      )
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to save file: ${e.message}")
+      throw e
+    }
+  }
+
+  override suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile? {
+    if (!isInitialized) {
+      return null
+    }
+    val folder = folderFromExt(searchParams.fileExtension)
+    Logger.i(TAG, "Going to find file: ${searchParams.name}, folder = $folder")
+    if (folder.isEmpty()) return null
+    try {
+      val result = dbxClientV2?.files()?.listFolder(folder) ?: return null
+      for (f in result.entries) {
+        if (f.name == searchParams.name && f is FileMetadata) {
+          return CloudFile(
+            id = f.id,
+            name = f.name,
+            fileExtension = searchParams.fileExtension,
+            lastModified = f.serverModified.time,
+            size = f.size.toInt(),
+            rev = f.rev,
+          )
+        }
+      }
+      return null
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to get files: ${e.message}")
+      return null
+    }
+  }
+
+  override suspend fun findFiles(fileExtension: String): List<CloudFile> {
+    if (!isInitialized) {
+      return emptyList()
+    }
+    val folder = folderFromExt(fileExtension)
+    Logger.i(TAG, "Going to find files, folder = $folder")
+    try {
+      val result = dbxClientV2?.files()?.listFolder(folder) ?: return emptyList()
+      val files = mutableListOf<CloudFile>()
+      for (f in result.entries) {
+        if (f is FileMetadata) {
+          val cloudFile = CloudFile(
+            id = f.id,
+            name = f.name,
+            fileExtension = fileExtension,
+            lastModified = f.serverModified.time,
+            size = f.size.toInt(),
+            rev = f.rev,
+          )
+          files.add(cloudFile)
+        }
+      }
+      return files
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to get files: ${e.message}")
+      return emptyList()
+    }
+  }
+
+  override suspend fun downloadFile(cloudFile: CloudFile): InputStream? {
+    if (!isInitialized) {
+      return null
+    }
+    val folder = folderFromExt(cloudFile.fileExtension)
+    Logger.i(TAG, "Going to download file: ${cloudFile.name}, folder = $folder")
+    return try {
+      dbxClientV2?.files()?.download(folder + cloudFile.name)?.inputStream
+    } catch (e: Throwable) {
+      Logger.e(TAG, "Failed to download file: ${e.message}")
+      null
+    }
   }
 
   override fun initialize(): Boolean {
@@ -76,66 +176,8 @@ internal class DropboxApiImpl(
         fis.close()
         stream.close()
       }
-
-      dbxClientV2?.files().listRevisions(result.pathLower)
     } catch (e: Throwable) {
       Logger.e(TAG, "Failed to save file: ${e.message}")
-    }
-  }
-
-  override suspend fun getFiles(folder: String, predicate: (CloudFile) -> Boolean): CloudFiles? {
-    if (!isInitialized) {
-      return null
-    }
-    if (folder.isEmpty()) return null
-    Logger.i(TAG, "Going to get files, folder = $folder")
-    try {
-      val result = dbxClientV2?.files()?.listFolder(folder) ?: return null
-      val files = mutableListOf<CloudFile>()
-      for (f in result.entries) {
-        val cloudFile = CloudFile(
-          id = f.previewUrl ?: "",
-          name = f.name,
-          folder = folder
-        )
-        if (predicate(cloudFile)) {
-          files.add(cloudFile)
-        }
-      }
-      return CloudFiles(files)
-    } catch (e: Throwable) {
-      Logger.e(TAG, "Failed to get files: ${e.message}")
-      return null
-    }
-  }
-
-  override suspend fun getFile(fileName: String): InputStream? {
-    if (!isInitialized) {
-      return null
-    }
-    val folder = folderFromFileName(fileName)
-    Logger.i(TAG, "Going to download file: $fileName, folder = $folder")
-    return try {
-      dbxClientV2?.files()?.download(folder + fileName)?.inputStream
-    } catch (e: Throwable) {
-      Logger.e(TAG, "Failed to download file: ${e.message}")
-      null
-    }
-  }
-
-  override suspend fun getFile(cloudFile: CloudFile): InputStream? {
-    if (!isInitialized) {
-      return null
-    }
-    if (cloudFile.folder.isEmpty()) {
-      return null
-    }
-    Logger.i(TAG, "Going to download file: ${cloudFile.name}, folder = ${cloudFile.folder}")
-    return try {
-      dbxClientV2?.files()?.download(cloudFile.folder + cloudFile.name)?.inputStream
-    } catch (e: Throwable) {
-      Logger.e(TAG, "Failed to download file: ${e.message}")
-      null
     }
   }
 
@@ -257,8 +299,6 @@ internal class DropboxApiImpl(
     }
   }
 
-  override val source: Source = Source.Dropbox
-
   private fun folderFromFileName(fileName: String): String {
     if (fileName.isEmpty()) return REMINDER_FOLDER
     val parts = fileName.split(".".toRegex())
@@ -276,7 +316,7 @@ internal class DropboxApiImpl(
       FileConfig.FILE_NAME_PLACE -> PLACE_FOLDER
       FileConfig.FILE_NAME_SETTINGS_EXT -> SETTINGS_FOLDER
       FileConfig.FILE_NAME_JSON -> ROOT_FOLDER
-      else -> REMINDER_FOLDER
+      else -> throw IllegalArgumentException("Unknown file extension: $ext")
     }
   }
 
@@ -339,10 +379,6 @@ internal class DropboxApiImpl(
     }
 
     return count
-  }
-
-  override fun toString(): String {
-    return TAG
   }
 
   companion object {

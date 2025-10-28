@@ -6,5 +6,6 @@ internal interface DataTypeRepositoryCaller<T> {
   suspend fun getById(id: String): T?
   suspend fun getIdsByState(states: List<SyncState>): List<String>
   suspend fun updateSyncState(id: String, state: SyncState)
-  suspend fun insertOrUpdate(item: T)
+  suspend fun insertOrUpdate(item: Any)
+  suspend fun getAllIds(): List<String>
 }

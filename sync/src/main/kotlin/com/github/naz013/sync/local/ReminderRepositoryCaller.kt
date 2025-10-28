@@ -23,7 +23,14 @@ internal class ReminderRepositoryCaller(
     reminderRepository.updateSyncState(id, state)
   }
 
-  override suspend fun insertOrUpdate(item: Reminder) {
+  override suspend fun insertOrUpdate(item: Any) {
+    if (item !is Reminder) {
+      throw IllegalArgumentException("Expected Reminder type but got: ${item::class}")
+    }
     reminderRepository.save(item)
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    return reminderRepository.getAllIds()
   }
 }

@@ -70,6 +70,11 @@ internal class BirthdayRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun getAllIds(): List<String> {
+    Logger.d(TAG, "Getting all birthday ids")
+    return birthdaysDao.getAllIds()
+  }
+
   companion object {
     private const val TAG = "BirthdayRepository"
   }

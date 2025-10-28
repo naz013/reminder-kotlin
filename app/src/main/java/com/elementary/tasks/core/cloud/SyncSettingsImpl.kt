@@ -1,11 +1,22 @@
 package com.elementary.tasks.core.cloud
 
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.work.SyncDataWorker
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.SyncSettings
 
-class SyncSettingsImpl : SyncSettings {
+class SyncSettingsImpl(
+  private val prefs: Prefs
+) : SyncSettings {
 
   override fun isDataTypeEnabled(dataType: DataType): Boolean {
-    TODO("Not yet implemented")
+    val syncFlags = prefs.autoSyncFlags
+    return when (dataType) {
+      DataType.Reminders -> syncFlags.contains(SyncDataWorker.FLAG_REMINDER)
+      DataType.Notes -> syncFlags.contains(SyncDataWorker.FLAG_NOTE)
+      DataType.Birthdays -> syncFlags.contains(SyncDataWorker.FLAG_BIRTHDAY)
+      DataType.Places -> syncFlags.contains(SyncDataWorker.FLAG_PLACE)
+      DataType.Groups -> true
+    }
   }
 }

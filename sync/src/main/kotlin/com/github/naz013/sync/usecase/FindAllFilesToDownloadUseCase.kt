@@ -2,45 +2,44 @@ package com.github.naz013.sync.usecase
 
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
-import com.github.naz013.cloudapi.CloudFileSearchParams
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 
-class FindNewestCloudApiSource(
+internal class FindAllFilesToDownloadUseCase(
   private val cloudApiProvider: CloudApiProvider,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
 ) {
 
-  suspend operator fun invoke(dataType: DataType, id: String): SearchResult? {
+  suspend operator fun invoke(dataType: DataType): SearchResult? {
     val apiList = cloudApiProvider.getAllowedCloudApis()
-    var newestResult: SearchResult? = null
+    val sources = mutableListOf<CloudFilesWithSource>()
     for (api in apiList) {
-      val cloudFile = findFileInApiSource(api, dataType, id)
-      if (cloudFile != null) {
-        if (newestResult == null || cloudFile.lastModified > newestResult.cloudFile.lastModified) {
-          newestResult = SearchResult(api, cloudFile)
-        }
+      val cloudFiles = findFilesInApiSource(api, dataType)
+      if (cloudFiles.isNotEmpty()) {
+        sources.add(CloudFilesWithSource(api, cloudFiles))
       }
     }
-    return newestResult
+    return if (sources.isNotEmpty()) {
+      SearchResult(sources)
+    } else {
+      null
+    }
   }
 
-  private suspend fun findFileInApiSource(
+  private suspend fun findFilesInApiSource(
     cloudFileApi: CloudFileApi,
     dataType: DataType,
-    id: String
-  ): CloudFile? {
-    val cloudFile = cloudFileApi.findFile(
-      CloudFileSearchParams(
-        name = id,
-        fileExtension = dataType.fileExtension
-      )
-    )
-    val remoteMetadata = remoteFileMetadataRepository.getByLocalUuIdAndSource(id, cloudFileApi.source.name)
-    return cloudFile?.takeIf { decideIfCanUseFile(cloudFileApi.source, it, remoteMetadata) }
+  ): List<CloudFile> {
+    val cloudFiles = cloudFileApi.findFiles(dataType.fileExtension)
+    val remoteMetadataMap = remoteFileMetadataRepository.getBySource(cloudFileApi.source.name)
+      .associateBy { it.name }
+    return cloudFiles.filter { cloudFile ->
+      val remoteMetadata = remoteMetadataMap[cloudFile.name]
+      decideIfCanUseFile(cloudFileApi.source, cloudFile, remoteMetadata)
+    }
   }
 
   private fun decideIfCanUseFile(
@@ -62,8 +61,12 @@ class FindNewestCloudApiSource(
   }
 
   data class SearchResult(
-    val cloudFileApi: CloudFileApi,
-    val cloudFile: CloudFile
+    val sources: List<CloudFilesWithSource>
+  )
+
+  data class CloudFilesWithSource(
+    val source: CloudFileApi,
+    val cloudFiles: List<CloudFile>
   )
 
   companion object {

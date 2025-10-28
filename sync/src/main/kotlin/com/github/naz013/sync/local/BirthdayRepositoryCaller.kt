@@ -23,7 +23,14 @@ internal class BirthdayRepositoryCaller(
     birthdayRepository.updateSyncState(id, state)
   }
 
-  override suspend fun insertOrUpdate(item: Birthday) {
+  override suspend fun insertOrUpdate(item: Any) {
+    if (item !is Birthday) {
+      throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: ${Birthday::class.java}")
+    }
     birthdayRepository.save(item)
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    return birthdayRepository.getAllIds()
   }
 }

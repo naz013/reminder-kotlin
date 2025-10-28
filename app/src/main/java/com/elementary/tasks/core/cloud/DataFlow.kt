@@ -6,10 +6,8 @@ import com.elementary.tasks.core.cloud.repositories.Repository
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.cloudapi.legacy.Convertible
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class DataFlow<T>(
   private val repository: Repository<T>,
@@ -17,8 +15,6 @@ class DataFlow<T>(
   private val storage: CloudFileApi,
   private val completable: Completable<T>? = null
 ) : KoinComponent {
-
-  private val dateTimeManager by inject<DateTimeManager>()
 
   suspend fun backup(id: String) {
     val item = repository.get(id) ?: run {
@@ -42,40 +38,6 @@ class DataFlow<T>(
       TAG,
       "Backed up file with ext = ${metadata.fileExt} and id = ${metadata.id} in $duration ms"
     )
-  }
-
-  suspend fun restore(id: String, type: IndexTypes) {
-    val fileName = fileName(id, type)
-    if (id.isEmpty() || fileName.isEmpty()) {
-      Logger.w(TAG, "Id or file name is empty, id = $id")
-      return
-    }
-    val millis = System.currentTimeMillis()
-    val inputStream = storage.getFile(fileName) ?: run {
-      Logger.w(TAG, "Input stream is null, id = $id")
-      return
-    }
-    val item = convertible.convert(inputStream) ?: run {
-      Logger.w(TAG, "Item is null, id = $id")
-      return
-    }
-    val localItem = repository.get(id)
-    val metadata = convertible.metadata(item)
-    val needUpdate = if (localItem != null) {
-      val metadataLocal = convertible.metadata(localItem)
-      dateTimeManager.isAfterDate(metadata.updatedAt, metadataLocal.updatedAt)
-    } else {
-      true
-    }
-    val duration = System.currentTimeMillis() - millis
-    if (needUpdate) {
-      Logger.i(
-        TAG,
-        "Saved remote file with ext = ${metadata.fileExt} and id = $id, in $duration ms"
-      )
-      repository.insert(item)
-      completable?.action(item)
-    }
   }
 
   suspend fun delete(id: String, type: IndexTypes) {

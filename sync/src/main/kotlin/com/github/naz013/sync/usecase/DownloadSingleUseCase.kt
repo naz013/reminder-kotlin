@@ -17,12 +17,11 @@ internal class DownloadSingleUseCase(
   private val syncDataConverter: SyncDataConverter,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
-  private val findNewestCloudApiSource: FindNewestCloudApiSource,
+  private val findNewestCloudApiSourceUseCase: FindNewestCloudApiSourceUseCase,
 ) {
   suspend operator fun invoke(dataType: DataType, id: String) {
     val caller = dataTypeRepositoryCallerFactory.getCaller(dataType)
-    val localData = caller.getById(id)
-    val newestResult = findNewestCloudApiSource(dataType, id) ?: run {
+    val newestResult = findNewestCloudApiSourceUseCase(dataType, id) ?: run {
       Logger.e(TAG, "No cloud file found for dataType: $dataType, id: $id")
       return
     }

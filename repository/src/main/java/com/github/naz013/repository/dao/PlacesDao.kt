@@ -32,4 +32,7 @@ internal interface PlacesDao {
 
   @Query("SELECT id FROM Place WHERE syncState IN (:syncStates)")
   fun getBySyncStates(syncStates: List<String>): List<String>
+
+  @Query("SELECT id FROM Place")
+  fun getAllIds(): List<String>
 }

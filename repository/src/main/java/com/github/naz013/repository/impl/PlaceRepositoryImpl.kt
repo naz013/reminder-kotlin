@@ -60,6 +60,11 @@ internal class PlaceRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun getAllIds(): List<String> {
+    Logger.d(TAG, "Get all place ids")
+    return placesDao.getAllIds()
+  }
+
   companion object {
     private const val TAG = "PlaceRepository"
   }

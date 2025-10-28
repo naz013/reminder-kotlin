@@ -29,4 +29,13 @@ internal interface RecurPresetDao {
 
   @Query("DELETE FROM RecurPreset WHERE id=:id")
   fun deleteById(id: String)
+
+//  @Query("UPDATE RecurPreset SET syncState=:state WHERE id=:id")
+//  fun updateSyncState(id: String, state: String)
+//
+//  @Query("SELECT id FROM RecurPreset WHERE syncState IN (:syncStates)")
+//  fun getBySyncStates(syncStates: List<String>): List<String>
+//
+//  @Query("SELECT id FROM RecurPreset")
+//  fun getAllIds(): List<String>
 }

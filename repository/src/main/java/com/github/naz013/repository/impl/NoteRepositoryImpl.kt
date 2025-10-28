@@ -122,6 +122,11 @@ internal class NoteRepositoryImpl(
     tableChangeNotifier.notify(Table.Note)
   }
 
+  override suspend fun getAllIds(): List<String> {
+    Logger.d(TAG, "Get all note ids")
+    return dao.getAllIds()
+  }
+
   companion object {
     private const val TAG = "NoteRepository"
   }

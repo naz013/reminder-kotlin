@@ -26,8 +26,6 @@ interface CloudFileApi {
   )
 
   suspend fun saveFile(stream: CopyByteArrayStream, metadata: Metadata)
-  suspend fun getFile(fileName: String): InputStream?
-  suspend fun getFile(cloudFile: CloudFile): InputStream?
   suspend fun deleteFile(fileName: String): Boolean
   suspend fun removeAllData(): Boolean
 
@@ -35,5 +33,6 @@ interface CloudFileApi {
 
   suspend fun uploadFile(stream: InputStream, cloudFile: CloudFile): CloudFile
   suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile?
+  suspend fun findFiles(fileExtension: String): List<CloudFile>
   suspend fun downloadFile(cloudFile: CloudFile): InputStream?
 }

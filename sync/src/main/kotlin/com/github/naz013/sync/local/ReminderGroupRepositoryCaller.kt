@@ -23,7 +23,14 @@ internal class ReminderGroupRepositoryCaller(
     reminderGroupRepository.updateSyncState(id, state)
   }
 
-  override suspend fun insertOrUpdate(item: ReminderGroup) {
+  override suspend fun insertOrUpdate(item: Any) {
+    if (item !is ReminderGroup) {
+      throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: ReminderGroup")
+    }
     reminderGroupRepository.save(item)
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    return reminderGroupRepository.getAllIds()
   }
 }

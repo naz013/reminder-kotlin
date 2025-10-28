@@ -123,4 +123,7 @@ internal interface ReminderDao {
 
   @Query("SELECT uuId FROM Reminder WHERE syncState IN (:syncStates)")
   fun getBySyncStates(syncStates: List<String>): List<String>
+
+  @Query("SELECT uuId FROM Reminder")
+  fun getAllIds(): List<String>
 }

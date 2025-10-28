@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.cloud.storages
 
-import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
-import com.github.naz013.cloudapi.CloudFiles
 import com.github.naz013.cloudapi.legacy.Convertible
 import com.github.naz013.cloudapi.legacy.DataChannel
 import com.github.naz013.cloudapi.legacy.Metadata
@@ -22,18 +20,6 @@ class CompositeStorage(
 
   override suspend fun saveFile(stream: CopyByteArrayStream, metadata: Metadata) {
     storageList.forEach { it.saveFile(stream, metadata) }
-  }
-
-  override suspend fun getFiles(folder: String, predicate: (CloudFile) -> Boolean): CloudFiles? {
-    return null
-  }
-
-  override suspend fun getFile(cloudFile: CloudFile): InputStream? {
-    return null
-  }
-
-  override suspend fun getFile(fileName: String): InputStream? {
-    return null
   }
 
   override suspend fun deleteFile(fileName: String): Boolean {

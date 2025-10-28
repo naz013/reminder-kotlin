@@ -21,11 +21,17 @@ internal interface RemoteFileMetadataDao {
   @Query("SELECT * FROM RemoteFileMetadata WHERE localUuId=:localUuId AND source=:source")
   fun get(localUuId: String, source: String): RemoteFileMetadataEntity?
 
+  @Query("SELECT * FROM RemoteFileMetadata WHERE source=:source")
+  fun getBySource(source: String): List<RemoteFileMetadataEntity>
+
   @Query("SELECT * FROM RemoteFileMetadata")
   fun getAll(): List<RemoteFileMetadataEntity>
 
   @Query("DELETE FROM RemoteFileMetadata WHERE id=:id")
   fun delete(id: String)
+
+  @Query("DELETE FROM RemoteFileMetadata WHERE localUuId=:localUuId")
+  fun deleteByLocalUuId(localUuId: String)
 
   @Query("DELETE FROM RemoteFileMetadata")
   fun deleteAll()

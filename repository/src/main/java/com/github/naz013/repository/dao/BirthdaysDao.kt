@@ -24,6 +24,9 @@ internal interface BirthdaysDao {
   @Query("SELECT uuId FROM Birthday WHERE syncState IN (:syncStates)")
   fun getBySyncStates(syncStates: List<String>): List<String>
 
+  @Query("SELECT uuId FROM Birthday")
+  fun getAllIds(): List<String>
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(birthday: BirthdayEntity)
 

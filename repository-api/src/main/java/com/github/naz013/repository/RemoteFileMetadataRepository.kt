@@ -7,7 +7,9 @@ interface RemoteFileMetadataRepository {
   suspend fun getById(id: String): RemoteFileMetadata?
   suspend fun getByLocalUuId(uuId: String): RemoteFileMetadata?
   suspend fun getByLocalUuIdAndSource(uuId: String, source: String): RemoteFileMetadata?
+  suspend fun getBySource(source: String): List<RemoteFileMetadata>
   suspend fun getAll(): List<RemoteFileMetadata>
   suspend fun delete(id: String)
+  suspend fun deleteByLocalUuId(uuId: String)
   suspend fun deleteAll()
 }

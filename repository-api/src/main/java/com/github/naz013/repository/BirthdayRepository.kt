@@ -17,4 +17,6 @@ interface BirthdayRepository {
 
   suspend fun delete(id: String)
   suspend fun deleteAll()
+
+  suspend fun getAllIds(): List<String>
 }

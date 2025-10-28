@@ -33,6 +33,5 @@ val workModule = module {
   worker { BackupDataWorker(get(), get(), get(), get(), get()) }
   worker { BackupSettingsWorker(get(), get(), get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get(), get()) }
-  worker { LoadFileWorker(get(), get(), get(), get()) }
   worker { SyncDataWorker(get(), get(), get(), get(), get(), get(), get()) }
 }

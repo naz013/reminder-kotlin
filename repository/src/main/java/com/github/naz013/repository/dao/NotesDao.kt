@@ -84,4 +84,7 @@ internal interface NotesDao {
 
   @Query("SELECT `key` FROM Note WHERE syncState IN (:syncStates)")
   fun getBySyncStates(syncStates: List<String>): List<String>
+
+  @Query("SELECT `key` FROM Note")
+  fun getAllIds(): List<String>
 }

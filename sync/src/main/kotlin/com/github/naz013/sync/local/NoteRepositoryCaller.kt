@@ -23,8 +23,15 @@ internal class NoteRepositoryCaller(
     noteRepository.updateSyncState(id, state)
   }
 
-  override suspend fun insertOrUpdate(item: NoteWithImages) {
+  override suspend fun insertOrUpdate(item: Any) {
+    if (item !is NoteWithImages) {
+      throw IllegalArgumentException("Expected NoteWithImages but got ${item::class.java}")
+    }
     item.note?.also { noteRepository.save(it) }
     item.images.forEach { noteRepository.save(it) }
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    return noteRepository.getAllIds()
   }
 }

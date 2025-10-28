@@ -22,7 +22,14 @@ internal class PlaceRepositoryCaller(
     placeRepository.updateSyncState(id, state)
   }
 
-  override suspend fun insertOrUpdate(item: Place) {
+  override suspend fun insertOrUpdate(item: Any) {
+    if (item !is Place) {
+      throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: Place")
+    }
     placeRepository.save(item)
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    return placeRepository.getAllIds()
   }
 }

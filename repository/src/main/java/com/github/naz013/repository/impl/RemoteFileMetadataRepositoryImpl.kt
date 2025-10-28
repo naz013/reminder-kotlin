@@ -31,12 +31,21 @@ internal class RemoteFileMetadataRepositoryImpl(
     return remoteFileMetadataDao.get(uuId, source)?.toDomain()
   }
 
+  override suspend fun getBySource(source: String): List<RemoteFileMetadata> {
+    return remoteFileMetadataDao.getBySource(source).map { it.toDomain() }
+  }
+
   override suspend fun getAll(): List<RemoteFileMetadata> {
     return remoteFileMetadataDao.getAll().map { it.toDomain() }
   }
 
   override suspend fun delete(id: String) {
     remoteFileMetadataDao.delete(id)
+    tableChangeNotifier.notify(Table.RemoteFileMetadata)
+  }
+
+  override suspend fun deleteByLocalUuId(uuId: String) {
+    remoteFileMetadataDao.deleteByLocalUuId(uuId)
     tableChangeNotifier.notify(Table.RemoteFileMetadata)
   }
 

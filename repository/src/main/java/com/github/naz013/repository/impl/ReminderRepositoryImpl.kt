@@ -155,6 +155,11 @@ internal class ReminderRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun getAllIds(): List<String> {
+    Logger.d(TAG, "Get all reminder ids")
+    return dao.getAllIds()
+  }
+
   companion object {
     private const val TAG = "ReminderRepository"
   }
