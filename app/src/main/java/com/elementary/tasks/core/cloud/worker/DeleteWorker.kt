@@ -21,10 +21,15 @@ class DeleteWorker(
       ?.let { DataType.valueOf(it) }
     val itemId = inputData.getString(WorkerData.ITEM_ID)
       ?.takeIf { it.isNotEmpty() }
+    val itemIds = inputData.getStringArray(WorkerData.ITEM_IDS)
+      ?.toList()
+      ?.takeIf { it.isNotEmpty() }
     withContext(dispatcherProvider.io()) {
       if (dataType != null) {
         if (itemId != null) {
           syncApi.delete(dataType, itemId)
+        } else if (itemIds != null) {
+          syncApi.delete(dataType, itemIds)
         } else {
           syncApi.delete(dataType)
         }

@@ -32,6 +32,7 @@ internal class DownloadSingleUseCase(
         return
       }
       val data = syncDataConverter.parse(stream, getClass(dataType))
+      // TODO: Add conflict resolution here
       caller.insertOrUpdate(data)
       val remoteFileMetadata = createRemoteFileMetadataUseCase(
         source = newestResult.cloudFileApi.source.value,

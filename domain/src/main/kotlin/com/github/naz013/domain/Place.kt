@@ -28,7 +28,7 @@ data class Place(
   @SerializedName("versionId")
   var version: Long = 0L,
   @Transient
-  val syncState: SyncState,
+  var syncState: SyncState,
 ) : Serializable {
 
   fun latLng(): LatLng = LatLng(latitude, longitude)

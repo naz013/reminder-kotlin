@@ -7,15 +7,15 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
 import com.elementary.tasks.core.utils.IdProvider
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
-import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.SaveReminderGroupUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -28,13 +28,14 @@ import java.util.UUID
 class EditGroupViewModel(
   private val id: String,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiGroupEditAdapter: UiGroupEditAdapter,
   private val idProvider: IdProvider,
-  private val intentDataReader: IntentDataReader
+  private val intentDataReader: IntentDataReader,
+  private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
+  private val saveReminderGroupUseCase: SaveReminderGroupUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _reminderGroup = mutableLiveDataOf<UiGroupEdit>()
@@ -117,19 +118,15 @@ class EditGroupViewModel(
         groupDateTime = dateTimeManager.getNowGmtDateTime(),
         groupTitle = title,
         isDefaultGroup = isDefault,
-        groupUuId = idProvider.generateUuid()
+        groupUuId = idProvider.generateUuid(),
+        syncState = SyncState.WaitingForUpload
       )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
       if (!wasDefault && group.isDefaultGroup) {
         val groups = reminderGroupRepository.getAll().map { it.copy(isDefaultGroup = false) }
         reminderGroupRepository.saveAll(groups)
       }
-      reminderGroupRepository.save(group)
-      workerLauncher.startWork(
-        GroupSingleBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        group.groupUuId
-      )
+      saveReminderGroupUseCase(group)
       Logger.logEvent("Group saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -140,15 +137,10 @@ class EditGroupViewModel(
     val reminderGroup = localGroup ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderGroupRepository.delete(reminderGroup.groupUuId)
+      deleteReminderGroupUseCase(reminderGroup.groupUuId)
       postInProgress(false)
       postCommand(Commands.DELETED)
       Logger.logEvent("Group deleted")
-      workerLauncher.startWork(
-        GroupDeleteBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        reminderGroup.groupUuId
-      )
     }
   }
 }

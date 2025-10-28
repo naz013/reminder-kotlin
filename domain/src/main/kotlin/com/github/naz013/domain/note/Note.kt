@@ -32,7 +32,7 @@ data class Note(
   @SerializedName("versionId")
   var version: Long = 0L,
   @Transient
-  val syncState: SyncState,
+  var syncState: SyncState,
 ) : Serializable {
 
   constructor(oldNote: OldNote) : this(

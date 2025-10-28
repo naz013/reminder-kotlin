@@ -8,25 +8,8 @@ import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.cloud.SyncManagers
-import com.elementary.tasks.core.cloud.completables.CompletableManager
 import com.elementary.tasks.core.cloud.completables.ReminderCompletable
-import com.elementary.tasks.core.cloud.completables.ReminderDeleteCompletable
-import com.elementary.tasks.core.cloud.converters.BirthdayConverter
-import com.elementary.tasks.core.cloud.converters.ConverterManager
-import com.elementary.tasks.core.cloud.converters.GroupConverter
-import com.elementary.tasks.core.cloud.converters.NoteConverter
-import com.elementary.tasks.core.cloud.converters.PlaceConverter
-import com.elementary.tasks.core.cloud.converters.ReminderConverter
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
-import com.elementary.tasks.core.cloud.repositories.BirthdayDataFlowRepository
-import com.elementary.tasks.core.cloud.repositories.GroupDataFlowRepository
-import com.elementary.tasks.core.cloud.repositories.NoteDataFlowRepository
-import com.elementary.tasks.core.cloud.repositories.PlaceDataFlowRepository
-import com.elementary.tasks.core.cloud.repositories.ReminderDataFlowRepository
-import com.elementary.tasks.core.cloud.repositories.RepositoryManager
-import com.elementary.tasks.core.cloud.repositories.SettingsDataFlowRepository
-import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.location.LocationTracker
@@ -51,19 +34,9 @@ import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.groups.create.EditGroupViewModel
-import com.elementary.tasks.groups.list.GroupsViewModel
-import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
-import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.places.create.EditPlaceViewModel
-import com.elementary.tasks.places.list.PlacesViewModel
-import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
-import com.elementary.tasks.places.work.PlaceSingleBackupWorker
 import com.elementary.tasks.reminder.work.CheckEventsWorker
-import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import com.elementary.tasks.settings.calendar.EventsImportViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
@@ -83,46 +56,12 @@ import org.koin.dsl.module
 val workerModule = module {
   worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
   worker { UpdateTaskWorker(get(), get(), get(), get(), get()) }
-  worker { GroupDeleteBackupWorker(get(), get(), get(), get()) }
-  worker { GroupSingleBackupWorker(get(), get(), get(), get()) }
-  worker { PlaceDeleteBackupWorker(get(), get(), get(), get()) }
-  worker { PlaceSingleBackupWorker(get(), get(), get(), get()) }
-  worker { ReminderDeleteBackupWorker(get(), get(), get(), get()) }
-  worker { ReminderSingleBackupWorker(get(), get(), get(), get()) }
   worker { CheckEventsWorker(get(), get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
-  viewModel { (id: String) ->
-    EditPlaceViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
-  viewModel { (id: String) ->
-    EditGroupViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { GroupsViewModel(get(), get(), get(), get(), get()) }
 
   viewModel { SelectApplicationViewModel(get(), get()) }
-  viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
 
   viewModel { CloudViewModel(get(), get(), get(), get(), get()) }
 
@@ -148,34 +87,15 @@ val viewModelModule = module {
 }
 
 val converterModule = module {
-  factory { BirthdayConverter(get()) }
-  factory { GroupConverter(get()) }
-  factory { NoteConverter(get(), get()) }
-  factory { PlaceConverter(get()) }
-  factory { ReminderConverter(get()) }
   factory { SettingsConverter(get()) }
-  factory { ConverterManager(get(), get(), get(), get(), get(), get()) }
 }
 
 val completableModule = module {
   factory { ReminderCompletable(get(), get(), get(), get(), get()) }
-  factory { ReminderDeleteCompletable(get()) }
-  factory { CompletableManager(get(), get()) }
 }
 
 val storageModule = module {
   factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
-  factory { StorageManager(get(), get(), get(), get()) }
-}
-
-val dataFlowRepositoryModule = module {
-  factory { BirthdayDataFlowRepository(get()) }
-  factory { GroupDataFlowRepository(get()) }
-  factory { NoteDataFlowRepository(get(), get()) }
-  factory { PlaceDataFlowRepository(get()) }
-  factory { ReminderDataFlowRepository(get()) }
-  factory { SettingsDataFlowRepository(get()) }
-  factory { RepositoryManager(get(), get(), get(), get(), get(), get()) }
 }
 
 val utilModule = module {
@@ -186,8 +106,6 @@ val utilModule = module {
   single { BackupTool(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   factory { GoogleCalendarUtils(get(), get(), get(), get()) }
   single { CacheUtil(get(), get()) }
-
-  factory { SyncManagers(get(), get(), get(), get()) }
 
   single {
     EventControlFactory(

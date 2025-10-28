@@ -3,25 +3,23 @@ package com.elementary.tasks.birthdays.create
 import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
-import com.elementary.tasks.birthdays.work.SingleBackupWorker
+import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
+import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayEdit
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.io.UriReader
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -36,16 +34,15 @@ class EditBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier,
   private val contactsReader: ContactsReader,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayEditAdapter: UiBirthdayEditAdapter,
   private val uriReader: UriReader,
-  private val appWidgetUpdater: AppWidgetUpdater,
   private val intentDataReader: IntentDataReader,
-  private val uiBirthdayDateFormatter: UiBirthdayDateFormatter
+  private val uiBirthdayDateFormatter: UiBirthdayDateFormatter,
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
+  private val saveBirthdayUseCase: SaveBirthdayUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
@@ -150,7 +147,9 @@ class EditBirthdayViewModel(
         month = selectedDate.monthValue - 1,
         dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
         updatedAt = dateTimeManager.getNowGmtDateTime(),
-        ignoreYear = ignoreYear
+        ignoreYear = ignoreYear,
+        syncState = SyncState.WaitingForUpload,
+        version = 0
       )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
       Logger.i("Saving the birthday with id: ${birthday.uuId}")
@@ -161,11 +160,7 @@ class EditBirthdayViewModel(
   fun deleteBirthday() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdayRepository.delete(id)
-      notifier.showBirthdayPermanent()
-      appWidgetUpdater.updateScheduleWidget()
-      appWidgetUpdater.updateBirthdaysWidget()
-      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, id)
+      deleteBirthdayUseCase(id)
       Logger.i("Deleting the birthday with id: $id")
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -193,11 +188,7 @@ class EditBirthdayViewModel(
   private fun saveBirthday(birthday: Birthday) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdayRepository.save(birthday)
-      notifier.showBirthdayPermanent()
-      appWidgetUpdater.updateBirthdaysWidget()
-      appWidgetUpdater.updateScheduleWidget()
-      workerLauncher.startWork(SingleBackupWorker::class.java, IntentKeys.INTENT_ID, birthday.uuId)
+      saveBirthdayUseCase(birthday)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

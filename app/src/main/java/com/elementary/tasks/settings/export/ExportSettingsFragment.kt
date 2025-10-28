@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
-import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -14,14 +14,14 @@ import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
-import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
-import com.github.naz013.ui.common.view.gone
+import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.fragment.toast
+import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
@@ -211,7 +211,7 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
   private fun syncClick() {
     permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
       onProgress.invoke(true)
-      syncWorker.sync()
+      syncWorker.sync(lifecycleScope)
     }
   }
 
@@ -253,7 +253,7 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
   private fun backupClick() {
     permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
       onProgress.invoke(true)
-      backupWorker.backup()
+      backupWorker.backup(lifecycleScope)
     }
   }
 
@@ -433,28 +433,28 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     return arrayOf(
       SyncFlag(
         getString(R.string.reminders_),
-        SyncDataWorker.FLAG_REMINDER,
-        current.contains(SyncDataWorker.FLAG_REMINDER)
+        SyncOptions.FLAG_REMINDER,
+        current.contains(SyncOptions.FLAG_REMINDER)
       ),
       SyncFlag(
         getString(R.string.birthdays),
-        SyncDataWorker.FLAG_BIRTHDAY,
-        current.contains(SyncDataWorker.FLAG_BIRTHDAY)
+        SyncOptions.FLAG_BIRTHDAY,
+        current.contains(SyncOptions.FLAG_BIRTHDAY)
       ),
       SyncFlag(
         getString(R.string.notes),
-        SyncDataWorker.FLAG_NOTE,
-        current.contains(SyncDataWorker.FLAG_NOTE)
+        SyncOptions.FLAG_NOTE,
+        current.contains(SyncOptions.FLAG_NOTE)
       ),
       SyncFlag(
         getString(R.string.places),
-        SyncDataWorker.FLAG_PLACE,
-        current.contains(SyncDataWorker.FLAG_PLACE)
+        SyncOptions.FLAG_PLACE,
+        current.contains(SyncOptions.FLAG_PLACE)
       ),
       SyncFlag(
         getString(R.string.action_settings),
-        SyncDataWorker.FLAG_SETTINGS,
-        current.contains(SyncDataWorker.FLAG_SETTINGS)
+        SyncOptions.FLAG_SETTINGS,
+        current.contains(SyncOptions.FLAG_SETTINGS)
       )
     )
   }

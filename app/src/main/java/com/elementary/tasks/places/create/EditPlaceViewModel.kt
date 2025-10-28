@@ -6,12 +6,12 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
-import com.elementary.tasks.places.work.PlaceSingleBackupWorker
+import com.elementary.tasks.places.usecase.DeletePlaceUseCase
+import com.elementary.tasks.places.usecase.SavePlaceUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -25,12 +25,13 @@ import java.util.UUID
 class EditPlaceViewModel(
   private val id: String,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val placeRepository: PlaceRepository,
   private val dateTimeManager: DateTimeManager,
   private val uiPlaceEditAdapter: UiPlaceEditAdapter,
   private val prefs: Prefs,
-  private val intentDataReader: IntentDataReader
+  private val intentDataReader: IntentDataReader,
+  private val deletePlaceUseCase: DeletePlaceUseCase,
+  private val savePlaceUseCase: SavePlaceUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _place = mutableLiveDataOf<UiPlaceEdit>()
@@ -69,19 +70,19 @@ class EditPlaceViewModel(
   fun savePlace(data: SavePlaceData) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = (placeRepository.getById(id) ?: Place()).apply {
+      val place = (placeRepository.getById(id) ?: Place(syncState = SyncState.WaitingForUpload)).apply {
         this.name = data.name
         this.dateTime = dateTimeManager.getNowGmtDateTime()
         this.radius = markerRadius
         this.latitude = lat
         this.longitude = lng
         this.marker = markerStyle
+        this.syncState = SyncState.WaitingForUpload
       }
       if (data.newId) {
         place.id = UUID.randomUUID().toString()
       }
-      placeRepository.save(place)
-      workerLauncher.startWork(PlaceSingleBackupWorker::class.java, IntentKeys.INTENT_ID, place.id)
+      savePlaceUseCase(place)
       Logger.logEvent("Place saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -100,14 +101,7 @@ class EditPlaceViewModel(
   fun deletePlace() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = placeRepository.getById(id)
-      if (place == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      placeRepository.delete(place.id)
-      workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, place.id)
+      deletePlaceUseCase(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

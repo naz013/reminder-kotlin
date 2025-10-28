@@ -2,17 +2,17 @@ package com.elementary.tasks.settings.birthday
 
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.Commands
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.common.TextProvider
-import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.sync.DataType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
@@ -20,10 +20,10 @@ import org.apache.commons.lang3.StringUtils
 class BirthdaySettingsViewModel(
   private val birthdayRepository: BirthdayRepository,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val notifier: Notifier,
   private val scanContactsWorker: ScanContactsWorker,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private var mJob: Job? = null
@@ -51,13 +51,13 @@ class BirthdaySettingsViewModel(
       val list = birthdayRepository.getAll()
       for (birthday in list) {
         birthdayRepository.delete(birthday.uuId)
-        workerLauncher.startWork(
-          BirthdayDeleteBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          birthday.uuId
-        )
       }
       notifier.showBirthdayPermanent()
+      scheduleBackgroundWorkUseCase(
+        workType = WorkType.Delete,
+        dataType = DataType.Birthdays,
+        id = null // delete all
+      )
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

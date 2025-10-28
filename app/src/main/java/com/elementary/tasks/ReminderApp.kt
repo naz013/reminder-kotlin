@@ -14,7 +14,6 @@ import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.completableModule
 import com.elementary.tasks.core.utils.converterModule
-import com.elementary.tasks.core.utils.dataFlowRepositoryModule
 import com.elementary.tasks.core.utils.newUtilsModule
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
@@ -25,12 +24,14 @@ import com.elementary.tasks.core.utils.workerModule
 import com.elementary.tasks.core.work.workModule
 import com.elementary.tasks.globalsearch.searchModule
 import com.elementary.tasks.googletasks.googleTaskModule
+import com.elementary.tasks.groups.reminderGroupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.notes.noteModule
+import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
@@ -94,7 +95,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
         listOf(
           utilModule,
           featureCommonModule,
-          dataFlowRepositoryModule,
           storageModule,
           completableModule,
           converterModule,
@@ -127,7 +127,9 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           iCalendarModule,
           navigationApiModule,
           cloudModule,
-          syncApiModule
+          syncApiModule,
+          reminderGroupModule,
+          placeKoinModule
         )
       )
     }

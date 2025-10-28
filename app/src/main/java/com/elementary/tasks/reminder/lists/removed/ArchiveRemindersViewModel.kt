@@ -6,8 +6,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.filter.AppliedFilters
@@ -18,9 +16,9 @@ import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
 import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilterGroup
 import com.elementary.tasks.reminder.lists.filter.group.ReminderGroupFilterInstance
 import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
-import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
+import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
+import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -39,13 +37,13 @@ import kotlinx.coroutines.withContext
 @OptIn(FlowPreview::class)
 class ArchiveRemindersViewModel(
   private val reminderRepository: ReminderRepository,
-  private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val textProvider: TextProvider,
-  private val groupRepository: ReminderGroupRepository
+  private val groupRepository: ReminderGroupRepository,
+  private val deleteReminderUseCase: DeleteReminderUseCase,
+  private val deleteAllReminderUseCase: DeleteAllReminderUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _events = mutableLiveDataOf<List<UiReminderEventsList>>()
@@ -132,14 +130,7 @@ class ArchiveRemindersViewModel(
     Logger.i(TAG, "Deleting reminder: $id")
     withResultSuspend {
       reminderRepository.getById(id)?.let {
-        eventControlFactory.getController(it).disable()
-        reminderRepository.delete(it.uuId)
-        googleCalendarUtils.deleteEvents(it.uuId)
-        workerLauncher.startWork(
-          ReminderDeleteBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          it.uuId
-        )
+        deleteReminderUseCase(it)
         loadReminders()
         Commands.DELETED
       } ?: run {
@@ -162,14 +153,7 @@ class ArchiveRemindersViewModel(
       reminders.forEach {
         eventControlFactory.getController(it).disable()
       }
-      reminderRepository.deleteAll(reminders.map { it.uuId })
-      reminders.forEach {
-        workerLauncher.startWork(
-          ReminderDeleteBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          it.uuId
-        )
-      }
+      deleteAllReminderUseCase(reminders.map { it.uuId })
       loadReminders()
       postInProgress(false)
       postCommand(Commands.DELETED)
