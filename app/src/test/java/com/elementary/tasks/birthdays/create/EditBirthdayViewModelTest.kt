@@ -5,7 +5,6 @@ import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.io.UriReader
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -29,13 +28,10 @@ class EditBirthdayViewModelTest : BaseTest() {
   private lateinit var viewModel: EditBirthdayViewModel
 
   private val birthdayRepository = mockk<BirthdayRepository>()
-  private val workerLauncher = mockk<WorkerLauncher>()
-  private val notifier = mockk<Notifier>()
   private val contactsReader = mockk<ContactsReader>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>()
   private val uriReader = mockk<UriReader>()
-  private val appWidgetUpdater = mockk<AppWidgetUpdater>()
   private val intentDataReader = mockk<IntentDataReader>()
 
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
@@ -48,14 +44,11 @@ class EditBirthdayViewModelTest : BaseTest() {
       id = ID,
       birthdayRepository = birthdayRepository,
       dispatcherProvider = mockDispatcherProvider(),
-      workerLauncher = workerLauncher,
-      notifier = notifier,
       contactsReader = contactsReader,
       dateTimeManager = dateTimeManager,
       analyticsEventSender = analyticsEventSender,
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
       uriReader = uriReader,
-      appWidgetUpdater = appWidgetUpdater,
       intentDataReader = intentDataReader,
       uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager)
     )

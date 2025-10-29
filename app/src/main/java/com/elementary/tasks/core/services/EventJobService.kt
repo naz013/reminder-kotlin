@@ -31,7 +31,6 @@ class EventJobService(
     when (params.tags.first()) {
       JobScheduler.EVENT_BIRTHDAY -> birthdayAction()
       JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
-      JobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
       JobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
       JobScheduler.EVENT_CHECK -> eventsCheckAction()
       else -> {
@@ -52,15 +51,6 @@ class EventJobService(
       id = null
     )
     jobScheduler.scheduleAutoBackup()
-  }
-
-  private fun autoSyncAction() {
-    scheduleBackgroundWorkUseCase(
-      workType = WorkType.Sync,
-      dataType = null,
-      id = null
-    )
-    jobScheduler.scheduleAutoSync()
   }
 
   private fun birthdayPermanentAction() {

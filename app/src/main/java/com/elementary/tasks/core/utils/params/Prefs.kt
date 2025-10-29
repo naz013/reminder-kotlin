@@ -76,10 +76,6 @@ class Prefs(
     get() = getBoolean(PrefsConstants.IS_DEFAULT_PRESET_INIT, def = true)
     set(value) = putBoolean(PrefsConstants.IS_DEFAULT_PRESET_INIT, value)
 
-  var showAdvancedDayDialog: Boolean
-    get() = getBoolean(PrefsConstants.RECUR_SHOW_ADVANCED_DAY_DIALOG, def = false)
-    set(value) = putBoolean(PrefsConstants.RECUR_SHOW_ADVANCED_DAY_DIALOG, value)
-
   var trackCalendarIds: Array<Long>
     get() = getLongArray(PrefsConstants.CALENDAR_IDS)
     set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
@@ -88,29 +84,13 @@ class Prefs(
     get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, def = true)
     set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)
 
-  var backupAttachedFiles: Boolean
-    get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
-    set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)
-
   var nightMode: Int
     get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
     set(value) = putInt(PrefsConstants.NIGHT_MODE, value)
 
-  var autoSyncState: Int
-    get() = getInt(PrefsConstants.AUTO_SYNC_STATE)
-    set(value) = putInt(PrefsConstants.AUTO_SYNC_STATE, value)
-
-  var autoSyncFlags: Array<String>
-    get() = getStringArray(PrefsConstants.AUTO_SYNC_FLAGS)
-    set(value) = putStringArray(PrefsConstants.AUTO_SYNC_FLAGS, value)
-
   var autoBackupState: Int
     get() = getInt(PrefsConstants.AUTO_BACKUP_STATE)
     set(value) = putInt(PrefsConstants.AUTO_BACKUP_STATE, value)
-
-  var autoBackupFlags: Array<String>
-    get() = getStringArray(PrefsConstants.AUTO_BACKUP_FLAGS)
-    set(value) = putStringArray(PrefsConstants.AUTO_BACKUP_FLAGS, value)
 
   var notePalette: Int
     get() = getInt(PrefsConstants.NOTE_PALETTE)
@@ -186,14 +166,6 @@ class Prefs(
     get() = getInt(PrefsConstants.APP_LANGUAGE)
     set(value) = putInt(PrefsConstants.APP_LANGUAGE, value)
 
-  var isTellAboutEvent: Boolean
-    get() = getBoolean(PrefsConstants.TELL_ABOUT_EVENT)
-    set(value) = putBoolean(PrefsConstants.TELL_ABOUT_EVENT, value)
-
-  var lastUsedReminder: Int
-    get() = getInt(PrefsConstants.LAST_USED_REMINDER)
-    set(value) = putInt(PrefsConstants.LAST_USED_REMINDER, value)
-
   var markerStyle: Int
     get() = getInt(PrefsConstants.MARKER_STYLE)
     set(value) = putInt(PrefsConstants.MARKER_STYLE, value)
@@ -209,26 +181,6 @@ class Prefs(
   var birthdayColor: Int
     get() = getInt(PrefsConstants.BIRTH_COLOR)
     set(value) = putInt(PrefsConstants.BIRTH_COLOR, value)
-
-  var nightTime: String
-    get() = getString(PrefsConstants.TIME_NIGHT)
-    set(value) = putString(PrefsConstants.TIME_NIGHT, value)
-
-  var eveningTime: String
-    get() = getString(PrefsConstants.TIME_EVENING)
-    set(value) = putString(PrefsConstants.TIME_EVENING, value)
-
-  var noonTime: String
-    get() = getString(PrefsConstants.TIME_DAY)
-    set(value) = putString(PrefsConstants.TIME_DAY, value)
-
-  var morningTime: String
-    get() = getString(PrefsConstants.TIME_MORNING)
-    set(value) = putString(PrefsConstants.TIME_MORNING, value)
-
-  var voiceLocale: Int
-    get() = getInt(PrefsConstants.CONVERSATION_LOCALE)
-    set(value) = putInt(PrefsConstants.CONVERSATION_LOCALE, value)
 
   val is24HourFormat: Boolean
     get() {
@@ -322,17 +274,6 @@ class Prefs(
   var ledColor: Int
     get() = getInt(PrefsConstants.LED_COLOR)
     set(value) = putInt(PrefsConstants.LED_COLOR, value)
-
-  var isSettingsBackupEnabled: Boolean
-    get() = getBoolean(PrefsConstants.EXPORT_SETTINGS)
-    set(value) = putBoolean(PrefsConstants.EXPORT_SETTINGS, value)
-
-  var isBackupEnabled: Boolean
-    get() = getBoolean(PrefsConstants.DATA_BACKUP)
-    set(value) {
-      putBoolean(PrefsConstants.DATA_BACKUP, value)
-      notifyKey(PrefsConstants.DATA_BACKUP)
-    }
 
   var calendarEventDuration: Int
     get() = getInt(PrefsConstants.EVENT_DURATION)
@@ -450,10 +391,6 @@ class Prefs(
       notifyKey(PrefsConstants.PRIVACY_SHOWED)
     }
 
-  var isLiveEnabled: Boolean
-    get() = getBoolean(PrefsConstants.LIVE_CONVERSATION)
-    set(value) = putBoolean(PrefsConstants.LIVE_CONVERSATION, value)
-
   var isNoteFontSizeRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, def = true)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, value)
@@ -501,10 +438,6 @@ class Prefs(
     get() = getString(PrefsConstants.VOICE_HELP_URLS, "{}")
     set(value) = putString(PrefsConstants.VOICE_HELP_URLS, value)
 
-  var isAutoMicClick: Boolean
-    get() = getBoolean(PrefsConstants.CONVERSATION_AUTO_MIC, true)
-    set(value) = putBoolean(PrefsConstants.CONVERSATION_AUTO_MIC, value)
-
   var useDynamicColors: Boolean
     get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)
     set(value) = putBoolean(PrefsConstants.DYNAMIC_COLORS, value)
@@ -547,11 +480,6 @@ class Prefs(
         localeCheck.startsWith("uk") -> 2
         else -> 0
       }
-      editor.putInt(PrefsConstants.CONVERSATION_LOCALE, locale)
-      editor.putString(PrefsConstants.TIME_MORNING, "7:0")
-      editor.putString(PrefsConstants.TIME_DAY, "12:0")
-      editor.putString(PrefsConstants.TIME_EVENING, "19:0")
-      editor.putString(PrefsConstants.TIME_NIGHT, "23:0")
       editor.putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
       editor.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
       editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
@@ -586,7 +514,6 @@ class Prefs(
       editor.putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
       editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
       editor.putBoolean(PrefsConstants.REMINDER_CHANGED, false)
-      editor.putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
       if (BuildParams.isPro) {
         editor.putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
         editor.putBoolean(PrefsConstants.LED_STATUS, true)
@@ -626,21 +553,6 @@ class Prefs(
       putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
     }
 
-    if (!hasKey(PrefsConstants.CONVERSATION_LOCALE)) {
-      putInt(PrefsConstants.CONVERSATION_LOCALE, 0)
-    }
-    if (!hasKey(PrefsConstants.TIME_MORNING)) {
-      putString(PrefsConstants.TIME_MORNING, "7:0")
-    }
-    if (!hasKey(PrefsConstants.TIME_DAY)) {
-      putString(PrefsConstants.TIME_DAY, "12:0")
-    }
-    if (!hasKey(PrefsConstants.TIME_EVENING)) {
-      putString(PrefsConstants.TIME_EVENING, "19:0")
-    }
-    if (!hasKey(PrefsConstants.TIME_NIGHT)) {
-      putString(PrefsConstants.TIME_NIGHT, "23:0")
-    }
     if (!hasKey(PrefsConstants.DAYS_TO_BIRTHDAY)) {
       putInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
     }
@@ -730,9 +642,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.REMINDER_CHANGED)) {
       putBoolean(PrefsConstants.REMINDER_CHANGED, false)
-    }
-    if (!hasKey(PrefsConstants.LIVE_CONVERSATION)) {
-      putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
     }
     if (!hasKey(PrefsConstants.NOTE_COLOR_OPACITY)) {
       putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)

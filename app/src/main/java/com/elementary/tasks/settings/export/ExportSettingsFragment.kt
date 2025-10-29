@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.SyncWorker
@@ -16,11 +15,9 @@ import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
-import java.io.File
 
 class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBinding>() {
 
@@ -63,13 +60,8 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       }
     }
 
-    initBackupPrefs()
-    initSettingsBackupPrefs()
-    initClearDataPrefs()
-
     initAutoBackupPrefs()
-    initAutoSyncPrefs()
-    initBackupFilesPrefs()
+    initClearDataPrefs()
   }
 
   override fun onResume() {
@@ -84,57 +76,12 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     backupWorker.unsubscribe()
   }
 
-  private fun initBackupFilesPrefs() {
-    binding.backupFilesPrefs.gone()
-//        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
-//        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
-//        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
-  }
-
-  private fun initAutoSyncPrefs() {
-    binding.autoSyncPrefs.setOnClickListener {
-      showIntervalDialog(getString(R.string.automatically_sync), prefs.autoSyncState) { state ->
-        prefs.autoSyncState = stateFromPosition(state)
-        showSyncState()
-        jobScheduler.scheduleAutoSync()
-      }
-    }
-    binding.autoSyncPrefs.setDependentView(binding.backupDataPrefs)
-    showSyncState()
-  }
-
-  private fun showSyncState() {
-    binding.autoSyncPrefs.setDetailText(syncStates()[positionFromState(prefs.autoSyncState)])
-    initAutoSyncFlagsPrefs()
-  }
-
-  private fun initAutoSyncFlagsPrefs() {
-    binding.autoSyncFlagsPrefs.setOnClickListener {
-      showFlagsDialog(getString(R.string.sync_flags), prefs.autoSyncFlags) {
-        prefs.autoSyncFlags = it
-      }
-    }
-    binding.autoSyncFlagsPrefs.setDependentView(binding.backupDataPrefs)
-    binding.autoSyncFlagsPrefs.setDependentValue(prefs.autoSyncState > 0)
-  }
-
-  private fun initBackupPrefs() {
-    binding.backupDataPrefs.isChecked = prefs.isBackupEnabled
-    binding.backupDataPrefs.setOnClickListener { changeBackupPrefs() }
-    initSyncButton()
-    initBackupButton()
-  }
-
   private fun initSyncButton() {
-    if (prefs.isBackupEnabled) {
-      binding.syncButton.isEnabled = true
-      binding.syncButton.visibility = View.VISIBLE
-      binding.syncButton.setOnClickListener { syncClick() }
-      syncWorker.listener = onProgress
-      syncWorker.onEnd = onSyncEnd
-    } else {
-      binding.syncButton.visibility = View.GONE
-    }
+    binding.syncButton.isEnabled = true
+    binding.syncButton.visibility = View.VISIBLE
+    binding.syncButton.setOnClickListener { syncClick() }
+    syncWorker.listener = onProgress
+    syncWorker.onEnd = onSyncEnd
   }
 
   private fun syncClick() {
@@ -145,15 +92,11 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
   }
 
   private fun initBackupButton() {
-    if (prefs.isBackupEnabled) {
-      binding.backupButton.isEnabled = true
-      binding.backupButton.visibility = View.VISIBLE
-      binding.backupButton.setOnClickListener { backupClick() }
-      backupWorker.listener = onProgress
-      backupWorker.onEnd = onSyncEnd
-    } else {
-      binding.backupButton.visibility = View.GONE
-    }
+    binding.backupButton.isEnabled = true
+    binding.backupButton.visibility = View.VISIBLE
+    binding.backupButton.setOnClickListener { backupClick() }
+    backupWorker.listener = onProgress
+    backupWorker.onEnd = onSyncEnd
   }
 
   private fun backupClick() {
@@ -163,54 +106,27 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     }
   }
 
-  private fun changeBackupPrefs() {
-    val isChecked = binding.backupDataPrefs.isChecked
-    binding.backupDataPrefs.isChecked = !isChecked
-    prefs.isBackupEnabled = !isChecked
-    initSyncButton()
-    initBackupButton()
-  }
-
   private fun initClearDataPrefs() {
     binding.cleanPrefs.setOnClickListener { showCleanDialog() }
-    binding.cleanPrefs.setDependentView(binding.backupDataPrefs)
   }
 
   private fun showCleanDialog() {
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setCancelable(true)
-    builder.setTitle(getString(R.string.clean))
-    builder.setNeutralButton(R.string.local) { _, _ ->
-      MemoryUtil.parent?.let { dir ->
-        deleteRecursive(dir)
-      }
-    }
+    builder.setTitle(getString(R.string.erase_cloud_data))
+    builder.setMessage(getString(R.string.erase_cloud_data_message))
     builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-    builder.setPositiveButton(R.string.all) { _, _ -> removeAllData() }
+    builder.setPositiveButton(R.string.erase) { _, _ -> removeAllData() }
     builder.create().show()
   }
 
   private fun removeAllData() {
-    MemoryUtil.parent?.let {
-      deleteRecursive(it)
-    }
     launchDefault {
       googleDriveApi.removeAllData()
       dropboxApi.removeAllData()
     }
   }
 
-  private fun deleteRecursive(fileOrDirectory: File) {
-    if (fileOrDirectory.isDirectory) {
-      val list = fileOrDirectory.listFiles()
-      if (list != null) {
-        for (child in list) {
-          deleteRecursive(child)
-        }
-      }
-    }
-    fileOrDirectory.delete()
-  }
 
   private fun initAutoBackupPrefs() {
     binding.autoBackupPrefs.setOnClickListener {
@@ -220,51 +136,11 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
         jobScheduler.scheduleAutoBackup()
       }
     }
-    binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)
     showBackupState()
   }
 
   private fun showBackupState() {
     binding.autoBackupPrefs.setDetailText(syncStates()[positionFromState(prefs.autoBackupState)])
-    initAutoBackupFlagsPrefs()
-  }
-
-  private fun initAutoBackupFlagsPrefs() {
-    binding.autoBackupFlagsPrefs.setOnClickListener {
-      showFlagsDialog(getString(R.string.backup_flags), prefs.autoBackupFlags) {
-        prefs.autoBackupFlags = it
-      }
-    }
-    binding.autoBackupFlagsPrefs.setDependentView(binding.backupDataPrefs)
-    binding.autoBackupFlagsPrefs.setDependentValue(prefs.autoBackupState > 0)
-  }
-
-  private fun showFlagsDialog(
-    title: String,
-    current: Array<String>,
-    onSelect: (Array<String>) -> Unit
-  ) {
-    val builder = dialogues.getMaterialDialog(requireContext())
-    builder.setTitle(title)
-    val syncFlags = syncFlags(current)
-    builder.setMultiChoiceItems(
-      syncFlags.map { it.title }.toTypedArray(),
-      checkStates(syncFlags)
-    ) { _, which, isChecked ->
-      syncFlags[which].isChecked = isChecked
-    }
-    builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-      dialog.dismiss()
-      onSelect.invoke(syncFlags.filter { it.isChecked }.map { it.key }.toTypedArray())
-    }
-    builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-      dialog.dismiss()
-    }
-    builder.create().show()
-  }
-
-  private fun checkStates(syncFlags: Array<SyncFlag>): BooleanArray {
-    return syncFlags.map { it.isChecked }.toBooleanArray()
   }
 
   private fun positionFromState(state: Int): Int {
@@ -308,60 +184,17 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     }
   }
 
-  private fun initSettingsBackupPrefs() {
-    binding.syncSettingsPrefs.isChecked = prefs.isSettingsBackupEnabled
-    binding.syncSettingsPrefs.setOnClickListener { changeSettingsBackupPrefs() }
-    binding.syncSettingsPrefs.setDependentView(binding.backupDataPrefs)
-  }
-
-  private fun changeSettingsBackupPrefs() {
-    val isChecked = binding.syncSettingsPrefs.isChecked
-    binding.syncSettingsPrefs.isChecked = !isChecked
-    prefs.isSettingsBackupEnabled = !isChecked
-  }
-
   override fun getTitle(): String = getString(R.string.cloud_backup)
 
   private fun syncStates(): Array<String> {
+    val prefix = getString(R.string.auto_backup_every) + " "
     return arrayOf(
       getString(R.string.disabled),
-      getString(R.string.one_hour),
-      getString(R.string.six_hours),
-      getString(R.string.twelve_hours),
-      getString(R.string.one_day),
-      getString(R.string.two_days)
+      prefix + getString(R.string.one_hour),
+      prefix + getString(R.string.six_hours),
+      prefix + getString(R.string.twelve_hours),
+      prefix + getString(R.string.one_day),
+      prefix + getString(R.string.two_days)
     )
   }
-
-  private fun syncFlags(current: Array<String>): Array<SyncFlag> {
-    return arrayOf(
-      SyncFlag(
-        getString(R.string.reminders_),
-        SyncOptions.FLAG_REMINDER,
-        current.contains(SyncOptions.FLAG_REMINDER)
-      ),
-      SyncFlag(
-        getString(R.string.birthdays),
-        SyncOptions.FLAG_BIRTHDAY,
-        current.contains(SyncOptions.FLAG_BIRTHDAY)
-      ),
-      SyncFlag(
-        getString(R.string.notes),
-        SyncOptions.FLAG_NOTE,
-        current.contains(SyncOptions.FLAG_NOTE)
-      ),
-      SyncFlag(
-        getString(R.string.places),
-        SyncOptions.FLAG_PLACE,
-        current.contains(SyncOptions.FLAG_PLACE)
-      ),
-      SyncFlag(
-        getString(R.string.action_settings),
-        SyncOptions.FLAG_SETTINGS,
-        current.contains(SyncOptions.FLAG_SETTINGS)
-      )
-    )
-  }
-
-  data class SyncFlag(val title: String, val key: String, var isChecked: Boolean)
 }

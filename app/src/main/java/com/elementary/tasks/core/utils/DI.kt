@@ -28,7 +28,6 @@ import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.params.ThemePreferencesImpl
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
@@ -133,7 +132,6 @@ val utilModule = module {
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }
 
   factory { WorkManagerProvider(get()) }
-  factory { WorkerLauncher(get(), get()) }
 
   factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
 
