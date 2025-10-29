@@ -24,7 +24,7 @@ val syncApiModule = module {
 
   factory { DataTypeRepositoryCallerFactory(get(), get(), get(), get(), get()) }
 
-  factory { GetAllowedDataTypesUseCase(get()) }
+  factory { GetAllowedDataTypesUseCase() }
   factory { CreateRemoteFileMetadataUseCase(get()) }
   factory { CreateCloudFileUseCase(get(), get()) }
   factory { GetLocalUuIdUseCase() }

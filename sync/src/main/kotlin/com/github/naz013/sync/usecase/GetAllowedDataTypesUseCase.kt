@@ -1,13 +1,10 @@
 package com.github.naz013.sync.usecase
 
 import com.github.naz013.sync.DataType
-import com.github.naz013.sync.SyncSettings
 
-internal class GetAllowedDataTypesUseCase(
-  private val syncSettings: SyncSettings
-) {
+internal class GetAllowedDataTypesUseCase {
 
-  suspend operator fun invoke(): List<DataType> {
+  operator fun invoke(): List<DataType> {
     return DataType.entries.toList()
   }
 }

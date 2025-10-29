@@ -34,7 +34,7 @@ Analyze the selected class/function/method and generate focused unit tests that 
 
 - Use existing project testing framework and patterns
 - Follow AAA pattern: Arrange, Act, Assert
-- Write descriptive test names that explain the scenario
+- Write descriptive test names that explain the scenario, use text with spaces instead of camelCase
 - Group related tests in describe/context blocks
 - Mock external dependencies cleanly using Mockk
 
@@ -43,7 +43,7 @@ Testing framework: junit4
 
 ## Guidelines
 
-- Generate 5-8 focused test cases covering the most important scenarios
+- Generate 5-8 or more (if applicable) focused test cases covering the most important scenarios
 - Include realistic test data, not just simple examples
 - Add comments for complex test setup or assertions
 - Ensure tests are independent and can run in any order
