@@ -39,7 +39,7 @@ class ScheduleBackgroundWorkUseCase(
       .addTag(tag)
       .build()
     workManagerProvider.getWorkManager().enqueue(work)
-    Logger.i(TAG, "Scheduled upload: type=$workType, dataType=$dataType, id=$id, tag=$tag")
+    Logger.i(TAG, "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag")
     return tag
   }
 

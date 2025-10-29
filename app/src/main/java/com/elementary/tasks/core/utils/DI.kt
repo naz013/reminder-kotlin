@@ -8,8 +8,6 @@ import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.cloud.completables.ReminderCompletable
-import com.elementary.tasks.core.cloud.converters.SettingsConverter
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.location.LocationTracker
@@ -86,14 +84,6 @@ val viewModelModule = module {
   viewModel { EventsImportViewModel(get(), get(), get(), get(), get()) }
 }
 
-val converterModule = module {
-  factory { SettingsConverter(get()) }
-}
-
-val completableModule = module {
-  factory { ReminderCompletable(get(), get(), get(), get(), get()) }
-}
-
 val storageModule = module {
   factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
 }
@@ -103,7 +93,7 @@ val utilModule = module {
   single { ReminderExplanationVisibility(get()) }
   single { MemoryUtil() }
   factory { UriReader(get()) }
-  single { BackupTool(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  single { BackupTool(get(), get()) }
   factory { GoogleCalendarUtils(get(), get(), get(), get()) }
   single { CacheUtil(get(), get()) }
 
@@ -160,10 +150,10 @@ val utilModule = module {
   factory { DoNotDisturbManager(get(), get()) }
 
   factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
-    GoogleLogin(fragment, get(), get(), get(), get(), callback)
+    GoogleLogin(fragment, get(), get(), get(), get(), callback, get())
   }
   factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
-    DropboxLogin(activity, get(), get(), callback)
+    DropboxLogin(activity, get(), get(), callback, get())
   }
   factory { (listener: LocationTracker.Listener) ->
     LocationTracker(listener, get(), get(), get())

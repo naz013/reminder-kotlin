@@ -8,8 +8,6 @@ internal class GetAllowedDataTypesUseCase(
 ) {
 
   suspend operator fun invoke(): List<DataType> {
-    return DataType.entries.toList().filter {
-      syncSettings.isDataTypeEnabled(it)
-    }
+    return DataType.entries.toList()
   }
 }

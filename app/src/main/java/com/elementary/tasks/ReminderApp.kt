@@ -12,8 +12,6 @@ import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.completableModule
-import com.elementary.tasks.core.utils.converterModule
 import com.elementary.tasks.core.utils.newUtilsModule
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
@@ -96,8 +94,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           utilModule,
           featureCommonModule,
           storageModule,
-          completableModule,
-          converterModule,
           workerModule,
           viewModelModule,
           adapterModule,

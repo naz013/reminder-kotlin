@@ -36,7 +36,7 @@ internal data class PlaceEntity(
   @SerializedName("version")
   val version: Long = 0L,
   @SerializedName("syncState")
-  val syncState: String
+  val syncState: String = SyncState.WaitingForUpload.name
 ) {
 
   constructor(place: Place) : this(

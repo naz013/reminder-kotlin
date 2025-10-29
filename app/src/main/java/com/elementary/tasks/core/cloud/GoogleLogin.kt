@@ -3,6 +3,8 @@ package com.elementary.tasks.core.cloud
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
@@ -20,7 +22,8 @@ class GoogleLogin(
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val googleTasksApi: GoogleTasksApi,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
-  private val loginCallback: LoginCallback
+  private val loginCallback: LoginCallback,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
 ) {
 
   var isGoogleDriveLogged = false
@@ -137,7 +140,17 @@ class GoogleLogin(
     if (mode == Mode.DRIVE) {
       googleDriveApi.disconnect()
       googleDriveAuthManager.saveUserName(account)
-      loginCallback.onResult(googleDriveApi.initialize(), mode)
+      googleDriveApi.initialize().also {
+        loginCallback.onResult(it, mode)
+        if (it) {
+          scheduleBackgroundWorkUseCase(
+            workType = WorkType.Sync,
+            dataType = null,
+            id = null,
+            ids = null,
+          )
+        }
+      }
     } else {
       googleTasksApi.disconnect()
       googleTasksAuthManager.saveUserName(account)

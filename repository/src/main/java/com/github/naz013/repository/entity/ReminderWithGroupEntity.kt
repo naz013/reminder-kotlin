@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.sync.SyncState
 
 @Keep
 internal data class ReminderWithGroupEntity(
@@ -73,9 +74,11 @@ internal data class ReminderWithGroupEntity(
       allDay = reminder.allDay,
       description = reminder.description,
       builderScheme = reminder.builderScheme,
-      jsonSchemaVersion = reminder.jsonSchemaVersion,
+      jsonSchemaVersion = reminder.version,
       groupTitle = reminderGroup?.groupTitle,
-      groupColor = reminderGroup?.groupColor ?: 0
+      groupColor = reminderGroup?.groupColor ?: 0,
+      version = reminder.versionId,
+      syncState = SyncState.valueOf(reminder.syncState),
     )
   }
 }

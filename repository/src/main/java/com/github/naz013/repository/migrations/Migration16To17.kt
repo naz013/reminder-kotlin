@@ -31,7 +31,7 @@ internal val MIGRATION_16_17: Migration = object : Migration(16, 17) {
       db.execSQL("ALTER TABLE Place ADD COLUMN syncState TEXT NOT NULL DEFAULT 'WaitingForUpload'")
     }
     runCatching {
-      db.execSQL("ALTER TABLE Reminder ADD COLUMN version INTEGER NOT NULL DEFAULT 0")
+      db.execSQL("ALTER TABLE Reminder ADD COLUMN versionId INTEGER NOT NULL DEFAULT 0")
       db.execSQL("ALTER TABLE Reminder ADD COLUMN syncState TEXT NOT NULL DEFAULT 'WaitingForUpload'")
     }
     runCatching {

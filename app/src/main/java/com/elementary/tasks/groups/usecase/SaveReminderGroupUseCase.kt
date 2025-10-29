@@ -3,6 +3,7 @@ package com.elementary.tasks.groups.usecase
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.sync.DataType
@@ -13,8 +14,8 @@ class SaveReminderGroupUseCase(
 ) {
 
   suspend operator fun invoke(reminderGroup: ReminderGroup) {
-    // TODO: consider the version increment
-    reminderGroupRepository.save(reminderGroup)
+    reminderGroupRepository.save(reminderGroup.copy(version = reminderGroup.version + 1))
+    reminderGroupRepository.updateSyncState(reminderGroup.groupUuId, SyncState.WaitingForUpload)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Groups,

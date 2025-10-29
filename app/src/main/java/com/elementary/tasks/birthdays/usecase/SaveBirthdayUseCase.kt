@@ -18,8 +18,7 @@ class SaveBirthdayUseCase(
 ) {
 
   suspend operator fun invoke(birthday: Birthday) {
-    // TODO: think about version increment
-    birthdayRepository.save(birthday)
+    birthdayRepository.save(birthday.copy(version = birthday.version + 1))
     birthdayRepository.updateSyncState(birthday.uuId, SyncState.WaitingForUpload)
     notifier.showBirthdayPermanent()
     appWidgetUpdater.updateBirthdaysWidget()

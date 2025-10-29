@@ -22,6 +22,7 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.Birthdays -> BirthdayRepositoryCaller(birthdayRepository)
       DataType.Groups -> ReminderGroupRepositoryCaller(reminderGroupRepository)
       DataType.Places -> PlaceRepositoryCaller(placeRepository)
+      DataType.Settings -> SettingsRepositoryCaller()
     }
   }
 }

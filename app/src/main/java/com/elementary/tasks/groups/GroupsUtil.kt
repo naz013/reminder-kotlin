@@ -5,6 +5,7 @@ import com.elementary.tasks.core.utils.IdProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.ReminderGroupRepository
 import java.util.Random
 
@@ -29,7 +30,8 @@ class GroupsUtil(
       groupColor = random.nextInt(16),
       groupDateTime = dateTimeManager.getNowGmtDateTime(),
       isDefaultGroup = true,
-      groupUuId = idProvider.generateUuid()
+      groupUuId = idProvider.generateUuid(),
+      syncState = SyncState.WaitingForUpload
     )
     runCatching {
       reminderGroupRepository.save(def)
@@ -39,7 +41,8 @@ class GroupsUtil(
           groupColor = random.nextInt(16),
           groupDateTime = dateTimeManager.getNowGmtDateTime(),
           isDefaultGroup = false,
-          groupUuId = idProvider.generateUuid()
+          groupUuId = idProvider.generateUuid(),
+          syncState = SyncState.WaitingForUpload
         )
       )
       reminderGroupRepository.save(
@@ -48,7 +51,8 @@ class GroupsUtil(
           groupColor = random.nextInt(16),
           groupDateTime = dateTimeManager.getNowGmtDateTime(),
           isDefaultGroup = false,
-          groupUuId = idProvider.generateUuid()
+          groupUuId = idProvider.generateUuid(),
+          syncState = SyncState.WaitingForUpload
         )
       )
     }

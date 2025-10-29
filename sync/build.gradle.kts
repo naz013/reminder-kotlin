@@ -26,7 +26,9 @@ dependencies {
 
   implementation(libs.koin.core)
   implementation(libs.threetenbp)
+  implementation(libs.kotlinx.coroutines.core)
 
   testImplementation(libs.junit)
   testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }

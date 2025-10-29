@@ -2,6 +2,7 @@ package com.elementary.tasks.notes.usecase
 
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.sync.DataType
@@ -22,7 +23,8 @@ class ChangeNoteArchiveStateUseCase(
     }
 
     note.archived = archived
-    noteRepository.save(note)
+    noteRepository.save(note.copy(version = note.version + 1))
+    noteRepository.updateSyncState(id, SyncState.WaitingForUpload)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Notes,

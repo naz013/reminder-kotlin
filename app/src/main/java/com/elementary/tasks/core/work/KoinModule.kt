@@ -6,7 +6,6 @@ import org.koin.dsl.module
 val workModule = module {
   factory { SyncWorker(get(), get(), get()) }
   factory { BackupWorker(get(), get()) }
-  single { ExportAllDataWorker(get()) }
 
-  worker { BackupSettingsWorker(get(), get(), get()) }
+  worker { BackupSettingsWorker(get(), get(), get(), get()) }
 }

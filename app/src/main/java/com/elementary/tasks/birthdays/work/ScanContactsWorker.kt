@@ -3,19 +3,22 @@ package com.elementary.tasks.birthdays.work
 import android.content.Context
 import android.provider.ContactsContract
 import android.text.TextUtils
+import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.readLong
 import com.github.naz013.feature.common.readString
-import com.github.naz013.domain.Birthday
 import com.github.naz013.repository.BirthdayRepository
 
 class ScanContactsWorker(
   private val birthdayRepository: BirthdayRepository,
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
-  private val contactsReader: ContactsReader
+  private val contactsReader: ContactsReader,
+  private val saveBirthdayUseCase: SaveBirthdayUseCase
 ) {
 
   suspend fun scanContacts(): Int {
@@ -75,12 +78,13 @@ class ScanContactsWorker(
               day = date.dayOfMonth,
               month = date.monthValue - 1,
               key = "$name|$key",
-              updatedAt = dateTimeManager.getNowGmtDateTime()
+              updatedAt = dateTimeManager.getNowGmtDateTime(),
+              syncState = SyncState.WaitingForUpload
             )
             if (contacts.firstOrNull { it.key == birthdayItem.key } == null) {
               i += 1
+              saveBirthdayUseCase(birthdayItem)
             }
-            birthdayRepository.save(birthdayItem)
           }
         }
       }

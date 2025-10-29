@@ -8,6 +8,7 @@ import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.OldNote
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
+import com.github.naz013.sync.settings.SettingsModel
 
 internal class CreateCloudFileUseCase(
   private val getLocalUuIdUseCase: GetLocalUuIdUseCase,
@@ -22,6 +23,7 @@ internal class CreateCloudFileUseCase(
       is Birthday -> any.getFileNamePrefix()
       is ReminderGroup -> any.getFileNamePrefix()
       is Place -> any.getFileNamePrefix()
+      is SettingsModel -> "app"
       else -> throw IllegalArgumentException("Unsupported data type: ${any::class.java}")
     } + dataType.fileExtension
     return CloudFile(

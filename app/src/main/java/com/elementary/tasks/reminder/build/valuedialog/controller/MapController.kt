@@ -4,12 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.github.naz013.domain.Place
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.databinding.BuilderItemMapBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Place
+import com.github.naz013.domain.sync.SyncState
 
 class MapController(
   builderItem: BuilderItem<Place>,
@@ -77,6 +78,6 @@ class MapController(
   }
 
   private fun getPlace(): Place {
-    return builderItem.modifier.getValue() ?: Place()
+    return builderItem.modifier.getValue() ?: Place(syncState = SyncState.WaitingForUpload)
   }
 }

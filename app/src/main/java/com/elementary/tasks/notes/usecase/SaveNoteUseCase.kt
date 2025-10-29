@@ -5,6 +5,7 @@ import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.sync.DataType
@@ -17,7 +18,8 @@ class SaveNoteUseCase(
   suspend operator fun invoke(noteWithImages: NoteWithImages) {
     val note = noteWithImages.note ?: return
     saveImages(noteWithImages.images, note.key)
-    noteRepository.save(note)
+    noteRepository.save(note.copy(version = note.version + 1))
+    noteRepository.updateSyncState(note.key, SyncState.WaitingForUpload)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
       dataType = DataType.Notes,

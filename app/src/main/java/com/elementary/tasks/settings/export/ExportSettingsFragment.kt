@@ -6,21 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.datapicker.BackupFilePicker
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.work.BackupWorker
-import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
@@ -29,43 +24,23 @@ import java.io.File
 
 class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBinding>() {
 
-  private val backupTool by inject<BackupTool>()
   private val syncWorker by inject<SyncWorker>()
   private val backupWorker by inject<BackupWorker>()
-  private val exportAllDataWorker by inject<ExportAllDataWorker>()
   private val dropboxApi by inject<DropboxApi>()
   private val googleDriveApi by inject<GoogleDriveApi>()
   private val jobScheduler by inject<JobScheduler>()
-  private val backupFilePicker = BackupFilePicker(this) {
-    onProgress.invoke(true)
-    backupTool.importAll(it, keepOldData) {
-      onSyncEnd.invoke()
-      binding.importButton.post {
-        if (it) {
-          toast(getString(R.string.backup_file_imported_successfully))
-        } else {
-          toast(getString(R.string.failed_to_import_backup))
-        }
-      }
-    }
-  }
 
   private var mItemSelect: Int = 0
-  private var keepOldData: Boolean = true
 
   private val onSyncEnd: () -> Unit = {
     binding.progressView.transparent()
     binding.syncButton.isEnabled = true
     binding.backupButton.isEnabled = true
-    binding.exportButton.isEnabled = true
-    binding.importButton.isEnabled = true
   }
   private val onProgress: (Boolean) -> Unit = {
     if (it) {
       binding.syncButton.isEnabled = false
       binding.backupButton.isEnabled = false
-      binding.exportButton.isEnabled = false
-      binding.importButton.isEnabled = false
       binding.progressView.visible()
     } else {
       onSyncEnd.invoke()
@@ -101,51 +76,12 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     super.onResume()
     initSyncButton()
     initBackupButton()
-    initExportButton()
-    initImportButton()
   }
 
   override fun onDestroy() {
     super.onDestroy()
     syncWorker.unsubscribe()
     backupWorker.unsubscribe()
-    exportAllDataWorker.unsubscribe()
-  }
-
-  private fun initImportButton() {
-    if (prefs.isBackupEnabled) {
-      binding.importButton.isEnabled = true
-      binding.importButton.visible()
-      binding.importButton.setOnClickListener { showImportDialog() }
-    } else {
-      binding.importButton.gone()
-    }
-  }
-
-  private fun showImportDialog() {
-    dialogues.getMaterialDialog(requireContext())
-      .setMessage(R.string.what_to_do_with_current_data)
-      .setPositiveButton(R.string.keep) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-        keepOldData = true
-        pickFile()
-      }
-      .setNegativeButton(R.string.replace) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-        keepOldData = false
-        pickFile()
-      }
-      .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-      }
-      .create()
-      .show()
-  }
-
-  private fun pickFile() {
-    permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
-      backupFilePicker.pickRbakFile()
-    }
   }
 
   private fun initBackupFilesPrefs() {
@@ -153,12 +89,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
 //        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
 //        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
 //        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
-  }
-
-  private fun changeBackupFilesPrefs() {
-    val isChecked = binding.backupFilesPrefs.isChecked
-    binding.backupFilesPrefs.isChecked = !isChecked
-    prefs.backupAttachedFiles = !isChecked
   }
 
   private fun initAutoSyncPrefs() {
@@ -193,7 +123,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     binding.backupDataPrefs.setOnClickListener { changeBackupPrefs() }
     initSyncButton()
     initBackupButton()
-    initExportButton()
   }
 
   private fun initSyncButton() {
@@ -212,29 +141,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
       onProgress.invoke(true)
       syncWorker.sync(lifecycleScope)
-    }
-  }
-
-  private fun initExportButton() {
-    if (prefs.isBackupEnabled) {
-      binding.exportButton.isEnabled = true
-      binding.exportButton.visibility = View.VISIBLE
-      binding.exportButton.setOnClickListener { exportClick() }
-      exportAllDataWorker.onEnd = { file ->
-        if (file != null) {
-          TelephonyUtil.sendFile(file, requireContext())
-        }
-      }
-      backupWorker.listener = onProgress
-    } else {
-      binding.exportButton.visibility = View.GONE
-    }
-  }
-
-  private fun exportClick() {
-    permissionFlow.askPermissions(listOf(Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-      onProgress.invoke(true)
-      exportAllDataWorker.export()
     }
   }
 
@@ -263,8 +169,6 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     prefs.isBackupEnabled = !isChecked
     initSyncButton()
     initBackupButton()
-    initExportButton()
-    initImportButton()
   }
 
   private fun initClearDataPrefs() {

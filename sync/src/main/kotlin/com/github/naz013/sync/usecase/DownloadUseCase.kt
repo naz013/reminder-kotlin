@@ -8,9 +8,13 @@ import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
+import com.github.naz013.sync.DataPostProcessor
 import com.github.naz013.sync.DataType
+import com.github.naz013.sync.Downloaded
 import com.github.naz013.sync.SyncDataConverter
+import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.settings.SettingsModel
 
 internal class DownloadUseCase(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
@@ -18,14 +22,16 @@ internal class DownloadUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
   private val findAllFilesToDownloadUseCase: FindAllFilesToDownloadUseCase,
-  private val getLocalUuIdUseCase: GetLocalUuIdUseCase
+  private val getLocalUuIdUseCase: GetLocalUuIdUseCase,
+  private val dataPostProcessor: DataPostProcessor
 ) {
-  suspend operator fun invoke(dataType: DataType) {
+  suspend operator fun invoke(dataType: DataType): SyncResult {
     val caller = dataTypeRepositoryCallerFactory.getCaller(dataType)
     val newestResult = findAllFilesToDownloadUseCase(dataType) ?: run {
       Logger.i(TAG, "No files to download for dataType: $dataType")
-      return
+      return SyncResult.Skipped
     }
+    val downloadedFiles = mutableListOf<Downloaded>()
     for (cloudFilesWithSource in newestResult.sources) {
       val cloudFileApi = cloudFilesWithSource.source
       for (cloudFile in cloudFilesWithSource.cloudFiles) {
@@ -37,6 +43,7 @@ internal class DownloadUseCase(
         val data = syncDataConverter.parse(stream, getClass(dataType))
         // TODO: Add conflict resolution here
         caller.insertOrUpdate(data)
+        dataPostProcessor.process(dataType, data)
         val remoteFileMetadata = createRemoteFileMetadataUseCase(
           source = cloudFileApi.source.value,
           cloudFile = cloudFile,
@@ -46,7 +53,16 @@ internal class DownloadUseCase(
         val id = getLocalUuIdUseCase(data)
         caller.updateSyncState(id, SyncState.Synced)
         Logger.i(TAG, "Downloaded and saved file: ${cloudFile.name} from source: ${cloudFileApi.source}")
+        downloadedFiles.add(Downloaded(dataType, id))
       }
+    }
+    return if (downloadedFiles.isNotEmpty()) {
+      SyncResult.Success(
+        downloaded = downloadedFiles,
+        success = true
+      )
+    } else {
+      SyncResult.Skipped
     }
   }
 
@@ -57,6 +73,7 @@ internal class DownloadUseCase(
       DataType.Birthdays -> Birthday::class.java
       DataType.Groups -> ReminderGroup::class.java
       DataType.Places -> Place::class.java
+      DataType.Settings -> SettingsModel::class.java
     }
   }
 

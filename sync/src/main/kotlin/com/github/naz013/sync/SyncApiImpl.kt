@@ -1,6 +1,5 @@
 package com.github.naz013.sync
 
-import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.usecase.DeleteDataTypeUseCase
@@ -8,97 +7,103 @@ import com.github.naz013.sync.usecase.DeleteSingleUseCase
 import com.github.naz013.sync.usecase.DownloadSingleUseCase
 import com.github.naz013.sync.usecase.DownloadUseCase
 import com.github.naz013.sync.usecase.GetAllowedDataTypesUseCase
+import com.github.naz013.sync.usecase.HasAnyCloudApiUseCase
+import com.github.naz013.sync.usecase.UploadDataTypeUseCase
 import com.github.naz013.sync.usecase.UploadSingleUseCase
 
 internal class SyncApiImpl(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
   private val getAllowedDataTypesUseCase: GetAllowedDataTypesUseCase,
   private val uploadSingleUseCase: UploadSingleUseCase,
-  private val syncSettings: SyncSettings,
   private val downloadSingleUseCase: DownloadSingleUseCase,
   private val downloadUseCase: DownloadUseCase,
   private val deleteSingleUseCase: DeleteSingleUseCase,
   private val deleteDataTypeUseCase: DeleteDataTypeUseCase,
+  private val uploadDataTypeUseCase: UploadDataTypeUseCase,
+  private val hasAnyCloudApiUseCase: HasAnyCloudApiUseCase,
 ) : SyncApi {
 
-  override suspend fun sync() {
+  override suspend fun sync(): SyncResult {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for sync.")
+      return SyncResult.Skipped
+    }
     val allowedDataTypes = getAllowedDataTypesUseCase()
+    if (allowedDataTypes.isEmpty()) {
+      Logger.i(TAG, "No allowed data types for sync.")
+      return SyncResult.Skipped
+    }
+    val results = mutableListOf<SyncResult>()
     for (dataType in allowedDataTypes) {
-      sync(dataType)
+      results.add(sync(dataType))
     }
+    return SyncResult.Success(
+      downloaded = results.filterIsInstance<SyncResult.Success>().flatMap { it.downloaded },
+      success = results.all { it is SyncResult.Success }
+    )
   }
 
-  override suspend fun sync(dataType: DataType) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Syncing items for data type: $dataType")
-      upload(dataType)
-      downloadUseCase(dataType)
+  override suspend fun sync(dataType: DataType): SyncResult {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for sync.")
+      return SyncResult.Skipped
     }
+    Logger.i(TAG, "Syncing items for data type: $dataType")
+    upload(dataType)
+
+    return downloadUseCase(dataType)
   }
 
-  override suspend fun sync(dataType: DataType, id: String) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Syncing single item. dataType: $dataType, id: $id")
-      uploadSingleUseCase(dataType, id)
-      downloadSingleUseCase(dataType, id)
-    } else {
-      Logger.i(TAG, "Data type is not enabled for sync: $dataType")
+  override suspend fun sync(dataType: DataType, id: String): SyncResult {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for sync.")
+      return SyncResult.Skipped
     }
+    if (dataType == DataType.Settings) {
+      throw IllegalArgumentException("Cannot sync single settings item.")
+    }
+    Logger.i(TAG, "Syncing single item. dataType: $dataType, id: $id")
+    uploadSingleUseCase(dataType, id)
+    return downloadSingleUseCase(dataType, id)
   }
 
   override suspend fun upload() {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for upload.")
+      return
+    }
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
       Logger.i(TAG, "Uploading items for data type: $dataType")
-      val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
-      val ids = repositoryCaller.getIdsByState(
-        listOf(
-          SyncState.WaitingForUpload,
-          SyncState.FailedToUpload
-        )
-      )
-      if (ids.isEmpty()) {
-        Logger.i(TAG, "No items to upload for data type: $dataType")
-        continue
-      }
-      for (id in ids) {
-        uploadSingleUseCase(dataType, id)
-      }
+      uploadDataTypeUseCase(dataType)
     }
   }
 
   override suspend fun upload(dataType: DataType) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
-      val ids = repositoryCaller.getIdsByState(
-        listOf(
-          SyncState.WaitingForUpload,
-          SyncState.FailedToUpload
-        )
-      )
-      if (ids.isEmpty()) {
-        Logger.i(TAG, "No items to upload for data type: $dataType")
-        return
-      }
-      Logger.i(TAG, "Uploading items for data type: $dataType")
-      for (id in ids) {
-        uploadSingleUseCase(dataType, id)
-      }
-    } else {
-      Logger.i(TAG, "Data type is not enabled for upload: $dataType")
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for upload.")
+      return
     }
+    uploadDataTypeUseCase(dataType)
   }
 
   override suspend fun upload(dataType: DataType, id: String) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Uploading single item. dataType: $dataType, id: $id")
-      uploadSingleUseCase(dataType, id)
-    } else {
-      Logger.i(TAG, "Data type is not enabled for upload: $dataType")
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for upload.")
+      return
     }
+    if (dataType == DataType.Settings) {
+      throw IllegalArgumentException("Cannot upload single settings item.")
+    }
+    Logger.i(TAG, "Uploading single item. dataType: $dataType, id: $id")
+    uploadSingleUseCase(dataType, id)
   }
 
   override suspend fun forceUpload() {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for upload.")
+      return
+    }
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
       Logger.i(TAG, "Force uploading items for data type: $dataType")
@@ -111,28 +116,32 @@ internal class SyncApiImpl(
   }
 
   override suspend fun forceUpload(dataType: DataType) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Force uploading items for data type: $dataType")
-      val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
-      val ids = repositoryCaller.getAllIds()
-      for (id in ids) {
-        uploadSingleUseCase(dataType, id)
-      }
-    } else {
-      Logger.i(TAG, "Data type is not enabled for upload: $dataType")
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for upload.")
+      return
+    }
+    Logger.i(TAG, "Force uploading items for data type: $dataType")
+    val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
+    val ids = repositoryCaller.getAllIds()
+    for (id in ids) {
+      uploadSingleUseCase(dataType, id)
     }
   }
 
   override suspend fun forceUpload(dataType: DataType, id: String) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Force uploading single item. dataType: $dataType, id: $id")
-      uploadSingleUseCase(dataType, id)
-    } else {
-      Logger.i(TAG, "Data type is not enabled for upload: $dataType")
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for upload.")
+      return
     }
+    Logger.i(TAG, "Force uploading single item. dataType: $dataType, id: $id")
+    uploadSingleUseCase(dataType, id)
   }
 
   override suspend fun delete() {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for delete.")
+      return
+    }
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
       Logger.i(TAG, "Deleting data type from cloud: $dataType")
@@ -141,20 +150,31 @@ internal class SyncApiImpl(
   }
 
   override suspend fun delete(dataType: DataType) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Deleting data type from cloud: $dataType")
-      deleteDataTypeUseCase(dataType)
-    } else {
-      Logger.i(TAG, "Data type is not enabled for delete: $dataType")
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for delete.")
+      return
     }
+    Logger.i(TAG, "Deleting data type from cloud: $dataType")
+    deleteDataTypeUseCase(dataType)
   }
 
   override suspend fun delete(dataType: DataType, id: String) {
-    if (syncSettings.isDataTypeEnabled(dataType)) {
-      Logger.i(TAG, "Deleting single item from cloud. dataType: $dataType, id: $id")
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for delete.")
+      return
+    }
+    Logger.i(TAG, "Deleting single item from cloud. dataType: $dataType, id: $id")
+    deleteSingleUseCase(dataType, id)
+  }
+
+  override suspend fun delete(dataType: DataType, ids: List<String>) {
+    if (!hasAnyCloudApiUseCase()) {
+      Logger.i(TAG, "No cloud API configured for delete.")
+      return
+    }
+    Logger.i(TAG, "Deleting multiple items from cloud. dataType: $dataType, ids count: ${ids.size}")
+    for (id in ids) {
       deleteSingleUseCase(dataType, id)
-    } else {
-      Logger.i(TAG, "Data type is not enabled for delete: $dataType")
     }
   }
 

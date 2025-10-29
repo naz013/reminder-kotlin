@@ -147,29 +147,6 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/exportButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/export_all_my_data"
-            android:textAllCaps="true" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/importButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/import_data_from_rbak_file"
-            android:textAllCaps="true" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/backupButton"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="match_parent"

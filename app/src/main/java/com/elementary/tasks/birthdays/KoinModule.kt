@@ -47,9 +47,9 @@ val birthdaysModule = module {
   viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { PreviewBirthdayViewModel(get(), get(), get(), get(), get(), get()) }
 
-  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get()) }
+  worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get(), get()) }
 
-  factory { ScanContactsWorker(get(), get(), get(), get()) }
+  factory { ScanContactsWorker(get(), get(), get(), get(), get()) }
 
   factory { DeleteBirthdayUseCase(get(), get(), get(), get()) }
   factory { SaveBirthdayUseCase(get(), get(), get(), get()) }

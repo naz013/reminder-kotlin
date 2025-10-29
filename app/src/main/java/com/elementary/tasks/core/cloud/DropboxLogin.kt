@@ -8,6 +8,8 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
@@ -16,7 +18,8 @@ class DropboxLogin(
   private val activity: Activity,
   private val dropboxApi: DropboxApi,
   private val dropboxAuthManager: DropboxAuthManager,
-  private val callback: LoginCallback
+  private val callback: LoginCallback,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
 ) {
 
   fun login() {
@@ -46,6 +49,14 @@ class DropboxLogin(
       dropboxAuthManager.onAuthFinished()
       dropboxApi.initialize()
       callback.onResult(dropboxAuthManager.isAuthorized())
+      if (dropboxAuthManager.isAuthorized()) {
+        scheduleBackgroundWorkUseCase(
+          workType = WorkType.Sync,
+          dataType = null,
+          id = null,
+          ids = null,
+        )
+      }
     }
   }
 

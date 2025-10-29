@@ -19,19 +19,19 @@ interface SyncApi {
    * Sync all data types.
    */
   @Throws(Exception::class)
-  suspend fun sync()
+  suspend fun sync(): SyncResult
 
   /**
    * Sync specific data type.
    */
   @Throws(Exception::class)
-  suspend fun sync(dataType: DataType)
+  suspend fun sync(dataType: DataType): SyncResult
 
   /**
    * Sync specific id of a data type.
    */
   @Throws(Exception::class)
-  suspend fun sync(dataType: DataType, id: String)
+  suspend fun sync(dataType: DataType, id: String): SyncResult
 
   /**
    * Upload all data types.
@@ -54,30 +54,42 @@ interface SyncApi {
   /**
    * Force upload of all data types, ignoring sync states.
    */
+  @Throws(Exception::class)
   suspend fun forceUpload()
 
   /**
    * Force upload of specific data type, ignoring sync states.
    */
+  @Throws(Exception::class)
   suspend fun forceUpload(dataType: DataType)
 
   /**
    * Force upload of specific id of a data type, ignoring sync states.
    */
+  @Throws(Exception::class)
   suspend fun forceUpload(dataType: DataType, id: String)
 
   /**
    * Delete all data from the cloud.
    */
+  @Throws(Exception::class)
   suspend fun delete()
 
   /**
    * Delete specific data type from the cloud.
    */
+  @Throws(Exception::class)
   suspend fun delete(dataType: DataType)
 
   /**
    * Delete specific id of a data type from the cloud.
    */
+  @Throws(Exception::class)
   suspend fun delete(dataType: DataType, id: String)
+
+  /**
+   * Delete specific ids of a data type from the cloud.
+   */
+  @Throws(Exception::class)
+  suspend fun delete(dataType: DataType, ids: List<String>)
 }

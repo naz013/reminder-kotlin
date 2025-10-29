@@ -153,9 +153,9 @@ internal data class ReminderEntity(
   @SerializedName("builderScheme")
   val builderScheme: List<BuilderSchemeItem>? = null,
   @SerializedName("version")
-  val jsonSchemaVersion: String? = Reminder.DEFAULT_VERSION,
-  @SerializedName("version")
-  val version: Long = 0L,
+  val version: String? = Reminder.DEFAULT_VERSION,
+  @SerializedName("versionId")
+  val versionId: Long = 0L,
   @SerializedName("syncState")
   val syncState: String,
   @ColumnInfo(name = "groupTitle")
@@ -223,9 +223,9 @@ internal data class ReminderEntity(
     allDay = reminder.allDay,
     description = reminder.description,
     builderScheme = reminder.builderScheme,
-    jsonSchemaVersion = reminder.jsonSchemaVersion,
+    version = reminder.jsonSchemaVersion,
     syncState = reminder.syncState.name,
-    version = reminder.version,
+    versionId = reminder.version,
   )
 
   fun toDomain(): Reminder {
@@ -286,11 +286,11 @@ internal data class ReminderEntity(
       allDay = allDay,
       description = description,
       builderScheme = builderScheme,
-      jsonSchemaVersion = jsonSchemaVersion,
+      jsonSchemaVersion = version,
       groupTitle = groupTitle,
       groupColor = groupColor,
       syncState = SyncState.valueOf(syncState),
-      version = version
+      version = versionId
     )
   }
 }
