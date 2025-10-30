@@ -14,6 +14,12 @@ import com.github.naz013.logging.Logger
 import okhttp3.OkHttpClient
 import java.io.InputStream
 
+/**
+ * Dropbox API implementation for file operations.
+ *
+ * Manages file uploads, downloads, searches, and deletions in Dropbox.
+ * Automatically initializes when the user has a valid OAuth2 token.
+ */
 internal class DropboxApiImpl(
   private val dropboxAuthManager: DropboxAuthManager
 ) : DropboxApi {
@@ -27,33 +33,57 @@ internal class DropboxApiImpl(
     initialize()
   }
 
+  /**
+   * Uploads a file to Dropbox.
+   *
+   * Deletes any existing file with the same name before uploading.
+   * The input stream is automatically closed after upload.
+   *
+   * @param stream The input stream containing the file data
+   * @param cloudFile Metadata for the file to upload
+   * @return Updated CloudFile with server-generated metadata (id, size, lastModified, rev)
+   * @throws IllegalStateException if Dropbox is not initialized or upload fails
+   * @throws IllegalArgumentException if file name or extension is blank
+   */
   override suspend fun uploadFile(stream: InputStream, cloudFile: CloudFile): CloudFile {
+    require(cloudFile.name.isNotBlank()) { "File name cannot be blank" }
+    require(cloudFile.fileExtension.isNotBlank()) { "File extension cannot be blank" }
     if (!isInitialized) {
       throw IllegalStateException("DropboxApi is not initialized")
     }
     val folder = folderFromExt(cloudFile.fileExtension)
     Logger.d(TAG, "Saving file: ${cloudFile.name}, folder = $folder")
-    try {
+    return try {
       deleteFile(cloudFile.name)
-      val result = dbxClientV2?.files()?.uploadBuilder(folder + cloudFile.name)
-        ?.withMode(WriteMode.OVERWRITE)
-        ?.uploadAndFinish(stream) ?: throw IllegalStateException("Upload failed")
-      stream.close()
-      return CloudFile(
-        id = result.id,
-        name = result.name,
-        size = result.size.toInt(),
-        lastModified = result.serverModified.time,
-        fileExtension = cloudFile.fileExtension,
-        rev = result.rev
-      )
+      stream.use {
+        val result = dbxClientV2?.files()?.uploadBuilder(folder + cloudFile.name)
+          ?.withMode(WriteMode.OVERWRITE)
+          ?.uploadAndFinish(it) ?: throw IllegalStateException("Upload failed")
+        CloudFile(
+          id = result.id,
+          name = result.name,
+          size = result.size.toInt(),
+          lastModified = result.serverModified.time,
+          fileExtension = cloudFile.fileExtension,
+          rev = result.rev
+        )
+      }
     } catch (e: Throwable) {
-      Logger.e(TAG, "Failed to save file: ${e.message}")
+      Logger.e(TAG, "Failed to save file: ${e.message}", e)
       throw e
     }
   }
 
+  /**
+   * Searches for a specific file in Dropbox.
+   *
+   * @param searchParams Search parameters including file name and extension
+   * @return CloudFile if found, null otherwise
+   */
   override suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile? {
+    if (searchParams.name.isBlank() || searchParams.fileExtension.isBlank()) {
+      return null
+    }
     if (!isInitialized) {
       return null
     }
@@ -81,8 +111,14 @@ internal class DropboxApiImpl(
     }
   }
 
+  /**
+   * Searches for all files with a specific extension in Dropbox.
+   *
+   * @param fileExtension The file extension to search for
+   * @return List of CloudFiles matching the extension
+   */
   override suspend fun findFiles(fileExtension: String): List<CloudFile> {
-    if (!isInitialized) {
+    if (fileExtension.isBlank() || !isInitialized) {
       return emptyList()
     }
     val folder = folderFromExt(fileExtension)
@@ -110,8 +146,14 @@ internal class DropboxApiImpl(
     }
   }
 
+  /**
+   * Downloads a file from Dropbox.
+   *
+   * @param cloudFile The file metadata including name and extension
+   * @return InputStream containing file data, or null if download fails
+   */
   override suspend fun downloadFile(cloudFile: CloudFile): InputStream? {
-    if (!isInitialized) {
+    if (cloudFile.name.isBlank() || cloudFile.fileExtension.isBlank() || !isInitialized) {
       return null
     }
     val folder = folderFromExt(cloudFile.fileExtension)
@@ -151,11 +193,14 @@ internal class DropboxApiImpl(
     Logger.i(TAG, "Dropbox disconnected")
   }
 
+  /**
+   * Deletes a file from Dropbox by filename.
+   *
+   * @param fileName The name of the file to delete
+   * @return true if deletion succeeded, false otherwise
+   */
   override suspend fun deleteFile(fileName: String): Boolean {
-    if (!isInitialized) {
-      return false
-    }
-    if (fileName.isEmpty()) {
+    if (!isInitialized || fileName.isBlank()) {
       return false
     }
     val folder = folderFromFileName(fileName)
@@ -169,6 +214,11 @@ internal class DropboxApiImpl(
     }
   }
 
+  /**
+   * Removes all data from Dropbox by deleting all application folders.
+   *
+   * @return true if all folders were deleted successfully, false otherwise
+   */
   override suspend fun removeAllData(): Boolean {
     if (!isInitialized) {
       return false

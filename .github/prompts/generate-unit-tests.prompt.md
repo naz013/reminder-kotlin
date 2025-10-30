@@ -48,5 +48,6 @@ Testing framework: junit4
 - Add comments for complex test setup or assertions
 - Ensure tests are independent and can run in any order
 - Focus on testing behavior, not implementation details
+- Do not create summary md file at the end
 
 Create tests that give confidence the function works correctly and help catch regressions.

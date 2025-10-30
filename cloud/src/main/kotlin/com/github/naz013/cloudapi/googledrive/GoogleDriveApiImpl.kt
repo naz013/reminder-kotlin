@@ -51,15 +51,13 @@ internal class GoogleDriveApiImpl(
           ?.setFields("id")
           ?.execute()
       }
-      if (resultFile == null) {
-        throw IllegalStateException("File upload failed")
-      }
+      val uploadedFile = resultFile ?: throw IllegalStateException("File upload failed")
       Logger.d(TAG, "File saved, file name ${cloudFile.name}")
       return cloudFile.copy(
-        id = resultFile.id ?: throw IllegalStateException("Failed to get file ID after upload"),
-        lastModified = resultFile.modifiedTime?.value ?: 0L,
-        size = resultFile.size,
-        version = resultFile.version ?: 0L
+        id = uploadedFile.id ?: throw IllegalStateException("Failed to get file ID after upload"),
+        lastModified = uploadedFile.modifiedTime?.value ?: 0L,
+        size = uploadedFile.size,
+        version = uploadedFile.version ?: 0L
       )
     } catch (e: Throwable) {
       Logger.e(TAG, "Failed to save file: ${e.message}")

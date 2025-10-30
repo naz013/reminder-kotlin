@@ -56,6 +56,8 @@ dependencies {
   implementation(libs.okhttp3.logging.interceptor)
 
   testImplementation(libs.junit)
+  testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }
 
 ktlint {
