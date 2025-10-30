@@ -443,23 +443,29 @@ class DownloadUseCaseTest {
   }
 
   @Test
-  fun `invoke when parse fails should propagate exception and stop processing`() {
+  fun `invoke when parse fails should continue with other files`() {
     runBlocking {
-      // Arrange - First file parses successfully, second fails
+      // Arrange - First file parses successfully, second fails, third succeeds
       val dataType = DataType.Places
       val cloudFile1 = CloudFile(id = "cf1", name = "p1.pl2", fileExtension = ".pl2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
       val cloudFile2 = CloudFile(id = "cf2", name = "p2.pl2", fileExtension = ".pl2", lastModified = 2000L, size = 200, version = 1L, rev = "r2")
+      val cloudFile3 = CloudFile(id = "cf3", name = "p3.pl2", fileExtension = ".pl2", lastModified = 3000L, size = 300, version = 1L, rev = "r3")
 
       val stream1 = ByteArrayInputStream("data1".toByteArray())
       val stream2 = ByteArrayInputStream("corrupted".toByteArray())
+      val stream3 = ByteArrayInputStream("data3".toByteArray())
 
       val place1 = mockk<Any>()
+      val place3 = mockk<Any>()
+
+      val metadata1 = mockk<RemoteFileMetadata>()
+      val metadata3 = mockk<RemoteFileMetadata>()
 
       val searchResult = FindAllFilesToDownloadUseCase.SearchResult(
         sources = listOf(
           FindAllFilesToDownloadUseCase.CloudFilesWithSource(
             source = mockCloudFileApi,
-            cloudFiles = listOf(cloudFile1, cloudFile2)
+            cloudFiles = listOf(cloudFile1, cloudFile2, cloudFile3)
           )
         )
       )
@@ -469,23 +475,31 @@ class DownloadUseCaseTest {
       every { mockCloudFileApi.source } returns Source.GoogleDrive
       coEvery { mockCloudFileApi.downloadFile(cloudFile1) } returns stream1
       coEvery { mockCloudFileApi.downloadFile(cloudFile2) } returns stream2
+      coEvery { mockCloudFileApi.downloadFile(cloudFile3) } returns stream3
       coEvery { syncDataConverter.parse<Any>(stream1, any()) } returns place1
       coEvery { syncDataConverter.parse<Any>(stream2, any()) } throws RuntimeException("Parse error")
+      coEvery { syncDataConverter.parse<Any>(stream3, any()) } returns place3
       every { getLocalUuIdUseCase(place1) } returns "p1"
-      coEvery { createRemoteFileMetadataUseCase(any(), any(), any()) } returns mockk()
+      every { getLocalUuIdUseCase(place3) } returns "p3"
+      coEvery { createRemoteFileMetadataUseCase(any(), cloudFile1, place1) } returns metadata1
+      coEvery { createRemoteFileMetadataUseCase(any(), cloudFile3, place3) } returns metadata3
 
-      // Act & Assert - Exception should propagate
-      var exceptionThrown = false
-      try {
-        downloadUseCase(dataType)
-      } catch (e: RuntimeException) {
-        exceptionThrown = true
-        assertTrue(e.message?.contains("Parse error") == true)
-      }
-      assertTrue("Expected RuntimeException to be thrown", exceptionThrown)
+      // Act
+      val result = downloadUseCase(dataType)
 
-      // First file should have been processed
+      // Assert - Should process files 1 and 3, skip file 2
+      assertTrue("Result should be Success", result is SyncResult.Success)
+      val successResult = result as SyncResult.Success
+      assertEquals("Should download 2 out of 3 files", 2, successResult.downloaded.size)
+
+      // First and third files should have been processed
       coVerify(exactly = 1) { mockRepositoryCaller.insertOrUpdate(place1) }
+      coVerify(exactly = 1) { mockRepositoryCaller.insertOrUpdate(place3) }
+      coVerify(exactly = 1) { mockRepositoryCaller.updateSyncState("p1", SyncState.Synced) }
+      coVerify(exactly = 1) { mockRepositoryCaller.updateSyncState("p3", SyncState.Synced) }
+
+      // Verify parse was attempted on all files
+      coVerify(exactly = 3) { mockCloudFileApi.downloadFile(any()) }
     }
   }
 
