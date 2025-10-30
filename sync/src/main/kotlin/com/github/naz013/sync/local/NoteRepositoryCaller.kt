@@ -27,7 +27,7 @@ internal class NoteRepositoryCaller(
     if (item !is NoteWithImages) {
       throw IllegalArgumentException("Expected NoteWithImages but got ${item::class.java}")
     }
-    item.note?.also { noteRepository.save(it) }
+    item.note?.also { noteRepository.save(it.copy(syncState = SyncState.Synced)) }
     item.images.forEach { noteRepository.save(it) }
   }
 

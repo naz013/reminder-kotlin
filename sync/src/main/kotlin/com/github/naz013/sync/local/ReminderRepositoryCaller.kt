@@ -27,7 +27,7 @@ internal class ReminderRepositoryCaller(
     if (item !is Reminder) {
       throw IllegalArgumentException("Expected Reminder type but got: ${item::class}")
     }
-    reminderRepository.save(item)
+    reminderRepository.save(item.copy(syncState = SyncState.Synced))
   }
 
   override suspend fun getAllIds(): List<String> {

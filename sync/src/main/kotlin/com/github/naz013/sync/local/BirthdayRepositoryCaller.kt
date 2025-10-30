@@ -27,7 +27,7 @@ internal class BirthdayRepositoryCaller(
     if (item !is Birthday) {
       throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: ${Birthday::class.java}")
     }
-    birthdayRepository.save(item)
+    birthdayRepository.save(item.copy(syncState = SyncState.Synced))
   }
 
   override suspend fun getAllIds(): List<String> {

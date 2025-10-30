@@ -26,7 +26,7 @@ internal class PlaceRepositoryCaller(
     if (item !is Place) {
       throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: Place")
     }
-    placeRepository.save(item)
+    placeRepository.save(item.copy(syncState = SyncState.Synced))
   }
 
   override suspend fun getAllIds(): List<String> {

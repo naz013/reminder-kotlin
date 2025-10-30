@@ -208,11 +208,17 @@ internal class GoogleDriveApiImpl(
   }
 
   override suspend fun removeAllData(): Boolean {
-    if (!isInitialized) return false
+    if (!isInitialized) {
+      Logger.e(TAG, "Remove all data: not initialized")
+      return false
+    }
     try {
       val request = drive?.files()?.list()
         ?.setSpaces("appDataFolder")
-        ?.setFields("nextPageToken, files(id, name)") ?: return false
+        ?.setFields("nextPageToken, files(id, name)") ?: run {
+        Logger.i(TAG, "Remove all data: request is null")
+        return false
+      }
       do {
         val files = request.execute()
         val fileList = files.files as ArrayList<File>

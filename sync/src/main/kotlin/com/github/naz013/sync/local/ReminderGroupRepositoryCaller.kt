@@ -27,7 +27,7 @@ internal class ReminderGroupRepositoryCaller(
     if (item !is ReminderGroup) {
       throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: ReminderGroup")
     }
-    reminderGroupRepository.save(item)
+    reminderGroupRepository.save(item.copy(syncState = SyncState.Synced))
   }
 
   override suspend fun getAllIds(): List<String> {

@@ -50,7 +50,12 @@ internal class DownloadUseCase(
           Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}")
           continue
         }
-        val data = syncDataConverter.parse(stream, getClass(dataType))
+        val data = try {
+          syncDataConverter.parse(stream, getClass(dataType))
+        } catch (e: Exception) {
+          Logger.e(TAG, "Failed to parse downloaded file for dataType: $dataType, file: ${cloudFile.name}, error: $e")
+          continue
+        }
         val id = getLocalUuIdUseCase(data)
 
         // Check for conflicts before updating

@@ -204,7 +204,7 @@ internal data class ReminderEntity(
     attachmentFile = reminder.attachmentFile,
     attachmentFiles = reminder.attachmentFiles,
     auto = reminder.auto,
-    places = reminder.places.map { PlaceEntity(it) },
+    places = reminder.places.map { PlaceEntity(it.copy(syncState = SyncState.Synced)) },
     shoppings = reminder.shoppings,
     uniqueId = reminder.uniqueId,
     isActive = reminder.isActive,

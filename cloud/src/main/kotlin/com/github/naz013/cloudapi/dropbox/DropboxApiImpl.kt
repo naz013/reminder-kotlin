@@ -9,6 +9,7 @@ import com.dropbox.core.v2.files.WriteMode
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileSearchParams
 import com.github.naz013.cloudapi.FileConfig
+import com.github.naz013.cloudapi.GetFileExtensionFromNameUseCase
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.logging.Logger
 import okhttp3.OkHttpClient
@@ -21,7 +22,8 @@ import java.io.InputStream
  * Automatically initializes when the user has a valid OAuth2 token.
  */
 internal class DropboxApiImpl(
-  private val dropboxAuthManager: DropboxAuthManager
+  private val dropboxAuthManager: DropboxAuthManager,
+  private val getFileExtensionFromNameUseCase: GetFileExtensionFromNameUseCase = GetFileExtensionFromNameUseCase()
 ) : DropboxApi {
 
   private var dbxClientV2: DbxClientV2? = null
@@ -203,14 +205,28 @@ internal class DropboxApiImpl(
     if (!isInitialized || fileName.isBlank()) {
       return false
     }
-    val folder = folderFromFileName(fileName)
-    try {
-      dbxClientV2?.files()?.deleteV2(folder + fileName)
+    return try {
+      val folder = folderFromFileName(fileName)
+      val fullPath = folder + fileName
+      Logger.d(TAG, "Attempting to delete file at path: $fullPath")
+      dbxClientV2?.files()?.deleteV2(fullPath)
       Logger.i(TAG, "File $fileName deleted")
-      return true
+      true
+    } catch (e: IllegalArgumentException) {
+      Logger.e(TAG, "Invalid file extension for file: $fileName, ${e.message}")
+      false
+    } catch (e: DbxException) {
+      // File not found is not a critical error during delete
+      if (e.message?.contains("not_found") == true || e.message?.contains("path_lookup") == true) {
+        Logger.d(TAG, "File $fileName not found (already deleted or doesn't exist)")
+        true
+      } else {
+        Logger.e(TAG, "Failed to delete file: $fileName, ${e.message}")
+        false
+      }
     } catch (e: Throwable) {
       Logger.e(TAG, "Failed to delete file: $fileName, ${e.message}")
-      return false
+      false
     }
   }
 
@@ -238,15 +254,18 @@ internal class DropboxApiImpl(
 
   private fun folderFromFileName(fileName: String): String {
     if (fileName.isEmpty()) return REMINDER_FOLDER
-    val parts = fileName.split(".".toRegex())
-    if (parts.size < 2) {
+    val extension = getFileExtensionFromNameUseCase(fileName)
+    if (extension.isEmpty()) {
+      Logger.w(TAG, "Could not extract extension from fileName: $fileName, defaulting to REMINDER_FOLDER")
       return REMINDER_FOLDER
     }
-    return folderFromExt(".${parts[1]}")
+    val extWithDot = if (extension.startsWith(".")) extension else ".$extension"
+    return folderFromExt(extWithDot)
   }
 
   private fun folderFromExt(ext: String): String {
     return when (ext) {
+      FileConfig.FILE_NAME_REMINDER -> REMINDER_FOLDER
       FileConfig.FILE_NAME_NOTE -> NOTE_FOLDER
       FileConfig.FILE_NAME_GROUP -> GROUP_FOLDER
       FileConfig.FILE_NAME_BIRTHDAY -> BIRTH_FOLDER
@@ -257,12 +276,32 @@ internal class DropboxApiImpl(
     }
   }
 
+  /**
+   * Deletes a folder from Dropbox.
+   *
+   * Removes trailing slash from folder path as Dropbox API requires paths without trailing slashes.
+   * Treats "not_found" errors as success since the folder doesn't exist.
+   *
+   * @param dbxClientV2 The Dropbox client instance
+   * @param folder The folder path to delete (can have trailing slash)
+   */
   private fun deleteFolder(dbxClientV2: DbxClientV2, folder: String) {
     try {
-      dbxClientV2.files().deleteV2(folder)
+      // Dropbox delete_v2 API requires paths without trailing slash
+      val folderPath = folder.trimEnd('/')
+      if (folderPath.isEmpty() || folderPath == "/") {
+        Logger.w(TAG, "Skipping deletion of root folder")
+        return
+      }
+      dbxClientV2.files().deleteV2(folderPath)
       Logger.i(TAG, "Folder $folder deleted")
     } catch (e: DbxException) {
-      Logger.e(TAG, "Failed to delete folder: $folder, ${e.message}")
+      // Folder not found is not a critical error during delete
+      if (e.message?.contains("not_found") == true || e.message?.contains("path_lookup") == true) {
+        Logger.d(TAG, "Folder $folder not found (already deleted or doesn't exist)")
+      } else {
+        Logger.e(TAG, "Failed to delete folder: $folder, ${e.message}")
+      }
     }
   }
 

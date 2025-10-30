@@ -59,34 +59,45 @@ class SyncDataConverterImpl : SyncDataConverter {
     }
   }
 
+  /**
+   * Converts SettingsModel to InputStream with Base64 encoding.
+   *
+   * Encodes the settings data map using ObjectOutputStream wrapped in Base64OutputStream
+   * to ensure consistent encoding with the decoding process.
+   *
+   * @param t The SettingsModel to encode
+   * @return Base64-encoded InputStream containing the serialized settings
+   * @throws IOException if encoding fails
+   */
   private fun toInputStream(t: SettingsModel): InputStream {
-    return try {
-      var output: ObjectOutputStream? = null
-      val outputBytes = CopyByteArrayStream()
-      try {
-        output = ObjectOutputStream(outputBytes)
+    val outputBytes = CopyByteArrayStream()
+    try {
+      // Wrap in Base64 encoding to match decoding expectations
+      val base64Output = Base64OutputStream(outputBytes, Base64.DEFAULT)
+      val objectOutput = ObjectOutputStream(base64Output)
+
+      objectOutput.use { output ->
         output.writeObject(t.data)
-        outputBytes.toInputStream()
-      } catch (e: IOException) {
-        throw e
-      } finally {
-        try {
-          if (output != null) {
-            output.flush()
-            output.close()
-          }
-        } catch (ex: IOException) {
-          Logger.e(TAG, "SettingsConverter: toInputStream error: $ex")
-        }
       }
-    } catch (e: Exception) {
+
+      base64Output.close()
+
+      // Convert to InputStream after all streams are closed
+      return outputBytes.toInputStream()
+    } catch (e: IOException) {
       Logger.e(TAG, "SettingsConverter: toInputStream error: $e")
       throw e
+    } catch (e: Exception) {
+      Logger.e(TAG, "SettingsConverter: toInputStream unexpected error: $e")
+      throw e
+    } finally {
+      outputBytes.close()
     }
   }
 
   override suspend fun <T> parse(stream: InputStream, clazz: Class<T>): T {
     if (clazz == SettingsModel::class.java) {
+      @Suppress("UNCHECKED_CAST")
       return convert(stream) as T
     }
     val output64 = Base64InputStream(stream, Base64.DEFAULT)
@@ -95,24 +106,48 @@ class SyncDataConverterImpl : SyncDataConverter {
     return reader.use { Gson().fromJson<T>(reader, clazz) }
   }
 
+  /**
+   * Converts Base64-encoded InputStream to SettingsModel.
+   *
+   * Decodes the Base64-encoded stream and deserializes the settings data map.
+   * Validates that the deserialized object is actually a Map.
+   *
+   * @param stream The Base64-encoded InputStream containing serialized settings
+   * @return SettingsModel with the deserialized settings data
+   * @throws IOException if decoding fails
+   * @throws ClassNotFoundException if the serialized class is not found
+   * @throws IllegalStateException if the deserialized object is not a Map
+   */
   private fun convert(stream: InputStream): SettingsModel {
     return try {
-      var input: ObjectInputStream? = null
-      try {
-        input = ObjectInputStream(Base64InputStream(stream, Base64.DEFAULT))
-        val entries = input.readObject() as Map<String, *>
-        SettingsModel(entries)
-      } catch (e: Exception) {
-        throw e
-      } finally {
-        try {
-          input?.close()
-        } catch (ex: IOException) {
-          Logger.e(TAG, "SettingsConverter: convert error: $ex")
+      val base64Input = Base64InputStream(stream, Base64.DEFAULT)
+      val objectInput = ObjectInputStream(base64Input)
+
+      objectInput.use { input ->
+        val obj = input.readObject()
+
+        // Validate the deserialized object is a Map
+        if (obj !is Map<*, *>) {
+          throw IllegalStateException(
+            "Expected Map but got ${obj?.javaClass?.name ?: "null"}"
+          )
         }
+
+        @Suppress("UNCHECKED_CAST")
+        val entries = obj as Map<String, *>
+        SettingsModel(entries)
       }
+    } catch (e: IOException) {
+      Logger.e(TAG, "SettingsConverter: convert IO error: $e")
+      throw e
+    } catch (e: ClassNotFoundException) {
+      Logger.e(TAG, "SettingsConverter: convert class not found: $e")
+      throw e
+    } catch (e: ClassCastException) {
+      Logger.e(TAG, "SettingsConverter: convert cast error: $e")
+      throw IllegalStateException("Failed to cast deserialized object to Map", e)
     } catch (e: Exception) {
-      Logger.e(TAG, "SettingsConverter: convert error: $e")
+      Logger.e(TAG, "SettingsConverter: convert unexpected error: $e")
       throw e
     }
   }

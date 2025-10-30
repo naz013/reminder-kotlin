@@ -5,6 +5,7 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.sync.settings.SettingsModel
 
 internal class GetLocalUuIdUseCase {
   operator fun invoke(any: Any): String {
@@ -14,6 +15,7 @@ internal class GetLocalUuIdUseCase {
       is Birthday -> any.uuId
       is ReminderGroup -> any.groupUuId
       is Place -> any.id
+      is SettingsModel -> "app"
       else -> throw IllegalArgumentException("Unsupported type: ${any::class.java}")
     }
   }
