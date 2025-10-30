@@ -14,6 +14,7 @@ import com.github.naz013.repository.dao.RecentQueryDao
 import com.github.naz013.repository.dao.RecurPresetDao
 import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.dao.ReminderGroupDao
+import com.github.naz013.repository.dao.RemoteFileMetadataDao
 import com.github.naz013.repository.dao.UsedTimeDao
 import com.github.naz013.repository.entity.BirthdayEntity
 import com.github.naz013.repository.entity.CalendarEventEntity
@@ -26,6 +27,7 @@ import com.github.naz013.repository.entity.RecentQueryEntity
 import com.github.naz013.repository.entity.RecurPresetEntity
 import com.github.naz013.repository.entity.ReminderEntity
 import com.github.naz013.repository.entity.ReminderGroupEntity
+import com.github.naz013.repository.entity.RemoteFileMetadataEntity
 import com.github.naz013.repository.entity.UsedTimeEntity
 import com.github.naz013.repository.migrations.MIGRATION_10_11
 import com.github.naz013.repository.migrations.MIGRATION_11_12
@@ -33,6 +35,7 @@ import com.github.naz013.repository.migrations.MIGRATION_12_13
 import com.github.naz013.repository.migrations.MIGRATION_13_14
 import com.github.naz013.repository.migrations.MIGRATION_14_15
 import com.github.naz013.repository.migrations.MIGRATION_15_16
+import com.github.naz013.repository.migrations.MIGRATION_16_17
 import com.github.naz013.repository.migrations.MIGRATION_1_2
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
@@ -56,9 +59,10 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     BirthdayEntity::class,
     ImageFileEntity::class,
     RecurPresetEntity::class,
-    RecentQueryEntity::class
+    RecentQueryEntity::class,
+    RemoteFileMetadataEntity::class
   ],
-  version = 16,
+  version = 17,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -74,6 +78,7 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun usedTimeDao(): UsedTimeDao
   abstract fun recurPresetDao(): RecurPresetDao
   abstract fun recentQueryDao(): RecentQueryDao
+  abstract fun remoteFileMetadataDao(): RemoteFileMetadataDao
 
   companion object {
 
@@ -98,7 +103,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_12_13,
             MIGRATION_13_14,
             MIGRATION_14_15,
-            MIGRATION_15_16
+            MIGRATION_15_16,
+            MIGRATION_16_17
           )
           .allowMainThreadQueries()
           .build()

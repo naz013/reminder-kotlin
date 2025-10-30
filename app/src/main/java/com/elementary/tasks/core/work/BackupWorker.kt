@@ -1,17 +1,16 @@
 package com.elementary.tasks.core.work
 
-import com.elementary.tasks.core.cloud.SyncManagers
-import com.elementary.tasks.core.cloud.storages.CompositeStorage
-import com.elementary.tasks.core.utils.launchIo
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.work.operation.SyncOperationType
-import com.elementary.tasks.core.work.operation.SyncOperationsFactory
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.sync.SyncApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BackupWorker(
-  private val syncManagers: SyncManagers,
-  private val syncOperationsFactory: SyncOperationsFactory
+  private val syncApi: SyncApi,
+  private val dispatcherProvider: DispatcherProvider
 ) {
 
   private var mJob: Job? = null
@@ -23,9 +22,9 @@ class BackupWorker(
       value?.invoke(mJob != null)
     }
 
-  fun backup() {
+  fun backup(coroutineScope: CoroutineScope) {
     mJob?.cancel()
-    launchSync()
+    launchSync(coroutineScope)
   }
 
   fun unsubscribe() {
@@ -33,18 +32,19 @@ class BackupWorker(
     listener = null
   }
 
-  private fun launchSync() {
-    val storage = CompositeStorage(syncManagers.storageManager)
-    mJob = launchIo {
-      Logger.i("Start full backup")
-      val result = OperationProcessor(
-        syncOperationsFactory(storage, SyncOperationType.JUST_BACKUP, true)
-      ).process()
-      Logger.i("Full backup completed with result = $result")
-      withUIContext {
+  private fun launchSync(coroutineScope: CoroutineScope) {
+    mJob = coroutineScope.launch(dispatcherProvider.io()) {
+      Logger.i(TAG, "Start full backup")
+      syncApi.upload()
+      Logger.i(TAG, "Full backup completed")
+      withContext(dispatcherProvider.main()) {
         onEnd?.invoke()
       }
       mJob = null
     }
+  }
+
+  companion object {
+    private const val TAG = "BackupWorker"
   }
 }

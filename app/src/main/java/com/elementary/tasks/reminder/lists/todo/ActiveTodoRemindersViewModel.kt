@@ -6,7 +6,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.AppliedFilters
@@ -17,9 +16,9 @@ import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
 import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilterGroup
 import com.elementary.tasks.reminder.lists.filter.group.ReminderGroupFilterInstance
 import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -40,10 +39,11 @@ class ActiveTodoRemindersViewModel(
   dispatcherProvider: DispatcherProvider,
   private val reminderRepository: ReminderRepository,
   private val eventControlFactory: EventControlFactory,
-  private val workerLauncher: WorkerLauncher,
   private val uiReminderListsAdapter: UiReminderListsAdapter,
   private val textProvider: TextProvider,
-  private val groupRepository: ReminderGroupRepository
+  private val groupRepository: ReminderGroupRepository,
+  private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _events = mutableLiveDataOf<List<UiReminderEventsList>>()
@@ -126,11 +126,7 @@ class ActiveTodoRemindersViewModel(
       val fromDb = reminderRepository.getById(id)
       if (fromDb != null) {
         eventControlFactory.getController(fromDb).skip()
-        workerLauncher.startWork(
-          ReminderSingleBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          fromDb.uuId
-        )
+        scheduleReminderUploadUseCase(fromDb.uuId)
         loadReminders()
         Commands.SAVED
       }
@@ -146,11 +142,7 @@ class ActiveTodoRemindersViewModel(
         postInProgress(false)
         postCommand(Commands.OUTDATED)
       } else {
-        workerLauncher.startWork(
-          ReminderSingleBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          item.uuId
-        )
+        scheduleReminderUploadUseCase(item.uuId)
         postInProgress(false)
         postCommand(Commands.SAVED)
       }
@@ -160,20 +152,9 @@ class ActiveTodoRemindersViewModel(
 
   fun moveToTrash(id: String) {
     withResultSuspend {
-      reminderRepository.getById(id)?.let {
-        it.isRemoved = true
-        eventControlFactory.getController(it).disable()
-        reminderRepository.save(it)
-        workerLauncher.startWork(
-          ReminderSingleBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          it.uuId
-        )
-        loadReminders()
-        Commands.DELETED
-      } ?: run {
-        Commands.FAILED
-      }
+      moveReminderToArchiveUseCase(id)
+      loadReminders()
+      Commands.DELETED
     }
   }
 

@@ -11,8 +11,7 @@ import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -43,7 +42,6 @@ class EditGoogleTaskViewModel(
   private val googleTasksApi: GoogleTasksApi,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val googleTaskRepository: GoogleTaskRepository,
   private val reminderRepository: ReminderRepository,
   private val reminderGroupRepository: ReminderGroupRepository,
@@ -51,7 +49,8 @@ class EditGoogleTaskViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
   private val getGoogleTaskByIdUseCase: GetGoogleTaskByIdUseCase,
-  private val appWidgetUpdater: AppWidgetUpdater
+  private val appWidgetUpdater: AppWidgetUpdater,
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateState = mutableLiveDataOf<DateState>()
@@ -319,11 +318,7 @@ class EditGoogleTaskViewModel(
         }
         if (reminder.groupUuId != "") {
           eventControlFactory.getController(reminder).enable()
-          workerLauncher.startWork(
-            ReminderSingleBackupWorker::class.java,
-            IntentKeys.INTENT_ID,
-            reminder.uuId
-          )
+          scheduleReminderUploadUseCase(reminder.uuId)
         }
       }
     }

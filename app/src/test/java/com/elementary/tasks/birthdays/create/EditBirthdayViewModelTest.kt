@@ -2,14 +2,13 @@ package com.elementary.tasks.birthdays.create
 
 import android.net.Uri
 import com.elementary.tasks.BaseTest
+import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
+import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.io.UriReader
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
@@ -29,14 +28,13 @@ class EditBirthdayViewModelTest : BaseTest() {
   private lateinit var viewModel: EditBirthdayViewModel
 
   private val birthdayRepository = mockk<BirthdayRepository>()
-  private val workerLauncher = mockk<WorkerLauncher>()
-  private val notifier = mockk<Notifier>()
   private val contactsReader = mockk<ContactsReader>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>()
   private val uriReader = mockk<UriReader>()
-  private val appWidgetUpdater = mockk<AppWidgetUpdater>()
   private val intentDataReader = mockk<IntentDataReader>()
+  private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
+  private val saveBirthdayUseCase = mockk<SaveBirthdayUseCase>()
 
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
 
@@ -48,16 +46,15 @@ class EditBirthdayViewModelTest : BaseTest() {
       id = ID,
       birthdayRepository = birthdayRepository,
       dispatcherProvider = mockDispatcherProvider(),
-      workerLauncher = workerLauncher,
-      notifier = notifier,
       contactsReader = contactsReader,
       dateTimeManager = dateTimeManager,
       analyticsEventSender = analyticsEventSender,
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
       uriReader = uriReader,
-      appWidgetUpdater = appWidgetUpdater,
       intentDataReader = intentDataReader,
-      uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager)
+      uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager),
+      deleteBirthdayUseCase = deleteBirthdayUseCase,
+      saveBirthdayUseCase = saveBirthdayUseCase
     )
   }
 

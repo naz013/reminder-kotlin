@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.converters.ListStringTypeConverter
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
@@ -31,7 +32,11 @@ internal data class PlaceEntity(
   @SerializedName("dateTime")
   val dateTime: String = "",
   @SerializedName("tags")
-  val tags: List<String> = listOf()
+  val tags: List<String> = listOf(),
+  @SerializedName("version")
+  val version: Long = 0L,
+  @SerializedName("syncState")
+  val syncState: String = SyncState.WaitingForUpload.name
 ) {
 
   constructor(place: Place) : this(
@@ -43,7 +48,9 @@ internal data class PlaceEntity(
     id = place.id,
     address = place.address,
     dateTime = place.dateTime,
-    tags = place.tags
+    tags = place.tags,
+    version = place.version,
+    syncState = place.syncState.name
   )
 
   fun toDomain(): Place = Place(
@@ -55,6 +62,8 @@ internal data class PlaceEntity(
     id = id,
     address = address,
     dateTime = dateTime,
-    tags = tags
+    tags = tags,
+    version = version,
+    syncState = SyncState.valueOf(syncState)
   )
 }

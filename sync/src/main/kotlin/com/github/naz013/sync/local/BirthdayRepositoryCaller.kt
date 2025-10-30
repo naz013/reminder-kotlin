@@ -1,0 +1,36 @@
+package com.github.naz013.sync.local
+
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.repository.BirthdayRepository
+
+internal class BirthdayRepositoryCaller(
+  private val birthdayRepository: BirthdayRepository
+) : DataTypeRepositoryCaller<Birthday> {
+
+  override suspend fun getById(id: String): Birthday? {
+    return birthdayRepository.getById(id)
+  }
+
+  override suspend fun getIdsByState(states: List<SyncState>): List<String> {
+    return birthdayRepository.getIdsByState(states)
+  }
+
+  override suspend fun updateSyncState(
+    id: String,
+    state: SyncState
+  ) {
+    birthdayRepository.updateSyncState(id, state)
+  }
+
+  override suspend fun insertOrUpdate(item: Any) {
+    if (item !is Birthday) {
+      throw IllegalArgumentException("Invalid item type: ${item::class.java}, expected: ${Birthday::class.java}")
+    }
+    birthdayRepository.save(item.copy(syncState = SyncState.Synced))
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    return birthdayRepository.getAllIds()
+  }
+}

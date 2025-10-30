@@ -12,17 +12,17 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
-import com.github.naz013.common.intent.PendingIntentWrapper
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.datetime.minusMillis
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.common.datetime.minusMillis
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import java.util.Calendar
@@ -97,28 +97,6 @@ class JobScheduler(
 
   fun cancelBirthdayPermanent() {
     cancelReminder(EVENT_BIRTHDAY_PERMANENT)
-  }
-
-  fun scheduleAutoSync() {
-    val interval = prefs.autoSyncState
-    if (interval <= 0) {
-      cancelAutoSync()
-      return
-    }
-
-    val millis = INTERVAL_HOUR * interval
-
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(EVENT_AUTO_SYNC)
-      .setConstraints(getDefaultConstraints())
-      .build()
-
-    schedule(work)
-  }
-
-  private fun cancelAutoSync() {
-    cancelReminder(EVENT_AUTO_SYNC)
   }
 
   fun scheduleAutoBackup() {
@@ -332,7 +310,6 @@ class JobScheduler(
   companion object {
     const val EVENT_BIRTHDAY = "event_birthday"
     const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
-    const val EVENT_AUTO_SYNC = "event_auto_sync"
     const val EVENT_AUTO_BACKUP = "event_auto_backup"
     const val EVENT_CHECK = "event_check"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"

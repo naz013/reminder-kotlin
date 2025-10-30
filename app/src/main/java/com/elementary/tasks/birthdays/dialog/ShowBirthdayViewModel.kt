@@ -2,16 +2,12 @@ package com.elementary.tasks.birthdays.dialog
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.work.SingleBackupWorker
-import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayShow
-import com.github.naz013.common.intent.IntentKeys
-import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.common.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -24,11 +20,9 @@ class ShowBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier,
   private val dateTimeManager: DateTimeManager,
   private val uiBirthdayShowAdapter: UiBirthdayShowAdapter,
-  private val appWidgetUpdater: AppWidgetUpdater
+  private val saveBirthdayUseCase: SaveBirthdayUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthday = mutableLiveDataOf<UiBirthdayShow>()
@@ -76,16 +70,12 @@ class ShowBirthdayViewModel(
         return@launch
       }
 
-      birthdayRepository.save(
+      saveBirthdayUseCase(
         birthday.copy(
           updatedAt = dateTimeManager.getNowGmtDateTime(),
           showedYear = LocalDate.now().year
         )
       )
-      notifier.showBirthdayPermanent()
-      appWidgetUpdater.updateBirthdaysWidget()
-      appWidgetUpdater.updateScheduleWidget()
-      workerLauncher.startWork(SingleBackupWorker::class.java, IntentKeys.INTENT_ID, birthday.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

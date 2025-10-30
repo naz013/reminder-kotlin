@@ -869,4 +869,9 @@
     <string name="filters_reset">Reset filters</string>
     <string name="filter_reminders">Filter reminders</string>
     <string name="date_range">Date range</string>
+
+    <string name="erase_cloud_data">Erase data</string>
+    <string name="erase_cloud_data_message">Erase all data in the Cloud</string>
+    <string name="erase">Erase</string>
+    <string name="auto_backup_every">Every</string>
 </resources>

@@ -7,31 +7,21 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.cloud.SyncManagers
-import com.elementary.tasks.core.cloud.storages.CompositeStorage
-import com.elementary.tasks.core.work.operation.SettingsOperationFactory
-import com.elementary.tasks.core.work.operation.SyncOperationType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.sync.DataType
+import com.github.naz013.sync.SyncApi
 import kotlinx.coroutines.withContext
 
 class BackupSettingsWorker(
-  private val syncManagers: SyncManagers,
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val settingsOperationFactory: SettingsOperationFactory
+  private val syncApi: SyncApi
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
     withContext(dispatcherProvider.io()) {
-      OperationProcessor(
-        listOf(
-          settingsOperationFactory(
-            storage = CompositeStorage(syncManagers.storageManager),
-            syncOperationType = SyncOperationType.JUST_BACKUP
-          )
-        )
-      ).process()
+      syncApi.upload(DataType.Settings)
     }
     return Result.success()
   }

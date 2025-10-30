@@ -6,14 +6,12 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.calendar.calendarModule
+import com.elementary.tasks.core.cloud.cloudModule
 import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.completableModule
-import com.elementary.tasks.core.utils.converterModule
-import com.elementary.tasks.core.utils.dataFlowRepositoryModule
 import com.elementary.tasks.core.utils.newUtilsModule
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
@@ -24,12 +22,14 @@ import com.elementary.tasks.core.utils.workerModule
 import com.elementary.tasks.core.work.workModule
 import com.elementary.tasks.globalsearch.searchModule
 import com.elementary.tasks.googletasks.googleTaskModule
+import com.elementary.tasks.groups.reminderGroupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.notes.noteModule
+import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
@@ -42,6 +42,7 @@ import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.navigationApiModule
 import com.github.naz013.repository.repositoryModule
+import com.github.naz013.sync.syncApiModule
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
@@ -92,10 +93,7 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
         listOf(
           utilModule,
           featureCommonModule,
-          dataFlowRepositoryModule,
           storageModule,
-          completableModule,
-          converterModule,
           workerModule,
           viewModelModule,
           adapterModule,
@@ -123,7 +121,11 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           remindersUseCaseModule,
           notesUseCaseModule,
           iCalendarModule,
-          navigationApiModule
+          navigationApiModule,
+          cloudModule,
+          syncApiModule,
+          reminderGroupModule,
+          placeKoinModule
         )
       )
     }

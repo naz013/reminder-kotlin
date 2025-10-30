@@ -22,11 +22,10 @@ import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.notes.work.NoteSingleBackupWorker
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
+import com.elementary.tasks.notes.usecase.SaveNoteUseCase
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -41,6 +40,7 @@ import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -65,7 +65,6 @@ class CreateNoteViewModel(
   private val imageDecoder: ImageDecoder,
   dispatcherProvider: DispatcherProvider,
   private val eventControlFactory: EventControlFactory,
-  private val workerLauncher: WorkerLauncher,
   private val noteRepository: NoteRepository,
   private val reminderRepository: ReminderRepository,
   private val reminderGroupRepository: ReminderGroupRepository,
@@ -78,7 +77,10 @@ class CreateNoteViewModel(
   private val uiNoteEditAdapter: UiNoteEditAdapter,
   private val noteImageRepository: NoteImageRepository,
   private val noteToOldNoteConverter: NoteToOldNoteConverter,
-  private val intentDataReader: IntentDataReader
+  private val intentDataReader: IntentDataReader,
+  private val deleteNoteUseCase: DeleteNoteUseCase,
+  private val saveNoteUseCase: SaveNoteUseCase,
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -290,10 +292,7 @@ class CreateNoteViewModel(
     val note = noteWithImages.note ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      noteRepository.delete(note.key)
-      noteRepository.deleteImageForNote(note.key)
-      noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      deleteNoteUseCase(note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -352,10 +351,8 @@ class CreateNoteViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       v.updatedAt = DateTimeManager.gmtDateTime
+      saveNoteUseCase(note)
       Logger.d("saveNote: $note")
-      saveImages(note.images, v.key)
-      noteRepository.save(v)
-      workerLauncher.startWork(NoteSingleBackupWorker::class.java, IntentKeys.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
       if (reminder != null) {
@@ -399,7 +396,7 @@ class CreateNoteViewModel(
     val noteWithImages = localNote
     var note = noteWithImages?.note
     if (note == null) {
-      note = Note()
+      note = Note(syncState = SyncState.WaitingForUpload)
     }
     note.summary = text
     note.date = dateTimeManager.getNowGmtDateTime()
@@ -408,6 +405,7 @@ class CreateNoteViewModel(
     note.fontSize = fontSize.value ?: FontParams.DEFAULT_FONT_SIZE
     note.palette = palette.value ?: 0
     note.opacity = pair.second
+    note.syncState = SyncState.WaitingForUpload
 
     return (noteWithImages ?: NoteWithImages()).copy(
       images = images.map {
@@ -432,28 +430,8 @@ class CreateNoteViewModel(
       }
       if (reminder.groupUuId != "") {
         eventControlFactory.getController(reminder).enable()
-        workerLauncher.startWork(
-          ReminderSingleBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          reminder.uuId
-        )
+        scheduleReminderUploadUseCase(reminder.uuId)
       }
     }
-  }
-
-  private suspend fun saveImages(list: List<ImageFile>, id: String) {
-    val oldList = noteRepository.getImagesByNoteId(id)
-    Logger.d("saveImages: ${oldList.size}")
-    for (image in oldList) {
-      Logger.d("saveImages: delete -> ${image.id}, ${image.noteId}")
-      noteRepository.deleteImage(image.id)
-    }
-    noteImageRepository.moveImagesToFolder(list, id)
-      .map { it.copy(noteId = id) }
-      .takeIf { it.isNotEmpty() }
-      ?.also {
-        Logger.d("saveImages: new list -> $it")
-        noteRepository.saveAll(it)
-      }
   }
 }

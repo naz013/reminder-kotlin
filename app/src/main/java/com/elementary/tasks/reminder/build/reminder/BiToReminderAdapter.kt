@@ -60,7 +60,7 @@ class BiToReminderAdapter(
     reminder.builderScheme = items.mapIndexed { index, builderItem ->
       BuilderSchemeItem(builderItem.biType, index)
     }
-    reminder.version = Reminder.Version.V3
+    reminder.jsonSchemaVersion = Reminder.Version.V3
 
     Logger.d(TAG, "New reminder = $reminder")
     return BuildResult.Success(reminder)

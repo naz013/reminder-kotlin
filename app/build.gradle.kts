@@ -204,6 +204,7 @@ dependencies {
   implementation(project(":usecase:notes"))
   implementation(project(":usecase:reminders"))
   implementation(project(":icalendar"))
+  implementation(project(":sync"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

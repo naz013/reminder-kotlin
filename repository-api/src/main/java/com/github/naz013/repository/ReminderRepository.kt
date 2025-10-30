@@ -1,6 +1,7 @@
 package com.github.naz013.repository
 
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.sync.SyncState
 
 interface ReminderRepository {
   suspend fun save(reminder: Reminder)
@@ -36,4 +37,8 @@ interface ReminderRepository {
   suspend fun delete(id: String)
   suspend fun deleteAll()
   suspend fun deleteAll(ids: List<String>)
+
+  suspend fun updateSyncState(id: String, state: SyncState)
+  suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
+  suspend fun getAllIds(): List<String>
 }

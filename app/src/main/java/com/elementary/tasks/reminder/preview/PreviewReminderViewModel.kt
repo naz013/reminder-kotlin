@@ -13,13 +13,12 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.io.BackupTool
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
-import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
-import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
+import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -46,10 +45,8 @@ class PreviewReminderViewModel(
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val uiReminderPreviewDataAdapter: UiReminderPreviewDataAdapter,
   private val backupTool: BackupTool,
-  private val appWidgetUpdater: AppWidgetUpdater,
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
@@ -59,7 +56,10 @@ class PreviewReminderViewModel(
   private val googleTaskToUiReminderPreviewGoogleTask: GoogleTaskToUiReminderPreviewGoogleTask,
   private val noteToUiReminderPreviewNote: NoteToUiReminderPreviewNote,
   private val textProvider: TextProvider,
-  private val eventToUiReminderPreview: EventToUiReminderPreview
+  private val eventToUiReminderPreview: EventToUiReminderPreview,
+  private val deleteReminderUseCase: DeleteReminderUseCase,
+  private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _note = mutableLiveDataOf<UiNoteList>()
@@ -163,13 +163,7 @@ class PreviewReminderViewModel(
     postInProgress(true)
     Logger.i(TAG, "Saving reminder, id: ${reminder.uuId}")
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.save(reminder)
-      appWidgetUpdater.updateScheduleWidget()
-      workerLauncher.startWork(
-        ReminderSingleBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        reminder.uuId
-      )
+      saveReminder(reminder)
       postInProgress(false)
       postCommand(Commands.SAVED)
       loadReminder()
@@ -194,11 +188,7 @@ class PreviewReminderViewModel(
       postInProgress(false)
       postCommand(Commands.OUTDATED)
     } else {
-      workerLauncher.startWork(
-        ReminderSingleBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        reminder.uuId
-      )
+      scheduleReminderUploadUseCase(reminder.uuId)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -233,6 +223,7 @@ class PreviewReminderViewModel(
           newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
           reminderRepository.save(newItem)
           eventControlFactory.getController(newItem).enable()
+          scheduleReminderUploadUseCase(newItem.uuId)
         }
         postCommand(Commands.SAVED)
       }
@@ -244,14 +235,7 @@ class PreviewReminderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(id)?.also { reminder ->
         withResultSuspend {
-          eventControlFactory.getController(reminder).disable()
-          reminderRepository.delete(reminder.uuId)
-          googleCalendarUtils.deleteEvents(reminder.uuId)
-          workerLauncher.startWork(
-            ReminderDeleteBackupWorker::class.java,
-            IntentKeys.INTENT_ID,
-            reminder.uuId
-          )
+          deleteReminderUseCase(reminder)
           Commands.DELETED
         }
       }
@@ -261,17 +245,8 @@ class PreviewReminderViewModel(
   fun moveToTrash() {
     Logger.i(TAG, "Moving reminder to trash, id: $id")
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.getById(id)?.also {
-        it.isRemoved = true
-        eventControlFactory.getController(it).disable()
-        reminderRepository.save(it)
-        workerLauncher.startWork(
-          ReminderSingleBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          it.uuId
-        )
-        postCommand(Commands.DELETED)
-      }
+      moveReminderToArchiveUseCase(id)
+      postCommand(Commands.DELETED)
     }
   }
 

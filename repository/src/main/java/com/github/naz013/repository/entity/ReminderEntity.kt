@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BuilderSchemeItem
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.converters.BuilderSchemeItemsTypeConverter
 import com.github.naz013.repository.converters.ListIntTypeConverter
 import com.github.naz013.repository.converters.ListStringTypeConverter
@@ -153,7 +154,10 @@ internal data class ReminderEntity(
   val builderScheme: List<BuilderSchemeItem>? = null,
   @SerializedName("version")
   val version: String? = Reminder.DEFAULT_VERSION,
-
+  @SerializedName("versionId")
+  val versionId: Long = 0L,
+  @SerializedName("syncState")
+  val syncState: String,
   @ColumnInfo(name = "groupTitle")
   @Transient
   val groupTitle: String? = "",
@@ -200,7 +204,7 @@ internal data class ReminderEntity(
     attachmentFile = reminder.attachmentFile,
     attachmentFiles = reminder.attachmentFiles,
     auto = reminder.auto,
-    places = reminder.places.map { PlaceEntity(it) },
+    places = reminder.places.map { PlaceEntity(it.copy(syncState = SyncState.Synced)) },
     shoppings = reminder.shoppings,
     uniqueId = reminder.uniqueId,
     isActive = reminder.isActive,
@@ -219,7 +223,9 @@ internal data class ReminderEntity(
     allDay = reminder.allDay,
     description = reminder.description,
     builderScheme = reminder.builderScheme,
-    version = reminder.version
+    version = reminder.jsonSchemaVersion,
+    syncState = reminder.syncState.name,
+    versionId = reminder.version,
   )
 
   fun toDomain(): Reminder {
@@ -280,9 +286,11 @@ internal data class ReminderEntity(
       allDay = allDay,
       description = description,
       builderScheme = builderScheme,
-      version = version,
+      jsonSchemaVersion = version,
       groupTitle = groupTitle,
-      groupColor = groupColor
+      groupColor = groupColor,
+      syncState = SyncState.valueOf(syncState),
+      version = versionId
     )
   }
 }

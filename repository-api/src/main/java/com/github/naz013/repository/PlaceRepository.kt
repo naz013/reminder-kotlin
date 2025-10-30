@@ -1,6 +1,7 @@
 package com.github.naz013.repository
 
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.sync.SyncState
 
 interface PlaceRepository {
   suspend fun save(place: Place)
@@ -11,4 +12,8 @@ interface PlaceRepository {
 
   suspend fun delete(id: String)
   suspend fun deleteAll()
+
+  suspend fun updateSyncState(id: String, state: SyncState)
+  suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
+  suspend fun getAllIds(): List<String>
 }

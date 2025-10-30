@@ -7,6 +7,4 @@ class LocalePreferencesImpl(
 ) : LocalePreferences {
   override val appLanguage: Int
     get() = prefs.appLanguage
-  override val voiceLocale: Int
-    get() = prefs.voiceLocale
 }

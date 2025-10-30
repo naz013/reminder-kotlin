@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.build.preset
 import android.app.AlarmManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.protocol.WeekDaysProtocol
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
@@ -16,13 +15,15 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.PresetBuilderScheme
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.ShopItem
-import com.github.naz013.common.ContextProvider
+import com.github.naz013.domain.sync.SyncState
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -115,7 +116,8 @@ class BuilderPresetsGenerateUseCase(
                 radius = 150,
                 latitude = 37.422131,
                 longitude = -122.084801,
-                name = "Googleplex, Mountain View, CA, USA"
+                name = "Googleplex, Mountain View, CA, USA",
+                syncState = SyncState.WaitingForUpload
               ),
               ArrivingCoordinatesBuilderItem::class.java
             )

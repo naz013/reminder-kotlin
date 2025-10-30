@@ -34,4 +34,13 @@ internal interface ReminderGroupDao {
 
   @Query("DELETE FROM ReminderGroup")
   fun deleteAll()
+
+  @Query("UPDATE ReminderGroup SET syncState=:state WHERE groupUuId=:id")
+  fun updateSyncState(id: String, state: String)
+
+  @Query("SELECT groupUuId FROM ReminderGroup WHERE syncState IN (:syncStates)")
+  fun getBySyncStates(syncStates: List<String>): List<String>
+
+  @Query("SELECT groupUuId FROM ReminderGroup")
+  fun getAllIds(): List<String>
 }

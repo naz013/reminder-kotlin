@@ -8,21 +8,19 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
+import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
+import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -37,17 +35,18 @@ import java.io.File
 class PreviewNoteViewModel(
   val key: String,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val backupTool: BackupTool,
   private val noteRepository: NoteRepository,
   private val reminderRepository: ReminderRepository,
   private val uiNotePreviewAdapter: UiNotePreviewAdapter,
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val noteImageRepository: NoteImageRepository,
   private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
   private val notifier: Notifier,
-  private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder
+  private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder,
+  private val deleteNoteUseCase: DeleteNoteUseCase,
+  private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
+  private val saveReminderUseCase: SaveReminderUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -132,10 +131,7 @@ class PreviewNoteViewModel(
         return@launch
       }
 
-      note.archived = !note.archived
-      noteRepository.save(note)
-
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      changeNoteArchiveStateUseCase(key, !note.archived)
 
       loadInternal()
 
@@ -147,22 +143,7 @@ class PreviewNoteViewModel(
   fun deleteNote() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(key)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      val note = noteWithImages.note
-      if (note == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      noteRepository.delete(note.key)
-      noteRepository.deleteImageForNote(note.key)
-      noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      deleteNoteUseCase(key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -201,12 +182,7 @@ class PreviewNoteViewModel(
 
       reminder.noteId = ""
 
-      reminderRepository.save(reminder)
-      workerLauncher.startWork(
-        ReminderSingleBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        reminder.uuId
-      )
+      saveReminderUseCase(reminder)
 
       loadReminders()
       postInProgress(false)

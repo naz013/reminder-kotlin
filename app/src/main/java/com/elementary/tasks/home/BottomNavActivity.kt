@@ -155,9 +155,7 @@ class BottomNavActivity :
 
   override fun onDestroy() {
     super.onDestroy()
-    if (prefs.isBackupEnabled && prefs.isSettingsBackupEnabled) {
-      BackupSettingsWorker.schedule(this)
-    }
+    BackupSettingsWorker.schedule(this)
   }
 
   override fun handleBackPress(): Boolean {

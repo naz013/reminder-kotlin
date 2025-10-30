@@ -1,5 +1,6 @@
 package com.github.naz013.domain.note
 
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.Random
@@ -27,7 +28,11 @@ data class Note(
   @SerializedName("fontSize")
   var fontSize: Int = -1,
   @SerializedName("archived")
-  var archived: Boolean = false
+  var archived: Boolean = false,
+  @SerializedName("versionId")
+  var version: Long = 0L,
+  @Transient
+  var syncState: SyncState,
 ) : Serializable {
 
   constructor(oldNote: OldNote) : this(
@@ -40,6 +45,7 @@ data class Note(
     summary = oldNote.summary,
     updatedAt = oldNote.updatedAt,
     fontSize = oldNote.fontSize,
-    archived = oldNote.archived
+    archived = oldNote.archived,
+    syncState = SyncState.Synced,
   )
 }

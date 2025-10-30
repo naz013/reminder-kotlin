@@ -1,18 +1,17 @@
 package com.elementary.tasks.core.work
 
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.elementary.tasks.core.cloud.SyncManagers
-import com.elementary.tasks.core.cloud.storages.CompositeStorage
-import com.elementary.tasks.core.utils.launchIo
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.work.operation.SyncOperationType
-import com.elementary.tasks.core.work.operation.SyncOperationsFactory
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.sync.SyncApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SyncWorker(
-  private val syncManagers: SyncManagers,
+  private val syncApi: SyncApi,
+  private val dispatcherProvider: DispatcherProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val syncOperationsFactory: SyncOperationsFactory
 ) {
 
   private var mJob: Job? = null
@@ -23,9 +22,9 @@ class SyncWorker(
       value?.invoke(mJob != null)
     }
 
-  fun sync() {
+  fun sync(coroutineScope: CoroutineScope) {
     mJob?.cancel()
-    launchSync()
+    launchSync(coroutineScope)
   }
 
   fun unsubscribe() {
@@ -33,13 +32,10 @@ class SyncWorker(
     listener = null
   }
 
-  private fun launchSync() {
-    val storage = CompositeStorage(syncManagers.storageManager)
-    mJob = launchIo {
-      OperationProcessor(
-        syncOperationsFactory(storage, SyncOperationType.FULL, true)
-      ).process()
-      withUIContext {
+  private fun launchSync(coroutineScope: CoroutineScope) {
+    mJob = coroutineScope.launch(dispatcherProvider.io()) {
+      syncApi.sync()
+      withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateAllWidgets()
         appWidgetUpdater.updateNotesWidget()
         onEnd?.invoke()
