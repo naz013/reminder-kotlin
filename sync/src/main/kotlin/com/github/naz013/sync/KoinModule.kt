@@ -12,6 +12,7 @@ import com.github.naz013.sync.usecase.FindAllFilesToDeleteUseCase
 import com.github.naz013.sync.usecase.FindAllFilesToDownloadUseCase
 import com.github.naz013.sync.usecase.FindNewestCloudApiSourceUseCase
 import com.github.naz013.sync.usecase.GetAllowedDataTypesUseCase
+import com.github.naz013.sync.usecase.GetClassByDataTypeUseCase
 import com.github.naz013.sync.usecase.GetCloudFileNameUseCase
 import com.github.naz013.sync.usecase.GetLocalUuIdUseCase
 import com.github.naz013.sync.usecase.HasAnyCloudApiUseCase
@@ -22,7 +23,7 @@ import org.koin.dsl.module
 val syncApiModule = module {
   factory { SyncApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get()) as SyncApi }
 
-  factory { DataTypeRepositoryCallerFactory(get(), get(), get(), get(), get()) }
+  factory { DataTypeRepositoryCallerFactory(get(), get(), get(), get(), get(), get()) }
 
   factory { GetAllowedDataTypesUseCase() }
   factory { CreateRemoteFileMetadataUseCase(get()) }
@@ -31,9 +32,9 @@ val syncApiModule = module {
   factory { UploadSingleUseCase(get(), get(), get(), get(), get(), get()) }
 
   factory { FindNewestCloudApiSourceUseCase(get(), get()) }
-  factory { DownloadSingleUseCase(get(), get(), get(), get(), get(), get()) }
+  factory { DownloadSingleUseCase(get(), get(), get(), get(), get(), get(), get()) }
   factory { FindAllFilesToDownloadUseCase(get(), get()) }
-  factory { DownloadUseCase(get(), get(), get(), get(), get(), get(), get()) }
+  factory { DownloadUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   factory { GetCloudFileNameUseCase() }
   factory { FindAllFilesToDeleteUseCase(get()) }
@@ -44,4 +45,6 @@ val syncApiModule = module {
   factory { UploadSettingsUseCase(get(), get(), get(), get()) }
 
   factory { HasAnyCloudApiUseCase(get()) }
+
+  factory { GetClassByDataTypeUseCase() }
 }

@@ -247,6 +247,7 @@ internal class DropboxApiImpl(
       deleteFolder(this, TEMPLATE_FOLDER)
       deleteFolder(this, SETTINGS_FOLDER)
       deleteFolder(this, REMINDER_FOLDER)
+      deleteFolder(this, PRESET_FOLDER)
       Logger.i(TAG, "All data removed")
       true
     } ?: false
@@ -272,6 +273,7 @@ internal class DropboxApiImpl(
       FileConfig.FILE_NAME_PLACE -> PLACE_FOLDER
       FileConfig.FILE_NAME_SETTINGS_EXT -> SETTINGS_FOLDER
       FileConfig.FILE_NAME_JSON -> ROOT_FOLDER
+      FileConfig.FILE_NAME_PRESET -> PRESET_FOLDER
       else -> throw IllegalArgumentException("Unknown file extension: $ext")
     }
   }
@@ -313,6 +315,7 @@ internal class DropboxApiImpl(
     private const val GROUP_FOLDER = "/Groups/"
     private const val BIRTH_FOLDER = "/Birthdays/"
     private const val PLACE_FOLDER = "/Places/"
+    private const val PRESET_FOLDER = "/Presets/"
 
     @Deprecated("After R")
     private const val TEMPLATE_FOLDER = "/Templates/"

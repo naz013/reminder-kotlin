@@ -1,6 +1,7 @@
 package com.github.naz013.domain
 
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import org.threeten.bp.LocalDateTime
 import java.util.UUID
@@ -25,7 +26,11 @@ data class RecurPreset(
   @SerializedName("isDefault")
   val isDefault: Boolean = false,
   @SerializedName("recurItemsToAdd")
-  val recurItemsToAdd: String?
+  val recurItemsToAdd: String?,
+  @SerializedName("versionId")
+  val version: Long = 0L,
+  @SerializedName("syncState")
+  val syncState: SyncState = SyncState.WaitingForUpload,
 )
 
 enum class PresetType {

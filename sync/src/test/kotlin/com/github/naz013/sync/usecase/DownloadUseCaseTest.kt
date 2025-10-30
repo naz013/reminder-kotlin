@@ -65,7 +65,8 @@ class DownloadUseCaseTest {
       createRemoteFileMetadataUseCase = createRemoteFileMetadataUseCase,
       findAllFilesToDownloadUseCase = findAllFilesToDownloadUseCase,
       getLocalUuIdUseCase = getLocalUuIdUseCase,
-      dataPostProcessor = dataPostProcessor
+      dataPostProcessor = dataPostProcessor,
+      getClassByDataTypeUseCase = GetClassByDataTypeUseCase()
     )
   }
 

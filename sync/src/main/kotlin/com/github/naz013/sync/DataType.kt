@@ -8,5 +8,6 @@ enum class DataType(
   Birthdays(".gr2"),
   Groups(".bi2"),
   Places(".pl2"),
-  Settings(".settings")
+  Settings(".settings"),
+  RecurPresets(".rp2")
 }

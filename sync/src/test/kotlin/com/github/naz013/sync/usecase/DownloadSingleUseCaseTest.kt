@@ -63,7 +63,8 @@ class DownloadSingleUseCaseTest {
       remoteFileMetadataRepository = remoteFileMetadataRepository,
       createRemoteFileMetadataUseCase = createRemoteFileMetadataUseCase,
       findNewestCloudApiSourceUseCase = findNewestCloudApiSourceUseCase,
-      dataPostProcessor = dataPostProcessor
+      dataPostProcessor = dataPostProcessor,
+      getClassByDataTypeUseCase = GetClassByDataTypeUseCase()
     )
   }
 
