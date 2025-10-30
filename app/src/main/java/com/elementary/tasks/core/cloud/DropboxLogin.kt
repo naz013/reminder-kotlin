@@ -51,6 +51,12 @@ class DropboxLogin(
       callback.onResult(dropboxAuthManager.isAuthorized())
       if (dropboxAuthManager.isAuthorized()) {
         scheduleBackgroundWorkUseCase(
+          workType = WorkType.ForceUpload,
+          dataType = null,
+          id = null,
+          ids = null,
+        )
+        scheduleBackgroundWorkUseCase(
           workType = WorkType.Sync,
           dataType = null,
           id = null,
