@@ -3,6 +3,7 @@ package com.github.naz013.sync.usecase
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.OldNote
@@ -24,6 +25,7 @@ internal class CreateCloudFileUseCase(
       is ReminderGroup -> any.getFileNamePrefix()
       is Place -> any.getFileNamePrefix()
       is SettingsModel -> "app"
+      is RecurPreset -> any.getFileNamePrefix()
       else -> throw IllegalArgumentException("Unsupported data type: ${any::class.java}")
     } + dataType.fileExtension
     return CloudFile(
@@ -53,6 +55,10 @@ internal class CreateCloudFileUseCase(
   }
 
   private fun Place.getFileNamePrefix(): String {
+    return id
+  }
+
+  private fun RecurPreset.getFileNamePrefix(): String {
     return id
   }
 
