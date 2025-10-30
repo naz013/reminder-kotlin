@@ -10,6 +10,15 @@ internal class FindAllFilesToDeleteUseCase(
   private val cloudApiProvider: CloudApiProvider,
 ) {
 
+  /**
+   * Finds all files of a specific data type in all configured cloud sources.
+   *
+   * Returns all cloud files matching the data type's file extension,
+   * without filtering by metadata (all files will be deleted).
+   *
+   * @param dataType The type of data to search for deletion
+   * @return SearchResult containing cloud files grouped by source, or null if no files found
+   */
   suspend operator fun invoke(dataType: DataType): SearchResult? {
     val apiList = cloudApiProvider.getAllowedCloudApis()
     val sources = mutableListOf<CloudFilesWithSource>()

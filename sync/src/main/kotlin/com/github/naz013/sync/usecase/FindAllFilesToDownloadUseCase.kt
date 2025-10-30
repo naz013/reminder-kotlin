@@ -13,6 +13,16 @@ internal class FindAllFilesToDownloadUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
 ) {
 
+  /**
+   * Finds all files of a specific data type that need to be downloaded from cloud sources.
+   *
+   * Compares cloud file metadata with local metadata to determine which files are newer
+   * or haven't been downloaded yet. Uses different comparison strategies for different sources
+   * (version for Google Drive, rev for Dropbox).
+   *
+   * @param dataType The type of data to search for
+   * @return SearchResult containing cloud files grouped by source, or null if no files to download
+   */
   suspend operator fun invoke(dataType: DataType): SearchResult? {
     val apiList = cloudApiProvider.getAllowedCloudApis()
     val sources = mutableListOf<CloudFilesWithSource>()

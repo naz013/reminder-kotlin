@@ -9,19 +9,25 @@ internal class DeleteSingleUseCase(
   private val getCloudFileNameUseCase: GetCloudFileNameUseCase,
   private val cloudApiProvider: CloudApiProvider,
 ) {
+  /**
+   * Deletes a single item from all configured cloud sources.
+   *
+   * @param dataType The type of data to delete
+   * @param id The unique identifier of the item
+   * @throws IllegalArgumentException if the id is blank
+   * @throws Exception if deletion fails
+   */
   suspend operator fun invoke(dataType: DataType, id: String) {
+    require(id.isNotBlank()) { "Id cannot be blank" }
+
     if (dataType == DataType.Settings) {
       // Settings are not deleted from cloud.
       return
     }
-    try {
-      val fileName = getCloudFileNameUseCase(dataType, id)
-      cloudApiProvider.getAllowedCloudApis().forEach { cloudFileApi ->
-        cloudFileApi.deleteFile(fileName)
-      }
-      remoteFileMetadataRepository.deleteByLocalUuId(id)
-    } catch (e: Exception) {
-      throw e
+    val fileName = getCloudFileNameUseCase(dataType, id)
+    cloudApiProvider.getAllowedCloudApis().forEach { cloudFileApi ->
+      cloudFileApi.deleteFile(fileName)
     }
+    remoteFileMetadataRepository.deleteByLocalUuId(id)
   }
 }

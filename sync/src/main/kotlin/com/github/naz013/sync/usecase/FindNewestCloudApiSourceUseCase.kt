@@ -14,6 +14,17 @@ internal class FindNewestCloudApiSourceUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
 ) {
 
+  /**
+   * Finds the newest version of a specific file across all configured cloud sources.
+   *
+   * Searches all cloud APIs for the file and compares lastModified timestamps
+   * to determine which source has the most recent version. Only includes files
+   * that are newer than the local metadata or don't exist in local metadata.
+   *
+   * @param dataType The type of data to search for
+   * @param id The unique identifier of the item
+   * @return SearchResult with the cloud API and file that has the newest version, or null if not found
+   */
   suspend operator fun invoke(dataType: DataType, id: String): SearchResult? {
     val apiList = cloudApiProvider.getAllowedCloudApis()
     var newestResult: SearchResult? = null

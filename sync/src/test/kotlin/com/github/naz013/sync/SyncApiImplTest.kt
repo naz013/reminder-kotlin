@@ -648,15 +648,20 @@ class SyncApiImplTest {
   }
 
   @Test
-  fun `delete multiple items with empty list should not call delete single`() {
+  fun `delete multiple items with empty list should throw exception`() {
     runBlocking {
       // Arrange
       every { hasAnyCloudApiUseCase() } returns true
 
-      // Act
-      syncApi.delete(DataType.Groups, emptyList())
+      // Act & Assert
+      var exceptionThrown = false
+      try {
+        syncApi.delete(DataType.Groups, emptyList())
+      } catch (e: IllegalArgumentException) {
+        exceptionThrown = true
+      }
 
-      // Assert
+      assert(exceptionThrown) { "Expected IllegalArgumentException to be thrown" }
       coVerify(exactly = 0) { deleteSingleUseCase(any(), any()) }
     }
   }

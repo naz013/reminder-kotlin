@@ -232,19 +232,13 @@ class UploadDataTypeUseCaseTest {
       coEvery { uploadSingleUseCase(dataType, "note-2") } throws RuntimeException("Upload failed")
       coEvery { uploadSingleUseCase(dataType, "note-3") } returns Unit
 
-      // Act & Assert - Exception should propagate (no try-catch in implementation)
-      var exceptionThrown = false
-      try {
-        uploadDataTypeUseCase(dataType)
-      } catch (e: RuntimeException) {
-        exceptionThrown = true
-      }
+      // Act - Should continue with all items despite failure
+      uploadDataTypeUseCase(dataType)
 
-      // Assert - First item processed, exception thrown on second
-      assert(exceptionThrown) { "Expected exception to be thrown" }
+      // Assert - All items should be attempted (partial failure handling)
       coVerify(exactly = 1) { uploadSingleUseCase(dataType, "note-1") }
       coVerify(exactly = 1) { uploadSingleUseCase(dataType, "note-2") }
-      coVerify(exactly = 0) { uploadSingleUseCase(dataType, "note-3") } // Not reached due to exception
+      coVerify(exactly = 1) { uploadSingleUseCase(dataType, "note-3") } // Still processed despite note-2 failure
     }
   }
 

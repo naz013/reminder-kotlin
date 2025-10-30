@@ -55,6 +55,7 @@ internal class SyncApiImpl(
   }
 
   override suspend fun sync(dataType: DataType, id: String): SyncResult {
+    require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for sync.")
       return SyncResult.Skipped
@@ -88,6 +89,7 @@ internal class SyncApiImpl(
   }
 
   override suspend fun upload(dataType: DataType, id: String) {
+    require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for upload.")
       return
@@ -129,6 +131,7 @@ internal class SyncApiImpl(
   }
 
   override suspend fun forceUpload(dataType: DataType, id: String) {
+    require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for upload.")
       return
@@ -159,6 +162,7 @@ internal class SyncApiImpl(
   }
 
   override suspend fun delete(dataType: DataType, id: String) {
+    require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for delete.")
       return
@@ -168,6 +172,8 @@ internal class SyncApiImpl(
   }
 
   override suspend fun delete(dataType: DataType, ids: List<String>) {
+    require(ids.isNotEmpty()) { "Ids list cannot be empty" }
+    require(ids.all { it.isNotBlank() }) { "All ids must be non-blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for delete.")
       return

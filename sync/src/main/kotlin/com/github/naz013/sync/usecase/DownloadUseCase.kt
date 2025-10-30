@@ -25,6 +25,16 @@ internal class DownloadUseCase(
   private val getLocalUuIdUseCase: GetLocalUuIdUseCase,
   private val dataPostProcessor: DataPostProcessor
 ) {
+  /**
+   * Downloads all files of a specific data type from all configured cloud sources.
+   *
+   * Iterates through all cloud sources and downloads files that are newer than
+   * the local version or don't exist locally. Updates sync state to Synced on success.
+   *
+   * @param dataType The type of data to download
+   * @return SyncResult with list of downloaded items or Skipped if nothing to download
+   * @throws Exception if download or processing fails for any file
+   */
   suspend operator fun invoke(dataType: DataType): SyncResult {
     val caller = dataTypeRepositoryCallerFactory.getCaller(dataType)
     val newestResult = findAllFilesToDownloadUseCase(dataType) ?: run {
@@ -41,7 +51,16 @@ internal class DownloadUseCase(
           continue
         }
         val data = syncDataConverter.parse(stream, getClass(dataType))
-        // TODO: Add conflict resolution here
+        val id = getLocalUuIdUseCase(data)
+
+        // Check for conflicts before updating
+        val existingData = caller.getById(id)
+        if (existingData != null) {
+          Logger.d(TAG, "Existing data found for id: $id, overwriting with cloud version")
+          // Cloud version takes precedence for now
+          // Future: Implement proper conflict resolution strategy
+        }
+
         caller.insertOrUpdate(data)
         dataPostProcessor.process(dataType, data)
         val remoteFileMetadata = createRemoteFileMetadataUseCase(
@@ -50,7 +69,6 @@ internal class DownloadUseCase(
           any = data
         )
         remoteFileMetadataRepository.save(remoteFileMetadata)
-        val id = getLocalUuIdUseCase(data)
         caller.updateSyncState(id, SyncState.Synced)
         Logger.i(TAG, "Downloaded and saved file: ${cloudFile.name} from source: ${cloudFileApi.source}")
         downloadedFiles.add(Downloaded(dataType, id))
@@ -78,6 +96,6 @@ internal class DownloadUseCase(
   }
 
   companion object {
-    private const val TAG = "DownloadSingleUseCase"
+    private const val TAG = "DownloadUseCase"
   }
 }

@@ -24,32 +24,51 @@ internal class DownloadSingleUseCase(
   private val findNewestCloudApiSourceUseCase: FindNewestCloudApiSourceUseCase,
   private val dataPostProcessor: DataPostProcessor
 ) {
+  /**
+   * Downloads and syncs a single item from the cloud.
+   *
+   * Finds the newest version of the file across all configured cloud sources,
+   * downloads it, and updates the local database. Updates sync state to Synced on success.
+   *
+   * @param dataType The type of data to download
+   * @param id The unique identifier of the item
+   * @return SyncResult indicating success or skip status
+   * @throws IllegalArgumentException if the id is blank
+   * @throws Exception if download or processing fails
+   */
   suspend operator fun invoke(dataType: DataType, id: String): SyncResult {
+    require(id.isNotBlank()) { "Id cannot be blank" }
+
     val caller = dataTypeRepositoryCallerFactory.getCaller(dataType)
     val newestResult = findNewestCloudApiSourceUseCase(dataType, id) ?: run {
       Logger.e(TAG, "No cloud file found for dataType: $dataType, id: $id")
       return SyncResult.Skipped
     }
-    try {
-      val cloudFile = newestResult.cloudFile
-      val stream = newestResult.cloudFileApi.downloadFile(cloudFile) ?: run {
-        Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, id: $id")
-        return SyncResult.Skipped
-      }
-      val data = syncDataConverter.parse(stream, getClass(dataType))
-      // TODO: Add conflict resolution here
-      caller.insertOrUpdate(data)
-      dataPostProcessor.process(dataType, data)
-      val remoteFileMetadata = createRemoteFileMetadataUseCase(
-        source = newestResult.cloudFileApi.source.value,
-        cloudFile = cloudFile,
-        any = data
-      )
-      remoteFileMetadataRepository.save(remoteFileMetadata)
-      caller.updateSyncState(id, SyncState.Synced)
-    } catch (e: Exception) {
-      throw e
+    val cloudFile = newestResult.cloudFile
+    val stream = newestResult.cloudFileApi.downloadFile(cloudFile) ?: run {
+      Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, id: $id")
+      return SyncResult.Skipped
     }
+    val data = syncDataConverter.parse(stream, getClass(dataType))
+
+    // Check for conflicts before updating
+    val existingData = caller.getById(id)
+    if (existingData != null) {
+      Logger.d(TAG, "Existing data found for id: $id, overwriting with cloud version")
+      // Cloud version takes precedence for now
+      // Future: Implement proper conflict resolution strategy
+    }
+
+    caller.insertOrUpdate(data)
+    dataPostProcessor.process(dataType, data)
+    val remoteFileMetadata = createRemoteFileMetadataUseCase(
+      source = newestResult.cloudFileApi.source.value,
+      cloudFile = cloudFile,
+      any = data
+    )
+    remoteFileMetadataRepository.save(remoteFileMetadata)
+    caller.updateSyncState(id, SyncState.Synced)
+
     return SyncResult.Success(
       downloaded = listOf(
         Downloaded(

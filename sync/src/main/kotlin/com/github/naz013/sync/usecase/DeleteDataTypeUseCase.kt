@@ -8,6 +8,12 @@ internal class DeleteDataTypeUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val findAllFilesToDeleteUseCase: FindAllFilesToDeleteUseCase,
 ) {
+  /**
+   * Deletes all files of a specific data type from all configured cloud sources.
+   *
+   * @param dataType The type of data to delete from cloud
+   * @throws Exception if deletion fails
+   */
   suspend operator fun invoke(dataType: DataType) {
     val newestResult = findAllFilesToDeleteUseCase(dataType) ?: run {
       Logger.i(TAG, "No files to delete for data type: $dataType")
@@ -24,6 +30,6 @@ internal class DeleteDataTypeUseCase(
   }
 
   companion object {
-    private const val TAG = "DownloadSingleUseCase"
+    private const val TAG = "DeleteDataTypeUseCase"
   }
 }
