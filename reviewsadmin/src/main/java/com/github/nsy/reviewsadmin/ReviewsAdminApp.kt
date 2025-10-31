@@ -3,17 +3,23 @@ package com.github.nsy.reviewsadmin
 import android.app.Application
 import android.util.Log
 import com.github.naz013.logging.FirebaseLogger
+import com.github.naz013.logging.Logger
 import com.github.naz013.logging.LoggerProvider
 import com.github.naz013.logging.initLogging
 import com.github.naz013.reviews.ReviewSdk
 import com.github.naz013.reviews.config.SecondaryFirebaseConfig
-import com.github.naz013.ui.common.uiCommonModule
+import com.github.naz013.reviews.reviewsKoinModule
+import com.github.nsy.reviewsadmin.di.reviewsAdminModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import org.koin.core.logger.Level
 
-class ReviewsAdminApplication : Application() {
+/**
+ * Application class for Reviews Admin app.
+ *
+ * Initializes Koin dependency injection and required libraries.
+ */
+class ReviewsAdminApp : Application() {
 
   override fun onCreate() {
     super.onCreate()
@@ -58,30 +64,41 @@ class ReviewsAdminApplication : Application() {
       }
     )
 
-    val config = SecondaryFirebaseConfig(
+    // Initialize Reviews SDK with Firebase configuration
+    val firebaseConfig = SecondaryFirebaseConfig(
       projectId = BuildConfig.REVIEWS_PROJECT_ID,
       applicationId = BuildConfig.REVIEWS_APP_ID,
       apiKey = BuildConfig.REVIEWS_API_KEY,
       storageBucket = BuildConfig.REVIEWS_STORAGE_BUCKET
     )
 
-    ReviewSdk.initialize(this, config, true).fold(
+    ReviewSdk.initialize(
+      context = this,
+      config = firebaseConfig,
+      enableAppCheck = false
+    ).fold(
       onSuccess = {
-        com.github.naz013.logging.Logger.i("App", "✅ Reviews Firebase initialized")
+        Logger.i("App", "✅ Reviews Firebase initialized")
       },
       onFailure = { error ->
-        com.github.naz013.logging.Logger.e("App", "❌ Reviews init failed", error)
+        Logger.e("App", "❌ Reviews init failed", error)
       }
     )
 
     // Initialize Koin
     startKoin {
-      androidLogger(Level.ERROR)
-      androidContext(this@ReviewsAdminApplication)
+      androidLogger()
+      androidContext(this@ReviewsAdminApp)
       modules(
-        uiCommonModule,
+        reviewsAdminModule,
+        reviewsKoinModule
       )
     }
+
+    Logger.i(TAG, "Reviews Admin App initialized")
+  }
+
+  companion object {
+    private const val TAG = "ReviewsAdminApp"
   }
 }
-

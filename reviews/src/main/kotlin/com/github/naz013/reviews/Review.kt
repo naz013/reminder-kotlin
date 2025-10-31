@@ -24,6 +24,7 @@ enum class AppSource {
  * @property userLocale User's locale setting
  * @property userId User identifier
  * @property source Application source (Free or Pro version)
+ * @property processed Flag indicating if the review has been processed, defaults to false
  */
 data class Review(
   val id: String,
@@ -36,5 +37,6 @@ data class Review(
   val userEmail: String?,
   val userLocale: String,
   val userId: String = "",
-  val source: AppSource = AppSource.FREE
+  val source: AppSource = AppSource.FREE,
+  val processed: Boolean = false
 )

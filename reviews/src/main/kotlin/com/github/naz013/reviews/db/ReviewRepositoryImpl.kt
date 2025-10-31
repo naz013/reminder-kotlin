@@ -122,4 +122,30 @@ internal class ReviewRepositoryImpl(
 
     return firestoreDatabase.deleteReview(reviewId)
   }
+
+  /**
+   * Updates an existing review in Firestore.
+   * Ensures user is authenticated before updating.
+   *
+   * @param review The review to update
+   * @return Result indicating success or failure
+   */
+  suspend fun updateReview(review: Review): Result<Unit> {
+    // Input validation
+    if (review.id.isBlank()) {
+      Logger.w("ReviewRepositoryImpl", "Cannot update review with blank ID")
+      return Result.failure(IllegalArgumentException("Review ID cannot be blank"))
+    }
+
+    // Ensure user is authenticated
+    val authResult = authManager.ensureAuthenticated()
+    if (authResult.isFailure) {
+      Logger.e("ReviewRepositoryImpl", "Authentication failed before updating review")
+      return Result.failure(
+        authResult.exceptionOrNull() ?: Exception("Authentication failed")
+      )
+    }
+
+    return firestoreDatabase.updateReview(review.toReviewEntity())
+  }
 }

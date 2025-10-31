@@ -148,4 +148,33 @@ internal class FirestoreDatabase(
       Result.failure(e)
     }
   }
+
+  /**
+   * Updates a ReviewEntity in Firestore.
+   *
+   * @param reviewEntity The review entity to update
+   * @return Result indicating success or failure with exception details
+   */
+  suspend fun updateReview(reviewEntity: ReviewEntity): Result<Unit> {
+    return try {
+      // Early return for empty ID
+      if (reviewEntity.id.isBlank()) {
+        val error = IllegalArgumentException("Review ID cannot be blank")
+        Logger.e("FirestoreDatabase", "Failed to update review: empty ID", error)
+        return Result.failure(error)
+      }
+
+      firestore
+        .collection(REVIEWS_COLLECTION)
+        .document(reviewEntity.id)
+        .set(reviewEntity)
+        .await()
+
+      Logger.i("FirestoreDatabase", "Successfully updated review with ID: ${reviewEntity.id}")
+      Result.success(Unit)
+    } catch (e: Exception) {
+      Logger.e("FirestoreDatabase", "Failed to update review with ID: ${reviewEntity.id}", e)
+      Result.failure(e)
+    }
+  }
 }

@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">reviewsadmin</string>
+    <string name="app_name">Reviews Admin</string>
+
+    <!-- Login Screen -->
+    <string name="login_subtitle">Sign in to view review statistics</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="sign_out">Sign out</string>
+    <string name="retry">Retry</string>
+
+    <!-- Dashboard Screen -->
+    <string name="dashboard_title">Reviews Dashboard</string>
+    <string name="total_reviews_by_source">Total Reviews by App Source</string>
+    <string name="total_reviews">Total Reviews</string>
+    <string name="statistics_by_period">Statistics by Period</string>
+    <string name="total_reviews_count">%d reviews</string>
+    <string name="last_n_days">Last %d days</string>
+    <string name="average_rating">Average Rating</string>
+    <string name="review_count">Review Count</string>
+
+    <!-- Review List Screen -->
+    <string name="back">Back</string>
+    <string name="rating">Rating</string>
+    <string name="comment">Comment</string>
+    <string name="app_version">Version</string>
+    <string name="timestamp">Timestamp</string>
+    <string name="has_logs">Logs</string>
+    <string name="locale">Locale</string>
 </resources>

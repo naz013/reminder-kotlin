@@ -28,5 +28,7 @@ internal data class ReviewEntity(
   @SerializedName("userId")
   val userId: String = "",
   @SerializedName("appSource")
-  val appSource: String = ""
+  val appSource: String = "",
+  @SerializedName("processed")
+  val processed: Boolean = false
 )
