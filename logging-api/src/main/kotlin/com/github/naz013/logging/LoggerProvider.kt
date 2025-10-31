@@ -1,10 +1,10 @@
 package com.github.naz013.logging
 
 interface LoggerProvider {
-  fun info(message: String)
-  fun debug(message: String)
-  fun error(message: String)
-  fun error(message: String, throwable: Throwable)
-  fun warning(message: String)
-  fun warning(message: String, throwable: Throwable)
+  fun info(tag: String, message: String)
+  fun debug(tag: String, message: String)
+  fun error(tag: String, message: String)
+  fun error(tag: String, message: String, throwable: Throwable)
+  fun warning(tag: String, message: String)
+  fun warning(tag: String, message: String, throwable: Throwable)
 }

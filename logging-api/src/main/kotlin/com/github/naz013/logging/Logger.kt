@@ -19,70 +19,76 @@ object Logger {
   }
 
   fun d(tag: String, message: String) {
-    d("$tag: $message")
+    if (loggingEnabled && isDebug) {
+      loggerProvider?.debug(tag, message)
+    }
   }
 
+  @Deprecated("Use d(tag: String, message: String) instead")
   fun d(message: String) {
-    if (loggingEnabled && isDebug) {
-      loggerProvider?.debug(message)
-    }
+    d("Logger", message)
   }
 
   fun i(tag: String, message: String) {
-    i("$tag: $message")
-  }
-
-  fun i(message: String) {
     if (loggingEnabled) {
-      loggerProvider?.info(message)
+      loggerProvider?.info(tag, message)
     }
     if (reportingEnabled) {
       firebaseLogger?.logEvent(message)
     }
+  }
+
+  @Deprecated("Use i(tag: String, message: String) instead")
+  fun i(message: String) {
+    i("Logger", message)
   }
 
   fun w(tag: String, message: String) {
-    w("$tag: $message")
+    if (loggingEnabled) {
+      loggerProvider?.warning(tag, message)
+    }
   }
 
+  @Deprecated("Use w(tag: String, message: String) instead")
   fun w(message: String) {
-    if (loggingEnabled) {
-      loggerProvider?.warning(message)
-    }
+    w("Logger", message)
   }
 
   fun e(tag: String, message: String, t: Throwable) {
-    e("$tag: $message", t)
+    if (loggingEnabled) {
+      loggerProvider?.error(tag, message, t)
+    }
+    if (reportingEnabled) {
+      firebaseLogger?.logEvent(message)
+    }
   }
 
   fun e(tag: String, message: String) {
-    e("$tag: $message")
+    if (loggingEnabled) {
+      loggerProvider?.error(tag, message)
+    }
+    if (reportingEnabled) {
+      firebaseLogger?.logEvent(message)
+    }
   }
 
+  @Deprecated("Use e(tag: String, message: String, t: Throwable) instead")
   fun e(t: Throwable, message: String) {
-    e(message, t)
+    e("Logger", message, t)
   }
 
+  @Deprecated("Use e(tag: String, message: String) instead")
   fun e(message: String, t: Throwable) {
-    if (loggingEnabled) {
-      loggerProvider?.error(message, t)
-    }
-    if (reportingEnabled) {
-      firebaseLogger?.logEvent(message)
-    }
+    e("Logger", message, t)
   }
 
+  @Deprecated("Use e(tag: String, message: String) instead")
   fun e(message: String) {
-    if (loggingEnabled) {
-      loggerProvider?.error(message)
-    }
-    if (reportingEnabled) {
-      firebaseLogger?.logEvent(message)
-    }
+    e("Logger", message)
   }
 
   fun logEvent(event: String) {
-    loggerProvider?.info(event)
+    loggerProvider?.info("Event", event)
     if (reportingEnabled) {
       firebaseLogger?.logEvent(event)
     }

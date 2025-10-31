@@ -24,28 +24,28 @@ class CloudTestApplication : Application() {
     initLogging(
       isDebug = true,
       loggerProvider = object : LoggerProvider {
-        override fun info(message: String) {
-          Log.i("Logger", message)
+        override fun info(tag: String, message: String) {
+          Log.i(tag, message)
         }
 
-        override fun debug(message: String) {
-          Log.d("Logger", message)
+        override fun debug(tag: String, message: String) {
+          Log.d(tag, message)
         }
 
-        override fun error(message: String) {
-          Log.e("Logger", message)
+        override fun error(tag: String, message: String) {
+          Log.e(tag, message)
         }
 
-        override fun error(message: String, throwable: Throwable) {
-          Log.e("Logger", message, throwable)
+        override fun error(tag: String, message: String, throwable: Throwable) {
+          Log.e(tag, message, throwable)
         }
 
-        override fun warning(message: String) {
-          Log.w("Logger", message)
+        override fun warning(tag: String, message: String) {
+          Log.w(tag, message)
         }
 
-        override fun warning(message: String, throwable: Throwable) {
-          Log.w("Logger", message, throwable)
+        override fun warning(tag: String, message: String, throwable: Throwable) {
+          Log.w(tag, message, throwable)
         }
       },
       firebaseLogger = object : FirebaseLogger {
