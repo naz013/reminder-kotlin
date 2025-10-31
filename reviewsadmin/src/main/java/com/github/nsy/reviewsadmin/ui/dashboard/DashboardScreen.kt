@@ -138,24 +138,47 @@ private fun AppSourceSection(
         containerColor = MaterialTheme.colorScheme.primaryContainer
       )
     ) {
-      Row(
+      Column(
         modifier = Modifier
           .fillMaxWidth()
           .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(8.dp)
       ) {
         Text(
           text = stringResource(R.string.total_reviews),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.SemiBold
         )
-        Text(
-          text = sourceData.count.toString(),
-          style = MaterialTheme.typography.headlineMedium,
-          color = MaterialTheme.colorScheme.primary,
-          fontWeight = FontWeight.Bold
-        )
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Column {
+            Text(
+              text = stringResource(R.string.review_count),
+              style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+              text = sourceData.count.toString(),
+              style = MaterialTheme.typography.headlineMedium,
+              color = MaterialTheme.colorScheme.primary,
+              fontWeight = FontWeight.Bold
+            )
+          }
+          Column(horizontalAlignment = Alignment.End) {
+            Text(
+              text = stringResource(R.string.average_rating),
+              style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+              text = String.format("%.2f", sourceData.averageRating),
+              style = MaterialTheme.typography.headlineMedium,
+              color = MaterialTheme.colorScheme.primary,
+              fontWeight = FontWeight.Bold
+            )
+          }
+        }
       }
     }
 

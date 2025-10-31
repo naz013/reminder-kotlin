@@ -12,6 +12,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.Review
+import com.github.naz013.reviews.auth.FirebaseAuthManager
 import com.github.naz013.reviews.db.ReviewRepositoryImpl
 import com.github.naz013.reviews.fileupload.LogFileUploader
 import com.github.naz013.reviews.logs.FindLatestLogsFileUseCase
@@ -25,6 +26,7 @@ import java.util.UUID
  * ViewModel for managing review submission in ReviewDialog.
  *
  * Handles form state, validation, and submission including:
+ * - Firebase anonymous authentication
  * - Gathering device and app information
  * - Finding and uploading log files
  * - Saving review to Firestore
@@ -34,13 +36,15 @@ import java.util.UUID
  * @property findLatestLogsFile Use case for finding latest log file
  * @property packageManagerWrapper Wrapper for accessing package information
  * @property dispatcherProvider Provider for coroutine dispatchers
+ * @property authManager Manager for Firebase anonymous authentication
  */
 internal class ReviewDialogViewModel(
   private val reviewRepository: ReviewRepositoryImpl,
   private val logFileUploader: LogFileUploader,
   private val findLatestLogsFile: FindLatestLogsFileUseCase,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val authManager: FirebaseAuthManager
 ) : ViewModel() {
 
   private val _isLoading = mutableLiveDataOf<Boolean>()
@@ -222,11 +226,24 @@ internal class ReviewDialogViewModel(
 
   /**
    * Uploads the latest log file to Firebase Storage.
+   * Performs anonymous sign-in before upload to ensure proper authentication.
    *
    * @return The download URL of the uploaded log file, or null if upload fails
    */
   private suspend fun uploadLogFile(): String? {
     return try {
+      // Sign in anonymously before uploading
+      Logger.d(TAG, "Authenticating user anonymously before log upload")
+      val authResult = authManager.signInAnonymously()
+
+      if (authResult.isFailure) {
+        val authError = authResult.exceptionOrNull()
+        Logger.w(TAG, "Failed to authenticate for log upload: ${authError?.message}")
+        // Continue without authentication - upload may still work or gracefully fail
+      } else {
+        Logger.d(TAG, "Authentication successful for log upload")
+      }
+
       Logger.d(TAG, "Finding latest log file")
       val logFilePath = findLatestLogsFile()
 
@@ -281,4 +298,3 @@ internal class ReviewDialogViewModel(
     private const val TAG = "ReviewDialogViewModel"
   }
 }
-

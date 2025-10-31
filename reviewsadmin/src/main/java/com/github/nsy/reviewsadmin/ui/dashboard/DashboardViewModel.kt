@@ -81,6 +81,13 @@ class DashboardViewModel(
       val sourceReviews = reviews.filter { it.source == source }
       val totalCount = sourceReviews.size
 
+      // Calculate overall average rating for this source
+      val totalAverageRating = if (sourceReviews.isNotEmpty()) {
+        sourceReviews.map { it.rating.toDouble() }.average()
+      } else {
+        0.0
+      }
+
       // Calculate period statistics for this specific source
       val periodStatistics = listOf(90, 30, 7).map { days ->
         val cutoffDate = now.minusDays(days.toLong())
@@ -103,6 +110,7 @@ class DashboardViewModel(
         sourceName = source.name,
         source = source,
         count = totalCount,
+        averageRating = totalAverageRating,
         periodStatistics = periodStatistics
       )
     }
@@ -152,6 +160,7 @@ data class AppSourceData(
   val sourceName: String,
   val source: AppSource,
   val count: Int,
+  val averageRating: Double,
   val periodStatistics: List<PeriodStatistics>
 )
 

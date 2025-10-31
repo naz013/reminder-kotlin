@@ -71,7 +71,8 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
       onSubmit = { rating, comment, attachLog, email ->
         viewModel.submitReview(rating, comment, attachLog, email, appSource)
       },
-      onDismiss = { dismiss() }
+      onDismiss = { dismiss() },
+      onShowError = { message -> showMessage(message) }
     )
   }
 
@@ -155,24 +156,40 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
 }
 
 /**
+ * Validates email address format.
+ *
+ * @param email The email address to validate
+ * @return true if the email is valid or empty, false otherwise
+ */
+private fun isValidEmail(email: String): Boolean {
+  if (email.isBlank()) return true
+
+  val emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+  return email.matches(emailPattern.toRegex())
+}
+
+/**
  * Composable content for the review form.
  *
  * @param title The form title
  * @param isLoading Whether the form is currently submitting
  * @param onSubmit Callback when form is submitted
  * @param onDismiss Callback when form is dismissed
+ * @param onShowError Callback to show error messages
  */
 @Composable
 fun ReviewFormContent(
   title: String,
   isLoading: Boolean = false,
   onSubmit: (rating: Float, comment: String, attachLog: Boolean, email: String?) -> Unit,
-  onDismiss: () -> Unit
+  onDismiss: () -> Unit,
+  onShowError: ((String) -> Unit)? = null
 ) {
   var rating by remember { mutableFloatStateOf(5f) }
   var comment by remember { mutableStateOf("") }
   var attachLog by remember { mutableStateOf(false) }
   var email by remember { mutableStateOf("") }
+  var emailError by remember { mutableStateOf(false) }
 
   Column(
     modifier = Modifier
@@ -213,6 +230,14 @@ fun ReviewFormContent(
           icon = AppIcons.Ok,
           contentDescription = stringResource(R.string.feedback_submit),
           onClick = {
+            // Validate email if provided
+            if (email.isNotBlank() && !isValidEmail(email)) {
+              emailError = true
+              onShowError?.invoke("Please enter a valid email address")
+              return@PrimaryIconButton
+            }
+
+            emailError = false
             val emailValue = if (email.isBlank()) null else email
             onSubmit(rating, comment, attachLog, emailValue)
           },
@@ -255,7 +280,14 @@ fun ReviewFormContent(
       // Optional email field
       EmailSection(
         email = email,
-        onEmailChanged = { email = it }
+        onEmailChanged = {
+          email = it
+          // Clear error when user types
+          if (emailError) {
+            emailError = false
+          }
+        },
+        isError = emailError
       )
 
       Spacer(modifier = Modifier.height(8.dp))
@@ -385,11 +417,13 @@ fun LogAttachmentSection(
  *
  * @param email Current email value
  * @param onEmailChanged Callback when email changes
+ * @param isError Whether the email is in error state
  */
 @Composable
 fun EmailSection(
   email: String,
-  onEmailChanged: (String) -> Unit
+  onEmailChanged: (String) -> Unit,
+  isError: Boolean = false
 ) {
   Column(
     modifier = Modifier.fillMaxWidth(),
@@ -407,13 +441,22 @@ fun EmailSection(
       modifier = Modifier.fillMaxWidth(),
       placeholder = { Text("your.email@example.com") },
       singleLine = true,
-      textStyle = MaterialTheme.typography.bodyMedium
+      textStyle = MaterialTheme.typography.bodyMedium,
+      isError = isError,
+      supportingText = if (isError) {
+        { Text(
+          text = "Please enter a valid email address",
+          color = MaterialTheme.colorScheme.error
+        ) }
+      } else null
     )
 
-    Text(
-      text = stringResource(R.string.we_ll_use_this_to_follow_up_on_your_feedback),
-      style = MaterialTheme.typography.bodySmall,
-      color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
+    if (!isError) {
+      Text(
+        text = stringResource(R.string.we_ll_use_this_to_follow_up_on_your_feedback),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+      )
+    }
   }
 }

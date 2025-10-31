@@ -54,5 +54,5 @@ val reviewsKoinModule = module {
 
   factory { FindLatestLogsFileUseCase(get()) }
 
-  viewModel { ReviewDialogViewModel(get(), get(), get(), get(), get()) }
+  viewModel { ReviewDialogViewModel(get(), get(), get(), get(), get(), get()) }
 }
