@@ -179,7 +179,8 @@ class ReviewDialogViewModelTest {
     // Then
     coVerify { reviewRepository.saveReview(any()) }
     assertNotNull(viewModel.submitError.value)
-    assertEquals(errorMessage, viewModel.submitError.value?.peekContent())
+    // ViewModel's getErrorMessage() returns a generic message for non-specific errors
+    assertEquals("Unable to save review. Please try again later.", viewModel.submitError.value?.peekContent())
     assertFalse(viewModel.isLoading.value ?: true)
   }
 

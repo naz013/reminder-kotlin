@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.FragmentReminderBuilderBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
@@ -24,10 +25,13 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.ReviewsApi
 import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -37,6 +41,7 @@ class BuildReminderFragment :
   ValueDialogCallback {
 
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
+  private val reviewsApi by inject<ReviewsApi>()
 
   private val builderAdapter = BuilderAdapter(
     onItemClickListener = { position, item ->
@@ -154,6 +159,9 @@ class BuildReminderFragment :
       binding.savePresetViewHolder.visibleGone(it)
     }
     viewModel.canSave.nonNullObserve(viewLifecycleOwner) { invalidateOptionsMenu() }
+    viewModel.showReviewDialog.observeEvent(viewLifecycleOwner) {
+      showReviewDialog()
+    }
   }
 
   private fun showPredictionState(prediction: ReminderPrediction) {
@@ -234,6 +242,24 @@ class BuildReminderFragment :
 
   override fun onValueChanged(position: Int, builderItem: BuilderItem<*>) {
     viewModel.updateValue(position, builderItem)
+  }
+
+  /**
+   * Shows the ReviewDialog to collect user feedback.
+   * Determines the app source (FREE or PRO) based on BuildParams.
+   */
+  private fun showReviewDialog() {
+    val appSource = if (BuildParams.isPro) {
+      AppSource.PRO
+    } else {
+      AppSource.FREE
+    }
+
+    reviewsApi.showFeedbackForm(
+      context = requireContext(),
+      title = getString(R.string.share_your_experience),
+      appSource = appSource
+    )
   }
 
   companion object {

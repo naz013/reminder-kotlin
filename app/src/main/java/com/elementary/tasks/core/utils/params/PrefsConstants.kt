@@ -106,6 +106,9 @@ object PrefsConstants {
   const val IS_PRESET_INIT = "preset_init"
   const val IS_DEFAULT_PRESET_INIT = "preset_init_default"
 
+  const val REMINDERS_CREATED_COUNT = "reminders_created_count"
+  const val REVIEW_DIALOG_SHOWN = "review_dialog_shown"
+
   const val PRIVACY_POLICY_URL = "privacy_url"
   const val TERMS_URL = "terms_url"
   const val VOICE_HELP_URLS = "voice_help_urls"

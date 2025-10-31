@@ -76,6 +76,14 @@ class Prefs(
     get() = getBoolean(PrefsConstants.IS_DEFAULT_PRESET_INIT, def = true)
     set(value) = putBoolean(PrefsConstants.IS_DEFAULT_PRESET_INIT, value)
 
+  var remindersCreatedCount: Int
+    get() = getInt(PrefsConstants.REMINDERS_CREATED_COUNT, def = 0)
+    set(value) = putInt(PrefsConstants.REMINDERS_CREATED_COUNT, value)
+
+  var reviewDialogShown: Boolean
+    get() = getBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, def = false)
+    set(value) = putBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, value)
+
   var trackCalendarIds: Array<Long>
     get() = getLongArray(PrefsConstants.CALENDAR_IDS)
     set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)

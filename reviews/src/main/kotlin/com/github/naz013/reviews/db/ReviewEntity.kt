@@ -26,5 +26,7 @@ internal data class ReviewEntity(
   @SerializedName("userLocale")
   val userLocale: String = "",
   @SerializedName("userId")
-  val userId: String = ""
+  val userId: String = "",
+  @SerializedName("appSource")
+  val appSource: String = ""
 )

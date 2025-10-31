@@ -1,5 +1,6 @@
 package com.github.naz013.reviews.db
 
+import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.Review
 
 /**
@@ -18,7 +19,8 @@ internal fun Review.toReviewEntity(): ReviewEntity {
     deviceInfo = deviceInfo,
     userEmail = userEmail,
     userLocale = userLocale,
-    userId = userId
+    userId = userId,
+    appSource = source.name
   )
 }
 
@@ -38,6 +40,11 @@ internal fun ReviewEntity.toReview(): Review {
     deviceInfo = deviceInfo,
     userEmail = userEmail,
     userLocale = userLocale,
-    userId = userId
+    userId = userId,
+    source = try {
+      AppSource.valueOf(appSource)
+    } catch (e: Exception) {
+      AppSource.FREE
+    }
   )
 }
