@@ -33,7 +33,11 @@ android {
     println("> Property file does not exist")
   }
 
-  val shouldSign = props.getProperty("signApk").toBoolean()
+  val debugKeyStoreFile = props.getProperty("debugKeyStoreFile")
+  val debugKeyStoreFileExists = debugKeyStoreFile?.let { file(it).exists() } ?: false
+  println("> Debug keystore file exists = $debugKeyStoreFileExists")
+
+  val shouldSign = props.getProperty("signApk").toBoolean() && debugKeyStoreFileExists
   println("> Should sign APK = $shouldSign")
 
   if (shouldSign) {
@@ -53,7 +57,9 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
     debug {
-      signingConfig = signingConfigs["debugApp"]
+      if (shouldSign) {
+        signingConfig = signingConfigs.getByName("debugApp")
+      }
     }
   }
   compileOptions {

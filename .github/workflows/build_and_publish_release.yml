@@ -68,6 +68,14 @@ jobs:
         DATA: ${{ secrets.GOOGLE_SERVICES_FREE }}
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json
 
+    - name: Create services json file for CloudTestAdmin
+      run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json | base64
+
+    - name: Put data into services json file for CloudTestAdmin
+      env:
+        DATA: ${{ secrets.GOOGLE_SERVICES }}
+      run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json
+
     - name: Build Release AAB
       id: buildRelease
       run: ./gradlew bundleRelease -x :cloudtestadmin:bundleRelease
