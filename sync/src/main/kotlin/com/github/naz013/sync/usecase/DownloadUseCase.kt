@@ -40,8 +40,23 @@ internal class DownloadUseCase(
     for (cloudFilesWithSource in newestResult.sources) {
       val cloudFileApi = cloudFilesWithSource.source
       for (cloudFile in cloudFilesWithSource.cloudFiles) {
+        val existingMetadata = remoteFileMetadataRepository.getBySource(
+          source = cloudFileApi.source.value
+        ).firstOrNull { it.name == cloudFile.name }
+        if (existingMetadata != null) {
+          if (cloudFile.lastModified <= existingMetadata.lastModified) {
+            Logger.d(TAG, "Local file is up to date for file: ${cloudFile.name}, skipping download.")
+            continue
+          }
+        }
+
         Logger.i(TAG, "Downloading file: ${cloudFile.name} from source: ${cloudFileApi.source}")
-        val stream = cloudFileApi.downloadFile(cloudFile) ?: run {
+        val stream = try {
+          cloudFileApi.downloadFile(cloudFile)
+        } catch (e: Exception) {
+          Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}, error: $e")
+          continue
+        } ?: run {
           Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}")
           continue
         }

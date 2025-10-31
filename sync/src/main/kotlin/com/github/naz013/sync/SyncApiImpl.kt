@@ -23,7 +23,7 @@ internal class SyncApiImpl(
   private val hasAnyCloudApiUseCase: HasAnyCloudApiUseCase,
 ) : SyncApi {
 
-  override suspend fun sync(): SyncResult {
+  override suspend fun sync(forceUpload: Boolean): SyncResult {
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for sync.")
       return SyncResult.Skipped
@@ -35,7 +35,7 @@ internal class SyncApiImpl(
     }
     val results = mutableListOf<SyncResult>()
     for (dataType in allowedDataTypes) {
-      results.add(sync(dataType))
+      results.add(sync(dataType, forceUpload))
     }
     return SyncResult.Success(
       downloaded = results.filterIsInstance<SyncResult.Success>().flatMap { it.downloaded },
@@ -43,18 +43,22 @@ internal class SyncApiImpl(
     )
   }
 
-  override suspend fun sync(dataType: DataType): SyncResult {
+  override suspend fun sync(dataType: DataType, forceUpload: Boolean): SyncResult {
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for sync.")
       return SyncResult.Skipped
     }
     Logger.i(TAG, "Syncing items for data type: $dataType")
-    upload(dataType)
+    if (forceUpload) {
+      forceUpload(dataType)
+    } else {
+      upload(dataType)
+    }
 
     return downloadUseCase(dataType)
   }
 
-  override suspend fun sync(dataType: DataType, id: String): SyncResult {
+  override suspend fun sync(dataType: DataType, id: String, forceUpload: Boolean): SyncResult {
     require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for sync.")
@@ -108,12 +112,7 @@ internal class SyncApiImpl(
     }
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
-      Logger.i(TAG, "Force uploading items for data type: $dataType")
-      val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
-      val ids = repositoryCaller.getAllIds()
-      for (id in ids) {
-        uploadSingleUseCase(dataType, id)
-      }
+      forceUpload(dataType)
     }
   }
 
@@ -125,6 +124,7 @@ internal class SyncApiImpl(
     Logger.i(TAG, "Force uploading items for data type: $dataType")
     val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
     val ids = repositoryCaller.getAllIds()
+    Logger.i(TAG, "Found ${ids.size} items to force upload for data type: $dataType")
     for (id in ids) {
       uploadSingleUseCase(dataType, id)
     }

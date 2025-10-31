@@ -2,11 +2,11 @@ package com.github.naz013.sync.settings
 
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncSettings
 import com.github.naz013.sync.usecase.CreateCloudFileUseCase
+import com.github.naz013.sync.usecase.GetAllowedCloudApisUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -27,7 +27,7 @@ class UploadSettingsUseCaseTest {
 
   private lateinit var createCloudFileUseCase: CreateCloudFileUseCase
   private lateinit var syncSettings: SyncSettings
-  private lateinit var cloudApiProvider: CloudApiProvider
+  private lateinit var getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
   private lateinit var syncDataConverter: SyncDataConverter
   private lateinit var uploadSettingsUseCase: UploadSettingsUseCase
 
@@ -37,14 +37,14 @@ class UploadSettingsUseCaseTest {
   fun setUp() {
     createCloudFileUseCase = mockk()
     syncSettings = mockk()
-    cloudApiProvider = mockk()
+    getAllowedCloudApisUseCase = mockk()
     syncDataConverter = mockk()
     mockCloudFileApi = mockk()
 
     uploadSettingsUseCase = UploadSettingsUseCase(
       createCloudFileUseCase = createCloudFileUseCase,
       syncSettings = syncSettings,
-      cloudApiProvider = cloudApiProvider,
+      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase,
       syncDataConverter = syncDataConverter
     )
   }
@@ -59,7 +59,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } returns inputStream
     coEvery { mockCloudFileApi.uploadFile(any(), any()) } returns cloudFile
 
@@ -69,7 +69,7 @@ class UploadSettingsUseCaseTest {
     // Assert
     verify(exactly = 1) { syncSettings.getSettings() }
     coVerify(exactly = 1) { createCloudFileUseCase(DataType.Settings, settingsModel) }
-    verify(exactly = 1) { cloudApiProvider.getAllowedCloudApis() }
+    verify(exactly = 1) { getAllowedCloudApisUseCase() }
     coVerify(exactly = 1) { syncDataConverter.create(settingsModel) }
     coVerify(exactly = 1) { mockCloudFileApi.uploadFile(inputStream, cloudFile) }
   }
@@ -86,7 +86,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase.invoke() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } returnsMany listOf(inputStream1, inputStream2)
     coEvery { mockCloudFileApi.uploadFile(any(), any()) } returns cloudFile
     coEvery { mockCloudFileApi2.uploadFile(any(), any()) } returns cloudFile
@@ -108,7 +108,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+    every { getAllowedCloudApisUseCase() } returns emptyList()
 
     // Act
     uploadSettingsUseCase()
@@ -130,7 +130,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } returns inputStream
     coEvery { mockCloudFileApi.uploadFile(any(), any()) } returns cloudFile
 
@@ -158,7 +158,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } returns inputStream
     coEvery { mockCloudFileApi.uploadFile(any(), any()) } returns cloudFile
 
@@ -205,7 +205,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } throws
       RuntimeException("Failed to serialize data")
 
@@ -225,7 +225,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } returns inputStream
     coEvery { mockCloudFileApi.uploadFile(any(), any()) } throws
       RuntimeException("Network error during upload")
@@ -251,7 +251,7 @@ class UploadSettingsUseCaseTest {
 
     every { syncSettings.getSettings() } returns settingsModel
     coEvery { createCloudFileUseCase(DataType.Settings, settingsModel) } returns cloudFile
-    every { cloudApiProvider.getAllowedCloudApis() } returns cloudApis
+    every { getAllowedCloudApisUseCase() } returns cloudApis
     coEvery { syncDataConverter.create(settingsModel) } returnsMany listOf(stream1, stream2, stream3)
     coEvery { api1.uploadFile(any(), any()) } returns cloudFile
     coEvery { api2.uploadFile(any(), any()) } returns cloudFile

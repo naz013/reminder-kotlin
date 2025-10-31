@@ -3,7 +3,6 @@ package com.github.naz013.sync.usecase
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
@@ -14,7 +13,7 @@ internal class UploadSingleUseCase(
   private val createCloudFileUseCase: CreateCloudFileUseCase,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
-  private val cloudApiProvider: CloudApiProvider
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
 ) {
   /**
    * Uploads a single item to all configured cloud sources.
@@ -38,7 +37,7 @@ internal class UploadSingleUseCase(
       caller.updateSyncState(id, SyncState.Uploading)
       Logger.d(TAG, "Uploading item with id: $id of type: $dataType, data: $data")
       val cloudFile = createCloudFileUseCase(dataType, data)
-      cloudApiProvider.getAllowedCloudApis().forEach { cloudFileApi ->
+      getAllowedCloudApisUseCase().forEach { cloudFileApi ->
         val stream = syncDataConverter.create(data)
         val resultFile = cloudFileApi.uploadFile(stream, cloudFile)
         val remoteFileMetadata = createRemoteFileMetadataUseCase(

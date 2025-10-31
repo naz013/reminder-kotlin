@@ -5,11 +5,10 @@ import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 
 internal class FindAllFilesToDownloadUseCase(
-  private val cloudApiProvider: CloudApiProvider,
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
 ) {
 
@@ -24,7 +23,7 @@ internal class FindAllFilesToDownloadUseCase(
    * @return SearchResult containing cloud files grouped by source, or null if no files to download
    */
   suspend operator fun invoke(dataType: DataType): SearchResult? {
-    val apiList = cloudApiProvider.getAllowedCloudApis()
+    val apiList = getAllowedCloudApisUseCase()
     val sources = mutableListOf<CloudFilesWithSource>()
     for (api in apiList) {
       val cloudFiles = findFilesInApiSource(api, dataType)

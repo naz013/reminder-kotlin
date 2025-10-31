@@ -14,7 +14,7 @@
         android:label="Cloud Test Admin"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".CloudTestAdminApp"
+        android:name=".CloudTestApplication"
         android:theme="@style/Theme.Reminder">
         <activity
             android:name=".MainActivity"

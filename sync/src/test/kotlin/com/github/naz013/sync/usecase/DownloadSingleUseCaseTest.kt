@@ -159,14 +159,15 @@ class DownloadSingleUseCaseTest {
       val birthdayId = "birthday-uuid-67890"
       val cloudFile = CloudFile(
         id = "dropbox-file-id",
-        name = "$birthdayId.gr2",
-        fileExtension = ".gr2",
+        name = "$birthdayId.bi2",
+        fileExtension = ".bi2",
         lastModified = 1698800000000L,
         size = 1024,
         version = 1L,
         rev = "rev1"
       )
 
+      every { mockCloudFileApi.source } returns Source.GoogleDrive
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findNewestCloudApiSourceUseCase(dataType, birthdayId) } returns
         FindNewestCloudApiSourceUseCase.SearchResult(mockCloudFileApi, cloudFile)
@@ -200,8 +201,8 @@ class DownloadSingleUseCaseTest {
       )
       val cloudFile = CloudFile(
         id = "cloud-id",
-        name = "$birthdayId.gr2",
-        fileExtension = ".gr2",
+        name = "$birthdayId.bi2",
+        fileExtension = ".bi2",
         lastModified = 1698850000000L,
         size = 512,
         version = 1L,
@@ -210,12 +211,12 @@ class DownloadSingleUseCaseTest {
       val inputStream = ByteArrayInputStream("birthday data".toByteArray())
       val remoteFileMetadata = RemoteFileMetadata(
         id = "cloud-id",
-        name = "$birthdayId.gr2",
+        name = "$birthdayId.bi2",
         lastModified = 1698850000000L,
         size = 512,
         source = "GDRIVE",
         localUuId = birthdayId,
-        fileExtension = ".gr2",
+        fileExtension = ".bi2",
         version = 1L,
         rev = "rev1"
       )
@@ -345,8 +346,8 @@ class DownloadSingleUseCaseTest {
       val group = mockk<Any>()
       val cloudFile = CloudFile(
         id = "group-file-id",
-        name = "$groupId.bi2",
-        fileExtension = ".bi2",
+        name = "$groupId.gr2",
+        fileExtension = ".gr2",
         lastModified = 1699100000000L,
         size = 256,
         version = 1L,
@@ -388,6 +389,8 @@ class DownloadSingleUseCaseTest {
       )
       val inputStream = ByteArrayInputStream("corrupted data".toByteArray())
 
+      every { mockCloudFileApi.source } returns Source.GoogleDrive
+      coEvery { remoteFileMetadataRepository.getBySource(any()) } returns emptyList()
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findNewestCloudApiSourceUseCase(dataType, placeId) } returns
         FindNewestCloudApiSourceUseCase.SearchResult(mockCloudFileApi, cloudFile)

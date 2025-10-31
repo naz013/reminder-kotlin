@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.google.services)
+  alias(libs.plugins.crashlytics.gradle)
 }
 
 android {
@@ -65,6 +66,19 @@ android {
   buildFeatures {
     compose = true
   }
+  packaging {
+    resources {
+      excludes += "META-INF/NOTICE"
+      excludes += "META-INF/LICENSE.txt"
+      excludes += "META-INF/NOTICE.txt"
+      excludes += "META-INF/proguard/androidx-annotations.pro"
+      excludes += "META-INF/DEPENDENCIES"
+      excludes += "META-INF/LICENSE"
+      excludes += "META-INF/license.txt"
+      excludes += "META-INF/ASL2.0"
+      excludes += "META-INF/LICENSE.md"
+    }
+  }
 }
 
 dependencies {
@@ -76,9 +90,11 @@ dependencies {
   implementation(project(":feature-common"))
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
+  implementation(project(":sync"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
+  implementation(libs.koin.androidx.compose)
 
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)

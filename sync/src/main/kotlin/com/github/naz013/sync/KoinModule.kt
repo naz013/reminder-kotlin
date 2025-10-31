@@ -11,6 +11,7 @@ import com.github.naz013.sync.usecase.DownloadUseCase
 import com.github.naz013.sync.usecase.FindAllFilesToDeleteUseCase
 import com.github.naz013.sync.usecase.FindAllFilesToDownloadUseCase
 import com.github.naz013.sync.usecase.FindNewestCloudApiSourceUseCase
+import com.github.naz013.sync.usecase.GetAllowedCloudApisUseCase
 import com.github.naz013.sync.usecase.GetAllowedDataTypesUseCase
 import com.github.naz013.sync.usecase.GetClassByDataTypeUseCase
 import com.github.naz013.sync.usecase.GetCloudFileNameUseCase
@@ -47,4 +48,6 @@ val syncApiModule = module {
   factory { HasAnyCloudApiUseCase(get()) }
 
   factory { GetClassByDataTypeUseCase() }
+
+  factory { GetAllowedCloudApisUseCase(get()) }
 }

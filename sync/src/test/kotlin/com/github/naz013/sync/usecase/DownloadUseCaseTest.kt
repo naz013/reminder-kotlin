@@ -169,9 +169,9 @@ class DownloadUseCaseTest {
       val birthday2 = Birthday(name = "Jane", uuId = "b2", syncState = SyncState.Synced)
       val birthday3 = Birthday(name = "Bob", uuId = "b3", syncState = SyncState.Synced)
 
-      val cloudFile1 = CloudFile(id = "cf1", name = "b1.gr2", fileExtension = ".gr2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
-      val cloudFile2 = CloudFile(id = "cf2", name = "b2.gr2", fileExtension = ".gr2", lastModified = 2000L, size = 200, version = 1L, rev = "r2")
-      val cloudFile3 = CloudFile(id = "cf3", name = "b3.gr2", fileExtension = ".gr2", lastModified = 3000L, size = 300, version = 1L, rev = "r3")
+      val cloudFile1 = CloudFile(id = "cf1", name = "b1.bi2", fileExtension = ".bi2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
+      val cloudFile2 = CloudFile(id = "cf2", name = "b2.bi2", fileExtension = ".bi2", lastModified = 2000L, size = 200, version = 1L, rev = "r2")
+      val cloudFile3 = CloudFile(id = "cf3", name = "b3.bi2", fileExtension = ".bi2", lastModified = 3000L, size = 300, version = 1L, rev = "r3")
 
       val stream1 = ByteArrayInputStream("data1".toByteArray())
       val stream2 = ByteArrayInputStream("data2".toByteArray())
@@ -512,8 +512,8 @@ class DownloadUseCaseTest {
       val cloudFiles = (1..10).map { index ->
         CloudFile(
           id = "cf$index",
-          name = "b$index.gr2",
-          fileExtension = ".gr2",
+          name = "b$index.bi2",
+          fileExtension = ".bi2",
           lastModified = 1000L * index,
           size = 100 * index,
           version = 1L,

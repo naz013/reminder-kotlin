@@ -91,8 +91,8 @@ class CreateRemoteFileMetadataUseCaseTest {
     )
     val cloudFile = CloudFile(
       id = "dropbox-file-id-def456",
-      name = "$birthdayUuId.gr2",
-      fileExtension = ".gr2",
+      name = "$birthdayUuId.bi2",
+      fileExtension = ".bi2",
       lastModified = 1698800000000L,
       size = 1024,
       version = 1L,
@@ -108,7 +108,7 @@ class CreateRemoteFileMetadataUseCaseTest {
     // Assert
     assertEquals("DROPBOX", result.source)
     assertEquals(birthdayUuId, result.localUuId)
-    assertEquals(".gr2", result.fileExtension)
+    assertEquals(".bi2", result.fileExtension)
     assertEquals("dropbox-file-id-def456", result.id)
   }
 
@@ -163,8 +163,8 @@ class CreateRemoteFileMetadataUseCaseTest {
     val largeFileSize = 10485760  // 10 MB
     val cloudFile = CloudFile(
       id = "large-file-id-123",
-      name = "$groupUuId.bi2",
-      fileExtension = ".bi2",
+      name = "$groupUuId.gr2",
+      fileExtension = ".gr2",
       lastModified = 1698850000000L,
       size = largeFileSize,
       version = 5L,
@@ -318,8 +318,8 @@ class CreateRemoteFileMetadataUseCaseTest {
     val complexRev = "ZjRlMzY4YTAtYWJjZC0xMjM0LTU2NzgtOTBhYmNkZWYwMTIz"  // Base64-like
     val cloudFile = CloudFile(
       id = "complex-rev-file-id",
-      name = "$birthdayUuId.gr2",
-      fileExtension = ".gr2",
+      name = "$birthdayUuId.bi2",
+      fileExtension = ".bi2",
       lastModified = 1699050000000L,
       size = 768,
       version = 7L,

@@ -107,6 +107,7 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-android-ext = { group = "io.insert-koin", name = "koin-android-ext", version.ref = "koin-android-ext" }
 koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx-recyclerview" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "androidx-multidex" }

@@ -28,7 +28,7 @@ import org.junit.Test
  */
 class FindNewestCloudApiSourceUseCaseTest {
 
-  private lateinit var cloudApiProvider: CloudApiProvider
+  private lateinit var getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
   private lateinit var remoteFileMetadataRepository: RemoteFileMetadataRepository
   private lateinit var findNewestCloudApiSourceUseCase: FindNewestCloudApiSourceUseCase
 
@@ -37,13 +37,13 @@ class FindNewestCloudApiSourceUseCaseTest {
 
   @Before
   fun setUp() {
-    cloudApiProvider = mockk()
+    getAllowedCloudApisUseCase = mockk()
     remoteFileMetadataRepository = mockk()
     mockGDriveApi = mockk(relaxUnitFun = true)
     mockDropboxApi = mockk(relaxUnitFun = true)
 
     findNewestCloudApiSourceUseCase = FindNewestCloudApiSourceUseCase(
-      cloudApiProvider = cloudApiProvider,
+      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase,
       remoteFileMetadataRepository = remoteFileMetadataRepository
     )
   }
@@ -68,7 +68,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".ta2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") } returns null
@@ -94,10 +94,10 @@ class FindNewestCloudApiSourceUseCaseTest {
       val birthdayId = "birthday-uuid-67890"
       val searchParams = CloudFileSearchParams(
         name = birthdayId,
-        fileExtension = ".gr2"
+        fileExtension = ".bi2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns null
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(any(), any()) } returns null
@@ -139,7 +139,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".no2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi, mockDropboxApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFile(searchParams) } returns gdriveFile
@@ -189,7 +189,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".ta2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") } returns localMetadata
@@ -210,8 +210,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       val groupId = "group-uuid-xyz789"
       val cloudFile = CloudFile(
         id = "gdrive-group",
-        name = "$groupId.bi2",
-        fileExtension = ".bi2",
+        name = "$groupId.gr2",
+        fileExtension = ".gr2",
         lastModified = 1698900000000L,
         size = 256,
         version = 7L,  // Newer version
@@ -219,21 +219,21 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val localMetadata = RemoteFileMetadata(
         id = "gdrive-group",
-        name = "$groupId.bi2",
+        name = "$groupId.gr2",
         lastModified = 1698900000000L,  // Same timestamp
         size = 256,
         source = "GoogleDrive",
         localUuId = groupId,
-        fileExtension = ".bi2",
+        fileExtension = ".gr2",
         version = 5L,  // Older version
         rev = "rev5"
       )
       val searchParams = CloudFileSearchParams(
         name = groupId,
-        fileExtension = ".bi2"
+        fileExtension = ".gr2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "GoogleDrive") } returns localMetadata
@@ -278,7 +278,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".pl2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "GoogleDrive") } returns localMetadata
@@ -300,8 +300,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       val birthdayId = "birthday-dropbox-filtered"
       val cloudFile = CloudFile(
         id = "dropbox-birthday",
-        name = "$birthdayId.gr2",
-        fileExtension = ".gr2",
+        name = "$birthdayId.bi2",
+        fileExtension = ".bi2",
         lastModified = 1698950000000L,
         size = 1024,
         version = 2L,
@@ -309,21 +309,21 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val localMetadata = RemoteFileMetadata(
         id = "dropbox-birthday",
-        name = "$birthdayId.gr2",
+        name = "$birthdayId.bi2",
         lastModified = 1698950000000L,
         size = 1024,
         source = "Dropbox",
         localUuId = birthdayId,
-        fileExtension = ".gr2",
+        fileExtension = ".bi2",
         version = 2L,
         rev = "same-revision-abc123"  // Same revision
       )
       val searchParams = CloudFileSearchParams(
         name = birthdayId,
-        fileExtension = ".gr2"
+        fileExtension = ".bi2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockDropboxApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockDropboxApi)
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockDropboxApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(birthdayId, "Dropbox") } returns localMetadata
@@ -367,7 +367,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".no2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockDropboxApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockDropboxApi)
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockDropboxApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "Dropbox") } returns localMetadata
@@ -389,7 +389,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       val dataType = DataType.Settings
       val settingsId = "settings-uuid"
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+      every {getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, settingsId)
@@ -420,7 +420,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".ta2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
       coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") } returns null
@@ -442,8 +442,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       val groupId = "group-mixed-scenario"
       val gdriveFile = CloudFile(
         id = "gdrive-group-new",
-        name = "$groupId.bi2",
-        fileExtension = ".bi2",
+        name = "$groupId.gr2",
+        fileExtension = ".gr2",
         lastModified = 1699100000000L,  // Newer
         size = 256,
         version = 5L,
@@ -451,8 +451,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val dropboxFile = CloudFile(
         id = "dropbox-group-old",
-        name = "$groupId.bi2",
-        fileExtension = ".bi2",
+        name = "$groupId.gr2",
+        fileExtension = ".gr2",
         lastModified = 1699000000000L,  // Older
         size = 256,
         version = 3L,
@@ -460,32 +460,32 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val gdriveMetadata = RemoteFileMetadata(
         id = "gdrive-group-new",
-        name = "$groupId.bi2",
+        name = "$groupId.gr2",
         lastModified = 1699090000000L,  // Older than cloud
         size = 256,
         source = "GoogleDrive",
         localUuId = groupId,
-        fileExtension = ".bi2",
+        fileExtension = ".gr2",
         version = 4L,  // Older version
         rev = "grev4"
       )
       val dropboxMetadata = RemoteFileMetadata(
         id = "dropbox-group-old",
-        name = "$groupId.bi2",
+        name = "$groupId.gr2",
         lastModified = 1699000000000L,
         size = 256,
         source = "Dropbox",
         localUuId = groupId,
-        fileExtension = ".bi2",
+        fileExtension = ".gr2",
         version = 3L,
         rev = "same-rev"  // Same revision = filtered
       )
       val searchParams = CloudFileSearchParams(
         name = groupId,
-        fileExtension = ".bi2"
+        fileExtension = ".gr2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi, mockDropboxApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFile(searchParams) } returns gdriveFile
@@ -532,7 +532,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         fileExtension = ".pl2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi, mockDropboxApi)
+      every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFile(searchParams) } returns gdriveFile

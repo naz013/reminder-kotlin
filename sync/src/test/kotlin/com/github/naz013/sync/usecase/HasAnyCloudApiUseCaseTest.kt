@@ -18,42 +18,42 @@ import org.junit.Test
  */
 class HasAnyCloudApiUseCaseTest {
 
-  private lateinit var cloudApiProvider: CloudApiProvider
+  private lateinit var getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
   private lateinit var hasAnyCloudApiUseCase: HasAnyCloudApiUseCase
 
   @Before
   fun setUp() {
-    cloudApiProvider = mockk()
+    getAllowedCloudApisUseCase = mockk()
     hasAnyCloudApiUseCase = HasAnyCloudApiUseCase(
-      cloudApiProvider = cloudApiProvider
+      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase
     )
   }
 
   @Test
   fun `invoke when no cloud apis available should return false`() {
     // Arrange - No cloud storage providers configured
-    every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+    every { getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
     // Act
     val result = hasAnyCloudApiUseCase()
 
     // Assert
     assertFalse(result)
-    verify(exactly = 1) { cloudApiProvider.getAllowedCloudApis() }
+    verify(exactly = 1) { getAllowedCloudApisUseCase.invoke() }
   }
 
   @Test
   fun `invoke when one cloud api available should return true`() {
     // Arrange - Single cloud provider (Google Drive)
     val mockCloudApi = mockk<CloudFileApi>()
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudApi)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudApi)
 
     // Act
     val result = hasAnyCloudApiUseCase()
 
     // Assert
     assertTrue(result)
-    verify(exactly = 1) { cloudApiProvider.getAllowedCloudApis() }
+    verify(exactly = 1) { getAllowedCloudApisUseCase.invoke() }
   }
 
   @Test
@@ -61,33 +61,33 @@ class HasAnyCloudApiUseCaseTest {
     // Arrange - Multiple cloud providers (Google Drive and Dropbox)
     val mockGoogleDrive = mockk<CloudFileApi>()
     val mockDropbox = mockk<CloudFileApi>()
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGoogleDrive, mockDropbox)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGoogleDrive, mockDropbox)
 
     // Act
     val result = hasAnyCloudApiUseCase()
 
     // Assert
     assertTrue(result)
-    verify(exactly = 1) { cloudApiProvider.getAllowedCloudApis() }
+    verify(exactly = 1) { getAllowedCloudApisUseCase.invoke() }
   }
 
   @Test
   fun `invoke should delegate to cloud api provider`() {
     // Arrange - Verify the use case properly delegates to provider
     val mockCloudApi = mockk<CloudFileApi>()
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudApi)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudApi)
 
     // Act
     hasAnyCloudApiUseCase()
 
     // Assert - Should call getAllowedCloudApis exactly once
-    verify(exactly = 1) { cloudApiProvider.getAllowedCloudApis() }
+    verify(exactly = 1) { getAllowedCloudApisUseCase.invoke() }
   }
 
   @Test
   fun `invoke multiple times should call provider each time`() {
     // Arrange - Test that each invocation queries the provider
-    every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+    every { getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
     // Act - Call multiple times
     hasAnyCloudApiUseCase()
@@ -95,13 +95,13 @@ class HasAnyCloudApiUseCaseTest {
     hasAnyCloudApiUseCase()
 
     // Assert - Should call provider 3 times (no caching)
-    verify(exactly = 3) { cloudApiProvider.getAllowedCloudApis() }
+    verify(exactly = 3) { getAllowedCloudApisUseCase.invoke() }
   }
 
   @Test
   fun `invoke should return false for empty list regardless of initial state`() {
     // Arrange - Always empty list
-    every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+    every { getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
     // Act - Multiple calls
     val result1 = hasAnyCloudApiUseCase()
@@ -118,7 +118,7 @@ class HasAnyCloudApiUseCaseTest {
   fun `invoke should return true when list contains single element`() {
     // Arrange - Exactly one API
     val mockApi = mockk<CloudFileApi>()
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockApi)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockApi)
 
     // Act
     val result = hasAnyCloudApiUseCase()
@@ -131,7 +131,7 @@ class HasAnyCloudApiUseCaseTest {
   fun `invoke should return true when list contains many elements`() {
     // Arrange - Large list of APIs (edge case: many providers)
     val mockApis = (1..10).map { mockk<CloudFileApi>() }
-    every { cloudApiProvider.getAllowedCloudApis() } returns mockApis
+    every { getAllowedCloudApisUseCase.invoke() } returns mockApis
 
     // Act
     val result = hasAnyCloudApiUseCase()
@@ -143,7 +143,7 @@ class HasAnyCloudApiUseCaseTest {
   @Test
   fun `invoke result should reflect current provider state`() {
     // Arrange - Provider state changes between calls
-    every { cloudApiProvider.getAllowedCloudApis() } returns emptyList() andThen listOf(mockk())
+    every { getAllowedCloudApisUseCase.invoke() } returns emptyList() andThen listOf(mockk())
 
     // Act & Assert - First call: no APIs
     val result1 = hasAnyCloudApiUseCase()
@@ -157,7 +157,7 @@ class HasAnyCloudApiUseCaseTest {
   @Test
   fun `invoke should not throw exception when provider returns empty list`() {
     // Arrange - Empty list is valid scenario
-    every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+    every { getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
     // Act - Should not throw
     var exceptionThrown = false

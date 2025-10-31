@@ -33,6 +33,10 @@ class ScheduleBackgroundWorkUseCase(
       WorkType.Sync -> OneTimeWorkRequest.Builder(SyncWorker::class.java)
       WorkType.Delete -> OneTimeWorkRequest.Builder(DeleteWorker::class.java)
       WorkType.ForceUpload -> OneTimeWorkRequest.Builder(ForceUploadWorker::class.java)
+      WorkType.ForceSync -> {
+        dataBuilder.putBoolean(WorkerData.FORCE, true)
+        OneTimeWorkRequest.Builder(SyncWorker::class.java)
+      }
     }
     val work = builder
       .setInputData(dataBuilder.build())

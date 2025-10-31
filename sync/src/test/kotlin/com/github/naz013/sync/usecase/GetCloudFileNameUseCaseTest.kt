@@ -33,7 +33,7 @@ class GetCloudFileNameUseCaseTest {
   }
 
   @Test
-  fun `invoke with birthday id should return name with gr2 extension`() {
+  fun `invoke with birthday id should return name with bi2 extension`() {
     // Arrange
     val dataType = DataType.Birthdays
     val birthdayId = "birthday-uuid-67890"
@@ -42,7 +42,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, birthdayId)
 
     // Assert
-    assertEquals("birthday-uuid-67890.gr2", result)
+    assertEquals("birthday-uuid-67890.bi2", result)
   }
 
   @Test
@@ -59,7 +59,7 @@ class GetCloudFileNameUseCaseTest {
   }
 
   @Test
-  fun `invoke with group id should return name with bi2 extension`() {
+  fun `invoke with group id should return name with gr2 extension`() {
     // Arrange
     val dataType = DataType.Groups
     val groupId = "group-uuid-xyz789"
@@ -68,7 +68,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, groupId)
 
     // Assert
-    assertEquals("group-uuid-xyz789.bi2", result)
+    assertEquals("group-uuid-xyz789.gr2", result)
   }
 
   @Test
@@ -120,7 +120,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, shortId)
 
     // Assert
-    assertEquals("1.gr2", result)
+    assertEquals("1.bi2", result)
   }
 
   @Test
@@ -146,7 +146,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, specialId)
 
     // Assert
-    assertEquals("group_2024.backup-v2.bi2", result)
+    assertEquals("group_2024.backup-v2.gr2", result)
   }
 
   @Test
@@ -200,7 +200,7 @@ class GetCloudFileNameUseCaseTest {
     val result3 = getCloudFileNameUseCase(dataType, birthdayId)
 
     // Assert - All results should be identical
-    assertEquals("consistent-id.gr2", result1)
+    assertEquals("consistent-id.bi2", result1)
     assertEquals(result1, result2)
     assertEquals(result2, result3)
   }
@@ -211,9 +211,9 @@ class GetCloudFileNameUseCaseTest {
     val testId = "test-id"
     val expectedResults = mapOf(
       DataType.Reminders to "test-id.ta2",
-      DataType.Birthdays to "test-id.gr2",
+      DataType.Birthdays to "test-id.bi2",
       DataType.Notes to "test-id.no2",
-      DataType.Groups to "test-id.bi2",
+      DataType.Groups to "test-id.gr2",
       DataType.Places to "test-id.pl2",
       DataType.Settings to "test-id.settings"
     )

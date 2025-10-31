@@ -1,12 +1,10 @@
 package com.github.naz013.sync.usecase
 
-import com.github.naz013.sync.CloudApiProvider
-
 class HasAnyCloudApiUseCase(
-  private val cloudApiProvider: CloudApiProvider
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
 ) {
 
   operator fun invoke(): Boolean {
-    return cloudApiProvider.getAllowedCloudApis().isNotEmpty()
+    return getAllowedCloudApisUseCase().isNotEmpty()
   }
 }

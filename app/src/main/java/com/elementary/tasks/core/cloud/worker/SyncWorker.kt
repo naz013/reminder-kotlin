@@ -21,15 +21,16 @@ class SyncWorker(
       ?.let { DataType.valueOf(it) }
     val itemId = inputData.getString(WorkerData.ITEM_ID)
       ?.takeIf { it.isNotEmpty() }
+    val force = inputData.getBoolean(WorkerData.FORCE, false)
     withContext(dispatcherProvider.io()) {
       if (dataType != null) {
         if (itemId != null) {
-          syncApi.sync(dataType, itemId)
+          syncApi.sync(dataType, itemId, force)
         } else {
-          syncApi.sync(dataType)
+          syncApi.sync(dataType, force)
         }
       } else {
-        syncApi.sync()
+        syncApi.sync(force)
       }
     }
     return Result.success()

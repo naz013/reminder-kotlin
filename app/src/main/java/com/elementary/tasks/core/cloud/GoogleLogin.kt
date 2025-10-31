@@ -144,13 +144,7 @@ class GoogleLogin(
         loginCallback.onResult(it, mode)
         if (it) {
           scheduleBackgroundWorkUseCase(
-            workType = WorkType.ForceUpload,
-            dataType = null,
-            id = null,
-            ids = null,
-          )
-          scheduleBackgroundWorkUseCase(
-            workType = WorkType.Sync,
+            workType = WorkType.ForceSync,
             dataType = null,
             id = null,
             ids = null,

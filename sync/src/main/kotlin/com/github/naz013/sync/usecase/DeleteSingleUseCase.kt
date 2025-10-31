@@ -1,13 +1,12 @@
 package com.github.naz013.sync.usecase
 
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 
 internal class DeleteSingleUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val getCloudFileNameUseCase: GetCloudFileNameUseCase,
-  private val cloudApiProvider: CloudApiProvider,
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
 ) {
   /**
    * Deletes a single item from all configured cloud sources.
@@ -25,7 +24,7 @@ internal class DeleteSingleUseCase(
       return
     }
     val fileName = getCloudFileNameUseCase(dataType, id)
-    cloudApiProvider.getAllowedCloudApis().forEach { cloudFileApi ->
+    getAllowedCloudApisUseCase().forEach { cloudFileApi ->
       cloudFileApi.deleteFile(fileName)
     }
     remoteFileMetadataRepository.deleteByLocalUuId(id)

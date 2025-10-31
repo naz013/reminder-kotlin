@@ -40,6 +40,16 @@ internal class DownloadSingleUseCase(
       return SyncResult.Skipped
     }
     val cloudFile = newestResult.cloudFile
+    val existingMetadata = remoteFileMetadataRepository.getBySource(
+      source = newestResult.cloudFileApi.source.value
+    ).firstOrNull { it.name == cloudFile.name }
+    if (existingMetadata != null) {
+      if (cloudFile.lastModified <= existingMetadata.lastModified) {
+        Logger.d(TAG, "Local file is up to date for dataType: $dataType, id: $id, skipping download.")
+        return SyncResult.Skipped
+      }
+    }
+
     val stream = newestResult.cloudFileApi.downloadFile(cloudFile) ?: run {
       Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, id: $id")
       return SyncResult.Skipped
