@@ -8,6 +8,7 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.repository.RecurPresetRepository
 import org.threeten.bp.LocalDateTime
@@ -250,7 +251,9 @@ class PresetInitProcessor(
       useCount = 0,
       description = null,
       isDefault = true,
-      recurItemsToAdd = itemsToAddAtRuntime
+      recurItemsToAdd = itemsToAddAtRuntime,
+      syncState = SyncState.WaitingForUpload,
+      version = 1
     )
   }
 

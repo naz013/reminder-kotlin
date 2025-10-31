@@ -102,11 +102,12 @@ val reminderModule = module {
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  viewModel { ManagePresetsViewModel(get(), get(), get()) }
+  viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
   viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
       arguments,
+      get(),
       get(),
       get(),
       get(),

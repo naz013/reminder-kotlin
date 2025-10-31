@@ -51,7 +51,7 @@ jobs:
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json
 
     - name: Run all unit tests (Android modules)
-      run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testProDebugUnitTest
+      run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testDebugUnitTest
 
     - name: Run all unit tests (Kotlin modules)
       run: ./gradlew test --continue -x :cloudtestadmin:test
