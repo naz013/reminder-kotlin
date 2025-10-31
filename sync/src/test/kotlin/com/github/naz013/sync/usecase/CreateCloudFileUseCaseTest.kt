@@ -95,12 +95,12 @@ class CreateCloudFileUseCaseTest {
     )
     val existingMetadata = RemoteFileMetadata(
       id = "birthday-cloud-id",
-      name = "$birthdayUuId.gr2",
+      name = "$birthdayUuId.bi2",
       lastModified = 987654321L,
       size = 512,
       source = "DROPBOX",
       localUuId = birthdayUuId,
-      fileExtension = ".gr2",
+      fileExtension = ".bi2",
       version = 2L,
       rev = "rev2"
     )
@@ -113,8 +113,8 @@ class CreateCloudFileUseCaseTest {
 
     // Assert
     assertEquals("birthday-cloud-id", result.id)
-    assertEquals("$birthdayUuId.gr2", result.name)
-    assertEquals(".gr2", result.fileExtension)
+    assertEquals("$birthdayUuId.bi2", result.name)
+    assertEquals(".bi2", result.fileExtension)
   }
 
   @Test
@@ -163,8 +163,8 @@ class CreateCloudFileUseCaseTest {
     val result = createCloudFileUseCase(DataType.Groups, reminderGroup)
 
     // Assert
-    assertEquals("$groupUuId.bi2", result.name)
-    assertEquals(".bi2", result.fileExtension)
+    assertEquals("$groupUuId.gr2", result.name)
+    assertEquals(".gr2", result.fileExtension)
     assertTrue(result.id.isEmpty())
   }
 
@@ -292,8 +292,8 @@ class CreateCloudFileUseCaseTest {
     assertEquals(".ta2", reminderFile.fileExtension)
     assertTrue(reminderFile.name.endsWith(".ta2"))
 
-    assertEquals(".gr2", birthdayFile.fileExtension)
-    assertTrue(birthdayFile.name.endsWith(".gr2"))
+    assertEquals(".bi2", birthdayFile.fileExtension)
+    assertTrue(birthdayFile.name.endsWith(".bi2"))
 
     assertEquals(".no2", noteFile.fileExtension)
     assertTrue(noteFile.name.endsWith(".no2"))

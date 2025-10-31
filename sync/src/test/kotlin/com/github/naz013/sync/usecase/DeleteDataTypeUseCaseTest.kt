@@ -96,8 +96,8 @@ class DeleteDataTypeUseCaseTest {
     val dataType = DataType.Birthdays
     val cloudFile1 = CloudFile(
       id = "dropbox-file-1",
-      name = "birthday-uuid-1.gr2",
-      fileExtension = ".gr2",
+      name = "birthday-uuid-1.bi2",
+      fileExtension = ".bi2",
       lastModified = 1698800000000L,
       size = 1024,
       version = 2L,
@@ -105,8 +105,8 @@ class DeleteDataTypeUseCaseTest {
     )
     val cloudFile2 = CloudFile(
       id = "dropbox-file-2",
-      name = "birthday-uuid-2.gr2",
-      fileExtension = ".gr2",
+      name = "birthday-uuid-2.bi2",
+      fileExtension = ".bi2",
       lastModified = 1698800001000L,
       size = 1536,
       version = 3L,
@@ -114,8 +114,8 @@ class DeleteDataTypeUseCaseTest {
     )
     val cloudFile3 = CloudFile(
       id = "dropbox-file-3",
-      name = "birthday-uuid-3.gr2",
-      fileExtension = ".gr2",
+      name = "birthday-uuid-3.bi2",
+      fileExtension = ".bi2",
       lastModified = 1698800002000L,
       size = 2048,
       version = 1L,
@@ -140,9 +140,9 @@ class DeleteDataTypeUseCaseTest {
     deleteDataTypeUseCase(dataType)
 
     // Assert - All three files should be deleted
-    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("birthday-uuid-1.gr2") }
-    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("birthday-uuid-2.gr2") }
-    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("birthday-uuid-3.gr2") }
+    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("birthday-uuid-1.bi2") }
+    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("birthday-uuid-2.bi2") }
+    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("birthday-uuid-3.bi2") }
     coVerify(exactly = 1) { remoteFileMetadataRepository.delete("dropbox-file-1") }
     coVerify(exactly = 1) { remoteFileMetadataRepository.delete("dropbox-file-2") }
     coVerify(exactly = 1) { remoteFileMetadataRepository.delete("dropbox-file-3") }
@@ -211,8 +211,8 @@ class DeleteDataTypeUseCaseTest {
     // Test 1: Groups
     val groupFile = CloudFile(
       id = "group-file-1",
-      name = "group-uuid-1.bi2",
-      fileExtension = ".bi2",
+      name = "group-uuid-1.gr2",
+      fileExtension = ".gr2",
       lastModified = 1698900000000L,
       size = 768,
       version = 2L,
@@ -235,7 +235,7 @@ class DeleteDataTypeUseCaseTest {
     deleteDataTypeUseCase(DataType.Groups)
 
     // Assert
-    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("group-uuid-1.bi2") }
+    coVerify(exactly = 1) { mockCloudFileApi.deleteFile("group-uuid-1.gr2") }
     coVerify(exactly = 1) { remoteFileMetadataRepository.delete("group-file-1") }
 
     // Test 2: Places

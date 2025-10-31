@@ -6,11 +6,10 @@ import com.github.naz013.cloudapi.CloudFileSearchParams
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 
 internal class FindNewestCloudApiSourceUseCase(
-  private val cloudApiProvider: CloudApiProvider,
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
 ) {
 
@@ -26,7 +25,7 @@ internal class FindNewestCloudApiSourceUseCase(
    * @return SearchResult with the cloud API and file that has the newest version, or null if not found
    */
   suspend operator fun invoke(dataType: DataType, id: String): SearchResult? {
-    val apiList = cloudApiProvider.getAllowedCloudApis()
+    val apiList = getAllowedCloudApisUseCase()
     var newestResult: SearchResult? = null
     for (api in apiList) {
       val cloudFile = findFileInApiSource(api, dataType, id)

@@ -6,7 +6,6 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupEditAdapter
 import com.elementary.tasks.core.data.ui.group.UiGroupEdit
-import com.elementary.tasks.core.utils.IdProvider
 import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
 import com.elementary.tasks.groups.usecase.SaveReminderGroupUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -32,7 +31,6 @@ class EditGroupViewModel(
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiGroupEditAdapter: UiGroupEditAdapter,
-  private val idProvider: IdProvider,
   private val intentDataReader: IntentDataReader,
   private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
   private val saveReminderGroupUseCase: SaveReminderGroupUseCase
@@ -118,7 +116,7 @@ class EditGroupViewModel(
         groupDateTime = dateTimeManager.getNowGmtDateTime(),
         groupTitle = title,
         isDefaultGroup = isDefault,
-        groupUuId = idProvider.generateUuid(),
+        groupUuId = UUID.randomUUID().toString(),
         syncState = SyncState.WaitingForUpload
       )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))

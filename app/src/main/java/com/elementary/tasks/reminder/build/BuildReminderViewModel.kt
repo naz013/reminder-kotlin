@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
@@ -51,6 +53,7 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -66,6 +69,7 @@ import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.sync.DataType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -106,7 +110,8 @@ class BuildReminderViewModel(
   private val prefs: Prefs,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -750,9 +755,17 @@ class BuildReminderViewModel(
       builderScheme = builderItemsToBuilderPresetAdapter(items),
       description = null,
       isDefault = false,
-      recurItemsToAdd = null
+      recurItemsToAdd = null,
+      syncState = SyncState.WaitingForUpload,
+      version = 1
     )
     recurPresetRepository.save(preset)
+    scheduleBackgroundWorkUseCase(
+      workType = WorkType.Upload,
+      dataType = DataType.RecurPresets,
+      id = preset.id,
+      ids = null
+    )
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))
   }
 

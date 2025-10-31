@@ -2,6 +2,7 @@ package com.github.naz013.sync.usecase
 
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
@@ -16,6 +17,7 @@ internal class GetLocalUuIdUseCase {
       is ReminderGroup -> any.groupUuId
       is Place -> any.id
       is SettingsModel -> "app"
+      is RecurPreset -> any.id
       else -> throw IllegalArgumentException("Unsupported type: ${any::class.java}")
     }
   }

@@ -139,10 +139,8 @@ val utilModule = module {
   factory { ReminderAnalyticsTracker(get()) }
 
   single { FeatureManager(get()) }
-  factory { GroupsUtil(get(), get(), get(), get()) }
+  factory { GroupsUtil(get(), get(), get()) }
   factory { ImageDecoder(get(), get(), get()) }
-
-  factory { IdProvider() }
 
   factory { DateTimePickerProvider(get()) }
   factory { DoNotDisturbManager(get(), get()) }

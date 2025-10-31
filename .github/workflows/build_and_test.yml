@@ -42,11 +42,19 @@ jobs:
         DATA: ${{ secrets.GOOGLE_SERVICES_FREE }}
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json
 
+    - name: Create services json file for CloudTestAdmin
+      run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json | base64
+
+    - name: Put data into services json file for CloudTestAdmin
+      env:
+        DATA: ${{ secrets.GOOGLE_SERVICES }}
+      run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json
+
     - name: Run all unit tests (Android modules)
-      run: ./gradlew testProDebugUnitTest --continue
+      run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testDebugUnitTest
 
     - name: Run all unit tests (Kotlin modules)
-      run: ./gradlew test --continue
+      run: ./gradlew test --continue -x :cloudtestadmin:test
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4

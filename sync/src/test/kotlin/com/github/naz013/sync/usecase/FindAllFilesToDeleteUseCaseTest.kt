@@ -3,7 +3,6 @@ package com.github.naz013.sync.usecase
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,18 +25,18 @@ import org.junit.Test
  */
 class FindAllFilesToDeleteUseCaseTest {
 
-  private lateinit var cloudApiProvider: CloudApiProvider
+  private lateinit var getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
   private lateinit var findAllFilesToDeleteUseCase: FindAllFilesToDeleteUseCase
 
   private lateinit var mockCloudFileApi: CloudFileApi
 
   @Before
   fun setUp() {
-    cloudApiProvider = mockk()
+    getAllowedCloudApisUseCase = mockk()
     mockCloudFileApi = mockk()
 
     findAllFilesToDeleteUseCase = FindAllFilesToDeleteUseCase(
-      cloudApiProvider = cloudApiProvider
+      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase
     )
   }
 
@@ -74,7 +73,7 @@ class FindAllFilesToDeleteUseCaseTest {
         rev = "rev1"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       every { mockCloudFileApi.source } returns Source.GoogleDrive
       coEvery { mockCloudFileApi.findFiles(".ta2") } returns listOf(cloudFile1, cloudFile2, cloudFile3)
 
@@ -100,15 +99,15 @@ class FindAllFilesToDeleteUseCaseTest {
       // Arrange - No files found in cloud
       val dataType = DataType.Birthdays
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
-      coEvery { mockCloudFileApi.findFiles(".gr2") } returns emptyList()
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
+      coEvery { mockCloudFileApi.findFiles(".bi2") } returns emptyList()
 
       // Act
       val result = findAllFilesToDeleteUseCase(dataType)
 
       // Assert - Should return null when no files found
       assertNull(result)
-      coVerify(exactly = 1) { mockCloudFileApi.findFiles(".gr2") }
+      coVerify(exactly = 1) { mockCloudFileApi.findFiles(".bi2") }
     }
   }
 
@@ -118,7 +117,7 @@ class FindAllFilesToDeleteUseCaseTest {
       // Arrange - No cloud APIs configured
       val dataType = DataType.Notes
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+      every { getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
       // Act
       val result = findAllFilesToDeleteUseCase(dataType)
@@ -165,7 +164,7 @@ class FindAllFilesToDeleteUseCaseTest {
         rev = "dropbox-rev-2"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi, mockDropboxApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFiles(".no2") } returns listOf(gdriveFile)
@@ -206,19 +205,19 @@ class FindAllFilesToDeleteUseCaseTest {
 
       val gdriveFile = CloudFile(
         id = "gdrive-group-1",
-        name = "group-uuid-1.bi2",
-        fileExtension = ".bi2",
+        name = "group-uuid-1.gr2",
+        fileExtension = ".gr2",
         lastModified = 1698850000000L,
         size = 256,
         version = 1L,
         rev = "rev1"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi, mockDropboxApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
-      coEvery { mockGDriveApi.findFiles(".bi2") } returns listOf(gdriveFile)
-      coEvery { mockDropboxApi.findFiles(".bi2") } returns emptyList()
+      coEvery { mockGDriveApi.findFiles(".gr2") } returns listOf(gdriveFile)
+      coEvery { mockDropboxApi.findFiles(".gr2") } returns emptyList()
 
       // Act
       val result = findAllFilesToDeleteUseCase(dataType)
@@ -229,8 +228,8 @@ class FindAllFilesToDeleteUseCaseTest {
       assertEquals(mockGDriveApi, result.sources[0].source)
       assertEquals(1, result.sources[0].cloudFiles.size)
 
-      coVerify(exactly = 1) { mockGDriveApi.findFiles(".bi2") }
-      coVerify(exactly = 1) { mockDropboxApi.findFiles(".bi2") }
+      coVerify(exactly = 1) { mockGDriveApi.findFiles(".gr2") }
+      coVerify(exactly = 1) { mockDropboxApi.findFiles(".gr2") }
     }
   }
 
@@ -240,9 +239,9 @@ class FindAllFilesToDeleteUseCaseTest {
       // Arrange - Test multiple data types with their extensions
       val testCases = listOf(
         DataType.Reminders to ".ta2",
-        DataType.Birthdays to ".gr2",
+        DataType.Birthdays to ".bi2",
         DataType.Notes to ".no2",
-        DataType.Groups to ".bi2",
+        DataType.Groups to ".gr2",
         DataType.Places to ".pl2",
         DataType.Settings to ".settings"
       )
@@ -258,7 +257,7 @@ class FindAllFilesToDeleteUseCaseTest {
           rev = "rev1"
         )
 
-        every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+        every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
         coEvery { mockCloudFileApi.findFiles(expectedExtension) } returns listOf(cloudFile)
 
         // Act
@@ -288,7 +287,7 @@ class FindAllFilesToDeleteUseCaseTest {
         )
       }
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.findFiles(".pl2") } returns cloudFiles
 
       // Act
@@ -311,7 +310,7 @@ class FindAllFilesToDeleteUseCaseTest {
       val mockApi2 = mockk<CloudFileApi>()
       val mockApi3 = mockk<CloudFileApi>()
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockApi1, mockApi2, mockApi3)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockApi1, mockApi2, mockApi3)
       coEvery { mockApi1.findFiles(".ta2") } returns emptyList()
       coEvery { mockApi2.findFiles(".ta2") } returns emptyList()
       coEvery { mockApi3.findFiles(".ta2") } returns emptyList()
@@ -351,7 +350,7 @@ class FindAllFilesToDeleteUseCaseTest {
         rev = "settings-rev-5"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.findFiles(".settings") } returns listOf(settingsFile1, settingsFile2)
 
       // Act
@@ -373,16 +372,16 @@ class FindAllFilesToDeleteUseCaseTest {
       val dataType = DataType.Birthdays
       val specificFile = CloudFile(
         id = "specific-birthday-id",
-        name = "birthday-uuid-12345.gr2",
-        fileExtension = ".gr2",
+        name = "birthday-uuid-12345.bi2",
+        fileExtension = ".bi2",
         lastModified = 1699100000000L,
         size = 2048,
         version = 7L,
         rev = "unique-revision-abc123"
       )
 
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
-      coEvery { mockCloudFileApi.findFiles(".gr2") } returns listOf(specificFile)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
+      coEvery { mockCloudFileApi.findFiles(".bi2") } returns listOf(specificFile)
 
       // Act
       val result = findAllFilesToDeleteUseCase(dataType)
@@ -391,8 +390,8 @@ class FindAllFilesToDeleteUseCaseTest {
       assertNotNull(result)
       val returnedFile = result!!.sources[0].cloudFiles[0]
       assertEquals("specific-birthday-id", returnedFile.id)
-      assertEquals("birthday-uuid-12345.gr2", returnedFile.name)
-      assertEquals(".gr2", returnedFile.fileExtension)
+      assertEquals("birthday-uuid-12345.bi2", returnedFile.name)
+      assertEquals(".bi2", returnedFile.fileExtension)
       assertEquals(1699100000000L, returnedFile.lastModified)
       assertEquals(2048, returnedFile.size)
       assertEquals(7L, returnedFile.version)

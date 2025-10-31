@@ -1,10 +1,5 @@
 package com.github.naz013.sync.usecase
 
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
@@ -14,7 +9,6 @@ import com.github.naz013.sync.Downloaded
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
-import com.github.naz013.sync.settings.SettingsModel
 
 internal class DownloadSingleUseCase(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
@@ -22,7 +16,8 @@ internal class DownloadSingleUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
   private val findNewestCloudApiSourceUseCase: FindNewestCloudApiSourceUseCase,
-  private val dataPostProcessor: DataPostProcessor
+  private val dataPostProcessor: DataPostProcessor,
+  private val getClassByDataTypeUseCase: GetClassByDataTypeUseCase
 ) {
   /**
    * Downloads and syncs a single item from the cloud.
@@ -45,11 +40,21 @@ internal class DownloadSingleUseCase(
       return SyncResult.Skipped
     }
     val cloudFile = newestResult.cloudFile
+    val existingMetadata = remoteFileMetadataRepository.getBySource(
+      source = newestResult.cloudFileApi.source.value
+    ).firstOrNull { it.name == cloudFile.name }
+    if (existingMetadata != null) {
+      if (cloudFile.lastModified <= existingMetadata.lastModified) {
+        Logger.d(TAG, "Local file is up to date for dataType: $dataType, id: $id, skipping download.")
+        return SyncResult.Skipped
+      }
+    }
+
     val stream = newestResult.cloudFileApi.downloadFile(cloudFile) ?: run {
       Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, id: $id")
       return SyncResult.Skipped
     }
-    val data = syncDataConverter.parse(stream, getClass(dataType))
+    val data = syncDataConverter.parse(stream, getClassByDataTypeUseCase(dataType))
 
     // Check for conflicts before updating
     val existingData = caller.getById(id)
@@ -78,17 +83,6 @@ internal class DownloadSingleUseCase(
       ),
       success = true
     )
-  }
-
-  private fun getClass(dataType: DataType): Class<*> {
-    return when (dataType) {
-      DataType.Reminders -> Reminder::class.java
-      DataType.Notes -> OldNote::class.java
-      DataType.Birthdays -> Birthday::class.java
-      DataType.Groups -> ReminderGroup::class.java
-      DataType.Places -> Place::class.java
-      DataType.Settings -> SettingsModel::class.java
-    }
   }
 
   companion object {

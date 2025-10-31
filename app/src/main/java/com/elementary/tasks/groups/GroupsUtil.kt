@@ -1,10 +1,9 @@
 package com.elementary.tasks.groups
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.IdProvider
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.ReminderGroupRepository
 import java.util.Random
@@ -13,7 +12,6 @@ class GroupsUtil(
   private val textProvider: TextProvider,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
-  private val idProvider: IdProvider
 ) {
 
   private val random = Random()
@@ -30,7 +28,7 @@ class GroupsUtil(
       groupColor = random.nextInt(16),
       groupDateTime = dateTimeManager.getNowGmtDateTime(),
       isDefaultGroup = true,
-      groupUuId = idProvider.generateUuid(),
+      groupUuId = getGroupId(1),
       syncState = SyncState.WaitingForUpload
     )
     runCatching {
@@ -41,7 +39,7 @@ class GroupsUtil(
           groupColor = random.nextInt(16),
           groupDateTime = dateTimeManager.getNowGmtDateTime(),
           isDefaultGroup = false,
-          groupUuId = idProvider.generateUuid(),
+          groupUuId = getGroupId(2),
           syncState = SyncState.WaitingForUpload
         )
       )
@@ -51,12 +49,16 @@ class GroupsUtil(
           groupColor = random.nextInt(16),
           groupDateTime = dateTimeManager.getNowGmtDateTime(),
           isDefaultGroup = false,
-          groupUuId = idProvider.generateUuid(),
+          groupUuId = getGroupId(3),
           syncState = SyncState.WaitingForUpload
         )
       )
     }
     return def.groupUuId
+  }
+
+  private fun getGroupId(index: Int): String {
+    return "default_group_$index"
   }
 
   suspend fun mapAll(): Map<String, ReminderGroup> {

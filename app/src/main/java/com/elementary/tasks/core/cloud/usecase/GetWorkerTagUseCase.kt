@@ -16,6 +16,7 @@ class GetWorkerTagUseCase {
       WorkType.Delete -> "DELETE"
       WorkType.Sync -> "SYNC"
       WorkType.ForceUpload -> "FORCE_UPLOAD"
+      WorkType.ForceSync -> "SYNC"
     })
     dataType?.also { builder.append("_").append(it.name) }
     id?.also { builder.append("_").append(it) }

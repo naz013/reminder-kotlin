@@ -19,19 +19,19 @@ interface SyncApi {
    * Sync all data types.
    */
   @Throws(Exception::class)
-  suspend fun sync(): SyncResult
+  suspend fun sync(forceUpload: Boolean = false): SyncResult
 
   /**
    * Sync specific data type.
    */
   @Throws(Exception::class)
-  suspend fun sync(dataType: DataType): SyncResult
+  suspend fun sync(dataType: DataType, forceUpload: Boolean = false): SyncResult
 
   /**
    * Sync specific id of a data type.
    */
   @Throws(Exception::class)
-  suspend fun sync(dataType: DataType, id: String): SyncResult
+  suspend fun sync(dataType: DataType, id: String, forceUpload: Boolean = false): SyncResult
 
   /**
    * Upload all data types.

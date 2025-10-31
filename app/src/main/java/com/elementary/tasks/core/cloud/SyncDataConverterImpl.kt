@@ -6,6 +6,7 @@ import android.util.Base64OutputStream
 import com.github.naz013.cloudapi.stream.CopyByteArrayStream
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.OldNote
@@ -43,6 +44,7 @@ class SyncDataConverterImpl : SyncDataConverter {
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
         is OldNote -> object : TypeToken<OldNote>() {}.type
+        is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
         else -> null
       } ?: run {
         throw IllegalArgumentException("Unsupported type: ${any::class.java}")

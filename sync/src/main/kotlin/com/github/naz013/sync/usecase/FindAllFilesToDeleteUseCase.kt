@@ -2,12 +2,10 @@ package com.github.naz013.sync.usecase
 
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
-import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 
 internal class FindAllFilesToDeleteUseCase(
-  private val cloudApiProvider: CloudApiProvider,
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
 ) {
 
   /**
@@ -20,7 +18,7 @@ internal class FindAllFilesToDeleteUseCase(
    * @return SearchResult containing cloud files grouped by source, or null if no files found
    */
   suspend operator fun invoke(dataType: DataType): SearchResult? {
-    val apiList = cloudApiProvider.getAllowedCloudApis()
+    val apiList = getAllowedCloudApisUseCase()
     val sources = mutableListOf<CloudFilesWithSource>()
     for (api in apiList) {
       val cloudFiles = findFilesInApiSource(api, dataType)

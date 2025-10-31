@@ -1,10 +1,5 @@
 package com.github.naz013.sync.usecase
 
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
@@ -14,7 +9,6 @@ import com.github.naz013.sync.Downloaded
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
-import com.github.naz013.sync.settings.SettingsModel
 
 internal class DownloadUseCase(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
@@ -23,7 +17,8 @@ internal class DownloadUseCase(
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
   private val findAllFilesToDownloadUseCase: FindAllFilesToDownloadUseCase,
   private val getLocalUuIdUseCase: GetLocalUuIdUseCase,
-  private val dataPostProcessor: DataPostProcessor
+  private val dataPostProcessor: DataPostProcessor,
+  private val getClassByDataTypeUseCase: GetClassByDataTypeUseCase
 ) {
   /**
    * Downloads all files of a specific data type from all configured cloud sources.
@@ -45,13 +40,28 @@ internal class DownloadUseCase(
     for (cloudFilesWithSource in newestResult.sources) {
       val cloudFileApi = cloudFilesWithSource.source
       for (cloudFile in cloudFilesWithSource.cloudFiles) {
+        val existingMetadata = remoteFileMetadataRepository.getBySource(
+          source = cloudFileApi.source.value
+        ).firstOrNull { it.name == cloudFile.name }
+        if (existingMetadata != null) {
+          if (cloudFile.lastModified <= existingMetadata.lastModified) {
+            Logger.d(TAG, "Local file is up to date for file: ${cloudFile.name}, skipping download.")
+            continue
+          }
+        }
+
         Logger.i(TAG, "Downloading file: ${cloudFile.name} from source: ${cloudFileApi.source}")
-        val stream = cloudFileApi.downloadFile(cloudFile) ?: run {
+        val stream = try {
+          cloudFileApi.downloadFile(cloudFile)
+        } catch (e: Exception) {
+          Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}, error: $e")
+          continue
+        } ?: run {
           Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}")
           continue
         }
         val data = try {
-          syncDataConverter.parse(stream, getClass(dataType))
+          syncDataConverter.parse(stream, getClassByDataTypeUseCase(dataType))
         } catch (e: Exception) {
           Logger.e(TAG, "Failed to parse downloaded file for dataType: $dataType, file: ${cloudFile.name}, error: $e")
           continue
@@ -86,17 +96,6 @@ internal class DownloadUseCase(
       )
     } else {
       SyncResult.Skipped
-    }
-  }
-
-  private fun getClass(dataType: DataType): Class<*> {
-    return when (dataType) {
-      DataType.Reminders -> Reminder::class.java
-      DataType.Notes -> OldNote::class.java
-      DataType.Birthdays -> Birthday::class.java
-      DataType.Groups -> ReminderGroup::class.java
-      DataType.Places -> Place::class.java
-      DataType.Settings -> SettingsModel::class.java
     }
   }
 

@@ -3,7 +3,6 @@ package com.github.naz013.sync.usecase
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,7 +23,7 @@ class DeleteSingleUseCaseTest {
 
   private lateinit var remoteFileMetadataRepository: RemoteFileMetadataRepository
   private lateinit var getCloudFileNameUseCase: GetCloudFileNameUseCase
-  private lateinit var cloudApiProvider: CloudApiProvider
+  private lateinit var getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
   private lateinit var deleteSingleUseCase: DeleteSingleUseCase
 
   private lateinit var mockCloudFileApi: CloudFileApi
@@ -33,13 +32,12 @@ class DeleteSingleUseCaseTest {
   fun setUp() {
     remoteFileMetadataRepository = mockk(relaxed = true)
     getCloudFileNameUseCase = mockk()
-    cloudApiProvider = mockk()
+    getAllowedCloudApisUseCase = mockk()
     mockCloudFileApi = mockk(relaxed = true)
-
     deleteSingleUseCase = DeleteSingleUseCase(
       remoteFileMetadataRepository = remoteFileMetadataRepository,
       getCloudFileNameUseCase = getCloudFileNameUseCase,
-      cloudApiProvider = cloudApiProvider
+      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase
     )
   }
 
@@ -52,7 +50,7 @@ class DeleteSingleUseCaseTest {
       val fileName = "$reminderId.ta2"
 
       every { getCloudFileNameUseCase(dataType, reminderId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       every { mockCloudFileApi.source } returns Source.GoogleDrive
       coEvery { mockCloudFileApi.deleteFile(fileName) } returns true
 
@@ -69,19 +67,19 @@ class DeleteSingleUseCaseTest {
   @Test
   fun invoke_withBirthdayType_shouldDeleteWithCorrectFileExtension() {
     runBlocking {
-      // Arrange - Delete a birthday file (.gr2 extension)
+      // Arrange - Delete a birthday file (.bi2 extension)
       val dataType = DataType.Birthdays
       val birthdayId = "birthday-uuid-67890"
-      val fileName = "$birthdayId.gr2"
+      val fileName = "$birthdayId.bi2"
 
       every { getCloudFileNameUseCase(dataType, birthdayId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.deleteFile(fileName) } returns true
 
       // Act
       deleteSingleUseCase(dataType, birthdayId)
 
-      // Assert - Correct file name with .gr2 extension
+      // Assert - Correct file name with .bi2 extension
       coVerify(exactly = 1) { mockCloudFileApi.deleteFile(fileName) }
       coVerify(exactly = 1) { remoteFileMetadataRepository.deleteByLocalUuId(birthdayId) }
     }
@@ -115,7 +113,7 @@ class DeleteSingleUseCaseTest {
       val mockDropboxApi = mockk<CloudFileApi>(relaxed = true)
 
       every { getCloudFileNameUseCase(dataType, noteId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockGDriveApi, mockDropboxApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.deleteFile(fileName) } returns true
@@ -140,7 +138,7 @@ class DeleteSingleUseCaseTest {
       val fileName = "$reminderId.ta2"
 
       every { getCloudFileNameUseCase(dataType, reminderId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns emptyList()
+      every { getAllowedCloudApisUseCase.invoke() } returns emptyList()
 
       // Act
       deleteSingleUseCase(dataType, reminderId)
@@ -154,19 +152,19 @@ class DeleteSingleUseCaseTest {
   @Test
   fun invoke_withGroupType_shouldHandleGroupFileExtension() {
     runBlocking {
-      // Arrange - Delete a reminder group (.bi2 extension)
+      // Arrange - Delete a reminder group (.gr2 extension)
       val dataType = DataType.Groups
       val groupId = "group-uuid-xyz789"
-      val fileName = "$groupId.bi2"
+      val fileName = "$groupId.gr2"
 
       every { getCloudFileNameUseCase(dataType, groupId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.deleteFile(fileName) } returns true
 
       // Act
       deleteSingleUseCase(dataType, groupId)
 
-      // Assert - Correct file name with .bi2 extension
+      // Assert - Correct file name with .gr2 extension
       coVerify(exactly = 1) { mockCloudFileApi.deleteFile(fileName) }
       coVerify(exactly = 1) { remoteFileMetadataRepository.deleteByLocalUuId(groupId) }
     }
@@ -181,7 +179,7 @@ class DeleteSingleUseCaseTest {
       val fileName = "$placeId.pl2"
 
       every { getCloudFileNameUseCase(dataType, placeId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.deleteFile(fileName) } returns true
 
       // Act
@@ -201,7 +199,7 @@ class DeleteSingleUseCaseTest {
     val fileName = "$reminderId.ta2"
 
     every { getCloudFileNameUseCase(dataType, reminderId) } returns fileName
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
     coEvery { mockCloudFileApi.deleteFile(fileName) } throws RuntimeException("Network error during deletion")
 
     // Act & Assert - Should propagate exception
@@ -229,7 +227,7 @@ class DeleteSingleUseCaseTest {
         noteId
       )
     } throws IllegalArgumentException("Invalid ID format")
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
 
     // Act & Assert - Should propagate exception
     var exceptionThrown = false
@@ -249,10 +247,10 @@ class DeleteSingleUseCaseTest {
     // Arrange - Repository throws exception during metadata deletion
     val dataType = DataType.Birthdays
     val birthdayId = "birthday-with-metadata-error"
-    val fileName = "$birthdayId.gr2"
+    val fileName = "$birthdayId.bi2"
 
     every { getCloudFileNameUseCase(dataType, birthdayId) } returns fileName
-    every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+    every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
     coEvery { mockCloudFileApi.deleteFile(fileName) } returns true
     coEvery { remoteFileMetadataRepository.deleteByLocalUuId(birthdayId) } throws
       RuntimeException("Database error")
@@ -279,7 +277,7 @@ class DeleteSingleUseCaseTest {
       val fileName = "$reminderId.ta2"
 
       every { getCloudFileNameUseCase(dataType, reminderId) } returns fileName
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.deleteFile(fileName) } returns true
 
       // Act
@@ -300,9 +298,9 @@ class DeleteSingleUseCaseTest {
       val noteId = "note-1"
 
       every { getCloudFileNameUseCase(DataType.Reminders, reminderId) } returns "$reminderId.ta2"
-      every { getCloudFileNameUseCase(DataType.Birthdays, birthdayId) } returns "$birthdayId.gr2"
+      every { getCloudFileNameUseCase(DataType.Birthdays, birthdayId) } returns "$birthdayId.bi2"
       every { getCloudFileNameUseCase(DataType.Notes, noteId) } returns "$noteId.no2"
-      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockCloudFileApi)
+      every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockCloudFileApi)
       coEvery { mockCloudFileApi.deleteFile(any()) } returns true
 
       // Act - Delete different types
@@ -312,7 +310,7 @@ class DeleteSingleUseCaseTest {
 
       // Assert - All three should be deleted with correct file names
       coVerify(exactly = 1) { mockCloudFileApi.deleteFile("$reminderId.ta2") }
-      coVerify(exactly = 1) { mockCloudFileApi.deleteFile("$birthdayId.gr2") }
+      coVerify(exactly = 1) { mockCloudFileApi.deleteFile("$birthdayId.bi2") }
       coVerify(exactly = 1) { mockCloudFileApi.deleteFile("$noteId.no2") }
       coVerify(exactly = 3) { remoteFileMetadataRepository.deleteByLocalUuId(any()) }
     }

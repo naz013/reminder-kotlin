@@ -5,8 +5,9 @@ enum class DataType(
 ) {
   Reminders(".ta2"),
   Notes(".no2"),
-  Birthdays(".gr2"),
-  Groups(".bi2"),
+  Birthdays(".bi2"),
+  Groups(".gr2"),
   Places(".pl2"),
-  Settings(".settings")
+  Settings(".settings"),
+  RecurPresets(".rp2")
 }

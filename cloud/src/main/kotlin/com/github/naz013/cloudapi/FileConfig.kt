@@ -26,6 +26,11 @@ object FileConfig {
    */
   const val FILE_NAME_PLACE = ".pl2"
 
+  /**
+   * File extension for preset.
+   */
+  const val FILE_NAME_PRESET = ".rp2"
+
   const val FILE_NAME_SETTINGS = "app.settings"
   const val FILE_NAME_SETTINGS_EXT = ".settings"
 

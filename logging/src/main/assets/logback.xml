@@ -1,11 +1,11 @@
 <configuration>
     <property name="LOG_DIR" value="${DATA_DIR}/log" />
     <timestamp key="datetime" datePattern="yyyy'-'MM'-'dd"/>
-    <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
-        <encoder>
-            <pattern>%-5level %msg%n</pattern>
-        </encoder>
-    </appender>
+<!--    <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">-->
+<!--        <encoder>-->
+<!--            <pattern>%-5level %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
     <appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${datetime}.log</file>
         <encoder>
