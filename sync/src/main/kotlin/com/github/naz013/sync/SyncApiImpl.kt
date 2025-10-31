@@ -1,6 +1,7 @@
 package com.github.naz013.sync
 
 import com.github.naz013.logging.Logger
+import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.usecase.DeleteDataTypeUseCase
 import com.github.naz013.sync.usecase.DeleteSingleUseCase
@@ -21,6 +22,7 @@ internal class SyncApiImpl(
   private val deleteDataTypeUseCase: DeleteDataTypeUseCase,
   private val uploadDataTypeUseCase: UploadDataTypeUseCase,
   private val hasAnyCloudApiUseCase: HasAnyCloudApiUseCase,
+  private val syncApiSessionCache: SyncApiSessionCache
 ) : SyncApi {
 
   override suspend fun sync(forceUpload: Boolean): SyncResult {
@@ -35,8 +37,9 @@ internal class SyncApiImpl(
     }
     val results = mutableListOf<SyncResult>()
     for (dataType in allowedDataTypes) {
-      results.add(sync(dataType, forceUpload))
+      results.add(syncInternal(dataType, forceUpload))
     }
+    syncApiSessionCache.clearCache()
     return SyncResult.Success(
       downloaded = results.filterIsInstance<SyncResult.Success>().flatMap { it.downloaded },
       success = results.all { it is SyncResult.Success }
@@ -48,13 +51,18 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for sync.")
       return SyncResult.Skipped
     }
+    return syncInternal(dataType, forceUpload).also {
+      syncApiSessionCache.clearCache()
+    }
+  }
+
+  private suspend fun syncInternal(dataType: DataType, forceUpload: Boolean): SyncResult {
     Logger.i(TAG, "Syncing items for data type: $dataType")
     if (forceUpload) {
       forceUpload(dataType)
     } else {
       upload(dataType)
     }
-
     return downloadUseCase(dataType)
   }
 
@@ -69,7 +77,9 @@ internal class SyncApiImpl(
     }
     Logger.i(TAG, "Syncing single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)
-    return downloadSingleUseCase(dataType, id)
+    return downloadSingleUseCase(dataType, id).also {
+      syncApiSessionCache.clearCache()
+    }
   }
 
   override suspend fun upload() {
@@ -82,6 +92,7 @@ internal class SyncApiImpl(
       Logger.i(TAG, "Uploading items for data type: $dataType")
       uploadDataTypeUseCase(dataType)
     }
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun upload(dataType: DataType) {
@@ -90,6 +101,7 @@ internal class SyncApiImpl(
       return
     }
     uploadDataTypeUseCase(dataType)
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun upload(dataType: DataType, id: String) {
@@ -103,6 +115,7 @@ internal class SyncApiImpl(
     }
     Logger.i(TAG, "Uploading single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun forceUpload() {
@@ -112,8 +125,9 @@ internal class SyncApiImpl(
     }
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
-      forceUpload(dataType)
+      forceUploadInternal(dataType)
     }
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun forceUpload(dataType: DataType) {
@@ -121,6 +135,11 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for upload.")
       return
     }
+    forceUploadInternal(dataType)
+    syncApiSessionCache.clearCache()
+  }
+
+  private suspend fun forceUploadInternal(dataType: DataType) {
     Logger.i(TAG, "Force uploading items for data type: $dataType")
     val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
     val ids = repositoryCaller.getAllIds()
@@ -138,6 +157,7 @@ internal class SyncApiImpl(
     }
     Logger.i(TAG, "Force uploading single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun delete() {
@@ -150,6 +170,7 @@ internal class SyncApiImpl(
       Logger.i(TAG, "Deleting data type from cloud: $dataType")
       deleteDataTypeUseCase(dataType)
     }
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun delete(dataType: DataType) {
@@ -159,6 +180,7 @@ internal class SyncApiImpl(
     }
     Logger.i(TAG, "Deleting data type from cloud: $dataType")
     deleteDataTypeUseCase(dataType)
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun delete(dataType: DataType, id: String) {
@@ -169,6 +191,7 @@ internal class SyncApiImpl(
     }
     Logger.i(TAG, "Deleting single item from cloud. dataType: $dataType, id: $id")
     deleteSingleUseCase(dataType, id)
+    syncApiSessionCache.clearCache()
   }
 
   override suspend fun delete(dataType: DataType, ids: List<String>) {
@@ -182,6 +205,7 @@ internal class SyncApiImpl(
     for (id in ids) {
       deleteSingleUseCase(dataType, id)
     }
+    syncApiSessionCache.clearCache()
   }
 
   companion object {

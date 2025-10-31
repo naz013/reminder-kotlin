@@ -9,7 +9,7 @@ import com.github.naz013.domain.note.OldNote
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.settings.SettingsModel
 
-class GetClassByDataTypeUseCase {
+internal class GetClassByDataTypeUseCase {
 
   operator fun invoke(dataType: DataType): Class<*> {
     return when (dataType) {

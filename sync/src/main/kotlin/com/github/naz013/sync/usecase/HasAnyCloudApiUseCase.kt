@@ -1,6 +1,6 @@
 package com.github.naz013.sync.usecase
 
-class HasAnyCloudApiUseCase(
+internal class HasAnyCloudApiUseCase(
   private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
 ) {
 

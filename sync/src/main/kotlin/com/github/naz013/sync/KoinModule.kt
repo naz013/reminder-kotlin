@@ -1,5 +1,6 @@
 package com.github.naz013.sync
 
+import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.settings.UploadSettingsUseCase
 import com.github.naz013.sync.usecase.CreateCloudFileUseCase
@@ -22,7 +23,7 @@ import com.github.naz013.sync.usecase.UploadSingleUseCase
 import org.koin.dsl.module
 
 val syncApiModule = module {
-  factory { SyncApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get()) as SyncApi }
+  factory { SyncApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) as SyncApi }
 
   factory { DataTypeRepositoryCallerFactory(get(), get(), get(), get(), get(), get()) }
 
@@ -49,5 +50,7 @@ val syncApiModule = module {
 
   factory { GetClassByDataTypeUseCase() }
 
-  factory { GetAllowedCloudApisUseCase(get()) }
+  factory { GetAllowedCloudApisUseCase(get(), get()) }
+
+  single { SyncApiSessionCache() }
 }
