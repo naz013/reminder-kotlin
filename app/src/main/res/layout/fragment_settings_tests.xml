@@ -55,6 +55,15 @@
             app:prefs_primary_text="Save object to File"
             app:prefs_type="none" />
 
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/review_dialog_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Show Review Dialog"
+            app:prefs_type="none" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/settings_bottom_space" />

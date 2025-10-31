@@ -874,4 +874,14 @@
     <string name="erase_cloud_data_message">Erase all data in the Cloud</string>
     <string name="erase">Erase</string>
     <string name="auto_backup_every">Every</string>
+    <string name="thank_you_for_your_feedback">Thank you for your feedback!</string>
+    <string name="feedback_submit">Submit</string>
+    <string name="feedback_rating">Rating</string>
+    <string name="feedback_comment">Comment</string>
+    <string name="share_your_feedback">Share your feedback...</string>
+    <string name="attach_log_files">Attach Log Files</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">Help us diagnose issues by including app logs</string>
+    <string name="feedback_email_optional">Email (Optional)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">We\'ll use this to follow up on your feedback</string>
+    <string name="share_your_experience">Share your experience</string>
 </resources>

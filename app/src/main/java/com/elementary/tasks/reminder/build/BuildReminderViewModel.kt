@@ -135,6 +135,9 @@ class BuildReminderViewModel(
   private val _canSave = mutableLiveDataOf<Boolean>()
   val canSave = _canSave.toSingleEvent()
 
+  private val _showReviewDialog = mutableLiveDataOf<Event<Unit>>()
+  val showReviewDialog = _showReviewDialog.toLiveData()
+
   var id: String = ""
     private set
   var hasSameInDb: Boolean = false
@@ -799,6 +802,20 @@ class BuildReminderViewModel(
     reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
     Logger.i(TAG, "Reminder saved, type = ${reminder.type}")
     scheduleReminderUploadUseCase(reminder.uuId)
+
+    // Track reminder creation and show review dialog after 4 reminders
+    if (!isEdit && !prefs.reviewDialogShown) {
+      val currentCount = prefs.remindersCreatedCount
+      val newCount = currentCount + 1
+      prefs.remindersCreatedCount = newCount
+      Logger.i(TAG, "Reminder creation count: $newCount")
+
+      if (newCount >= 4) {
+        Logger.i(TAG, "Showing review dialog after 4 reminders created")
+        _showReviewDialog.postValue(Event(Unit))
+        prefs.reviewDialogShown = true
+      }
+    }
   }
 
   private suspend fun pauseReminder(reminder: Reminder) {

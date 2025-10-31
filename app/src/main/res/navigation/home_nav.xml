@@ -430,11 +430,6 @@
         android:id="@+id/navigation2"
         app:startDestination="@id/otherSettingsFragment">
         <fragment
-            android:id="@+id/feedbackFragment"
-            android:name="com.elementary.tasks.navigation.fragments.FeedbackFragment"
-            android:label="@string/feedback"
-            tools:layout="@layout/fragment_settings_web_view" />
-        <fragment
             android:id="@+id/permissionsFragment"
             android:name="com.elementary.tasks.settings.other.PermissionsFragment"
             android:label="@string/permissions"
@@ -452,13 +447,6 @@
             <action
                 android:id="@+id/action_otherSettingsFragment_to_permissionsFragment"
                 app:destination="@id/permissionsFragment"
-                app:enterAnim="@anim/nav_default_enter_anim"
-                app:exitAnim="@anim/nav_default_exit_anim"
-                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-            <action
-                android:id="@+id/action_otherSettingsFragment_to_feedbackFragment"
-                app:destination="@id/feedbackFragment"
                 app:enterAnim="@anim/nav_default_enter_anim"
                 app:exitAnim="@anim/nav_default_exit_anim"
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
