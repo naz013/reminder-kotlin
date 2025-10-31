@@ -1,5 +1,6 @@
 package com.github.naz013.sync
 
+import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.usecase.DeleteDataTypeUseCase
@@ -40,6 +41,7 @@ class SyncApiImplTest {
   private lateinit var uploadDataTypeUseCase: UploadDataTypeUseCase
   private lateinit var hasAnyCloudApiUseCase: HasAnyCloudApiUseCase
   private lateinit var syncApi: SyncApiImpl
+  private lateinit var syncApiSessionCache: SyncApiSessionCache
 
   private lateinit var mockRepositoryCaller: DataTypeRepositoryCaller<Any>
 
@@ -55,6 +57,7 @@ class SyncApiImplTest {
     uploadDataTypeUseCase = mockk(relaxed = true)
     hasAnyCloudApiUseCase = mockk()
     mockRepositoryCaller = mockk(relaxed = true)
+    syncApiSessionCache = mockk(relaxed = true)
 
     syncApi = SyncApiImpl(
       dataTypeRepositoryCallerFactory = dataTypeRepositoryCallerFactory,
@@ -65,7 +68,8 @@ class SyncApiImplTest {
       deleteSingleUseCase = deleteSingleUseCase,
       deleteDataTypeUseCase = deleteDataTypeUseCase,
       uploadDataTypeUseCase = uploadDataTypeUseCase,
-      hasAnyCloudApiUseCase = hasAnyCloudApiUseCase
+      hasAnyCloudApiUseCase = hasAnyCloudApiUseCase,
+      syncApiSessionCache = syncApiSessionCache
     )
   }
 

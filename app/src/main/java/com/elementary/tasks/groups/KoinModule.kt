@@ -13,6 +13,6 @@ val reminderGroupModule = module {
 
   viewModel { GroupsViewModel(get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
-    EditGroupViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get())
+    EditGroupViewModel(id, get(), get(), get(), get(), get(), get(), get(), get())
   }
 }
