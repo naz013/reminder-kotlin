@@ -42,6 +42,9 @@ import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.navigationApiModule
 import com.github.naz013.repository.repositoryModule
+import com.github.naz013.reviews.ReviewSdk
+import com.github.naz013.reviews.config.SecondaryFirebaseConfig
+import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
@@ -125,10 +128,27 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           cloudModule,
           syncApiModule,
           reminderGroupModule,
-          placeKoinModule
+          placeKoinModule,
+          reviewsKoinModule
         )
       )
     }
+
+    val config = SecondaryFirebaseConfig(
+      projectId = BuildConfig.REVIEWS_PROJECT_ID,
+      applicationId = BuildConfig.REVIEWS_APP_ID,
+      apiKey = BuildConfig.REVIEWS_API_KEY,
+      storageBucket = BuildConfig.REVIEWS_STORAGE_BUCKET
+    )
+
+    ReviewSdk.initialize(this, config, true).fold(
+      onSuccess = {
+        com.github.naz013.logging.Logger.i("App", "✅ Reviews Firebase initialized")
+      },
+      onFailure = { error ->
+        com.github.naz013.logging.Logger.e("App", "❌ Reviews init failed", error)
+      }
+    )
 
     get<NavigationObservable>().subscribeGlobal(navigationConsumer)
 
