@@ -1,8 +1,5 @@
 import java.net.URI
 
-include(":cloudtestadmin")
-
-
 pluginManagement {
   repositories {
     google()
@@ -41,3 +38,4 @@ include(":usecase:googletasks")
 include(":usecase:birthdays")
 include(":usecase:reminders")
 include(":usecase:notes")
+include(":cloudtestadmin")

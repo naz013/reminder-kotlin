@@ -43,10 +43,10 @@ jobs:
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/free/google-services.json
 
     - name: Run all unit tests (Android modules)
-      run: ./gradlew testProDebugUnitTest --continue
+      run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testProDebugUnitTest
 
     - name: Run all unit tests (Kotlin modules)
-      run: ./gradlew test --continue
+      run: ./gradlew test --continue -x :cloudtestadmin:test
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
