@@ -889,4 +889,5 @@
     <string name="network_type_wifi_only">Wifi</string>
     <string name="network_type_cellular">Cellular</string>
     <string name="select_network_type">Select the network type</string>
+    <string name="report_an_issue">Report an Issue</string>
 </resources>
