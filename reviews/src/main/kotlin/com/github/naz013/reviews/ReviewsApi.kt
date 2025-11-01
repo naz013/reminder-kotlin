@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseUser
 
 interface ReviewsApi {
-  fun showFeedbackForm(context: Context, title: String?, appSource: AppSource)
+  fun showFeedbackForm(context: Context, title: String?, appSource: AppSource, allowLogsAttachment: Boolean = true)
 
   /**
    * Retrieves all reviews from Firestore.

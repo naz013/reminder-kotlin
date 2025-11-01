@@ -2,14 +2,14 @@ package com.elementary.tasks.core.utils.params
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.FeatureManager
-import com.github.naz013.ui.common.locale.Language
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
 import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
 import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.locale.Language
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
@@ -45,7 +45,7 @@ class RemotePrefs(
 
   private fun fetchConfig() {
     config?.fetchAndActivate()?.addOnCompleteListener { task ->
-      Logger.d("fetchConfig: ${task.isSuccessful}, ${task.exception}")
+      Logger.d(TAG, "fetchConfig: ${task.isSuccessful}, ${task.exception}")
       if (task.isSuccessful) {
         config.fetchAndActivate()
       }
@@ -67,8 +67,8 @@ class RemotePrefs(
     val updateMessage =
       runCatching { Gson().fromJson(json, UpdateMessageV2::class.java) }.getOrNull()
 
-    Logger.d("readUpdateMessage: json=$json")
-    Logger.d("readUpdateMessage: message=$updateMessage")
+    Logger.d(TAG, "readUpdateMessage: json=$json")
+    Logger.d(TAG, "readUpdateMessage: message=$updateMessage")
 
     if (updateMessage != null) {
       val currentVersionCode = packageManagerWrapper.getVersionCode()
@@ -93,8 +93,8 @@ class RemotePrefs(
 
     val saleMessageV2 = runCatching { Gson().fromJson(json, SaleMessageV2::class.java) }.getOrNull()
 
-    Logger.d("readSaleMessage: json=$json")
-    Logger.d("readSaleMessage: message=$saleMessageV2")
+    Logger.d(TAG, "readSaleMessage: json=$json")
+    Logger.d(TAG, "readSaleMessage: message=$saleMessageV2")
 
     if (saleMessageV2 != null) {
       prefs.saleMessage = json ?: ""
@@ -112,9 +112,9 @@ class RemotePrefs(
     val startDateTime = dateTimeManager.fromRfc3339ToLocal(saleMessageV2.startAt)
     val endDateTime = dateTimeManager.fromRfc3339ToLocal(saleMessageV2.endAt)
 
-    Logger.d("checkSaleMessage: now=$now")
-    Logger.d("checkSaleMessage: startDateTime=$startDateTime")
-    Logger.d("checkSaleMessage: endDateTime=$endDateTime")
+    Logger.d(TAG, "checkSaleMessage: now=$now")
+    Logger.d(TAG, "checkSaleMessage: startDateTime=$startDateTime")
+    Logger.d(TAG, "checkSaleMessage: endDateTime=$endDateTime")
 
     if (startDateTime != null && endDateTime != null) {
       if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
@@ -140,8 +140,8 @@ class RemotePrefs(
     val internalMessageV1 =
       runCatching { Gson().fromJson(json, InternalMessageV1::class.java) }.getOrNull()
 
-    Logger.d("readInternalMessage: json=$json")
-    Logger.d("readInternalMessage: message=$internalMessageV1")
+    Logger.d(TAG, "readInternalMessage: json=$json")
+    Logger.d(TAG, "readInternalMessage: message=$internalMessageV1")
 
     if (internalMessageV1 != null) {
       prefs.internalMessage = json ?: ""
@@ -159,9 +159,9 @@ class RemotePrefs(
     val startDateTime = dateTimeManager.fromRfc3339ToLocal(internalMessageV1.startAt)
     val endDateTime = dateTimeManager.fromRfc3339ToLocal(internalMessageV1.endAt)
 
-    Logger.d("checkInternalMessage: now=$now")
-    Logger.d("checkInternalMessage: startDateTime=$startDateTime")
-    Logger.d("checkInternalMessage: endDateTime=$endDateTime")
+    Logger.d(TAG, "checkInternalMessage: now=$now")
+    Logger.d(TAG, "checkInternalMessage: startDateTime=$startDateTime")
+    Logger.d(TAG, "checkInternalMessage: endDateTime=$endDateTime")
 
     if (startDateTime != null && endDateTime != null) {
       if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
@@ -195,29 +195,26 @@ class RemotePrefs(
   private fun readAppConfigs() {
     val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
     val termsUrl = config?.getString(TERMS_URL)
-    val voiceHelpUrls = config?.getString(VOICE_HELP_URLS)
 
-    Logger.d("RemoteConfig: privacyUrl=$privacyUrl")
-    Logger.d("RemoteConfig: termsUrl=$termsUrl")
-    Logger.d("RemoteConfig: voiceHelpJson=$voiceHelpUrls")
+    Logger.d(TAG, "Privacy Url=$privacyUrl")
+    Logger.d(TAG, "Terms Url=$termsUrl")
 
     privacyUrl?.also { prefs.privacyUrl = it }
     termsUrl?.also { prefs.termsUrl = it }
-    voiceHelpUrls?.also { prefs.voiceHelpUrls = it }
   }
 
   private fun readFeatureFlags() {
     FeatureManager.Feature.entries.map {
       it to (readBool(it.value) ?: it.defaultValue)
     }.forEach {
-      Logger.d("Feature ${it.first} isEnabled=${it.second}")
+      Logger.d(TAG, "Feature ${it.first} isEnabled=${it.second}")
       prefs.putBoolean(it.first.value, it.second)
     }
   }
 
   private fun readBool(key: String): Boolean? {
     return config?.getBoolean(key).also {
-      Logger.d("Read bool key=$key, val=$it")
+      Logger.d(TAG, "Read bool key=$key, val=$it")
     }
   }
 
@@ -273,10 +270,10 @@ class RemotePrefs(
   }
 
   companion object {
+    private const val TAG = "RemotePrefs"
 
     private const val PRIVACY_POLICY_URL = "privacy_policy_link"
     private const val TERMS_URL = "terms_link"
-    private const val VOICE_HELP_URLS = "voice_help_urls"
 
     private const val UPDATE_MESSAGE = "update_message_v2"
     private const val PRO_SALE_MESSAGE = "pro_sale_message_v2"

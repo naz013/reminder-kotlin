@@ -13,10 +13,10 @@ import org.koin.dsl.module
 
 val reviewsKoinModule = module {
   factory { ReviewsApiImpl(get(), get()) as ReviewsApi }
-  factory { ReviewRepositoryImpl(get(), get()) }
+  single { ReviewRepositoryImpl(get(), get()) }
 
   // Firebase instances from the reviews Firebase app
-  factory {
+  single {
     try {
       val firestore = SecondaryFirebaseAppManager.getFirestore()
       if (firestore != null) {
@@ -42,7 +42,7 @@ val reviewsKoinModule = module {
     }
   }
 
-  factory {
+  single {
     val storage = SecondaryFirebaseAppManager.getStorage()
     if (storage != null) {
       LogFileUploader(storage)

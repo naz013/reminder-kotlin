@@ -4,6 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,15 +66,24 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
 
   private val viewModel by viewModel<ReviewDialogViewModel>()
 
+  init {
+    Logger.d(TAG, "ReviewDialog instance created at ${System.currentTimeMillis()}")
+  }
+
   @Composable
   override fun FragmentContent() {
+    Logger.d(TAG, "FragmentContent composition started at ${System.currentTimeMillis()}")
+
     val title = arguments?.getString(ARG_TITLE) ?: stringResource(R.string.feedback)
     val appSource = arguments?.readSerializable(ARG_SOURCE, AppSource::class.java) ?: AppSource.FREE
+    val allowLogs = arguments?.getBoolean(ARG_ALLOW_LOGS) ?: false
+
     val isLoading by viewModel.isLoading.observeAsState(false)
 
     ReviewFormContent(
       title = title,
       isLoading = isLoading,
+      allowLogs = allowLogs,
       onSubmit = { rating, comment, attachLog, email ->
         viewModel.submitReview(rating, comment, attachLog, email, appSource)
       },
@@ -78,13 +94,8 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    Logger.i(TAG, "On view created.")
+    Logger.i(TAG, "On view created at ${System.currentTimeMillis()}")
     initViewModel()
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    Logger.i(TAG, "On attach.")
     setupBottomSheet()
   }
 
@@ -134,6 +145,7 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
     internal const val TAG = "ReviewDialog"
     private const val ARG_TITLE = "dialog_title"
     private const val ARG_SOURCE = "dialog_source"
+    private const val ARG_ALLOW_LOGS = "allow_logs"
 
     /**
      * Creates a new instance of ReviewDialog.
@@ -144,11 +156,13 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
     fun newInstance(
       title: String?,
       appSource: AppSource,
+      allowLogsAttachment: Boolean
     ): ReviewDialog {
       return ReviewDialog().apply {
         arguments = Bundle().apply {
           putString(ARG_TITLE, title)
           putSerializable(ARG_SOURCE, appSource)
+          putBoolean(ARG_ALLOW_LOGS, allowLogsAttachment)
         }
       }
     }
@@ -181,6 +195,7 @@ private fun isValidEmail(email: String): Boolean {
 fun ReviewFormContent(
   title: String,
   isLoading: Boolean = false,
+  allowLogs: Boolean = false,
   onSubmit: (rating: Float, comment: String, attachLog: Boolean, email: String?) -> Unit,
   onDismiss: () -> Unit,
   onShowError: ((String) -> Unit)? = null
@@ -271,11 +286,13 @@ fun ReviewFormContent(
         onCommentChanged = { comment = it }
       )
 
-      // Log file attachment option
-      LogAttachmentSection(
-        attachLog = attachLog,
-        onAttachLogChanged = { attachLog = it }
-      )
+      if (allowLogs) {
+        // Log file attachment option
+        LogAttachmentSection(
+          attachLog = attachLog,
+          onAttachLogChanged = { attachLog = it }
+        )
+      }
 
       // Optional email field
       EmailSection(
@@ -321,11 +338,30 @@ fun RatingSection(
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
     ) {
-      Text(
-        text = "⭐".repeat(rating.toInt()),
-        style = MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.primary
-      )
+      Row {
+        repeat(5) { index ->
+          AnimatedContent(
+            targetState = index < rating.toInt(),
+            transitionSpec = {
+              scaleIn(
+                animationSpec = spring(
+                  dampingRatio = Spring.DampingRatioMediumBouncy,
+                  stiffness = Spring.StiffnessLow
+                )
+              ) togetherWith scaleOut(
+                animationSpec = tween(durationMillis = 100)
+              )
+            },
+            label = "star_${index}_animation"
+          ) { isVisible ->
+            Text(
+              text = if (isVisible) "⭐" else "",
+              style = MaterialTheme.typography.headlineMedium,
+              color = MaterialTheme.colorScheme.primary
+            )
+          }
+        }
+      }
       Text(
         text = "${rating.toInt()}/5",
         style = MaterialTheme.typography.bodyLarge,

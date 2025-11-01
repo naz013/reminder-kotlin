@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
@@ -24,6 +25,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
 
   private val packageManagerWrapper by inject<PackageManagerWrapper>()
   private val reviewsApi by inject<ReviewsApi>()
+  private val featureManager by inject<FeatureManager>()
 
   private val mDataList = ArrayList<Item>()
   private val translators: String
@@ -66,7 +68,8 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
         AppSource.PRO
       } else {
         AppSource.FREE
-      }
+      },
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
     )
   }
 
