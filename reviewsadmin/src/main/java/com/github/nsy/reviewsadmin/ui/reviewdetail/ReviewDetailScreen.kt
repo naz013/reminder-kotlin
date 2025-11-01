@@ -40,7 +40,7 @@ fun ReviewDetailScreen(
   review: Review,
   onNavigateBack: () -> Unit,
   onViewLogs: (String) -> Unit = {},
-  viewModel: ReviewDetailViewModel = koinViewModel()
+  viewModel: ReviewDetailViewModel = koinViewModel(key = review.id)
 ) {
   val uiState by viewModel.uiState.collectAsState()
   val currentReview by viewModel.currentReview.collectAsState()
@@ -267,14 +267,6 @@ private fun ReviewDetailContent(
     DetailField(
       label = "Device Info",
       value = review.deviceInfo
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    // User ID
-    DetailField(
-      label = "User ID",
-      value = review.userId.ifEmpty { "N/A" }
     )
 
     Spacer(modifier = Modifier.height(16.dp))

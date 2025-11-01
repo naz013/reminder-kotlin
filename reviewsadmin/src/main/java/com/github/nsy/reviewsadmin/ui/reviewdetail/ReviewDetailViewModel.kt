@@ -29,6 +29,7 @@ class ReviewDetailViewModel(
    */
   fun setReview(review: Review) {
     _currentReview.value = review
+    _uiState.value = ReviewDetailUiState.Idle
   }
 
   /**
