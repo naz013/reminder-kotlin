@@ -4,27 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.work.BackupWorker
-import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.cloudapi.dropbox.DropboxApi
-import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
-import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
 
 class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBinding>() {
 
-  private val syncWorker by inject<SyncWorker>()
-  private val backupWorker by inject<BackupWorker>()
-  private val dropboxApi by inject<DropboxApi>()
-  private val googleDriveApi by inject<GoogleDriveApi>()
+  private val observableWorkerManager by inject<ObservableWorkerManager>()
   private val jobScheduler by inject<JobScheduler>()
 
   private var mItemSelect: Int = 0
@@ -33,11 +23,13 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
     binding.progressView.transparent()
     binding.syncButton.isEnabled = true
     binding.backupButton.isEnabled = true
+    binding.cleanPrefs.isEnabled = true
   }
   private val onProgress: (Boolean) -> Unit = {
     if (it) {
       binding.syncButton.isEnabled = false
       binding.backupButton.isEnabled = false
+      binding.cleanPrefs.isEnabled = false
       binding.progressView.visible()
     } else {
       onSyncEnd.invoke()
@@ -72,38 +64,43 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
 
   override fun onDestroy() {
     super.onDestroy()
-    syncWorker.unsubscribe()
-    backupWorker.unsubscribe()
+    observableWorkerManager.unsubscribe()
   }
 
   private fun initSyncButton() {
     binding.syncButton.isEnabled = true
     binding.syncButton.visibility = View.VISIBLE
-    binding.syncButton.setOnClickListener { syncClick() }
-    syncWorker.listener = onProgress
-    syncWorker.onEnd = onSyncEnd
+    binding.syncButton.setOnClickListener { observableSyncClick() }
   }
 
-  private fun syncClick() {
-    permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-      onProgress.invoke(true)
-      syncWorker.sync(lifecycleScope)
-    }
+  private fun observableSyncClick() {
+    onProgress.invoke(true)
+    observableWorkerManager.listener = onProgress
+    observableWorkerManager.onEnd = onSyncEnd
+    ObservableSyncWorker.schedule(requireContext())
+    observableWorkerManager.observeWork(
+      viewLifecycleOwner,
+      ObservableSyncWorker.getWorkTag(),
+      ObservableSyncWorker.KEY_IS_IN_PROGRESS
+    )
   }
 
   private fun initBackupButton() {
     binding.backupButton.isEnabled = true
     binding.backupButton.visibility = View.VISIBLE
-    binding.backupButton.setOnClickListener { backupClick() }
-    backupWorker.listener = onProgress
-    backupWorker.onEnd = onSyncEnd
+    binding.backupButton.setOnClickListener { observableBackupClick() }
   }
 
-  private fun backupClick() {
-    permissionFlow.askPermissions(listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-      onProgress.invoke(true)
-      backupWorker.backup(lifecycleScope)
-    }
+  private fun observableBackupClick() {
+    onProgress.invoke(true)
+    observableWorkerManager.listener = onProgress
+    observableWorkerManager.onEnd = onSyncEnd
+    ObservableBackupWorker.schedule(requireContext())
+    observableWorkerManager.observeWork(
+      viewLifecycleOwner,
+      ObservableBackupWorker.getWorkTag(),
+      ObservableBackupWorker.KEY_IS_IN_PROGRESS
+    )
   }
 
   private fun initClearDataPrefs() {
@@ -121,12 +118,16 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
   }
 
   private fun removeAllData() {
-    launchDefault {
-      googleDriveApi.removeAllData()
-      dropboxApi.removeAllData()
-    }
+    onProgress.invoke(true)
+    observableWorkerManager.listener = onProgress
+    observableWorkerManager.onEnd = onSyncEnd
+    ObservableEraseDataWorker.schedule(requireContext())
+    observableWorkerManager.observeWork(
+      viewLifecycleOwner,
+      ObservableEraseDataWorker.getWorkTag(),
+      ObservableEraseDataWorker.KEY_IS_IN_PROGRESS
+    )
   }
-
 
   private fun initAutoBackupPrefs() {
     binding.autoBackupPrefs.setOnClickListener {

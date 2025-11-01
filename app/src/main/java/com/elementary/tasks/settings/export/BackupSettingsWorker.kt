@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.work
+package com.elementary.tasks.settings.export
 
 import android.content.Context
 import androidx.work.Constraints

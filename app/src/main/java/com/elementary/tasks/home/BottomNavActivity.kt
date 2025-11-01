@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.work.BackupSettingsWorker
+import com.elementary.tasks.settings.export.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.NavigationConsumer

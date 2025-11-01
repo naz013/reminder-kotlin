@@ -19,7 +19,6 @@ import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.elementary.tasks.core.work.workModule
 import com.elementary.tasks.globalsearch.searchModule
 import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.groups.reminderGroupModule
@@ -31,6 +30,7 @@ import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
+import com.elementary.tasks.settings.export.syncSettingsModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
@@ -110,7 +110,6 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           searchModule,
           homeModule,
           googleTaskModule,
-          workModule,
           noteModule,
           servicesModule,
           repositoryModule,
@@ -129,7 +128,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
           syncApiModule,
           reminderGroupModule,
           placeKoinModule,
-          reviewsKoinModule
+          reviewsKoinModule,
+          syncSettingsModule
         )
       )
     }
