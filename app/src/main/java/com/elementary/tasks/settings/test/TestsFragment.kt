@@ -41,7 +41,8 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
           AppSource.PRO
         } else {
           AppSource.FREE
-        }
+        },
+        allowLogsAttachment = false
       )
     }
   }

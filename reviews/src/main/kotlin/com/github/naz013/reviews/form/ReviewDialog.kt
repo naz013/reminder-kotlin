@@ -63,11 +63,14 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
   override fun FragmentContent() {
     val title = arguments?.getString(ARG_TITLE) ?: stringResource(R.string.feedback)
     val appSource = arguments?.readSerializable(ARG_SOURCE, AppSource::class.java) ?: AppSource.FREE
+    val allowLogs = arguments?.getBoolean(ARG_ALLOW_LOGS) ?: false
+
     val isLoading by viewModel.isLoading.observeAsState(false)
 
     ReviewFormContent(
       title = title,
       isLoading = isLoading,
+      allowLogs = allowLogs,
       onSubmit = { rating, comment, attachLog, email ->
         viewModel.submitReview(rating, comment, attachLog, email, appSource)
       },
@@ -134,6 +137,7 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
     internal const val TAG = "ReviewDialog"
     private const val ARG_TITLE = "dialog_title"
     private const val ARG_SOURCE = "dialog_source"
+    private const val ARG_ALLOW_LOGS = "allow_logs"
 
     /**
      * Creates a new instance of ReviewDialog.
@@ -144,11 +148,13 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
     fun newInstance(
       title: String?,
       appSource: AppSource,
+      allowLogsAttachment: Boolean
     ): ReviewDialog {
       return ReviewDialog().apply {
         arguments = Bundle().apply {
           putString(ARG_TITLE, title)
           putSerializable(ARG_SOURCE, appSource)
+          putBoolean(ARG_ALLOW_LOGS, allowLogsAttachment)
         }
       }
     }
@@ -181,6 +187,7 @@ private fun isValidEmail(email: String): Boolean {
 fun ReviewFormContent(
   title: String,
   isLoading: Boolean = false,
+  allowLogs: Boolean = false,
   onSubmit: (rating: Float, comment: String, attachLog: Boolean, email: String?) -> Unit,
   onDismiss: () -> Unit,
   onShowError: ((String) -> Unit)? = null
@@ -271,11 +278,13 @@ fun ReviewFormContent(
         onCommentChanged = { comment = it }
       )
 
-      // Log file attachment option
-      LogAttachmentSection(
-        attachLog = attachLog,
-        onAttachLogChanged = { attachLog = it }
-      )
+      if (allowLogs) {
+        // Log file attachment option
+        LogAttachmentSection(
+          attachLog = attachLog,
+          onAttachLogChanged = { attachLog = it }
+        )
+      }
 
       // Optional email field
       EmailSection(

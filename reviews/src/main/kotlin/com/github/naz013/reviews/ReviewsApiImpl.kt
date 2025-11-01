@@ -24,11 +24,13 @@ internal class ReviewsApiImpl(
     context: Context,
     title: String?,
     appSource: AppSource,
+    allowLogsAttachment: Boolean
   ) {
     Logger.i(TAG, "Showing feedback form")
     val dialog = ReviewDialog.newInstance(
       title = title,
-      appSource = appSource
+      appSource = appSource,
+      allowLogsAttachment = allowLogsAttachment
     )
     if (context is Fragment) {
       dialog.show(context.childFragmentManager, ReviewDialog.TAG)

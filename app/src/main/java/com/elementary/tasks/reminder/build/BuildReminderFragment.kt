@@ -10,6 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.BuildParams
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.FragmentReminderBuilderBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
@@ -42,6 +43,7 @@ class BuildReminderFragment :
 
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
   private val reviewsApi by inject<ReviewsApi>()
+  private val featureManager by inject<FeatureManager>()
 
   private val builderAdapter = BuilderAdapter(
     onItemClickListener = { position, item ->
@@ -258,7 +260,8 @@ class BuildReminderFragment :
     reviewsApi.showFeedbackForm(
       context = requireContext(),
       title = getString(R.string.share_your_experience),
-      appSource = appSource
+      appSource = appSource,
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
     )
   }
 
