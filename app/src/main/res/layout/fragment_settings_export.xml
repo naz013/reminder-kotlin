@@ -38,6 +38,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/connection_prefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_network_check"
+            app:prefs_primary_text="@string/which_network_to_use_for_sync"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/cleanPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

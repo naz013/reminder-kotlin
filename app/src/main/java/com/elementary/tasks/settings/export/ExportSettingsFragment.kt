@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
@@ -54,6 +55,7 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
 
     initAutoBackupPrefs()
     initClearDataPrefs()
+    initNetworkTypePrefs()
   }
 
   override fun onResume() {
@@ -65,6 +67,16 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
   override fun onDestroy() {
     super.onDestroy()
     observableWorkerManager.unsubscribe()
+  }
+
+  private fun initNetworkTypePrefs() {
+    binding.connectionPrefs.setOnClickListener {
+      showNetworkTypeDialog(prefs.workerNetworkType.ordinal) { type ->
+        prefs.workerNetworkType = WorkerNetworkType.entries[type]
+        showNetworkTypeState()
+      }
+    }
+    showNetworkTypeState()
   }
 
   private fun initSyncButton() {
@@ -196,6 +208,43 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       prefix + getString(R.string.twelve_hours),
       prefix + getString(R.string.one_day),
       prefix + getString(R.string.two_days)
+    )
+  }
+
+  private fun showNetworkTypeDialog(
+    currentType: Int,
+    onSelect: (Int) -> Unit
+  ) {
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setTitle(getString(R.string.select_network_type))
+    var selectedItem = currentType
+    builder.setSingleChoiceItems(
+      getNetworkTypeNames(),
+      currentType
+    ) { _, item -> selectedItem = item }
+    builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+      dialog.dismiss()
+      onSelect.invoke(selectedItem)
+    }
+    builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+      dialog.dismiss()
+    }
+    builder.create().show()
+  }
+
+  private fun showNetworkTypeState() {
+    binding.connectionPrefs.setDetailText(getNetworkTypeName(prefs.workerNetworkType.ordinal))
+  }
+
+  private fun getNetworkTypeName(position: Int): String {
+    return getNetworkTypeNames().getOrElse(position) { getString(R.string.network_type_any_network) }
+  }
+
+  private fun getNetworkTypeNames(): Array<String> {
+    return arrayOf(
+      getString(R.string.network_type_any_network),
+      getString(R.string.network_type_wifi_only),
+      getString(R.string.network_type_cellular)
     )
   }
 }

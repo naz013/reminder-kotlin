@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
+import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
@@ -51,6 +52,18 @@ class Prefs(
       it.invoke(key)
     }
   }
+
+  var workerNetworkType: WorkerNetworkType
+    get() {
+      val type = getInt(PrefsConstants.WORKER_NETWORK_TYPE, def = 1)
+      return when (type) {
+        0 -> WorkerNetworkType.Any
+        1 -> WorkerNetworkType.Wifi
+        2 -> WorkerNetworkType.Cellular
+        else -> WorkerNetworkType.Any
+      }
+    }
+    set(value) = putInt(PrefsConstants.WORKER_NETWORK_TYPE, value.ordinal)
 
   var lastVersionCode: Long
     get() = getLong(PrefsConstants.LAST_VERSION_CODE, def = Long.MAX_VALUE)

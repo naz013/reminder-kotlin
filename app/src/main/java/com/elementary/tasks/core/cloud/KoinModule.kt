@@ -20,7 +20,7 @@ val cloudModule = module {
   factory { DataPostProcessorImpl(get(), get(), get(), get(), get(), get()) as DataPostProcessor }
 
   factory { GetWorkerTagUseCase() }
-  factory { ScheduleBackgroundWorkUseCase(get(), get()) }
+  factory { ScheduleBackgroundWorkUseCase(get(), get(), get()) }
 
   worker { DeleteWorker(get(), get(), get(), get()) }
   worker { ForceUploadWorker(get(), get(), get(), get()) }

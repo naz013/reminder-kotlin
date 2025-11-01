@@ -111,4 +111,6 @@ object PrefsConstants {
 
   const val PRIVACY_POLICY_URL = "privacy_url"
   const val TERMS_URL = "terms_url"
+
+  const val WORKER_NETWORK_TYPE = "worker_network_type"
 }
