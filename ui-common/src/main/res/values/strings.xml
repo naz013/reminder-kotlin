@@ -870,7 +870,7 @@
     <string name="filter_reminders">Filter reminders</string>
     <string name="date_range">Date range</string>
 
-    <string name="erase_cloud_data">Erase data</string>
+    <string name="erase_cloud_data">Erase data in the Cloud</string>
     <string name="erase_cloud_data_message">Erase all data in the Cloud</string>
     <string name="erase">Erase</string>
     <string name="auto_backup_every">Every</string>
@@ -884,4 +884,9 @@
     <string name="feedback_email_optional">Email (Optional)</string>
     <string name="we_ll_use_this_to_follow_up_on_your_feedback">We\'ll use this to follow up on your feedback</string>
     <string name="share_your_experience">Share your experience</string>
+    <string name="which_network_to_use_for_sync">Which network to use for sync</string>
+    <string name="network_type_any_network">Any</string>
+    <string name="network_type_wifi_only">Wifi</string>
+    <string name="network_type_cellular">Cellular</string>
+    <string name="select_network_type">Select the network type</string>
 </resources>

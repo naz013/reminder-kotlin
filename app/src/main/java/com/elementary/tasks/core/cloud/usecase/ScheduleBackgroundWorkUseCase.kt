@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.cloud.usecase
 
+import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.elementary.tasks.core.cloud.worker.DeleteWorker
@@ -8,6 +9,7 @@ import com.elementary.tasks.core.cloud.worker.SyncWorker
 import com.elementary.tasks.core.cloud.worker.UploadWorker
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.cloud.worker.WorkerData
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.DataType
@@ -15,6 +17,7 @@ import com.github.naz013.sync.DataType
 class ScheduleBackgroundWorkUseCase(
   private val workManagerProvider: WorkManagerProvider,
   private val getWorkerTagUseCase: GetWorkerTagUseCase,
+  private val prefs: Prefs
 ) {
 
   operator fun invoke(
@@ -41,9 +44,14 @@ class ScheduleBackgroundWorkUseCase(
     val work = builder
       .setInputData(dataBuilder.build())
       .addTag(tag)
+      .setConstraints(
+        Constraints.Builder()
+          .setRequiredNetworkType(prefs.workerNetworkType.type)
+          .build()
+      )
       .build()
     workManagerProvider.getWorkManager().enqueue(work)
-    Logger.i(TAG, "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag")
+    Logger.i(TAG, "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag, network=${prefs.workerNetworkType.name}")
     return tag
   }
 
