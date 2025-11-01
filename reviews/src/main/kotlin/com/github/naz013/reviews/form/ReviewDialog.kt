@@ -4,6 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,8 +66,14 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
 
   private val viewModel by viewModel<ReviewDialogViewModel>()
 
+  init {
+    Logger.d(TAG, "ReviewDialog instance created at ${System.currentTimeMillis()}")
+  }
+
   @Composable
   override fun FragmentContent() {
+    Logger.d(TAG, "FragmentContent composition started at ${System.currentTimeMillis()}")
+
     val title = arguments?.getString(ARG_TITLE) ?: stringResource(R.string.feedback)
     val appSource = arguments?.readSerializable(ARG_SOURCE, AppSource::class.java) ?: AppSource.FREE
     val allowLogs = arguments?.getBoolean(ARG_ALLOW_LOGS) ?: false
@@ -81,13 +94,8 @@ internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    Logger.i(TAG, "On view created.")
+    Logger.i(TAG, "On view created at ${System.currentTimeMillis()}")
     initViewModel()
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    Logger.i(TAG, "On attach.")
     setupBottomSheet()
   }
 
@@ -330,11 +338,30 @@ fun RatingSection(
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
     ) {
-      Text(
-        text = "⭐".repeat(rating.toInt()),
-        style = MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.primary
-      )
+      Row {
+        repeat(5) { index ->
+          AnimatedContent(
+            targetState = index < rating.toInt(),
+            transitionSpec = {
+              scaleIn(
+                animationSpec = spring(
+                  dampingRatio = Spring.DampingRatioMediumBouncy,
+                  stiffness = Spring.StiffnessLow
+                )
+              ) togetherWith scaleOut(
+                animationSpec = tween(durationMillis = 100)
+              )
+            },
+            label = "star_${index}_animation"
+          ) { isVisible ->
+            Text(
+              text = if (isVisible) "⭐" else "",
+              style = MaterialTheme.typography.headlineMedium,
+              color = MaterialTheme.colorScheme.primary
+            )
+          }
+        }
+      }
       Text(
         text = "${rating.toInt()}/5",
         style = MaterialTheme.typography.bodyLarge,

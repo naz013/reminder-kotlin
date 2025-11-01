@@ -26,17 +26,20 @@ internal class ReviewsApiImpl(
     appSource: AppSource,
     allowLogsAttachment: Boolean
   ) {
-    Logger.i(TAG, "Showing feedback form")
+    val startTime = System.currentTimeMillis()
+    Logger.i(TAG, "Showing feedback form at $startTime")
     val dialog = ReviewDialog.newInstance(
       title = title,
       appSource = appSource,
       allowLogsAttachment = allowLogsAttachment
     )
-    if (context is Fragment) {
-      dialog.show(context.childFragmentManager, ReviewDialog.TAG)
-    } else if (context is FragmentActivity) {
+    Logger.d(TAG, "Dialog instance created in ${System.currentTimeMillis() - startTime}ms")
+    if (context is FragmentActivity) {
       dialog.show(context.supportFragmentManager, ReviewDialog.TAG)
+    } else {
+      Logger.w(TAG, "Context is not a FragmentActivity, cannot show dialog")
     }
+    Logger.d(TAG, "Dialog show() called in ${System.currentTimeMillis() - startTime}ms")
   }
 
   override suspend fun getAllReviews(): Result<List<Review>> {
