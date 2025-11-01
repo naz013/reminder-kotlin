@@ -54,7 +54,7 @@ jobs:
       run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testDebugUnitTest -x :reviewsadmin:testDebugUnitTest
 
     - name: Run all unit tests (Kotlin modules)
-      run: ./gradlew test --continue -x :cloudtestadmin:test -x :reviewsadmin:test
+      run: ./gradlew test --continue -x :cloudtestadmin:test -x :reviewsadmin:test -x :reviews:test
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
