@@ -98,17 +98,26 @@ class BuildReminderFragment :
       onMenuItemListener = { menuItem ->
         return@addMenu when (menuItem.itemId) {
           R.id.action_add -> {
+            Logger.i(TAG, "User wants to add reminder.")
             askNotificationPermissionIfNeeded()
             true
           }
 
           R.id.action_delete -> {
+            Logger.i(TAG, "User wants to delete reminder.")
             deleteReminder()
             true
           }
 
           R.id.action_configure -> {
+            Logger.i(TAG, "User wants to configure reminder.")
             builderConfigureLauncher.configure()
+            true
+          }
+
+          R.id.action_report_issue -> {
+            Logger.i(TAG, "User wants to report an issue.")
+            showReviewDialog(getString(R.string.report_an_issue))
             true
           }
 
@@ -162,7 +171,7 @@ class BuildReminderFragment :
     }
     viewModel.canSave.nonNullObserve(viewLifecycleOwner) { invalidateOptionsMenu() }
     viewModel.showReviewDialog.observeEvent(viewLifecycleOwner) {
-      showReviewDialog()
+      showReviewDialog(getString(R.string.share_your_experience))
     }
   }
 
@@ -250,7 +259,7 @@ class BuildReminderFragment :
    * Shows the ReviewDialog to collect user feedback.
    * Determines the app source (FREE or PRO) based on BuildParams.
    */
-  private fun showReviewDialog() {
+  private fun showReviewDialog(title: String) {
     val appSource = if (BuildParams.isPro) {
       AppSource.PRO
     } else {
@@ -259,7 +268,7 @@ class BuildReminderFragment :
 
     reviewsApi.showFeedbackForm(
       context = requireContext(),
-      title = getString(R.string.share_your_experience),
+      title = title,
       appSource = appSource,
       allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
     )
