@@ -133,11 +133,33 @@ class HomeFragment :
     updateLoginBanner()
     initViewModel()
     setUpWhatsNewBanner()
+    setupScrollFadeEffect()
 
     initRemindersList()
 
     whatsNewManager.addListener(this)
     lifecycle.addObserver(whatsNewManager)
+  }
+
+  /**
+   * Sets up fade effect for GreetingHeaderTextView when scrolling.
+   * The view gradually fades out as the user scrolls down and fades in when scrolling back up.
+   */
+  private fun setupScrollFadeEffect() {
+    binding.scheduleHeaderView.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+      val greetingView = binding.greetingHeaderTextView
+      val totalScrollRange = appBarLayout.totalScrollRange
+      val greetingHeight = greetingView.height
+
+      if (totalScrollRange > 0 && greetingHeight > 0) {
+        // Calculate alpha based on scroll position
+        // When verticalOffset is 0, we're fully expanded (alpha = 1.0)
+        // When verticalOffset reaches -greetingHeight, greeting is fully scrolled off (alpha = 0.0)
+        val scrollPercentage = -verticalOffset.toFloat() / greetingHeight.toFloat()
+        val alpha = 1.0f - scrollPercentage.coerceIn(0f, 1f)
+        greetingView.alpha = alpha
+      }
+    }
   }
 
   private fun showEventTypeSelectionDialog(headerTimeType: HeaderTimeType?) {
