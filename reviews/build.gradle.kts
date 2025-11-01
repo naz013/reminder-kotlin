@@ -100,9 +100,10 @@ dependencies {
 
   testImplementation(libs.junit)
   testImplementation(libs.mockk)
-  testImplementation(libs.mockk.android)
   testImplementation(libs.kotlinx.coroutines.test)
   testImplementation(libs.androidx.core.testing)
+  testImplementation(libs.kotlinx.coroutines.android)
+  testImplementation(libs.mockk.android)
 }
 
 ktlint {

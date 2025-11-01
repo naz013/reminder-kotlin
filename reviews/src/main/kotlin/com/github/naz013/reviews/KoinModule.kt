@@ -12,7 +12,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val reviewsKoinModule = module {
-  factory { ReviewsApiImpl(get()) as ReviewsApi }
+  factory { ReviewsApiImpl(get(), get()) as ReviewsApi }
   factory { ReviewRepositoryImpl(get(), get()) }
 
   // Firebase instances from the reviews Firebase app
@@ -54,5 +54,5 @@ val reviewsKoinModule = module {
 
   factory { FindLatestLogsFileUseCase(get()) }
 
-  viewModel { ReviewDialogViewModel(get(), get(), get(), get(), get()) }
+  viewModel { ReviewDialogViewModel(get(), get(), get(), get(), get(), get()) }
 }

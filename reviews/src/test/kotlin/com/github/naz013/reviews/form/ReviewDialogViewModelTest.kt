@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.auth.FirebaseAuthManager
 import com.github.naz013.reviews.db.ReviewRepositoryImpl
 import com.github.naz013.reviews.fileupload.LogFileUploader
 import com.github.naz013.reviews.logs.FindLatestLogsFileUseCase
@@ -35,6 +36,7 @@ class ReviewDialogViewModelTest {
   private lateinit var findLatestLogsFile: FindLatestLogsFileUseCase
   private lateinit var packageManagerWrapper: PackageManagerWrapper
   private lateinit var dispatcherProvider: DispatcherProvider
+  private lateinit var authManager: FirebaseAuthManager
   private lateinit var viewModel: ReviewDialogViewModel
 
   private val testDispatcher = UnconfinedTestDispatcher()
@@ -48,6 +50,7 @@ class ReviewDialogViewModelTest {
     findLatestLogsFile = mockk(relaxed = true)
     packageManagerWrapper = mockk(relaxed = true)
     dispatcherProvider = mockk(relaxed = true)
+    authManager = mockk(relaxed = true)
 
     every { dispatcherProvider.default() } returns testDispatcher
     every { dispatcherProvider.main() } returns testDispatcher
@@ -59,7 +62,8 @@ class ReviewDialogViewModelTest {
       logFileUploader,
       findLatestLogsFile,
       packageManagerWrapper,
-      dispatcherProvider
+      dispatcherProvider,
+      authManager
     )
   }
 

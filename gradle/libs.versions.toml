@@ -69,6 +69,7 @@ dropbox-core-sdk = "7.0.0"
 lib-recur = "0.17.1"
 commons-lang3 = "3.19.0"
 threetenbp = "1.7.2"
+threetenabp = "1.4.7"
 colorslider = "2.0.6"
 android-calendar-ext = "1.0.4"
 lottie = "6.7.0"
@@ -205,6 +206,7 @@ dropbox-android-sdk = { group = "com.dropbox.core", name = "dropbox-android-sdk"
 lib-recur = { group = "org.dmfs", name = "lib-recur", version.ref = "lib-recur" }
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 threetenbp = { group = "org.threeten", name = "threetenbp", version.ref = "threetenbp" }
+threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
 colorslider = { group = "com.github.naz013", name = "ColorSlider", version.ref = "colorslider" }
 android-calendar-ext = { group = "com.github.naz013", name = "android-calendar-ext", version.ref = "android-calendar-ext" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }

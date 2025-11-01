@@ -20,7 +20,8 @@ internal fun Review.toReviewEntity(): ReviewEntity {
     userEmail = userEmail,
     userLocale = userLocale,
     userId = userId,
-    appSource = source.name
+    appSource = source.name,
+    processed = processed
   )
 }
 
@@ -45,6 +46,7 @@ internal fun ReviewEntity.toReview(): Review {
       AppSource.valueOf(appSource)
     } catch (e: Exception) {
       AppSource.FREE
-    }
+    },
+    processed = processed
   )
 }

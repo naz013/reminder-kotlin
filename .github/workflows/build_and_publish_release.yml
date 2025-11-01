@@ -76,6 +76,11 @@ jobs:
         echo "reviewsStorageBucket=${{ secrets.REVIEWS_STORAGE_BUCKET }}" >> keystore.properties
         echo "freeReviewsAppId=${{ secrets.FREE_REVIEWS_APP_ID }}" >> keystore.properties
         echo "proReviewsAppId=${{ secrets.PRO_REVIEWS_APP_ID }}" >> keystore.properties
+        echo "reviewsAdminAppId=${{ secrets.ADMIN_REVIEWS_APP_ID }}" >> keystore.properties
+        echo "reviewsAdminKeyStoreFile=debug_key" >> keystore.properties
+        echo "reviewsAdminKeyStorePassword=${{ secrets.REVIEW_ADMIN_KEYSTORE_PASSWORD }}" >> keystore.properties
+        echo "reviewsAdminKeyAlias=reviews.admin.debug" >> keystore.properties
+        echo "reviewsAdminKeyPassword=${{ secrets.REVIEW_ADMIN_KEY_PASSWORD }}" >> keystore.properties
 
     - name: Create services json file for PRO version
       run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json | base64
@@ -103,7 +108,7 @@ jobs:
 
     - name: Build Release AAB
       id: buildRelease
-      run: ./gradlew bundleRelease -x :cloudtestadmin:bundleRelease
+      run: ./gradlew bundleRelease -x :cloudtestadmin:bundleRelease -x :reviewsadmin:bundleRelease
 
     - name: Save signed aab
       uses: actions/upload-artifact@v4
