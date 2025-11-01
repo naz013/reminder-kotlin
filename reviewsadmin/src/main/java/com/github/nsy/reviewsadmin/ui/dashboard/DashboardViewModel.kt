@@ -7,6 +7,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.Review
 import com.github.naz013.reviews.ReviewsApi
+import com.github.nsy.reviewsadmin.cache.ReviewIdCache
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,13 +20,16 @@ import org.threeten.bp.LocalDateTime
  * Manages loading and processing of review statistics including:
  * - Total reviews by app source
  * - Average ratings and counts for different time periods per app source
+ * - New reviews since last cache
  *
  * @property reviewsApi API for accessing review data
  * @property dispatcherProvider Provides coroutine dispatchers
+ * @property reviewIdCache Cache for tracking new reviews
  */
 class DashboardViewModel(
   private val reviewsApi: ReviewsApi,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val reviewIdCache: ReviewIdCache
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow<DashboardUiState>(DashboardUiState.Loading)
@@ -88,6 +92,16 @@ class DashboardViewModel(
         0.0
       }
 
+      // Calculate new reviews since last cache
+      val currentReviewIds = sourceReviews.map { it.id }.toSet()
+      val cachedReviewIds = reviewIdCache.getCachedReviewIds(source)
+      val newReviewsCount = currentReviewIds.subtract(cachedReviewIds).size
+
+      // Update cache with current review IDs
+      reviewIdCache.saveReviewIds(source, currentReviewIds)
+
+      Logger.d(TAG, "Source: $source, Total: $totalCount, Cached: ${cachedReviewIds.size}, New: $newReviewsCount")
+
       // Calculate period statistics for this specific source
       val periodStatistics = listOf(90, 30, 7).map { days ->
         val cutoffDate = now.minusDays(days.toLong())
@@ -111,6 +125,7 @@ class DashboardViewModel(
         source = source,
         count = totalCount,
         averageRating = totalAverageRating,
+        newReviewsCount = newReviewsCount,
         periodStatistics = periodStatistics
       )
     }
@@ -154,6 +169,8 @@ data class DashboardData(
  * @property sourceName Display name of the app source
  * @property source The app source enum value
  * @property count Total number of reviews for this source
+ * @property averageRating Average rating for all reviews in this source
+ * @property newReviewsCount Number of new reviews since last cache
  * @property periodStatistics Statistics for different time periods for this source
  */
 data class AppSourceData(
@@ -161,6 +178,7 @@ data class AppSourceData(
   val source: AppSource,
   val count: Int,
   val averageRating: Double,
+  val newReviewsCount: Int,
   val periodStatistics: List<PeriodStatistics>
 )
 

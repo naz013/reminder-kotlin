@@ -144,11 +144,31 @@ private fun AppSourceSection(
           .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
       ) {
-        Text(
-          text = stringResource(R.string.total_reviews),
-          style = MaterialTheme.typography.titleMedium,
-          fontWeight = FontWeight.SemiBold
-        )
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            text = stringResource(R.string.total_reviews),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+          )
+          if (sourceData.newReviewsCount > 0) {
+            Surface(
+              color = MaterialTheme.colorScheme.secondary,
+              shape = MaterialTheme.shapes.small
+            ) {
+              Text(
+                text = stringResource(R.string.new_reviews_count, sourceData.newReviewsCount),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondary,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+              )
+            }
+          }
+        }
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,

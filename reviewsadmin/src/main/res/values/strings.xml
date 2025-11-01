@@ -7,6 +7,7 @@
     <string name="signing_in">Signing in…</string>
     <string name="sign_out">Sign out</string>
     <string name="retry">Retry</string>
+    <string name="refresh">Refresh</string>
 
     <!-- Dashboard Screen -->
     <string name="dashboard_title">Reviews Dashboard</string>
@@ -17,6 +18,8 @@
     <string name="last_n_days">Last %d days</string>
     <string name="average_rating">Average Rating</string>
     <string name="review_count">Review Count</string>
+    <string name="new_reviews">New Reviews</string>
+    <string name="new_reviews_count">+%d new</string>
 
     <!-- Review List Screen -->
     <string name="back">Back</string>
