@@ -1,4 +1,4 @@
-package com.github.naz013.sync.usecase
+package com.github.naz013.sync.usecase.download
 
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
@@ -6,19 +6,20 @@ import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataPostProcessor
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.Downloaded
-import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.CreateRemoteFileMetadataUseCase
+import com.github.naz013.sync.usecase.FindAllFilesToDownloadUseCase
+import com.github.naz013.sync.usecase.GetLocalUuIdUseCase
 
 internal class DownloadUseCase(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
-  private val syncDataConverter: SyncDataConverter,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
   private val findAllFilesToDownloadUseCase: FindAllFilesToDownloadUseCase,
   private val getLocalUuIdUseCase: GetLocalUuIdUseCase,
   private val dataPostProcessor: DataPostProcessor,
-  private val getClassByDataTypeUseCase: GetClassByDataTypeUseCase
+  private val downloadCloudFileUseCase: DownloadCloudFileUseCase,
 ) {
   /**
    * Downloads all files of a specific data type from all configured cloud sources.
@@ -51,17 +52,12 @@ internal class DownloadUseCase(
         }
 
         Logger.i(TAG, "Downloading file: ${cloudFile.name} from source: ${cloudFileApi.source}")
-        val stream = try {
-          cloudFileApi.downloadFile(cloudFile)
-        } catch (e: Exception) {
-          Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}, error: $e")
-          continue
-        } ?: run {
-          Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, file: ${cloudFile.name}")
-          continue
-        }
         val data = try {
-          syncDataConverter.parse(stream, getClassByDataTypeUseCase(dataType))
+          downloadCloudFileUseCase(
+            cloudFileApi = cloudFileApi,
+            cloudFile = cloudFile,
+            dataType = dataType
+          )
         } catch (e: Exception) {
           Logger.e(TAG, "Failed to parse downloaded file for dataType: $dataType, file: ${cloudFile.name}, error: $e")
           continue

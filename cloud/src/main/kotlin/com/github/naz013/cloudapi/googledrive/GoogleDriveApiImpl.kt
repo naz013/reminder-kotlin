@@ -3,6 +3,7 @@ package com.github.naz013.cloudapi.googledrive
 import android.content.Context
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileSearchParams
+import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.logging.Logger
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -149,9 +150,20 @@ internal class GoogleDriveApiImpl(
     if (cloudFile.id.isEmpty()) {
       throw IllegalArgumentException("File ID is empty")
     }
+    val id = if (cloudFile.fileExtension == FileConfig.FILE_NAME_NOTE_IMAGE) {
+      val foundFile = findFile(
+        CloudFileSearchParams(
+          name = cloudFile.name,
+          fileExtension = cloudFile.fileExtension
+        )
+      ) ?: throw IllegalStateException("File not found: ${cloudFile.name}")
+      foundFile.id
+    } else {
+      cloudFile.id
+    }
     Logger.i(TAG, "Going to download file: ${cloudFile.name}")
     try {
-      return drive?.files()?.get(cloudFile.id)?.executeMediaAsInputStream()
+      return drive?.files()?.get(id)?.executeMediaAsInputStream()
     } catch (e: Throwable) {
       Logger.e(TAG, "Failed to download file: ${e.message}")
       throw e

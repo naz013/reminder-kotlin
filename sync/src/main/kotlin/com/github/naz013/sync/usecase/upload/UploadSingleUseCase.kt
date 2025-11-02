@@ -1,4 +1,4 @@
-package com.github.naz013.sync.usecase
+package com.github.naz013.sync.usecase.upload
 
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
@@ -6,6 +6,9 @@ import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.CreateCloudFileUseCase
+import com.github.naz013.sync.usecase.CreateRemoteFileMetadataUseCase
+import com.github.naz013.sync.usecase.GetAllowedCloudApisUseCase
 
 internal class UploadSingleUseCase(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
@@ -13,7 +16,8 @@ internal class UploadSingleUseCase(
   private val createCloudFileUseCase: CreateCloudFileUseCase,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
-  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
+  private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase,
+  private val preProcessUploadingFileUseCase: PreProcessUploadingFileUseCase
 ) {
   /**
    * Uploads a single item to all configured cloud sources.
@@ -38,7 +42,13 @@ internal class UploadSingleUseCase(
       Logger.d(TAG, "Uploading item with id: $id of type: $dataType, data: $data")
       val cloudFile = createCloudFileUseCase(dataType, data)
       getAllowedCloudApisUseCase().forEach { cloudFileApi ->
-        val stream = syncDataConverter.create(data)
+        val preProcessedData = preProcessUploadingFileUseCase(
+          dataType = dataType,
+          data = data,
+          cloudFileApi = cloudFileApi,
+          cloudFile = cloudFile
+        )
+        val stream = syncDataConverter.create(preProcessedData)
         val resultFile = cloudFileApi.uploadFile(stream, cloudFile)
         val remoteFileMetadata = createRemoteFileMetadataUseCase(
           source = cloudFileApi.source.value,

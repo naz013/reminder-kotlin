@@ -9,7 +9,7 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.sync.NoteV3Json
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.settings.SettingsModel
@@ -43,8 +43,8 @@ class SyncDataConverterImpl : SyncDataConverter {
         is Place -> object : TypeToken<Place>() {}.type
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is OldNote -> object : TypeToken<OldNote>() {}.type
         is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
+        is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
         else -> null
       } ?: run {
         throw IllegalArgumentException("Unsupported type: ${any::class.java}")

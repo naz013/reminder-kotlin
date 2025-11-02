@@ -1,4 +1,4 @@
-package com.github.naz013.sync.usecase
+package com.github.naz013.sync.usecase.download
 
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
@@ -6,18 +6,18 @@ import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataPostProcessor
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.Downloaded
-import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.CreateRemoteFileMetadataUseCase
+import com.github.naz013.sync.usecase.FindNewestCloudApiSourceUseCase
 
 internal class DownloadSingleUseCase(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
-  private val syncDataConverter: SyncDataConverter,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase,
   private val findNewestCloudApiSourceUseCase: FindNewestCloudApiSourceUseCase,
   private val dataPostProcessor: DataPostProcessor,
-  private val getClassByDataTypeUseCase: GetClassByDataTypeUseCase
+  private val downloadCloudFileUseCase: DownloadCloudFileUseCase
 ) {
   /**
    * Downloads and syncs a single item from the cloud.
@@ -50,11 +50,11 @@ internal class DownloadSingleUseCase(
       }
     }
 
-    val stream = newestResult.cloudFileApi.downloadFile(cloudFile) ?: run {
-      Logger.e(TAG, "Failed to download file from cloud for dataType: $dataType, id: $id")
-      return SyncResult.Skipped
-    }
-    val data = syncDataConverter.parse(stream, getClassByDataTypeUseCase(dataType))
+    val data = downloadCloudFileUseCase(
+      cloudFileApi = newestResult.cloudFileApi,
+      cloudFile = cloudFile,
+      dataType = dataType
+    )
 
     // Check for conflicts before updating
     val existingData = caller.getById(id)

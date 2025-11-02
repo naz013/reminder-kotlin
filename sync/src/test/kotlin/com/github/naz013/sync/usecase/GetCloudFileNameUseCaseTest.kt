@@ -46,7 +46,7 @@ class GetCloudFileNameUseCaseTest {
   }
 
   @Test
-  fun `invoke with note id should return name with no2 extension`() {
+  fun `invoke with note id should return name with no3 extension`() {
     // Arrange
     val dataType = DataType.Notes
     val noteId = "note-key-abc123"
@@ -55,7 +55,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, noteId)
 
     // Assert
-    assertEquals("note-key-abc123.no2", result)
+    assertEquals("note-key-abc123.no3", result)
   }
 
   @Test
@@ -133,7 +133,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, longId)
 
     // Assert
-    assertEquals("this-is-a-very-long-identifier-with-many-characters-that-might-be-used-in-some-scenarios.no2", result)
+    assertEquals("this-is-a-very-long-identifier-with-many-characters-that-might-be-used-in-some-scenarios.no3", result)
   }
 
   @Test
@@ -185,7 +185,7 @@ class GetCloudFileNameUseCaseTest {
     val result = getCloudFileNameUseCase(dataType, idWithSpaces)
 
     // Assert
-    assertEquals("note with spaces.no2", result)
+    assertEquals("note with spaces.no3", result)
   }
 
   @Test
@@ -212,7 +212,7 @@ class GetCloudFileNameUseCaseTest {
     val expectedResults = mapOf(
       DataType.Reminders to "test-id.ta2",
       DataType.Birthdays to "test-id.bi2",
-      DataType.Notes to "test-id.no2",
+      DataType.Notes to "test-id.no3",
       DataType.Groups to "test-id.gr2",
       DataType.Places to "test-id.pl2",
       DataType.Settings to "test-id.settings"

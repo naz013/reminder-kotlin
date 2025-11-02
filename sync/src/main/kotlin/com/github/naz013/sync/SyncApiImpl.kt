@@ -4,14 +4,15 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.performance.measure
-import com.github.naz013.sync.usecase.DeleteDataTypeUseCase
-import com.github.naz013.sync.usecase.DeleteSingleUseCase
-import com.github.naz013.sync.usecase.DownloadSingleUseCase
-import com.github.naz013.sync.usecase.DownloadUseCase
 import com.github.naz013.sync.usecase.GetAllowedDataTypesUseCase
 import com.github.naz013.sync.usecase.HasAnyCloudApiUseCase
-import com.github.naz013.sync.usecase.UploadDataTypeUseCase
-import com.github.naz013.sync.usecase.UploadSingleUseCase
+import com.github.naz013.sync.usecase.delete.DeleteDataTypeUseCase
+import com.github.naz013.sync.usecase.delete.DeleteSingleUseCase
+import com.github.naz013.sync.usecase.download.DownloadLegacyFilesUseCase
+import com.github.naz013.sync.usecase.download.DownloadSingleUseCase
+import com.github.naz013.sync.usecase.download.DownloadUseCase
+import com.github.naz013.sync.usecase.upload.UploadDataTypeUseCase
+import com.github.naz013.sync.usecase.upload.UploadSingleUseCase
 
 internal class SyncApiImpl(
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
@@ -23,7 +24,8 @@ internal class SyncApiImpl(
   private val deleteDataTypeUseCase: DeleteDataTypeUseCase,
   private val uploadDataTypeUseCase: UploadDataTypeUseCase,
   private val hasAnyCloudApiUseCase: HasAnyCloudApiUseCase,
-  private val syncApiSessionCache: SyncApiSessionCache
+  private val syncApiSessionCache: SyncApiSessionCache,
+  private val downloadLegacyFilesUseCase: DownloadLegacyFilesUseCase
 ) : SyncApi {
 
   override suspend fun sync(forceUpload: Boolean): SyncResult = measure("Total sync") {
@@ -40,6 +42,8 @@ internal class SyncApiImpl(
     for (dataType in allowedDataTypes) {
       results.add(syncInternal(dataType, forceUpload))
     }
+    // Download legacy files after all other sync is done
+    downloadLegacyFilesUseCase()
     syncApiSessionCache.clearCache()
     SyncResult.Success(
       downloaded = results.filterIsInstance<SyncResult.Success>().flatMap { it.downloaded },
@@ -53,6 +57,7 @@ internal class SyncApiImpl(
       return@measure SyncResult.Skipped
     }
     syncInternal(dataType, forceUpload).also {
+      downloadLegacyFilesUseCase()
       syncApiSessionCache.clearCache()
     }
   }
@@ -60,9 +65,9 @@ internal class SyncApiImpl(
   private suspend fun syncInternal(dataType: DataType, forceUpload: Boolean): SyncResult {
     Logger.i(TAG, "Syncing items for data type: $dataType")
     if (forceUpload) {
-      forceUpload(dataType)
+      forceUploadInternal(dataType)
     } else {
-      upload(dataType)
+      uploadInternal(dataType)
     }
     return downloadUseCase(dataType)
   }
@@ -91,7 +96,7 @@ internal class SyncApiImpl(
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
       Logger.i(TAG, "Uploading items for data type: $dataType")
-      uploadDataTypeUseCase(dataType)
+      uploadInternal(dataType)
     }
     syncApiSessionCache.clearCache()
   }
@@ -101,8 +106,12 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for upload.")
       return@measure
     }
-    uploadDataTypeUseCase(dataType)
+    uploadInternal(dataType)
     syncApiSessionCache.clearCache()
+  }
+
+  private suspend fun uploadInternal(dataType: DataType) {
+    uploadDataTypeUseCase(dataType)
   }
 
   override suspend fun upload(dataType: DataType, id: String) = measure("Upload single item. dataType: $dataType, id: $id") {

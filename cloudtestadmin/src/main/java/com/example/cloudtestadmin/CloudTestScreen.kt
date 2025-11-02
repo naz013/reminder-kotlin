@@ -3,11 +3,10 @@ package com.example.cloudtestadmin
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import android.graphics.BitmapFactory
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cloud
@@ -38,11 +42,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,7 +65,6 @@ import com.github.naz013.cloudapi.Source
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.DataType
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -142,6 +145,7 @@ fun CloudTestScreen(
         }
         is CloudTestUiState.FolderList -> {
           FolderListScreen(
+            dataTypes = state.dataTypes,
             onFolderSelected = { dataType -> viewModel.loadFiles(dataType) },
             onBackPressed = { viewModel.backToSourceSelection() },
             onLogout = { viewModel.logout() }
@@ -161,6 +165,7 @@ fun CloudTestScreen(
             dataType = state.dataType,
             cloudFile = state.cloudFile,
             content = state.content,
+            imageData = state.imageData,
             onBackPressed = { viewModel.backToFileList(state.dataType) }
           )
         }
@@ -443,7 +448,8 @@ fun AuthenticationScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderListScreen(
-  onFolderSelected: (DataType) -> Unit,
+  dataTypes: List<CloudTestUiState.DataType>,
+  onFolderSelected: (CloudTestUiState.DataType) -> Unit,
   onBackPressed: () -> Unit,
   onLogout: () -> Unit
 ) {
@@ -500,7 +506,7 @@ fun FolderListScreen(
         .padding(16.dp),
       verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-      items(DataType.entries) { dataType ->
+      items(dataTypes) { dataType ->
         FolderItem(
           dataType = dataType,
           onClick = { onFolderSelected(dataType) }
@@ -546,7 +552,7 @@ fun FolderListScreen(
  */
 @Composable
 fun FolderItem(
-  dataType: DataType,
+  dataType: CloudTestUiState.DataType,
   onClick: () -> Unit
 ) {
   Card(
@@ -593,7 +599,7 @@ fun FolderItem(
 @Composable
 fun FileListScreen(
   viewModel: CloudTestViewModel,
-  dataType: DataType,
+  dataType: CloudTestUiState.DataType,
   files: List<CloudFile>,
   onFileSelected: (CloudFile) -> Unit,
   onBackPressed: () -> Unit
@@ -689,7 +695,7 @@ fun FileListScreen(
  */
 @Composable
 fun FileItem(
-  dataType: DataType,
+  dataType: CloudTestUiState.DataType,
   file: CloudFile,
   onFileClick: () -> Unit,
   onDeleteClick: () -> Unit
@@ -785,9 +791,10 @@ fun FileItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilePreviewScreen(
-  dataType: DataType,
+  dataType: CloudTestUiState.DataType,
   cloudFile: CloudFile,
   content: String,
+  imageData: ByteArray? = null,
   onBackPressed: () -> Unit
 ) {
   Scaffold(
@@ -871,28 +878,61 @@ fun FilePreviewScreen(
               fontWeight = FontWeight.Bold
             )
             Text(
-              text = if (dataType == DataType.Settings) "XML" else "JSON",
+              text = when {
+                dataType.name == "NoteImages" -> "IMAGE"
+                dataType.name == "Settings" -> "XML"
+                else -> "JSON"
+              },
               style = MaterialTheme.typography.labelMedium,
               color = MaterialTheme.colorScheme.primary
             )
           }
           Spacer(modifier = Modifier.height(8.dp))
 
-          // Scrollable content area with horizontal scroll support
-          Box(
-            modifier = Modifier
-              .fillMaxSize()
-              .horizontalScroll(rememberScrollState())
-              .verticalScroll(rememberScrollState())
-              .padding(8.dp)
-          ) {
-            Text(
-              text = content,
-              style = MaterialTheme.typography.bodySmall.copy(
-                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
-              ),
-              color = MaterialTheme.colorScheme.onSurface
-            )
+          // Display image or text content
+          if (imageData != null && dataType.name == "NoteImages") {
+            // Display image preview
+            Box(
+              modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+              contentAlignment = Alignment.Center
+            ) {
+              val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+              if (bitmap != null) {
+                Image(
+                  bitmap = bitmap.asImageBitmap(),
+                  contentDescription = "Note image preview",
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                  contentScale = ContentScale.Fit
+                )
+              } else {
+                Text(
+                  text = "Failed to decode image",
+                  style = MaterialTheme.typography.bodyMedium,
+                  color = MaterialTheme.colorScheme.error
+                )
+              }
+            }
+          } else {
+            // Scrollable text content area with horizontal scroll support
+            Box(
+              modifier = Modifier
+                .fillMaxSize()
+                .horizontalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState())
+                .padding(8.dp)
+            ) {
+              Text(
+                text = content,
+                style = MaterialTheme.typography.bodySmall.copy(
+                  fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                ),
+                color = MaterialTheme.colorScheme.onSurface
+              )
+            }
           }
         }
       }

@@ -76,7 +76,7 @@ class CloudTestViewModel(
 
     if (isAuth) {
       Logger.d(TAG, "Navigating to folder list")
-      _uiState.value = CloudTestUiState.FolderList
+      _uiState.value = CloudTestUiState.FolderList(getInternalDataTypes())
     } else {
       Logger.d(TAG, "Navigating to authentication screen")
       _uiState.value = CloudTestUiState.NeedAuth(source)
@@ -95,7 +95,7 @@ class CloudTestViewModel(
 
       if (isAuth) {
         Logger.i(TAG, "Authentication successful, navigating to folder list")
-        _uiState.value = CloudTestUiState.FolderList
+        _uiState.value = CloudTestUiState.FolderList(getInternalDataTypes())
       } else {
         Logger.e(TAG, "Authentication failed - user not authorized")
         _errorMessage.value = "Authentication failed"
@@ -113,7 +113,7 @@ class CloudTestViewModel(
    *
    * @param dataType The data type folder to load files from
    */
-  fun loadFiles(dataType: DataType) {
+  fun loadFiles(dataType: CloudTestUiState.DataType) {
     Logger.i(TAG, "loadFiles for dataType: ${dataType.name}, extension: ${dataType.fileExtension}")
 
     val api = currentApi
@@ -156,7 +156,7 @@ class CloudTestViewModel(
    * @param dataType The data type of the file
    * @param cloudFile The file to preview
    */
-  fun previewFile(dataType: DataType, cloudFile: CloudFile) {
+  fun previewFile(dataType: CloudTestUiState.DataType, cloudFile: CloudFile) {
     Logger.i(TAG, "previewFile: ${cloudFile.name}, dataType: ${dataType.name}")
 
     val api = currentApi
@@ -183,12 +183,31 @@ class CloudTestViewModel(
           return@launch
         }
 
-        Logger.d(TAG, "Decoding file content for ${cloudFile.name}")
-        val content = decodeFileContent(stream, dataType, cloudFile.name)
+        // Handle NoteImages as binary image data
+        if (dataType.name == "NoteImages") {
+          Logger.d(TAG, "Loading image data for ${cloudFile.name}")
+          val imageBytes = stream.readBytes()
+          Logger.i(TAG, "Image preview ready, size: ${imageBytes.size} bytes")
+          withContext(Dispatchers.Main) {
+            _uiState.value = CloudTestUiState.FilePreview(
+              dataType = dataType,
+              cloudFile = cloudFile,
+              content = "",
+              imageData = imageBytes
+            )
+          }
+        } else {
+          Logger.d(TAG, "Decoding file content for ${cloudFile.name}")
+          val content = decodeFileContent(stream, dataType, cloudFile.name)
 
-        Logger.i(TAG, "File preview ready, content length: ${content.length}")
-        withContext(Dispatchers.Main) {
-          _uiState.value = CloudTestUiState.FilePreview(dataType, cloudFile, content)
+          Logger.i(TAG, "File preview ready, content length: ${content.length}")
+          withContext(Dispatchers.Main) {
+            _uiState.value = CloudTestUiState.FilePreview(
+              dataType = dataType,
+              cloudFile = cloudFile,
+              content = content
+            )
+          }
         }
       } catch (e: Exception) {
         Logger.e(TAG, "Failed to preview file ${cloudFile.name}: ${e.message}", e)
@@ -213,13 +232,13 @@ class CloudTestViewModel(
    */
   private suspend fun decodeFileContent(
     stream: InputStream,
-    dataType: DataType,
+    dataType: CloudTestUiState.DataType,
     fileName: String
   ): String {
     return withContext(Dispatchers.IO) {
       try {
-        when (dataType) {
-          DataType.Settings -> {
+        when (dataType.name) {
+          "Settings" -> {
             // Decode as SettingsModel and convert to XML
             val settings = parseSettingsModel(stream)
             Logger.d(TAG, "Decoded SettingsModel with ${settings.data.size} entries")
@@ -324,7 +343,7 @@ class CloudTestViewModel(
   /**
    * Navigates back to the file list from preview.
    */
-  fun backToFileList(dataType: DataType) {
+  fun backToFileList(dataType: CloudTestUiState.DataType) {
     Logger.d(TAG, "Navigating back to file list for ${dataType.name}")
     loadFiles(dataType)
   }
@@ -334,7 +353,7 @@ class CloudTestViewModel(
    */
   fun backToFolderList() {
     Logger.d(TAG, "Navigating back to folder list")
-    _uiState.value = CloudTestUiState.FolderList
+    _uiState.value = CloudTestUiState.FolderList(getInternalDataTypes())
   }
 
   /**
@@ -353,7 +372,7 @@ class CloudTestViewModel(
    * @param cloudFile The file to delete
    * @param dataType The data type of the file
    */
-  fun deleteFile(cloudFile: CloudFile, dataType: DataType) {
+  fun deleteFile(cloudFile: CloudFile, dataType: CloudTestUiState.DataType) {
     Logger.i(TAG, "deleteFile: ${cloudFile.name}, dataType: ${dataType.name}")
 
     val api = currentApi
@@ -403,7 +422,7 @@ class CloudTestViewModel(
    *
    * @param dataType The data type folder to clear
    */
-  fun deleteAllFilesInFolder(dataType: DataType) {
+  fun deleteAllFilesInFolder(dataType: CloudTestUiState.DataType) {
     Logger.i(TAG, "deleteAllFilesInFolder: ${dataType.name}")
 
     val api = currentApi
@@ -492,7 +511,7 @@ class CloudTestViewModel(
           withContext(Dispatchers.Main) {
             _errorMessage.value = "All data cleared successfully"
             // Navigate back to folder list
-            _uiState.value = CloudTestUiState.FolderList
+            _uiState.value = CloudTestUiState.FolderList(getInternalDataTypes())
           }
         } else {
           Logger.e(TAG, "Failed to clear all data")
@@ -544,6 +563,12 @@ class CloudTestViewModel(
     backToSourceSelection()
   }
 
+  fun getInternalDataTypes(): List<CloudTestUiState.DataType> {
+    return DataType.entries.map {
+      CloudTestUiState.DataType(it.name, it.fileExtension)
+    } + CloudTestUiState.DataType("NoteImages", ".nif")
+  }
+
   companion object {
     private const val TAG = "CloudTestViewModel"
   }
@@ -566,7 +591,7 @@ sealed class CloudTestUiState {
   /**
    * State showing the list of available folders (DataTypes).
    */
-  data object FolderList : CloudTestUiState()
+  data class FolderList(val dataTypes: List<CloudTestUiState.DataType>) : CloudTestUiState()
 
   /**
    * State showing files in a specific folder.
@@ -579,7 +604,34 @@ sealed class CloudTestUiState {
   data class FilePreview(
     val dataType: DataType,
     val cloudFile: CloudFile,
-    val content: String
-  ) : CloudTestUiState()
-}
+    val content: String = "",
+    val imageData: ByteArray? = null
+  ) : CloudTestUiState() {
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (javaClass != other?.javaClass) return false
 
+      other as FilePreview
+
+      if (dataType != other.dataType) return false
+      if (cloudFile != other.cloudFile) return false
+      if (content != other.content) return false
+      if (imageData != null) {
+        if (other.imageData == null) return false
+        if (!imageData.contentEquals(other.imageData)) return false
+      } else if (other.imageData != null) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = dataType.hashCode()
+      result = 31 * result + cloudFile.hashCode()
+      result = 31 * result + content.hashCode()
+      result = 31 * result + (imageData?.contentHashCode() ?: 0)
+      return result
+    }
+  }
+
+  data class DataType(val name: String, val fileExtension: String)
+}

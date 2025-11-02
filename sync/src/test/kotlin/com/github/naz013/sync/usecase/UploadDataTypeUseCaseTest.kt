@@ -5,6 +5,8 @@ import com.github.naz013.sync.DataType
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.settings.UploadSettingsUseCase
+import com.github.naz013.sync.usecase.upload.UploadDataTypeUseCase
+import com.github.naz013.sync.usecase.upload.UploadSingleUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -14,7 +16,7 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [UploadDataTypeUseCase].
+ * Unit tests for [com.github.naz013.sync.usecase.upload.UploadDataTypeUseCase].
  *
  * Tests the batch upload of all items of a specific data type that need syncing,
  * including handling of Settings (special case), empty results, multiple items,

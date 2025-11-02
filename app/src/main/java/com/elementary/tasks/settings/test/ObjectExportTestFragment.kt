@@ -193,7 +193,7 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
   private fun getFileExt(): String {
     return when (objectType) {
       ObjectType.Reminder -> FileConfig.FILE_NAME_REMINDER
-      ObjectType.Note -> FileConfig.FILE_NAME_NOTE
+      ObjectType.Note -> FileConfig.FILE_NAME_NOTE_V3
       ObjectType.Birthday -> FileConfig.FILE_NAME_BIRTHDAY
       ObjectType.Place -> FileConfig.FILE_NAME_PLACE
       ObjectType.Group -> FileConfig.FILE_NAME_GROUP

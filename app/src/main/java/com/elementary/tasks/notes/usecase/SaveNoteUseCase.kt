@@ -21,7 +21,7 @@ class SaveNoteUseCase(
     noteRepository.save(note.copy(version = note.version + 1))
     noteRepository.updateSyncState(note.key, SyncState.WaitingForUpload)
     scheduleBackgroundWorkUseCase(
-      workType = WorkType.Delete,
+      workType = WorkType.Upload,
       dataType = DataType.Notes,
       id = note.key
     )

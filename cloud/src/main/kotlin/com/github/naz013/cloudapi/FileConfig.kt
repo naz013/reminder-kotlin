@@ -9,7 +9,10 @@ object FileConfig {
   /**
    * File extension for note.
    */
+  @Deprecated("Use FILE_NAME_NOTE_V3 instead")
   const val FILE_NAME_NOTE = ".no2"
+  const val FILE_NAME_NOTE_V3 = ".no3"
+  const val FILE_NAME_NOTE_IMAGE = ".nif"
 
   /**
    * File extension for reminder reminderGroup.

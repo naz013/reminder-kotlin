@@ -1,7 +1,9 @@
-package com.github.naz013.sync.usecase
+package com.github.naz013.sync.usecase.delete
 
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
+import com.github.naz013.sync.usecase.GetAllowedCloudApisUseCase
+import com.github.naz013.sync.usecase.GetCloudFileNameUseCase
 
 internal class DeleteSingleUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
