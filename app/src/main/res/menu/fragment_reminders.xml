@@ -10,13 +10,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_map"
-        android:icon="@drawable/ic_fluent_map"
-        android:title="@string/map"
-        app:iconTint="?colorOnSurface"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_archive"
         android:icon="@drawable/ic_fluent_archive"
         android:title="@string/reminders_archive"

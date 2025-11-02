@@ -19,6 +19,7 @@ import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -87,7 +88,13 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
           when (it.itemId) {
             R.id.action_add -> {
               Logger.i(TAG, "Add new Google Task List clicked")
-              navigate { navigate(R.id.editGoogleTaskListFragment) }
+              navigate {
+                navigate(
+                  R.id.editGoogleTaskListFragment,
+                  null,
+                  NavigationAnimations.inDepthNavOptions()
+                )
+              }
             }
           }
           true
@@ -158,7 +165,8 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
         R.id.editGoogleTaskFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, defId)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -259,7 +267,8 @@ class GoogleTasksFragment : BaseTopToolbarFragment<FragmentGoogleTasksBinding>()
         R.id.previewGoogleTaskFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, taskId)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }

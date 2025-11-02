@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.databinding.FragmentNotePreviewBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter
@@ -151,7 +152,8 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
         R.id.buildReminderFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -244,7 +246,7 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
         R.drawable.ic_fluent_heart,
         viewModel.isBgDark
       )
-      menu[3].setTitle(archiveActionTitle)
+      menu[3].title = archiveActionTitle
       menu[1].isVisible = !isArchived
       menu[2].isVisible = !isArchived
     }

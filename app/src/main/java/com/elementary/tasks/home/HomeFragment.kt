@@ -22,6 +22,7 @@ import com.elementary.tasks.home.scheduleview.HeaderTimeType
 import com.elementary.tasks.home.scheduleview.ScheduleAdapter
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleModel
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
@@ -58,7 +59,8 @@ class HomeFragment :
           R.id.previewReminderFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -71,7 +73,8 @@ class HomeFragment :
           R.id.previewNoteFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -81,7 +84,8 @@ class HomeFragment :
           R.id.previewGoogleTaskFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -91,7 +95,8 @@ class HomeFragment :
           R.id.previewBirthdayFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     }
@@ -202,7 +207,8 @@ class HomeFragment :
         Bundle().apply {
           putParcelable(deepLinkData.intentKey, deepLinkData)
           putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -218,7 +224,8 @@ class HomeFragment :
         Bundle().apply {
           putParcelable(deepLinkData.intentKey, deepLinkData)
           putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -231,7 +238,8 @@ class HomeFragment :
         Bundle().apply {
           putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
           putParcelable(deepLinkData.intentKey, deepLinkData)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -341,7 +349,8 @@ class HomeFragment :
             navigationAction.id,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, navigationAction.objectId)
-            }
+            },
+            NavigationAnimations.inDepthNavOptions()
           )
         }
       }

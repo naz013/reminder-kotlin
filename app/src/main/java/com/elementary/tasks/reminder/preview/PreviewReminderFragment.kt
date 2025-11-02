@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.databinding.FragmentReminderPreviewBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -152,7 +153,8 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         R.id.editGoogleTaskFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -161,7 +163,8 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
     navigate {
       navigate(
         R.id.previewNoteFragment,
-        Bundle().apply { putString(IntentKeys.INTENT_ID, id) }
+        Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -174,7 +177,6 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       palette = note.colorPalette
     )
     startActivity(ImagePreviewActivity::class.java) {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       putExtra(IntentKeys.INTENT_ID, note.id)
       putExtra(IntentKeys.INTENT_POSITION, imagePosition)
     }
@@ -190,7 +192,8 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         R.id.buildReminderFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, viewModel.id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -244,7 +247,8 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         R.id.fullscreenMapFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, viewModel.id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }

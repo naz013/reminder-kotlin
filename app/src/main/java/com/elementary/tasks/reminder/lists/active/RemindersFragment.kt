@@ -13,6 +13,7 @@ import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.home.eventsview.HomeEventsFragmentDirections
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
@@ -50,7 +51,8 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
             R.id.previewReminderFragment,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
-            }
+            },
+            NavigationAnimations.inDepthNavOptions()
           )
         }
       },
@@ -60,7 +62,8 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
             R.id.buildReminderFragment,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
-            }
+            },
+            NavigationAnimations.inDepthNavOptions()
           )
         }
       }
@@ -92,7 +95,7 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
     binding.recyclerView.applyBottomInsets()
     binding.fab.setOnClickListener {
       navigate {
-        navigate(R.id.buildReminderFragment)
+        navigate(R.id.buildReminderFragment, null, NavigationAnimations.inDepthNavOptions())
       }
     }
 
@@ -114,9 +117,6 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
     super.onResume()
     addMenu(R.menu.fragment_reminders, { menuItem ->
       when (menuItem.itemId) {
-        R.id.action_map -> {
-          safeNavigation { HomeEventsFragmentDirections.actionActionEventsToMapFragment() }
-        }
         R.id.action_groups -> {
           safeNavigation { HomeEventsFragmentDirections.actionActionEventsToGroupsFragment() }
         }
@@ -125,7 +125,9 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
         }
         R.id.action_settings -> {
           safeNavigation {
-            HomeEventsFragmentDirections.actionActionEventsToRemindersSettingsFragment()
+            HomeEventsFragmentDirections.actionActionEventsToRemindersSettingsFragment(
+              getString(R.string.action_settings)
+            )
           }
         }
         R.id.action_filter -> {

@@ -73,7 +73,10 @@ class BottomNavActivity :
       supportFragmentManager.findFragmentById(R.id.mainNavigationFragment) as NavHostFragment
     val navController = navHostFragment.navController
     this.navController = navController
+
+    // Set up bottom navigation with fade animations for natural transitions
     binding.bottomNavigation.setupWithNavController(navController)
+    setupBottomNavigationAnimations()
 
     if (intent.action == Intent.ACTION_VIEW) {
       val deepLinkDestination = intent.readParcelable(
@@ -190,6 +193,37 @@ class BottomNavActivity :
     Logger.i(TAG, "Removing the Search view $fragmentSearchView")
     fragmentSearchView?.also {
       binding.container.removeView(it)
+    }
+  }
+
+  /**
+   * Sets up natural fade animations for bottom navigation transitions.
+   *
+   * This method configures the bottom navigation to use cross-fade animations
+   * when switching between top-level destinations (Home, Notes, Calendar, Tasks).
+   * Fade animations provide a more natural feel for lateral navigation compared
+   * to slide animations.
+   */
+  private fun setupBottomNavigationAnimations() {
+    // Listen for bottom navigation item selections
+    binding.bottomNavigation.setOnItemSelectedListener { item ->
+      val currentDestination = navController.currentDestination?.id
+      val targetDestination = item.itemId
+
+      // Only apply fade animation if navigating between different top-level destinations
+      if (currentDestination != targetDestination) {
+        val navOptions = androidx.navigation.NavOptions.Builder()
+          .setEnterAnim(R.anim.fragment_fade_in)
+          .setExitAnim(R.anim.fragment_fade_out)
+          .setPopEnterAnim(R.anim.fragment_fade_in)
+          .setPopExitAnim(R.anim.fragment_fade_out)
+          .setLaunchSingleTop(true)
+          .setPopUpTo(R.id.actionHome, false, true)
+          .build()
+
+        navController.navigate(targetDestination, null, navOptions)
+      }
+      true
     }
   }
 

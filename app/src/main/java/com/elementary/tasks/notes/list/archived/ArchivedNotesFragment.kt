@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.list.archived
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -20,6 +19,7 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.core.views.recyclerview.StaggeredSpaceItemDecoration
 import com.elementary.tasks.databinding.FragmentNotesBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.NoteSortProcessor
@@ -231,7 +231,6 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
         palette = note.colorPalette
       )
       startActivity(ImagePreviewActivity::class.java) {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         putExtra(IntentKeys.INTENT_ID, note.id)
         putExtra(IntentKeys.INTENT_POSITION, imagePosition)
       }
@@ -317,7 +316,8 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
     navigate {
       navigate(
         R.id.previewNoteFragment,
-        Bundle().apply { putString(IntentKeys.INTENT_ID, id) }
+        Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
