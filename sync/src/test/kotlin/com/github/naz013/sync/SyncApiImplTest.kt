@@ -5,6 +5,7 @@ import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.usecase.delete.DeleteDataTypeUseCase
 import com.github.naz013.sync.usecase.delete.DeleteSingleUseCase
+import com.github.naz013.sync.usecase.download.DownloadLegacyFilesUseCase
 import com.github.naz013.sync.usecase.download.DownloadSingleUseCase
 import com.github.naz013.sync.usecase.download.DownloadUseCase
 import com.github.naz013.sync.usecase.GetAllowedDataTypesUseCase
@@ -42,6 +43,7 @@ class SyncApiImplTest {
   private lateinit var hasAnyCloudApiUseCase: HasAnyCloudApiUseCase
   private lateinit var syncApi: SyncApiImpl
   private lateinit var syncApiSessionCache: SyncApiSessionCache
+  private lateinit var downloadLegacyFilesUseCase: DownloadLegacyFilesUseCase
 
   private lateinit var mockRepositoryCaller: DataTypeRepositoryCaller<Any>
 
@@ -58,6 +60,7 @@ class SyncApiImplTest {
     hasAnyCloudApiUseCase = mockk()
     mockRepositoryCaller = mockk(relaxed = true)
     syncApiSessionCache = mockk(relaxed = true)
+    downloadLegacyFilesUseCase = mockk(relaxed = true)
 
     syncApi = SyncApiImpl(
       dataTypeRepositoryCallerFactory = dataTypeRepositoryCallerFactory,
@@ -69,7 +72,8 @@ class SyncApiImplTest {
       deleteDataTypeUseCase = deleteDataTypeUseCase,
       uploadDataTypeUseCase = uploadDataTypeUseCase,
       hasAnyCloudApiUseCase = hasAnyCloudApiUseCase,
-      syncApiSessionCache = syncApiSessionCache
+      syncApiSessionCache = syncApiSessionCache,
+      downloadLegacyFilesUseCase = downloadLegacyFilesUseCase
     )
   }
 
@@ -109,6 +113,9 @@ class SyncApiImplTest {
       coVerify(exactly = 1) { downloadUseCase(DataType.Reminders) }
       coVerify(exactly = 1) { downloadUseCase(DataType.Birthdays) }
       coVerify(exactly = 1) { downloadUseCase(DataType.Notes) }
+      coVerify(exactly = 1) { downloadLegacyFilesUseCase() }
+      // clearCache is called once at the end of sync() - uploadInternal doesn't call it
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -176,6 +183,9 @@ class SyncApiImplTest {
       assertEquals(3, successResult.downloaded.size)
       assertTrue(successResult.downloaded.containsAll(remindersDownloaded))
       assertTrue(successResult.downloaded.containsAll(notesDownloaded))
+      coVerify(exactly = 1) { downloadLegacyFilesUseCase() }
+      // clearCache is called once at the end of sync() - uploadInternal doesn't call it
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -202,6 +212,9 @@ class SyncApiImplTest {
       assertEquals(downloadResult, result)
       coVerify(exactly = 1) { uploadDataTypeUseCase(dataType) }
       coVerify(exactly = 1) { downloadUseCase(dataType) }
+      coVerify(exactly = 1) { downloadLegacyFilesUseCase() }
+      // clearCache is called once at the end of sync(dataType) - uploadInternal doesn't call it
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -245,6 +258,7 @@ class SyncApiImplTest {
       assertEquals(downloadResult, result)
       coVerify(exactly = 1) { uploadSingleUseCase(dataType, itemId) }
       coVerify(exactly = 1) { downloadSingleUseCase(dataType, itemId) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -306,6 +320,7 @@ class SyncApiImplTest {
       coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.Reminders) }
       coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.Birthdays) }
       coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.Groups) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -338,6 +353,7 @@ class SyncApiImplTest {
 
       // Assert
       coVerify(exactly = 1) { uploadDataTypeUseCase(dataType) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -372,6 +388,7 @@ class SyncApiImplTest {
 
       // Assert
       coVerify(exactly = 1) { uploadSingleUseCase(dataType, itemId) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -443,6 +460,7 @@ class SyncApiImplTest {
         coVerify(exactly = 1) { uploadSingleUseCase(DataType.Notes, id) }
       }
       coVerify(exactly = 5) { uploadSingleUseCase(any(), any()) } // 3 + 2 items
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -481,6 +499,7 @@ class SyncApiImplTest {
         coVerify(exactly = 1) { uploadSingleUseCase(dataType, id) }
       }
       coVerify(exactly = 4) { uploadSingleUseCase(any(), any()) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -514,6 +533,7 @@ class SyncApiImplTest {
 
       // Assert
       coVerify(exactly = 1) { uploadSingleUseCase(dataType, itemId) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -535,6 +555,7 @@ class SyncApiImplTest {
       // Assert
       coVerify(exactly = 1) { deleteDataTypeUseCase(DataType.Reminders) }
       coVerify(exactly = 1) { deleteDataTypeUseCase(DataType.Birthdays) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -567,6 +588,7 @@ class SyncApiImplTest {
 
       // Assert
       coVerify(exactly = 1) { deleteDataTypeUseCase(dataType) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -599,6 +621,7 @@ class SyncApiImplTest {
 
       // Assert
       coVerify(exactly = 1) { deleteSingleUseCase(dataType, itemId) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 
@@ -634,6 +657,7 @@ class SyncApiImplTest {
         coVerify(exactly = 1) { deleteSingleUseCase(dataType, id) }
       }
       coVerify(exactly = 5) { deleteSingleUseCase(any(), any()) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
     }
   }
 

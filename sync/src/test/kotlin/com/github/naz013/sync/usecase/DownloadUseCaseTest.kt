@@ -10,12 +10,11 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataPostProcessor
 import com.github.naz013.sync.DataType
-import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.download.DownloadCloudFileUseCase
 import com.github.naz013.sync.usecase.download.DownloadUseCase
-import com.github.naz013.sync.usecase.download.GetClassByDataTypeUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -37,7 +36,7 @@ import java.io.ByteArrayInputStream
 class DownloadUseCaseTest {
 
   private lateinit var dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory
-  private lateinit var syncDataConverter: SyncDataConverter
+  private lateinit var downloadCloudFileUseCase: DownloadCloudFileUseCase
   private lateinit var remoteFileMetadataRepository: RemoteFileMetadataRepository
   private lateinit var createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase
   private lateinit var findAllFilesToDownloadUseCase: FindAllFilesToDownloadUseCase
@@ -51,7 +50,7 @@ class DownloadUseCaseTest {
   @Before
   fun setUp() {
     dataTypeRepositoryCallerFactory = mockk()
-    syncDataConverter = mockk()
+    downloadCloudFileUseCase = mockk()
     remoteFileMetadataRepository = mockk(relaxed = true)
     createRemoteFileMetadataUseCase = mockk()
     findAllFilesToDownloadUseCase = mockk()
@@ -62,13 +61,12 @@ class DownloadUseCaseTest {
 
     downloadUseCase = DownloadUseCase(
       dataTypeRepositoryCallerFactory = dataTypeRepositoryCallerFactory,
-      syncDataConverter = syncDataConverter,
       remoteFileMetadataRepository = remoteFileMetadataRepository,
       createRemoteFileMetadataUseCase = createRemoteFileMetadataUseCase,
       findAllFilesToDownloadUseCase = findAllFilesToDownloadUseCase,
       getLocalUuIdUseCase = getLocalUuIdUseCase,
       dataPostProcessor = dataPostProcessor,
-      getClassByDataTypeUseCase = GetClassByDataTypeUseCase()
+      downloadCloudFileUseCase = downloadCloudFileUseCase
     )
   }
 
@@ -94,7 +92,6 @@ class DownloadUseCaseTest {
         version = 3L,
         rev = "rev3"
       )
-      val inputStream = ByteArrayInputStream("reminder data".toByteArray())
       val remoteFileMetadata = RemoteFileMetadata(
         id = "gdrive-file-id-123",
         name = "$reminderId.ta2",
@@ -118,8 +115,7 @@ class DownloadUseCaseTest {
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockCloudFileApi.source } returns Source.GoogleDrive
-      coEvery { mockCloudFileApi.downloadFile(cloudFile) } returns inputStream
-      coEvery { syncDataConverter.parse(inputStream, Reminder::class.java) } returns reminder
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile, dataType) } returns reminder
       every { getLocalUuIdUseCase(reminder) } returns reminderId
       coEvery { createRemoteFileMetadataUseCase(Source.GoogleDrive.value, cloudFile, reminder) } returns remoteFileMetadata
 
@@ -134,8 +130,7 @@ class DownloadUseCaseTest {
       assertEquals(dataType, successResult.downloaded[0].dataType)
       assertEquals(reminderId, successResult.downloaded[0].id)
 
-      coVerify(exactly = 1) { mockCloudFileApi.downloadFile(cloudFile) }
-      coVerify(exactly = 1) { syncDataConverter.parse(inputStream, Reminder::class.java) }
+      coVerify(exactly = 1) { downloadCloudFileUseCase(mockCloudFileApi, cloudFile, dataType) }
       coVerify(exactly = 1) { mockRepositoryCaller.insertOrUpdate(reminder) }
       coVerify(exactly = 1) { dataPostProcessor.process(dataType, reminder) }
       coVerify(exactly = 1) { remoteFileMetadataRepository.save(remoteFileMetadata) }
@@ -195,12 +190,9 @@ class DownloadUseCaseTest {
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockCloudFileApi.source } returns Source.GoogleDrive
-      coEvery { mockCloudFileApi.downloadFile(cloudFile1) } returns stream1
-      coEvery { mockCloudFileApi.downloadFile(cloudFile2) } returns stream2
-      coEvery { mockCloudFileApi.downloadFile(cloudFile3) } returns stream3
-      coEvery { syncDataConverter.parse(stream1, Birthday::class.java) } returns birthday1
-      coEvery { syncDataConverter.parse(stream2, Birthday::class.java) } returns birthday2
-      coEvery { syncDataConverter.parse(stream3, Birthday::class.java) } returns birthday3
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile1, dataType) } returns birthday1
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile2, dataType) } returns birthday2
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile3, dataType) } returns birthday3
       every { getLocalUuIdUseCase(birthday1) } returns "b1"
       every { getLocalUuIdUseCase(birthday2) } returns "b2"
       every { getLocalUuIdUseCase(birthday3) } returns "b3"
@@ -214,7 +206,7 @@ class DownloadUseCaseTest {
       val successResult = result as SyncResult.Success
       assertEquals(3, successResult.downloaded.size)
 
-      coVerify(exactly = 3) { mockCloudFileApi.downloadFile(any()) }
+      coVerify(exactly = 3) { downloadCloudFileUseCase(mockCloudFileApi, any(), dataType) }
       coVerify(exactly = 3) { mockRepositoryCaller.insertOrUpdate(any()) }
       coVerify(exactly = 3) { remoteFileMetadataRepository.save(any()) }
       coVerify(exactly = 3) { mockRepositoryCaller.updateSyncState(any(), SyncState.Synced) }
@@ -252,10 +244,8 @@ class DownloadUseCaseTest {
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
-      coEvery { mockGDriveApi.downloadFile(gdriveFile) } returns stream1
-      coEvery { mockDropboxApi.downloadFile(dropboxFile) } returns stream2
-      coEvery { syncDataConverter.parse(stream1, Reminder::class.java) } returns reminder1
-      coEvery { syncDataConverter.parse(stream2, Reminder::class.java) } returns reminder2
+      coEvery { downloadCloudFileUseCase(mockGDriveApi, gdriveFile, dataType) } returns reminder1
+      coEvery { downloadCloudFileUseCase(mockDropboxApi, dropboxFile, dataType) } returns reminder2
       every { getLocalUuIdUseCase(reminder1) } returns "r1"
       every { getLocalUuIdUseCase(reminder2) } returns "r2"
       coEvery { createRemoteFileMetadataUseCase(Source.GoogleDrive.value, gdriveFile, reminder1) } returns metadata1
@@ -269,8 +259,8 @@ class DownloadUseCaseTest {
       val successResult = result as SyncResult.Success
       assertEquals(2, successResult.downloaded.size)
 
-      coVerify(exactly = 1) { mockGDriveApi.downloadFile(gdriveFile) }
-      coVerify(exactly = 1) { mockDropboxApi.downloadFile(dropboxFile) }
+      coVerify(exactly = 1) { downloadCloudFileUseCase(mockGDriveApi, gdriveFile, dataType) }
+      coVerify(exactly = 1) { downloadCloudFileUseCase(mockDropboxApi, dropboxFile, dataType) }
     }
   }
 
@@ -285,9 +275,6 @@ class DownloadUseCaseTest {
       val cloudFile1 = CloudFile(id = "cf1", name = "r1.ta2", fileExtension = ".ta2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
       val cloudFile2 = CloudFile(id = "cf2", name = "r2.ta2", fileExtension = ".ta2", lastModified = 2000L, size = 200, version = 1L, rev = "r2")
       val cloudFile3 = CloudFile(id = "cf3", name = "r3.ta2", fileExtension = ".ta2", lastModified = 3000L, size = 300, version = 1L, rev = "r3")
-
-      val stream1 = ByteArrayInputStream("data1".toByteArray())
-      val stream3 = ByteArrayInputStream("data3".toByteArray())
 
       val metadata1 = mockk<RemoteFileMetadata>()
       val metadata3 = mockk<RemoteFileMetadata>()
@@ -304,11 +291,9 @@ class DownloadUseCaseTest {
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockCloudFileApi.source } returns Source.GoogleDrive
-      coEvery { mockCloudFileApi.downloadFile(cloudFile1) } returns stream1
-      coEvery { mockCloudFileApi.downloadFile(cloudFile2) } returns null  // Download fails
-      coEvery { mockCloudFileApi.downloadFile(cloudFile3) } returns stream3
-      coEvery { syncDataConverter.parse(stream1, Reminder::class.java) } returns reminder1
-      coEvery { syncDataConverter.parse(stream3, Reminder::class.java) } returns reminder3
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile1, dataType) } returns reminder1
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile2, dataType) } throws RuntimeException("Download failed")  // Download fails
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile3, dataType) } returns reminder3
       every { getLocalUuIdUseCase(reminder1) } returns "r1"
       every { getLocalUuIdUseCase(reminder3) } returns "r3"
       coEvery { createRemoteFileMetadataUseCase(any(), cloudFile1, reminder1) } returns metadata1
@@ -317,13 +302,13 @@ class DownloadUseCaseTest {
       // Act
       val result = downloadUseCase(dataType)
 
-      // Assert - Should download 2 out of 3 files
+      // Assert - Should download 2 out of 3 files (file 2 throws exception and is skipped)
       assertTrue(result is SyncResult.Success)
       val successResult = result as SyncResult.Success
       assertEquals(2, successResult.downloaded.size)
 
-      // Verify file 2 was skipped
-      coVerify(exactly = 0) { syncDataConverter.parse(any(), match { it == cloudFile2 }) }
+      // Verify file 2 was attempted
+      coVerify(exactly = 1) { downloadCloudFileUseCase(mockCloudFileApi, cloudFile2, dataType) }
       coVerify(exactly = 2) { mockRepositoryCaller.insertOrUpdate(any()) }
     }
   }
@@ -385,10 +370,8 @@ class DownloadUseCaseTest {
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockCloudFileApi.source } returns Source.GoogleDrive
-      coEvery { mockCloudFileApi.downloadFile(cloudFile1) } returns stream1
-      coEvery { mockCloudFileApi.downloadFile(cloudFile2) } returns stream2
-      coEvery { syncDataConverter.parse(stream1, Reminder::class.java) } returns reminder1
-      coEvery { syncDataConverter.parse(stream2, Reminder::class.java) } returns reminder2
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile1, dataType) } returns reminder1
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile2, dataType) } returns reminder2
       every { getLocalUuIdUseCase(reminder1) } returns "r1"
       every { getLocalUuIdUseCase(reminder2) } returns "r2"
       coEvery { createRemoteFileMetadataUseCase(any(), any(), any()) } returns mockk()
@@ -413,9 +396,6 @@ class DownloadUseCaseTest {
       val cloudFile1 = CloudFile(id = "cf1", name = "r1.ta2", fileExtension = ".ta2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
       val cloudFile2 = CloudFile(id = "cf2", name = "r2.ta2", fileExtension = ".ta2", lastModified = 2000L, size = 200, version = 1L, rev = "r2")
 
-      val stream1 = ByteArrayInputStream("data1".toByteArray())
-      val stream2 = ByteArrayInputStream("data2".toByteArray())
-
       val searchResult = FindAllFilesToDownloadUseCase.SearchResult(
         sources = listOf(
           FindAllFilesToDownloadUseCase.CloudFilesWithSource(
@@ -428,10 +408,8 @@ class DownloadUseCaseTest {
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockCloudFileApi.source } returns Source.GoogleDrive
-      coEvery { mockCloudFileApi.downloadFile(cloudFile1) } returns stream1
-      coEvery { mockCloudFileApi.downloadFile(cloudFile2) } returns stream2
-      coEvery { syncDataConverter.parse(stream1, Reminder::class.java) } returns reminder1
-      coEvery { syncDataConverter.parse(stream2, Reminder::class.java) } returns reminder2
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile1, dataType) } returns reminder1
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile2, dataType) } returns reminder2
       every { getLocalUuIdUseCase(reminder1) } returns "r1"
       every { getLocalUuIdUseCase(reminder2) } returns "r2"
       coEvery { createRemoteFileMetadataUseCase(any(), any(), any()) } returns mockk()
@@ -448,15 +426,12 @@ class DownloadUseCaseTest {
   @Test
   fun `invoke when parse fails should continue with other files`() {
     runBlocking {
-      // Arrange - First file parses successfully, second fails, third succeeds
+      // Arrange - First file downloads successfully, second fails, third succeeds
       val dataType = DataType.Places
       val cloudFile1 = CloudFile(id = "cf1", name = "p1.pl2", fileExtension = ".pl2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
       val cloudFile2 = CloudFile(id = "cf2", name = "p2.pl2", fileExtension = ".pl2", lastModified = 2000L, size = 200, version = 1L, rev = "r2")
       val cloudFile3 = CloudFile(id = "cf3", name = "p3.pl2", fileExtension = ".pl2", lastModified = 3000L, size = 300, version = 1L, rev = "r3")
 
-      val stream1 = ByteArrayInputStream("data1".toByteArray())
-      val stream2 = ByteArrayInputStream("corrupted".toByteArray())
-      val stream3 = ByteArrayInputStream("data3".toByteArray())
 
       val place1 = mockk<Any>()
       val place3 = mockk<Any>()
@@ -476,12 +451,9 @@ class DownloadUseCaseTest {
       every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
       coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
       every { mockCloudFileApi.source } returns Source.GoogleDrive
-      coEvery { mockCloudFileApi.downloadFile(cloudFile1) } returns stream1
-      coEvery { mockCloudFileApi.downloadFile(cloudFile2) } returns stream2
-      coEvery { mockCloudFileApi.downloadFile(cloudFile3) } returns stream3
-      coEvery { syncDataConverter.parse<Any>(stream1, any()) } returns place1
-      coEvery { syncDataConverter.parse<Any>(stream2, any()) } throws RuntimeException("Parse error")
-      coEvery { syncDataConverter.parse<Any>(stream3, any()) } returns place3
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile1, dataType) } returns place1
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile2, dataType) } throws RuntimeException("Parse error")
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile3, dataType) } returns place3
       every { getLocalUuIdUseCase(place1) } returns "p1"
       every { getLocalUuIdUseCase(place3) } returns "p3"
       coEvery { createRemoteFileMetadataUseCase(any(), cloudFile1, place1) } returns metadata1
@@ -501,8 +473,8 @@ class DownloadUseCaseTest {
       coVerify(exactly = 1) { mockRepositoryCaller.updateSyncState("p1", SyncState.Synced) }
       coVerify(exactly = 1) { mockRepositoryCaller.updateSyncState("p3", SyncState.Synced) }
 
-      // Verify parse was attempted on all files
-      coVerify(exactly = 3) { mockCloudFileApi.downloadFile(any()) }
+      // Verify download was attempted on all files
+      coVerify(exactly = 3) { downloadCloudFileUseCase(mockCloudFileApi, any(), dataType) }
     }
   }
 
@@ -543,8 +515,7 @@ class DownloadUseCaseTest {
       every { mockCloudFileApi.source } returns Source.GoogleDrive
 
       cloudFiles.forEachIndexed { index, cloudFile ->
-        coEvery { mockCloudFileApi.downloadFile(cloudFile) } returns streams[index]
-        coEvery { syncDataConverter.parse(streams[index], Birthday::class.java) } returns birthdays[index]
+        coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile, dataType) } returns birthdays[index]
         every { getLocalUuIdUseCase(birthdays[index]) } returns "b${index + 1}"
         coEvery { createRemoteFileMetadataUseCase(any(), cloudFile, birthdays[index]) } returns mockk()
       }
@@ -557,7 +528,7 @@ class DownloadUseCaseTest {
       val successResult = result as SyncResult.Success
       assertEquals(10, successResult.downloaded.size)
 
-      coVerify(exactly = 10) { mockCloudFileApi.downloadFile(any()) }
+      coVerify(exactly = 10) { downloadCloudFileUseCase(mockCloudFileApi, any(), dataType) }
       coVerify(exactly = 10) { mockRepositoryCaller.insertOrUpdate(any()) }
       coVerify(exactly = 10) { remoteFileMetadataRepository.save(any()) }
     }

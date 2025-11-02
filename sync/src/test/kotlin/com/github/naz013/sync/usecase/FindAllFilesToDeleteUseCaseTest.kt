@@ -138,8 +138,8 @@ class FindAllFilesToDeleteUseCaseTest {
 
       val gdriveFile = CloudFile(
         id = "gdrive-note-1",
-        name = "note-key-1.no2",
-        fileExtension = ".no2",
+        name = "note-key-1.no3",
+        fileExtension = ".no3",
         lastModified = 1698800000000L,
         size = 512,
         version = 1L,
@@ -147,8 +147,8 @@ class FindAllFilesToDeleteUseCaseTest {
       )
       val dropboxFile1 = CloudFile(
         id = "dropbox-note-1",
-        name = "note-key-2.no2",
-        fileExtension = ".no2",
+        name = "note-key-2.no3",
+        fileExtension = ".no3",
         lastModified = 1698800001000L,
         size = 768,
         version = 2L,
@@ -156,8 +156,8 @@ class FindAllFilesToDeleteUseCaseTest {
       )
       val dropboxFile2 = CloudFile(
         id = "dropbox-note-2",
-        name = "note-key-3.no2",
-        fileExtension = ".no2",
+        name = "note-key-3.no3",
+        fileExtension = ".no3",
         lastModified = 1698800002000L,
         size = 1024,
         version = 1L,
@@ -167,8 +167,8 @@ class FindAllFilesToDeleteUseCaseTest {
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
-      coEvery { mockGDriveApi.findFiles(".no2") } returns listOf(gdriveFile)
-      coEvery { mockDropboxApi.findFiles(".no2") } returns listOf(dropboxFile1, dropboxFile2)
+      coEvery { mockGDriveApi.findFiles(".no3") } returns listOf(gdriveFile)
+      coEvery { mockDropboxApi.findFiles(".no3") } returns listOf(dropboxFile1, dropboxFile2)
 
       // Act
       val result = findAllFilesToDeleteUseCase(dataType)
@@ -190,8 +190,8 @@ class FindAllFilesToDeleteUseCaseTest {
       assertTrue(dropboxSource.cloudFiles.contains(dropboxFile1))
       assertTrue(dropboxSource.cloudFiles.contains(dropboxFile2))
 
-      coVerify(exactly = 1) { mockGDriveApi.findFiles(".no2") }
-      coVerify(exactly = 1) { mockDropboxApi.findFiles(".no2") }
+      coVerify(exactly = 1) { mockGDriveApi.findFiles(".no3") }
+      coVerify(exactly = 1) { mockDropboxApi.findFiles(".no3") }
     }
   }
 
@@ -240,7 +240,7 @@ class FindAllFilesToDeleteUseCaseTest {
       val testCases = listOf(
         DataType.Reminders to ".ta2",
         DataType.Birthdays to ".bi2",
-        DataType.Notes to ".no2",
+        DataType.Notes to ".no3",
         DataType.Groups to ".gr2",
         DataType.Places to ".pl2",
         DataType.Settings to ".settings"

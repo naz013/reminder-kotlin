@@ -65,9 +65,9 @@ internal class SyncApiImpl(
   private suspend fun syncInternal(dataType: DataType, forceUpload: Boolean): SyncResult {
     Logger.i(TAG, "Syncing items for data type: $dataType")
     if (forceUpload) {
-      forceUpload(dataType)
+      forceUploadInternal(dataType)
     } else {
-      upload(dataType)
+      uploadInternal(dataType)
     }
     return downloadUseCase(dataType)
   }
@@ -96,7 +96,7 @@ internal class SyncApiImpl(
     val allowedDataTypes = getAllowedDataTypesUseCase()
     for (dataType in allowedDataTypes) {
       Logger.i(TAG, "Uploading items for data type: $dataType")
-      uploadDataTypeUseCase(dataType)
+      uploadInternal(dataType)
     }
     syncApiSessionCache.clearCache()
   }
@@ -106,8 +106,12 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for upload.")
       return@measure
     }
-    uploadDataTypeUseCase(dataType)
+    uploadInternal(dataType)
     syncApiSessionCache.clearCache()
+  }
+
+  private suspend fun uploadInternal(dataType: DataType) {
+    uploadDataTypeUseCase(dataType)
   }
 
   override suspend fun upload(dataType: DataType, id: String) = measure("Upload single item. dataType: $dataType, id: $id") {

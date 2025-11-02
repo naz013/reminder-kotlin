@@ -7,11 +7,11 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.upload.PreProcessUploadingFileUseCase
 import com.github.naz013.sync.usecase.upload.UploadSingleUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -44,6 +44,7 @@ class UploadSingleUseCaseTest {
   private lateinit var remoteFileMetadataRepository: RemoteFileMetadataRepository
   private lateinit var createRemoteFileMetadataUseCase: CreateRemoteFileMetadataUseCase
   private lateinit var getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase
+  private lateinit var preProcessUploadingFileUseCase: PreProcessUploadingFileUseCase
   private lateinit var uploadSingleUseCase: UploadSingleUseCase
 
   private lateinit var mockRepositoryCaller: DataTypeRepositoryCaller<Any>
@@ -58,6 +59,7 @@ class UploadSingleUseCaseTest {
     remoteFileMetadataRepository = mockk(relaxed = true)
     createRemoteFileMetadataUseCase = mockk()
     getAllowedCloudApisUseCase = mockk()
+    preProcessUploadingFileUseCase = mockk(relaxed = true)
     mockRepositoryCaller = mockk(relaxed = true)
     mockGDriveApi = mockk(relaxUnitFun = true)
     mockDropboxApi = mockk(relaxUnitFun = true)
@@ -68,7 +70,8 @@ class UploadSingleUseCaseTest {
       createCloudFileUseCase = createCloudFileUseCase,
       remoteFileMetadataRepository = remoteFileMetadataRepository,
       createRemoteFileMetadataUseCase = createRemoteFileMetadataUseCase,
-      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase
+      getAllowedCloudApisUseCase = getAllowedCloudApisUseCase,
+      preProcessUploadingFileUseCase = preProcessUploadingFileUseCase
     )
   }
 
@@ -107,6 +110,7 @@ class UploadSingleUseCaseTest {
       coEvery { createCloudFileUseCase(dataType, reminder) } returns cloudFile
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
+      coEvery { preProcessUploadingFileUseCase(mockGDriveApi, cloudFile, dataType, reminder) } returns reminder
       coEvery { syncDataConverter.create(reminder) } returns inputStream
       coEvery { mockGDriveApi.uploadFile(inputStream, cloudFile) } returns uploadedFile
       coEvery { createRemoteFileMetadataUseCase(Source.GoogleDrive.value, uploadedFile, reminder) } returns remoteMetadata
@@ -187,6 +191,8 @@ class UploadSingleUseCaseTest {
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
+      coEvery { preProcessUploadingFileUseCase(mockGDriveApi, cloudFile, dataType, note) } returns note
+      coEvery { preProcessUploadingFileUseCase(mockDropboxApi, cloudFile, dataType, note) } returns note
       coEvery { syncDataConverter.create(note) } returnsMany listOf(gdriveStream, dropboxStream)
       coEvery { mockGDriveApi.uploadFile(gdriveStream, cloudFile) } returns gdriveUploadedFile
       coEvery { mockDropboxApi.uploadFile(dropboxStream, cloudFile) } returns dropboxUploadedFile
@@ -220,6 +226,8 @@ class UploadSingleUseCaseTest {
       coEvery { mockRepositoryCaller.getById(groupId) } returns group
       coEvery { createCloudFileUseCase(dataType, group) } returns cloudFile
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
+      every { mockGDriveApi.source } returns Source.GoogleDrive
+      coEvery { preProcessUploadingFileUseCase(mockGDriveApi, cloudFile, dataType, group) } returns group
       coEvery { syncDataConverter.create(group) } returns inputStream
       coEvery { mockGDriveApi.uploadFile(inputStream, cloudFile) } throws RuntimeException("Network error")
 
@@ -261,6 +269,7 @@ class UploadSingleUseCaseTest {
       coEvery { createCloudFileUseCase(dataType, place) } returns cloudFile
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
+      coEvery { preProcessUploadingFileUseCase(mockGDriveApi, cloudFile, dataType, place) } returns place
       coEvery { syncDataConverter.create(place) } returns inputStream
       coEvery { mockGDriveApi.uploadFile(inputStream, cloudFile) } returns uploadedFile
       coEvery { createRemoteFileMetadataUseCase(any(), any(), any()) } returns metadata
@@ -296,6 +305,8 @@ class UploadSingleUseCaseTest {
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
+      coEvery { preProcessUploadingFileUseCase(mockGDriveApi, cloudFile, dataType, reminder) } returns reminder
+      coEvery { preProcessUploadingFileUseCase(mockDropboxApi, cloudFile, dataType, reminder) } returns reminder
       coEvery { syncDataConverter.create(reminder) } returnsMany listOf(gdriveStream, dropboxStream)
       coEvery { mockGDriveApi.uploadFile(gdriveStream, cloudFile) } returns gdriveUploadedFile
       coEvery { mockDropboxApi.uploadFile(dropboxStream, cloudFile) } returns dropboxUploadedFile
@@ -416,6 +427,8 @@ class UploadSingleUseCaseTest {
       every { getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       every { mockDropboxApi.source } returns Source.Dropbox
+      coEvery { preProcessUploadingFileUseCase(mockGDriveApi, cloudFile, dataType, reminder) } returns reminder
+      coEvery { preProcessUploadingFileUseCase(mockDropboxApi, cloudFile, dataType, reminder) } returns reminder
       coEvery { syncDataConverter.create(reminder) } returnsMany listOf(stream1, stream2)
       coEvery { mockGDriveApi.uploadFile(any(), any()) } returns mockk()
       coEvery { mockDropboxApi.uploadFile(any(), any()) } returns mockk()

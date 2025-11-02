@@ -118,8 +118,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       val noteId = "note-key-abc123"
       val gdriveFile = CloudFile(
         id = "gdrive-note-1",
-        name = "$noteId.no2",
-        fileExtension = ".no2",
+        name = "$noteId.no3",
+        fileExtension = ".no3",
         lastModified = 1698800000000L,  // Older
         size = 512,
         version = 2L,
@@ -127,8 +127,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val dropboxFile = CloudFile(
         id = "dropbox-note-1",
-        name = "$noteId.no2",
-        fileExtension = ".no2",
+        name = "$noteId.no3",
+        fileExtension = ".no3",
         lastModified = 1698900000000L,  // Newer
         size = 768,
         version = 3L,
@@ -136,7 +136,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val searchParams = CloudFileSearchParams(
         name = noteId,
-        fileExtension = ".no2"
+        fileExtension = ".no3"
       )
 
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi, mockDropboxApi)
@@ -344,8 +344,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       val noteId = "note-dropbox-updated"
       val cloudFile = CloudFile(
         id = "dropbox-note",
-        name = "$noteId.no2",
-        fileExtension = ".no2",
+        name = "$noteId.no3",
+        fileExtension = ".no3",
         lastModified = 1699000000000L,
         size = 768,
         version = 1L,
@@ -353,18 +353,18 @@ class FindNewestCloudApiSourceUseCaseTest {
       )
       val localMetadata = RemoteFileMetadata(
         id = "dropbox-note",
-        name = "$noteId.no2",
+        name = "$noteId.no3",
         lastModified = 1699000000000L,  // Same timestamp doesn't matter for Dropbox
         size = 768,
         source = "Dropbox",
         localUuId = noteId,
-        fileExtension = ".no2",
+        fileExtension = ".no3",
         version = 1L,
         rev = "old-revision-abc123"  // Different revision
       )
       val searchParams = CloudFileSearchParams(
         name = noteId,
-        fileExtension = ".no2"
+        fileExtension = ".no3"
       )
 
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockDropboxApi)

@@ -7,6 +7,7 @@ import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.sync.NoteV3Json
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
@@ -27,6 +28,7 @@ internal class CreateCloudFileUseCase(
       is Place -> any.getFileNamePrefix()
       is SettingsModel -> "app"
       is RecurPreset -> any.getFileNamePrefix()
+      is NoteV3Json -> any.key
       else -> throw IllegalArgumentException("Unsupported data type: ${any::class.java}")
     } + dataType.fileExtension
     Logger.d(TAG, "Created cloud file name: $name for dataType: $dataType")

@@ -5,6 +5,7 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.sync.NoteV3Json
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RemoteFileMetadataRepository
@@ -121,7 +122,7 @@ class CreateCloudFileUseCaseTest {
   fun invoke_withOldNote_shouldCreateCloudFileWithNoteKey() = runBlocking {
     // Arrange - Old note with key field
     val noteKey = "note-key-abc123"
-    val note = OldNote(
+    val note = NoteV3Json(
       summary = "Meeting notes",
       key = noteKey,
       date = "2025-10-29",
@@ -137,8 +138,8 @@ class CreateCloudFileUseCaseTest {
 
     // Assert - When no existing metadata, id should be empty
     assertEquals("", result.id)
-    assertEquals("$noteKey.no2", result.name)
-    assertEquals(".no2", result.fileExtension)
+    assertEquals("$noteKey.no3", result.name)
+    assertEquals(".no3", result.fileExtension)
     assertEquals(0, result.size)
     assertEquals(0L, result.lastModified)
   }
@@ -278,7 +279,7 @@ class CreateCloudFileUseCaseTest {
     // Arrange - Test that different data types get correct extensions
     val reminder = Reminder(summary = "Test", uuId = "r1")
     val birthday = Birthday(name = "Test", uuId = "b1", syncState = SyncState.Synced)
-    val note = OldNote(summary = "Test", key = "n1")
+    val note = NoteV3Json(summary = "Test", key = "n1")
 
     every { getLocalUuIdUseCase(any()) } returnsMany listOf("r1", "b1", "n1")
     coEvery { remoteFileMetadataRepository.getByLocalUuId(any()) } returns null
@@ -295,7 +296,7 @@ class CreateCloudFileUseCaseTest {
     assertEquals(".bi2", birthdayFile.fileExtension)
     assertTrue(birthdayFile.name.endsWith(".bi2"))
 
-    assertEquals(".no2", noteFile.fileExtension)
-    assertTrue(noteFile.name.endsWith(".no2"))
+    assertEquals(".no3", noteFile.fileExtension)
+    assertTrue(noteFile.name.endsWith(".no3"))
   }
 }
