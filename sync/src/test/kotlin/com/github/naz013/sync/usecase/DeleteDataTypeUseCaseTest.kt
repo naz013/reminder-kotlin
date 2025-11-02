@@ -5,6 +5,7 @@ import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
+import com.github.naz013.sync.usecase.delete.DeleteDataTypeUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -14,7 +15,7 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [DeleteDataTypeUseCase].
+ * Unit tests for [com.github.naz013.sync.usecase.delete.DeleteDataTypeUseCase].
  *
  * Tests the deletion of cloud files for a specific data type,
  * including interactions with cloud APIs and metadata repository cleanup.

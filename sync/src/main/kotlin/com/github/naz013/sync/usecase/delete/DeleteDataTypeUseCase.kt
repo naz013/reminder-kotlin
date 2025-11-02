@@ -1,8 +1,9 @@
-package com.github.naz013.sync.usecase
+package com.github.naz013.sync.usecase.delete
 
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
+import com.github.naz013.sync.usecase.FindAllFilesToDeleteUseCase
 
 internal class DeleteDataTypeUseCase(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,

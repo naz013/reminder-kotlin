@@ -6,7 +6,8 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.settings.SettingsModel
@@ -20,7 +21,7 @@ internal class CreateCloudFileUseCase(
     val existingMetadata = remoteFileMetadataRepository.getByLocalUuId(localUuId)
     val name = when (any) {
       is Reminder -> any.getFileNamePrefix()
-      is OldNote -> any.getFileNamePrefix()
+      is NoteWithImages -> any.getFileNamePrefix()
       is Birthday -> any.getFileNamePrefix()
       is ReminderGroup -> any.getFileNamePrefix()
       is Place -> any.getFileNamePrefix()
@@ -28,6 +29,7 @@ internal class CreateCloudFileUseCase(
       is RecurPreset -> any.getFileNamePrefix()
       else -> throw IllegalArgumentException("Unsupported data type: ${any::class.java}")
     } + dataType.fileExtension
+    Logger.d(TAG, "Created cloud file name: $name for dataType: $dataType")
     return CloudFile(
       id = existingMetadata?.id ?: "",
       name = name,
@@ -42,8 +44,8 @@ internal class CreateCloudFileUseCase(
     return uuId
   }
 
-  private fun OldNote.getFileNamePrefix(): String {
-    return key
+  private fun NoteWithImages.getFileNamePrefix(): String {
+    return note?.key ?: throw IllegalArgumentException("Note key is null")
   }
 
   private fun Birthday.getFileNamePrefix(): String {

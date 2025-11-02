@@ -123,6 +123,9 @@ dependencies {
   implementation(libs.compose.foundation.foundation)
   implementation(libs.compose.ui.ui)
 
+  implementation(libs.coil)
+  implementation("io.coil-kt:coil-compose:2.7.0")
+
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling.preview)
 

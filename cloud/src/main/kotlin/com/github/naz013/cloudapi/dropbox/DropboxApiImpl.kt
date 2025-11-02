@@ -268,6 +268,8 @@ internal class DropboxApiImpl(
     return when (ext) {
       FileConfig.FILE_NAME_REMINDER -> REMINDER_FOLDER
       FileConfig.FILE_NAME_NOTE -> NOTE_FOLDER
+      FileConfig.FILE_NAME_NOTE_V3 -> NOTE_FOLDER
+      FileConfig.FILE_NAME_NOTE_IMAGE -> IMAGES_FOLDER
       FileConfig.FILE_NAME_GROUP -> GROUP_FOLDER
       FileConfig.FILE_NAME_BIRTHDAY -> BIRTH_FOLDER
       FileConfig.FILE_NAME_PLACE -> PLACE_FOLDER
@@ -316,6 +318,7 @@ internal class DropboxApiImpl(
     private const val BIRTH_FOLDER = "/Birthdays/"
     private const val PLACE_FOLDER = "/Places/"
     private const val PRESET_FOLDER = "/Presets/"
+    private const val IMAGES_FOLDER = "/NoteImages/"
 
     @Deprecated("After R")
     private const val TEMPLATE_FOLDER = "/Templates/"

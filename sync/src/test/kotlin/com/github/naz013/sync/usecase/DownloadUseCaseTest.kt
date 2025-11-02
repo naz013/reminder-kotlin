@@ -14,6 +14,8 @@ import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncResult
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.download.DownloadUseCase
+import com.github.naz013.sync.usecase.download.GetClassByDataTypeUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -26,7 +28,7 @@ import org.junit.Test
 import java.io.ByteArrayInputStream
 
 /**
- * Unit tests for [DownloadUseCase].
+ * Unit tests for [com.github.naz013.sync.usecase.download.DownloadUseCase].
  *
  * Tests the batch downloading of multiple files from cloud storage,
  * including file retrieval, parsing, local storage, metadata tracking,

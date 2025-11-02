@@ -4,6 +4,7 @@ import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.sync.DataType
+import com.github.naz013.sync.usecase.delete.DeleteSingleUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -13,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [DeleteSingleUseCase].
+ * Unit tests for [com.github.naz013.sync.usecase.delete.DeleteSingleUseCase].
  *
  * Tests the deletion of a single cloud file by ID and data type,
  * including special handling for Settings, multi-cloud deletion,

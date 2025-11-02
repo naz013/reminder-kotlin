@@ -20,7 +20,7 @@ class NoteImageRepository(private val context: Context) {
         runCatching { it.createNewFile() }
       }
       file.writeBytes(byteArray)
-      Logger.d("saveBytesToFile: saved $file")
+      Logger.d(TAG, "Saved image file: $file")
       file.toString()
     }.getOrNull() ?: ""
   }
@@ -32,7 +32,7 @@ class NoteImageRepository(private val context: Context) {
     tmpFolder.listFiles()?.filter { it.isFile && !it.isHidden }?.forEach { file ->
       if (fileNames.contains(file.name)) {
         val dstFile = File(dstFolder, file.name)
-        Logger.d("moveImagesToFolder: name=${file.name}, dst=$dstFile")
+        Logger.d(TAG, "Moving file ${file.name} to $dstFile")
         file.copyTo(dstFile, overwrite = true)
         files.firstOrNull { it.fileName == file.name }?.apply {
           filePath = dstFile.toString()
@@ -45,19 +45,19 @@ class NoteImageRepository(private val context: Context) {
 
   fun saveTemporaryImage(fileName: String, inputStream: InputStream): String {
     val tmpFile = createTemporaryFile(fileName)
-    Logger.d("saveTemporaryImage: name=$fileName")
     tmpFile.copyInputStreamToFile(inputStream)
+    Logger.i(TAG, "Saved temporary image: $tmpFile")
     return tmpFile.toString()
   }
 
   fun clearFolder(folderName: String) {
-    Logger.d("clearFolder: $folderName")
     getImageFolder(folderName).deleteRecursively()
+    Logger.i(TAG, "Cleared image folder: $folderName")
   }
 
   private fun clearTemporaryFolder() {
-    Logger.d("clearTemporaryFolder: ")
     getTmpFolder().deleteRecursively()
+    Logger.i(TAG, "Cleared temporary image folder")
   }
 
   private fun createTemporaryFile(fileName: String): File {
@@ -88,5 +88,9 @@ class NoteImageRepository(private val context: Context) {
     this.outputStream().use { fileOut ->
       inputStream.copyTo(fileOut)
     }
+  }
+
+  companion object {
+    private const val TAG = "NoteImageRepository"
   }
 }

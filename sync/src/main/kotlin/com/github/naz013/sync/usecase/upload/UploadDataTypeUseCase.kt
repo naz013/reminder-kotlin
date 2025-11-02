@@ -1,4 +1,4 @@
-package com.github.naz013.sync.usecase
+package com.github.naz013.sync.usecase.upload
 
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger

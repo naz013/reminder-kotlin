@@ -20,7 +20,7 @@ internal class DataTypeRepositoryCallerFactory(
   fun getCaller(dataType: DataType): DataTypeRepositoryCaller<*> {
     return when (dataType) {
       DataType.Reminders -> ReminderRepositoryCaller(reminderRepository)
-      DataType.Notes -> NoteRepositoryCaller(noteRepository)
+      DataType.Notes, DataType.NotesV2 -> NoteRepositoryCaller(noteRepository)
       DataType.Birthdays -> BirthdayRepositoryCaller(birthdayRepository)
       DataType.Groups -> ReminderGroupRepositoryCaller(reminderGroupRepository)
       DataType.Places -> PlaceRepositoryCaller(placeRepository)

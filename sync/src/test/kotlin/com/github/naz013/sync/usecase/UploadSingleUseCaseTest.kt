@@ -12,6 +12,7 @@ import com.github.naz013.sync.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
+import com.github.naz013.sync.usecase.upload.UploadSingleUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -26,7 +27,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 /**
- * Unit tests for [UploadSingleUseCase].
+ * Unit tests for [com.github.naz013.sync.usecase.upload.UploadSingleUseCase].
  *
  * Tests the complete upload workflow for a single item including:
  * - Data retrieval from local repository
