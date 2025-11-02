@@ -14,6 +14,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.Module
@@ -36,7 +37,8 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
           R.id.editBirthdayFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, it.uuId)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -46,7 +48,8 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
           R.id.previewBirthdayFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, it.uuId)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     }
@@ -82,7 +85,7 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
   }
 
   private fun addNew() {
-    navigate { navigate(R.id.editBirthdayFragment) }
+    navigate { navigate(R.id.editBirthdayFragment, null, NavigationAnimations.inDepthNavOptions()) }
   }
 
   private fun initViewModel() {

@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentGroupsBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -46,7 +47,9 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
   }
 
   private fun addGroup() {
-    navigate { navigate(R.id.editGroupFragment) }
+    navigate {
+      navigate(R.id.editGroupFragment, null, NavigationAnimations.inDepthNavOptions())
+    }
   }
 
   private fun initViewModel() {
@@ -138,7 +141,13 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
     val bundle = Bundle().apply {
       putString(IntentKeys.INTENT_ID, id)
     }
-    navigate { navigate(R.id.editGroupFragment, bundle) }
+    navigate {
+      navigate(
+        R.id.editGroupFragment,
+        bundle,
+        NavigationAnimations.inDepthNavOptions()
+      )
+    }
   }
 
   override fun getTitle(): String = getString(R.string.groups)

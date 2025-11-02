@@ -10,4 +10,5 @@ object IntentKeys {
   const val INTENT_ITEM = "item_item"
   const val INTENT_DEEP_LINK = "item_deep_link"
   const val SELECTED_APPLICATION = "selected_application"
+  const val INTENT_SCREEN_TITLE = "screen_title"
 }

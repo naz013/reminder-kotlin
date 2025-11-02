@@ -12,6 +12,7 @@ import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.databinding.FragmentBirthdayPreviewBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
@@ -88,7 +89,8 @@ class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBindi
         R.id.editBirthdayFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, idFromIntent())
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }

@@ -13,6 +13,7 @@ import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
@@ -51,7 +52,8 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
             R.id.previewReminderFragment,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
-            }
+            },
+            NavigationAnimations.inDepthNavOptions()
           )
         }
       },
@@ -61,7 +63,8 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
             R.id.buildReminderFragment,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
-            }
+            },
+            NavigationAnimations.inDepthNavOptions()
           )
         }
       }
@@ -100,7 +103,8 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
           Bundle().apply {
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     }

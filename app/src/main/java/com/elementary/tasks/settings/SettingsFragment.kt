@@ -104,7 +104,7 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
     }
     binding.notesSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment(null))
     }
     binding.notificationSettings.setOnClickListener {
       safeNavigation(
@@ -121,7 +121,7 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToBirthdaySettingsFragment())
     }
     binding.remindersSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment(null))
     }
     binding.securitySettings.setOnClickListener { askPin() }
     binding.troubleshootingSettings.setOnClickListener {

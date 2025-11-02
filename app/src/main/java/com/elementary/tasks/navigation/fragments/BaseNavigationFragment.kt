@@ -13,6 +13,21 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import org.koin.android.ext.android.inject
 
+/**
+ * Base fragment for all navigation-enabled fragments in the app.
+ *
+ * This class provides core navigation functionality with safe navigation methods
+ * that handle errors gracefully. Fragments extending this class should use the
+ * navigation graph animations defined in XML or programmatically set NavOptions.
+ *
+ * Navigation animations are configured based on fragment hierarchy:
+ * - Top-level destinations (extending [com.elementary.tasks.navigation.topfragment.BaseTopFragment])
+ *   use fade animations for lateral navigation
+ * - In-depth navigation uses slide-from-right animations for hierarchical navigation
+ * - Modal screens use slide-from-bottom animations
+ *
+ * @param B The ViewBinding type for this fragment
+ */
 abstract class BaseNavigationFragment<B : ViewBinding> :
   BindingFragment<B>(),
   FragmentNavigationController {

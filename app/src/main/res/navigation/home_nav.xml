@@ -31,21 +31,6 @@
             app:exitAnim="@anim/fragment_wait"
             app:popEnterAnim="@anim/fragment_wait"
             app:popExitAnim="@anim/fragment_slide_bottom" />
-        <action
-            android:id="@+id/action_actionHome_to_editBirthdayFragment"
-            app:destination="@id/editBirthdayFragment" />
-        <action
-            android:id="@+id/action_actionHome_to_previewBirthdayFragment"
-            app:destination="@id/previewBirthdayFragment" />
-        <action
-            android:id="@+id/action_actionHome_to_editGroupFragment"
-            app:destination="@id/editGroupFragment" />
-        <action
-            android:id="@+id/action_actionHome_to_previewReminderFragment"
-            app:destination="@id/previewReminderFragment" />
-        <action
-            android:id="@+id/action_actionHome_to_buildReminderFragment"
-            app:destination="@id/buildReminderFragment" />
     </fragment>
 
     <fragment
@@ -63,13 +48,10 @@
         <action
             android:id="@+id/action_actionNotes_to_noteSettingsFragment"
             app:destination="@id/noteSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_actionNotes_to_previewNoteFragment"
-            app:destination="@id/previewNoteFragment" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
     </fragment>
 
     <fragment
@@ -91,12 +73,6 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_actionCalendar_to_editBirthdayFragment"
-            app:destination="@id/editBirthdayFragment" />
-        <action
-            android:id="@+id/action_actionCalendar_to_previewBirthdayFragment"
-            app:destination="@id/previewBirthdayFragment" />
     </fragment>
 
     <fragment
@@ -111,31 +87,12 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_actionGoogle_to_previewGoogleTaskFragment"
-            app:destination="@id/previewGoogleTaskFragment" />
-        <action
-            android:id="@+id/action_actionGoogle_to_editGoogleTaskListFragment"
-            app:destination="@id/editGoogleTaskListFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupsFragment"
         android:name="com.elementary.tasks.groups.list.GroupsFragment"
         android:label="@string/groups"
-        tools:layout="@layout/fragment_groups">
-        <action
-            android:id="@+id/action_groupsFragment_to_editGroupFragment"
-            app:destination="@id/editGroupFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/mapFragment"
-        android:name="com.elementary.tasks.navigation.fragments.MapFragment"
-        android:label="@string/map"
-        tools:layout="@layout/fragment_events_map">
-        <action
-            android:id="@+id/action_mapFragment_to_mapStyleFragment"
-            app:destination="@id/mapStyleFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_groups" />
     <fragment
         android:id="@+id/archiveFragment"
         android:name="com.elementary.tasks.reminder.lists.removed.ArchiveFragment"
@@ -152,15 +109,6 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="reminderapp.com/calendar/{date}" />
-        <action
-            android:id="@+id/action_dayViewFragment_to_editBirthdayFragment"
-            app:destination="@id/editBirthdayFragment" />
-        <action
-            android:id="@+id/action_dayViewFragment_to_previewBirthdayFragment"
-            app:destination="@id/previewBirthdayFragment" />
-        <action
-            android:id="@+id/action_dayViewFragment_to_previewReminderFragment"
-            app:destination="@id/previewReminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
@@ -172,13 +120,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_taskListFragment_to_previewGoogleTaskFragment"
-            app:destination="@id/previewGoogleTaskFragment" />
-        <action
-            android:id="@+id/action_taskListFragment_to_editGoogleTaskFragment"
-            app:destination="@id/editGoogleTaskFragment" />
-        <action
-            android:id="@+id/action_taskListFragment_to_editGoogleTaskListFragment"
-            app:destination="@id/editGoogleTaskListFragment" />
+            app:destination="@id/previewGoogleTaskFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment
@@ -296,6 +242,10 @@
         android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
         android:label="@string/reminders_"
         tools:layout="@layout/fragment_settings_reminders">
+        <argument
+            android:name="screen_title"
+            app:nullable="true"
+            app:argType="string" />
         <action
             android:id="@+id/action_remindersSettingsFragment_to_managePresetsFragment"
             app:destination="@id/managePresetsFragment"
@@ -421,11 +371,7 @@
         android:id="@+id/placesFragment"
         android:name="com.elementary.tasks.places.list.PlacesFragment"
         android:label="@string/places"
-        tools:layout="@layout/fragment_places">
-        <action
-            android:id="@+id/action_placesFragment_to_editPlaceFragment"
-            app:destination="@id/editPlaceFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_places" />
     <navigation
         android:id="@+id/navigation2"
         app:startDestination="@id/otherSettingsFragment">
@@ -500,7 +446,12 @@
         android:id="@+id/noteSettingsFragment"
         android:name="com.elementary.tasks.settings.NoteSettingsFragment"
         android:label="@string/notes"
-        tools:layout="@layout/fragment_settings_notes" />
+        tools:layout="@layout/fragment_settings_notes" >
+        <argument
+            android:name="screen_title"
+            app:nullable="true"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/testsFragment"
         android:name="com.elementary.tasks.settings.test.TestsFragment"
@@ -508,7 +459,11 @@
         tools:layout="@layout/fragment_settings_tests">
         <action
             android:id="@+id/action_testsFragment_to_objectExportTestFragment"
-            app:destination="@id/objectExportTestFragment" />
+            app:destination="@id/objectExportTestFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/fragmentProVersion"
@@ -534,43 +489,33 @@
         android:id="@+id/archivedNotesFragment"
         android:name="com.elementary.tasks.notes.list.archived.ArchivedNotesFragment"
         android:label="@string/notes_archive"
-        tools:layout="@layout/fragment_notes" >
-        <action
-            android:id="@+id/action_archivedNotesFragment_to_previewNoteFragment"
-            app:destination="@id/previewNoteFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_notes" />
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
         android:label="@string/events"
         tools:layout="@layout/fragment_home_events">
         <action
-            android:id="@+id/action_actionEvents_to_mapFragment"
-            app:destination="@id/mapFragment" />
-        <action
             android:id="@+id/action_actionEvents_to_groupsFragment"
-            app:destination="@id/groupsFragment" />
+            app:destination="@id/groupsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_actionEvents_to_archiveFragment"
-            app:destination="@id/archiveFragment" />
+            app:destination="@id/archiveFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_actionEvents_to_remindersSettingsFragment"
-            app:destination="@id/remindersSettingsFragment" />
-        <action
-            android:id="@+id/action_actionEvents_to_birthdaySettingsFragment"
-            app:destination="@id/birthdaySettingsFragment" />
-        <action
-            android:id="@+id/action_actionEvents_to_editBirthdayFragment"
-            app:destination="@id/editBirthdayFragment" />
-        <action
-            android:id="@+id/action_actionEvents_to_previewBirthdayFragment"
-            app:destination="@id/previewBirthdayFragment" />
-        <action
-            android:id="@+id/action_actionEvents_to_previewReminderFragment"
-            app:destination="@id/previewReminderFragment" />
-        <action
-            android:id="@+id/action_actionEvents_to_buildReminderFragment"
-            app:destination="@id/buildReminderFragment" />
+            app:destination="@id/remindersSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/managePresetsFragment"
@@ -613,9 +558,6 @@
         <argument
             android:name="item_id"
             app:argType="string" />
-        <action
-            android:id="@+id/action_previewGoogleTaskFragment_to_editGoogleTaskFragment"
-            app:destination="@id/editGoogleTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/editGoogleTaskFragment"
@@ -631,14 +573,7 @@
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"
         android:label="@string/details"
-        tools:layout="@layout/fragment_reminder_preview" >
-        <action
-            android:id="@+id/action_previewReminderFragment_to_fullscreenMapFragment"
-            app:destination="@id/fullscreenMapFragment" />
-        <action
-            android:id="@+id/action_previewReminderFragment_to_buildReminderFragment"
-            app:destination="@id/buildReminderFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_reminder_preview" />
     <fragment
         android:id="@+id/fullscreenMapFragment"
         android:name="com.elementary.tasks.reminder.preview.FullscreenMapFragment"
@@ -653,9 +588,5 @@
         android:id="@+id/previewNoteFragment"
         android:name="com.elementary.tasks.notes.preview.PreviewNoteFragment"
         tools:layout="@layout/fragment_note_preview"
-        android:label="@string/details" >
-        <action
-            android:id="@+id/action_previewNoteFragment_to_buildReminderFragment"
-            app:destination="@id/buildReminderFragment" />
-    </fragment>
+        android:label="@string/details" />
 </navigation>

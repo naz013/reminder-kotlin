@@ -17,6 +17,7 @@ import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentEventsListBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.reminder.ReminderResolver
 import com.github.naz013.common.Module.isTablet
 import com.github.naz013.common.intent.IntentKeys
@@ -59,7 +60,8 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
         R.id.editBirthdayFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, it.uuId)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     },
     birthdayOpenAction = {
@@ -67,7 +69,8 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
         R.id.previewBirthdayFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, it.uuId)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   )
@@ -81,7 +84,8 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
         R.id.previewReminderFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, it.id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     },
     editAction = {
@@ -89,7 +93,8 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
         R.id.buildReminderFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, it.id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   )
