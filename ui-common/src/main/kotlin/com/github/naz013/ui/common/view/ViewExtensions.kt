@@ -15,6 +15,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
+import androidx.core.view.marginEnd
+import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import com.github.naz013.ui.common.context.dp2px
 
@@ -218,7 +220,12 @@ fun View.applyBottomInsetsMargin(
       WindowInsetsCompat.Type.systemBars() or
         WindowInsetsCompat.Type.displayCutout()
     )
-    v.applyMarginsPx(bottom = v.marginBottom + bottomMargin + innerPadding.bottom)
+    v.applyMarginsPx(
+      bottom = v.marginBottom + bottomMargin + innerPadding.bottom,
+      start = v.marginStart,
+      end = v.marginEnd,
+      top = v.marginTop
+    )
     insets
   }
 }

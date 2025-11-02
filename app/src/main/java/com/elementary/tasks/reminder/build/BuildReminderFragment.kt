@@ -29,6 +29,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
 import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
@@ -81,7 +82,7 @@ class BuildReminderFragment :
     binding.builderList.layoutManager = LinearLayoutManager(context)
     binding.builderList.adapter = builderAdapter
 
-    binding.addButton.applyBottomInsets()
+    binding.addButton.applyBottomInsetsMargin()
     binding.addButton.singleClick {
       SelectorDialog().show(parentFragmentManager, SelectorDialog.TAG)
     }
