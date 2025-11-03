@@ -4,7 +4,6 @@ import android.content.Context
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.note.NoteWithImages
 import java.io.File
 import java.io.FileOutputStream
 
@@ -15,11 +14,6 @@ class BackupTool(
 
   fun reminderToFile(item: Reminder): File? {
     return anyToFile(item, item.uuId + FileConfig.FILE_NAME_REMINDER)
-  }
-
-  fun noteToFile(item: NoteWithImages?): File? {
-    val note = item?.note ?: return null
-    return anyToFile(item, note.key + FileConfig.FILE_NAME_NOTE)
   }
 
   fun placeToFile(item: Place): File? {

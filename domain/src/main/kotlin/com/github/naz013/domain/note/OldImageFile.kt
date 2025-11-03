@@ -2,6 +2,7 @@ package com.github.naz013.domain.note
 
 import com.google.gson.annotations.SerializedName
 
+@Deprecated("Old data class for sync of old backup, do not use in new code")
 data class OldImageFile(
   @SerializedName("image")
   val image: ByteArray? = null,

@@ -10,11 +10,11 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
+import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -26,16 +26,15 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class PreviewNoteViewModel(
   val key: String,
   dispatcherProvider: DispatcherProvider,
-  private val backupTool: BackupTool,
   private val noteRepository: NoteRepository,
   private val reminderRepository: ReminderRepository,
   private val uiNotePreviewAdapter: UiNotePreviewAdapter,
@@ -46,7 +45,8 @@ class PreviewNoteViewModel(
   private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
-  private val saveReminderUseCase: SaveReminderUseCase
+  private val saveReminderUseCase: SaveReminderUseCase,
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -158,9 +158,9 @@ class PreviewNoteViewModel(
         postCommand(Commands.FAILED)
         return@launch
       }
-      val file = runBlocking {
-        backupTool.noteToFile(noteWithImages)
-      }
+      val file = createSharedNoteFileUseCase(noteWithImages)
+      Logger.i(TAG, "Share note file created: ${file?.absolutePath}")
+
       postInProgress(false)
       if (file != null) {
         _sharedFile.postValue(Pair(noteWithImages, file))
@@ -188,5 +188,9 @@ class PreviewNoteViewModel(
       postInProgress(false)
       postCommand(Commands.UPDATED)
     }
+  }
+
+  companion object {
+    private const val TAG = "PreviewNoteViewModel"
   }
 }
