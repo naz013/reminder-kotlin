@@ -523,11 +523,7 @@ class CreateNoteActivity :
     binding.toolbar.setOnMenuItemClickListener { menuItem ->
       when (menuItem.itemId) {
         R.id.action_share -> {
-          permissionFlowDelegate.with {
-            askPermissions(
-              listOf(Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-            ) { viewModel.shareNote(getText(), binding.opacityBar.valueInt) }
-          }
+          viewModel.shareNote(getText(), binding.opacityBar.valueInt)
           true
         }
 

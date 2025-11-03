@@ -9,6 +9,7 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
+import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -19,9 +20,11 @@ val noteModule = module {
   factory { SaveNoteUseCase(get(), get(), get()) }
   factory { ChangeNoteArchiveStateUseCase(get(), get()) }
 
+  factory { CreateSharedNoteFileUseCase(get()) }
+
   factory { ReminderToUiNoteAttachedReminder(get()) }
 
-  factory { NoteToOldNoteConverter(get()) }
+  factory { NoteToOldNoteConverter() }
 
   single { ImagesSingleton(get()) }
 

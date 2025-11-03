@@ -8,10 +8,10 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
+import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
 import com.github.naz013.appwidgets.AppWidgetUpdater
@@ -21,14 +21,13 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class NotesViewModel(
   dispatcherProvider: DispatcherProvider,
-  private val backupTool: BackupTool,
   private val textProvider: TextProvider,
   private val uiNoteListAdapter: UiNoteListAdapter,
   private val prefs: Prefs,
@@ -38,7 +37,8 @@ class NotesViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
-  private val saveNoteUseCase: SaveNoteUseCase
+  private val saveNoteUseCase: SaveNoteUseCase,
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -88,9 +88,8 @@ class NotesViewModel(
         postError(textProvider.getText(R.string.failed_to_send_note))
         return@launch
       }
-      val file = runBlocking {
-        backupTool.noteToFile(note)
-      }
+      val file = createSharedNoteFileUseCase(note)
+      Logger.i(TAG, "Share note file created: ${file?.absolutePath}")
       postInProgress(false)
       if (file != null) {
         _sharedFile.postValue(Pair(note, file))
@@ -153,5 +152,9 @@ class NotesViewModel(
         withUIContext { notifier.showNoteNotification(it) }
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "NotesViewModel"
   }
 }

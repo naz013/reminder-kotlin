@@ -8,12 +8,12 @@ import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
+import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.OldNote
 import com.github.naz013.feature.common.readString
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
@@ -41,7 +41,7 @@ class MemoryUtil {
         is Place -> object : TypeToken<Place>() {}.type
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is OldNote -> object : TypeToken<OldNote>() {}.type
+        is SharedNote -> object : TypeToken<SharedNote>() {}.type
         else -> null
       } ?: return false
       Logger.d("toStream: $type, $any")
@@ -75,6 +75,7 @@ class MemoryUtil {
 
   companion object {
     private const val DIR_PREFS = "preferences"
+    private const val TAG = "MemoryUtil"
 
     private val isSdPresent: Boolean
       get() {
@@ -131,7 +132,7 @@ class MemoryUtil {
       } catch (e: Exception) {
         source
       }
-      Logger.d("readFromUri: $name, $source")
+      Logger.i(TAG, "Reading from uri: $name, source: $source")
       return try {
         val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
         val bufferedReader = BufferedReader(InputStreamReader(output64))
@@ -149,16 +150,15 @@ class MemoryUtil {
           name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
             Gson().fromJson<ReminderGroup>(reader, object : TypeToken<ReminderGroup>() {}.type)
           }
-          name.endsWith(FileConfig.FILE_NAME_NOTE) -> {
-            Gson().fromJson<OldNote>(reader, object : TypeToken<OldNote>() {}.type)
+          name.endsWith(SharedNote.FILE_EXTENSION) -> {
+            Gson().fromJson<SharedNote>(reader, object : TypeToken<SharedNote>() {}.type)
           }
           else -> null
         }
-        Logger.d("readFromUri: obj=$obj")
+        Logger.d(TAG, "Read object: $obj")
         obj
       } catch (e: Exception) {
-        Logger.d("readFromUri: Bad JSON")
-        e.printStackTrace()
+        Logger.e(TAG, "Failed to read from uri: ${e.message}")
         null
       }
     }

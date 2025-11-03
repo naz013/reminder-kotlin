@@ -33,19 +33,4 @@ data class Note(
   var version: Long = 0L,
   @Transient
   var syncState: SyncState,
-) : Serializable {
-
-  constructor(oldNote: OldNote) : this(
-    color = oldNote.color,
-    palette = oldNote.palette,
-    key = oldNote.key,
-    date = oldNote.date,
-    style = oldNote.style,
-    uniqueId = oldNote.uniqueId,
-    summary = oldNote.summary,
-    updatedAt = oldNote.updatedAt,
-    fontSize = oldNote.fontSize,
-    archived = oldNote.archived,
-    syncState = SyncState.Synced,
-  )
-}
+) : Serializable

@@ -20,11 +20,11 @@ object TelephonyUtil {
     var note = ""
     if (message != null) {
       if (message.length > 100) {
-        title = message.substring(0, 48)
+        title = message.take(48)
         title = "$title..."
       }
       if (message.length > 150) {
-        note = message.substring(0, 135)
+        note = message.take(135)
         note = "$note..."
       }
     }
@@ -34,7 +34,7 @@ object TelephonyUtil {
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     try {
-      context.startActivity(Intent.createChooser(intent, "Send email..."))
+      context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_send_email)))
     } catch (e: Exception) {
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
@@ -48,7 +48,7 @@ object TelephonyUtil {
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     try {
-      val chooser = Intent.createChooser(intent, "Send email...")
+      val chooser = Intent.createChooser(intent, context.getString(R.string.share_send_email))
       context.startActivity(chooser)
     } catch (e: Exception) {
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
@@ -64,22 +64,8 @@ object TelephonyUtil {
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     try {
-      val chooser = Intent.createChooser(intent, "Send email...")
+      val chooser = Intent.createChooser(intent, context.getString(R.string.share_send_email))
       context.startActivity(chooser)
-    } catch (e: Exception) {
-      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-    }
-  }
-
-  fun sendFile(file: File, context: Context) {
-    val intent = Intent(Intent.ACTION_SEND)
-    intent.type = "text/plain"
-    intent.putExtra(Intent.EXTRA_SUBJECT, file.name)
-    val uri = UriUtil.getUri(context, file, BuildConfig.APPLICATION_ID)
-    intent.putExtra(Intent.EXTRA_STREAM, uri)
-    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-    try {
-      context.startActivity(Intent.createChooser(intent, "Send email..."))
     } catch (e: Exception) {
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
@@ -104,7 +90,7 @@ object TelephonyUtil {
       intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
     try {
-      context.startActivity(Intent.createChooser(intent, "Send email..."))
+      context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_send_email)))
     } catch (e: Exception) {
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
@@ -129,7 +115,7 @@ object TelephonyUtil {
       intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
     try {
-      context.startActivity(Intent.createChooser(intent, "Send email..."))
+      context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_send_email)))
     } catch (e: Exception) {
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
