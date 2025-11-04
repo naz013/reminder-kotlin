@@ -124,9 +124,13 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
           safeNavigation { HomeEventsFragmentDirections.actionActionEventsToArchiveFragment() }
         }
         R.id.action_settings -> {
-          safeNavigation {
-            HomeEventsFragmentDirections.actionActionEventsToRemindersSettingsFragment(
-              getString(R.string.action_settings)
+          navigate {
+            navigate(
+              R.id.remindersSettingsFragment,
+              Bundle().apply {
+                putString(IntentKeys.INTENT_SCREEN_TITLE, getString(R.string.action_settings))
+              },
+              NavigationAnimations.modalNavOptions()
             )
           }
         }

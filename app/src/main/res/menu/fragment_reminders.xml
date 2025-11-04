@@ -11,23 +11,17 @@
 
     <item
         android:id="@+id/action_archive"
-        android:icon="@drawable/ic_fluent_archive"
         android:title="@string/reminders_archive"
-        app:iconTint="?colorOnSurface"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_groups"
-        android:icon="@drawable/ic_builder_group"
         android:title="@string/groups"
-        app:iconTint="?colorOnSurface"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_fluent_settings"
         android:title="@string/action_settings"
-        app:iconTint="?colorOnSurface"
         app:showAsAction="never" />
 
 </menu>

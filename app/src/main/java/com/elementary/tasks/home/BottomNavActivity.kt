@@ -44,7 +44,6 @@ class BottomNavActivity :
   SearchableFragmentCallback {
 
   private val navigationObservable by inject<NavigationObservable>()
-  private val prefs by inject<Prefs>()
   private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
 
   private lateinit var navController: NavController

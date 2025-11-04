@@ -77,7 +77,7 @@ class CalendarFragment :
       when (menuItem.itemId) {
         R.id.action_settings -> {
           safeNavigation {
-            CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment()
+            CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment(getString(R.string.action_settings))
           }
           true
         }

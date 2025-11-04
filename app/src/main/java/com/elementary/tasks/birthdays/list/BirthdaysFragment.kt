@@ -81,7 +81,22 @@ class BirthdaysFragment : BaseSubEventsFragment<FragmentBirthdaysBinding>() {
 
   override fun onResume() {
     super.onResume()
-    removeMenu()
+    addMenu(R.menu.fragment_birthdays, { menuItem ->
+      when (menuItem.itemId) {
+        R.id.action_settings -> {
+          navigate {
+            navigate(
+              R.id.birthdaySettingsFragment,
+              Bundle().apply {
+                putString(IntentKeys.INTENT_SCREEN_TITLE, getString(R.string.action_settings))
+              },
+              NavigationAnimations.modalNavOptions()
+            )
+          }
+        }
+      }
+      true
+    })
   }
 
   private fun addNew() {

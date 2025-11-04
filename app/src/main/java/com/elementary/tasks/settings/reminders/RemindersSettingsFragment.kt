@@ -222,4 +222,12 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
   override fun getTitle(): String {
     return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.reminders_)
   }
+
+  override fun getNavigationIcon(): Int {
+    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+      super.getNavigationIcon()
+    } else {
+      R.drawable.ic_builder_clear
+    }
+  }
 }

@@ -115,7 +115,7 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
     }
     binding.calendarSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment(null))
     }
     binding.birthdaysSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToBirthdaySettingsFragment())
