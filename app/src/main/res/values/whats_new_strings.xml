@@ -3,9 +3,10 @@
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
         \n
-        ✅ Added the dot indicator for the days with events in the week view;
-        ✅ Added the Group and Date filters to the Reminders list;
-        🐞 Fixed the issue where selected tab resets during screen rotation;
+        ✅ Added the new Feedback screen to gather your thoughts;
+        ⭐ Improved sync and backup performance;
+        ⭐ Updated the Cloud backup Settings screen for better usability;
+        ⭐ Refined the UI for a smoother experience;
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">

@@ -49,7 +49,7 @@ internal class GoogleDriveApiImpl(
       var resultFile: File? = null
       stream.use {
         resultFile = drive?.files()?.create(fileMetadata, mediaContent)
-          ?.setFields("id")
+          ?.setFields(FILES_FIELDS)
           ?.execute()
       }
       val uploadedFile = resultFile ?: throw IllegalStateException("File upload failed")
@@ -74,7 +74,7 @@ internal class GoogleDriveApiImpl(
     try {
       val request = drive?.files()?.list()
         ?.setSpaces("appDataFolder")
-        ?.setFields("nextPageToken, files(id, name)")
+        ?.setFields("nextPageToken, files($FILES_FIELDS)")
         ?.setQ("mimeType = 'text/plain' and name contains '${searchParams.name}'")
         ?: return null
       do {
@@ -111,7 +111,7 @@ internal class GoogleDriveApiImpl(
     try {
       val request = drive?.files()?.list()
         ?.setSpaces("appDataFolder")
-        ?.setFields("nextPageToken, files(id, name)")
+        ?.setFields("nextPageToken, files($FILES_FIELDS)")
         ?.setQ("mimeType = 'text/plain' and name contains '$fileExtension'")
         ?: return emptyList()
       do {
@@ -251,5 +251,6 @@ internal class GoogleDriveApiImpl(
     private const val TAG = "GoogleDriveApi"
     private const val APPLICATION_NAME = "Reminder/7.0"
     private val PARENTS = Collections.singletonList("appDataFolder")
+    private const val FILES_FIELDS = "id, name, description, fileExtension, modifiedTime, size, version"
   }
 }
