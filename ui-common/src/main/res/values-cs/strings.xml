@@ -870,4 +870,27 @@
     <string name="filters_reset">Resetovat filtry</string>
     <string name="filter_reminders">Filtrování připomenutí</string>
     <string name="date_range">Rozsah dat</string>
+
+    <string name="erase_cloud_data">Vymazat data v cloudu</string>
+    <string name="erase_cloud_data_message">Vymazat všechna data v cloudu</string>
+    <string name="erase">Vymazat</string>
+    <string name="auto_backup_every">Každý</string>
+    <string name="thank_you_for_your_feedback">Děkujeme za vaši zpětnou vazbu!</string>
+    <string name="feedback_submit">Odeslat</string>
+    <string name="feedback_rating">Hodnocení</string>
+    <string name="feedback_comment">Komentář</string>
+    <string name="share_your_feedback">Podělte se o svou zpětnou vazbu…</string>
+    <string name="attach_log_files">Přiložit soubory protokolu</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">Pomozte nám diagnostikovat problémy přiložením logů aplikace</string>
+    <string name="feedback_email_optional">E-mail (nepovinné)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">Použijeme ho k následnému kontaktování v souvislosti s vaší zpětnou vazbou</string>
+    <string name="share_your_experience">Podělte se o své zkušenosti</string>
+    <string name="which_network_to_use_for_sync">Kterou síť použít pro synchronizaci</string>
+    <string name="network_type_any_network">Libovolná</string>
+    <string name="network_type_wifi_only">Pouze Wi‑Fi</string>
+    <string name="network_type_cellular">Mobilní data</string>
+    <string name="select_network_type">Vyberte typ sítě</string>
+    <string name="report_an_issue">Nahlásit problém</string>
+    <string name="move_to_archive">Přesunout do archivu</string>
+    <string name="share_send_email">Odeslat e-mail…</string>
 </resources>

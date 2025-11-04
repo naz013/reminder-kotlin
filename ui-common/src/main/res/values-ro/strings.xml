@@ -870,4 +870,27 @@
     <string name="filters_reset">Resetează filtre</string>
     <string name="filter_reminders">Filtrează mementouri</string>
     <string name="date_range">Interval de date</string>
+
+    <string name="erase_cloud_data">Șterge datele din cloud</string>
+    <string name="erase_cloud_data_message">Șterge toate datele din cloud</string>
+    <string name="erase">Șterge</string>
+    <string name="auto_backup_every">La fiecare</string>
+    <string name="thank_you_for_your_feedback">Vă mulțumim pentru feedback!</string>
+    <string name="feedback_submit">Trimite</string>
+    <string name="feedback_rating">Evaluare</string>
+    <string name="feedback_comment">Comentariu</string>
+    <string name="share_your_feedback">Împărtășiți feedback‑ul dumneavoastră…</string>
+    <string name="attach_log_files">Atașați fișiere jurnal</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">Ajutați‑ne să diagnosticăm problemele incluzând jurnalele aplicației</string>
+    <string name="feedback_email_optional">E-mail (opțional)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">Vom folosi aceste informații pentru a reveni asupra feedback‑ului dumneavoastră</string>
+    <string name="share_your_experience">Împărtășiți experiența dumneavoastră</string>
+    <string name="which_network_to_use_for_sync">Ce rețea să folosiți pentru sincronizare</string>
+    <string name="network_type_any_network">Orice rețea</string>
+    <string name="network_type_wifi_only">Doar Wi‑Fi</string>
+    <string name="network_type_cellular">Date mobile</string>
+    <string name="select_network_type">Selectați tipul de rețea</string>
+    <string name="report_an_issue">Raportați o problemă</string>
+    <string name="move_to_archive">Mutați în arhivă</string>
+    <string name="share_send_email">Trimiteți e‑mail…</string>
 </resources>
