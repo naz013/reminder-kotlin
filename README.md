@@ -1,6 +1,6 @@
 # Reminder - TODO & Task manager
 
-<img src="https://github.com/naz013/reminder-kotlin/raw/master/res/app_icon.png" width="100" alt="Reminder">
+<img src="https://github.com/naz013/reminder-kotlin/raw/master/res/ic_launcher-playstore.png" width="100" alt="Reminder">
 
 A comprehensive task management and reminder application for Android, built with Kotlin. Stay organized and never miss important events with powerful reminder features, note-taking capabilities, and cloud backup support.
 
