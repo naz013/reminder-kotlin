@@ -33,11 +33,7 @@ class SettingsFragment :
 
   private val prefsObserver: (String) -> Unit = {
     Handler(Looper.getMainLooper()).post {
-      if (it == PrefsConstants.DATA_BACKUP) {
-        checkBackupPrefs()
-      } else {
-        checkDoNotDisturb()
-      }
+      checkDoNotDisturb()
     }
   }
   private val loginLauncher = LoginLauncher(this) {
@@ -58,19 +54,16 @@ class SettingsFragment :
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
-    prefs.addObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
     remotePrefs.addUpdateObserver(this)
     remotePrefs.addMessageObserver(this)
     if (!BuildParams.isPro) {
       remotePrefs.addSaleObserver(this)
     }
     checkDoNotDisturb()
-    checkBackupPrefs()
   }
 
   override fun onPause() {
     super.onPause()
-    prefs.removeObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
@@ -80,14 +73,6 @@ class SettingsFragment :
     }
     remotePrefs.removeUpdateObserver(this)
     remotePrefs.removeMessageObserver(this)
-  }
-
-  private fun checkBackupPrefs() {
-    if (prefs.isBackupEnabled) {
-      binding.backupBadge.gone()
-    } else {
-      binding.backupBadge.visible()
-    }
   }
 
   private fun checkDoNotDisturb() {
@@ -119,7 +104,7 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
     }
     binding.notesSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment(null))
     }
     binding.notificationSettings.setOnClickListener {
       safeNavigation(
@@ -130,13 +115,13 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
     }
     binding.calendarSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment(null))
     }
     binding.birthdaysSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToBirthdaySettingsFragment())
     }
     binding.remindersSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment(null))
     }
     binding.securitySettings.setOnClickListener { askPin() }
     binding.troubleshootingSettings.setOnClickListener {

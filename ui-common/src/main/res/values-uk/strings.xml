@@ -871,4 +871,27 @@
     <string name="filters_reset">Скинути фільтри</string>
     <string name="filter_reminders">Фільтрувати нагадування</string>
     <string name="date_range">Діапазон дат</string>
+
+    <string name="erase_cloud_data">Видалити дані в хмарі</string>
+    <string name="erase_cloud_data_message">Видалити всі дані в хмарі</string>
+    <string name="erase">Видалити</string>
+    <string name="auto_backup_every">Кожні</string>
+    <string name="thank_you_for_your_feedback">Дякуємо за ваш відгук!</string>
+    <string name="feedback_submit">Надіслати</string>
+    <string name="feedback_rating">Оцінка</string>
+    <string name="feedback_comment">Коментар</string>
+    <string name="share_your_feedback">Поділіться своїм відгуком…</string>
+    <string name="attach_log_files">Прикріпити файли журналів</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">Допоможіть нам діагностувати проблеми, прикріпивши журнали додатку</string>
+    <string name="feedback_email_optional">Електронна пошта (необов\'язково)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">Ми використаємо це, щоб зв\'язатися з вами щодо вашого відгуку</string>
+    <string name="share_your_experience">Поділіться своїм досвідом</string>
+    <string name="which_network_to_use_for_sync">Яку мережу використовувати для синхронізації</string>
+    <string name="network_type_any_network">Будь‑яка</string>
+    <string name="network_type_wifi_only">Лише Wi‑Fi</string>
+    <string name="network_type_cellular">Мобільні дані</string>
+    <string name="select_network_type">Виберіть тип мережі</string>
+    <string name="report_an_issue">Повідомити про проблему</string>
+    <string name="move_to_archive">Перемістити в архів</string>
+    <string name="share_send_email">Надіслати електронний лист…</string>
 </resources>

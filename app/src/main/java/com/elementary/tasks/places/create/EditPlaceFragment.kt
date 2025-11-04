@@ -24,6 +24,7 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
 
   private val viewModel by viewModel<EditPlaceViewModel> { parametersOf(idFromIntent()) }
   private var googleMap: SimpleMapFragment? = null
+  private var forceExit: Boolean = false
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
@@ -127,7 +128,10 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
     viewModel.place.nonNullObserve(viewLifecycleOwner) { showPlace(it) }
     viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
-        Commands.SAVED, Commands.DELETED -> moveBack()
+        Commands.SAVED, Commands.DELETED -> {
+          forceExit = true
+          moveBack()
+        }
         else -> {
         }
       }
@@ -197,7 +201,7 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
   override fun canGoBack(): Boolean {
     val canCloseMap = googleMap?.onBackPressed()
     Logger.i(TAG, "Map can be closed: $canCloseMap")
-    return canCloseMap == true
+    return canCloseMap == true || forceExit
   }
 
   companion object {

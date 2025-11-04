@@ -871,4 +871,27 @@
     <string name="filters_reset">Filtreleri sıfırla</string>
     <string name="filter_reminders">Hatırlatıcıları filtrele</string>
     <string name="date_range">Tarih aralığı</string>
+
+    <string name="erase_cloud_data">Buluttaki verileri sil</string>
+    <string name="erase_cloud_data_message">Buluttaki tüm verileri sil</string>
+    <string name="erase">Sil</string>
+    <string name="auto_backup_every">Her</string>
+    <string name="thank_you_for_your_feedback">Geri bildiriminiz için teşekkür ederiz!</string>
+    <string name="feedback_submit">Gönder</string>
+    <string name="feedback_rating">Değerlendirme</string>
+    <string name="feedback_comment">Yorum</string>
+    <string name="share_your_feedback">Geri bildiriminizi paylaşın…</string>
+    <string name="attach_log_files">Log dosyalarını ekle</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">Uygulama loglarını ekleyerek sorunları teşhis etmemize yardımcı olun</string>
+    <string name="feedback_email_optional">E-posta (isteğe bağlı)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">Bunu, geri bildiriminizle ilgili takip için kullanacağız</string>
+    <string name="share_your_experience">Deneyiminizi paylaşın</string>
+    <string name="which_network_to_use_for_sync">Senkronizasyon için hangi ağı kullanmak istersiniz?</string>
+    <string name="network_type_any_network">Herhangi bir ağ</string>
+    <string name="network_type_wifi_only">Sadece Wi‑Fi</string>
+    <string name="network_type_cellular">Mobil veri</string>
+    <string name="select_network_type">Ağ türünü seçin</string>
+    <string name="report_an_issue">Sorun bildir</string>
+    <string name="move_to_archive">Arşive taşı</string>
+    <string name="share_send_email">E-posta gönder…</string>
 </resources>

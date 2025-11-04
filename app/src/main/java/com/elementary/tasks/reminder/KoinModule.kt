@@ -82,20 +82,33 @@ import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogle
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
+import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
+import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
+import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val reminderModule = module {
+  factory { DeleteReminderUseCase(get(), get(), get(), get()) }
+  factory { DeleteAllReminderUseCase(get(), get(), get()) }
+  factory { MoveReminderToArchiveUseCase(get(), get(), get()) }
+  factory { SaveReminderUseCase(get(), get(), get()) }
+  factory { ScheduleReminderUploadUseCase(get()) }
+
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
-  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  viewModel { ManagePresetsViewModel(get(), get(), get()) }
+  viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
   viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
       arguments,
+      get(),
+      get(),
       get(),
       get(),
       get(),
@@ -151,11 +164,12 @@ val reminderModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
 
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get()) }
+  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
   viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
 
   factory { UriToAttachmentFileAdapter(get()) }

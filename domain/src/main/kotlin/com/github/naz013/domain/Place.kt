@@ -1,6 +1,7 @@
 package com.github.naz013.domain
 
 import com.github.naz013.domain.place.LatLng
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.UUID
@@ -23,7 +24,11 @@ data class Place(
   @SerializedName("dateTime")
   var dateTime: String = "",
   @SerializedName("tags")
-  var tags: List<String> = listOf()
+  var tags: List<String> = listOf(),
+  @SerializedName("versionId")
+  var version: Long = 0L,
+  @Transient
+  var syncState: SyncState,
 ) : Serializable {
 
   fun latLng(): LatLng = LatLng(latitude, longitude)

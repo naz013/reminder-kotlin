@@ -3,6 +3,7 @@ package com.github.naz013.repository.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.util.Random
 import java.util.UUID
@@ -35,7 +36,11 @@ internal data class BirthdayEntity(
   @SerializedName("updatedAt")
   val updatedAt: String? = null,
   @SerializedName("ignoreYear")
-  val ignoreYear: Boolean = false
+  val ignoreYear: Boolean = false,
+  @SerializedName("version")
+  val version: Long = 0L,
+  @SerializedName("syncState")
+  val syncState: String
 ) {
 
   constructor(birthday: Birthday) : this(
@@ -51,7 +56,9 @@ internal data class BirthdayEntity(
     dayMonth = birthday.dayMonth,
     uuId = birthday.uuId,
     updatedAt = birthday.updatedAt,
-    ignoreYear = birthday.ignoreYear
+    ignoreYear = birthday.ignoreYear,
+    version = birthday.version,
+    syncState = birthday.syncState.name
   )
 
   fun toDomain(): Birthday {
@@ -68,7 +75,9 @@ internal data class BirthdayEntity(
       dayMonth = dayMonth,
       uuId = uuId,
       updatedAt = updatedAt,
-      ignoreYear = ignoreYear
+      ignoreYear = ignoreYear,
+      version = version,
+      syncState = SyncState.valueOf(syncState)
     )
   }
 }

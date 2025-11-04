@@ -20,6 +20,7 @@ class FeatureManager(
     ALLOW_LOGS("allow_log_send", false),
     REMINDER_BUILDER_V1("feature_builder_v1"),
     REMINDER_BUILDER_V2("feature_builder_v2"),
-    GEOCODING("feature_geocoding")
+    GEOCODING("feature_geocoding"),
+    LOGS_IN_REVIEWS("feature_logs_in_reviews", false)
   }
 }

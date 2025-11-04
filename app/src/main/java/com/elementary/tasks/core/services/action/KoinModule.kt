@@ -27,8 +27,6 @@ val actionModule = module {
       get(),
       get(),
       get(),
-      get(),
-      get()
     )
   }
 

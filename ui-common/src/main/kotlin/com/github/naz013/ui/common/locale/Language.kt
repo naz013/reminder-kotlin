@@ -1,9 +1,8 @@
 package com.github.naz013.ui.common.locale
 
 import android.content.Context
-import android.content.res.Configuration
-import com.github.naz013.ui.common.R
 import com.github.naz013.common.TextProvider
+import com.github.naz013.ui.common.R
 import java.util.Locale
 
 class Language(
@@ -37,76 +36,16 @@ class Language(
     return context.createConfigurationContext(configuration)
   }
 
-  fun getConversationLocalizedText(context: Context, id: Int): String {
-    val configuration = Configuration(context.resources.configuration)
-    configuration.setLocale(Locale(getTextLanguage(localePreferences.voiceLocale)))
-    return context.createConfigurationContext(configuration).resources.getString(id)
-  }
-
-  fun getConversationLocalizedContext(): Context {
-    val configuration = Configuration(context.resources.configuration)
-    configuration.setLocale(Locale(getTextLanguage(localePreferences.voiceLocale)))
-    return context.createConfigurationContext(configuration)
-  }
-
-  fun getLanguages(context: Context) = listOf(
-    context.getString(R.string.english),
-    context.getString(R.string.ukrainian),
-    context.getString(R.string.spanish),
-    context.getString(R.string.portuguese),
-    context.getString(R.string.polish),
-    context.getString(R.string.italian)
-  )
-
-  fun getTextLanguage(code: Int) = when (code) {
-    0 -> ENGLISH
-    1 -> UKRAINIAN
-    2 -> SPANISH
-    3 -> PORTUGUESE
-    4 -> POLISH
-    5 -> ITALIAN
-    else -> ENGLISH
-  }
-
-  fun getLanguage(code: Int) = when (code) {
-    0 -> EN
-    1 -> UK
-    2 -> ES
-    3 -> PT
-    4 -> PL
-    5 -> IT
-    else -> EN
-  }
-
-  fun getVoiceLocale(code: Int): Locale = when (code) {
-    0 -> Locale.ENGLISH
-    1 -> Locale("uk", "")
-    2 -> Locale("es", "")
-    3 -> Locale("pt", "")
-    4 -> Locale("pl", "")
-    5 -> Locale.ITALIAN
-    else -> Locale.ENGLISH
-  }
-
   fun getScreenLocaleName(context: Context): String =
     context.resources.getStringArray(R.array.app_languages)[localePreferences.appLanguage]
 
   companion object {
-    const val ENGLISH = "en"
-    const val ITALIAN = "it"
     const val POLISH = "pl"
     const val RUSSIAN = "ru"
     const val SPANISH = "es"
     const val UKRAINIAN = "uk"
     const val PORTUGUESE = "pt"
     const val BULGARIAN = "bg"
-
-    private const val EN = "en-US"
-    private const val UK = "uk-UA"
-    private const val ES = "es-ES"
-    private const val PT = "pt-PT"
-    private const val PL = "pl"
-    private const val IT = "it"
 
     fun getScreenLanguage(code: Int): Locale {
       return when (code) {

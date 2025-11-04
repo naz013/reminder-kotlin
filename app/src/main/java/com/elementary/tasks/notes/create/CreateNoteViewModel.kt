@@ -18,19 +18,18 @@ import com.elementary.tasks.core.data.ui.note.UiNoteEdit
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
+import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.notes.work.NoteSingleBackupWorker
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
+import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
+import com.elementary.tasks.notes.usecase.SaveNoteUseCase
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
@@ -40,7 +39,7 @@ import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -51,6 +50,7 @@ import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -65,20 +65,22 @@ class CreateNoteViewModel(
   private val imageDecoder: ImageDecoder,
   dispatcherProvider: DispatcherProvider,
   private val eventControlFactory: EventControlFactory,
-  private val workerLauncher: WorkerLauncher,
   private val noteRepository: NoteRepository,
   private val reminderRepository: ReminderRepository,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
-  private val backupTool: BackupTool,
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiNoteEditAdapter: UiNoteEditAdapter,
   private val noteImageRepository: NoteImageRepository,
   private val noteToOldNoteConverter: NoteToOldNoteConverter,
-  private val intentDataReader: IntentDataReader
+  private val intentDataReader: IntentDataReader,
+  private val deleteNoteUseCase: DeleteNoteUseCase,
+  private val saveNoteUseCase: SaveNoteUseCase,
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -134,8 +136,8 @@ class CreateNoteViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       runCatching {
         if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-          val any = MemoryUtil.readFromUri(contextProvider.context, uri, FileConfig.FILE_NAME_NOTE)
-          if (any != null && any is OldNote) {
+          val any = MemoryUtil.readFromUri(contextProvider.context, uri, SharedNote.FILE_EXTENSION)
+          if (any != null && any is SharedNote) {
             noteToOldNoteConverter.toNote(any)?.also {
               isFromFile = true
               onNoteLoaded(it)
@@ -149,10 +151,11 @@ class CreateNoteViewModel(
 
   fun shareNote(text: String, opacity: Int) {
     postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
+    viewModelScope.launch(dispatcherProvider.io()) {
       val note = createObject(text, opacity)
-      val file = backupTool.noteToFile(note)
-      withUIContext {
+      val file = createSharedNoteFileUseCase(note)
+      Logger.i(TAG, "Share note file path: ${file?.absolutePath}")
+      withContext(dispatcherProvider.main()) {
         postInProgress(false)
         if (file != null) {
           _noteToShare.postValue(Pair(text, file))
@@ -246,7 +249,7 @@ class CreateNoteViewModel(
 
       val filePath = noteImageRepository.saveTemporaryImage(imageFile.fileName, bs)
 
-      Logger.d("addBitmap: size=${bos.size()}")
+      Logger.i(TAG, "Add bitmap saved to: $filePath")
       imageFile = imageFile.copy(
         filePath = filePath,
         state = UiNoteImageState.READY
@@ -290,17 +293,14 @@ class CreateNoteViewModel(
     val note = noteWithImages.note ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      noteRepository.delete(note.key)
-      noteRepository.deleteImageForNote(note.key)
-      noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      deleteNoteUseCase(note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
   }
 
   fun parseDrop(clipData: ClipData, text: String) {
-    Logger.d("parseDrop: ${clipData.itemCount}, ${clipData.description}")
+    Logger.i(TAG, "Parse drop called with ${clipData.itemCount} items.")
     viewModelScope.launch(dispatcherProvider.default()) {
       var parsedText = ""
       val uris = mutableListOf<Uri>()
@@ -352,10 +352,8 @@ class CreateNoteViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       v.updatedAt = DateTimeManager.gmtDateTime
-      Logger.d("saveNote: $note")
-      saveImages(note.images, v.key)
-      noteRepository.save(v)
-      workerLauncher.startWork(NoteSingleBackupWorker::class.java, IntentKeys.INTENT_ID, v.key)
+      saveNoteUseCase(note)
+      Logger.i(TAG, "Note saved with id: ${v.key}")
       postInProgress(false)
       postCommand(Commands.SAVED)
       if (reminder != null) {
@@ -399,7 +397,7 @@ class CreateNoteViewModel(
     val noteWithImages = localNote
     var note = noteWithImages?.note
     if (note == null) {
-      note = Note()
+      note = Note(syncState = SyncState.WaitingForUpload)
     }
     note.summary = text
     note.date = dateTimeManager.getNowGmtDateTime()
@@ -408,6 +406,7 @@ class CreateNoteViewModel(
     note.fontSize = fontSize.value ?: FontParams.DEFAULT_FONT_SIZE
     note.palette = palette.value ?: 0
     note.opacity = pair.second
+    note.syncState = SyncState.WaitingForUpload
 
     return (noteWithImages ?: NoteWithImages()).copy(
       images = images.map {
@@ -432,28 +431,12 @@ class CreateNoteViewModel(
       }
       if (reminder.groupUuId != "") {
         eventControlFactory.getController(reminder).enable()
-        workerLauncher.startWork(
-          ReminderSingleBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          reminder.uuId
-        )
+        scheduleReminderUploadUseCase(reminder.uuId)
       }
     }
   }
 
-  private suspend fun saveImages(list: List<ImageFile>, id: String) {
-    val oldList = noteRepository.getImagesByNoteId(id)
-    Logger.d("saveImages: ${oldList.size}")
-    for (image in oldList) {
-      Logger.d("saveImages: delete -> ${image.id}, ${image.noteId}")
-      noteRepository.deleteImage(image.id)
-    }
-    noteImageRepository.moveImagesToFolder(list, id)
-      .map { it.copy(noteId = id) }
-      .takeIf { it.isNotEmpty() }
-      ?.also {
-        Logger.d("saveImages: new list -> $it")
-        noteRepository.saveAll(it)
-      }
+  companion object {
+    private const val TAG = "CreateNoteViewModel"
   }
 }

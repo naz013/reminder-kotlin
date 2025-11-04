@@ -2,6 +2,7 @@ package com.elementary.tasks.tests
 
 import android.text.TextUtils
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -24,7 +25,8 @@ object TestObjects {
       number = number,
       date = createBirthDate(25, 5, 1955),
       key = "Test User|$secKey",
-      dayMonth = "25|5"
+      dayMonth = "25|5",
+      syncState = SyncState.Synced,
     )
   }
 

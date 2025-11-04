@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
@@ -15,10 +17,8 @@ import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
 import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiComparator
 import com.elementary.tasks.reminder.build.bi.BiFactory
@@ -38,8 +38,9 @@ import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
-import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
-import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
+import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -52,6 +53,7 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -67,6 +69,7 @@ import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.sync.DataType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -75,10 +78,8 @@ import java.util.UUID
 
 class BuildReminderViewModel(
   private val arguments: Bundle?,
-  private val googleCalendarUtils: GoogleCalendarUtils,
   private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val reminderRepository: ReminderRepository,
   private val placeRepository: PlaceRepository,
@@ -106,7 +107,11 @@ class BuildReminderViewModel(
   private val intentDataReader: IntentDataReader,
   private val builderErrorFinder: BuilderErrorFinder,
   private val builderErrorToTextAdapter: BuilderErrorToTextAdapter,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val deleteReminderUseCase: DeleteReminderUseCase,
+  private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -129,6 +134,9 @@ class BuildReminderViewModel(
 
   private val _canSave = mutableLiveDataOf<Boolean>()
   val canSave = _canSave.toSingleEvent()
+
+  private val _showReviewDialog = mutableLiveDataOf<Event<Unit>>()
+  val showReviewDialog = _showReviewDialog.toLiveData()
 
   var id: String = ""
     private set
@@ -750,9 +758,17 @@ class BuildReminderViewModel(
       builderScheme = builderItemsToBuilderPresetAdapter(items),
       description = null,
       isDefault = false,
-      recurItemsToAdd = null
+      recurItemsToAdd = null,
+      syncState = SyncState.WaitingForUpload,
+      version = 1
     )
     recurPresetRepository.save(preset)
+    scheduleBackgroundWorkUseCase(
+      workType = WorkType.Upload,
+      dataType = DataType.RecurPresets,
+      id = preset.id,
+      ids = null
+    )
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))
   }
 
@@ -785,7 +801,21 @@ class BuildReminderViewModel(
     analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
     reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
     Logger.i(TAG, "Reminder saved, type = ${reminder.type}")
-    backupReminder(reminder.uuId)
+    scheduleReminderUploadUseCase(reminder.uuId)
+
+    // Track reminder creation and show review dialog after 4 reminders
+    if (!isEdit && !prefs.reviewDialogShown) {
+      val currentCount = prefs.remindersCreatedCount
+      val newCount = currentCount + 1
+      prefs.remindersCreatedCount = newCount
+      Logger.i(TAG, "Reminder creation count: $newCount")
+
+      if (newCount >= 4) {
+        Logger.i(TAG, "Showing review dialog after 4 reminders created")
+        _showReviewDialog.postValue(Event(Unit))
+        prefs.reviewDialogShown = true
+      }
+    }
   }
 
   private suspend fun pauseReminder(reminder: Reminder) {
@@ -811,10 +841,7 @@ class BuildReminderViewModel(
     Logger.i(TAG, "Move reminder to Archive, id = ${reminder.uuId}")
 
     withResultSuspend {
-      reminder.isRemoved = true
-      eventControlFactory.getController(reminder).disable()
-      reminderRepository.save(reminder)
-      backupReminder(reminder.uuId)
+      moveReminderToArchiveUseCase(reminder.uuId)
       Commands.DELETED
     }
   }
@@ -830,33 +857,14 @@ class BuildReminderViewModel(
 
     if (showMessage) {
       withResultSuspend {
-        eventControlFactory.getController(reminder).disable()
-        reminderRepository.delete(reminder.uuId)
-        googleCalendarUtils.deleteEvents(reminder.uuId)
-        workerLauncher.startWork(
-          ReminderDeleteBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          reminder.uuId
-        )
+        deleteReminderUseCase(reminder)
         Commands.DELETED
       }
     } else {
       withProgressSuspend {
-        eventControlFactory.getController(reminder).disable()
-        reminderRepository.delete(reminder.uuId)
-        googleCalendarUtils.deleteEvents(reminder.uuId)
-        workerLauncher.startWork(
-          ReminderDeleteBackupWorker::class.java,
-          IntentKeys.INTENT_ID,
-          reminder.uuId
-        )
+        deleteReminderUseCase(reminder)
       }
     }
-  }
-
-  private fun backupReminder(uuId: String) {
-    Logger.i(TAG, "Schedule reminder backup work")
-    workerLauncher.startWork(ReminderSingleBackupWorker::class.java, IntentKeys.INTENT_ID, uuId)
   }
 
   companion object {

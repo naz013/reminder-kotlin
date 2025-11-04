@@ -32,7 +32,6 @@ object PrefsConstants {
   const val LED_COLOR = "led_color"
   const val MARKER_STYLE = "marker_style"
   const val INFINITE_VIBRATION = "infinite_vibration"
-  const val DATA_BACKUP = "data_backup"
   const val NOTIFICATION_REPEAT = "notification_repeat"
   const val NOTIFICATION_REPEAT_INTERVAL = "notification_repeat_interval"
   const val WEAR_NOTIFICATION = "wear_notification"
@@ -42,20 +41,14 @@ object PrefsConstants {
   const val STATUS_BAR_ICON = "status_icon"
   const val STATUS_BAR_NOTIFICATION = "status_notification"
   const val TRACK_TIME = "tracking_time"
-  const val TIME_MORNING = "time_morning"
-  const val TIME_DAY = "time_day"
-  const val TIME_EVENING = "time_evening"
-  const val TIME_NIGHT = "time_night"
   const val EXPORT_TO_STOCK = "export_to_stock"
   const val REMINDERS_IN_CALENDAR = "reminders_in_calendar"
   const val REMINDER_COLOR = "reminder_color"
   const val TIME_FORMAT = "new_hour_format"
   const val CALENDAR_FEATURE_TASKS = "feature_tasks"
-  const val EXPORT_SETTINGS = "export_settings"
   const val BIRTHDAY_PERMANENT = "birthday_permanent"
   const val RATE_COUNT = "rate_count"
   const val USER_LOGGED = "user_logged"
-  const val LIVE_CONVERSATION = "live_conversation"
 
   const val REMEMBER_NOTE_COLOR = "remember_note_color"
   const val REMEMBER_NOTE_FONT_SIZE = "remember_note_font_size"
@@ -66,7 +59,6 @@ object PrefsConstants {
   const val NOTE_COLOR_OPACITY = "note_color_opacity"
 
   const val DROPBOX_TOKEN = "dropbox_token"
-  const val TELL_ABOUT_EVENT = "tell_about_event"
   const val APP_LANGUAGE = "app_language"
   const val REMINDER_CREATOR_PARAMS = "reminder_creator_params"
 
@@ -84,25 +76,18 @@ object PrefsConstants {
   const val DO_NOT_DISTURB_IGNORE = "do_not_disturb_ignore"
   const val DO_NOT_DISTURB_ACTION = "do_not_disturb_action"
   const val NOTE_PALETTE = "note_palette"
-  const val AUTO_SYNC_STATE = "auto_sync_state"
-  const val AUTO_SYNC_FLAGS = "auto_sync_flags"
   const val AUTO_BACKUP_STATE = "auto_backup_state"
-  const val AUTO_BACKUP_FLAGS = "auto_backup_flags"
   const val NIGHT_MODE = "night_mode"
-  const val EXPORT_ATTACHED_FILES = "export_attached_files"
   const val PRIVACY_SHOWED = "privacy_showed"
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"
   const val DYNAMIC_COLORS = "dynamic_colors_13"
   const val ANALYTICS_ENABLED = "analytics_enabled"
   const val METRIC_SYSTEM = "metric_system"
 
-  const val RECUR_SHOW_ADVANCED_DAY_DIALOG = "recur_adv_day_dialog"
-
   const val SALE_MESSAGE = "sale_message_json_v2"
   const val INTERNAL_MESSAGE = "internal_message_json_v1"
 
   const val REMINDER_CHANGED = "reminder_changed"
-  const val LAST_USED_REMINDER = "last_reminder"
   const val NOTES_ORDER = "notes_ordering"
   const val NOTES_LIST_STYLE = "notes_style"
   const val RATE_SHOW = "show_rate"
@@ -121,10 +106,11 @@ object PrefsConstants {
   const val IS_PRESET_INIT = "preset_init"
   const val IS_DEFAULT_PRESET_INIT = "preset_init_default"
 
+  const val REMINDERS_CREATED_COUNT = "reminders_created_count"
+  const val REVIEW_DIALOG_SHOWN = "review_dialog_shown"
+
   const val PRIVACY_POLICY_URL = "privacy_url"
   const val TERMS_URL = "terms_url"
-  const val VOICE_HELP_URLS = "voice_help_urls"
 
-  const val CONVERSATION_AUTO_MIC = "conversation_auto_mic"
-  const val CONVERSATION_LOCALE = "voice_locale"
+  const val WORKER_NETWORK_TYPE = "worker_network_type"
 }

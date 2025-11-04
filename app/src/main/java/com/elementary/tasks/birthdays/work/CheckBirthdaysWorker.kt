@@ -7,12 +7,14 @@ import android.provider.ContactsContract
 import android.text.TextUtils
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.feature.common.readString
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.readString
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.withContext
 
@@ -22,7 +24,8 @@ class CheckBirthdaysWorker(
   workerParams: WorkerParameters,
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
+  private val saveBirthdayUseCase: SaveBirthdayUseCase
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
@@ -105,12 +108,14 @@ class CheckBirthdaysWorker(
         day = date.dayOfMonth,
         month = date.monthValue - 1,
         key = "$name|$key",
-        updatedAt = dateTimeManager.getNowGmtDateTime()
+        updatedAt = dateTimeManager.getNowGmtDateTime(),
+        version = 0L,
+        syncState = SyncState.WaitingForUpload
       )
       if (contacts.firstOrNull { it.key == birthdayItem.key } == null) {
         counter += 1
+        saveBirthdayUseCase(birthdayItem)
       }
-      birthdayRepository.save(birthdayItem)
     }
     return counter
   }

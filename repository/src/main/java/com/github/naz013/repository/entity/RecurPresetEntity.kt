@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import com.github.naz013.domain.PresetBuilderScheme
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.converters.DateTimeTypeConverter
 import com.github.naz013.repository.converters.PresetBuilderSchemeTypeConverter
 import com.github.naz013.repository.converters.PresetTypeConverter
@@ -42,7 +43,11 @@ internal data class RecurPresetEntity(
   @SerializedName("isDefault")
   val isDefault: Boolean,
   @SerializedName("recurItemsToAdd")
-  val recurItemsToAdd: String?
+  val recurItemsToAdd: String?,
+  @SerializedName("version")
+  val version: Long = 0L,
+  @SerializedName("syncState")
+  val syncState: String = "WaitingForUpload"
 ) {
 
   constructor(recurPreset: RecurPreset) : this(
@@ -55,7 +60,9 @@ internal data class RecurPresetEntity(
     useCount = recurPreset.useCount,
     description = recurPreset.description,
     isDefault = recurPreset.isDefault,
-    recurItemsToAdd = recurPreset.recurItemsToAdd
+    recurItemsToAdd = recurPreset.recurItemsToAdd,
+    version = recurPreset.version,
+    syncState = recurPreset.syncState.name
   )
 
   fun toDomain(): RecurPreset {
@@ -69,7 +76,9 @@ internal data class RecurPresetEntity(
       useCount = useCount,
       description = description,
       isDefault = isDefault,
-      recurItemsToAdd = recurItemsToAdd
+      recurItemsToAdd = recurItemsToAdd,
+      version = version,
+      syncState = SyncState.valueOf(syncState)
     )
   }
 }

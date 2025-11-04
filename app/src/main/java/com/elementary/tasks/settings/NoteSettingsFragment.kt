@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsNotesBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
 import java.util.Locale
@@ -73,7 +74,17 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
     )
   }
 
-  override fun getTitle(): String = getString(R.string.notes)
+  override fun getTitle(): String {
+    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.notes)
+  }
+
+  override fun getNavigationIcon(): Int {
+    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+      super.getNavigationIcon()
+    } else {
+      R.drawable.ic_builder_clear
+    }
+  }
 
   private fun showOpacityPickerDialog() {
     withActivity {

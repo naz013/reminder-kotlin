@@ -2,13 +2,13 @@ package com.elementary.tasks.core.utils
 
 import android.app.AlarmManager
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -16,11 +16,11 @@ import java.util.Calendar
 
 class EventImportProcessor(
   private val googleCalendarUtils: GoogleCalendarUtils,
-  private val reminderRepository: ReminderRepository,
   private val dateTimeManager: DateTimeManager,
   private val eventControlFactory: EventControlFactory,
   private val calendarEventRepository: CalendarEventRepository,
-  private val reminderGroupRepository: ReminderGroupRepository
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val saveReminderUseCase: SaveReminderUseCase
 ) {
 
   suspend fun importEventsFor(ids: List<Long>): Result {
@@ -117,7 +117,7 @@ class EventImportProcessor(
       this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
       this.allDay = allDay
     }
-    reminderRepository.save(reminder)
+    saveReminderUseCase(reminder)
     eventControlFactory.getController(reminder).enable()
     calendarEventRepository.save(
       CalendarEvent(

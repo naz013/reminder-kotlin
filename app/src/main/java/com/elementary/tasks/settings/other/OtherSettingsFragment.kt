@@ -8,19 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.common.PackageManagerWrapper
-import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.common.Module
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.Module
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.Permissions
+import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.ReviewsApi
+import com.github.naz013.ui.common.fragment.toast
 import org.koin.android.ext.android.inject
 
 class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>() {
 
   private val packageManagerWrapper by inject<PackageManagerWrapper>()
+  private val reviewsApi by inject<ReviewsApi>()
+  private val featureManager by inject<FeatureManager>()
 
   private val mDataList = ArrayList<Item>()
   private val translators: String
@@ -56,9 +61,16 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
   override fun getTitle(): String = getString(R.string.other)
 
   private fun openFeedbackScreen() {
-    safeNavigation {
-      OtherSettingsFragmentDirections.actionOtherSettingsFragmentToFeedbackFragment()
-    }
+    reviewsApi.showFeedbackForm(
+      requireContext(),
+      getString(R.string.share_your_experience),
+      appSource = if (BuildParams.isPro) {
+        AppSource.PRO
+      } else {
+        AppSource.FREE
+      },
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
+    )
   }
 
   private fun openTermsScreen() {

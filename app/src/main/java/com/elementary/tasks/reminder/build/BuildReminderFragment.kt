@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
+import com.elementary.tasks.core.utils.BuildParams
+import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.FragmentReminderBuilderBinding
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
@@ -24,10 +26,14 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
+import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.ReviewsApi
 import com.github.naz013.ui.common.view.applyBottomInsets
+import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -37,6 +43,8 @@ class BuildReminderFragment :
   ValueDialogCallback {
 
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
+  private val reviewsApi by inject<ReviewsApi>()
+  private val featureManager by inject<FeatureManager>()
 
   private val builderAdapter = BuilderAdapter(
     onItemClickListener = { position, item ->
@@ -74,7 +82,7 @@ class BuildReminderFragment :
     binding.builderList.layoutManager = LinearLayoutManager(context)
     binding.builderList.adapter = builderAdapter
 
-    binding.addButton.applyBottomInsets()
+    binding.addButton.applyBottomInsetsMargin()
     binding.addButton.singleClick {
       SelectorDialog().show(parentFragmentManager, SelectorDialog.TAG)
     }
@@ -91,17 +99,26 @@ class BuildReminderFragment :
       onMenuItemListener = { menuItem ->
         return@addMenu when (menuItem.itemId) {
           R.id.action_add -> {
+            Logger.i(TAG, "User wants to add reminder.")
             askNotificationPermissionIfNeeded()
             true
           }
 
           R.id.action_delete -> {
+            Logger.i(TAG, "User wants to delete reminder.")
             deleteReminder()
             true
           }
 
           R.id.action_configure -> {
+            Logger.i(TAG, "User wants to configure reminder.")
             builderConfigureLauncher.configure()
+            true
+          }
+
+          R.id.action_report_issue -> {
+            Logger.i(TAG, "User wants to report an issue.")
+            showReviewDialog(getString(R.string.report_an_issue))
             true
           }
 
@@ -154,6 +171,9 @@ class BuildReminderFragment :
       binding.savePresetViewHolder.visibleGone(it)
     }
     viewModel.canSave.nonNullObserve(viewLifecycleOwner) { invalidateOptionsMenu() }
+    viewModel.showReviewDialog.observeEvent(viewLifecycleOwner) {
+      showReviewDialog(getString(R.string.share_your_experience))
+    }
   }
 
   private fun showPredictionState(prediction: ReminderPrediction) {
@@ -234,6 +254,25 @@ class BuildReminderFragment :
 
   override fun onValueChanged(position: Int, builderItem: BuilderItem<*>) {
     viewModel.updateValue(position, builderItem)
+  }
+
+  /**
+   * Shows the ReviewDialog to collect user feedback.
+   * Determines the app source (FREE or PRO) based on BuildParams.
+   */
+  private fun showReviewDialog(title: String) {
+    val appSource = if (BuildParams.isPro) {
+      AppSource.PRO
+    } else {
+      AppSource.FREE
+    }
+
+    reviewsApi.showFeedbackForm(
+      context = requireContext(),
+      title = title,
+      appSource = appSource,
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
+    )
   }
 
   companion object {

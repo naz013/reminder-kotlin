@@ -12,5 +12,6 @@ enum class Table(val tableName: String) {
   Note("Note"),
   ImageFile("ImageFile"),
   GoogleTaskList("GoogleTaskList"),
-  GoogleTask("GoogleTask")
+  GoogleTask("GoogleTask"),
+  RemoteFileMetadata("RemoteFileMetadata"),
 }

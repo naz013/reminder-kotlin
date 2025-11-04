@@ -3,6 +3,7 @@ package com.github.naz013.repository
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.sync.SyncState
 
 interface NoteRepository {
   suspend fun save(note: Note)
@@ -23,4 +24,8 @@ interface NoteRepository {
   suspend fun deleteImageForNote(id: String)
   suspend fun deleteAllNotes()
   suspend fun deleteAllImages()
+
+  suspend fun updateSyncState(id: String, state: SyncState)
+  suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
+  suspend fun getAllIds(): List<String>
 }

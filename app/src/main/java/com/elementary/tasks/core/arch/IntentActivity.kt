@@ -5,12 +5,12 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.utils.io.MemoryUtil
+import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.note.OldNote
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Navigator
@@ -58,7 +58,7 @@ class IntentActivity : LightThemedActivity() {
             finish()
           }
 
-          is OldNote -> {
+          is SharedNote -> {
             val noteWithImages = noteToOldNoteConverter.toNote(any)
             if (noteWithImages != null) {
               Logger.i(TAG, "OLD Note is valid")

@@ -9,6 +9,7 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalTime
 
@@ -218,5 +219,15 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     )
   }
 
-  override fun getTitle(): String = getString(R.string.reminders_)
+  override fun getTitle(): String {
+    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.reminders_)
+  }
+
+  override fun getNavigationIcon(): Int {
+    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+      super.getNavigationIcon()
+    } else {
+      R.drawable.ic_builder_clear
+    }
+  }
 }

@@ -208,7 +208,6 @@
                 style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stateListAnimator="@animator/card_animator"
                 app:cardCornerRadius="5dp"
                 app:contentPadding="16dp">
 

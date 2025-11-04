@@ -8,23 +8,27 @@ import com.elementary.tasks.notes.list.archived.ArchivedNotesViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.notes.work.NoteSingleBackupWorker
+import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
+import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
+import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
+import com.elementary.tasks.notes.usecase.SaveNoteUseCase
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
 val noteModule = module {
+  factory { DeleteNoteUseCase(get(), get(), get()) }
+  factory { SaveNoteUseCase(get(), get(), get()) }
+  factory { ChangeNoteArchiveStateUseCase(get(), get()) }
+
+  factory { CreateSharedNoteFileUseCase(get()) }
+
   factory { ReminderToUiNoteAttachedReminder(get()) }
 
-  factory { NoteToOldNoteConverter(get()) }
+  factory { NoteToOldNoteConverter() }
 
   single { ImagesSingleton(get()) }
 
   factory { NoteImageRepository(get()) }
-
-  worker { DeleteNoteBackupWorker(get(), get(), get(), get()) }
-  worker { NoteSingleBackupWorker(get(), get(), get(), get()) }
 
   viewModel {
     CreateNoteViewModel(
@@ -45,7 +49,9 @@ val noteModule = module {
       get(),
       get(),
       get(),
-      get()
+      get(),
+      get(),
+      get(),
     )
   }
   viewModel {
@@ -60,7 +66,8 @@ val noteModule = module {
       get(),
       get(),
       get(),
-      get()
+      get(),
+      get(),
     )
   }
   viewModel {
@@ -71,7 +78,6 @@ val noteModule = module {
       get(),
       get(),
       get(),
-      get()
     )
   }
   viewModel { (id: String) ->
@@ -88,7 +94,8 @@ val noteModule = module {
       get(),
       get(),
       get(),
-      get()
+      get(),
+      get(),
     )
   }
 }

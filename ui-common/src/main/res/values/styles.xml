@@ -117,11 +117,6 @@
 
     <!--OLD STYLES-->
 
-    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/AppTheme</item>
-    </style>
-
     <style name="FullWidthBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:maxWidth">1200dp</item>
     </style>

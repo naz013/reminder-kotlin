@@ -870,4 +870,27 @@
     <string name="filters_reset">フィルターをリセット</string>
     <string name="filter_reminders">リマインダーを絞り込む</string>
     <string name="date_range">日付範囲</string>
+
+    <string name="erase_cloud_data">クラウドのデータを消去</string>
+    <string name="erase_cloud_data_message">クラウド内のすべてのデータを消去します</string>
+    <string name="erase">消去</string>
+    <string name="auto_backup_every">毎</string>
+    <string name="thank_you_for_your_feedback">ご意見ありがとうございます！</string>
+    <string name="feedback_submit">送信</string>
+    <string name="feedback_rating">評価</string>
+    <string name="feedback_comment">コメント</string>
+    <string name="share_your_feedback">ご意見を共有してください…</string>
+    <string name="attach_log_files">ログファイルを添付</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">アプリのログを添付して問題の診断にご協力ください</string>
+    <string name="feedback_email_optional">メール（任意）</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">いただいたご意見に対してフォローアップするために使用します</string>
+    <string name="share_your_experience">体験を共有する</string>
+    <string name="which_network_to_use_for_sync">同期に使用するネットワーク</string>
+    <string name="network_type_any_network">すべてのネットワーク</string>
+    <string name="network_type_wifi_only">Wi‑Fiのみ</string>
+    <string name="network_type_cellular">モバイルデータ</string>
+    <string name="select_network_type">ネットワークの種類を選択</string>
+    <string name="report_an_issue">問題を報告</string>
+    <string name="move_to_archive">アーカイブに移動</string>
+    <string name="share_send_email">メールを送信…</string>
 </resources>

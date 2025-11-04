@@ -9,7 +9,10 @@ object FileConfig {
   /**
    * File extension for note.
    */
+  @Deprecated("Use FILE_NAME_NOTE_V3 instead")
   const val FILE_NAME_NOTE = ".no2"
+  const val FILE_NAME_NOTE_V3 = ".no3"
+  const val FILE_NAME_NOTE_IMAGE = ".nif"
 
   /**
    * File extension for reminder reminderGroup.
@@ -26,9 +29,13 @@ object FileConfig {
    */
   const val FILE_NAME_PLACE = ".pl2"
 
+  /**
+   * File extension for preset.
+   */
+  const val FILE_NAME_PRESET = ".rp2"
+
   const val FILE_NAME_SETTINGS = "app.settings"
   const val FILE_NAME_SETTINGS_EXT = ".settings"
 
-  const val FILE_NAME_FULL_BACKUP = ".rbak"
   const val FILE_NAME_JSON = ".json"
 }

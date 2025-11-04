@@ -2,6 +2,7 @@ package com.github.naz013.domain.note
 
 import com.google.gson.annotations.SerializedName
 
+@Deprecated("Old data class for sync of old backup, do not use in new code")
 data class OldNote(
   @SerializedName("summary")
   val summary: String = "",
@@ -24,5 +25,7 @@ data class OldNote(
   @SerializedName("fontSize")
   val fontSize: Int = -1,
   @SerializedName("archived")
-  val archived: Boolean = false
+  val archived: Boolean = false,
+  @SerializedName("versionId")
+  var version: Long = 0L,
 )

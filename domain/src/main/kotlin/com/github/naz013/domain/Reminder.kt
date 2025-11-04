@@ -3,6 +3,7 @@ package com.github.naz013.domain
 import com.github.naz013.domain.reminder.BuilderSchemeItem
 import com.github.naz013.domain.reminder.ReminderType
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.Random
@@ -133,7 +134,11 @@ data class Reminder(
   @SerializedName("builderScheme")
   var builderScheme: List<BuilderSchemeItem>? = null,
   @SerializedName("version")
-  var version: String? = DEFAULT_VERSION,
+  var jsonSchemaVersion: String? = DEFAULT_VERSION,
+  @SerializedName("versionId")
+  var version: Long = 0L,
+  @Transient
+  val syncState: SyncState = SyncState.Synced,
   @Transient
   var groupTitle: String? = "",
   @Transient

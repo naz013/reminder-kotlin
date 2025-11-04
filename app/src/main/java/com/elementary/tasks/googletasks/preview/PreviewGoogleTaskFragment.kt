@@ -12,6 +12,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.databinding.FragmentGoogleTaskPreviewBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
@@ -96,7 +97,8 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
         R.id.editGoogleTaskFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, idFromIntent())
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }

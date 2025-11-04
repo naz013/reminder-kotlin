@@ -286,9 +286,6 @@
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
-            android:name="com.elementary.tasks.settings.other.SendFeedbackActivity"
-            android:exported="false" />
-        <activity
             android:name=".other.PrivacyPolicyActivity"
             android:exported="false" />
         <activity

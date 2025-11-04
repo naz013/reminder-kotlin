@@ -870,4 +870,27 @@
     <string name="filters_reset">Restablecer filtros</string>
     <string name="filter_reminders">Filtrar recordatorios</string>
     <string name="date_range">Rango de fechas</string>
+
+    <string name="erase_cloud_data">Borrar datos en la nube</string>
+    <string name="erase_cloud_data_message">Borrar todos los datos en la nube</string>
+    <string name="erase">Borrar</string>
+    <string name="auto_backup_every">Cada</string>
+    <string name="thank_you_for_your_feedback">¡Gracias por tus comentarios!</string>
+    <string name="feedback_submit">Enviar</string>
+    <string name="feedback_rating">Valoración</string>
+    <string name="feedback_comment">Comentario</string>
+    <string name="share_your_feedback">Comparte tus comentarios…</string>
+    <string name="attach_log_files">Adjuntar archivos de registro</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">Ayúdanos a diagnosticar problemas incluyendo los registros de la aplicación</string>
+    <string name="feedback_email_optional">Correo electrónico (opcional)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">Usaremos esto para dar seguimiento a tus comentarios</string>
+    <string name="share_your_experience">Comparte tu experiencia</string>
+    <string name="which_network_to_use_for_sync">Qué red usar para la sincronización</string>
+    <string name="network_type_any_network">Cualquiera</string>
+    <string name="network_type_wifi_only">Solo Wi‑Fi</string>
+    <string name="network_type_cellular">Datos móviles</string>
+    <string name="select_network_type">Seleccionar el tipo de red</string>
+    <string name="report_an_issue">Reportar un problema</string>
+    <string name="move_to_archive">Mover al archivo</string>
+    <string name="share_send_email">Enviar correo…</string>
 </resources>

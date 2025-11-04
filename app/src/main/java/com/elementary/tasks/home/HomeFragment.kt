@@ -22,6 +22,7 @@ import com.elementary.tasks.home.scheduleview.HeaderTimeType
 import com.elementary.tasks.home.scheduleview.ScheduleAdapter
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleModel
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.whatsnew.WhatsNewManager
@@ -58,7 +59,8 @@ class HomeFragment :
           R.id.previewReminderFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -71,7 +73,8 @@ class HomeFragment :
           R.id.previewNoteFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -81,7 +84,8 @@ class HomeFragment :
           R.id.previewGoogleTaskFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     },
@@ -91,7 +95,8 @@ class HomeFragment :
           R.id.previewBirthdayFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, id)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     }
@@ -133,11 +138,33 @@ class HomeFragment :
     updateLoginBanner()
     initViewModel()
     setUpWhatsNewBanner()
+    setupScrollFadeEffect()
 
     initRemindersList()
 
     whatsNewManager.addListener(this)
     lifecycle.addObserver(whatsNewManager)
+  }
+
+  /**
+   * Sets up fade effect for GreetingHeaderTextView when scrolling.
+   * The view gradually fades out as the user scrolls down and fades in when scrolling back up.
+   */
+  private fun setupScrollFadeEffect() {
+    binding.scheduleHeaderView.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+      val greetingView = binding.greetingHeaderTextView
+      val totalScrollRange = appBarLayout.totalScrollRange
+      val greetingHeight = greetingView.height
+
+      if (totalScrollRange > 0 && greetingHeight > 0) {
+        // Calculate alpha based on scroll position
+        // When verticalOffset is 0, we're fully expanded (alpha = 1.0)
+        // When verticalOffset reaches -greetingHeight, greeting is fully scrolled off (alpha = 0.0)
+        val scrollPercentage = -verticalOffset.toFloat() / greetingHeight.toFloat()
+        val alpha = 1.0f - scrollPercentage.coerceIn(0f, 1f)
+        greetingView.alpha = alpha
+      }
+    }
   }
 
   private fun showEventTypeSelectionDialog(headerTimeType: HeaderTimeType?) {
@@ -180,7 +207,8 @@ class HomeFragment :
         Bundle().apply {
           putParcelable(deepLinkData.intentKey, deepLinkData)
           putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -196,7 +224,8 @@ class HomeFragment :
         Bundle().apply {
           putParcelable(deepLinkData.intentKey, deepLinkData)
           putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -209,7 +238,8 @@ class HomeFragment :
         Bundle().apply {
           putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
           putParcelable(deepLinkData.intentKey, deepLinkData)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }
@@ -319,7 +349,8 @@ class HomeFragment :
             navigationAction.id,
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, navigationAction.objectId)
-            }
+            },
+            NavigationAnimations.inDepthNavOptions()
           )
         }
       }

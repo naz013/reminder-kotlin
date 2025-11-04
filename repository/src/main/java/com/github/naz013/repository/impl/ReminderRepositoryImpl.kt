@@ -1,6 +1,7 @@
 package com.github.naz013.repository.impl
 
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.dao.ReminderDao
@@ -141,6 +142,22 @@ internal class ReminderRepositoryImpl(
     Logger.d(TAG, "Delete all reminders by ids: $ids")
     dao.deleteAll(ids)
     tableChangeNotifier.notify(table)
+  }
+
+  override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> {
+    Logger.d(TAG, "Get reminder ids by sync states: $syncStates")
+    return dao.getBySyncStates(syncStates.map { it.name })
+  }
+
+  override suspend fun updateSyncState(id: String, state: SyncState) {
+    Logger.d(TAG, "Update reminder sync state, id: $id, state: $state")
+    dao.updateSyncState(id, state.name)
+    tableChangeNotifier.notify(table)
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    Logger.d(TAG, "Get all reminder ids")
+    return dao.getAllIds()
   }
 
   companion object {

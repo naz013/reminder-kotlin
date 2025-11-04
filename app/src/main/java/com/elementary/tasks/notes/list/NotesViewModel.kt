@@ -3,43 +3,42 @@ package com.elementary.tasks.notes.list
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
-import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
+import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
+import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
+import com.elementary.tasks.notes.usecase.SaveNoteUseCase
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.io.BackupTool
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.notes.work.NoteSingleBackupWorker
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class NotesViewModel(
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val backupTool: BackupTool,
   private val textProvider: TextProvider,
   private val uiNoteListAdapter: UiNoteListAdapter,
   private val prefs: Prefs,
   private val noteRepository: NoteRepository,
-  private val noteImageRepository: NoteImageRepository,
   private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
   private val notifier: Notifier,
-  private val appWidgetUpdater: AppWidgetUpdater
+  private val appWidgetUpdater: AppWidgetUpdater,
+  private val deleteNoteUseCase: DeleteNoteUseCase,
+  private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
+  private val saveNoteUseCase: SaveNoteUseCase,
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
@@ -67,24 +66,7 @@ class NotesViewModel(
   fun moveToArchive(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(id)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.notes_failed_to_update))
-        return@launch
-      }
-
-      val note = noteWithImages.note
-      if (note == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.notes_failed_to_update))
-        return@launch
-      }
-
-      note.archived = true
-      noteRepository.save(note)
-
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      changeNoteArchiveStateUseCase(id, true)
 
       notesData.refresh()
 
@@ -106,9 +88,8 @@ class NotesViewModel(
         postError(textProvider.getText(R.string.failed_to_send_note))
         return@launch
       }
-      val file = runBlocking {
-        backupTool.noteToFile(note)
-      }
+      val file = createSharedNoteFileUseCase(note)
+      Logger.i(TAG, "Share note file created: ${file?.absolutePath}")
       postInProgress(false)
       if (file != null) {
         _sharedFile.postValue(Pair(note, file))
@@ -121,22 +102,7 @@ class NotesViewModel(
   fun deleteNote(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(id)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      val note = noteWithImages.note
-      if (note == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      noteRepository.delete(note.key)
-      noteRepository.deleteImageForNote(note.key)
-      noteImageRepository.clearFolder(note.key)
-      workerLauncher.startWork(DeleteNoteBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      deleteNoteUseCase(id)
 
       notesData.refresh()
 
@@ -166,8 +132,7 @@ class NotesViewModel(
       }
       note.color = color
       note.updatedAt = DateTimeManager.gmtDateTime
-      noteRepository.save(note)
-      workerLauncher.startWork(NoteSingleBackupWorker::class.java, IntentKeys.INTENT_ID, note.key)
+      saveNoteUseCase(noteWithImages)
 
       notesData.refresh()
 
@@ -187,5 +152,9 @@ class NotesViewModel(
         withUIContext { notifier.showNoteNotification(it) }
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "NotesViewModel"
   }
 }

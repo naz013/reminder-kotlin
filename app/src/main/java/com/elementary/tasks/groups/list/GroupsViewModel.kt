@@ -6,11 +6,9 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.observeTable
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
-import com.elementary.tasks.groups.work.GroupSingleBackupWorker
+import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.SaveReminderGroupUseCase
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
@@ -19,10 +17,11 @@ import kotlinx.coroutines.launch
 
 class GroupsViewModel(
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val uiGroupListAdapter: UiGroupListAdapter,
-  tableChangeListenerFactory: TableChangeListenerFactory
+  tableChangeListenerFactory: TableChangeListenerFactory,
+  private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
+  private val saveReminderGroupUseCase: SaveReminderGroupUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   val allGroups = viewModelScope.observeTable(
@@ -42,14 +41,9 @@ class GroupsViewModel(
         postCommand(Commands.FAILED)
         return@launch
       }
-      reminderGroupRepository.delete(reminderGroup.groupUuId)
+      deleteReminderGroupUseCase(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      workerLauncher.startWork(
-        GroupDeleteBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        reminderGroup.groupUuId
-      )
     }
   }
 
@@ -62,13 +56,7 @@ class GroupsViewModel(
         postCommand(Commands.FAILED)
         return@launch
       }
-
-      reminderGroupRepository.save(reminderGroup.copy(groupColor = color))
-      workerLauncher.startWork(
-        GroupSingleBackupWorker::class.java,
-        IntentKeys.INTENT_ID,
-        reminderGroup.groupUuId
-      )
+      saveReminderGroupUseCase(reminderGroup.copy(groupColor = color))
       withUIContext { postInProgress(false) }
     }
   }

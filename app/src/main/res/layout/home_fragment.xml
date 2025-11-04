@@ -17,8 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
             android:layout_marginTop="112dp"
+            android:layout_marginRight="24dp"
             android:gravity="center|top"
             android:text="@string/schedule_you_have_done_everything_for_today"
             android:textAppearance="?textAppearanceTitleLarge" />
@@ -39,51 +39,34 @@
         android:id="@+id/schedule_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
-        app:liftOnScroll="false"
+        android:fitsSystemWindows="true"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/schedule_list_view"
         tools:visibility="gone">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
-            android:layout_width="match_parent"
+        <com.elementary.tasks.core.views.GreetingHeaderTextView
+            android:id="@+id/greetingHeaderTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:contentScrim="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:textAppearance="?textAppearanceHeadlineMedium"
+            app:layout_scrollFlags="scroll|snap" />
 
-            <LinearLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_collapseMode="none">
+                android:hint="@string/search_everywhere"
+                android:textAppearance="@style/TextAppearance.SearchBar" />
 
-                <com.elementary.tasks.core.views.GreetingHeaderTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?textAppearanceHeadlineMedium" />
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_collapseMode="pin"
-                    app:layout_scrollFlags="noScroll">
-
-                    <com.google.android.material.search.SearchBar
-                        android:id="@+id/search_bar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.SearchBar"
-                        android:hint="@string/search_everywhere" />
-
-                </com.google.android.material.appbar.MaterialToolbar>
-
-            </LinearLayout>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -93,7 +76,9 @@
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:clipToPadding="false"
         android:overScrollMode="never"
+        android:paddingBottom="16dp"
         android:scrollbars="none"
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

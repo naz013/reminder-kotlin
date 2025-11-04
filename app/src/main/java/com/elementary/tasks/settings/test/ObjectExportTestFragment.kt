@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsObjectExportBinding
 import com.elementary.tasks.databinding.ListItemTestsObjectBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.logging.Logger
@@ -163,7 +164,7 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
       }
 
       if (objectType == ObjectType.Note) {
-        val oldNote = noteToOldNoteConverter.toOldNote(obj as NoteWithImages)
+        val oldNote = noteToOldNoteConverter.toSharedNote(obj as NoteWithImages)
         if (oldNote == null) {
           Logger.d("OETest", "OldNote is NULL")
           return@launch
@@ -193,7 +194,7 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
   private fun getFileExt(): String {
     return when (objectType) {
       ObjectType.Reminder -> FileConfig.FILE_NAME_REMINDER
-      ObjectType.Note -> FileConfig.FILE_NAME_NOTE
+      ObjectType.Note -> SharedNote.FILE_EXTENSION
       ObjectType.Birthday -> FileConfig.FILE_NAME_BIRTHDAY
       ObjectType.Place -> FileConfig.FILE_NAME_PLACE
       ObjectType.Group -> FileConfig.FILE_NAME_GROUP

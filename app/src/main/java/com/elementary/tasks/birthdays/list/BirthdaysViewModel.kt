@@ -3,15 +3,11 @@ package com.elementary.tasks.birthdays.list
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.list.filter.BirthdayQueryFilter
-import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
@@ -29,9 +25,7 @@ class BirthdaysViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
-  private val notifier: Notifier,
-  private val appWidgetUpdater: AppWidgetUpdater
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _birthdays = mutableLiveDataOf<List<UiBirthdayList>>()
@@ -69,12 +63,8 @@ class BirthdaysViewModel(
   fun deleteBirthday(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      birthdayRepository.delete(id)
-      notifier.showBirthdayPermanent()
-      workerLauncher.startWork(BirthdayDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, id)
+      deleteBirthdayUseCase(id)
       loadBirthdays()
-      appWidgetUpdater.updateScheduleWidget()
-      appWidgetUpdater.updateBirthdaysWidget()
       postInProgress(false)
       postCommand(Commands.DELETED)
     }

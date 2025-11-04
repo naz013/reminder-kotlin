@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 335
-    versionName = "9.9.0"
+    versionCode = 337
+    versionName = "9.10.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
@@ -79,11 +79,13 @@ android {
       val api = props.getProperty("freeApiKey", "API_KEY")
       val placesApiKey = props.getProperty("freePlacesApiKey", "\"API_KEY\"")
 
-      println("> FREE API KEY = $api")
-      println("> FREE PLACES API KEY = $placesApiKey")
-
       buildConfigField("String", "PLACES_API_KEY", placesApiKey)
       manifestPlaceholders["apiKey"] = api
+
+      buildConfigField("String", "REVIEWS_PROJECT_ID", props.getProperty("reviewsProjectId", "\"\""))
+      buildConfigField("String", "REVIEWS_APP_ID", props.getProperty("freeReviewsAppId", "\"\""))
+      buildConfigField("String", "REVIEWS_API_KEY", props.getProperty("reviewsApiKey", "\"\""))
+      buildConfigField("String", "REVIEWS_STORAGE_BUCKET", props.getProperty("reviewsStorageBucket", "\"\""))
     }
     create("pro") {
       dimension = "level"
@@ -93,11 +95,13 @@ android {
       val api = props.getProperty("proApiKey", "API_KEY")
       val placesApiKey = props.getProperty("proPlacesApiKey", "\"API_KEY\"")
 
-      println("> PRO API KEY = $api")
-      println("> PRO PLACES API KEY = $placesApiKey")
-
       buildConfigField("String", "PLACES_API_KEY", placesApiKey)
       manifestPlaceholders["apiKey"] = api
+
+      buildConfigField("String", "REVIEWS_PROJECT_ID", props.getProperty("reviewsProjectId", "\"\""))
+      buildConfigField("String", "REVIEWS_APP_ID", props.getProperty("proReviewsAppId", "\"\""))
+      buildConfigField("String", "REVIEWS_API_KEY", props.getProperty("reviewsApiKey", "\"\""))
+      buildConfigField("String", "REVIEWS_STORAGE_BUCKET", props.getProperty("reviewsStorageBucket", "\"\""))
     }
   }
   packaging {
@@ -204,6 +208,8 @@ dependencies {
   implementation(project(":usecase:notes"))
   implementation(project(":usecase:reminders"))
   implementation(project(":icalendar"))
+  implementation(project(":sync"))
+  implementation(project(":reviews"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

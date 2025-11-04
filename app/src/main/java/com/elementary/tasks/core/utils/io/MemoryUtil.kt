@@ -8,9 +8,9 @@ import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
+import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
@@ -22,53 +22,14 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import java.io.BufferedReader
 import java.io.BufferedWriter
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileWriter
-import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
-import java.util.*
-import kotlin.math.ln
-import kotlin.math.pow
 
 class MemoryUtil {
-
-  @Throws(IOException::class)
-  fun writeFileNoEncryption(file: File, data: String?): String? {
-    if (data == null) return null
-    try {
-      val inputStream = ByteArrayInputStream(data.toByteArray())
-      val buffer = ByteArray(8192)
-      var bytesRead: Int
-      val output = ByteArrayOutputStream()
-      try {
-        do {
-          bytesRead = inputStream.read(buffer)
-          if (bytesRead != -1) {
-            output.write(buffer, 0, bytesRead)
-          }
-        } while (bytesRead != -1)
-      } catch (e: IOException) {
-        e.printStackTrace()
-      }
-
-      if (file.exists()) {
-        file.delete()
-      }
-      val fw = FileWriter(file)
-      fw.write(output.toString())
-      fw.close()
-      output.close()
-    } catch (e: SecurityException) {
-      return null
-    }
-    return file.toString()
-  }
 
   fun toStream(any: Any, outputStream: OutputStream): Boolean {
     try {
@@ -80,7 +41,7 @@ class MemoryUtil {
         is Place -> object : TypeToken<Place>() {}.type
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is OldNote -> object : TypeToken<OldNote>() {}.type
+        is SharedNote -> object : TypeToken<SharedNote>() {}.type
         else -> null
       } ?: return false
       Logger.d("toStream: $type, $any")
@@ -113,13 +74,8 @@ class MemoryUtil {
   }
 
   companion object {
-    private const val DIR_SD = "backup"
     private const val DIR_PREFS = "preferences"
-    private const val DIR_NOTES_SD = "notes"
-    private const val DIR_GROUP_SD = "groups"
-    private const val DIR_BIRTHDAY_SD = "birthdays"
-    private const val DIR_PLACES_SD = "places"
-    private const val DIR_TEMPLATES_SD = "templates"
+    private const val TAG = "MemoryUtil"
 
     private val isSdPresent: Boolean
       get() {
@@ -127,15 +83,8 @@ class MemoryUtil {
         return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
       }
 
-    val remindersDir = getDir(DIR_SD)
-    val groupsDir = getDir(DIR_GROUP_SD)
-    val birthdaysDir = getDir(DIR_BIRTHDAY_SD)
-    val notesDir = getDir(DIR_NOTES_SD)
-    val placesDir = getDir(DIR_PLACES_SD)
-    val templatesDir = getDir(DIR_TEMPLATES_SD)
     val prefsDir = getDir(DIR_PREFS)
     val parent = getDir("")
-    val imagesDir = getDir("image_cache")
 
     private fun getDir(directory: String): File? {
       return if (isSdPresent) {
@@ -148,59 +97,6 @@ class MemoryUtil {
         }
       } else {
         null
-      }
-    }
-
-    fun humanReadableByte(bytes: Long, si: Boolean): String {
-      val unit = if (si) 1000 else 1024
-      if (bytes < unit) {
-        return "$bytes B"
-      }
-      val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
-      val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""
-      return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
-    }
-
-    fun <T> fromStream(stream: InputStream, clazz: Class<T>): T? {
-      try {
-        val output64 = Base64InputStream(stream, Base64.DEFAULT)
-        val bufferedReader = BufferedReader(InputStreamReader(output64))
-        val reader = JsonReader(bufferedReader)
-        Logger.d("fromStream: $stream, $clazz")
-        val t: T?
-        try {
-          t = Gson().fromJson<T>(reader, clazz)
-        } catch (e: Exception) {
-          return null
-        } catch (e: OutOfMemoryError) {
-          return null
-        }
-        reader.close()
-        return t
-      } catch (e: Exception) {
-        e.printStackTrace()
-        return null
-      }
-    }
-
-    fun <T> fromStreamNoDecrypt(stream: InputStream, clazz: Class<T>): T? {
-      try {
-        val bufferedReader = BufferedReader(InputStreamReader(stream))
-        val reader = JsonReader(bufferedReader)
-        Logger.d("fromStream: $stream, $clazz")
-        val t: T?
-        try {
-          t = Gson().fromJson<T>(reader, clazz)
-        } catch (e: Exception) {
-          return null
-        } catch (e: OutOfMemoryError) {
-          return null
-        }
-        reader.close()
-        return t
-      } catch (e: Exception) {
-        e.printStackTrace()
-        return null
       }
     }
 
@@ -236,7 +132,7 @@ class MemoryUtil {
       } catch (e: Exception) {
         source
       }
-      Logger.d("readFromUri: $name, $source")
+      Logger.i(TAG, "Reading from uri: $name, source: $source")
       return try {
         val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
         val bufferedReader = BufferedReader(InputStreamReader(output64))
@@ -254,16 +150,15 @@ class MemoryUtil {
           name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
             Gson().fromJson<ReminderGroup>(reader, object : TypeToken<ReminderGroup>() {}.type)
           }
-          name.endsWith(FileConfig.FILE_NAME_NOTE) -> {
-            Gson().fromJson<OldNote>(reader, object : TypeToken<OldNote>() {}.type)
+          name.endsWith(SharedNote.FILE_EXTENSION) -> {
+            Gson().fromJson<SharedNote>(reader, object : TypeToken<SharedNote>() {}.type)
           }
           else -> null
         }
-        Logger.d("readFromUri: obj=$obj")
+        Logger.d(TAG, "Read object: $obj")
         obj
       } catch (e: Exception) {
-        Logger.d("readFromUri: Bad JSON")
-        e.printStackTrace()
+        Logger.e(TAG, "Failed to read from uri: ${e.message}")
         null
       }
     }

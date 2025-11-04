@@ -5,15 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
-import com.github.naz013.feature.common.livedata.SearchableLiveData
 import com.elementary.tasks.core.data.models.ShareFile
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.io.BackupTool
-import com.elementary.tasks.core.utils.work.WorkerLauncher
-import com.elementary.tasks.places.work.PlaceDeleteBackupWorker
+import com.elementary.tasks.places.usecase.DeletePlaceUseCase
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.SearchableLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.PlaceRepository
 import kotlinx.coroutines.CoroutineScope
@@ -23,9 +21,9 @@ import kotlinx.coroutines.plus
 class PlacesViewModel(
   private val backupTool: BackupTool,
   dispatcherProvider: DispatcherProvider,
-  private val workerLauncher: WorkerLauncher,
   private val placeRepository: PlaceRepository,
-  private val uiPlaceListAdapter: UiPlaceListAdapter
+  private val uiPlaceListAdapter: UiPlaceListAdapter,
+  private val deletePlaceUseCase: DeletePlaceUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val placesData = SearchableData(dispatcherProvider, viewModelScope, placeRepository)
@@ -41,14 +39,7 @@ class PlacesViewModel(
   fun deletePlace(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = placeRepository.getById(id)
-      if (place == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      placeRepository.delete(place.id)
-      workerLauncher.startWork(PlaceDeleteBackupWorker::class.java, IntentKeys.INTENT_ID, place.id)
+      deletePlaceUseCase(id)
       placesData.refresh()
       postInProgress(false)
       postCommand(Commands.DELETED)

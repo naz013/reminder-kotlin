@@ -17,16 +17,19 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_archive"
-        android:icon="@drawable/ic_fluent_archive"
-        android:title="@string/notes_archive"
-        app:iconTint="?colorOnSurface"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/action_order"
         android:icon="@drawable/ic_fluent_arrow_sort"
         android:title="@string/order"
         app:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_archive"
+        android:title="@string/notes_archive"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
 </menu>

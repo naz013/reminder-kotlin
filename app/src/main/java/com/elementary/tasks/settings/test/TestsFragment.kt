@@ -5,12 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
 import com.github.naz013.domain.Reminder
+import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.ReviewsApi
+import org.koin.android.ext.android.inject
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
+
+  private val reviewsApi by inject<ReviewsApi>()
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -26,6 +32,18 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
     binding.objectExport.setOnClickListener {
       safeNavigation(TestsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
+    }
+    binding.reviewDialogTest.setOnClickListener {
+      reviewsApi.showFeedbackForm(
+        context = requireContext(),
+        title = "Write a review",
+        appSource = if (BuildParams.isPro) {
+          AppSource.PRO
+        } else {
+          AppSource.FREE
+        },
+        allowLogsAttachment = false
+      )
     }
   }
 

@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.databinding.FragmentPlacesBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
@@ -73,7 +74,9 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   private fun addPlace() {
-    navigate { navigate(R.id.editPlaceFragment) }
+    navigate {
+      navigate(R.id.editPlaceFragment, null, NavigationAnimations.inDepthNavOptions())
+    }
   }
 
   private fun initViewModel() {
@@ -151,7 +154,8 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
         R.id.editPlaceFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, place.id)
-        }
+        },
+        NavigationAnimations.inDepthNavOptions()
       )
     }
   }

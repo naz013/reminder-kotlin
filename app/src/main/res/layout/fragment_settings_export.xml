@@ -28,43 +28,6 @@
             app:prefs_primary_text="@string/cloud_services"
             app:prefs_type="none" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/backup"
-            android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorTertiary" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/backupDataPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
-            app:prefs_primary_text="@string/backup_my_data"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/backupFilesPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_builder_attach"
-            app:prefs_primary_text="@string/backup_attached_files_and_melodies"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/syncSettingsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_launcher_settings"
-            app:prefs_primary_text="@string/backup_settings"
-            app:prefs_type="check_switch" />
-
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/autoBackupPrefs"
             android:layout_width="match_parent"
@@ -75,12 +38,12 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/autoBackupFlagsPrefs"
+            android:id="@+id/connection_prefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_flag"
-            app:prefs_primary_text="@string/backup_flags"
+            app:prefs_icon="@drawable/ic_fluent_network_check"
+            app:prefs_primary_text="@string/which_network_to_use_for_sync"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -89,35 +52,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_broom"
-            app:prefs_primary_text="@string/clean"
-            app:prefs_type="none" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/synchronization"
-            android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorTertiary" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/autoSyncPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_arrow_sync"
-            app:prefs_primary_text="@string/automatically_sync"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/autoSyncFlagsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_flag"
-            app:prefs_primary_text="@string/sync_flags"
+            app:prefs_primary_text="@string/erase_cloud_data"
             app:prefs_type="none" />
 
         <LinearLayout
@@ -145,29 +80,6 @@
                 tools:text="@string/please_wait" />
 
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/exportButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/export_all_my_data"
-            android:textAllCaps="true" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/importButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/import_data_from_rbak_file"
-            android:textAllCaps="true" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backupButton"

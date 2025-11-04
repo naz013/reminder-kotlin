@@ -6,6 +6,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.calendar.monthview.DayBottomSheetDialog
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -42,7 +43,8 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
           Bundle().apply {
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     }
@@ -57,7 +59,8 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
           Bundle().apply {
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)
-          }
+          },
+          NavigationAnimations.inDepthNavOptions()
         )
       }
     }

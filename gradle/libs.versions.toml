@@ -15,7 +15,7 @@ ksp = "2.2.20-2.0.3"
 kotlinCompilerExtensionVersion = "1.5.15"
 
 # Libraries
-firebase-bom = "34.4.0"
+firebase-bom = "34.5.0"
 
 play-services-location = "21.3.0"
 play-services-maps = "19.2.0"
@@ -40,7 +40,7 @@ androidx-work-runtime = "2.11.0"
 androidx-work-runtime-ktx = "2.11.0"
 androidx-localbroadcastmanager = "1.1.0"
 androidx-activity-compose = "1.11.0"
-androidx-compose-material3-adaptive-navigation-suite = "1.5.0-alpha06"
+androidx-compose-material3-adaptive-navigation-suite = "1.5.0-alpha07"
 androidx-compose-material3 = "1.4.0"
 
 glance = "1.1.1"
@@ -64,14 +64,15 @@ circleimageview = "3.1.0"
 retrofit = "3.0.0"
 gson = "2.13.2"
 jsr305 = "3.0.2"
-okhttp3-logging-interceptor = "5.2.1"
+okhttp3-logging-interceptor = "5.3.0"
 dropbox-core-sdk = "7.0.0"
 lib-recur = "0.17.1"
 commons-lang3 = "3.19.0"
 threetenbp = "1.7.2"
+threetenabp = "1.4.7"
 colorslider = "2.0.6"
 android-calendar-ext = "1.0.4"
-lottie = "6.6.10"
+lottie = "6.7.0"
 photoview = "2.3.0"
 sheets = "2.3.1"
 coil = "2.7.0"
@@ -84,6 +85,8 @@ google-api-services-tasks = "v1-rev20230401-2.0.0"
 google-api-services-drive = "v3-rev20230423-2.0.0"
 google-http-client-gson = "2.0.2"
 google-api-client-android = "2.8.1"
+
+grpc = "1.76.0"
 
 # Testing
 junit = "4.13.2"
@@ -107,6 +110,7 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-android-ext = { group = "io.insert-koin", name = "koin-android-ext", version.ref = "koin-android-ext" }
 koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx-recyclerview" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "androidx-multidex" }
@@ -177,6 +181,10 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
+firebase-appcheck = { module = "com.google.firebase:firebase-appcheck" }
+firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "play-services-maps" }
@@ -198,6 +206,7 @@ dropbox-android-sdk = { group = "com.dropbox.core", name = "dropbox-android-sdk"
 lib-recur = { group = "org.dmfs", name = "lib-recur", version.ref = "lib-recur" }
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 threetenbp = { group = "org.threeten", name = "threetenbp", version.ref = "threetenbp" }
+threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
 colorslider = { group = "com.github.naz013", name = "ColorSlider", version.ref = "colorslider" }
 android-calendar-ext = { group = "com.github.naz013", name = "android-calendar-ext", version.ref = "android-calendar-ext" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
@@ -217,6 +226,9 @@ google-api-services-tasks = { group = "com.google.apis", name = "google-api-serv
 google-api-services-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "google-api-services-drive" }
 google-http-client-gson = { group = "com.google.http-client", name = "google-http-client-gson", version.ref = "google-http-client-gson" }
 google-api-client-android = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "google-api-client-android" }
+
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-android = { group = "io.grpc", name = "grpc-android", version.ref = "grpc" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

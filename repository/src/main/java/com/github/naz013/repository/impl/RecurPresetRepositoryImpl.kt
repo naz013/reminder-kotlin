@@ -2,6 +2,7 @@ package com.github.naz013.repository.impl
 
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.dao.RecurPresetDao
@@ -41,6 +42,11 @@ internal class RecurPresetRepositoryImpl(
     }
   }
 
+  override suspend fun getBySyncState(states: List<SyncState>): List<String> {
+    Logger.d(TAG, "Get recur presets by sync states $states")
+    return dao.getBySyncStates(states.map { it.name })
+  }
+
   override suspend fun delete(id: String) {
     Logger.d(TAG, "Delete recur preset by id $id")
     dao.deleteById(id)
@@ -51,6 +57,17 @@ internal class RecurPresetRepositoryImpl(
     Logger.d(TAG, "Delete all recur presets")
     dao.deleteAll()
     notifier.notify(table)
+  }
+
+  override suspend fun updateSyncState(id: String, state: SyncState) {
+    Logger.d(TAG, "Update recur preset sync state for id $id to $state")
+    dao.updateSyncState(id, state.name)
+    notifier.notify(table)
+  }
+
+  override suspend fun getAllIds(): List<String> {
+    Logger.d(TAG, "Get all recur preset ids")
+    return dao.getAllIds()
   }
 
   companion object {

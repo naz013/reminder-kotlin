@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.databinding.FragmentHomeEventsBinding
 import com.elementary.tasks.navigation.topfragment.BaseTopFragment
@@ -42,6 +41,10 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
     super.onViewCreated(view, savedInstanceState)
     Logger.i(TAG, "On view created")
     binding.appBar.applyTopInsets()
+
+    binding.toolbar.setNavigationOnClickListener {
+      requireActivity().onBackPressedDispatcher.onBackPressed()
+    }
 
     viewPagerAdapter = TabsPagerAdapter(
       this,

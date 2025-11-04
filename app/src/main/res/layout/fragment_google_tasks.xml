@@ -9,11 +9,10 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin">
+        android:layout_height="match_parent">
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="ifContentScrolls"
@@ -30,6 +29,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingEnd="16dp"
+                    android:scrollbars="none"
                     tools:itemCount="2"
                     tools:listitem="@layout/list_item_google_tasks_list" />
 
@@ -95,9 +98,9 @@
         android:id="@+id/notLoggedView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:colorBackground"
         android:gravity="center"
         android:orientation="vertical"
-        android:background="?android:colorBackground"
         android:visibility="gone"
         tools:visibility="visible">
 

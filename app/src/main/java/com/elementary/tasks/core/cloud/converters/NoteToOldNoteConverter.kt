@@ -1,28 +1,28 @@
 package com.elementary.tasks.core.cloud.converters
 
-import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.github.naz013.domain.note.ImageFile
+import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.note.OldImageFile
-import com.github.naz013.domain.note.OldNote
-import java.util.UUID
+import com.github.naz013.domain.sync.SyncState
 
-class NoteToOldNoteConverter(
-  private val noteImageRepository: NoteImageRepository
-) {
+class NoteToOldNoteConverter {
 
-  fun toNote(oldNote: OldNote): NoteWithImages? {
+  fun toNote(sharedNote: SharedNote): NoteWithImages? {
     val noteWithImages = NoteWithImages(
-      note = Note(oldNote),
-      images = oldNote.images.map {
-        val fileName = UUID.randomUUID().toString()
-        ImageFile(
-          fileName = fileName,
-          filePath = noteImageRepository.saveBytesToFile(fileName, it.image, oldNote.key),
-          noteId = oldNote.key
-        )
-      }
+      note = Note(
+        style = sharedNote.style,
+        color = sharedNote.color,
+        palette = sharedNote.palette,
+        date = sharedNote.date,
+        key = sharedNote.id,
+        summary = sharedNote.text,
+        updatedAt = sharedNote.updatedAt,
+        fontSize = sharedNote.fontSize,
+        archived = false,
+        version = 0,
+        syncState = SyncState.WaitingForUpload
+      ),
+      images = emptyList()
     )
     return if (noteWithImages.isValid()) {
       noteWithImages
@@ -31,26 +31,17 @@ class NoteToOldNoteConverter(
     }
   }
 
-  fun toOldNote(noteWithImages: NoteWithImages): OldNote? {
-    val note = noteWithImages.note ?: return null
-    val images = noteWithImages.images.map {
-      OldImageFile(
-        image = noteImageRepository.readBytes(it.filePath),
-        noteId = it.noteId
-      )
-    }
-    return OldNote(
-      images = images,
-      uniqueId = note.uniqueId,
-      style = note.style,
-      color = note.color,
-      palette = note.palette,
-      date = note.date,
-      key = note.key,
-      summary = note.summary,
-      updatedAt = note.updatedAt,
-      fontSize = note.fontSize,
-      archived = note.archived
+  fun toSharedNote(noteWithImages: NoteWithImages): SharedNote? {
+    return SharedNote(
+      text = noteWithImages.note?.summary ?: "",
+      id = noteWithImages.note?.key ?: "",
+      date = noteWithImages.note?.date ?: "",
+      color = noteWithImages.note?.color ?: 0,
+      style = noteWithImages.note?.style ?: 0,
+      palette = noteWithImages.note?.palette ?: 0,
+      updatedAt = noteWithImages.note?.updatedAt,
+      opacity = noteWithImages.note?.opacity ?: 100,
+      fontSize = noteWithImages.note?.fontSize ?: -1,
     )
   }
 

@@ -52,7 +52,7 @@ abstract class RepeatableEventManager(
           dateTimeManager.toMillis(reminder.eventTime)
         )
       }
-      if (prefs.isCalendarEnabled || reminder.version == Reminder.Version.V3) {
+      if (prefs.isCalendarEnabled || reminder.jsonSchemaVersion == Reminder.Version.V3) {
         invokeSuspend { googleCalendarUtils.addEvent(reminder) }
       }
     }
