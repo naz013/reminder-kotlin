@@ -17,6 +17,7 @@ import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
@@ -416,5 +417,15 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     viewModel.deleteAllBirthdays()
   }
 
-  override fun getTitle(): String = getString(R.string.birthdays)
+  override fun getTitle(): String {
+    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.birthdays)
+  }
+
+  override fun getNavigationIcon(): Int {
+    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+      super.getNavigationIcon()
+    } else {
+      R.drawable.ic_builder_clear
+    }
+  }
 }

@@ -69,10 +69,10 @@
         <action
             android:id="@+id/action_actionCalendar_to_calendarSettingsFragment"
             app:destination="@id/calendarSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
     </fragment>
 
     <fragment
@@ -277,6 +277,10 @@
         android:name="com.elementary.tasks.settings.calendar.CalendarSettingsFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_settings_calendar">
+        <argument
+            android:name="screen_title"
+            app:nullable="true"
+            app:argType="string" />
         <action
             android:id="@+id/action_calendarSettingsFragment_to_fragmentEventsImport"
             app:destination="@id/fragmentEventsImport"
@@ -505,13 +509,6 @@
         <action
             android:id="@+id/action_actionEvents_to_archiveFragment"
             app:destination="@id/archiveFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-        <action
-            android:id="@+id/action_actionEvents_to_remindersSettingsFragment"
-            app:destination="@id/remindersSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
