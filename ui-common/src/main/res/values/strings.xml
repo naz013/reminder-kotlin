@@ -878,7 +878,7 @@
     <string name="feedback_submit">Submit</string>
     <string name="feedback_rating">Rating</string>
     <string name="feedback_comment">Comment</string>
-    <string name="share_your_feedback">Share your feedback...</string>
+    <string name="share_your_feedback">Share your feedback…</string>
     <string name="attach_log_files">Attach Log Files</string>
     <string name="help_us_diagnose_issues_by_including_app_logs">Help us diagnose issues by including app logs</string>
     <string name="feedback_email_optional">Email (Optional)</string>
@@ -891,5 +891,5 @@
     <string name="select_network_type">Select the network type</string>
     <string name="report_an_issue">Report an Issue</string>
     <string name="move_to_archive">Move to archive</string>
-    <string name="share_send_email">Send email...</string>
+    <string name="share_send_email">Send email…</string>
 </resources>

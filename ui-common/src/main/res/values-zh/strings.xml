@@ -871,4 +871,27 @@
     <string name="filters_reset">重置筛选</string>
     <string name="filter_reminders">筛选提醒事项</string>
     <string name="date_range">日期范围</string>
+
+    <string name="erase_cloud_data">删除云端数据</string>
+    <string name="erase_cloud_data_message">删除云端中的所有数据</string>
+    <string name="erase">删除</string>
+    <string name="auto_backup_every">每</string>
+    <string name="thank_you_for_your_feedback">感谢您的反馈！</string>
+    <string name="feedback_submit">提交</string>
+    <string name="feedback_rating">评分</string>
+    <string name="feedback_comment">评论</string>
+    <string name="share_your_feedback">分享您的反馈…</string>
+    <string name="attach_log_files">附加日志文件</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">请附上应用日志以帮助我们诊断问题</string>
+    <string name="feedback_email_optional">电子邮件（可选）</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">我们将使用此信息跟进您的反馈</string>
+    <string name="share_your_experience">分享您的体验</string>
+    <string name="which_network_to_use_for_sync">用于同步的网络</string>
+    <string name="network_type_any_network">任意网络</string>
+    <string name="network_type_wifi_only">仅限 Wi‑Fi</string>
+    <string name="network_type_cellular">移动数据</string>
+    <string name="select_network_type">选择网络类型</string>
+    <string name="report_an_issue">报告问题</string>
+    <string name="move_to_archive">移至存档</string>
+    <string name="share_send_email">发送电子邮件…</string>
 </resources>

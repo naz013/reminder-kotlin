@@ -870,4 +870,29 @@
     <string name="filters_reset">फ़िल्टर रीसेट करें</string>
     <string name="filter_reminders">रिमाइंडर फ़िल्टर करें</string>
     <string name="date_range">तिथि सीमा</string>
+
+    <string name="erase_cloud_data">क्लाउड में डेटा मिटाएँ</string>
+    <string name="erase_cloud_data_message">क्लाउड में मौजूद सभी डेटा मिटाएँ</string>
+    <string name="erase">मिटाएँ</string>
+    <string name="auto_backup_every">हर</string>
+    <string name="thank_you_for_your_feedback">आपकी प्रतिक्रिया के लिए धन्यवाद!</string>
+    <string name="feedback_submit">जमा करें</string>
+    <string name="feedback_rating">रेटिंग</string>
+    <string name="feedback_comment">टिप्पणी</string>
+    <string name="share_your_feedback">अपनी प्रतिक्रिया साझा करें…</string>
+    <string name="attach_log_files">लॉग फ़ाइलें संलग्न करें</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">ऐप के लॉग शामिल करके हमें समस्याओं का निदान करने में मदद करें</string>
+    <string name="feedback_email_optional">ईमेल (वैकल्पिक)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">हम इसका उपयोग आपकी प्रतिक्रिया पर फॉलो‑अप करने के लिए करेंगे</string>
+    <string name="share_your_experience">अपना अनुभव साझा करें</string>
+    <string name="which_network_to_use_for_sync">सिंक के लिए किस नेटवर्क का उपयोग करें</string>
+    <string name="network_type_any_network">किसी भी</string>
+    <string name="network_type_wifi_only">केवल वाई‑फाई</string>
+    <string name="network_type_cellular">मोबाइल डेटा</string>
+    <string name="select_network_type">नेटवर्क प्रकार चुनें</string>
+    <string name="report_an_issue">समस्या रिपोर्ट करें</string>
+    <string name="move_to_archive">आर्काइव में स्थानांतरित करें</string>
+    <string name="share_send_email">ईमेल भेजें…</string>
+
+    <string name="voice_found">मिला</string>
 </resources>

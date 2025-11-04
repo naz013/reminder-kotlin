@@ -870,4 +870,27 @@
     <string name="filters_reset">필터 재설정</string>
     <string name="filter_reminders">알림을 필터링</string>
     <string name="date_range">날짜 범위</string>
+
+    <string name="erase_cloud_data">클라우드의 데이터를 삭제</string>
+    <string name="erase_cloud_data_message">클라우드의 모든 데이터를 삭제합니다</string>
+    <string name="erase">삭제</string>
+    <string name="auto_backup_every">매</string>
+    <string name="thank_you_for_your_feedback">피드백을 보내주셔서 감사합니다!</string>
+    <string name="feedback_submit">제출</string>
+    <string name="feedback_rating">평점</string>
+    <string name="feedback_comment">댓글</string>
+    <string name="share_your_feedback">피드백을 공유해 주세요…</string>
+    <string name="attach_log_files">로그 파일 첨부</string>
+    <string name="help_us_diagnose_issues_by_including_app_logs">앱 로그를 포함하면 문제 진단에 도움이 됩니다</string>
+    <string name="feedback_email_optional">이메일 (선택 사항)</string>
+    <string name="we_ll_use_this_to_follow_up_on_your_feedback">피드백에 대해 후속 연락을 드리는 데 사용합니다</string>
+    <string name="share_your_experience">경험을 공유해 주세요</string>
+    <string name="which_network_to_use_for_sync">동기화에 사용할 네트워크</string>
+    <string name="network_type_any_network">모든 네트워크</string>
+    <string name="network_type_wifi_only">Wi‑Fi만</string>
+    <string name="network_type_cellular">모바일 데이터</string>
+    <string name="select_network_type">네트워크 유형 선택</string>
+    <string name="report_an_issue">문제 신고</string>
+    <string name="move_to_archive">보관으로 이동</string>
+    <string name="share_send_email">이메일 보내기…</string>
 </resources>
