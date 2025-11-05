@@ -55,10 +55,10 @@ jobs:
 #    - name: Create keystore.properties file
 #      run: |
 #        echo "signApk=true" >> keystore.properties
-#        echo "freeApiKey=${{ secrets.FREE_API_KEY }}" >> keystore.properties
-#        echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
-#        echo "proPlacesApiKey=${{ secrets.PRO_PLACES_API_KEY }}" >> keystore.properties
-#        echo "freePlacesApiKey=${{ secrets.FREE_PLACES_API_KEY }}" >> keystore.properties
+        echo "freeApiKey=${{ secrets.FREE_API_KEY }}" >> keystore.properties
+        echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
+        echo "proPlacesApiKey=${{ secrets.PRO_PLACES_API_KEY }}" >> keystore.properties
+        echo "freePlacesApiKey=${{ secrets.FREE_PLACES_API_KEY }}" >> keystore.properties
 #        echo "debugKeyStoreFile=debug_key.jks" >> keystore.properties
 #        echo "debugKeyStorePassword=${{ secrets.DEBUG_KEYSTORE_PASSWORD }}" >> keystore.properties
 #        echo "debugKeyAlias=reminder.debug" >> keystore.properties
@@ -71,12 +71,12 @@ jobs:
 #        echo "releaseProKeyStorePassword=${{ secrets.PRO_SIGN_KEY_STORE_PASSWORD }}" >> keystore.properties
 #        echo "releaseProKeyAlias=${{ secrets.PRO_SIGN_KEY_ALIAS }}" >> keystore.properties
 #        echo "releaseProKeyPassword=${{ secrets.PRO_SIGN_KEY_PASSWORD }}" >> keystore.properties
-#        echo "reviewsProjectId=${{ secrets.REVIEWS_PROJECT_ID }}" >> keystore.properties
-#        echo "reviewsApiKey=${{ secrets.REVIEWS_API_KEY }}" >> keystore.properties
-#        echo "reviewsStorageBucket=${{ secrets.REVIEWS_STORAGE_BUCKET }}" >> keystore.properties
-#        echo "freeReviewsAppId=${{ secrets.FREE_REVIEWS_APP_ID }}" >> keystore.properties
-#        echo "proReviewsAppId=${{ secrets.PRO_REVIEWS_APP_ID }}" >> keystore.properties
-#        echo "reviewsAdminAppId=${{ secrets.ADMIN_REVIEWS_APP_ID }}" >> keystore.properties
+        echo "reviewsProjectId=${{ secrets.REVIEWS_PROJECT_ID }}" >> keystore.properties
+        echo "reviewsApiKey=${{ secrets.REVIEWS_API_KEY }}" >> keystore.properties
+        echo "reviewsStorageBucket=${{ secrets.REVIEWS_STORAGE_BUCKET }}" >> keystore.properties
+        echo "freeReviewsAppId=${{ secrets.FREE_REVIEWS_APP_ID }}" >> keystore.properties
+        echo "proReviewsAppId=${{ secrets.PRO_REVIEWS_APP_ID }}" >> keystore.properties
+        echo "reviewsAdminAppId=${{ secrets.ADMIN_REVIEWS_APP_ID }}" >> keystore.properties
 #        echo "reviewsAdminKeyStoreFile=debug_key" >> keystore.properties
 #        echo "reviewsAdminKeyStorePassword=${{ secrets.REVIEW_ADMIN_KEYSTORE_PASSWORD }}" >> keystore.properties
 #        echo "reviewsAdminKeyAlias=reviews.admin.debug" >> keystore.properties
