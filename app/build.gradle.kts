@@ -125,7 +125,7 @@ android {
         getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro"
       )
-      isDebuggable = true
+      isDebuggable = false
       isJniDebuggable = false
       if (shouldSign) {
         productFlavors["free"].apply {
