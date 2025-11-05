@@ -58,12 +58,12 @@ jobs:
         echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
         echo "proPlacesApiKey=${{ secrets.PRO_PLACES_API_KEY }}" >> keystore.properties
         echo "freePlacesApiKey=${{ secrets.FREE_PLACES_API_KEY }}" >> keystore.properties
-        echo "reviewsProjectId=${{ secrets.REVIEWS_PROJECT_ID }}" >> keystore.properties
-        echo "reviewsApiKey=${{ secrets.REVIEWS_API_KEY }}" >> keystore.properties
-        echo "reviewsStorageBucket=${{ secrets.REVIEWS_STORAGE_BUCKET }}" >> keystore.properties
-        echo "freeReviewsAppId=${{ secrets.FREE_REVIEWS_APP_ID }}" >> keystore.properties
-        echo "proReviewsAppId=${{ secrets.PRO_REVIEWS_APP_ID }}" >> keystore.properties
-        echo "reviewsAdminAppId=${{ secrets.ADMIN_REVIEWS_APP_ID }}" >> keystore.properties
+        echo "reviewsProjectId=\"${{ secrets.REVIEWS_PROJECT_ID }}\"" >> keystore.properties
+        echo "reviewsApiKey=\"${{ secrets.REVIEWS_API_KEY }}\"" >> keystore.properties
+        echo "reviewsStorageBucket=\"${{ secrets.REVIEWS_STORAGE_BUCKET }}\"" >> keystore.properties
+        echo "freeReviewsAppId=\"${{ secrets.FREE_REVIEWS_APP_ID }}\"" >> keystore.properties
+        echo "proReviewsAppId=\"${{ secrets.PRO_REVIEWS_APP_ID }}\"" >> keystore.properties
+        echo "reviewsAdminAppId=\"${{ secrets.ADMIN_REVIEWS_APP_ID }}\"" >> keystore.properties
 
     - name: Create services json file for PRO version
       run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json | base64
