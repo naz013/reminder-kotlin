@@ -113,4 +113,7 @@ object PrefsConstants {
   const val TERMS_URL = "terms_url"
 
   const val WORKER_NETWORK_TYPE = "worker_network_type"
+  const val OCCURRENCE_MIGRATED = "occurrence_migrated"
+  const val OCCURRENCE_COUNT_REMINDERS = "occurrence_count_reminders"
+  const val OCCURRENCE_COUNT_BIRTHDAYS = "occurrence_count_birthdays"
 }

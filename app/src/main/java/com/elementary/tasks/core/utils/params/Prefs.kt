@@ -53,6 +53,18 @@ class Prefs(
     }
   }
 
+  var occurrenceMigrated: Boolean
+    get() = getBoolean(PrefsConstants.OCCURRENCE_MIGRATED, def = false)
+    set(value) = putBoolean(PrefsConstants.OCCURRENCE_MIGRATED, value)
+
+  var numberOfReminderOccurrences: Int
+    get() = getInt(PrefsConstants.OCCURRENCE_COUNT_REMINDERS, def = 1000)
+    set(value) = putInt(PrefsConstants.OCCURRENCE_COUNT_REMINDERS, value)
+
+  var numberOfBirthdayOccurrences: Int
+    get() = getInt(PrefsConstants.OCCURRENCE_COUNT_BIRTHDAYS, def = 10)
+    set(value) = putInt(PrefsConstants.OCCURRENCE_COUNT_BIRTHDAYS, value)
+
   var workerNetworkType: WorkerNetworkType
     get() {
       val type = getInt(PrefsConstants.WORKER_NETWORK_TYPE, def = 1)
