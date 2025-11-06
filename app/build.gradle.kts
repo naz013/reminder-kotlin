@@ -44,7 +44,7 @@ android {
     println("> Property file does not exist")
   }
 
-  val shouldSign = props.getProperty("signApk").toBoolean()
+  val shouldSign = props.getProperty("signApk", "false").toBoolean()
   println("> Should sign APK = $shouldSign")
 
   if (shouldSign) {
