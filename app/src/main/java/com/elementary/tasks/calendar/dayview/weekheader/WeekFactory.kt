@@ -24,8 +24,8 @@ class WeekFactory(
     }
 
     val reminderMode = calendarDataEngine.getReminderMode(
-      includeReminders = prefs.isRemindersInCalendarEnabled,
-      calculateFuture = prefs.isFutureEventEnabled
+      includeReminders = true,
+      calculateFuture = true
     )
 
     return (0..6).toList().map {

@@ -51,8 +51,8 @@ class MonthLiveData(
       calendarDataEngine.getByMonth(
         localDate = date,
         reminderMode = calendarDataEngine.getReminderMode(
-          includeReminders = prefs.isRemindersInCalendarEnabled,
-          calculateFuture = prefs.isFutureEventEnabled
+          includeReminders = true,
+          calculateFuture = true
         )
       ).let { mapData(it) }
         .also { postValue(it) }

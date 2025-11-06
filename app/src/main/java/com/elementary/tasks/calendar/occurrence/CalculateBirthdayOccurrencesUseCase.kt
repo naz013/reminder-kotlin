@@ -30,7 +30,7 @@ class CalculateBirthdayOccurrencesUseCase(
     val time = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val previousYear = dateTimeManager.getCurrentDate().year - 1
     val startDate = date.withYear(previousYear)
-    for (i in 1..prefs.numberOfBirthdayOccurrences) {
+    for (i in 0..prefs.numberOfBirthdayOccurrences) {
       val occurrenceDate = startDate.plusYears(i.toLong())
       eventOccurrenceRepository.save(
         EventOccurrence(

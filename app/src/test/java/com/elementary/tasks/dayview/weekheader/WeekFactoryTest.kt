@@ -26,8 +26,6 @@ class WeekFactoryTest {
   fun setUp() {
     prefs = mockk()
     every { prefs.appLanguage } returns 1
-    every { prefs.isRemindersInCalendarEnabled } returns false
-    every { prefs.isFutureEventEnabled } returns false
 
     dateTimePreferences = mockk()
     every { dateTimePreferences.locale } returns Locale.US

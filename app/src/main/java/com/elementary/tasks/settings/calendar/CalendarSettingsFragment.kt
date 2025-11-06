@@ -35,8 +35,6 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    initFuturePrefs()
-    initRemindersPrefs()
     initFirstDayPrefs()
     binding.eventsImportPrefs.setOnClickListener {
       safeNavigation {
@@ -44,7 +42,6 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
       }
     }
 
-    binding.reminderColorPrefs.setDependentView(binding.reminderInCalendarPrefs)
     binding.reminderColorPrefs.setOnClickListener {
       showColorPopup(prefs.reminderColor, getString(R.string.reminders_color)) { color ->
         prefs.reminderColor = color
@@ -117,28 +114,6 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     binding.reminderColorPrefs.setViewColor(
       ThemeProvider.colorReminderCalendar(requireContext(), prefs.reminderColor)
     )
-  }
-
-  private fun initRemindersPrefs() {
-    binding.reminderInCalendarPrefs.isChecked = prefs.isRemindersInCalendarEnabled
-    binding.reminderInCalendarPrefs.setOnClickListener { changeRemindersPrefs() }
-  }
-
-  private fun changeRemindersPrefs() {
-    val isChecked = binding.reminderInCalendarPrefs.isChecked
-    binding.reminderInCalendarPrefs.isChecked = !isChecked
-    prefs.isRemindersInCalendarEnabled = !isChecked
-  }
-
-  private fun initFuturePrefs() {
-    binding.featureRemindersPrefs.isChecked = prefs.isFutureEventEnabled
-    binding.featureRemindersPrefs.setOnClickListener { changeFuturePrefs() }
-  }
-
-  private fun changeFuturePrefs() {
-    val isChecked = binding.featureRemindersPrefs.isChecked
-    binding.featureRemindersPrefs.isChecked = !isChecked
-    prefs.isFutureEventEnabled = !isChecked
   }
 
   override fun getTitle(): String {

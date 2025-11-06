@@ -47,15 +47,6 @@
             app:prefs_type="view" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/reminderInCalendarPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_alert"
-            app:prefs_primary_text="@string/show_reminders"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/reminderColorPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,17 +63,6 @@
             app:prefs_icon="@drawable/ic_fluent_food_cake"
             app:prefs_primary_text="@string/birthdays_color"
             app:prefs_type="view" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/featureRemindersPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_calendar_agenda"
-            app:prefs_primary_text="@string/feature_events"
-            app:prefs_secondary_text_off="@string/hide_future_events"
-            app:prefs_secondary_text_on="@string/show_calculated_feature_events"
-            app:prefs_type="check_switch" />
 
         <TextView
             android:layout_width="match_parent"

@@ -42,11 +42,11 @@ val calendarModule = module {
   factory { CalendarDataEngineBroadcast(get()) }
 
   factory { MonthLiveData(get(), get(), get(), get(), get()) }
-  factory { DayLiveData(get(), get(), get(), get(), get()) }
+  factory { DayLiveData(get(), get(), get(), get()) }
 
   factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
   factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get()) }
-  factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get()) }
+  factory { CalculateReminderOccurrencesUseCase() }
 
   worker { CalculateBirthdayOccurrencesWorker(get(), get(), get(), get()) }
   worker { CalculateReminderOccurrencesWorker(get(), get(), get(), get()) }

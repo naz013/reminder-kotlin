@@ -321,14 +321,6 @@ class Prefs(
     get() = getLong(PrefsConstants.DEFAULT_CALENDAR_ID)
     set(value) = putLong(PrefsConstants.DEFAULT_CALENDAR_ID, value)
 
-  var isFutureEventEnabled: Boolean
-    get() = getBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
-    set(value) = putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, value)
-
-  var isRemindersInCalendarEnabled: Boolean
-    get() = getBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, true)
-    set(value) = putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, value)
-
   var startDay: Int
     get() = getInt(PrefsConstants.START_DAY)
     set(value) = putInt(PrefsConstants.START_DAY, value)
@@ -538,9 +530,7 @@ class Prefs(
       editor.putBoolean(PrefsConstants.NOTIFICATION_REPEAT, false)
       editor.putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, false)
       editor.putBoolean(PrefsConstants.EXPORT_TO_STOCK, false)
-      editor.putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, true)
       editor.putInt(PrefsConstants.TIME_FORMAT, 0)
-      editor.putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
       editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
       editor.putBoolean(PrefsConstants.REMINDER_CHANGED, false)
       if (BuildParams.isPro) {
@@ -630,9 +620,6 @@ class Prefs(
     if (!hasKey(PrefsConstants.RATE_SHOW)) {
       putBoolean(PrefsConstants.RATE_SHOW, false)
     }
-    if (!hasKey(PrefsConstants.REMINDERS_IN_CALENDAR)) {
-      putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, false)
-    }
     if (!hasKey(PrefsConstants.CONTACT_BIRTHDAYS)) {
       putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
     }
@@ -662,9 +649,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.TIME_FORMAT)) {
       putInt(PrefsConstants.TIME_FORMAT, 0)
-    }
-    if (!hasKey(PrefsConstants.CALENDAR_FEATURE_TASKS)) {
-      putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, false)
     }
     if (!hasKey(PrefsConstants.BIRTHDAY_PERMANENT)) {
       putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)

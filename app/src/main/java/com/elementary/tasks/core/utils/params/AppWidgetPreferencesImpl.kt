@@ -8,9 +8,9 @@ class AppWidgetPreferencesImpl(
   override val isBirthdayInWidgetEnabled: Boolean
     get() = prefs.isBirthdayInWidgetEnabled
   override val isRemindersInCalendarEnabled: Boolean
-    get() = prefs.isRemindersInCalendarEnabled
+    get() = true
   override val isFutureEventEnabled: Boolean
-    get() = prefs.isFutureEventEnabled
+    get() = true
   override val startDay: Int
     get() = prefs.startDay
   override val reminderColor: Int
