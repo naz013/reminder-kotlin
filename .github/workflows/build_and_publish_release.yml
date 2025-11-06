@@ -52,35 +52,56 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-#    - name: Create keystore.properties file
-#      run: |
-#        echo "signApk=true" >> keystore.properties
-#        echo "freeApiKey=${{ secrets.FREE_API_KEY }}" >> keystore.properties
-#        echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
-#        echo "proPlacesApiKey=${{ secrets.PRO_PLACES_API_KEY }}" >> keystore.properties
-#        echo "freePlacesApiKey=${{ secrets.FREE_PLACES_API_KEY }}" >> keystore.properties
-#        echo "debugKeyStoreFile=debug_key.jks" >> keystore.properties
-#        echo "debugKeyStorePassword=${{ secrets.DEBUG_KEYSTORE_PASSWORD }}" >> keystore.properties
-#        echo "debugKeyAlias=reminder.debug" >> keystore.properties
-#        echo "debugKeyPassword=${{ secrets.DEBUG_KEY_PASSWORD }}" >> keystore.properties
-#        echo "releaseFreeKeyStoreFile=justreminder.jks" >> keystore.properties
-#        echo "releaseFreeKeyStorePassword=${{ secrets.FREE_SIGN_KEY_STORE_PASSWORD }}" >> keystore.properties
-#        echo "releaseFreeKeyAlias=${{ secrets.FREE_SIGN_KEY_ALIAS }}" >> keystore.properties
-#        echo "releaseFreeKeyPassword=${{ secrets.FREE_SIGN_KEY_PASSWORD }}" >> keystore.properties
-#        echo "releaseProKeyStoreFile=justReminderPro.jks" >> keystore.properties
-#        echo "releaseProKeyStorePassword=${{ secrets.PRO_SIGN_KEY_STORE_PASSWORD }}" >> keystore.properties
-#        echo "releaseProKeyAlias=${{ secrets.PRO_SIGN_KEY_ALIAS }}" >> keystore.properties
-#        echo "releaseProKeyPassword=${{ secrets.PRO_SIGN_KEY_PASSWORD }}" >> keystore.properties
-#        echo "reviewsProjectId=${{ secrets.REVIEWS_PROJECT_ID }}" >> keystore.properties
-#        echo "reviewsApiKey=${{ secrets.REVIEWS_API_KEY }}" >> keystore.properties
-#        echo "reviewsStorageBucket=${{ secrets.REVIEWS_STORAGE_BUCKET }}" >> keystore.properties
-#        echo "freeReviewsAppId=${{ secrets.FREE_REVIEWS_APP_ID }}" >> keystore.properties
-#        echo "proReviewsAppId=${{ secrets.PRO_REVIEWS_APP_ID }}" >> keystore.properties
-#        echo "reviewsAdminAppId=${{ secrets.ADMIN_REVIEWS_APP_ID }}" >> keystore.properties
-#        echo "reviewsAdminKeyStoreFile=debug_key" >> keystore.properties
-#        echo "reviewsAdminKeyStorePassword=${{ secrets.REVIEW_ADMIN_KEYSTORE_PASSWORD }}" >> keystore.properties
-#        echo "reviewsAdminKeyAlias=reviews.admin.debug" >> keystore.properties
-#        echo "reviewsAdminKeyPassword=${{ secrets.REVIEW_ADMIN_KEY_PASSWORD }}" >> keystore.properties
+    - name: Debug secrets availability
+      run: |
+        echo "Checking if secrets are available..."
+        if [ -z "${{ secrets.FREE_API_KEY }}" ]; then
+          echo "ERROR: FREE_API_KEY secret is empty or not set!"
+          exit 1
+        else
+          echo "✓ FREE_API_KEY secret is set"
+        fi
+        if [ -z "${{ secrets.PRO_API_KEY }}" ]; then
+          echo "ERROR: PRO_API_KEY secret is empty or not set!"
+          exit 1
+        else
+          echo "✓ PRO_API_KEY secret is set"
+        fi
+
+    - name: Create keystore.properties file
+      run: |
+        echo "signApk=false" >> keystore.properties
+        echo "freeApiKey=${{ secrets.FREE_API_KEY }}" >> keystore.properties
+        echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
+        echo "proPlacesApiKey=\"${{ secrets.PRO_PLACES_API_KEY }}\"" >> keystore.properties
+        echo "freePlacesApiKey=\"${{ secrets.FREE_PLACES_API_KEY }}\"" >> keystore.properties
+        echo "reviewsProjectId=\"${{ secrets.REVIEWS_PROJECT_ID }}\"" >> keystore.properties
+        echo "reviewsApiKey=\"${{ secrets.REVIEWS_API_KEY }}\"" >> keystore.properties
+        echo "reviewsStorageBucket=\"${{ secrets.REVIEWS_STORAGE_BUCKET }}\"" >> keystore.properties
+        echo "freeReviewsAppId=\"${{ secrets.FREE_REVIEWS_APP_ID }}\"" >> keystore.properties
+        echo "proReviewsAppId=\"${{ secrets.PRO_REVIEWS_APP_ID }}\"" >> keystore.properties
+        echo "reviewsAdminAppId=\"${{ secrets.ADMIN_REVIEWS_APP_ID }}\"" >> keystore.properties
+
+    - name: Verify keystore.properties file
+      run: |
+        echo "Contents of keystore.properties (API keys masked):"
+        cat keystore.properties | grep -v "ApiKey" | grep -v "apiKey" || true
+        echo ""
+        echo "Checking if freeApiKey is set:"
+        if grep "freeApiKey=" keystore.properties > /dev/null; then
+          FREE_KEY=$(grep "freeApiKey=" keystore.properties | cut -d'=' -f2)
+          echo "✓ freeApiKey found (length: ${#FREE_KEY} characters)"
+        else
+          echo "✗ freeApiKey NOT found"
+        fi
+        echo ""
+        echo "Checking if proApiKey is set:"
+        if grep "proApiKey=" keystore.properties > /dev/null; then
+          PRO_KEY=$(grep "proApiKey=" keystore.properties | cut -d'=' -f2)
+          echo "✓ proApiKey found (length: ${#PRO_KEY} characters)"
+        else
+          echo "✗ proApiKey NOT found"
+        fi
 
     - name: Create services json file for PRO version
       run: cat /home/runner/work/reminder-kotlin/reminder-kotlin/app/src/pro/google-services.json | base64
