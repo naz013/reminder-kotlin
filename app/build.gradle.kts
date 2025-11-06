@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 341
-    versionName = "9.10.1"
+    versionCode = 342
+    versionName = "9.10.2"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
@@ -44,7 +44,7 @@ android {
     println("> Property file does not exist")
   }
 
-  val shouldSign = props.getProperty("signApk").toBoolean()
+  val shouldSign = props.getProperty("signApk", "false").toBoolean()
   println("> Should sign APK = $shouldSign")
 
   if (shouldSign) {
