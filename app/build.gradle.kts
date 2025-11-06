@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 337
-    versionName = "9.10.0"
+    versionCode = 341
+    versionName = "9.10.1"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
@@ -125,7 +125,7 @@ android {
         getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro"
       )
-      isDebuggable = true
+      isDebuggable = false
       isJniDebuggable = false
       if (shouldSign) {
         productFlavors["free"].apply {
