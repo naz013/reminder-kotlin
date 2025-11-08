@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.observeTable
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
@@ -29,7 +30,12 @@ class ReminderViewModel(
   fun saveReminder(reminder: Reminder) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      saveReminderUseCase(reminder)
+      saveReminderUseCase(
+        reminder.copy(
+          version = reminder.version + 1,
+          syncState = SyncState.WaitingForUpload
+        )
+      )
       postInProgress(false)
       postCommand(Commands.SAVED)
     }

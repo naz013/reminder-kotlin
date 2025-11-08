@@ -82,6 +82,20 @@ import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogle
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
+import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.location.StopLocationTrackingUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
 import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
@@ -302,4 +316,25 @@ val reminderModule = module {
   factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { ReminderFilterDialogViewModel(get()) }
+
+  factory { BehaviorStrategyResolver(get(), get(), get()) }
+
+  factory { ActivateReminderUseCase(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { DeactivateReminderUseCase(get(), get(), get(), get()) }
+
+  factory { PauseReminderUseCase(get(), get(), get(), get()) }
+  factory { ResumeReminderUseCase(get(), get(), get()) }
+
+  factory { SnoozeReminderUseCase(get(), get(), get(), get()) }
+  factory { CompleteReminderUseCase(get(), get(), get(), get()) }
+  factory { SkipReminderUseCase(get(), get(), get()) }
+
+  factory { UpdatePermanentReminderNotificationUseCase(get(), get()) }
+
+  factory { StopLocationTrackingUseCase(get(), get(), get()) }
+  factory { StartLocationTrackingUseCase(get(), get()) }
+
+  factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }
+  factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
+  factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
 }

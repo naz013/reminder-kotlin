@@ -6,6 +6,7 @@ import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.ReminderGroupRepository
@@ -107,7 +108,10 @@ class EventImportProcessor(
     calendarId: Long,
     allDay: Boolean
   ) {
-    val reminder = Reminder().apply {
+    val reminder = Reminder(
+      syncState = SyncState.WaitingForUpload,
+      version = 0
+    ).apply {
       this.type = Reminder.BY_DATE
       this.repeatInterval = repeat
       this.groupUuId = categoryId
