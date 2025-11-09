@@ -7,6 +7,16 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 
+/**
+ * Deactivates a reminder by setting its active state to false,
+ * updating its sync state, and pausing any scheduled jobs.
+ * If the reminder is exported to Google Tasks, it also completes the related task.
+ *
+ * @param saveReminderUseCase Use case to save the updated reminder.
+ * @param completeRelatedGoogleTaskUseCase Use case to complete the related Google Task.
+ * @param pauseReminderUseCase Use case to pause any scheduled jobs for the reminder.
+ * @param updatePermanentReminderNotificationUseCase Use case to update permanent reminder notifications.
+ */
 class DeactivateReminderUseCase(
   private val saveReminderUseCase: SaveReminderUseCase,
   private val completeRelatedGoogleTaskUseCase: CompleteRelatedGoogleTaskUseCase,

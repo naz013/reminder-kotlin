@@ -4,7 +4,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
@@ -37,7 +36,6 @@ import kotlinx.coroutines.withContext
 @OptIn(FlowPreview::class)
 class ArchiveRemindersViewModel(
   private val reminderRepository: ReminderRepository,
-  private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val textProvider: TextProvider,
@@ -150,10 +148,7 @@ class ArchiveRemindersViewModel(
         return@launch
       }
       Logger.i(TAG, "Deleting all reminders: ${reminders.size}")
-      reminders.forEach {
-        eventControlFactory.getController(it).disable()
-      }
-      deleteAllReminderUseCase(reminders.map { it.uuId })
+      deleteAllReminderUseCase(reminders)
       loadReminders()
       postInProgress(false)
       postCommand(Commands.DELETED)

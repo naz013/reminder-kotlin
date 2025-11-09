@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.elementary.tasks.core.services.JobScheduler
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.LocationBasedStrategy
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
@@ -22,7 +23,8 @@ class SnoozeReminderUseCase(
   private val jobScheduler: JobScheduler,
   private val strategyResolver: BehaviorStrategyResolver,
   private val completeReminderUseCase: CompleteReminderUseCase,
-  private val saveReminderUseCase: SaveReminderUseCase
+  private val saveReminderUseCase: SaveReminderUseCase,
+  private val notifier: Notifier
 ) {
 
   suspend operator fun invoke(reminder: Reminder, timeInMinutes: Int): Reminder {
@@ -35,6 +37,7 @@ class SnoozeReminderUseCase(
       Logger.w(TAG, "Snooze time is less than or equal to zero for reminder id=${reminder.uuId}")
       return completeReminderUseCase(reminder)
     }
+    notifier.cancel(reminder.uniqueId)
     val reminder = reminder.copy(
       delay = timeInMinutes,
       syncState = SyncState.WaitingForUpload

@@ -7,11 +7,10 @@ import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.calendar.data.DayLiveData
 import com.elementary.tasks.calendar.data.EventModel
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
@@ -23,10 +22,9 @@ class DayViewModel(
   dispatcherProvider: DispatcherProvider,
   private val dayLiveData: DayLiveData,
   private val reminderRepository: ReminderRepository,
-  private val eventControlFactory: EventControlFactory,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val skipReminderUseCase: SkipReminderUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   val events: LiveData<List<EventModel>> = dayLiveData
@@ -60,8 +58,7 @@ class DayViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val fromDb = reminderRepository.getById(reminder.id)
       if (fromDb != null) {
-        eventControlFactory.getController(fromDb).skip()
-        scheduleReminderUploadUseCase(fromDb.uuId)
+        skipReminderUseCase(fromDb)
         postInProgress(false)
         postCommand(Commands.DELETED)
       } else {

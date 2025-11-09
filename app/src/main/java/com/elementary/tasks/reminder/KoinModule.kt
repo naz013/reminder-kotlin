@@ -90,6 +90,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
@@ -106,21 +107,22 @@ import org.koin.dsl.module
 
 val reminderModule = module {
   factory { DeleteReminderUseCase(get(), get(), get(), get()) }
-  factory { DeleteAllReminderUseCase(get(), get(), get()) }
-  factory { MoveReminderToArchiveUseCase(get(), get(), get()) }
+  factory { DeleteAllReminderUseCase(get(), get(), get(), get()) }
+  factory { MoveReminderToArchiveUseCase(get(), get()) }
   factory { SaveReminderUseCase(get(), get(), get()) }
   factory { ScheduleReminderUploadUseCase(get()) }
 
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
   viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
       arguments,
+      get(),
       get(),
       get(),
       get(),
@@ -183,7 +185,7 @@ val reminderModule = module {
     )
   }
 
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
+  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
   viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
 
   factory { UriToAttachmentFileAdapter(get()) }
@@ -325,9 +327,11 @@ val reminderModule = module {
   factory { PauseReminderUseCase(get(), get(), get(), get()) }
   factory { ResumeReminderUseCase(get(), get(), get()) }
 
-  factory { SnoozeReminderUseCase(get(), get(), get(), get()) }
+  factory { SnoozeReminderUseCase(get(), get(), get(), get(), get()) }
   factory { CompleteReminderUseCase(get(), get(), get(), get()) }
   factory { SkipReminderUseCase(get(), get(), get()) }
+
+  factory { ToggleReminderStateUseCase(get(), get()) }
 
   factory { UpdatePermanentReminderNotificationUseCase(get(), get()) }
 

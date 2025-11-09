@@ -17,8 +17,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.controller.EventControl
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
 import com.elementary.tasks.core.services.JobScheduler
@@ -27,11 +25,10 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.io.BitmapUtils
-import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.elementary.tasks.reminder.scheduling.ReminderBehaviorStrategy
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
@@ -52,7 +49,6 @@ import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -75,15 +71,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   private val moreActionParams = MoreActionParams()
 
   private var mReminder: Reminder? = null
-  private var mControl: EventControl? = null
+  private var reminderStrategy: ReminderBehaviorStrategy? = null
   private var isMockedTest = false
   private var isReminderShowed = false
-  private val isAppType: Boolean
-    get() {
-      val reminder = mReminder ?: return false
-      return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
-        Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
-    }
+
 
   private val isRateDialogShowed: Boolean
     get() {
@@ -92,8 +83,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       prefs.rateCount = count
       return count == 10
     }
-  private val id: Int
-    get() = mReminder?.uniqueId ?: 2121
   private val summary: String
     get() = mReminder?.summary ?: ""
   private val groupName: String
@@ -155,7 +144,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       map[getString(R.string.acc_button_snooze_for)] = {
         jobScheduler.cancelReminder(mReminder?.uniqueId ?: 0)
         showDialog()
-        discardNotification(id)
       }
     }
     if (moreActionParams.canMoveToStatusBar) {
@@ -219,9 +207,73 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
         }
       }
     }
+    viewModel.redirectEvent.observeEvent(this) { event ->
+      handleRedirect(event)
+    }
+    viewModel.showToast.observeEvent(this) {
+      Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+    }
+    viewModel.showFavoriteNotification.observeEvent(this) {
+      showFavouriteNotification(it.text, it.notificationId)
+    }
     lifecycle.addObserver(viewModel)
     if (getId() == "" && BuildConfig.DEBUG) {
       loadTest()
+    }
+  }
+
+  private fun handleRedirect(event: ReminderViewModel.Redirect) {
+    when (event) {
+      is ReminderViewModel.Redirect.Edit -> {
+        navigator.navigate(
+          ActivityDestination(
+            screen = DestinationScreen.ReminderCreate,
+            extras = Bundle().apply {
+              putString(IntentKeys.INTENT_ID, event.id)
+            },
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
+          )
+        )
+        finish()
+      }
+
+      is ReminderViewModel.Redirect.Finish -> {
+        finish()
+      }
+
+      is ReminderViewModel.Redirect.SendEmail -> {
+        TelephonyUtil.sendMail(
+          context = this,
+          email = event.email,
+          subject = event.subject,
+          message = event.message,
+          filePath = event.filePath
+        )
+        finish()
+      }
+
+      is ReminderViewModel.Redirect.OpenApp -> {
+        TelephonyUtil.openApp(event.target, this)
+        finish()
+      }
+
+      is ReminderViewModel.Redirect.OpenLink -> {
+        TelephonyUtil.openLink(event.target, this)
+        finish()
+      }
+
+      is ReminderViewModel.Redirect.SendSms -> {
+        TelephonyUtil.sendSms(this, event.target, summary)
+      }
+
+      is ReminderViewModel.Redirect.MakeCall -> {
+        permissionFlowDelegate.permissionFlow.askPermission(Permissions.CALL_PHONE) {
+          TelephonyUtil.makeCall(event.target, this)
+          finish()
+        }
+      }
     }
   }
 
@@ -235,9 +287,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
 
   private fun showInfo(reminder: Reminder) {
     this.mReminder = reminder
-    if (!isMockedTest) {
-      this.mControl = get<EventControlFactory>().getController(reminder)
-    }
     Logger.d("showInfo: ${dateTimeManager.logDateTime(reminder.eventTime)}")
 
     moreActionParams.canOpenAttachment = reminder.attachmentFile != ""
@@ -404,15 +453,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   }
 
   private fun canSkip(): Boolean {
-    return mControl?.canSkip() ?: false
+    return reminderStrategy?.canSkip(mReminder!!) ?: false
   }
 
   private fun startAgain() {
-    discardNotification(id)
-    doActions({
-      it.next()
-      it.onOff()
-    }, { finish() })
+    viewModel.startAgain()
   }
 
   private fun showFile() {
@@ -444,19 +489,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   override fun handleBackPress(): Boolean {
     Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
     return true
-  }
-
-  private fun openApplication(reminder: Reminder) {
-    if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
-      TelephonyUtil.openApp(reminder.target, this)
-    } else {
-      TelephonyUtil.openLink(reminder.target, this)
-    }
-    finish()
-  }
-
-  private fun cancelTasks() {
-    discardNotification(id)
   }
 
   private fun showDialog() {
@@ -498,28 +530,8 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
     builder.create().show()
   }
 
-  private fun sendSMS() {
-    val reminder = mReminder ?: return
-    if (TextUtils.isEmpty(summary)) return
-    TelephonyUtil.sendSms(this, reminder.target, summary)
-  }
-
   private fun editReminder() {
-    discardNotification(id)
-    doActions({ it.disable() }, {
-      navigator.navigate(
-        ActivityDestination(
-          screen = DestinationScreen.ReminderCreate,
-          extras = Bundle().apply {
-            putString(IntentKeys.INTENT_ID, it.uuId)
-          },
-          flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-          isLoggedIn = true,
-          action = Intent.ACTION_VIEW
-        )
-      )
-      finish()
-    })
+    viewModel.editReminder()
   }
 
   private fun loadData() {
@@ -546,63 +558,28 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
   }
 
   private fun call() {
-    discardNotification(id)
-    doActions({ it.next() }, {
-      when {
-        it.readType().hasSmsAction() -> sendSMS()
-        isAppType -> openApplication(it)
-        Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> TelephonyUtil.sendMail(
-          context = this,
-          email = it.target,
-          subject = it.subject,
-          message = summary,
-          filePath = it.attachmentFile
-        )
-
-        else -> makeCall()
-      }
-      if (!it.readType().hasSmsAction()) {
-        finish()
-      }
-    })
-  }
-
-  private fun makeCall() {
-    val reminder = mReminder ?: return
-    permissionFlowDelegate.permissionFlow.askPermission(Permissions.CALL_PHONE) {
-      TelephonyUtil.makeCall(reminder.target, this)
-    }
+    viewModel.onActionButtonClick()
   }
 
   private fun delay(minutes: Int = prefs.snoozeTime) {
-    discardNotification(id)
-    doActions({ it.setDelay(minutes) }, {
-      Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
-      finish()
-    })
+    viewModel.onSnoozeClicked(minutes)
   }
 
   private fun cancel() {
-    discardNotification(id)
-    doActions({ it.disable() }, { finish() })
+    viewModel.onCancelClicked()
   }
 
   private fun favourite() {
-    discardNotification(id)
-    doActions({ it.next() }, {
-      showFavouriteNotification()
-      finish()
-    })
+    viewModel.onFavoriteClicked()
   }
 
   private fun ok() {
-    discardNotification(id)
-    doActions({ it.next() }, { finish() })
+    viewModel.onOkClicked()
   }
 
-  private fun showFavouriteNotification() {
+  private fun showFavouriteNotification(text: String, notificationId: Int) {
     val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-    builder.setContentTitle(summary)
+    builder.setContentTitle(text)
     val appName: String = if (BuildParams.isPro) {
       getString(R.string.app_name_pro)
     } else {
@@ -617,56 +594,37 @@ class ReminderDialog29Activity : BindingActivity<ActivityDialogReminderBinding>(
       builder.setGroup("GROUP")
       builder.setGroupSummary(true)
     }
-    notifier.notify(id, builder.build())
+    notifier.notify(notificationId, builder.build())
     if (isWear) {
-      showWearNotification(appName)
+      showWearNotification(
+        text,
+        appName,
+        notificationId
+      )
     }
   }
 
-  private fun discardNotification(id: Int) {
-    Logger.d("discardNotification: $id")
-    notifier.cancel(id)
-  }
-
-  private fun showWearNotification(secondaryText: String) {
+  private fun showWearNotification(
+    text: String,
+    secondaryText: String,
+    notificationId: Int
+  ) {
     Logger.d("showWearNotification: $secondaryText")
     val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
-    wearableNotificationBuilder.setContentTitle(summary)
+    wearableNotificationBuilder.setContentTitle(text)
     wearableNotificationBuilder.setContentText(secondaryText)
     wearableNotificationBuilder.color = colorOf(R.color.secondaryBlue)
     wearableNotificationBuilder.setOngoing(false)
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)
     wearableNotificationBuilder.setGroupSummary(false)
-    notifier.notify(id, wearableNotificationBuilder.build())
+    notifier.notify(notificationId, wearableNotificationBuilder.build())
   }
 
   override fun onStop() {
     super.onStop()
     mWasStopped = true
-  }
-
-  private fun doActions(onControl: (EventControl) -> Unit, onEnd: (Reminder) -> Unit) {
-    isReminderShowed = true
-    viewModel.reminder.removeObserver(mReminderObserver)
-    val reminder = mReminder
-    if (reminder == null) {
-      cancelTasks()
-      finish()
-      return
-    }
-    jobScheduler.cancelReminder(reminder.uniqueId)
-    val control = mControl
-    launchDefault {
-      if (control != null) {
-        onControl.invoke(control)
-      }
-      withUIContext {
-        cancelTasks()
-        onEnd.invoke(reminder)
-      }
-    }
   }
 
   companion object {

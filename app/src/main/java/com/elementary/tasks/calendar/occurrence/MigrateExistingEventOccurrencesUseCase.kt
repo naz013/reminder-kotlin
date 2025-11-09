@@ -14,15 +14,19 @@ class MigrateExistingEventOccurrencesUseCase(
 ) {
 
   suspend operator fun invoke() {
-    birthdayRepository.getAll().forEach { birthday ->
+    birthdayRepository.getAllIds()
+      .also { Logger.i(TAG, "Going to migrate ${it.size} birthdays occurrences.") }
+      .forEach { id ->
       workManagerProvider.getWorkManager()
-        .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(birthday.uuId))
+        .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(id))
     }
 
-    reminderRepository.getAllIds().forEach { id ->
-      workManagerProvider.getWorkManager()
-        .enqueue(CalculateReminderOccurrencesWorker.prepareWork(id))
-    }
+    reminderRepository.getAllIds()
+      .also { Logger.i(TAG, "Going to migrate ${it.size} reminders occurrences.") }
+      .forEach { id ->
+        workManagerProvider.getWorkManager()
+          .enqueue(CalculateReminderOccurrencesWorker.prepareWork(id))
+      }
 
     Logger.i(TAG, "Scheduled occurrence calculations for existing birthdays and reminders.")
   }

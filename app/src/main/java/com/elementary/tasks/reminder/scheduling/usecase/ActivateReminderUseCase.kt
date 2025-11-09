@@ -90,6 +90,12 @@ class ActivateReminderUseCase(
       return reminder
     } else {
       Logger.w(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.eventTime}.")
+      val reminder = reminder.copy(
+        isActive = false,
+        syncState = SyncState.WaitingForUpload,
+        version = reminder.version + 1,
+      )
+      saveReminderUseCase(reminder)
       return reminder
     }
   }

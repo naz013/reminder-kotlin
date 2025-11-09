@@ -12,7 +12,7 @@ class CompleteReminderUseCase(
   private val strategyResolver: BehaviorStrategyResolver,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
   private val dateTimeManager: DateTimeManager,
-  private val activateReminderUseCase: ActivateReminderUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
 ) {
 
   suspend operator fun invoke(reminder: Reminder): Reminder {

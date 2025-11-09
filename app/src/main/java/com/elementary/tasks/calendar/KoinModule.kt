@@ -23,7 +23,7 @@ val calendarModule = module {
   factory { WeekHeaderController(get()) }
 
   viewModel { (date: LocalDate) -> WeekViewModel(date, get(), get(), get(), get()) }
-  viewModel { (date: LocalDate) -> DayViewModel(date, get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { (date: LocalDate) -> DayViewModel(date, get(), get(), get(), get(), get(), get()) }
 
   single {
     CalendarDataEngine(
