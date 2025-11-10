@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger

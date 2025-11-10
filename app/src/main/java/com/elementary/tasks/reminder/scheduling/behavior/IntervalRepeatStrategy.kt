@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.scheduling
+package com.elementary.tasks.reminder.scheduling.behavior
 
 import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
@@ -6,13 +6,13 @@ import com.github.naz013.domain.Reminder
 import org.threeten.bp.LocalDateTime
 
 /**
- * Strategy for timer-based repeating reminders.
- * Uses from, to, and hours properties to determine next occurrence.
+ * Strategy for interval-based repeating reminders.
+ * Uses repeatInterval property to calculate next occurrence.
  *
- * This strategy calculates the next occurrence within a time window (from/to)
- * and specific hours list (e.g., every hour from 9 AM to 5 PM).
+ * This strategy adds the repeatInterval (in milliseconds) to the current time
+ * to determine when the reminder should fire next.
  */
-class TimerRepeatStrategy(
+class IntervalRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
@@ -22,29 +22,26 @@ class TimerRepeatStrategy(
     fromDateTime: LocalDateTime
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
-    if (reminder.repeatInterval <= 0L) return null
     val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
-    val fromTime = dateTimeManager.toLocalTime(reminder.from)
-    val toTime = dateTimeManager.toLocalTime(reminder.to)
-    return recurrenceCalculator.findNextTimerDateTime(
+
+    return recurrenceCalculator.findNextIntervalDateTime(
       eventDateTime = eventDateTime,
-      interval = reminder.repeatInterval,
-      excludedHours = reminder.hours,
-      excludedFromTime = fromTime,
-      excludedToTime = toTime,
-      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+      intervalMillis = reminder.repeatInterval,
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
     )
   }
 
   override fun canSkip(reminder: Reminder): Boolean {
-    return reminder.repeatInterval > 0L && !reminder.isLimitExceed()
+    return reminder.repeatInterval > 0 && !reminder.isLimitExceed()
   }
 
   override fun canSnooze(reminder: Reminder): Boolean {
+    // Interval repeat reminders can be snoozed
     return true
   }
 
   override fun canStartImmediately(reminder: Reminder): Boolean {
+    // Interval repeat reminders can start immediately
     return dateTimeManager.isCurrent(reminder.eventTime)
   }
 }

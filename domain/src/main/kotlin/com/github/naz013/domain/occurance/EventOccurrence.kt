@@ -1,6 +1,7 @@
 package com.github.naz013.domain.occurance
 
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 data class EventOccurrence(
@@ -9,4 +10,9 @@ data class EventOccurrence(
   val date: LocalDate,
   val time: LocalTime,
   val type: OccurrenceType
-)
+) {
+
+  fun getDateTime(): LocalDateTime {
+    return LocalDateTime.of(date, time)
+  }
+}

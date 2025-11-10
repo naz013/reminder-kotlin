@@ -2,6 +2,15 @@ package com.elementary.tasks.reminder.scheduling
 
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.IntervalRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.MonthlyRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.RecurRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.SimpleDateStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.TimerRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.WeekdayRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.YearlyRepeatStrategy
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder

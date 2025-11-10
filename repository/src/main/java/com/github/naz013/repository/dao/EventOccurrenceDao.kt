@@ -21,6 +21,9 @@ internal interface EventOccurrenceDao {
   @Query("SELECT * FROM EventOccurrence WHERE eventId = :eventId ORDER BY date, time")
   suspend fun getByEventId(eventId: String): List<EventOccurrenceEntity>
 
+  @Query("SELECT * FROM EventOccurrence WHERE date = :date AND time BETWEEN :startTime AND :endTime ORDER BY time")
+  suspend fun getByDateAndTimeRange(date: Long, startTime: Int, endTime: Int): List<EventOccurrenceEntity>
+
   @Query("DELETE FROM EventOccurrence WHERE id = :id")
   suspend fun deleteById(id: String)
 

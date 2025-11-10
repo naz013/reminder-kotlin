@@ -7,6 +7,7 @@ import com.github.naz013.repository.entity.EventOccurrenceEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
 
 internal class EventOccurrenceRepositoryImpl(
   private val dao: EventOccurrenceDao,
@@ -33,6 +34,18 @@ internal class EventOccurrenceRepositoryImpl(
 
   override suspend fun getByEventId(eventId: String): List<EventOccurrence> {
     return dao.getByEventId(eventId).map { it.toDomain() }
+  }
+
+  override suspend fun getByDateAndTimeRange(
+    date: LocalDate,
+    startTime: LocalTime,
+    endTime: LocalTime
+  ): List<EventOccurrence> {
+    return dao.getByDateAndTimeRange(
+      date.toEpochDay(),
+      startTime.toSecondOfDay(),
+      endTime.toSecondOfDay()
+    ).map { it.toDomain() }
   }
 
   override suspend fun deleteById(id: String) {

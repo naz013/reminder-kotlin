@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.scheduling
+package com.elementary.tasks.reminder.scheduling.behavior
 
 import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager

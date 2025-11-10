@@ -2,8 +2,8 @@ package com.elementary.tasks.reminder.scheduling.usecase.location
 
 import android.content.Context
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.LocationBasedStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 

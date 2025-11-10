@@ -4,7 +4,7 @@ import android.content.Context
 import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesWorker
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
-import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase

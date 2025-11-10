@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.scheduling
+package com.elementary.tasks.reminder.scheduling.behavior
 
 import com.github.naz013.domain.Reminder
 import org.threeten.bp.LocalDateTime

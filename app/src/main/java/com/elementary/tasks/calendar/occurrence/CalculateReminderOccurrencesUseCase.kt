@@ -1,8 +1,8 @@
 package com.elementary.tasks.calendar.occurrence
 
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.NoReminderStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.NoReminderStrategy
 import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.occurance.EventOccurrence

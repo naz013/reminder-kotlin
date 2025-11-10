@@ -1,26 +1,35 @@
 package com.elementary.tasks.calendar.data
 
 import androidx.lifecycle.LiveData
+import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDateRangeUseCase
 import com.elementary.tasks.core.calendar.EventsCursor
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.occurance.EventOccurrence
+import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
-import com.github.naz013.common.ContextProvider
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 
 class MonthLiveData(
   private val context: ContextProvider,
   private val dispatcherProvider: DispatcherProvider,
-  private val calendarDataEngine: CalendarDataEngine,
-  private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
   private val prefs: Prefs,
-  private val scope: CoroutineScope = CoroutineScope(Job())
-) : LiveData<Map<LocalDate, EventsCursor>>(), CalendarDataEngineBroadcastCallback {
+  private val getOccurrencesByDateRangeUseCase: GetOccurrencesByDateRangeUseCase,
+  private val birthdayRepository: BirthdayRepository,
+  private val reminderRepository: ReminderRepository,
+) : LiveData<Map<LocalDate, EventsCursor>>() {
 
+  private val scope: CoroutineScope = CoroutineScope(Job())
   private var lastDate: LocalDate? = null
 
   fun onDateChanged(date: LocalDate) {
@@ -30,64 +39,65 @@ class MonthLiveData(
 
   override fun onActive() {
     super.onActive()
-    calendarDataEngineBroadcast.observerEvent(
-      parent = this.toString(),
-      action = CalendarDataEngineBroadcast.EVENT_READY,
-      callback = this
-    )
-  }
-
-  override fun onInactive() {
-    super.onInactive()
-    calendarDataEngineBroadcast.removeObserver(this.toString())
-  }
-
-  override fun invoke() {
-    lastDate?.also { loadData(it) }
-  }
-
-  private fun loadData(date: LocalDate) {
-    scope.launch(dispatcherProvider.default()) {
-      calendarDataEngine.getByMonth(
-        localDate = date,
-        reminderMode = calendarDataEngine.getReminderMode(
-          includeReminders = true,
-          calculateFuture = true
-        )
-      ).let { mapData(it) }
-        .also { postValue(it) }
-        .also {
-          Logger.d("loadData: ${it.size}, date=$date")
-        }
+    lastDate?.let {
+      loadData(it)
     }
   }
 
-  private fun mapData(list: List<EventModel>): Map<LocalDate, EventsCursor> {
+  private fun loadData(date: LocalDate) {
+    val startOfTheMonth = date.withDayOfMonth(1)
+    val endOfTheMonth = date.withDayOfMonth(date.lengthOfMonth())
+    scope.launch(dispatcherProvider.default()) {
+      val occurrences = getOccurrencesByDateRangeUseCase(
+        startDate = startOfTheMonth,
+        endDate = endOfTheMonth
+      )
+      val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
+      val reminders = reminderRepository.getActive().associateBy { it.uuId }
+      val mappedData = mapData(occurrences, birthdays, reminders)
+      Logger.d(TAG, "Mapped data for $date: ${mappedData.size} days with events")
+
+      withContext(dispatcherProvider.main()) {
+        value = mappedData
+      }
+    }
+  }
+
+  private fun mapData(
+    list: List<EventOccurrence>,
+    birthdaysMap: Map<String, Birthday>,
+    remindersMap: Map<String, Reminder>
+  ): Map<LocalDate, EventsCursor> {
     val birthdayColor = birthdayColor()
     val reminderColor = reminderColor()
 
     val map = mutableMapOf<LocalDate, EventsCursor>()
     for (model in list) {
-      when (model) {
-        is BirthdayEventModel -> {
+      when (model.type) {
+        OccurrenceType.Birthday -> {
+          val birthday = birthdaysMap[model.eventId] ?: continue
           setEvent(
-            model.model.nextBirthdayDate.toLocalDate(),
-            model.model.name,
+            model.date,
+            birthday.name,
             birthdayColor,
             EventsCursor.Type.BIRTHDAY,
             map
           )
         }
 
-        is ReminderEventModel -> {
-          val eventTime = model.model.due?.localDateTime ?: continue
+        OccurrenceType.Reminder -> {
+          val reminder = remindersMap[model.eventId] ?: continue
           setEvent(
-            eventTime.toLocalDate(),
-            model.model.summary,
+            model.date,
+            reminder.summary,
             reminderColor,
             EventsCursor.Type.REMINDER,
             map
           )
+        }
+
+        OccurrenceType.CalendarEvent -> {
+          // TODO: Add calendar event handling
         }
       }
     }
@@ -117,5 +127,9 @@ class MonthLiveData(
 
   private fun reminderColor(): Int {
     return ThemeProvider.colorReminderCalendar(context.themedContext, prefs.reminderColor)
+  }
+
+  companion object {
+    private const val TAG = "MonthLiveData"
   }
 }

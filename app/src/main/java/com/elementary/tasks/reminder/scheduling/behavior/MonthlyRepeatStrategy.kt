@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.scheduling
+package com.elementary.tasks.reminder.scheduling.behavior
 
 import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
@@ -6,13 +6,13 @@ import com.github.naz013.domain.Reminder
 import org.threeten.bp.LocalDateTime
 
 /**
- * Strategy for weekday-based repeating reminders.
- * Uses weekdays list to determine next occurrence.
+ * Strategy for monthly repeating reminders.
+ * Uses dayOfMonth property to determine next occurrence.
  *
- * This strategy finds the next occurrence based on the selected weekdays
- * (e.g., Monday, Wednesday, Friday) from the reminder's weekdays list.
+ * This strategy advances to the next month while maintaining the same day of month
+ * (e.g., the 15th of every month).
  */
-class WeekdayRepeatStrategy(
+class MonthlyRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
@@ -22,25 +22,27 @@ class WeekdayRepeatStrategy(
     fromDateTime: LocalDateTime
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
-    if (reminder.weekdays.isEmpty()) return null
     val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
 
-    return recurrenceCalculator.findNextDayOfWeekDateTime(
+    return recurrenceCalculator.findNextMonthDayDateTime(
       eventDateTime = eventDateTime,
-      weekdays = reminder.weekdays,
-      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+      dayOfMonth = reminder.dayOfMonth,
+      interval = reminder.repeatInterval,
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
     )
   }
 
   override fun canSkip(reminder: Reminder): Boolean {
-    return reminder.weekdays.isNotEmpty() && !reminder.isLimitExceed()
+    return reminder.dayOfMonth >= 0 && !reminder.isLimitExceed()
   }
 
   override fun canSnooze(reminder: Reminder): Boolean {
+    // Monthly repeat reminders can be snoozed
     return true
   }
 
   override fun canStartImmediately(reminder: Reminder): Boolean {
+    // Monthly repeat reminders can start immediately
     return dateTimeManager.isCurrent(reminder.eventTime)
   }
 }

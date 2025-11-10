@@ -82,9 +82,10 @@ import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogle
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
-import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
@@ -96,6 +97,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCa
 import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.legacy.MigrateRecurringParamsUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.location.StopLocationTrackingUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
@@ -347,4 +349,8 @@ val reminderModule = module {
   factory { ReminderOccurrenceCalculatorFactory(get(), get()) }
 
   factory { EventDateTimeCalculator(get(), get()) }
+
+  factory { RecurrenceCalculator() }
+
+  factory { MigrateRecurringParamsUseCase(get(), get()) }
 }

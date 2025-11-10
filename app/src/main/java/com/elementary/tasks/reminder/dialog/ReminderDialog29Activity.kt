@@ -28,7 +28,7 @@ import com.elementary.tasks.core.utils.io.BitmapUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.databinding.ActivityDialogReminderBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
-import com.elementary.tasks.reminder.scheduling.ReminderBehaviorStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.ReminderBehaviorStrategy
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager

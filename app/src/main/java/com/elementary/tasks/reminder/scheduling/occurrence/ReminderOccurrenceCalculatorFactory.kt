@@ -1,16 +1,16 @@
 package com.elementary.tasks.reminder.scheduling.occurrence
 
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
-import com.elementary.tasks.reminder.scheduling.IntervalRepeatStrategy
-import com.elementary.tasks.reminder.scheduling.LocationBasedStrategy
-import com.elementary.tasks.reminder.scheduling.MonthlyRepeatStrategy
-import com.elementary.tasks.reminder.scheduling.NoReminderStrategy
-import com.elementary.tasks.reminder.scheduling.RecurRepeatStrategy
-import com.elementary.tasks.reminder.scheduling.ReminderBehaviorStrategy
-import com.elementary.tasks.reminder.scheduling.SimpleDateStrategy
-import com.elementary.tasks.reminder.scheduling.TimerRepeatStrategy
-import com.elementary.tasks.reminder.scheduling.WeekdayRepeatStrategy
-import com.elementary.tasks.reminder.scheduling.YearlyRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.IntervalRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.MonthlyRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.NoReminderStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.RecurRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.ReminderBehaviorStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.SimpleDateStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.TimerRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.WeekdayRepeatStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.YearlyRepeatStrategy
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 

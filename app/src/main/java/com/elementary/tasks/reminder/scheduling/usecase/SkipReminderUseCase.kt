@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.LocationBasedStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.datetime.plusMillis
 import com.github.naz013.domain.Reminder
