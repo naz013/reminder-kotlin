@@ -12,12 +12,14 @@ import com.elementary.tasks.core.cloud.worker.WorkerData
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.sync.DataType
 
 class ScheduleBackgroundWorkUseCase(
   private val workManagerProvider: WorkManagerProvider,
   private val getWorkerTagUseCase: GetWorkerTagUseCase,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val cloudApiProvider: CloudApiProvider
 ) {
 
   operator fun invoke(
@@ -25,7 +27,12 @@ class ScheduleBackgroundWorkUseCase(
     dataType: DataType? = null,
     id: String? = null,
     ids: List<String>? = null,
-  ) :String {
+  ): String? {
+    if (cloudApiProvider.getAllowedCloudApis().isEmpty()) {
+      Logger.i(TAG, "No authorized cloud APIs. Work not scheduled.")
+      return null
+    }
+
     val dataBuilder = Data.Builder()
     dataType?.also { dataBuilder.putString(WorkerData.DATA_TYPE, it.name) }
     id?.also { dataBuilder.putString(WorkerData.ITEM_ID, it) }
@@ -51,7 +58,10 @@ class ScheduleBackgroundWorkUseCase(
       )
       .build()
     workManagerProvider.getWorkManager().enqueue(work)
-    Logger.i(TAG, "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag, network=${prefs.workerNetworkType.name}")
+    Logger.i(
+      TAG,
+      "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag, network=${prefs.workerNetworkType.name}"
+    )
     return tag
   }
 

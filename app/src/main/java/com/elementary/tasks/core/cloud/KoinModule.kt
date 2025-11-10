@@ -22,7 +22,7 @@ val cloudModule = module {
   factory { FileCacheProviderImpl(get()) as FileCacheProvider }
 
   factory { GetWorkerTagUseCase() }
-  factory { ScheduleBackgroundWorkUseCase(get(), get(), get()) }
+  factory { ScheduleBackgroundWorkUseCase(get(), get(), get(), get()) }
 
   worker { DeleteWorker(get(), get(), get(), get()) }
   worker { ForceUploadWorker(get(), get(), get(), get()) }

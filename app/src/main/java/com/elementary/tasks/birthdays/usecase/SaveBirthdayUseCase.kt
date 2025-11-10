@@ -32,7 +32,7 @@ class SaveBirthdayUseCase(
     workManagerProvider.getWorkManager()
       .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(birthday.uuId))
 
-    scheduleBackgroundWorkUseCase.invoke(
+    scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Birthdays,
       id = birthday.uuId
