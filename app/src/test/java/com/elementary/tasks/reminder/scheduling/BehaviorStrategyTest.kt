@@ -438,6 +438,8 @@ class SimpleDateStrategyTest : BaseTest() {
 
   @Test
   fun `canStartImmediately returns true for simple reminders`() = runTest {
+    every { dateTimeManager.isCurrent(any<String>()) } returns true
+
     // Arrange
     val reminder = Reminder(
       summary = "One-time reminder",
