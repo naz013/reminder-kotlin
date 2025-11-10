@@ -1,22 +1,21 @@
-package com.elementary.tasks.reminder.work
+package com.elementary.tasks.settings.calendar.work
 
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.elementary.tasks.settings.calendar.usecase.ScanGoogleCalendarForNewEventsUseCase
 import com.github.naz013.common.Permissions
-import com.elementary.tasks.core.utils.EventImportProcessor
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.withContext
 
-class CheckEventsWorker(
-  private val prefs: Prefs,
+class ScanGoogleCalendarEventsWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val eventImportProcessor: EventImportProcessor
+  private val scanGoogleCalendarForNewEventsUseCase: ScanGoogleCalendarForNewEventsUseCase
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
@@ -27,22 +26,25 @@ class CheckEventsWorker(
         Permissions.WRITE_CALENDAR
       )
     ) {
+      Logger.i(TAG, "Starting Google Calendar events scan worker.")
       launchCheckEvents()
+    } else {
+      Logger.w(TAG, "Calendar permissions are not granted. Cannot scan Google Calendar events.")
     }
     return Result.success()
   }
 
   private suspend fun launchCheckEvents() {
-    withContext(dispatcherProvider.default()) {
-      eventImportProcessor.importEventsFor(prefs.trackCalendarIds.toList())
+    withContext(dispatcherProvider.io()) {
+      scanGoogleCalendarForNewEventsUseCase()
     }
   }
 
   companion object {
-    private const val TAG = "CheckEventsWorker"
+    private const val TAG = "ScanGoogleCalendarEventsWorker"
 
     fun schedule(context: Context) {
-      val work = OneTimeWorkRequest.Builder(CheckEventsWorker::class.java)
+      val work = OneTimeWorkRequest.Builder(ScanGoogleCalendarEventsWorker::class.java)
         .addTag(TAG)
         .build()
       WorkManager.getInstance(context).enqueue(work)

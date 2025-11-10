@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.activity.finishWith
-import com.github.naz013.common.Module
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
-import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.splash.SplashScreenActivity
+import com.github.naz013.common.Module
+import com.github.naz013.ui.common.activity.finishWith
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
+import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.color.DynamicColors
 
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
@@ -130,7 +130,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
 
   private fun currentFormat(): String {
     return when (prefs.hourFormat) {
-      0 -> getString(R.string.default_string)
+      0 -> getString(R.string.system_default)
       1 -> getString(R.string.use_24_hour_format)
       2 -> getString(R.string.use_12_hour_format)
       else -> getString(R.string.default_string)
@@ -146,7 +146,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
       mItemSelect = prefs.hourFormat
       builder.setSingleChoiceItems(
         arrayOf(
-          getString(R.string.default_string),
+          getString(R.string.system_default),
           getString(R.string.use_24_hour_format),
           getString(R.string.use_12_hour_format)
         ),

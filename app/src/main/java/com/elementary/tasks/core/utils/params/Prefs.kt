@@ -53,6 +53,18 @@ class Prefs(
     }
   }
 
+  var addRemindersToGoogleCalendar: Boolean
+    get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, def = false)
+    set(value) = putBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, value)
+
+  var scanGoogleCalendarEvents: Boolean
+    get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_SYNC, def = false)
+    set(value) = putBoolean(PrefsConstants.GOOGLE_CALENDAR_SYNC, value)
+
+  var googleCalendarReminderId: Long
+    get() = getLong(PrefsConstants.GOOGLE_CALENDAR_ID, def = -1L)
+    set(value) = putLong(PrefsConstants.GOOGLE_CALENDAR_ID, value)
+
   var occurrenceMigrated: Boolean
     get() = getBoolean(PrefsConstants.OCCURRENCE_MIGRATED, def = false)
     set(value) = putBoolean(PrefsConstants.OCCURRENCE_MIGRATED, value)
@@ -108,10 +120,6 @@ class Prefs(
   var reviewDialogShown: Boolean
     get() = getBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, def = false)
     set(value) = putBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, value)
-
-  var trackCalendarIds: Array<Long>
-    get() = getLongArray(PrefsConstants.CALENDAR_IDS)
-    set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
 
   var analyticsEnabled: Boolean
     get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, def = true)
@@ -312,31 +320,9 @@ class Prefs(
     get() = getInt(PrefsConstants.EVENT_DURATION)
     set(value) = putInt(PrefsConstants.EVENT_DURATION, value)
 
-  @Deprecated("Use {defaultCalendarId} parameter")
-  private var calendarId: Int
-    get() = getInt(PrefsConstants.CALENDAR_ID)
-    set(value) = putInt(PrefsConstants.CALENDAR_ID, value)
-
-  var defaultCalendarId: Long
-    get() = getLong(PrefsConstants.DEFAULT_CALENDAR_ID)
-    set(value) = putLong(PrefsConstants.DEFAULT_CALENDAR_ID, value)
-
   var startDay: Int
     get() = getInt(PrefsConstants.START_DAY)
     set(value) = putInt(PrefsConstants.START_DAY, value)
-
-  var isAutoEventsCheckEnabled: Boolean
-    get() = getBoolean(PrefsConstants.AUTO_CHECK_FOR_EVENTS)
-    set(value) = putBoolean(PrefsConstants.AUTO_CHECK_FOR_EVENTS, value)
-
-  var autoCheckInterval: Int
-    get() = getInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL)
-    set(value) = putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, value)
-
-  @Deprecated("Use {calendarIds} parameter")
-  private var eventsCalendar: Int
-    get() = getInt(PrefsConstants.EVENTS_CALENDAR)
-    set(value) = putInt(PrefsConstants.EVENTS_CALENDAR, value)
 
   var isBirthdayReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_REMINDER, def = true)
@@ -513,7 +499,6 @@ class Prefs(
       editor.putInt(PrefsConstants.APP_RUNS_COUNT, 0)
       editor.putInt(PrefsConstants.DELAY_TIME, 5)
       editor.putInt(PrefsConstants.EVENT_DURATION, 30)
-      editor.putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
       editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
       editor.putInt(PrefsConstants.MAP_STYLE, 6)
       editor.putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -547,18 +532,6 @@ class Prefs(
   }
 
   fun checkPrefs() {
-    if (hasKey(PrefsConstants.CALENDAR_ID)) {
-      if (calendarId != 0) {
-        defaultCalendarId = calendarId.toLong()
-      }
-      removeKey(PrefsConstants.CALENDAR_ID)
-    }
-    if (hasKey(PrefsConstants.EVENTS_CALENDAR)) {
-      if (eventsCalendar != 0) {
-        trackCalendarIds = arrayOf(eventsCalendar.toLong())
-      }
-      removeKey(PrefsConstants.EVENTS_CALENDAR)
-    }
     if (!hasKey(PrefsConstants.TODAY_COLOR)) {
       putInt(PrefsConstants.TODAY_COLOR, 4)
     }
@@ -595,9 +568,6 @@ class Prefs(
     }
     if (!hasKey(PrefsConstants.DO_NOT_DISTURB_TO)) {
       putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
-    }
-    if (!hasKey(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL)) {
-      putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
     }
     if (!hasKey(PrefsConstants.TRACK_TIME)) {
       putInt(PrefsConstants.TRACK_TIME, 1)

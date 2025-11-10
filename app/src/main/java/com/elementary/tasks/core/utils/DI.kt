@@ -32,8 +32,6 @@ import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.reminder.work.CheckEventsWorker
-import com.elementary.tasks.settings.calendar.EventsImportViewModel
 import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
@@ -52,7 +50,6 @@ import org.koin.dsl.module
 val workerModule = module {
   worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
   worker { UpdateTaskWorker(get(), get(), get(), get(), get()) }
-  worker { CheckEventsWorker(get(), get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
@@ -79,7 +76,6 @@ val viewModelModule = module {
   }
 
   viewModel { TroubleshootingViewModel(get(), get(), get(), get(), get(), get()) }
-  viewModel { EventsImportViewModel(get(), get(), get(), get(), get()) }
 }
 
 val storageModule = module {

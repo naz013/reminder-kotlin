@@ -36,26 +36,6 @@ class JobScheduler(
   private val eventDateTimeCalculator: EventDateTimeCalculator,
 ) {
 
-  fun scheduleEventCheck() {
-    val interval = prefs.autoCheckInterval
-    if (interval <= 0) {
-      cancelEventCheck()
-      return
-    }
-    val millis = INTERVAL_HOUR * interval
-
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(EVENT_CHECK)
-      .setConstraints(getDefaultConstraints())
-      .build()
-    schedule(work)
-  }
-
-  fun cancelEventCheck() {
-    cancelReminder(EVENT_CHECK)
-  }
-
   fun scheduleBirthdaysCheck() {
     val work = PeriodicWorkRequest.Builder(
       CheckBirthdaysWorker::class.java,
@@ -298,7 +278,6 @@ class JobScheduler(
     const val EVENT_BIRTHDAY = "event_birthday"
     const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
     const val EVENT_AUTO_BACKUP = "event_auto_backup"
-    const val EVENT_CHECK = "event_check"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
     private const val TAG = "JobScheduler"
 

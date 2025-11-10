@@ -43,8 +43,8 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_builder_google_task_list"
             app:prefs_primary_text="@string/completed_reminders"
-            app:prefs_secondary_text_off="@string/do_not_move"
-            app:prefs_secondary_text_on="@string/move_to_trash"
+            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/move_to_the_archive"
             app:prefs_type="check_switch" />
 
         <TextView

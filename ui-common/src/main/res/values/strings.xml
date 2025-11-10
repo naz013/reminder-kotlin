@@ -892,4 +892,13 @@
     <string name="report_an_issue">Report an Issue</string>
     <string name="move_to_archive">Move to archive</string>
     <string name="share_send_email">Send email…</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="_24_hour_format">24 hour format</string>
+    <string name="move_to_the_archive">Move to the Archive</string>
+    <string name="do_nothing">Do nothing</string>
+    <string name="first_day_of_the_week">First day of the week</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Add reminders to Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Scan Google Calendar for the new events</string>
+    <string name="calendar_not_selected">Calendar not selected</string>
 </resources>

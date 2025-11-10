@@ -281,24 +281,12 @@
             android:name="screen_title"
             app:nullable="true"
             app:argType="string" />
-        <action
-            android:id="@+id/action_calendarSettingsFragment_to_fragmentEventsImport"
-            app:destination="@id/fragmentEventsImport"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/notificationSettingsFragment"
         android:name="com.elementary.tasks.settings.NotificationSettingsFragment"
         android:label="@string/notification"
         tools:layout="@layout/fragment_settings_notification" />
-    <fragment
-        android:id="@+id/fragmentEventsImport"
-        android:name="com.elementary.tasks.settings.calendar.FragmentEventsImport"
-        android:label="@string/import_events"
-        tools:layout="@layout/fragment_settings_events_import" />
     <fragment
         android:id="@+id/birthdaySettingsFragment"
         android:name="com.elementary.tasks.settings.BirthdaySettingsFragment"

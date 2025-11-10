@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_calendar_week_start"
-            app:prefs_primary_text="@string/first_day"
+            app:prefs_primary_text="@string/first_day_of_the_week"
             app:prefs_type="none" />
 
         <TextView
@@ -70,28 +70,18 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/import_"
+            android:text="@string/google_calendar"
             android:textAppearance="?textAppearanceTitleSmall"
             android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/eventsImportPrefs"
+            android:id="@+id/selectCalendarPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_cloud_download"
-            app:prefs_primary_text="@string/import_events"
+            app:prefs_icon="@drawable/ic_fluent_calendar_star"
+            app:prefs_primary_text="@string/choose_calendar"
             app:prefs_type="none" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/export"
-            android:textAppearance="?textAppearanceTitleSmall"
-            android:textColor="?colorTertiary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/exportToCalendarPrefs"
@@ -99,33 +89,16 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_builder_google_calendar_add"
-            app:prefs_primary_text="@string/export_to_google_calendar"
+            app:prefs_primary_text="@string/add_reminders_to_google_calendar"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/eventDurationPrefs"
+            android:id="@+id/scanCalendarPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_builder_by_minute"
-            app:prefs_primary_text="@string/event_duration"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/selectCalendarPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_calendar_checkmark"
-            app:prefs_primary_text="@string/choose_calendar"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportToStockPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="false"
-            app:prefs_primary_text="@string/export_to_stock_calendar"
+            app:prefs_icon="@drawable/ic_fluent_calendar_sync"
+            app:prefs_primary_text="@string/scan_google_calendar_for_the_new_events"
             app:prefs_type="check_switch" />
 
         <Space

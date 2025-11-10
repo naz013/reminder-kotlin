@@ -4,10 +4,6 @@ object PrefsConstants {
 
   const val PREFS_NAME = "prefs_six"
 
-  @Deprecated("Should not use")
-  const val EVENTS_CALENDAR = "events_cal"
-  const val AUTO_CHECK_FOR_EVENTS = "auto_events"
-  const val AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval"
   const val DRIVE_USER = "ggl_user"
   const val TASKS_USER = "gtl_user"
   const val MAP_TYPE = "new_map_type"
@@ -23,10 +19,6 @@ object PrefsConstants {
   const val EVENT_DURATION = "event_duration"
   const val EXPORT_TO_CALENDAR = "export_to_calendar"
 
-  @Deprecated("Should not use")
-  const val CALENDAR_ID = "cal_id"
-  const val CALENDAR_IDS = "calendar_ids"
-  const val DEFAULT_CALENDAR_ID = "default_calendar_id"
   const val AUTO_CHECK_BIRTHDAYS = "birthdays_auto_scan"
   const val LED_STATUS = "led_status"
   const val LED_COLOR = "led_color"
@@ -114,4 +106,8 @@ object PrefsConstants {
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"
   const val OCCURRENCE_COUNT_REMINDERS = "occurrence_count_reminders"
   const val OCCURRENCE_COUNT_BIRTHDAYS = "occurrence_count_birthdays"
+
+  const val GOOGLE_CALENDAR_SYNC = "google_calendar_sync"
+  const val GOOGLE_CALENDAR_ID = "google_calendar_id"
+  const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
 }

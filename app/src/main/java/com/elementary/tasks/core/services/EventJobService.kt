@@ -8,7 +8,6 @@ import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
@@ -32,16 +31,10 @@ class EventJobService(
       JobScheduler.EVENT_BIRTHDAY -> birthdayAction()
       JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
       JobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
-      JobScheduler.EVENT_CHECK -> eventsCheckAction()
       else -> {
       }
     }
     return Result.success()
-  }
-
-  private fun eventsCheckAction() {
-    CheckEventsWorker.schedule(context)
-    jobScheduler.scheduleEventCheck()
   }
 
   private fun autoBackupAction() {
