@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.scheduling
 
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -14,7 +14,7 @@ import org.threeten.bp.LocalDateTime
  */
 class WeekdayRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
 
   override fun calculateNextOccurrence(
@@ -22,8 +22,14 @@ class WeekdayRepeatStrategy(
     fromDateTime: LocalDateTime
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
+    if (reminder.weekdays.isEmpty()) return null
+    val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
 
-    return modelDateTimeFormatter.getNextWeekdayTime(reminder, fromDateTime)
+    return recurrenceCalculator.findNextDayOfWeekDateTime(
+      eventDateTime = eventDateTime,
+      weekdays = reminder.weekdays,
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+    )
   }
 
   override fun canSkip(reminder: Reminder): Boolean {

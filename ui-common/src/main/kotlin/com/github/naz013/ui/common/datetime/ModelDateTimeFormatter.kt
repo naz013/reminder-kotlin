@@ -5,7 +5,6 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.datetime.DateTimePreferences
 import com.github.naz013.common.datetime.NowDateTimeProvider
 import com.github.naz013.common.datetime.minusMillis
-import com.github.naz013.common.datetime.plusMillis
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
@@ -291,106 +290,5 @@ class ModelDateTimeFormatter(
         .plusMonths(interval)
     }
     return dateTime.withSecond(0)
-  }
-
-  fun getNextYearDayTime(
-    reminder: Reminder,
-    fromTime: LocalDateTime = dateTimeManager.getCurrentDateTime()
-  ): LocalDateTime {
-    val dayOfMonth = reminder.dayOfMonth
-    val monthOfYear = reminder.monthOfYear + 1
-    val beforeValue = reminder.remindBefore
-
-    val startDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-      ?: dateTimeManager.getCurrentDateTime()
-
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), fromTime.toLocalTime())
-      .withMonth(monthOfYear)
-    var yearMonth = YearMonth.from(dateTime)
-
-    dateTime = if (dayOfMonth <= yearMonth.atEndOfMonth().dayOfMonth) {
-      dateTime.withDayOfMonth(dayOfMonth)
-    } else {
-      dateTime.withDayOfMonth(yearMonth.atEndOfMonth().dayOfMonth)
-    }
-
-    if (dateTime.minusMillis(beforeValue) <= fromTime) {
-      while (true) {
-        if (dateTime.minusMillis(beforeValue) > fromTime) {
-          break
-        }
-        dateTime = dateTime.plusYears(1)
-          .withDayOfMonth(1)
-
-        yearMonth = YearMonth.from(dateTime)
-        dateTime = if (dayOfMonth <= yearMonth.atEndOfMonth().dayOfMonth) {
-          dateTime.withDayOfMonth(dayOfMonth)
-        } else {
-          dateTime.withDayOfMonth(yearMonth.atEndOfMonth().dayOfMonth)
-        }
-      }
-    }
-    return dateTime.withSecond(0)
-  }
-
-  fun generateNextTimer(reminder: Reminder, isNew: Boolean): LocalDateTime {
-    val hours = reminder.hours
-    val fromHour = reminder.from
-    val toHour = reminder.to
-    var dateTime = if (isNew) {
-      dateTimeManager.fromMillis(System.currentTimeMillis() + reminder.after)
-    } else {
-      (dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: dateTimeManager.getCurrentDateTime())
-        .plusMillis(reminder.repeatInterval)
-    }
-    if (hours.isNotEmpty()) {
-      while (hours.contains(dateTime.hour)) {
-        dateTime = dateTime.minusMillis(reminder.repeatInterval)
-      }
-      return dateTime
-    }
-
-    if (fromHour.isNotEmpty() && toHour.isNotEmpty()) {
-      val fromTime = dateTimeManager.toLocalTime(fromHour)
-      val toTime = dateTimeManager.toLocalTime(toHour)
-      val currentDate = nowDateTimeProvider.nowDate()
-      if (fromTime != null && toTime != null) {
-        val start = LocalDateTime.of(currentDate, fromTime)
-        val end = LocalDateTime.of(currentDate, toTime)
-        while (isRange(dateTime, start, end)) {
-          dateTime = dateTime.plusSeconds(reminder.repeatInterval / 1000L)
-        }
-      }
-    }
-    return dateTime
-  }
-
-  private fun isRange(dateTime: LocalDateTime, start: LocalDateTime, end: LocalDateTime): Boolean {
-    return if (start > end) {
-      dateTime.isAfter(start) && dateTime.isBefore(end)
-    } else {
-      dateTime.isAfter(start) && dateTime.isBefore(end)
-    }
-  }
-
-  fun getNextWeekdayTime(
-    reminder: Reminder,
-    fromTime: LocalDateTime = dateTimeManager.getCurrentDateTime()
-  ): LocalDateTime {
-    val weekdays = reminder.weekdays
-    val beforeValue = reminder.remindBefore
-
-    var dateTIme = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-      ?: dateTimeManager.getCurrentDateTime()
-
-    while (true) {
-      if (weekdays[dateTimeManager.localDayOfWeekToOld(dateTIme.dayOfWeek) - 1] == 1 &&
-        dateTIme.minusMillis(beforeValue) > fromTime
-      ) {
-        break
-      }
-      dateTIme = dateTIme.plusDays(1)
-    }
-    return dateTIme
   }
 }

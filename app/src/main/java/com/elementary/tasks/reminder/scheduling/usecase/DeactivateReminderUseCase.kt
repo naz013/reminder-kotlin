@@ -6,6 +6,7 @@ import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.EventOccurrenceRepository
 
 /**
  * Deactivates a reminder by setting its active state to false,
@@ -22,6 +23,7 @@ class DeactivateReminderUseCase(
   private val completeRelatedGoogleTaskUseCase: CompleteRelatedGoogleTaskUseCase,
   private val pauseReminderUseCase: PauseReminderUseCase,
   private val updatePermanentReminderNotificationUseCase: UpdatePermanentReminderNotificationUseCase,
+  private val eventOccurrenceRepository: EventOccurrenceRepository
 ) {
 
   suspend operator fun invoke(reminder: Reminder): Reminder {
@@ -38,6 +40,8 @@ class DeactivateReminderUseCase(
     if (reminder.exportToTasks) {
       completeRelatedGoogleTaskUseCase(reminder.uuId)
     }
+
+    eventOccurrenceRepository.deleteByEventId(reminder.uuId)
 
     return reminder
   }

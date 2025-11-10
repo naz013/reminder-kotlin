@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.scheduling
 
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -14,7 +14,7 @@ import org.threeten.bp.LocalDateTime
  */
 class TimerRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
 
   override fun calculateNextOccurrence(
@@ -22,22 +22,22 @@ class TimerRepeatStrategy(
     fromDateTime: LocalDateTime
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
-
-    var time = modelDateTimeFormatter.generateNextTimer(reminder, false)
-
-    // Skip past occurrences until we find a current/future one
-    while (!dateTimeManager.isCurrent(time)) {
-      time = modelDateTimeFormatter.generateNextTimer(reminder, false)
-    }
-
-    return time
+    if (reminder.repeatInterval <= 0L) return null
+    val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
+    val fromTime = dateTimeManager.toLocalTime(reminder.from)
+    val toTime = dateTimeManager.toLocalTime(reminder.to)
+    return recurrenceCalculator.findNextTimerDateTime(
+      eventDateTime = eventDateTime,
+      interval = reminder.repeatInterval,
+      excludedHours = reminder.hours,
+      excludedFromTime = fromTime,
+      excludedToTime = toTime,
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+    )
   }
 
   override fun canSkip(reminder: Reminder): Boolean {
-    return reminder.from.isNotEmpty() &&
-           reminder.to.isNotEmpty() &&
-           reminder.hours.isNotEmpty() &&
-           !reminder.isLimitExceed()
+    return reminder.repeatInterval > 0L && !reminder.isLimitExceed()
   }
 
   override fun canSnooze(reminder: Reminder): Boolean {

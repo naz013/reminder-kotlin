@@ -83,6 +83,8 @@ import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
+import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
@@ -319,10 +321,10 @@ val reminderModule = module {
 
   viewModel { ReminderFilterDialogViewModel(get()) }
 
-  factory { BehaviorStrategyResolver(get(), get(), get()) }
+  factory { BehaviorStrategyResolver(get(), get()) }
 
-  factory { ActivateReminderUseCase(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-  factory { DeactivateReminderUseCase(get(), get(), get(), get()) }
+  factory { ActivateReminderUseCase(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { DeactivateReminderUseCase(get(), get(), get(), get(), get()) }
 
   factory { PauseReminderUseCase(get(), get(), get(), get()) }
   factory { ResumeReminderUseCase(get(), get(), get()) }
@@ -341,4 +343,8 @@ val reminderModule = module {
   factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }
   factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
   factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
+
+  factory { ReminderOccurrenceCalculatorFactory(get(), get()) }
+
+  factory { EventDateTimeCalculator(get(), get()) }
 }

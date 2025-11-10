@@ -6,18 +6,18 @@ import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 class DateTimeInjector(
   private val dateTimeManager: DateTimeManager,
   private val iCalDateTimeInjector: ICalDateTimeInjector,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) {
 
   operator fun invoke(
@@ -55,33 +55,53 @@ class DateTimeInjector(
       }
 
       type.isCountdown() && reminder.after != 0L -> {
-        modelDateTimeFormatter.generateNextTimer(reminder, true).also {
+        recurrenceCalculator.getStartTimerDateTime(
+          countdownTimeInMillis = reminder.after
+        ).also {
           Logger.i(TAG, "Put countdown date time $it")
         }
       }
 
       type.isByDayOfWeek() && IntervalUtil.isWeekday(reminder.weekdays) && time != null -> {
-        reminder.eventTime =
-          dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-        modelDateTimeFormatter.getNextWeekdayTime(reminder).also {
+        val dateTime = LocalDateTime.of(LocalDate.now(), time)
+        val nextDateTime = recurrenceCalculator.findNextDayOfWeekDateTime(
+          eventDateTime = dateTime,
+          weekdays = reminder.weekdays,
+          afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+        ).also {
           Logger.i(TAG, "Put date time $it for the By Day Of Week")
         }
+        reminder.eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime)
+        nextDateTime
       }
 
       type.isByDayOfMonth() && time != null -> {
-        reminder.eventTime =
-          dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-        modelDateTimeFormatter.getNewNextMonthDayTime(reminder).also {
+        val dateTime = LocalDateTime.of(LocalDate.now(), time)
+        val nextDateTime = recurrenceCalculator.findNextMonthDayDateTime(
+          eventDateTime = dateTime,
+          dayOfMonth = reminder.dayOfMonth,
+          interval = reminder.repeatInterval,
+          afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+        ).also {
           Logger.i(TAG, "Put date time $it for the By Day Of Month")
         }
+        reminder.eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime)
+        nextDateTime
       }
 
       type.isByDayOfYear() && time != null -> {
-        reminder.eventTime =
-          dateTimeManager.getGmtFromDateTime(LocalDateTime.of(LocalDate.now(), time))
-        modelDateTimeFormatter.getNextYearDayTime(reminder).also {
+        val dateTime = LocalDateTime.of(LocalDate.now(), time)
+        val nextDateTime = recurrenceCalculator.findNextYearDayDateTime(
+          eventDateTime = dateTime,
+          monthOfYear = reminder.monthOfYear,
+          dayOfMonth = reminder.dayOfMonth,
+          interval = reminder.repeatInterval,
+          afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+        ).also {
           Logger.i(TAG, "Put date time $it for the By Day Of Year")
         }
+        reminder.eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime)
+        nextDateTime
       }
 
       type.isGpsType() -> {

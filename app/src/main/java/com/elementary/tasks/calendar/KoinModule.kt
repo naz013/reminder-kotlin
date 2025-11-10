@@ -10,6 +10,7 @@ import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.calendar.occurrence.CalculateBirthdayOccurrencesUseCase
 import com.elementary.tasks.calendar.occurrence.CalculateReminderOccurrencesUseCase
+import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDateRangeUseCase
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesWorker
 import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesWorker
@@ -46,8 +47,10 @@ val calendarModule = module {
 
   factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
   factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get()) }
-  factory { CalculateReminderOccurrencesUseCase() }
+  factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get(), get(), get()) }
 
   worker { CalculateBirthdayOccurrencesWorker(get(), get(), get(), get()) }
   worker { CalculateReminderOccurrencesWorker(get(), get(), get(), get()) }
+
+  factory { GetOccurrencesByDateRangeUseCase(get()) }
 }

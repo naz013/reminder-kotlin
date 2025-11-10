@@ -5,6 +5,7 @@ import org.threeten.bp.LocalDate
 
 interface EventOccurrenceRepository {
   suspend fun save(occurrence: EventOccurrence)
+  suspend fun saveAll(occurrences: List<EventOccurrence>)
 
   suspend fun getByDateRange(startDate: LocalDate, endDate: LocalDate): List<EventOccurrence>
   suspend fun getByEventId(eventId: String): List<EventOccurrence>

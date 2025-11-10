@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.scheduling
 
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -14,7 +14,7 @@ import org.threeten.bp.LocalDateTime
  */
 class MonthlyRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
 
   override fun calculateNextOccurrence(
@@ -22,12 +22,18 @@ class MonthlyRepeatStrategy(
     fromDateTime: LocalDateTime
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
+    val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
 
-    return modelDateTimeFormatter.getNewNextMonthDayTime(reminder, fromDateTime)
+    return recurrenceCalculator.findNextMonthDayDateTime(
+      eventDateTime = eventDateTime,
+      dayOfMonth = reminder.dayOfMonth,
+      interval = reminder.repeatInterval,
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+    )
   }
 
   override fun canSkip(reminder: Reminder): Boolean {
-    return reminder.dayOfMonth > 0 && !reminder.isLimitExceed()
+    return reminder.dayOfMonth >= 0 && !reminder.isLimitExceed()
   }
 
   override fun canSnooze(reminder: Reminder): Boolean {

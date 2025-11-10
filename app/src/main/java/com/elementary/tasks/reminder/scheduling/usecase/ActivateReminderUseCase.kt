@@ -1,7 +1,9 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
 import android.content.Context
+import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesWorker
 import com.elementary.tasks.core.services.JobScheduler
+import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.reminder.scheduling.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
@@ -26,7 +28,8 @@ class ActivateReminderUseCase(
   private val jobScheduler: JobScheduler,
   private val updatePermanentReminderNotificationUseCase: UpdatePermanentReminderNotificationUseCase,
   private val saveReminderToGoogleTasksUseCase: SaveReminderToGoogleTasksUseCase,
-  private val saveReminderToGoogleCalendarUseCase: SaveReminderToGoogleCalendarUseCase
+  private val saveReminderToGoogleCalendarUseCase: SaveReminderToGoogleCalendarUseCase,
+  private val workManagerProvider: WorkManagerProvider,
 ) {
 
   suspend operator fun invoke(reminder: Reminder, startAnyway: Boolean = false): Reminder {
@@ -87,6 +90,8 @@ class ActivateReminderUseCase(
       jobScheduler.scheduleReminder(reminder)
       saveReminderToGoogleTasksUseCase(reminder)
       saveReminderToGoogleCalendarUseCase(reminder)
+      workManagerProvider.getWorkManager()
+        .enqueue(CalculateReminderOccurrencesWorker.prepareWork(reminder.uuId))
       return reminder
     } else {
       Logger.w(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.eventTime}.")

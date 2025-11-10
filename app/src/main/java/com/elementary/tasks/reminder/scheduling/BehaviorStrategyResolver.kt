@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.scheduling
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 
 /**
  * Resolves the appropriate behavior strategy based on Reminder properties.
@@ -16,7 +15,6 @@ import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 class BehaviorStrategyResolver(
   private val dateTimeManager: DateTimeManager,
   private val recurEventManager: RecurEventManager,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
   /**
@@ -39,7 +37,7 @@ class BehaviorStrategyResolver(
   fun resolve(reminder: Reminder): ReminderBehaviorStrategy {
     return when {
       // Location-based reminders have places list
-      reminder.places.isNotEmpty() && reminder.eventTime.isNotEmpty() && dateTimeManager.isCurrent(
+      reminder.places.isNotEmpty() && hasEventTime(reminder) && dateTimeManager.isCurrent(
         reminder.eventTime
       ) -> {
         SimpleDateStrategy(dateTimeManager)
@@ -51,8 +49,8 @@ class BehaviorStrategyResolver(
       }
 
       // Shopping list without time-based reminder
-      reminder.shoppings.isNotEmpty() && !hasAnyRepeatProperties(reminder) -> {
-        NoStrategy
+      reminder.shoppings.isNotEmpty() && !hasEventTime(reminder) && !hasAnyRepeatProperties(reminder) -> {
+        NoReminderStrategy
       }
 
       // Recurrence pattern (RRULE)
@@ -62,22 +60,22 @@ class BehaviorStrategyResolver(
 
       // Timer-based (has time window and hours)
       hasTimerProperties(reminder) -> {
-        TimerRepeatStrategy(dateTimeManager, modelDateTimeFormatter)
-      }
-
-      // Yearly repeat (specific day and month)
-      hasYearlyProperties(reminder) -> {
-        YearlyRepeatStrategy(dateTimeManager, modelDateTimeFormatter)
-      }
-
-      // Monthly repeat (specific day of month)
-      hasMonthlyProperties(reminder) -> {
-        MonthlyRepeatStrategy(dateTimeManager, modelDateTimeFormatter)
+        TimerRepeatStrategy(dateTimeManager)
       }
 
       // Weekly repeat (specific weekdays)
       hasWeekdayProperties(reminder) -> {
-        WeekdayRepeatStrategy(dateTimeManager, modelDateTimeFormatter)
+        WeekdayRepeatStrategy(dateTimeManager)
+      }
+
+      // Yearly repeat (specific day and month)
+      hasYearlyProperties(reminder) -> {
+        YearlyRepeatStrategy(dateTimeManager)
+      }
+
+      // Monthly repeat (specific day of month)
+      hasMonthlyProperties(reminder) -> {
+        MonthlyRepeatStrategy(dateTimeManager)
       }
 
       // Interval-based repeat (every X milliseconds)
@@ -93,16 +91,14 @@ class BehaviorStrategyResolver(
   }
 
   /**
-   * Checks if reminder has timer-specific properties.
-   * Timer reminders have: from time, to time, and hours list.
+   * Checks if reminder has timer repeat properties.
+   * Timer reminders have: from/to/hours set and after > 0.
    *
    * @param reminder The reminder to check
    * @return true if reminder has timer properties
    */
   private fun hasTimerProperties(reminder: Reminder): Boolean {
-    return reminder.from.isNotEmpty() &&
-      reminder.to.isNotEmpty() &&
-      reminder.hours.isNotEmpty()
+    return ((reminder.from.isNotEmpty() || reminder.to.isNotEmpty()) || reminder.hours.isNotEmpty()) && reminder.after != 0L
   }
 
   /**
@@ -113,7 +109,7 @@ class BehaviorStrategyResolver(
    * @return true if reminder has yearly properties
    */
   private fun hasYearlyProperties(reminder: Reminder): Boolean {
-    return reminder.dayOfMonth > 0 && reminder.monthOfYear > 0
+    return reminder.dayOfMonth >= 0 && reminder.monthOfYear >= 0
   }
 
   /**
@@ -124,7 +120,7 @@ class BehaviorStrategyResolver(
    * @return true if reminder has monthly properties
    */
   private fun hasMonthlyProperties(reminder: Reminder): Boolean {
-    return reminder.dayOfMonth > 0 && reminder.monthOfYear == 0
+    return reminder.dayOfMonth >= 0
   }
 
   /**
@@ -136,6 +132,10 @@ class BehaviorStrategyResolver(
    */
   private fun hasWeekdayProperties(reminder: Reminder): Boolean {
     return reminder.weekdays.isNotEmpty()
+  }
+
+  private fun hasEventTime(reminder: Reminder): Boolean {
+    return reminder.eventTime.isNotEmpty()
   }
 
   private fun hasAnyRepeatProperties(reminder: Reminder): Boolean {

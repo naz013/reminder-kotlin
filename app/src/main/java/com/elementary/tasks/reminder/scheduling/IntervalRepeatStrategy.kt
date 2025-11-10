@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.scheduling
 
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
 import org.threeten.bp.LocalDateTime
@@ -12,7 +13,8 @@ import org.threeten.bp.LocalDateTime
  * to determine when the reminder should fire next.
  */
 class IntervalRepeatStrategy(
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
 
   override fun calculateNextOccurrence(
@@ -20,11 +22,12 @@ class IntervalRepeatStrategy(
     fromDateTime: LocalDateTime
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
+    val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
 
-    return dateTimeManager.generateDateTime(
-      reminder.eventTime,
-      reminder.repeatInterval,
-      fromDateTime
+    return recurrenceCalculator.findNextIntervalDateTime(
+      eventDateTime = eventDateTime,
+      intervalMillis = reminder.repeatInterval,
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
     )
   }
 

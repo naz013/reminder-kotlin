@@ -16,8 +16,8 @@ import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
+import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.datetime.minusMillis
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.GoogleTask
@@ -32,7 +32,8 @@ class JobScheduler(
   private val context: Context,
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
-  private val systemServiceProvider: SystemServiceProvider
+  private val systemServiceProvider: SystemServiceProvider,
+  private val eventDateTimeCalculator: EventDateTimeCalculator,
 ) {
 
   fun scheduleEventCheck() {
@@ -195,26 +196,12 @@ class JobScheduler(
   }
 
   fun scheduleReminder(reminder: Reminder?) {
-    if (reminder == null) return
-    var due = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-    Logger.d("scheduleReminder: noe -> ${dateTimeManager.logDateTime()}")
-    if (due == null) {
+    if (reminder == null) {
+      Logger.w(TAG, "Cannot schedule null reminder")
       return
     }
-    Logger.d("scheduleReminder: ${dateTimeManager.logDateTime(due)}")
-    if (reminder.remindBefore != 0L) {
-      due = due.minusMillis(reminder.remindBefore)
-    }
-    if (!Reminder.isBase(reminder.type, Reminder.BY_TIME)) {
-      due = due.withSecond(0)
-    }
-    if (due == null) {
-      Logger.d("scheduleReminder: return due is NULL")
-      return
-    }
-    val millis = dateTimeManager.toMillis(due)
-    if (millis <= 0) {
-      Logger.d("scheduleReminder: return due is 0")
+    val millis = eventDateTimeCalculator.calculateEventDateTime(reminder) ?: run {
+      Logger.e(TAG, "Cannot calculate event date time for reminder: ${reminder.uuId}")
       return
     }
 
@@ -313,6 +300,7 @@ class JobScheduler(
     const val EVENT_AUTO_BACKUP = "event_auto_backup"
     const val EVENT_CHECK = "event_check"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
+    private const val TAG = "JobScheduler"
 
     private const val INTERVAL_MINUTE = 60 * 1000L
     private const val INTERVAL_HOUR = 60 * INTERVAL_MINUTE

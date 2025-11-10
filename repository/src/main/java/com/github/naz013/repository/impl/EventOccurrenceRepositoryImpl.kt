@@ -18,6 +18,12 @@ internal class EventOccurrenceRepositoryImpl(
     tableChangeNotifier.notify(Table.EventOccurrence)
   }
 
+  override suspend fun saveAll(occurrences: List<EventOccurrence>) {
+    val entities = occurrences.map { EventOccurrenceEntity(it) }
+    dao.insertAll(entities)
+    tableChangeNotifier.notify(Table.EventOccurrence)
+  }
+
   override suspend fun getByDateRange(
     startDate: LocalDate,
     endDate: LocalDate

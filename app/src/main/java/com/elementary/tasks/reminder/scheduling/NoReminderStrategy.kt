@@ -6,7 +6,7 @@ import org.threeten.bp.LocalDateTime
 /**
  * Strategy for simple reminders with no date/time dependencies.
  */
-data object NoStrategy : ReminderBehaviorStrategy {
+data object NoReminderStrategy : ReminderBehaviorStrategy {
 
   override fun calculateNextOccurrence(
     reminder: Reminder,

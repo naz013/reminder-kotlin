@@ -106,7 +106,7 @@ val utilModule = module {
   single { AppWidgetPreferencesImpl(get()) as AppWidgetPreferences }
 
   factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
-  factory { JobScheduler(get(), get(), get(), get()) }
+  factory { JobScheduler(get(), get(), get(), get(), get()) }
 
   factory { ActivateAllActiveRemindersUseCase(get(), get()) }
   factory { NoteImageMigration(get(), get()) }

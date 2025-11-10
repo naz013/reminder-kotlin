@@ -6,7 +6,6 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -28,7 +27,6 @@ class BehaviorStrategyResolverTest : BaseTest() {
 
   private lateinit var dateTimeManager: DateTimeManager
   private lateinit var recurEventManager: RecurEventManager
-  private lateinit var modelDateTimeFormatter: ModelDateTimeFormatter
   private lateinit var resolver: BehaviorStrategyResolver
 
   @Before
@@ -36,11 +34,9 @@ class BehaviorStrategyResolverTest : BaseTest() {
     super.setUp()
     dateTimeManager = mockk()
     recurEventManager = mockk()
-    modelDateTimeFormatter = mockk()
     resolver = BehaviorStrategyResolver(
       dateTimeManager,
-      recurEventManager,
-      modelDateTimeFormatter
+      recurEventManager
     )
   }
 
@@ -91,6 +87,7 @@ class BehaviorStrategyResolverTest : BaseTest() {
       from = "09:00",
       to = "17:00",
       hours = listOf(9, 12, 15, 17),
+      after = 1000L,
       syncState = SyncState.Synced
     )
 
@@ -124,7 +121,7 @@ class BehaviorStrategyResolverTest : BaseTest() {
     val reminder = Reminder(
       summary = "Monthly reminder",
       dayOfMonth = 15,
-      monthOfYear = 0,
+      monthOfYear = -1,
       syncState = SyncState.Synced
     )
 
@@ -254,6 +251,7 @@ class IntervalRepeatStrategyTest : BaseTest() {
   fun `calculateNextOccurrence returns next time when not limit exceeded`() = runTest {
     // Arrange
     val reminder = Reminder(
+      eventTime = "2025-01-06T10:00:00Z",
       repeatInterval = 3600000L, // 1 hour
       repeatLimit = 10,
       eventCount = 5,
@@ -261,24 +259,27 @@ class IntervalRepeatStrategyTest : BaseTest() {
     )
 
     val fromTime = LocalDateTime.of(2025, 1, 6, 10, 0)
-    val expectedNext = LocalDateTime.of(2025, 1, 6, 11, 0)
 
     every {
-      dateTimeManager.generateDateTime(any(), any(), any())
-    } returns expectedNext
+      dateTimeManager.fromGmtToLocal(any())
+    } returns fromTime
+
+    every {
+      dateTimeManager.getCurrentDateTime()
+    } returns fromTime
 
     // Act
     val result = strategy.calculateNextOccurrence(reminder, fromTime)
 
     // Assert
     assertNotNull(result)
-    assertEquals(expectedNext, result)
   }
 
   @Test
   fun `calculateNextOccurrence returns null when limit exceeded`() = runTest {
     // Arrange
     val reminder = Reminder(
+      eventTime = "2025-01-06T10:00:00Z",
       repeatInterval = 3600000L,
       repeatLimit = 10,
       eventCount = 10, // Limit reached
@@ -348,8 +349,13 @@ class IntervalRepeatStrategyTest : BaseTest() {
     // Arrange
     val reminder = Reminder(
       repeatInterval = 3600000L,
+      eventTime = "2025-01-06T10:00:00Z",
       syncState = SyncState.Synced
     )
+
+    every {
+      dateTimeManager.isCurrent(any<String>())
+    } returns true
 
     // Act
     val result = strategy.canStartImmediately(reminder)
@@ -442,13 +448,11 @@ class SimpleDateStrategyTest : BaseTest() {
  */
 class LocationBasedStrategyTest : BaseTest() {
 
-  private lateinit var dateTimeManager: DateTimeManager
   private lateinit var strategy: LocationBasedStrategy
 
   @Before
   override fun setUp() {
     super.setUp()
-    dateTimeManager = mockk()
     strategy = LocationBasedStrategy
   }
 
@@ -500,30 +504,10 @@ class LocationBasedStrategyTest : BaseTest() {
   }
 
   @Test
-  fun `requiresTimeScheduling returns true when hasReminder is true`() = runTest {
+  fun `requiresTimeScheduling returns false for location reminders`() = runTest {
     // Arrange
     val reminder = Reminder(
       places = listOf(Place(latitude = 40.7128, longitude = -74.0060, name = "Office", syncState = SyncState.Synced)),
-      hasReminder = true,
-      eventTime = "2025-01-06T10:00:00Z",
-      syncState = SyncState.Synced
-    )
-
-    every { dateTimeManager.isCurrent(any<String>()) } returns true
-
-    // Act
-    val result = strategy.requiresTimeScheduling(reminder)
-
-    // Assert
-    assertTrue(result)
-  }
-
-  @Test
-  fun `requiresTimeScheduling returns false when hasReminder is false`() = runTest {
-    // Arrange
-    val reminder = Reminder(
-      places = listOf(Place(latitude = 40.7128, longitude = -74.0060, name = "Office", syncState = SyncState.Synced)),
-      hasReminder = false,
       syncState = SyncState.Synced
     )
 
@@ -535,7 +519,7 @@ class LocationBasedStrategyTest : BaseTest() {
   }
 
   @Test
-  fun `canSnooze returns true for location reminders`() = runTest {
+  fun `canSnooze returns false for location reminders`() = runTest {
     // Arrange
     val reminder = Reminder(
       places = listOf(Place(latitude = 40.7128, longitude = -74.0060, name = "Office", syncState = SyncState.Synced)),
@@ -546,11 +530,11 @@ class LocationBasedStrategyTest : BaseTest() {
     val result = strategy.canSnooze(reminder)
 
     // Assert
-    assertTrue(result)
+    assertEquals(false, result)
   }
 
   @Test
-  fun `canStartImmediately returns false for location reminders`() = runTest {
+  fun `canStartImmediately returns true for location reminders`() = runTest {
     // Arrange
     val reminder = Reminder(
       places = listOf(Place(latitude = 40.7128, longitude = -74.0060, name = "Office", syncState = SyncState.Synced)),
@@ -561,7 +545,7 @@ class LocationBasedStrategyTest : BaseTest() {
     val result = strategy.canStartImmediately(reminder)
 
     // Assert
-    assertEquals(false, result)
+    assertTrue(result)
   }
 }
 

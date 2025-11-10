@@ -14,7 +14,7 @@ import org.threeten.bp.LocalDateTime
  */
 class RecurRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
-  private val recurEventManager: RecurEventManager
+  private val recurEventManager: RecurEventManager,
 ) : ReminderBehaviorStrategy {
 
   override fun calculateNextOccurrence(

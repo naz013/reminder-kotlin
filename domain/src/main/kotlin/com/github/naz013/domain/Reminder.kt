@@ -68,17 +68,17 @@ data class Reminder(
   @SerializedName("volume")
   var volume: Int = -1,
   @SerializedName("dayOfMonth")
-  var dayOfMonth: Int = 0,
+  var dayOfMonth: Int = -1,
   @SerializedName("monthOfYear")
-  var monthOfYear: Int = 0,
+  var monthOfYear: Int = -1,
   @SerializedName("repeatInterval")
   var repeatInterval: Long = 0,
   @SerializedName("repeatLimit")
   var repeatLimit: Int = -1,
   @SerializedName("after")
-  var after: Long = 0,
+  var after: Long = 0, // Countdown time in millis
   @SerializedName("weekdays")
-  var weekdays: List<Int> = ArrayList(),
+  var weekdays: List<Int> = ArrayList(), // 0 - Sunday, 1 - Monday ..., If == 1 then selected
   @SerializedName("type")
   @Deprecated("Types are not used anymore")
   var type: Int = 0,
