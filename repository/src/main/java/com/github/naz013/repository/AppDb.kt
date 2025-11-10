@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.github.naz013.repository.dao.BirthdaysDao
 import com.github.naz013.repository.dao.CalendarEventsDao
+import com.github.naz013.repository.dao.EventOccurrenceDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
 import com.github.naz013.repository.dao.NotesDao
@@ -18,6 +19,7 @@ import com.github.naz013.repository.dao.RemoteFileMetadataDao
 import com.github.naz013.repository.dao.UsedTimeDao
 import com.github.naz013.repository.entity.BirthdayEntity
 import com.github.naz013.repository.entity.CalendarEventEntity
+import com.github.naz013.repository.entity.EventOccurrenceEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
 import com.github.naz013.repository.entity.ImageFileEntity
@@ -37,6 +39,7 @@ import com.github.naz013.repository.migrations.MIGRATION_14_15
 import com.github.naz013.repository.migrations.MIGRATION_15_16
 import com.github.naz013.repository.migrations.MIGRATION_16_17
 import com.github.naz013.repository.migrations.MIGRATION_17_18
+import com.github.naz013.repository.migrations.MIGRATION_18_19
 import com.github.naz013.repository.migrations.MIGRATION_1_2
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
@@ -61,9 +64,10 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     ImageFileEntity::class,
     RecurPresetEntity::class,
     RecentQueryEntity::class,
-    RemoteFileMetadataEntity::class
+    RemoteFileMetadataEntity::class,
+    EventOccurrenceEntity::class,
   ],
-  version = 18,
+  version = 19,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -80,6 +84,7 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun recurPresetDao(): RecurPresetDao
   abstract fun recentQueryDao(): RecentQueryDao
   abstract fun remoteFileMetadataDao(): RemoteFileMetadataDao
+  abstract fun eventOccurrenceDao(): EventOccurrenceDao
 
   companion object {
 
@@ -106,7 +111,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_14_15,
             MIGRATION_15_16,
             MIGRATION_16_17,
-            MIGRATION_17_18
+            MIGRATION_17_18,
+            MIGRATION_18_19
           )
           .allowMainThreadQueries()
           .build()

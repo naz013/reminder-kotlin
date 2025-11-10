@@ -5,13 +5,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -40,7 +39,6 @@ import org.threeten.bp.LocalTime
 class EditGoogleTaskViewModel(
   private val arguments: Bundle?,
   private val googleTasksApi: GoogleTasksApi,
-  private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val reminderRepository: ReminderRepository,
@@ -50,7 +48,7 @@ class EditGoogleTaskViewModel(
   private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
   private val getGoogleTaskByIdUseCase: GetGoogleTaskByIdUseCase,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateState = mutableLiveDataOf<DateState>()
@@ -314,11 +312,7 @@ class EditGoogleTaskViewModel(
           reminder.groupColor = group.groupColor
           reminder.groupTitle = group.groupTitle
           reminder.groupUuId = group.groupUuId
-          reminderRepository.save(reminder)
-        }
-        if (reminder.groupUuId != "") {
-          eventControlFactory.getController(reminder).enable()
-          scheduleReminderUploadUseCase(reminder.uuId)
+          activateReminderUseCase(reminder)
         }
       }
     }

@@ -8,7 +8,6 @@ import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
@@ -38,9 +37,11 @@ import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -78,7 +79,6 @@ import java.util.UUID
 
 class BuildReminderViewModel(
   private val arguments: Bundle?,
-  private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val reminderRepository: ReminderRepository,
@@ -110,8 +110,10 @@ class BuildReminderViewModel(
   private val prefs: Prefs,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val activateReminderUseCase: ActivateReminderUseCase,
+  private val pauseReminderUseCase: PauseReminderUseCase,
+  private val resumeReminderUseCase: ResumeReminderUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
@@ -786,7 +788,6 @@ class BuildReminderViewModel(
         reminder.groupUuId = group.groupUuId
       }
     }
-    reminderRepository.save(reminder)
     if (!isEdit) {
       if (Reminder.isGpsType(reminder.type)) {
         val places = reminder.places
@@ -795,13 +796,11 @@ class BuildReminderViewModel(
         }
       }
     }
-    eventControlFactory.getController(reminder).justStart()
+    activateReminderUseCase(reminder, startAnyway = true)
     Logger.i(TAG, "Reminder saved, id = ${reminder.uuId}")
 
     analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
     reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
-    Logger.i(TAG, "Reminder saved, type = ${reminder.type}")
-    scheduleReminderUploadUseCase(reminder.uuId)
 
     // Track reminder creation and show review dialog after 4 reminders
     if (!isEdit && !prefs.reviewDialogShown) {
@@ -821,13 +820,14 @@ class BuildReminderViewModel(
   private suspend fun pauseReminder(reminder: Reminder) {
     Logger.i(TAG, "Pause reminder, id = ${reminder.uuId}")
     isPaused = true
-    eventControlFactory.getController(reminder).pause()
+    pauseReminderUseCase(reminder)
   }
 
   private fun resumeReminder(reminder: Reminder) {
     Logger.i(TAG, "Resume reminder, id = ${reminder.uuId}")
     viewModelScope.launch(dispatcherProvider.default()) {
-      eventControlFactory.getController(reminder).resume()
+      isPaused = false
+      resumeReminderUseCase(reminder)
     }
   }
 

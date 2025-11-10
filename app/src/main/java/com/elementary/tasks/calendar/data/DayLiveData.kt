@@ -2,26 +2,34 @@ package com.elementary.tasks.calendar.data
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.core.calendar.EventsCursor
-import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
+import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
+import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
+import com.elementary.tasks.core.data.ui.UiReminderListData
+import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
-import com.github.naz013.common.ContextProvider
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 
 class DayLiveData(
-  private val context: ContextProvider,
   private val dispatcherProvider: DispatcherProvider,
-  private val calendarDataEngine: CalendarDataEngine,
-  private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
-  private val prefs: Prefs,
-  private val scope: CoroutineScope = CoroutineScope(Job())
-) : LiveData<List<EventModel>>(), CalendarDataEngineBroadcastCallback {
+  private val getOccurrencesByDayUseCase: GetOccurrencesByDayUseCase,
+  private val birthdayRepository: BirthdayRepository,
+  private val reminderRepository: ReminderRepository,
+  private val uiBirthdayListAdapter: UiBirthdayListAdapter,
+  private val uiReminderListAdapter: UiReminderListAdapter,
+  private val dateTimeManager: DateTimeManager
+) : LiveData<List<EventModel>>() {
 
+  private val scope: CoroutineScope = CoroutineScope(Job())
   private var lastDate: LocalDate? = null
 
   @MainThread
@@ -32,95 +40,59 @@ class DayLiveData(
 
   override fun onActive() {
     super.onActive()
-    calendarDataEngineBroadcast.observerEvent(
-      parent = this.toString(),
-      action = CalendarDataEngineBroadcast.EVENT_READY,
-      callback = this
-    )
-    lastDate?.also { loadData(it) }
-  }
-
-  override fun onInactive() {
-    super.onInactive()
-    calendarDataEngineBroadcast.removeObserver(this.toString())
-  }
-
-  override fun invoke() {
     lastDate?.also { loadData(it) }
   }
 
   private fun loadData(date: LocalDate) {
     scope.launch(dispatcherProvider.default()) {
-      calendarDataEngine.getByDateRange(
-        dateStart = date,
-        dateEnd = date,
-        reminderMode = calendarDataEngine.getReminderMode(
-          includeReminders = prefs.isRemindersInCalendarEnabled,
-          calculateFuture = prefs.isFutureEventEnabled
-        )
-      )
-        .sortedBy { it.millis }
-        .also { postValue(it) }
-        .also {
-          Logger.d("loadData: ${it.size}, date=$date")
-        }
-    }
-  }
-
-  private fun mapData(list: List<EventModel>): Map<LocalDate, EventsCursor> {
-    val birthdayColor = birthdayColor()
-    val reminderColor = reminderColor()
-
-    val map = mutableMapOf<LocalDate, EventsCursor>()
-    for (model in list) {
-      when (model) {
-        is BirthdayEventModel -> {
-          setEvent(
-            model.model.nextBirthdayDate.toLocalDate(),
-            model.model.name,
-            birthdayColor,
-            EventsCursor.Type.BIRTHDAY,
-            map
-          )
-        }
-
-        is ReminderEventModel -> {
-          val eventTime = model.model.due?.localDateTime ?: continue
-          setEvent(
-            eventTime.toLocalDate(),
-            model.model.summary,
-            reminderColor,
-            EventsCursor.Type.REMINDER,
-            map
-          )
+      val occurrences = getOccurrencesByDayUseCase(date)
+      val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
+      val reminders = reminderRepository.getActive().associateBy { it.uuId }
+      val mappedData = occurrences.mapNotNull {
+        when (it.type) {
+          OccurrenceType.Birthday -> {
+            val birthday = birthdays[it.eventId] ?: return@mapNotNull null
+            val dateTime = LocalDateTime.of(it.date, it.time)
+            uiBirthdayListAdapter.convert(
+              birthday = birthday,
+              nowDateTime = dateTime
+            ).toEventModel(LocalDateTime.of(it.date, it.time))
+          }
+          OccurrenceType.Reminder -> {
+            val reminder = reminders[it.eventId] ?: return@mapNotNull null
+            reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(it.date, it.time))
+            uiReminderListAdapter.create(reminder).toEventModel(LocalDateTime.of(it.date, it.time))
+          }
+          else -> null
         }
       }
-    }
-    return map
-  }
 
-  private fun setEvent(
-    date: LocalDate,
-    summary: String,
-    color: Int,
-    type: EventsCursor.Type,
-    map: MutableMap<LocalDate, EventsCursor>
-  ) {
-    if (map.containsKey(date)) {
-      val eventsCursor = map[date] ?: EventsCursor()
-      eventsCursor.addEvent(summary, color, type, date)
-      map[date] = eventsCursor
-    } else {
-      val eventsCursor = EventsCursor(summary, color, type, date)
-      map[date] = eventsCursor
+      Logger.d(TAG, "Mapped data for $date: ${mappedData.size} events")
+      launch(dispatcherProvider.main()) {
+        value = mappedData
+      }
     }
   }
 
-  private fun birthdayColor(): Int {
-    return ThemeProvider.colorBirthdayCalendar(context.themedContext, prefs.birthdayColor)
+  private fun UiReminderListData.toEventModel(dateTime: LocalDateTime): ReminderEventModel {
+    return ReminderEventModel(
+      model = this,
+      day = dateTime.dayOfMonth,
+      monthValue = dateTime.monthValue,
+      year = dateTime.year
+    )
   }
 
-  private fun reminderColor(): Int {
-    return ThemeProvider.colorReminderCalendar(context.themedContext, prefs.reminderColor)
+  private fun UiBirthdayList.toEventModel(localDateTime: LocalDateTime): BirthdayEventModel {
+    return BirthdayEventModel(
+      model = this,
+      day = localDateTime.dayOfMonth,
+      monthValue = localDateTime.monthValue,
+      year = localDateTime.year
+    )
+  }
+
+  companion object {
+    private const val TAG = "DayLiveData"
   }
 }

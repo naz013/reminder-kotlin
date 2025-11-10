@@ -1,25 +1,21 @@
 package com.elementary.tasks.core.cloud
 
 import androidx.core.content.edit
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.groups.GroupsUtil
-import com.github.naz013.common.datetime.DateTimeManager
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.sync.DataPostProcessor
 import com.github.naz013.sync.DataType
 import com.github.naz013.sync.settings.SettingsModel
 
 class DataPostProcessorImpl(
   private val reminderGroupRepository: ReminderGroupRepository,
-  private val reminderRepository: ReminderRepository,
-  private val eventControlFactory: EventControlFactory,
   private val groupsUtil: GroupsUtil,
-  private val dateTimeManager: DateTimeManager,
-  private val prefs: Prefs
+  private val prefs: Prefs,
+  private val activateReminderUseCase: ActivateReminderUseCase
 ) : DataPostProcessor {
 
   override suspend fun process(dataType: DataType, any: Any) {
@@ -68,24 +64,10 @@ class DataPostProcessorImpl(
         this.groupColor = defGroup.groupColor
       }
     }
-    if (!reminder.isActive || reminder.isRemoved) {
+    if (reminder.isRemoved) {
       reminder.isActive = false
     }
-    if (!Reminder.isGpsType(reminder.type) && !dateTimeManager.isCurrent(reminder.eventTime)) {
-      if (!Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) || reminder.hasReminder) {
-        reminder.isActive = false
-      }
-    }
-    reminderRepository.save(reminder)
-    if (reminder.isActive && !reminder.isRemoved) {
-      val control = eventControlFactory.getController(reminder)
-      if (control.canSkip()) {
-        control.next()
-      } else {
-        control.enable()
-      }
-    }
-
+    activateReminderUseCase(reminder)
     Logger.i(TAG, "Post processed reminder with id = ${reminder.uuId}")
   }
 

@@ -2,8 +2,6 @@ package com.elementary.tasks.calendar.dayview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.calendar.data.CalendarDataEngineBroadcast
-import com.elementary.tasks.calendar.data.CalendarDataEngineBroadcastCallback
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.github.naz013.common.datetime.DateTimeManager
@@ -22,9 +20,8 @@ class WeekViewModel(
   startDate: LocalDate,
   dispatcherProvider: DispatcherProvider,
   private val weekHeaderController: WeekHeaderController,
-  private val calendarDataEngineBroadcast: CalendarDataEngineBroadcast,
   private val dateTimeManager: DateTimeManager,
-) : BaseProgressViewModel(dispatcherProvider), CalendarDataEngineBroadcastCallback {
+) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _state = mutableLiveDataOf<DayViewState>()
   val state = _state.toLiveData()
@@ -86,25 +83,14 @@ class WeekViewModel(
     super.onResume(owner)
     Logger.d(TAG, "On resume, restoring last selected date $lastSelectedDate")
     onDateSelected(lastSelectedDate)
-    calendarDataEngineBroadcast.observerEvent(
-      parent = this.toString(),
-      action = CalendarDataEngineBroadcast.EVENT_READY,
-      callback = this
-    )
   }
 
   override fun onPause(owner: LifecycleOwner) {
     super.onPause(owner)
     Logger.d(TAG, "On pause.")
-    calendarDataEngineBroadcast.removeObserver(this.toString())
   }
 
-  override fun invoke() {
-    Logger.d(TAG, "Calendar data engine broadcast received.")
-    onDateSelected(lastSelectedDate)
-  }
-
-  private fun stateForDate(date: LocalDate): DayViewState {
+  private suspend fun stateForDate(date: LocalDate): DayViewState {
     return DayViewState(
       title = dateTimeManager.formatCalendarDate(date).capitalizeFirstLetter(),
       days = weekHeaderController.calculateWeek(date)

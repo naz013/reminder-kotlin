@@ -82,6 +82,25 @@ import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogle
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
+import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
+import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.legacy.MigrateRecurringParamsUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.location.StopLocationTrackingUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
 import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
@@ -92,21 +111,22 @@ import org.koin.dsl.module
 
 val reminderModule = module {
   factory { DeleteReminderUseCase(get(), get(), get(), get()) }
-  factory { DeleteAllReminderUseCase(get(), get(), get()) }
-  factory { MoveReminderToArchiveUseCase(get(), get(), get()) }
+  factory { DeleteAllReminderUseCase(get(), get(), get(), get()) }
+  factory { MoveReminderToArchiveUseCase(get(), get()) }
   factory { SaveReminderUseCase(get(), get(), get()) }
   factory { ScheduleReminderUploadUseCase(get()) }
 
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }
   viewModel { (arguments: Bundle?) ->
     BuildReminderViewModel(
       arguments,
+      get(),
       get(),
       get(),
       get(),
@@ -169,7 +189,7 @@ val reminderModule = module {
     )
   }
 
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get()) }
+  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
   viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
 
   factory { UriToAttachmentFileAdapter(get()) }
@@ -302,4 +322,35 @@ val reminderModule = module {
   factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { ReminderFilterDialogViewModel(get()) }
+
+  factory { BehaviorStrategyResolver(get(), get()) }
+
+  factory { ActivateReminderUseCase(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { DeactivateReminderUseCase(get(), get(), get(), get(), get()) }
+
+  factory { PauseReminderUseCase(get(), get(), get(), get()) }
+  factory { ResumeReminderUseCase(get(), get(), get()) }
+
+  factory { SnoozeReminderUseCase(get(), get(), get(), get(), get()) }
+  factory { CompleteReminderUseCase(get(), get(), get(), get()) }
+  factory { SkipReminderUseCase(get(), get(), get()) }
+
+  factory { ToggleReminderStateUseCase(get(), get()) }
+
+  factory { UpdatePermanentReminderNotificationUseCase(get(), get()) }
+
+  factory { StopLocationTrackingUseCase(get(), get(), get()) }
+  factory { StartLocationTrackingUseCase(get(), get()) }
+
+  factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }
+  factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
+  factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
+
+  factory { ReminderOccurrenceCalculatorFactory(get(), get()) }
+
+  factory { EventDateTimeCalculator(get(), get()) }
+
+  factory { RecurrenceCalculator() }
+
+  factory { MigrateRecurringParamsUseCase(get(), get()) }
 }

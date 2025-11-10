@@ -4,7 +4,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
@@ -16,8 +15,9 @@ import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
 import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilterGroup
 import com.elementary.tasks.reminder.lists.filter.group.ReminderGroupFilterInstance
 import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
+import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -38,12 +38,12 @@ import kotlinx.coroutines.withContext
 class ActiveTodoRemindersViewModel(
   dispatcherProvider: DispatcherProvider,
   private val reminderRepository: ReminderRepository,
-  private val eventControlFactory: EventControlFactory,
   private val uiReminderListsAdapter: UiReminderListsAdapter,
   private val textProvider: TextProvider,
   private val groupRepository: ReminderGroupRepository,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val skipReminderUseCase: SkipReminderUseCase,
+  private val toggleReminderStateUseCase: ToggleReminderStateUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _events = mutableLiveDataOf<List<UiReminderEventsList>>()
@@ -125,12 +125,12 @@ class ActiveTodoRemindersViewModel(
     withResultSuspend {
       val fromDb = reminderRepository.getById(id)
       if (fromDb != null) {
-        eventControlFactory.getController(fromDb).skip()
-        scheduleReminderUploadUseCase(fromDb.uuId)
+        skipReminderUseCase(fromDb)
         loadReminders()
         Commands.SAVED
+      } else {
+        Commands.FAILED
       }
-      Commands.FAILED
     }
   }
 
@@ -138,13 +138,12 @@ class ActiveTodoRemindersViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val item = reminderRepository.getById(id) ?: return@launch
-      if (!eventControlFactory.getController(item).onOff()) {
-        postInProgress(false)
-        postCommand(Commands.OUTDATED)
-      } else {
-        scheduleReminderUploadUseCase(item.uuId)
-        postInProgress(false)
+      val (success, _) = toggleReminderStateUseCase(item)
+      postInProgress(false)
+      if (success) {
         postCommand(Commands.SAVED)
+      } else {
+        postCommand(Commands.OUTDATED)
       }
       loadReminders()
     }

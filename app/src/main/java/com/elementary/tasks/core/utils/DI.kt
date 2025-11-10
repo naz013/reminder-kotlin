@@ -8,7 +8,6 @@ import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.JobScheduler
@@ -96,23 +95,6 @@ val utilModule = module {
   factory { GoogleCalendarUtils(get(), get(), get(), get()) }
   single { CacheUtil(get(), get()) }
 
-  single {
-    EventControlFactory(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
   factory { RecurEventManager(get()) }
 
   single { Prefs(get()) }
@@ -124,9 +106,9 @@ val utilModule = module {
   single { AppWidgetPreferencesImpl(get()) as AppWidgetPreferences }
 
   factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
-  factory { JobScheduler(get(), get(), get(), get()) }
+  factory { JobScheduler(get(), get(), get(), get(), get()) }
 
-  factory { EnableThread(get(), get()) }
+  factory { ActivateAllActiveRemindersUseCase(get(), get()) }
   factory { NoteImageMigration(get(), get()) }
 
   single { CurrentStateHolder(get(), get(), get(), get(), get()) }

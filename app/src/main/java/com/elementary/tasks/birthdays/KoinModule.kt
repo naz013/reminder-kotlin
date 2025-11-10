@@ -51,6 +51,6 @@ val birthdaysModule = module {
 
   factory { ScanContactsWorker(get(), get(), get(), get(), get()) }
 
-  factory { DeleteBirthdayUseCase(get(), get(), get(), get()) }
-  factory { SaveBirthdayUseCase(get(), get(), get(), get()) }
+  factory { DeleteBirthdayUseCase(get(), get(), get(), get(), get()) }
+  factory { SaveBirthdayUseCase(get(), get(), get(), get(), get()) }
 }
