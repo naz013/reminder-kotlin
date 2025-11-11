@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(FlowPreview::class)
-class ArchiveRemindersViewModel(
+class RemindersArchiveFragmentViewModel(
   private val reminderRepository: ReminderRepository,
   dispatcherProvider: DispatcherProvider,
   private val uiReminderListAdapter: UiReminderListAdapter,

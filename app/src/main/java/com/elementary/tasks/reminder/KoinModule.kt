@@ -73,7 +73,7 @@ import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialogViewModel
-import com.elementary.tasks.reminder.lists.removed.ArchiveRemindersViewModel
+import com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragmentViewModel
 import com.elementary.tasks.reminder.lists.todo.ActiveTodoRemindersViewModel
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
 import com.elementary.tasks.reminder.preview.EventToUiReminderPreview
@@ -119,7 +119,7 @@ val reminderModule = module {
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
   viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { ArchiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
   viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
   viewModel { SelectorDialogViewModel(get(), get()) }

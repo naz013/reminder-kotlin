@@ -27,9 +27,9 @@ import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
+class RemindersArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
-  private val viewModel by viewModel<ArchiveRemindersViewModel>()
+  private val viewModel by viewModel<RemindersArchiveFragmentViewModel>()
 
   private val reminderResolver by lazy {
     ReminderActionResolver(
@@ -84,7 +84,7 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
     addMenu(R.menu.fragment_reminders_archive, { menuItem ->
       return@addMenu when (menuItem.itemId) {
         R.id.action_delete_all -> {
-          viewModel.deleteAll()
+          showConfirmationDialog()
           true
         }
         R.id.action_filter -> {
@@ -102,6 +102,20 @@ class ArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
 
     initList()
     initViewModel()
+  }
+
+  private fun showConfirmationDialog() {
+    dialogues.askConfirmation(
+      context = requireContext(),
+      title = getString(R.string.delete_all_archived_reminders),
+      positiveText = getString(R.string.yes_delete_all),
+      negativeText = getString(R.string.cancel),
+      onAction = {
+        if (it) {
+          viewModel.deleteAll()
+        }
+      }
+    )
   }
 
   private fun showFilters(filters: Filters) {
