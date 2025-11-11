@@ -914,4 +914,5 @@
     <string name="scan_contacts_automatically">Scan contacts automatically</string>
     <string name="delete_all_archived_reminders">Delete all archived reminders</string>
     <string name="yes_delete_all">Yes, delete all</string>
+    <string name="reset_calendar">Reset</string>
 </resources>

@@ -14,8 +14,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.BuildParams
+import com.elementary.tasks.databinding.ViewPrefsBinding
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.context.dp2px
 import com.github.naz013.ui.common.view.gone
@@ -24,7 +24,7 @@ import com.github.naz013.ui.common.view.visible
 
 class PrefsView : RelativeLayout {
 
-  private lateinit var binding: PrefsViewBinding
+  private lateinit var binding: ViewPrefsBinding
 
   var isChecked: Boolean = false
     set(checked) {
@@ -41,14 +41,17 @@ class PrefsView : RelativeLayout {
     }
   private var isForPro: Boolean = false
   private var isTest: Boolean = false
+  private var showCustomButton: Boolean = false
   private var mDependentValue: Boolean? = null
   private var viewType = CHECK
   private var mOnText: String? = null
   private var mOffText: String? = null
   private var mSecondaryText: String? = null
+  private var customButtonText: String? = null
   private val mDependencyViews = ArrayList<PrefsView>()
   private val mReverseDependencyViews = ArrayList<PrefsView>()
   private val mOnCheckedListeners = ArrayList<OnCheckedListener>()
+  private var onCustomButtonClickListener: View.OnClickListener? = null
 
   private val isCheckable: Boolean
     get() = viewType == CHECK || viewType == SWITCH
@@ -71,10 +74,10 @@ class PrefsView : RelativeLayout {
 
   private fun init(context: Context, attrs: AttributeSet?) {
     View.inflate(context, R.layout.view_prefs, this)
-    binding = PrefsViewBinding(this)
     descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+    binding = ViewPrefsBinding.bind(this)
 
-    binding.progressView.gone()
+    binding.progressViewPrefs.gone()
 
     if (attrs != null) {
       val a = context.theme.obtainStyledAttributes(
@@ -106,6 +109,8 @@ class PrefsView : RelativeLayout {
         if (primaryColor != -1) {
           binding.prefsPrimaryText.setTextColor(primaryColor)
         }
+        showCustomButton = a.getBoolean(R.styleable.PrefsView_prefs_showCustomButton, false)
+        customButtonText = a.getString(R.styleable.PrefsView_prefs_customButtonText)
       } catch (e: Exception) {
         Logger.d("init: ${e.message}")
       } finally {
@@ -118,23 +123,73 @@ class PrefsView : RelativeLayout {
       } else {
         binding.iconView.transparent()
       }
+      binding.prefsCustomButton.setOnClickListener { view ->
+        onCustomButtonClickListener?.onClick(view)
+      }
       setTitleText(titleText)
       setDividerTop(divTop)
       setDividerBottom(divBottom)
       setView()
       setValueText(valueText)
       setViewResource(res)
+      setCustomButtonText(customButtonText)
+      setCustomButtonVisible(showCustomButton)
     }
     setDetailText(mSecondaryText)
     isChecked = isChecked
     setVisible()
   }
 
+  fun setCustomButton(text: String?, onClickListener: OnClickListener? = null) {
+    if (viewType == NONE) {
+      customButtonText = text
+      if (text != null) {
+        binding.prefsCustomButton.text = text
+      }
+      onCustomButtonClickListener = onClickListener
+    }
+  }
+
+  fun setCustomButtonOnClickListener(onClickListener: OnClickListener?) {
+    if (viewType == NONE) {
+      onCustomButtonClickListener = onClickListener
+    }
+  }
+
+  fun setCustomButtonText(text: String?) {
+    if (viewType == NONE) {
+      customButtonText = text
+      if (text != null) {
+        binding.prefsCustomButton.text = text
+      }
+    }
+  }
+
+  fun setCustomButtonVisible(visible: Boolean) {
+    if (viewType != NONE) return
+    showCustomButton = visible
+    if (visible) {
+      binding.prefsCustomButton.visible()
+      if (customButtonText != null) {
+        binding.prefsCustomButton.text = customButtonText
+      }
+    } else {
+      binding.prefsCustomButton.gone()
+    }
+  }
+
+  fun removeCustomButton() {
+    showCustomButton = false
+    customButtonText = null
+    onCustomButtonClickListener = null
+    binding.prefsCustomButton.gone()
+  }
+
   fun setLoading(isLoading: Boolean) {
     if (isLoading) {
-      binding.progressView.visible()
+      binding.progressViewPrefs.visible()
     } else {
-      binding.progressView.gone()
+      binding.progressViewPrefs.gone()
     }
   }
 
@@ -357,6 +412,7 @@ class PrefsView : RelativeLayout {
     private const val SWITCH = 1
     private const val VIEW = 2
     private const val TEXT = 3
+    private const val NONE = 4
     private const val SHOW_ICON: Boolean = true
   }
 }

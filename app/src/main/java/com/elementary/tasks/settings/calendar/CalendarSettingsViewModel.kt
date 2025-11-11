@@ -3,7 +3,6 @@ package com.elementary.tasks.settings.calendar
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
@@ -60,6 +59,12 @@ class CalendarSettingsViewModel(
     }
   }
 
+  fun onCalendarReset() {
+    selectedCalendarId = -1L
+    prefs.googleCalendarReminderId = selectedCalendarId
+    _selectedCalendar.value = NO_CALENDAR
+  }
+
   fun onCalendarSelected(position: Int) {
     val calendar = calendars.getOrNull(position) ?: return
     selectedCalendarId = calendar.id
@@ -81,10 +86,7 @@ class CalendarSettingsViewModel(
       } else {
         Logger.e(TAG, "Selected calendar not found for id: $selectedCalendarId")
         withContext(dispatcherProvider.main()) {
-          _selectedCalendar.value = GoogleCalendar(
-            id = -1L,
-            name = textProvider.getString(R.string.calendar_not_selected)
-          )
+          _selectedCalendar.value = NO_CALENDAR
         }
       }
     }
@@ -97,10 +99,14 @@ class CalendarSettingsViewModel(
 
   data class GoogleCalendar(
     val id: Long,
-    val name: String,
+    val name: String?,
   )
 
   companion object {
     private const val TAG = "CalendarSettingsViewModel"
+    private val NO_CALENDAR = GoogleCalendar(
+      id = -1L,
+      name = null
+    )
   }
 }
