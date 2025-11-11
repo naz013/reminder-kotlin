@@ -82,7 +82,7 @@ class ReminderResolver(
   }
 
   private fun askConfirmation(view: View, title: String, onAction: (Boolean) -> Unit) {
-    dialogAction.invoke().askConfirmation(view.context, title, onAction)
+    dialogAction.invoke().askConfirmation(view.context, title, onAction = onAction)
   }
 
   private fun editReminder(reminder: UiReminderListData) {

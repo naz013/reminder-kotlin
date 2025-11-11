@@ -95,7 +95,7 @@
         tools:layout="@layout/fragment_groups" />
     <fragment
         android:id="@+id/archiveFragment"
-        android:name="com.elementary.tasks.reminder.lists.removed.ArchiveFragment"
+        android:name="com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragment"
         android:label="@string/trash"
         tools:layout="@layout/fragment_trash" />
     <fragment

@@ -38,7 +38,11 @@ class BirthdayResolver(
   }
 
   private fun askConfirmation(view: View, title: String, onAction: (Boolean) -> Unit) {
-    dialogAction.invoke().askConfirmation(view.context, title, onAction)
+    dialogAction.invoke().askConfirmation(
+      context = view.context,
+      title = title,
+      onAction = onAction
+    )
   }
 
   private fun openBirthday(birthday: UiBirthdayList) {

@@ -115,7 +115,7 @@ class ReminderActionResolver(
   }
 
   private fun askConfirmation(title: String, onAction: (Boolean) -> Unit) {
-    dialogues.askConfirmation(context, title, onAction)
+    dialogues.askConfirmation(context, title, onAction = onAction)
   }
 
   private fun editReminder(id: String) {
