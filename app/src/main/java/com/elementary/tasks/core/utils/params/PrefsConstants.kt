@@ -4,17 +4,12 @@ object PrefsConstants {
 
   const val PREFS_NAME = "prefs_six"
 
-  @Deprecated("Should not use")
-  const val EVENTS_CALENDAR = "events_cal"
-  const val AUTO_CHECK_FOR_EVENTS = "auto_events"
-  const val AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval"
   const val DRIVE_USER = "ggl_user"
   const val TASKS_USER = "gtl_user"
   const val MAP_TYPE = "new_map_type"
   const val MAP_STYLE = "new_map_style"
   const val LOCATION_RADIUS = "radius"
   const val TRACKING_NOTIFICATION = "tracking_notification"
-  const val VIBRATION_STATUS = "vibration_status"
   const val CONTACT_BIRTHDAYS = "use_contacts"
   const val BIRTHDAY_REMINDER = "birthdays_reminder"
   const val START_DAY = "start_day"
@@ -23,15 +18,10 @@ object PrefsConstants {
   const val EVENT_DURATION = "event_duration"
   const val EXPORT_TO_CALENDAR = "export_to_calendar"
 
-  @Deprecated("Should not use")
-  const val CALENDAR_ID = "cal_id"
-  const val CALENDAR_IDS = "calendar_ids"
-  const val DEFAULT_CALENDAR_ID = "default_calendar_id"
   const val AUTO_CHECK_BIRTHDAYS = "birthdays_auto_scan"
   const val LED_STATUS = "led_status"
   const val LED_COLOR = "led_color"
   const val MARKER_STYLE = "marker_style"
-  const val INFINITE_VIBRATION = "infinite_vibration"
   const val NOTIFICATION_REPEAT = "notification_repeat"
   const val NOTIFICATION_REPEAT_INTERVAL = "notification_repeat_interval"
   const val WEAR_NOTIFICATION = "wear_notification"
@@ -41,7 +31,6 @@ object PrefsConstants {
   const val STATUS_BAR_ICON = "status_icon"
   const val STATUS_BAR_NOTIFICATION = "status_notification"
   const val TRACK_TIME = "tracking_time"
-  const val EXPORT_TO_STOCK = "export_to_stock"
   const val REMINDER_COLOR = "reminder_color"
   const val TIME_FORMAT = "new_hour_format"
   const val BIRTHDAY_PERMANENT = "birthday_permanent"
@@ -85,20 +74,15 @@ object PrefsConstants {
   const val SALE_MESSAGE = "sale_message_json_v2"
   const val INTERNAL_MESSAGE = "internal_message_json_v1"
 
-  const val REMINDER_CHANGED = "reminder_changed"
   const val NOTES_ORDER = "notes_ordering"
   const val NOTES_LIST_STYLE = "notes_style"
-  const val RATE_SHOW = "show_rate"
-  const val APP_RUNS_COUNT = "app_runs"
 
   const val LAST_VERSION_CODE = "last_version_code"
 
   // birthdays reminder notification constants
   const val BIRTHDAY_USE_GLOBAL = "use_global"
-  const val BIRTHDAY_VIBRATION_STATUS = "birthday_vibration_status"
   const val BIRTHDAY_LED_STATUS = "birthday_led_status"
   const val BIRTHDAY_LED_COLOR = "birthday_led_color"
-  const val BIRTHDAY_INFINITE_VIBRATION = "birthday_infinite_vibration"
   const val BIRTHDAY_REMINDER_TIME = "reminder_hour"
 
   const val IS_PRESET_INIT = "preset_init"
@@ -114,4 +98,8 @@ object PrefsConstants {
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"
   const val OCCURRENCE_COUNT_REMINDERS = "occurrence_count_reminders"
   const val OCCURRENCE_COUNT_BIRTHDAYS = "occurrence_count_birthdays"
+
+  const val GOOGLE_CALENDAR_SYNC = "google_calendar_sync"
+  const val GOOGLE_CALENDAR_ID = "google_calendar_id"
+  const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
 }

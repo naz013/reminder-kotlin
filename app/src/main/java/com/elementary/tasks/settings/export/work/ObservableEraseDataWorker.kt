@@ -1,4 +1,4 @@
-package com.elementary.tasks.settings.export
+package com.elementary.tasks.settings.export.work
 
 import android.content.Context
 import androidx.work.Constraints
@@ -9,41 +9,35 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.github.naz013.cloudapi.dropbox.DropboxApi
+import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.SyncApi
 import kotlinx.coroutines.withContext
 
-/**
- * WorkManager worker for performing observable backup operations.
- * Reports progress during backup to allow UI updates.
- *
- * @param context Application context
- * @param workerParams Worker parameters from WorkManager
- * @param dispatcherProvider Coroutine dispatcher provider for background work
- * @param syncApi API for performing sync operations
- */
-class ObservableBackupWorker(
+class ObservableEraseDataWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val syncApi: SyncApi
+  private val googleDriveApi: GoogleDriveApi,
+  private val dropboxApi: DropboxApi
 ) : CoroutineWorker(context, workerParams) {
 
   override suspend fun doWork(): Result {
     return try {
-      Logger.i(TAG, "Starting observable backup")
+      Logger.i(TAG, "Starting observable erase data work")
       setProgress(createProgressData(true))
 
       withContext(dispatcherProvider.io()) {
-        syncApi.upload()
+        googleDriveApi.removeAllData()
+        dropboxApi.removeAllData()
       }
 
-      Logger.i(TAG, "Observable backup completed successfully")
+      Logger.i(TAG, "Observable erase data work completed successfully")
       setProgress(createProgressData(false))
       Result.success()
     } catch (e: Exception) {
-      Logger.e(TAG, "Observable backup failed", e)
+      Logger.e(TAG, "Observable erase data work failed", e)
       setProgress(createProgressData(false))
       Result.failure()
     }
@@ -62,17 +56,16 @@ class ObservableBackupWorker(
   }
 
   companion object {
-    private const val TAG = "ObservableBackupWorker"
+    private const val TAG = "ObservableEraseDataWorker"
     const val KEY_IS_IN_PROGRESS = "is_in_progress"
 
     /**
-     * Schedules a new backup work request.
-     * Uses REPLACE policy to ensure only one backup runs at a time.
+     * Schedules the observable erase data work with WorkManager.
      *
      * @param context Application context
      */
     fun schedule(context: Context) {
-      val work = OneTimeWorkRequest.Builder(ObservableBackupWorker::class.java)
+      val work = OneTimeWorkRequest.Builder(ObservableEraseDataWorker::class.java)
         .addTag(TAG)
         .setConstraints(
           Constraints.Builder()
@@ -80,7 +73,7 @@ class ObservableBackupWorker(
             .build()
         )
         .build()
-      WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, work)
+      WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, work)
     }
 
     /**

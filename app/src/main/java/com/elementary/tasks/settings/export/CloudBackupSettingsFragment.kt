@@ -6,19 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.settings.export.work.ObservableBackupWorker
+import com.elementary.tasks.settings.export.work.ObservableEraseDataWorker
+import com.elementary.tasks.settings.export.work.ObservableSyncWorker
+import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBinding>() {
+class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBinding>() {
 
+  private val viewModel by viewModel<CloudBackupSettingsViewModel>()
   private val observableWorkerManager by inject<ObservableWorkerManager>()
-  private val jobScheduler by inject<JobScheduler>()
-
-  private var mItemSelect: Int = 0
 
   private val onSyncEnd: () -> Unit = {
     binding.progressView.transparent()
@@ -49,24 +51,33 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
 
     binding.cloudsPrefs.setOnClickListener {
       safeNavigation {
-        ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives()
+        CloudBackupSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives()
       }
     }
 
     initAutoBackupPrefs()
     initClearDataPrefs()
     initNetworkTypePrefs()
-  }
-
-  override fun onResume() {
-    super.onResume()
     initSyncButton()
     initBackupButton()
+
+    initViewModel()
   }
 
   override fun onDestroy() {
     super.onDestroy()
     observableWorkerManager.unsubscribe()
+  }
+
+  private fun initViewModel() {
+    viewModel.hasAnyCloudApi.nonNullObserve(viewLifecycleOwner) {
+      binding.autoBackupPrefs.setDependentValue(it)
+      binding.connectionPrefs.setDependentValue(it)
+      binding.cleanPrefs.setDependentValue(it)
+      binding.syncButton.isEnabled = it
+      binding.backupButton.isEnabled = it
+    }
+    lifecycle.addObserver(viewModel)
   }
 
   private fun initNetworkTypePrefs() {
@@ -146,7 +157,7 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       showIntervalDialog(getString(R.string.automatically_backup), prefs.autoBackupState) { state ->
         prefs.autoBackupState = stateFromPosition(state)
         showBackupState()
-        jobScheduler.scheduleAutoBackup()
+        viewModel.onAutoBackupIntervalChanged()
       }
     }
     showBackupState()
@@ -165,20 +176,20 @@ class ExportSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBindin
       48 -> 5
       else -> 0
     }
-    mItemSelect = position
     return position
   }
 
   private fun showIntervalDialog(title: String, current: Int, onSelect: (Int) -> Unit) {
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(title)
+    var position = positionFromState(current)
     builder.setSingleChoiceItems(
       syncStates(),
-      positionFromState(current)
-    ) { _, item -> mItemSelect = item }
+      position
+    ) { _, item -> position = item }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
       dialog.dismiss()
-      onSelect.invoke(mItemSelect)
+      onSelect.invoke(position)
     }
     builder.setNegativeButton(R.string.cancel) { dialog, _ ->
       dialog.dismiss()

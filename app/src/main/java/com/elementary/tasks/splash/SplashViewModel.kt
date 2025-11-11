@@ -49,7 +49,6 @@ class SplashViewModel(
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
     viewModelScope.launch(dispatcherProvider.default()) {
-      initPrefs()
       checkIfAppUpdated()
       checkDb()
       appWidgetPreviewUpdater.updateEventsWidgetPreview()
@@ -82,10 +81,5 @@ class SplashViewModel(
       prefs.saveVersionBoolean(versionName)
       activateAllActiveRemindersUseCase.run()
     }
-  }
-
-  private fun initPrefs() {
-    prefs.initPrefs()
-    prefs.checkPrefs()
   }
 }

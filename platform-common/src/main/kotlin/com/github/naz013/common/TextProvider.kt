@@ -31,4 +31,10 @@ class TextProvider(initContext: Context) {
   fun getText(@StringRes id: Int, vararg args: Any): String {
     return getString(id, *args)
   }
+
+  fun getAppName(): String {
+    val packageManager = context.packageManager
+    val applicationInfo = context.applicationInfo
+    return packageManager.getApplicationLabel(applicationInfo).toString()
+  }
 }

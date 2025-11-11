@@ -24,9 +24,6 @@ class BootReceiver : BaseBroadcast() {
       if (prefs.isContactAutoCheckEnabled) {
         jobScheduler.scheduleBirthdaysCheck()
       }
-      if (prefs.isAutoEventsCheckEnabled) {
-        jobScheduler.scheduleEventCheck()
-      }
       jobScheduler.scheduleAutoBackup()
       if (prefs.isBirthdayPermanentEnabled) {
         jobScheduler.scheduleBirthdayPermanent()

@@ -3,6 +3,8 @@ package com.elementary.tasks.core.views
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -14,10 +16,11 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.context.dp2px
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
-import com.github.naz013.logging.Logger
 
 class PrefsView : RelativeLayout {
 
@@ -273,8 +276,18 @@ class PrefsView : RelativeLayout {
 
   fun setViewColor(@ColorInt color: Int) {
     if (color != 0) {
-      binding.prefsView.setBackgroundColor(color)
+      // Create a circular drawable with the specified color
+      binding.prefsView.setBackgroundDrawable(getCircleDrawable(color))
     }
+  }
+
+  private fun getCircleDrawable(@ColorInt color: Int): Drawable {
+    val size = context.dp2px(24)
+    val shapeDrawable = ShapeDrawable(OvalShape())
+    shapeDrawable.intrinsicWidth = size
+    shapeDrawable.intrinsicHeight = size
+    shapeDrawable.paint.color = color
+    return shapeDrawable
   }
 
   fun setViewResource(@DrawableRes resource: Int) {

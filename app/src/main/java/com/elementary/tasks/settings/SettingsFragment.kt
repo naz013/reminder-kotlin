@@ -106,11 +106,6 @@ class SettingsFragment :
     binding.notesSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment(null))
     }
-    binding.notificationSettings.setOnClickListener {
-      safeNavigation(
-        SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment()
-      )
-    }
     binding.exportSettings.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
     }
@@ -124,9 +119,6 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment(null))
     }
     binding.securitySettings.setOnClickListener { askPin() }
-    binding.troubleshootingSettings.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToFragmentTroubleshooting())
-    }
 
     binding.testsScreen.setOnClickListener {
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
@@ -140,19 +132,6 @@ class SettingsFragment :
       binding.buyProBadge.visible()
     } else {
       binding.buyProBadge.gone()
-    }
-
-    withContext {
-      if (Module.hasLocation(it)) {
-        binding.locationSettings.setOnClickListener {
-          safeNavigation {
-            SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment()
-          }
-        }
-        binding.locationSettings.visible()
-      } else {
-        binding.locationSettings.gone()
-      }
     }
   }
 

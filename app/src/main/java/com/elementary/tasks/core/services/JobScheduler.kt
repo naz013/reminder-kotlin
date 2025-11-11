@@ -11,7 +11,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
@@ -36,26 +36,6 @@ class JobScheduler(
   private val eventDateTimeCalculator: EventDateTimeCalculator,
 ) {
 
-  fun scheduleEventCheck() {
-    val interval = prefs.autoCheckInterval
-    if (interval <= 0) {
-      cancelEventCheck()
-      return
-    }
-    val millis = INTERVAL_HOUR * interval
-
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(EVENT_CHECK)
-      .setConstraints(getDefaultConstraints())
-      .build()
-    schedule(work)
-  }
-
-  fun cancelEventCheck() {
-    cancelReminder(EVENT_CHECK)
-  }
-
   fun scheduleBirthdaysCheck() {
     val work = PeriodicWorkRequest.Builder(
       CheckBirthdaysWorker::class.java,
@@ -67,10 +47,12 @@ class JobScheduler(
       .addTag(EVENT_CHECK_BIRTHDAYS)
       .build()
     schedule(work)
+    Logger.i(TAG, "Scheduled birthday check.")
   }
 
   fun cancelBirthdaysCheck() {
     cancelReminder(EVENT_CHECK_BIRTHDAYS)
+    Logger.w(TAG, "Cancelled birthday check.")
   }
 
   fun scheduleBirthdayPermanent() {
@@ -298,7 +280,6 @@ class JobScheduler(
     const val EVENT_BIRTHDAY = "event_birthday"
     const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
     const val EVENT_AUTO_BACKUP = "event_auto_backup"
-    const val EVENT_CHECK = "event_check"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
     private const val TAG = "JobScheduler"
 

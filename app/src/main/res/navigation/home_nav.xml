@@ -154,13 +154,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_notificationSettingsFragment"
-            app:destination="@id/notificationSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
             android:id="@+id/action_settingsFragment_to_calendarSettingsFragment"
             app:destination="@id/calendarSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -177,13 +170,6 @@
         <action
             android:id="@+id/action_settingsFragment_to_securitySettingsFragment"
             app:destination="@id/securitySettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_settingsFragment_to_locationSettingsFragment"
-            app:destination="@id/locationSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -212,13 +198,6 @@
         <action
             android:id="@+id/action_settingsFragment_to_fragmentProVersion"
             app:destination="@id/fragmentProVersion"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_settingsFragment_to_fragmentTroubleshooting"
-            app:destination="@id/fragmentTroubleshooting"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -256,7 +235,7 @@
     </fragment>
     <fragment
         android:id="@+id/exportSettingsFragment"
-        android:name="com.elementary.tasks.settings.export.ExportSettingsFragment"
+        android:name="com.elementary.tasks.settings.export.CloudBackupSettingsFragment"
         android:label="@string/cloud_backup"
         tools:layout="@layout/fragment_settings_export">
         <action
@@ -269,7 +248,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentCloudDrives"
-        android:name="com.elementary.tasks.settings.export.FragmentCloudDrives"
+        android:name="com.elementary.tasks.settings.export.services.CloudServicesFragment"
         android:label="@string/cloud_services"
         tools:layout="@layout/fragment_settings_cloud_drives" />
     <fragment
@@ -281,27 +260,10 @@
             android:name="screen_title"
             app:nullable="true"
             app:argType="string" />
-        <action
-            android:id="@+id/action_calendarSettingsFragment_to_fragmentEventsImport"
-            app:destination="@id/fragmentEventsImport"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/notificationSettingsFragment"
-        android:name="com.elementary.tasks.settings.NotificationSettingsFragment"
-        android:label="@string/notification"
-        tools:layout="@layout/fragment_settings_notification" />
-    <fragment
-        android:id="@+id/fragmentEventsImport"
-        android:name="com.elementary.tasks.settings.calendar.FragmentEventsImport"
-        android:label="@string/import_events"
-        tools:layout="@layout/fragment_settings_events_import" />
-    <fragment
         android:id="@+id/birthdaySettingsFragment"
-        android:name="com.elementary.tasks.settings.BirthdaySettingsFragment"
+        android:name="com.elementary.tasks.settings.birthday.BirthdaySettingsFragment"
         android:label="@string/birthdays"
         tools:layout="@layout/fragment_settings_birthdays" />
     <fragment

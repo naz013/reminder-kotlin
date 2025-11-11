@@ -28,12 +28,21 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/locationSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_builder_map_my_location"
+            app:prefs_primary_text="@string/location"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/defaultPriorityPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_star"
-            app:prefs_primary_text="@string/default_priority"
+            app:prefs_primary_text="@string/reminder_default_priority"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -43,8 +52,106 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_builder_google_task_list"
             app:prefs_primary_text="@string/completed_reminders"
-            app:prefs_secondary_text_off="@string/do_not_move"
-            app:prefs_secondary_text_on="@string/move_to_trash"
+            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/move_to_the_archive"
+            app:prefs_type="check_switch" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/notification"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/wearPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_watch"
+            app:prefs_primary_text="@string/android_wear_notification"
+            app:prefs_secondary_text_off="@string/do_no_show_notifications_on_wear_devices"
+            app:prefs_secondary_text_on="@string/show_notifications_on_wear_devices"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/delayForPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_alert_snooze"
+            app:prefs_primary_text="@string/default_reminder_snooze_time"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/repeatNotificationOptionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/reminder_notification_repeating"
+            app:prefs_secondary_text_off="@string/repeat_reminder_notification_until_dismissed"
+            app:prefs_secondary_text_on="@string/do_not_repeat_reminder_notification_when_no_action_taken"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/repeatIntervalPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/reminder_notification_repeat_interval"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/ledPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_builder_led_color"
+            app:prefs_primary_text="@string/led_indication_if_available"
+            app:prefs_pro="true"
+            app:prefs_secondary_text_off="@string/do_not_show_led_indication"
+            app:prefs_secondary_text_on="@string/show_led_indication"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/chooseLedColorPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_color"
+            app:prefs_primary_text="@string/led_indication_color"
+            app:prefs_pro="true"
+            app:prefs_type="none" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/status_bar"
+            android:textAppearance="?textAppearanceTitleSmall"
+            android:textColor="?colorTertiary" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/permanentNotificationPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/permanent_notification"
+            app:prefs_secondary_text_off="@string/hidden"
+            app:prefs_secondary_text_on="@string/always_showing"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/statusIconPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/permanent_notification_icon"
+            app:prefs_secondary_text_off="@string/hide_icon"
+            app:prefs_secondary_text_on="@string/show_icon"
             app:prefs_type="check_switch" />
 
         <TextView

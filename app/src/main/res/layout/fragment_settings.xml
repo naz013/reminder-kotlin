@@ -98,12 +98,12 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/remindersSettings"
+            android:id="@+id/exportSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_clock_alarm"
-            app:prefs_primary_text="@string/reminders_"
+            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
+            app:prefs_primary_text="@string/cloud_backup"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -116,6 +116,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/remindersSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_fluent_clock_alarm"
+            app:prefs_primary_text="@string/reminders_"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/birthdaysSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,48 +134,12 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/notificationSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_alert"
-            app:prefs_primary_text="@string/notification"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_cloud_backup"
-            app:prefs_primary_text="@string/cloud_backup"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/troubleshootingSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_send_logging"
-            app:prefs_primary_text="@string/troubleshooting"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/securitySettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_lock"
             app:prefs_primary_text="@string/security"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/locationSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_builder_map_my_location"
-            app:prefs_primary_text="@string/location"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
