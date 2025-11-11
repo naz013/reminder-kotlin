@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.Module
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalTime
 
@@ -35,6 +39,26 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     initActionPrefs()
     initIgnorePrefs()
     initPresets()
+    initLocationPrefs()
+  }
+
+  private fun initLocationPrefs() {
+    if (Module.hasLocation(requireContext())) {
+      binding.locationSettings.setOnClickListener { openLocationSettingsScreen() }
+      binding.locationSettings.visible()
+    } else {
+      binding.locationSettings.gone()
+    }
+  }
+
+  private fun openLocationSettingsScreen() {
+    navigate {
+      navigate(
+        R.id.locationSettingsFragment,
+        null,
+        NavigationAnimations.inDepthNavOptions()
+      )
+    }
   }
 
   private fun initPresets() {

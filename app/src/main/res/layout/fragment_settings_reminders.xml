@@ -28,6 +28,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/locationSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_builder_map_my_location"
+            app:prefs_primary_text="@string/location"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/defaultPriorityPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

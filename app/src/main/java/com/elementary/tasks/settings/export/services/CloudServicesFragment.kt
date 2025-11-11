@@ -1,41 +1,41 @@
-package com.elementary.tasks.settings.export
+package com.elementary.tasks.settings.export.services
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.DropboxLogin
+import com.elementary.tasks.core.cloud.GoogleLogin
+import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
+import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.GoogleLogin
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.fragment.toast
-import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.logging.Logger
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
+class CloudServicesFragment : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
 
   private val featureManager by inject<FeatureManager>()
 
-  private val viewModel by viewModel<CloudViewModel>()
+  private val viewModel by viewModel<CloudServicesFragmentViewModel>()
   private val dropboxLogin: DropboxLogin by inject {
     parametersOf(requireActivity(), dropboxCallback)
   }
   private val googleLogin: GoogleLogin by inject {
-    parametersOf(this@FragmentCloudDrives, googleCallback)
+    parametersOf(this@CloudServicesFragment, googleCallback)
   }
 
   private val googleCallback = object : GoogleLogin.LoginCallback {
@@ -44,7 +44,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
 
     override fun onResult(isLogged: Boolean, mode: GoogleLogin.Mode) {
-      Logger.d("onResult: $isLogged, mode=$mode")
+      Logger.i(TAG, "Google login result: isLogged=$isLogged, mode=$mode")
       if (mode == GoogleLogin.Mode.TASKS) {
         if (isLogged) {
           viewModel.loadGoogleTasks()
@@ -155,6 +155,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     withActivity {
       if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
         toast(R.string.google_play_services_not_installed)
+        Logger.e(TAG, "Google Play Services not available.")
         return@withActivity
       }
       if (googleLogin.isGoogleTasksLogged) {
@@ -180,6 +181,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     withActivity {
       if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
         toast(R.string.google_play_services_not_installed)
+        Logger.e(TAG, "Google Play Services not available.")
         return@withActivity
       }
       if (googleLogin.isGoogleDriveLogged) {
@@ -221,4 +223,8 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
   }
 
   override fun getTitle(): String = getString(R.string.cloud_services)
+
+  companion object {
+    private const val TAG = "CloudServicesFragment"
+  }
 }

@@ -182,13 +182,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_locationSettingsFragment"
-            app:destination="@id/locationSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
             android:id="@+id/action_settingsFragment_to_otherSettingsFragment"
             app:destination="@id/navigation2"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -212,13 +205,6 @@
         <action
             android:id="@+id/action_settingsFragment_to_fragmentProVersion"
             app:destination="@id/fragmentProVersion"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_settingsFragment_to_fragmentTroubleshooting"
-            app:destination="@id/fragmentTroubleshooting"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -256,7 +242,7 @@
     </fragment>
     <fragment
         android:id="@+id/exportSettingsFragment"
-        android:name="com.elementary.tasks.settings.export.ExportSettingsFragment"
+        android:name="com.elementary.tasks.settings.export.CloudBackupSettingsFragment"
         android:label="@string/cloud_backup"
         tools:layout="@layout/fragment_settings_export">
         <action
@@ -269,7 +255,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentCloudDrives"
-        android:name="com.elementary.tasks.settings.export.FragmentCloudDrives"
+        android:name="com.elementary.tasks.settings.export.services.CloudServicesFragment"
         android:label="@string/cloud_services"
         tools:layout="@layout/fragment_settings_cloud_drives" />
     <fragment

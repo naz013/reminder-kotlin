@@ -4,7 +4,6 @@ import android.app.Activity
 import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
-import com.elementary.tasks.core.arch.CurrentStateHolder
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
@@ -22,7 +21,6 @@ import com.elementary.tasks.core.utils.params.AuthPreferencesImpl
 import com.elementary.tasks.core.utils.params.DateTimePreferencesImpl
 import com.elementary.tasks.core.utils.params.LocalePreferencesImpl
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.params.ReminderExplanationVisibility
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.params.ThemePreferencesImpl
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
@@ -32,7 +30,6 @@ import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.settings.export.CloudViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
@@ -55,8 +52,6 @@ val workerModule = module {
 val viewModelModule = module {
 
   viewModel { SelectApplicationViewModel(get(), get()) }
-
-  viewModel { CloudViewModel(get(), get(), get(), get(), get()) }
 
   viewModel {
     SplashViewModel(
@@ -84,7 +79,6 @@ val storageModule = module {
 
 val utilModule = module {
   factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
-  single { ReminderExplanationVisibility(get()) }
   single { MemoryUtil() }
   factory { UriReader(get()) }
   single { BackupTool(get(), get()) }
@@ -107,8 +101,6 @@ val utilModule = module {
   factory { ActivateAllActiveRemindersUseCase(get(), get()) }
   factory { NoteImageMigration(get(), get()) }
 
-  single { CurrentStateHolder(get(), get(), get(), get(), get()) }
-
   factory { WorkManagerProvider(get()) }
 
   factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
@@ -116,7 +108,7 @@ val utilModule = module {
   single { initializeAnalytics(get(), get()) }
   factory { ReminderAnalyticsTracker(get()) }
 
-  single { FeatureManager(get()) }
+  factory { FeatureManager(get()) }
   factory { GroupsUtil(get(), get(), get()) }
   factory { ImageDecoder(get(), get(), get()) }
 

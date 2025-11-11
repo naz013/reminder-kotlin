@@ -11,18 +11,27 @@ class DoNotDisturbManager(
 
   fun applyDoNotDisturb(priority: Int, millis: Long = System.currentTimeMillis()): Boolean {
     if (prefs.isDoNotDisturbEnabled) {
-      Logger.d("applyDoNotDisturb: enabled, $millis")
       val range = dateTimeManager.doNotDisturbRange(prefs.doNotDisturbFrom, prefs.doNotDisturbTo)
-      return if (range.contains(millis)) {
+      return if (millis in range) {
         if (prefs.doNotDisturbIgnore == 5) {
+          Logger.i(TAG, "Do not disturb active: ignoring all.")
           true
         } else {
-          priority < prefs.doNotDisturbIgnore
+          (priority < prefs.doNotDisturbIgnore).also {
+            Logger.i(
+              TAG,
+              "Do not disturb active: priority check. Task priority: $priority, ignore level: ${prefs.doNotDisturbIgnore}, should ignore: $it"
+            )
+          }
         }
       } else {
         false
       }
     }
     return false
+  }
+
+  companion object {
+    private const val TAG = "DoNotDisturbManager"
   }
 }

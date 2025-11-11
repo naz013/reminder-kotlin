@@ -6,11 +6,12 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.arch.CurrentStateHolder
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.navigation.FragmentCallback
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.activity.LightThemedActivity
+import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
 
 /**
@@ -35,14 +36,13 @@ abstract class BaseNavigationFragment<B : ViewBinding> :
   var callback: FragmentCallback? = null
     private set
 
-  protected val currentStateHolder by inject<CurrentStateHolder>()
-  protected val prefs = currentStateHolder.preferences
+  protected val prefs by inject<Prefs>()
+  protected val themeProvider by inject<ThemeProvider>()
   protected val isDark: Boolean
     get() {
-      return currentStateHolder.theme.isDark
+      return themeProvider.isDark
     }
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
-  protected val themeProvider = currentStateHolder.theme
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
