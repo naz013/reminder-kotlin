@@ -203,7 +203,7 @@
             android:id="@+id/doNotDisturbIgnorePrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="false"
+            app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/ignore_when_priority"
             app:prefs_type="none" />
 

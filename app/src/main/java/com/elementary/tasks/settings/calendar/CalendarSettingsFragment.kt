@@ -65,8 +65,9 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
   private fun initGoogleCalendarIdPrefs() {
     viewModel.selectedCalendar.observe(viewLifecycleOwner) {
       binding.selectCalendarPrefs.setDetailText(it.name)
-      binding.exportToCalendarPrefs.setDependentValue(it.id != -1L)
-      binding.scanCalendarPrefs.setDependentValue(it.id != -1L)
+      binding.exportToCalendarPrefs.setDependentValue(it?.id != -1L)
+      binding.scanCalendarPrefs.setDependentValue(it?.id != -1L)
+      binding.selectCalendarPrefs.setCustomButtonVisible(it?.id != -1L)
     }
     viewModel.showSelectGoogleCalendarDialog.observeEvent(viewLifecycleOwner) {
       showGoogleCalendarSelectionDialog(it)
@@ -75,6 +76,9 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
       permissionFlow.askPermissions(listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
         viewModel.onSelectGoogleCalendarClicked()
       }
+    }
+    binding.selectCalendarPrefs.setCustomButton(getString(R.string.reset_calendar)) {
+      viewModel.onCalendarReset()
     }
   }
 
