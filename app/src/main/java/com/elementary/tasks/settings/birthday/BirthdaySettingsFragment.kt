@@ -1,4 +1,4 @@
-package com.elementary.tasks.settings
+package com.elementary.tasks.settings.birthday
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +12,6 @@ import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
@@ -176,7 +175,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
       prefs.isContactBirthdaysEnabled = isChecked
       // Schedule a scan when enabling contact birthdays
       if (isChecked) {
-        CheckBirthdaysWorker.scheduleOnTime(requireContext())
+        CheckBirthdaysWorker.Companion.scheduleOnTime(requireContext())
       } else {
         jobScheduler.cancelBirthdaysCheck()
       }
@@ -244,7 +243,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
       val dialog = builder.create()
       dialog.show()
-      Dialogues.setFullWidthDialog(dialog, it)
+      Dialogues.Companion.setFullWidthDialog(dialog, it)
     }
   }
 
@@ -281,7 +280,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
       builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
       val dialog = builder.create()
       dialog.show()
-      Dialogues.setFullWidthDialog(dialog, it)
+      Dialogues.Companion.setFullWidthDialog(dialog, it)
     }
   }
 
@@ -303,13 +302,13 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     if (!isChecked) {
       requireActivity().sendBroadcast(
         Intent(requireContext(), PermanentBirthdayReceiver::class.java)
-          .setAction(PermanentBirthdayReceiver.ACTION_SHOW)
+          .setAction(PermanentBirthdayReceiver.Companion.ACTION_SHOW)
       )
       jobScheduler.scheduleBirthdayPermanent()
     } else {
       requireActivity().sendBroadcast(
         Intent(requireContext(), PermanentBirthdayReceiver::class.java)
-          .setAction(PermanentBirthdayReceiver.ACTION_HIDE)
+          .setAction(PermanentBirthdayReceiver.Companion.ACTION_HIDE)
       )
       jobScheduler.cancelBirthdayPermanent()
     }

@@ -263,7 +263,7 @@
     </fragment>
     <fragment
         android:id="@+id/birthdaySettingsFragment"
-        android:name="com.elementary.tasks.settings.BirthdaySettingsFragment"
+        android:name="com.elementary.tasks.settings.birthday.BirthdaySettingsFragment"
         android:label="@string/birthdays"
         tools:layout="@layout/fragment_settings_birthdays" />
     <fragment
