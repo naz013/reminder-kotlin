@@ -5,14 +5,9 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
-import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.common.Module
 import com.github.naz013.domain.font.FontParams
-import com.google.android.gms.maps.GoogleMap
-import java.io.File
-import java.util.Locale
 
 typealias PrefsObserver = (String) -> Unit
 
@@ -241,10 +236,6 @@ class Prefs(
     get() = getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
     set(value) = putBoolean(PrefsConstants.EXPORT_TO_CALENDAR, value)
 
-  var isStockCalendarEnabled: Boolean
-    get() = getBoolean(PrefsConstants.EXPORT_TO_STOCK)
-    set(value) = putBoolean(PrefsConstants.EXPORT_TO_STOCK, value)
-
   var isWearEnabled: Boolean
     get() = getBoolean(PrefsConstants.WEAR_NOTIFICATION)
     set(value) = putBoolean(PrefsConstants.WEAR_NOTIFICATION, value)
@@ -287,14 +278,6 @@ class Prefs(
   var isSbIconEnabled: Boolean
     get() = getBoolean(PrefsConstants.STATUS_BAR_ICON)
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_ICON, value)
-
-  var isVibrateEnabled: Boolean
-    get() = getBoolean(PrefsConstants.VIBRATION_STATUS)
-    set(value) = putBoolean(PrefsConstants.VIBRATION_STATUS, value)
-
-  var isInfiniteVibrateEnabled: Boolean
-    get() = getBoolean(PrefsConstants.INFINITE_VIBRATION)
-    set(value) = putBoolean(PrefsConstants.INFINITE_VIBRATION, value)
 
   var snoozeTime: Int
     get() = getInt(PrefsConstants.DELAY_TIME)
@@ -359,14 +342,6 @@ class Prefs(
   var isBirthdayGlobalEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, value)
-
-  var isBirthdayVibrationEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_VIBRATION_STATUS)
-    set(value) = putBoolean(PrefsConstants.BIRTHDAY_VIBRATION_STATUS, value)
-
-  var isBirthdayInfiniteVibrationEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION)
-    set(value) = putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, value)
 
   var isBirthdayLedEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS)
@@ -461,211 +436,4 @@ class Prefs(
       )
     )
     set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
-
-  fun initPrefs() {
-    val settingsUI = File(
-      "/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml"
-    )
-    if (!settingsUI.exists()) {
-      val preferences = context.getSharedPreferences(
-        PrefsConstants.PREFS_NAME,
-        Context.MODE_PRIVATE
-      )
-      val editor = preferences.edit()
-      editor.putInt(PrefsConstants.TODAY_COLOR, 0)
-      editor.putInt(PrefsConstants.BIRTH_COLOR, 2)
-      editor.putInt(PrefsConstants.REMINDER_COLOR, 4)
-      editor.putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
-      editor.putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
-      editor.putInt(PrefsConstants.LED_COLOR, LED.BLUE)
-      editor.putInt(PrefsConstants.BIRTHDAY_LED_COLOR, LED.BLUE)
-      editor.putInt(PrefsConstants.LOCATION_RADIUS, DefaultValues.RADIUS)
-      editor.putInt(PrefsConstants.MARKER_STYLE, 5)
-      editor.putInt(PrefsConstants.TRACK_TIME, 1)
-      val localeCheck = Locale.getDefault().toString().lowercase()
-      val locale = when {
-        localeCheck.startsWith("uk") -> 2
-        else -> 0
-      }
-      editor.putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
-      editor.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
-      editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
-      editor.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
-      editor.putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
-      editor.putInt(PrefsConstants.APP_LANGUAGE, 0)
-      editor.putInt(PrefsConstants.START_DAY, 1)
-      editor.putInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
-      editor.putInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, 15)
-      editor.putInt(PrefsConstants.APP_RUNS_COUNT, 0)
-      editor.putInt(PrefsConstants.DELAY_TIME, 5)
-      editor.putInt(PrefsConstants.EVENT_DURATION, 30)
-      editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
-      editor.putInt(PrefsConstants.MAP_STYLE, 6)
-      editor.putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-      editor.putBoolean(
-        PrefsConstants.TRACKING_NOTIFICATION,
-        DefaultValues.LOCATION_TRACK_NOTIFICATION
-      )
-      editor.putBoolean(PrefsConstants.RATE_SHOW, false)
-      editor.putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
-      editor.putBoolean(PrefsConstants.BIRTHDAY_REMINDER, true)
-      editor.putBoolean(PrefsConstants.EXPORT_TO_CALENDAR, false)
-      editor.putBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, false)
-      editor.putBoolean(PrefsConstants.INFINITE_VIBRATION, false)
-      editor.putBoolean(PrefsConstants.NOTIFICATION_REPEAT, false)
-      editor.putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, false)
-      editor.putBoolean(PrefsConstants.EXPORT_TO_STOCK, false)
-      editor.putInt(PrefsConstants.TIME_FORMAT, 0)
-      editor.putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
-      editor.putBoolean(PrefsConstants.REMINDER_CHANGED, false)
-      if (BuildParams.isPro) {
-        editor.putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
-        editor.putBoolean(PrefsConstants.LED_STATUS, true)
-        editor.putInt(PrefsConstants.BIRTHDAY_LED_COLOR, 6)
-        editor.putInt(PrefsConstants.LED_COLOR, 11)
-        editor.putBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, true)
-        editor.putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, false)
-        editor.putBoolean(PrefsConstants.BIRTHDAY_VIBRATION_STATUS, false)
-      }
-      editor.apply()
-    }
-  }
-
-  fun checkPrefs() {
-    if (!hasKey(PrefsConstants.TODAY_COLOR)) {
-      putInt(PrefsConstants.TODAY_COLOR, 4)
-    }
-    if (!hasKey(PrefsConstants.BIRTH_COLOR)) {
-      putInt(PrefsConstants.BIRTH_COLOR, 1)
-    }
-    if (!hasKey(PrefsConstants.REMINDER_COLOR)) {
-      putInt(PrefsConstants.REMINDER_COLOR, 6)
-    }
-    if (!hasKey(PrefsConstants.DRIVE_USER)) {
-      putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
-    }
-
-    if (!hasKey(PrefsConstants.DAYS_TO_BIRTHDAY)) {
-      putInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
-    }
-    if (!hasKey(PrefsConstants.START_DAY)) {
-      putInt(PrefsConstants.START_DAY, 1)
-    }
-    if (!hasKey(PrefsConstants.DO_NOT_DISTURB_IGNORE)) {
-      putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
-    }
-    if (!hasKey(PrefsConstants.DEFAULT_PRIORITY)) {
-      putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
-    }
-    if (!hasKey(PrefsConstants.BIRTHDAY_PRIORITY)) {
-      putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
-    }
-    if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER_TIME)) {
-      putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "12:00")
-    }
-    if (!hasKey(PrefsConstants.DO_NOT_DISTURB_FROM)) {
-      putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
-    }
-    if (!hasKey(PrefsConstants.DO_NOT_DISTURB_TO)) {
-      putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
-    }
-    if (!hasKey(PrefsConstants.TRACK_TIME)) {
-      putInt(PrefsConstants.TRACK_TIME, 1)
-    }
-    if (!hasKey(PrefsConstants.APP_RUNS_COUNT)) {
-      putInt(PrefsConstants.APP_RUNS_COUNT, 0)
-    }
-    if (!hasKey(PrefsConstants.DELAY_TIME)) {
-      putInt(PrefsConstants.DELAY_TIME, 5)
-    }
-    if (!hasKey(PrefsConstants.EVENT_DURATION)) {
-      putInt(PrefsConstants.EVENT_DURATION, 30)
-    }
-    if (!hasKey(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL)) {
-      putInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, 15)
-    }
-    if (!hasKey(PrefsConstants.MAP_TYPE)) {
-      putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
-    }
-    if (!hasKey(PrefsConstants.RATE_SHOW)) {
-      putBoolean(PrefsConstants.RATE_SHOW, false)
-    }
-    if (!hasKey(PrefsConstants.CONTACT_BIRTHDAYS)) {
-      putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
-    }
-    if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER)) {
-      putBoolean(PrefsConstants.BIRTHDAY_REMINDER, true)
-    }
-    if (!hasKey(PrefsConstants.WIDGET_BIRTHDAYS)) {
-      putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, false)
-    }
-    if (!hasKey(PrefsConstants.WEAR_NOTIFICATION)) {
-      putBoolean(PrefsConstants.WEAR_NOTIFICATION, false)
-    }
-    if (!hasKey(PrefsConstants.EXPORT_TO_STOCK)) {
-      putBoolean(PrefsConstants.EXPORT_TO_STOCK, false)
-    }
-    if (!hasKey(PrefsConstants.EXPORT_TO_CALENDAR)) {
-      putBoolean(PrefsConstants.EXPORT_TO_CALENDAR, false)
-    }
-    if (!hasKey(PrefsConstants.AUTO_CHECK_BIRTHDAYS)) {
-      putBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, false)
-    }
-    if (!hasKey(PrefsConstants.INFINITE_VIBRATION)) {
-      putBoolean(PrefsConstants.INFINITE_VIBRATION, false)
-    }
-    if (!hasKey(PrefsConstants.NOTIFICATION_REPEAT)) {
-      putBoolean(PrefsConstants.NOTIFICATION_REPEAT, false)
-    }
-    if (!hasKey(PrefsConstants.TIME_FORMAT)) {
-      putInt(PrefsConstants.TIME_FORMAT, 0)
-    }
-    if (!hasKey(PrefsConstants.BIRTHDAY_PERMANENT)) {
-      putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
-    }
-    if (!hasKey(PrefsConstants.REMINDER_CHANGED)) {
-      putBoolean(PrefsConstants.REMINDER_CHANGED, false)
-    }
-    if (!hasKey(PrefsConstants.NOTE_COLOR_OPACITY)) {
-      putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
-    }
-    if (!hasKey(PrefsConstants.APP_LANGUAGE)) {
-      putInt(PrefsConstants.APP_LANGUAGE, 0)
-    }
-    if (!hasKey(PrefsConstants.MAP_STYLE)) {
-      putInt(PrefsConstants.MAP_STYLE, 6)
-    }
-    if (!hasKey(PrefsConstants.NIGHT_MODE)) {
-      putInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-    }
-    if (BuildParams.isPro) {
-      if (!hasKey(PrefsConstants.LED_STATUS)) {
-        putBoolean(PrefsConstants.LED_STATUS, true)
-      }
-      if (!hasKey(PrefsConstants.LED_COLOR)) {
-        putInt(PrefsConstants.LED_COLOR, 11)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_LED_STATUS)) {
-        putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_LED_COLOR)) {
-        putInt(PrefsConstants.BIRTHDAY_LED_COLOR, 6)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_VIBRATION_STATUS)) {
-        putBoolean(PrefsConstants.BIRTHDAY_VIBRATION_STATUS, false)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION)) {
-        putBoolean(PrefsConstants.BIRTHDAY_INFINITE_VIBRATION, false)
-      }
-      if (!hasKey(PrefsConstants.BIRTHDAY_USE_GLOBAL)) {
-        putBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, true)
-      }
-    } else {
-      putInt(PrefsConstants.MARKER_STYLE, 5)
-    }
-  }
-
-  companion object {
-    const val DRIVE_USER_NONE = "none"
-  }
 }

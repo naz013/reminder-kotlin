@@ -892,6 +892,7 @@
     <string name="report_an_issue">Report an Issue</string>
     <string name="move_to_archive">Move to archive</string>
     <string name="share_send_email">Send email…</string>
+
     <string name="dark_mode">Dark Mode</string>
     <string name="_24_hour_format">24 hour format</string>
     <string name="move_to_the_archive">Move to the Archive</string>
@@ -901,4 +902,14 @@
     <string name="add_reminders_to_google_calendar">Add reminders to Google Calendar</string>
     <string name="scan_google_calendar_for_the_new_events">Scan Google Calendar for the new events</string>
     <string name="calendar_not_selected">Calendar not selected</string>
+    <string name="default_reminder_snooze_time">Default reminder snooze time</string>
+    <string name="reminder_notification_repeating">Reminder notification repeating</string>
+    <string name="repeat_reminder_notification_until_dismissed">Repeat reminder notification until dismissed</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Do not repeat reminder notification when no action taken</string>
+    <string name="reminder_notification_repeat_interval">Reminder notification repeat interval</string>
+    <string name="led_indication_if_available">LED indication (if available)</string>
+    <string name="led_indication_color">LED indication color</string>
+    <string name="reminder_default_priority">Reminder default priority</string>
+    <string name="birthdays_from_contacts">Birthdays from contacts</string>
+    <string name="scan_contacts_automatically">Scan contacts automatically</string>
 </resources>

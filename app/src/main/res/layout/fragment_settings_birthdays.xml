@@ -108,29 +108,12 @@
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/vibrationOptionPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_fluent_phone_vibrate"
-            app:prefs_primary_text="@string/vibrate"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/infiniteVibrateOptionPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/infinite_vibrate"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/ledPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_builder_led_color"
-            app:prefs_primary_text="@string/led_notification"
+            app:prefs_primary_text="@string/led_indication_if_available"
             app:prefs_secondary_text_off="@string/do_not_show_led_indication"
             app:prefs_secondary_text_on="@string/show_led_indication"
             app:prefs_type="check_switch" />
@@ -141,7 +124,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_color"
-            app:prefs_primary_text="@string/led_color"
+            app:prefs_primary_text="@string/led_indication_color"
             app:prefs_type="none" />
 
         <TextView
@@ -160,7 +143,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_contacts"
-            app:prefs_primary_text="@string/contacts"
+            app:prefs_primary_text="@string/birthdays_from_contacts"
             app:prefs_secondary_text_off="@string/use_only_my_birthdays"
             app:prefs_secondary_text_on="@string/retrieve_birthdays_from_contacts"
             app:prefs_type="check_switch" />
@@ -170,47 +153,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/check_automatically"
+            app:prefs_primary_text="@string/scan_contacts_automatically"
             app:prefs_secondary_text_off="@string/do_not_scan_contacts"
             app:prefs_secondary_text_on="@string/automatically_check_for_new_birthdays"
             app:prefs_type="check_switch" />
-
-        <LinearLayout
-            android:id="@+id/progressView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:visibility="invisible">
-
-            <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/progressMessageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:textAppearance="?textAppearanceSubtitle1"
-                tools:text="@string/please_wait" />
-
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/scanButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/scan_contacts"
-            android:textAllCaps="true" />
 
         <Space
             android:layout_width="match_parent"

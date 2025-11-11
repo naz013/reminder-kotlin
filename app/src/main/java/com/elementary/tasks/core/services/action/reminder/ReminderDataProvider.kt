@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.services.action.reminder
 
 import androidx.core.app.NotificationCompat
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.params.Prefs
@@ -25,23 +24,11 @@ class ReminderDataProvider(
   }
 
   fun getVibrationPattern(): LongArray? {
-    return if (prefs.isVibrateEnabled) {
-      if (prefs.isInfiniteVibrateEnabled) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-    } else {
-      null
-    }
+    return longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
   }
 
   fun getAppName(): String {
-    return if (BuildParams.isPro) {
-      textProvider.getText(R.string.app_name_pro)
-    } else {
-      textProvider.getText(R.string.app_name)
-    }
+    return textProvider.getAppName()
   }
 
   fun priority(priority: Int): Int {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.LED
@@ -14,17 +13,13 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
-import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.view.transparent
-import com.github.naz013.ui.common.view.visible
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalTime
@@ -53,15 +48,13 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     initDaysToPrefs()
     initHomeDaysPrefs()
     initBirthdayTimePrefs()
+
     initContactsPrefs()
     initContactsAutoPrefs()
-    initViewModel()
-    initScanButton()
+
     initPriority()
 
     initGlobalPrefs()
-    initVibratePrefs()
-    initInfiniteVibratePrefs()
     initLedPrefs()
     initLedColorPrefs()
   }
@@ -83,7 +76,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
   private fun showLedColorDialog() {
     withContext {
       val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(getString(R.string.led_color))
+      builder.setTitle(getString(R.string.led_indication_color))
       val colors = LED.getAllNames(it).toTypedArray()
       mItemSelect = prefs.birthdayLedColor
       builder.setSingleChoiceItems(colors, mItemSelect) { _, which -> mItemSelect = which }
@@ -112,32 +105,6 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     prefs.isBirthdayLedEnabled = !isChecked
   }
 
-  private fun initInfiniteVibratePrefs() {
-    binding.infiniteVibrateOptionPrefs.isChecked = prefs.isBirthdayInfiniteVibrationEnabled
-    binding.infiniteVibrateOptionPrefs.setOnClickListener { changeInfiniteVibrationPrefs() }
-    binding.infiniteVibrateOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
-    binding.infiniteVibrateOptionPrefs.setDependentView(binding.birthReminderPrefs)
-  }
-
-  private fun changeInfiniteVibrationPrefs() {
-    val isChecked = binding.infiniteVibrateOptionPrefs.isChecked
-    binding.infiniteVibrateOptionPrefs.isChecked = !isChecked
-    prefs.isBirthdayInfiniteVibrationEnabled = !isChecked
-  }
-
-  private fun initVibratePrefs() {
-    binding.vibrationOptionPrefs.isChecked = prefs.isBirthdayVibrationEnabled
-    binding.vibrationOptionPrefs.setOnClickListener { changeVibrationPrefs() }
-    binding.vibrationOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
-    binding.vibrationOptionPrefs.setDependentView(binding.birthReminderPrefs)
-  }
-
-  private fun changeVibrationPrefs() {
-    val isChecked = binding.vibrationOptionPrefs.isChecked
-    binding.vibrationOptionPrefs.isChecked = !isChecked
-    prefs.isBirthdayVibrationEnabled = !isChecked
-  }
-
   private fun initGlobalPrefs() {
     binding.globalOptionPrefs.isChecked = prefs.isBirthdayGlobalEnabled
     binding.globalOptionPrefs.setDependentView(binding.birthReminderPrefs)
@@ -150,29 +117,6 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     prefs.isBirthdayGlobalEnabled = !isChecked
   }
 
-  private fun initViewModel() {
-    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
-      when (commands) {
-        Commands.DELETED -> {
-        }
-
-        else -> {
-        }
-      }
-    }
-    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) {
-      if (it) {
-        binding.progressMessageView.text = getString(R.string.please_wait)
-        binding.scanButton.isEnabled = false
-        binding.progressView.visible()
-      } else {
-        binding.progressView.transparent()
-        binding.scanButton.isEnabled = true
-      }
-    }
-    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { toast(it) }
-  }
-
   private fun initPriority() {
     binding.priorityPrefs.setOnClickListener { showPriorityDialog() }
     binding.priorityPrefs.setDependentView(binding.birthReminderPrefs)
@@ -181,7 +125,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
 
   private fun showPriorityDialog() {
     val builder = dialogues.getMaterialDialog(requireContext())
-    builder.setTitle(getString(R.string.default_priority))
+    builder.setTitle(getString(R.string.birthday_notification_priority))
     mItemSelect = prefs.birthdayPriority
     builder.setSingleChoiceItems(priorityList(), mItemSelect) { _, which ->
       mItemSelect = which
@@ -199,22 +143,6 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
 
   private fun showPriority() {
     binding.priorityPrefs.setDetailText(priorityList()[prefs.birthdayPriority])
-  }
-
-  private fun initScanButton() {
-    if (prefs.isContactBirthdaysEnabled) {
-      binding.scanButton.isEnabled = true
-      binding.scanButton.visibility = View.VISIBLE
-      binding.scanButton.setOnClickListener { scanForBirthdays() }
-    } else {
-      binding.scanButton.visibility = View.GONE
-    }
-  }
-
-  private fun scanForBirthdays() {
-    permissionFlow.askPermission(Permissions.READ_CONTACTS) {
-      viewModel.startScan()
-    }
   }
 
   private fun initContactsAutoPrefs() {
@@ -243,10 +171,15 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
 
   private fun changeContactsPrefs() {
     permissionFlow.askPermission(Permissions.READ_CONTACTS) {
-      val isChecked = binding.useContactsPrefs.isChecked
-      binding.useContactsPrefs.isChecked = !isChecked
-      prefs.isContactBirthdaysEnabled = !isChecked
-      initScanButton()
+      val isChecked = !prefs.isContactBirthdaysEnabled
+      binding.useContactsPrefs.isChecked = isChecked
+      prefs.isContactBirthdaysEnabled = isChecked
+      // Schedule a scan when enabling contact birthdays
+      if (isChecked) {
+        CheckBirthdaysWorker.scheduleOnTime(requireContext())
+      } else {
+        jobScheduler.cancelBirthdaysCheck()
+      }
     }
   }
 
@@ -408,13 +341,8 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     if (!isChecked) {
       jobScheduler.scheduleDailyBirthday()
     } else {
-      cleanBirthdays()
       jobScheduler.cancelDailyBirthday()
     }
-  }
-
-  private fun cleanBirthdays() {
-    viewModel.deleteAllBirthdays()
   }
 
   override fun getTitle(): String {

@@ -10,7 +10,6 @@ object PrefsConstants {
   const val MAP_STYLE = "new_map_style"
   const val LOCATION_RADIUS = "radius"
   const val TRACKING_NOTIFICATION = "tracking_notification"
-  const val VIBRATION_STATUS = "vibration_status"
   const val CONTACT_BIRTHDAYS = "use_contacts"
   const val BIRTHDAY_REMINDER = "birthdays_reminder"
   const val START_DAY = "start_day"
@@ -23,7 +22,6 @@ object PrefsConstants {
   const val LED_STATUS = "led_status"
   const val LED_COLOR = "led_color"
   const val MARKER_STYLE = "marker_style"
-  const val INFINITE_VIBRATION = "infinite_vibration"
   const val NOTIFICATION_REPEAT = "notification_repeat"
   const val NOTIFICATION_REPEAT_INTERVAL = "notification_repeat_interval"
   const val WEAR_NOTIFICATION = "wear_notification"
@@ -33,7 +31,6 @@ object PrefsConstants {
   const val STATUS_BAR_ICON = "status_icon"
   const val STATUS_BAR_NOTIFICATION = "status_notification"
   const val TRACK_TIME = "tracking_time"
-  const val EXPORT_TO_STOCK = "export_to_stock"
   const val REMINDER_COLOR = "reminder_color"
   const val TIME_FORMAT = "new_hour_format"
   const val BIRTHDAY_PERMANENT = "birthday_permanent"
@@ -77,20 +74,15 @@ object PrefsConstants {
   const val SALE_MESSAGE = "sale_message_json_v2"
   const val INTERNAL_MESSAGE = "internal_message_json_v1"
 
-  const val REMINDER_CHANGED = "reminder_changed"
   const val NOTES_ORDER = "notes_ordering"
   const val NOTES_LIST_STYLE = "notes_style"
-  const val RATE_SHOW = "show_rate"
-  const val APP_RUNS_COUNT = "app_runs"
 
   const val LAST_VERSION_CODE = "last_version_code"
 
   // birthdays reminder notification constants
   const val BIRTHDAY_USE_GLOBAL = "use_global"
-  const val BIRTHDAY_VIBRATION_STATUS = "birthday_vibration_status"
   const val BIRTHDAY_LED_STATUS = "birthday_led_status"
   const val BIRTHDAY_LED_COLOR = "birthday_led_color"
-  const val BIRTHDAY_INFINITE_VIBRATION = "birthday_infinite_vibration"
   const val BIRTHDAY_REMINDER_TIME = "reminder_hour"
 
   const val IS_PRESET_INIT = "preset_init"

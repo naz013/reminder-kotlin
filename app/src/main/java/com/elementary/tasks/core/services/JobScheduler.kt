@@ -11,7 +11,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
@@ -47,10 +47,12 @@ class JobScheduler(
       .addTag(EVENT_CHECK_BIRTHDAYS)
       .build()
     schedule(work)
+    Logger.i(TAG, "Scheduled birthday check.")
   }
 
   fun cancelBirthdaysCheck() {
     cancelReminder(EVENT_CHECK_BIRTHDAYS)
+    Logger.w(TAG, "Cancelled birthday check.")
   }
 
   fun scheduleBirthdayPermanent() {

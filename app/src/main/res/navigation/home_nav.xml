@@ -154,13 +154,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_notificationSettingsFragment"
-            app:destination="@id/notificationSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
             android:id="@+id/action_settingsFragment_to_calendarSettingsFragment"
             app:destination="@id/calendarSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -268,11 +261,6 @@
             app:nullable="true"
             app:argType="string" />
     </fragment>
-    <fragment
-        android:id="@+id/notificationSettingsFragment"
-        android:name="com.elementary.tasks.settings.NotificationSettingsFragment"
-        android:label="@string/notification"
-        tools:layout="@layout/fragment_settings_notification" />
     <fragment
         android:id="@+id/birthdaySettingsFragment"
         android:name="com.elementary.tasks.settings.BirthdaySettingsFragment"
